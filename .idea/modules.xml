@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/datalayer/datalayer.iml" filepath="$PROJECT_DIR$/datalayer/datalayer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domainlayer/domainlayer.iml" filepath="$PROJECT_DIR$/domainlayer/domainlayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/moviespreview.iml" filepath="$PROJECT_DIR$/moviespreview.iml" />
     </modules>
   </component>

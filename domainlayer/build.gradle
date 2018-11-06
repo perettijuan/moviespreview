@@ -29,5 +29,8 @@ dependencies {
     // Common lib -> do not leak
     implementation project(path: ':common')
 
+    // Data layer module -> do not leak
+    implementation project(path: ':datalayer')
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
