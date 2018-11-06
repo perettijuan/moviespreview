@@ -4,8 +4,6 @@ apply plugin: 'kotlin-android'
 android {
     compileSdkVersion 28
 
-
-
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 28
@@ -24,10 +22,10 @@ android {
 
 dependencies {
     // Kotlin standard libs
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    api "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    // Common lib -> do not leak
-    implementation project(path: ':common')
+    // Common lib -> leak common dependency to all clients
+    api project(path: ':common')
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
