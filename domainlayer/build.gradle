@@ -21,8 +21,11 @@ android {
 }
 
 dependencies {
-    // Common lib -> leak common dependency to all clients in order to force recompiling with changes
-    api project(path: ':datalayer')
+    // Data layer -> DO NOT leak dependency
+    implementation project(path: ':datalayer')
+
+    // Common module -> DO NOT leak dependency
+    implementation project(path: ':common')
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }

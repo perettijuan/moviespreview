@@ -21,11 +21,11 @@ android {
 }
 
 dependencies {
-    // Kotlin standard libs
-    api "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    // Kotlin standard libs -> DO NOT leak dependency
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    // Common lib -> leak common dependency to all clients
-    api project(path: ':common')
+    // Common module -> DO NOT leak dependency
+    implementation project(path: ':common')
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
