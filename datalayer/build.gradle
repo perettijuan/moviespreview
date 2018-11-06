@@ -1,9 +1,10 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
-
 android {
     compileSdkVersion 28
+
+
 
     defaultConfig {
         minSdkVersion 15
@@ -18,10 +19,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
-    // Kotlin standard libs
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Common lib -> do not leak
+    implementation project(path: ':common')
 }
