@@ -1,2 +1,2 @@
 # moviespreview
-An application to show movies and TV shoes based on TheMovieDB API.
+An application to show movies and TV shows based on TheMovieDB API.
