@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="app_bar_layout_height_default">340dp</dimen>
+  <dimen name="action_bar_height">48dp</dimen>
+</resources>
