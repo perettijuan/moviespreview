@@ -1,3 +1,11 @@
 <resources>
   <string name="app_name">MoviesPreview</string>
+
+
+  <string name="main_menu_now_playing">Now Playing</string>
+  <string name="main_menu_popular">Popular</string>
+  <string name="main_menu_top_rated">Top Rated</string>
+  <string name="main_menu_upcoming">Upcoming</string>
+
+
 </resources>

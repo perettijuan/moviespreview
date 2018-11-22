@@ -27,6 +27,7 @@
         app:expandedTitleMarginStart="48dp"
         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
+        <!-- This ImageView shows the movie detail image -->
         <ImageView
           android:id="@+id/mainImageView"
           android:layout_width="match_parent"
