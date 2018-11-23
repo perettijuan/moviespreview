@@ -7,8 +7,9 @@ import com.jpp.moviespreview.domainlayer.usecase.ConfigureApplicationState
 import com.jpp.moviespreview.screens.MPScopedViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class MoviesFragmentViewModel : MPScopedViewModel() {
+class MoviesFragmentViewModel @Inject constructor() : MPScopedViewModel() {
 
     private val viewState by lazy { MutableLiveData<MoviesFragmentViewState>().apply { value = MoviesFragmentViewState.Loading } }
     private val useCase = ConfigueApplicationUseCase()

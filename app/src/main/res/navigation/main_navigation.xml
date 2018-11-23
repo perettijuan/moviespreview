@@ -27,7 +27,7 @@
     tools:layout="@layout/fragment_movies"  />
   <fragment
     android:id="@+id/searchFragment"
-    android:name="com.jpp.moviespreview.screens.search.SearchFragment"
+    android:name="com.jpp.moviespreview.screens.main.search.SearchFragment"
     android:label="SearchFragment" />
 
 </navigation>

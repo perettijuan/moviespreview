@@ -6,12 +6,20 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.*
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.ext.setGone
+import dagger.android.AndroidInjection
+import dagger.android.AndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.activity_main.*
+import dagger.android.DispatchingAndroidInjector
+import javax.inject.Inject
+
+
 
 /**
  * Main entry point of the application.
@@ -34,9 +42,13 @@ import kotlinx.android.synthetic.main.activity_main.*
  *
  *
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),  HasSupportFragmentInjector {
+
+    @Inject
+    lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(mainToolbar)
@@ -129,4 +141,6 @@ class MainActivity : AppCompatActivity() {
         }
         mainImageView.setGone()
     }
+
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentDispatchingAndroidInjector
 }
