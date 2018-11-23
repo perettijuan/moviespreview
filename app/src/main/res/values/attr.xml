@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <attr name="appBarLayoutHeight" format="reference"/>
-  <attr name="actionBarHeight" format="reference"/>
+  <attr name="mpActionBarHeightExpanded" format="reference"/>
+  <attr name="mpActionBarHeightNormal" format="reference"/>
 </resources>

@@ -6,8 +6,12 @@
     <item name="colorPrimary">@color/primaryColor</item>
     <item name="colorPrimaryDark">@color/primaryDarkColor</item>
     <item name="colorAccent">@color/accentColor</item>
-    <item name="appBarLayoutHeight">@dimen/app_bar_layout_height_default</item>
-    <item name="actionBarHeight">@dimen/action_bar_height</item>
+    <item name="mpActionBarHeightExpanded">@dimen/action_bar_height_expanded</item>
+    <item name="mpActionBarHeightNormal">@dimen/action_bar_height_normal</item>
   </style>
+
+
+  <style name="MPNavigationViewItemStyle" parent="@android:style/TextAppearance.Medium"/>
+  <style name="MPAppToolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
 </resources>

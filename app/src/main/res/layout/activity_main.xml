@@ -15,8 +15,8 @@
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/mainAppBarLayout"
       android:layout_width="match_parent"
-      android:layout_height="?appBarLayoutHeight"
-      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+      android:layout_height="?attr/mpActionBarHeightExpanded"
+      android:theme="@style/MPAppToolbar">
 
       <com.google.android.material.appbar.CollapsingToolbarLayout
         android:id="@+id/mainCollapsingToolbarLayout"
@@ -39,10 +39,10 @@
         <androidx.appcompat.widget.Toolbar
           android:id="@+id/mainToolbar"
           android:layout_width="match_parent"
-          android:layout_height="?actionBarHeight"
+          android:layout_height="?attr/mpActionBarHeightNormal"
           app:layout_collapseMode="pin"
           app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-          app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+          app:theme="@style/MPAppToolbar" />
 
       </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -65,6 +65,7 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:layout_gravity="start"
+    app:itemTextAppearance="@style/MPNavigationViewItemStyle"
     app:menu="@menu/main_navigation_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity() {
             setExpanded(false, false)
             isActivated = false
             val lp = layoutParams as CoordinatorLayout.LayoutParams
-            lp.height = resources.getDimension(R.dimen.action_bar_height).toInt()
+            lp.height = resources.getDimension(R.dimen.action_bar_height_normal).toInt()
         }
         mainCollapsingToolbarLayout.apply {
             isTitleEnabled = false
