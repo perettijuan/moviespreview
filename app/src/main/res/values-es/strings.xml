@@ -1,0 +1,12 @@
+<resources>
+  <string name="app_name">MoviesPreview</string>
+
+
+  <string name="main_menu_now_playing">En cines</string>
+  <string name="main_menu_popular">Populares</string>
+  <string name="main_menu_top_rated">Mejor rankeadas</string>
+  <string name="main_menu_upcoming">Por estrenar</string>
+
+  <string name="main_activity_search_menu_title">Buscar</string>
+
+</resources>

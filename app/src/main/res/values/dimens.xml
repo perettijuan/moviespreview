@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="action_bar_height_expanded">340dp</dimen>
+  <dimen name="action_bar_height_normal">48dp</dimen>
+</resources>

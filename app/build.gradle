@@ -23,10 +23,17 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.android.support:appcompat-v7:28.0.0'
+    // appCompat libraries
+    def appCompatVersion = "1.0.2"
+    implementation "androidx.appcompat:appcompat:$appCompatVersion"
 
     // Kotlin standard libs
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    // Navigation Components
+    def navigationVersion = "1.0.0-alpha07"
+    implementation "android.arch.navigation:navigation-fragment-ktx:$navigationVersion"
+    implementation "android.arch.navigation:navigation-ui-ktx:$navigationVersion"
 
     implementation project(path: ':domainlayer')
     implementation project(path: ':common')
