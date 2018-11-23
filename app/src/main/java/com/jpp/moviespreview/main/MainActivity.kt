@@ -1,12 +1,16 @@
 package com.jpp.moviespreview.main
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.*
 import com.jpp.moviespreview.R
+import com.jpp.moviespreview.ext.setGone
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
@@ -37,9 +41,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(mainToolbar)
         setupNavigation()
+        lockActionBar()
     }
 
     override fun onSupportNavigateUp(): Boolean {
+        if(findNavController(this, R.id.mainNavHostFragment).currentDestination?.id == R.id.searchFragment) {
+            return navigateUp(findNavController(this, R.id.mainNavHostFragment), mainDrawerLayout)
+        }
+
         if (!mainDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             // this ensures that we support multiple top level fragments
             mainDrawerLayout.openDrawer(GravityCompat.START)
@@ -57,6 +66,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_activity_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.search_menu -> {
+                findNavController(this, R.id.mainNavHostFragment).navigate(R.id.searchFragment)
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+
+    }
 
     private fun setupNavigation() {
         val navController = findNavController(this, R.id.mainNavHostFragment)
@@ -84,5 +108,24 @@ class MainActivity : AppCompatActivity() {
         }
 
         setupWithNavController(mainNavigationView, navController)
+    }
+
+
+    /**
+     * Disable the CollapsingToolbarLayout behavior in order to show a fixed
+     * top bar.
+     */
+    private fun lockActionBar() {
+        // disable expanded mode in AppBarLayout container
+        mainAppBarLayout.apply {
+            setExpanded(false, false)
+            isActivated = false
+            val lp = layoutParams as CoordinatorLayout.LayoutParams
+            lp.height = resources.getDimension(R.dimen.action_bar_height).toInt()
+        }
+        mainCollapsingToolbarLayout.apply {
+            isTitleEnabled = false
+        }
+        mainImageView.setGone()
     }
 }

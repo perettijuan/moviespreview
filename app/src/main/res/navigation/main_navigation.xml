@@ -25,5 +25,9 @@
     android:name="com.jpp.moviespreview.main.TopRatedMoviesFragment"
     android:label="@string/main_menu_top_rated"
     tools:layout="@layout/fragment_movies"  />
+  <fragment
+    android:id="@+id/searchFragment"
+    android:name="com.jpp.moviespreview.search.SearchFragment"
+    android:label="SearchFragment" />
 
 </navigation>

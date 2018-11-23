@@ -6,6 +6,7 @@
   <string name="main_menu_popular">Popular</string>
   <string name="main_menu_top_rated">Top Rated</string>
   <string name="main_menu_upcoming">Upcoming</string>
+  <string name="main_activity_search_menu_title">Search</string>
 
 
 </resources>
