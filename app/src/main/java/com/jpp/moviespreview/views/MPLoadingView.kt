@@ -30,8 +30,8 @@ class MPLoadingView : View {
 
     private val animDuration = 750
 
-    private lateinit var primaryColor: Paint
-    private lateinit var secondaryColor: Paint
+    private var primaryColor: Paint? = null
+    private var secondaryColor: Paint? = null
 
     private var sweepAngle: Int = 0
     private var startAngle: Int = 0
@@ -39,11 +39,11 @@ class MPLoadingView : View {
     private var strokeSize: Int = 0
 
     private lateinit var viewBounds: RectF
-    private lateinit var currentColor: Paint
+    private var currentColor: Paint? = null
 
-    private lateinit var sweepAnim: ValueAnimator
-    private lateinit var startAnim: ValueAnimator
-    private lateinit var finalAnim: ValueAnimator
+    private var sweepAnim: ValueAnimator? = null
+    private var startAnim: ValueAnimator? = null
+    private var finalAnim: ValueAnimator? = null
 
     constructor(context: Context) : super(context) {
         init(null, 0)
@@ -67,7 +67,6 @@ class MPLoadingView : View {
                 }.run {
                     recycle()
                 }
-        currentColor = primaryColor
     }
 
     /**
@@ -100,8 +99,7 @@ class MPLoadingView : View {
 
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
-                    super.onAnimationEnd(animation)
-                    finalAnim.start()
+                    finalAnim?.start()
                 }
             })
         }
@@ -123,21 +121,19 @@ class MPLoadingView : View {
                 override fun onAnimationEnd(animation: Animator) {
                     super.onAnimationEnd(animation)
                     updateColor()
-                    sweepAnim.start()
-                    startAnim.start()
+                    sweepAnim?.start()
+                    startAnim?.start()
                 }
             })
         }
 
-        sweepAnim.start()
-        startAnim.start()
+        sweepAnim?.start()
+        startAnim?.start()
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        sweepAnim.cancel()
-        startAnim.cancel()
-        finalAnim.cancel()
+        stop()
     }
 
     /**
@@ -206,8 +202,11 @@ class MPLoadingView : View {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
+
         if (visibility == VISIBLE) {
-            canvas.drawArc(viewBounds, startAngle.toFloat(), (sweepAngle - startAngle).toFloat(), false, currentColor)
+            currentColor?.run {
+                canvas.drawArc(viewBounds, startAngle.toFloat(), (sweepAngle - startAngle).toFloat(), false, this)
+            }
         }
     }
 

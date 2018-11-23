@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.jpp.moviespreview.R
+import com.jpp.moviespreview.ext.setInvisible
+import com.jpp.moviespreview.ext.setVisible
 import kotlinx.android.synthetic.main.fragment_movies.*
 
 abstract class MoviesFragment : Fragment() {
@@ -35,11 +37,23 @@ abstract class MoviesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.bindViewState().observe(this, Observer {
             when (it) {
-                MoviesFragmentViewState.Loading -> moviesLoadingErrorView.animateToLoading()
-                MoviesFragmentViewState.ErrorUnknown -> moviesLoadingErrorView.animateToUnknownError {}
-                MoviesFragmentViewState.ErrorNoConnectivity -> moviesLoadingErrorView.animateToNoConnectivityError {}
+                MoviesFragmentViewState.Loading -> {
+                    moviesLoadingErrorView.setVisible()
+                    moviesLoadingErrorView.animateToLoading()
+                }
+                MoviesFragmentViewState.ErrorUnknown -> {
+                    moviesLoadingErrorView.setVisible()
+                    moviesLoadingErrorView.animateToUnknownError {}
+                }
+                MoviesFragmentViewState.ErrorNoConnectivity -> {
+                    moviesLoadingErrorView.setVisible()
+                    moviesLoadingErrorView.animateToNoConnectivityError {}
+                }
                 MoviesFragmentViewState.Configured -> {
-                    moviesLoadingErrorView.hideWithAnimation { Toast.makeText(activity, "It Works!", Toast.LENGTH_LONG).show() }
+                    moviesLoadingErrorView.hideWithAnimation {
+                        moviesLoadingErrorView.setInvisible()
+                        Toast.makeText(activity, "It Works!", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         })
