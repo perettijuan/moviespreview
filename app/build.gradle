@@ -36,10 +36,26 @@ dependencies {
     // Kotlin standard libs
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
+    // Kotlin coroutines
+    def kotlinCoroutines = '0.27.0-eap13'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
+
     // Navigation Components
     def navigationVersion = "1.0.0-alpha07"
     implementation "android.arch.navigation:navigation-fragment-ktx:$navigationVersion"
     implementation "android.arch.navigation:navigation-ui-ktx:$navigationVersion"
+
+    // ViewModel and LiveData
+    implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
+    kapt "androidx.lifecycle:lifecycle-compiler:2.0.0"
+
+    // Dagger
+    def daggerVersion = '2.15'
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    implementation "com.google.dagger:dagger-android:$daggerVersion"
 
     implementation project(path: ':domainlayer')
     implementation project(path: ':common')

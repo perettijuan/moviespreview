@@ -1,4 +1,4 @@
-package com.jpp.moviespreview.main
+package com.jpp.moviespreview.screens.main
 
 import android.os.Bundle
 import android.view.Menu

@@ -1,13 +1,13 @@
-package com.jpp.moviespreview.main
+package com.jpp.moviespreview.screens.main
 
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 
-class TopRatedMoviesFragment : MoviesFragment() {
+class PlayingMoviesFragment : MoviesFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("JPPLogging", "TopRatedMoviesFragment")
+        Log.d("JPPLogging", "Playing")
     }
 }

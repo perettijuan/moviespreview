@@ -1,4 +1,4 @@
-package com.jpp.moviespreview.search
+package com.jpp.moviespreview.screens.search
 
 import android.os.Bundle
 import android.view.LayoutInflater

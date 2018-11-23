@@ -7,27 +7,27 @@
 
   <fragment
     android:id="@+id/playingMoviesFragment"
-    android:name="com.jpp.moviespreview.main.PlayingMoviesFragment"
+    android:name="com.jpp.moviespreview.screens.main.PlayingMoviesFragment"
     android:label="@string/main_menu_now_playing"
     tools:layout="@layout/fragment_movies" />
   <fragment
     android:id="@+id/popularMoviesFragment"
-    android:name="com.jpp.moviespreview.main.PopularMoviesFragment"
+    android:name="com.jpp.moviespreview.screens.main.PopularMoviesFragment"
     android:label="@string/main_menu_popular"
     tools:layout="@layout/fragment_movies"  />
   <fragment
     android:id="@+id/upcomingMoviesFragment"
-    android:name="com.jpp.moviespreview.main.UpcomingMoviesFragment"
+    android:name="com.jpp.moviespreview.screens.main.UpcomingMoviesFragment"
     android:label="@string/main_menu_upcoming"
     tools:layout="@layout/fragment_movies"  />
   <fragment
     android:id="@+id/topRatedMoviesFragment"
-    android:name="com.jpp.moviespreview.main.TopRatedMoviesFragment"
+    android:name="com.jpp.moviespreview.screens.main.TopRatedMoviesFragment"
     android:label="@string/main_menu_top_rated"
     tools:layout="@layout/fragment_movies"  />
   <fragment
     android:id="@+id/searchFragment"
-    android:name="com.jpp.moviespreview.search.SearchFragment"
+    android:name="com.jpp.moviespreview.screens.search.SearchFragment"
     android:label="SearchFragment" />
 
 </navigation>
