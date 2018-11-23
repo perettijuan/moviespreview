@@ -7,22 +7,22 @@
 
   <fragment
     android:id="@+id/playingMoviesFragment"
-    android:name="com.jpp.moviespreview.screens.main.PlayingMoviesFragment"
+    android:name="com.jpp.moviespreview.screens.main.movies.fragments.PlayingMoviesFragment"
     android:label="@string/main_menu_now_playing"
     tools:layout="@layout/fragment_movies" />
   <fragment
     android:id="@+id/popularMoviesFragment"
-    android:name="com.jpp.moviespreview.screens.main.PopularMoviesFragment"
+    android:name="com.jpp.moviespreview.screens.main.movies.fragments.PopularMoviesFragment"
     android:label="@string/main_menu_popular"
     tools:layout="@layout/fragment_movies"  />
   <fragment
     android:id="@+id/upcomingMoviesFragment"
-    android:name="com.jpp.moviespreview.screens.main.UpcomingMoviesFragment"
+    android:name="com.jpp.moviespreview.screens.main.movies.fragments.UpcomingMoviesFragment"
     android:label="@string/main_menu_upcoming"
     tools:layout="@layout/fragment_movies"  />
   <fragment
     android:id="@+id/topRatedMoviesFragment"
-    android:name="com.jpp.moviespreview.screens.main.TopRatedMoviesFragment"
+    android:name="com.jpp.moviespreview.screens.main.movies.fragments.TopRatedMoviesFragment"
     android:label="@string/main_menu_top_rated"
     tools:layout="@layout/fragment_movies"  />
   <fragment
