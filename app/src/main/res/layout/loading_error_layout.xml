@@ -9,7 +9,7 @@
 
   <ImageView
     android:id="@+id/errorImageView"
-    style="@style/MPLoadingViewNormal"
+    style="@style/MPErrorView"
     app:layout_constraintBottom_toTopOf="@id/errorTitleTextView"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +40,7 @@
 
 
   <com.jpp.moviespreview.views.MPLoadingView
-    android:id="@+id/loading_view"
+    android:id="@+id/loadingView"
     style="@style/MPLoadingViewNormal"
     android:visibility="visible"
     app:layout_constraintBottom_toBottomOf="parent"

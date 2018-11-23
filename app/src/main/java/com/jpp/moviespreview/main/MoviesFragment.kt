@@ -16,6 +16,11 @@ abstract class MoviesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mpLoadingView.start()
+        moviesLoadingErrorView.showLoadingImmediate()
+        moviesLoadingErrorView.postDelayed({
+            moviesLoadingErrorView.animateToNoConnectivityError {
+                moviesLoadingErrorView.animateToLoading()
+            }
+        }, 1000)
     }
 }

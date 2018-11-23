@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+  <!-- Used in the Drawer items-->
   <style name="MPNavigationViewItemStyle" parent="@android:style/TextAppearance.Medium">
     <item name="android:fontFamily">@font/poppins</item>
   </style>
 
+  <!-- Application TopBar -->
   <style name="MPAppToolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
     <item name="android:fontFamily">@font/poppins</item>
   </style>
 
-
+  <!-- TextView styles -->
   <style name="MPTextViewNormal" parent="@android:style/TextAppearance" >
     <item name="android:fontFamily">@font/poppins</item>
   </style>

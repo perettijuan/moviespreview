@@ -13,5 +13,4 @@
     <attr name="stroke" format="dimension|reference" />
   </declare-styleable>
 
-
 </resources>

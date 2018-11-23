@@ -1,12 +1,18 @@
 <resources>
   <string name="app_name">MoviesPreview</string>
 
-
+  <!-- Main Activity -->
   <string name="main_menu_now_playing">Now Playing</string>
   <string name="main_menu_popular">Popular</string>
   <string name="main_menu_top_rated">Top Rated</string>
   <string name="main_menu_upcoming">Upcoming</string>
   <string name="main_activity_search_menu_title">Search</string>
+  <!-- End Main Activity -->
 
+  <!-- Errors -->
+  <string name="error_no_network_connection_message">Verify your network connection and try again</string>
+  <string name="error_unexpected_error_message">An unexpected error has occurred. Pleas, try again later.</string>
+  <string name="error_retry">Retry</string>
+  <!-- End Errors -->
 
 </resources>
