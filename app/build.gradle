@@ -27,6 +27,11 @@ dependencies {
     def appCompatVersion = "1.0.2"
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
 
+    // ConstraintLayout
+    def constraintLayoutVersion = '1.1.3'
+    implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+    implementation "androidx.constraintlayout:constraintlayout-solver:$constraintLayoutVersion"
+
     // Kotlin standard libs
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 

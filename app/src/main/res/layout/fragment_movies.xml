@@ -10,4 +10,9 @@
     android:layout_height="wrap_content"
     android:text="@string/app_name"/>
 
+  <com.jpp.moviespreview.views.MPLoadingView
+    android:id="@+id/mpLoadingView"
+    android:layout_width="80dp"
+    android:layout_height="80dp" />
+
 </LinearLayout>

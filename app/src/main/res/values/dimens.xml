@@ -2,4 +2,6 @@
 <resources>
   <dimen name="action_bar_height_expanded">340dp</dimen>
   <dimen name="action_bar_height_normal">48dp</dimen>
+
+  <dimen name="mp_loading_view_stroke_width">3dp</dimen>
 </resources>
