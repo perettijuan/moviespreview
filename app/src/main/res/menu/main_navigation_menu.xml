@@ -3,15 +3,19 @@
   <group android:checkableBehavior="single">
     <item
       android:id="@+id/playingMoviesFragment"
-      android:title="@string/main_menu_now_playing" />
+      android:title="@string/main_menu_now_playing"
+      android:icon="@drawable/ic_section_now_playing"/>
     <item
       android:id="@+id/popularMoviesFragment"
-      android:title="@string/main_menu_popular" />
+      android:title="@string/main_menu_popular"
+      android:icon="@drawable/ic_section_popular"/>
     <item
       android:id="@+id/upcomingMoviesFragment"
-      android:title="@string/main_menu_upcoming" />
+      android:title="@string/main_menu_upcoming"
+      android:icon="@drawable/ic_section_upcoming"/>
     <item
       android:id="@+id/topRatedMoviesFragment"
-      android:title="@string/main_menu_top_rated" />
+      android:title="@string/main_menu_top_rated"
+      android:icon="@drawable/ic_section_top_rated"/>
   </group>
 </menu>

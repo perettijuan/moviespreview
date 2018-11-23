@@ -74,6 +74,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.search_menu -> {
+                // Probably the best idea here is to navigate to a new Activity
                 findNavController(this, R.id.mainNavHostFragment).navigate(R.id.searchFragment)
                 return true
             }
