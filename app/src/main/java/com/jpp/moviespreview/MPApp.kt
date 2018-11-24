@@ -2,6 +2,7 @@ package com.jpp.moviespreview
 
 import android.app.Activity
 import android.app.Application
+import com.jpp.moviespreview.di.AppModule
 import com.jpp.moviespreview.di.DaggerAppComponent
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -17,7 +18,7 @@ class MPApp : Application(), HasActivityInjector {
     override fun onCreate() {
         super.onCreate()
         DaggerAppComponent.builder()
-                .application(this)
+                .appModule(AppModule(this))
                 .build()
                 .inject(this)
     }

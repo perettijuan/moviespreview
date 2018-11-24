@@ -48,7 +48,7 @@ fun View.toOneAlpha() {
 }
 
 /**
- * Extension function to retrieve a String from the application resources.
+ * Extension function to retrieve a String from the appModule resources.
  */
 fun View.getStringFromResources(@StringRes stringResId: Int) = resources.getString(stringResId)
 

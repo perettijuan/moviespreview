@@ -8,7 +8,7 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 /**
- * Provides all the ViewModels needed by the application.
+ * Provides all the ViewModels needed by the appModule.
  */
 @Module
 abstract class ViewModelModule {

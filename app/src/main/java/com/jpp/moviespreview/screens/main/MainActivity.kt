@@ -22,14 +22,14 @@ import javax.inject.Inject
 
 
 /**
- * Main entry point of the application.
+ * Main entry point of the appModule.
  *
  * Navigation: shows a DrawerLayout with the different items that the user can select in order
- * to be redirected to a particular destination of the application. Uses Navigation Component
+ * to be redirected to a particular destination of the appModule. Uses Navigation Component
  * in order to delegate the navigation logic to the Architecture Components.
  *
  * Multi-top-level fragments navigation: the navigation guidelines described in the Android
- * support site states that the application should have only one entry point, meaning only
+ * support site states that the appModule should have only one entry point, meaning only
  * one top-level fragment per navigation graph. Now, when we're using a DrawerLayout (the menu
  * with the 'burger' icon), we need more than one top-level fragment, since we want to
  * show the burger icon in every fragment that the user can select from the drawer.

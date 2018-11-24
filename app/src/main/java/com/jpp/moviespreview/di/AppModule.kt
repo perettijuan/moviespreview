@@ -1,18 +1,18 @@
 package com.jpp.moviespreview.di
 
 import android.content.Context
+import com.jpp.moviespreview.MPApp
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
 /**
- * TODO JPP -> for the moment, this class is to verify that everything compiles. Delete it if not needed!!!!
+ * Provides appModule scoped dependencies.
  */
 @Module
-class AppModule {
-
+class AppModule(private val appInstance: MPApp) {
 
     @Provides
     @Singleton
-    fun providesContext(context: Context): Context = context
+    fun providesContext(): Context = appInstance.applicationContext
 }

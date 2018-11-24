@@ -60,6 +60,7 @@ dependencies {
 
 
     implementation project(path: ':domainlayer')
+    implementation project(path: ':datalayer')
     implementation project(path: ':common')
 
     //testImplementation 'junit:junit:4.12'
