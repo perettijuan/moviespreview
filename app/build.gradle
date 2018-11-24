@@ -24,6 +24,13 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // Kotlin standard libs
+    implementation deps.kotlin.stdlib
+
+    // Kotlin coroutines
+    def kotlinCoroutines = '0.27.0-eap13'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
 
     // appCompat libraries
     def appCompatVersion = "1.0.2"
@@ -33,14 +40,6 @@ dependencies {
     def constraintLayoutVersion = '1.1.3'
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
     implementation "androidx.constraintlayout:constraintlayout-solver:$constraintLayoutVersion"
-
-    // Kotlin standard libs
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
-    // Kotlin coroutines
-    def kotlinCoroutines = '0.27.0-eap13'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
 
     // Navigation Components
     def navigationVersion = "1.0.0-alpha07"

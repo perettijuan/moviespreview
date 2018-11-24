@@ -22,6 +22,6 @@ android {
 
 dependencies {
     // Kotlin standard libs
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation deps.kotlin.stdlib
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }

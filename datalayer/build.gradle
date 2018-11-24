@@ -22,7 +22,7 @@ android {
 
 dependencies {
     // Kotlin standard libs -> DO NOT leak dependency
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation deps.kotlin.stdlib
 
     // Common module -> DO NOT leak dependency
     implementation project(path: ':common')

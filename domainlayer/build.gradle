@@ -21,6 +21,8 @@ android {
 }
 
 dependencies {
+    implementation deps.kotlin.stdlib
+
     // Data layer -> DO NOT leak dependency
     implementation project(path: ':datalayer')
 
@@ -28,7 +30,10 @@ dependencies {
     implementation project(path: ':common')
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    testImplementation deps.test.junit5.jupiter.api         // <-- allows running JUnit5 tests
+    testImplementation deps.test.junit5.jupiter.params      // <-- allows running JUnit5 parameterized tests
+    testRuntimeOnly deps.test.junit5.jupiter.engine         // <-- allows running JUnit5 tests
 }
 repositories {
     mavenCentral()
