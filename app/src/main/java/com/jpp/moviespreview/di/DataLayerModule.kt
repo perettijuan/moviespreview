@@ -1,5 +1,7 @@
 package com.jpp.moviespreview.di
 
+import com.jpp.moviespreview.BuildConfig
+import com.jpp.moviespreview.datalayer.api.ServerRepositoryImpl
 import com.jpp.moviespreview.datalayer.repository.ConfigurationRepository
 import com.jpp.moviespreview.datalayer.repository.ConfigurationRepositoryImpl
 import dagger.Module
@@ -14,5 +16,10 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun provideConfigurationRepository(): ConfigurationRepository = ConfigurationRepositoryImpl()
+    fun provideConfigurationRepository(serverRepositoryImpl: ServerRepositoryImpl)
+            : ConfigurationRepository = ConfigurationRepositoryImpl(serverRepositoryImpl)
+
+    @Singleton
+    @Provides
+    fun providesServerRepositoryImpl() = ServerRepositoryImpl(BuildConfig.API_KEY)
 }
