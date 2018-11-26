@@ -8,4 +8,5 @@ import com.jpp.moviespreview.datalayer.AppConfiguration
  */
 interface ConfigurationRepository {
     fun getConfiguration(): AppConfiguration?
+    fun updateAppConfiguration(appConfiguration: AppConfiguration)
 }

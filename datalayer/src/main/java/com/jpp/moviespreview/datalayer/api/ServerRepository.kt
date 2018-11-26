@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * to provide a single point of access to the API.
  * It hides the Retrofit implementation to the clients of the data layer.
  */
-class ServerRepositoryImpl(private val serverApiKey: String)
+class ServerRepository(private val serverApiKey: String)
     : ConfigurationRepository {
 
     companion object {
@@ -33,9 +33,11 @@ class ServerRepositoryImpl(private val serverApiKey: String)
         }
     }
 
-    override fun getConfiguration(): AppConfiguration? {
-       return tryCatchOrReturnNull { API.getAppConfiguration(serverApiKey).execute().body() }
-    }
+    override fun getConfiguration(): AppConfiguration? =
+        tryCatchOrReturnNull { API.getAppConfiguration(serverApiKey).execute().body() }
+
+    override fun updateAppConfiguration(appConfiguration: AppConfiguration) =
+        throw UnsupportedOperationException("Updating AppConfiguration is not supported by the server")
 
     /**
      * Executes the provided [block] in a try-catch block and returns the result.
