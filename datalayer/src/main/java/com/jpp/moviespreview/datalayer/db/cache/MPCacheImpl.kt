@@ -15,9 +15,8 @@ class MPCacheImpl(private val context: Context) : MPCache {
     }
 
     override fun isAppConfigurationUpToDate(): Boolean = with(TimestampId.CacheAppConfiguration) {
-        isTimestampOutdated(getTimestamp(this), refreshTime)
+        isTimestampUpToDate(getTimestamp(this), refreshTime)
     }
-
 
     /**
      * Retrieves a Long value that represents the Timestamp provided. If the
@@ -47,9 +46,9 @@ class MPCacheImpl(private val context: Context) : MPCache {
      * Determinate if the provided [timestamp] is outdated based on the [refreshTime].
      * Will return
      */
-    private fun isTimestampOutdated(timestamp: Long?, refreshTime: Long): Boolean {
+    private fun isTimestampUpToDate(timestamp: Long?, refreshTime: Long): Boolean {
         return timestamp?.let {
-            (currentTimeInMillis() - it) > refreshTime
+            (currentTimeInMillis() - it) < refreshTime
         } ?: false
     }
 }
