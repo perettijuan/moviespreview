@@ -7,8 +7,8 @@ class ConfigurationRepositoryImpl(private val dbRepository: ConfigurationReposit
 
 
     override fun getConfiguration(): AppConfiguration? {
-        return dbRepository.getConfiguration() ?: serverRepository.getConfiguration()?.apply {
-            dbRepository.updateAppConfiguration(this)
+        return dbRepository.getConfiguration() ?: serverRepository.getConfiguration()?.also {
+            dbRepository.updateAppConfiguration(it)
         }
     }
 

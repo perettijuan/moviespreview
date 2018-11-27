@@ -18,7 +18,7 @@ class DBConfigurationRepository(private val mpCache: MPCache,
     override fun updateAppConfiguration(appConfiguration: AppConfiguration) {
         mpDatabase
                 .updateAppConfiguration(appConfiguration)
-                .run {
+                .let {
                     mpCache.updateAppConfigurationInserted()
                 }
     }
