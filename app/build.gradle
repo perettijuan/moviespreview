@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 28
@@ -8,8 +9,10 @@ android {
         applicationId "com.jpp.moviespreview"
         minSdkVersion 15
         targetSdkVersion 28
+        vectorDrawables.useSupportLibrary = true
         versionCode 6
         versionName "1.3.2"
+        buildConfigField 'String', 'API_KEY', '"eddf6980a6d7dadd72386f55f94ab571"'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -22,20 +25,42 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // Kotlin standard libs
+    implementation deps.kotlin.stdlib
+
+    // Kotlin coroutines
+    def kotlinCoroutines = '0.27.0-eap13'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
 
     // appCompat libraries
     def appCompatVersion = "1.0.2"
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
 
-    // Kotlin standard libs
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    // ConstraintLayout
+    def constraintLayoutVersion = '1.1.3'
+    implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+    implementation "androidx.constraintlayout:constraintlayout-solver:$constraintLayoutVersion"
 
     // Navigation Components
     def navigationVersion = "1.0.0-alpha07"
     implementation "android.arch.navigation:navigation-fragment-ktx:$navigationVersion"
     implementation "android.arch.navigation:navigation-ui-ktx:$navigationVersion"
 
+    // ViewModel and LiveData
+    implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
+    kapt "androidx.lifecycle:lifecycle-compiler:2.0.0"
+
+    // Dagger
+    def daggerVersion = '2.15'
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+
+
     implementation project(path: ':domainlayer')
+    implementation project(path: ':datalayer')
     implementation project(path: ':common')
 
     //testImplementation 'junit:junit:4.12'

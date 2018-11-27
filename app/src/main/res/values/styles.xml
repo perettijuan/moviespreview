@@ -1,6 +1,6 @@
 <resources>
 
-  <!-- Base application theme. -->
+  <!-- Base appModule theme. -->
   <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
     <!-- Customize your theme here. -->
     <item name="colorPrimary">@color/primaryColor</item>
@@ -10,8 +10,30 @@
     <item name="mpActionBarHeightNormal">@dimen/action_bar_height_normal</item>
   </style>
 
+  <!-- Used in the Drawer items-->
+  <style name="MPNavigationViewItemStyle" parent="@android:style/TextAppearance.Medium" />
 
-  <style name="MPNavigationViewItemStyle" parent="@android:style/TextAppearance.Medium"/>
-  <style name="MPAppToolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+  <!-- Application TopBar -->
+  <style name="MPAppToolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+  <!-- MPLoadingView -->
+  <style name="MPLoadingViewNormal">
+    <item name="android:layout_height">@dimen/mp_loading_view_default_height</item>
+    <item name="android:layout_width">@dimen/mp_loading_view_default_width</item>
+  </style>
+
+  <!-- MPLoadingErrorView -->
+  <style name="MPErrorView">
+    <item name="android:layout_height">@dimen/error_image_view_default_height</item>
+    <item name="android:layout_width">@dimen/error_image_view_default_height</item>
+  </style>
+
+  <!-- TextView styles -->
+
+  <style name="MPTextViewNormal" parent="@android:style/TextAppearance" />
+  <style name="MPTextViewTitle" parent="@android:style/TextAppearance.Medium">
+    <item name="android:textColor">@android:color/black</item>
+    <item name="android:textSize">@dimen/title_text_size</item>
+  </style>
 
 </resources>
