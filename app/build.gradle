@@ -21,6 +21,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    kotlinOptions{
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
@@ -63,10 +67,16 @@ dependencies {
     implementation project(path: ':datalayer')
     implementation project(path: ':common')
 
-    //testImplementation 'junit:junit:4.12'
-    //androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    //androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    testImplementation deps.test.junit5.jupiter.api         // <-- allows running JUnit5 tests
+    testImplementation deps.test.junit5.jupiter.params      // <-- allows running JUnit5 parameterized tests
+    testRuntimeOnly deps.test.junit5.jupiter.engine         // <-- allows running JUnit5 tests
+    testImplementation deps.test.mockk
 }
-repositories {
-    mavenCentral()
+
+
+afterEvaluate {
+    project.tasks.withType(Test).forEach { t ->
+        t.useJUnitPlatform()    // <-- specify to gradle that we want to run tests on JUnit5 platform
+    }
 }
+
