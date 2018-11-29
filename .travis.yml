@@ -41,4 +41,4 @@ cache:
 
 
 script:
-    - ./gradlew test -PdisablePreDex --stacktrace
+    - ./gradlew :datalayer:test  -PdisablePreDex --stacktrace

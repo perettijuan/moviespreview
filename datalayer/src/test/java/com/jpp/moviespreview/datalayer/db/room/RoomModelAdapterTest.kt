@@ -26,7 +26,10 @@ class RoomModelAdapterTest {
                 DBImageSize(baseUrl, posterSizes[1], 11),
                 DBImageSize(baseUrl, posterSizes[2], 11),
                 DBImageSize(baseUrl, posterSizes[3], 11),
-                DBImageSize(baseUrl, profileSizes[0], 22)
+                DBImageSize(baseUrl, profileSizes[0], 22),
+                DBImageSize(baseUrl, profileSizes[1], 22),
+                DBImageSize(baseUrl, profileSizes[2], 22),
+                DBImageSize(baseUrl, profileSizes[3], 22)
         )
         val result = subject.adaptAppConfigurationToImageSizes(appConfiguration)
 
