@@ -39,6 +39,9 @@ dependencies {
     testRuntimeOnly deps.test.junit5.jupiter.engine         // <-- allows running JUnit5 tests
     testImplementation deps.test.mockk
 }
-repositories {
-    mavenCentral()
+
+afterEvaluate {
+    project.tasks.withType(Test).forEach { t ->
+        t.useJUnitPlatform()    // <-- specify to gradle that we want to run tests on JUnit5 platform
+    }
 }

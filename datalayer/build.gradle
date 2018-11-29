@@ -20,6 +20,9 @@ android {
         }
     }
 
+    kotlinOptions{
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
@@ -47,5 +50,14 @@ dependencies {
     testImplementation deps.test.junit5.jupiter.api         // <-- allows running JUnit5 tests
     testImplementation deps.test.junit5.jupiter.params      // <-- allows running JUnit5 parameterized tests
     testRuntimeOnly deps.test.junit5.jupiter.engine         // <-- allows running JUnit5 tests
+    testImplementation 'org.hamcrest:hamcrest-library:1.3'
     testImplementation deps.test.mockk
+}
+
+
+
+afterEvaluate {
+    project.tasks.withType(Test).forEach { t ->
+        t.useJUnitPlatform()    // <-- specify to gradle that we want to run tests on JUnit5 platform
+    }
 }

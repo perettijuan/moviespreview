@@ -1,0 +1,44 @@
+language: android
+jdk: oraclejdk8
+sudo: false
+
+env:
+  matrix:
+    - ANDROID_TARGET=android-22  ANDROID_ABI=armeabi-v7a
+
+android:
+  components:
+    - build-tools-26.0.2
+    - $ANDROID_TARGET
+    - sys-img-armeabi-v7a-$ANDROID_TARGET
+    - extra-android-support
+    - extra-android-m2repository
+    - extra-google-m2repository
+    - sys-img-armeabi-v7a-google_apis-22
+  licenses:
+    - 'android-sdk-preview-license-52d11cd2'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
+
+before_install:
+    - yes | sdkmanager "platforms;android-26"
+
+before_cache:
+    - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+
+cache:
+  directories:      #Cache all dirs under .gradle folder
+    - $HOME/.gradle/daemon      #Cache daemon logs
+    - $HOME/.gradle/native      #Cache library downloaded from the gradle dependency
+    - $HOME/.gradle/wrapper     #Cache the gradle
+
+# Enable to run android instrumented tests
+# efore_script:
+ # - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
+ # - emulator -avd test -no-window &
+ # - android-wait-for-emulator
+ # - adb shell input keyevent 82 &
+
+
+script:
+    - ./gradlew :datalayer:test :domainlayer:test :app:test -PdisablePreDex --stacktrace

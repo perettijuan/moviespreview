@@ -6,8 +6,8 @@ import com.jpp.moviespreview.datalayer.AppConfiguration
 import com.jpp.moviespreview.datalayer.db.room.MPRoomDataBase
 import com.jpp.moviespreview.datalayer.db.room.RoomModelAdapter
 
-class MPDataBaseImpl(private val context: Context,
-                     private val adapter: RoomModelAdapter) : MPDataBase {
+class MoviesPreviewDataBaseImpl(private val context: Context,
+                                private val adapter: RoomModelAdapter) : MoviesPreviewDataBase {
 
     private val roomDatabase by lazy {
         Room
