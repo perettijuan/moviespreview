@@ -6,6 +6,7 @@ import com.jpp.moviespreview.domainlayer.usecase.ConfigureApplicationResult
 import com.jpp.moviespreview.domainlayer.usecase.ConfigureApplicationUseCase
 import com.jpp.moviespreview.screens.MPScopedViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -16,7 +17,7 @@ class MoviesFragmentViewModel @Inject constructor(private val configAppUseCase: 
     fun bindViewState(): LiveData<MoviesFragmentViewState> = viewState
 
     fun onIntent(intent: MoviesFragmentIntent) {
-        launchInScope {
+        launch {
             when (intent) {
                 MoviesFragmentIntent.ConfigureApplication -> viewState.value = withContext(Dispatchers.Default) { configure() }
             }
