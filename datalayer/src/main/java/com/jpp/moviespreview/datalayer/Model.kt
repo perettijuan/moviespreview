@@ -3,7 +3,7 @@ package com.jpp.moviespreview.datalayer
 /***************************************************************************************************
  ********** Contains all the model classes that the data layer exposes to it's clients.  ***********
  ********** All classes defined in the file are a one to one match with the objects that ***********
- ********** the API (themoviedb.org) exposes when consumed by any client.                ***********
+ **********       the API (themoviedb.org) exposes when consumed by any client.          ***********
  ***************************************************************************************************/
 
 /**
@@ -28,3 +28,45 @@ data class AppConfiguration(val images: ImagesConfiguration)
 data class ImagesConfiguration(val base_url: String,
                                val poster_sizes: List<String>,
                                val profile_sizes: List<String>)
+
+/**
+ * Represents a page of [Movie] retrieved from the API server.
+ * [page] - the number of the current page.
+ * [results] - the list of [Movie] that the page has.
+ * [total_pages] - the total number of pages available. Used to verify if there are more
+ * pages to retrieve.
+ * [total_results] - the total number of results in all pages available.
+ */
+data class MoviePage(val page: Int,
+                     val results: List<Movie>,
+                     val total_pages: Int,
+                     val total_results: Int)
+
+/**
+ * Represents a Movie as it is retrieved from the API server.
+ * [id] - the identifier that represents this movie in the model.
+ * [title] - the title of the movie to be shown.
+ * [original_title] - the original title of the movie, without any translation.
+ * [overview] - an synopsis of the movie.
+ * [release_date] - the date in which the movie was originally released. The format
+ * depends on the language used to fetch the movie.
+ * [poster_path] - the path of the poster image. This needs to be used to configure
+ * the full URL of the image, using the sizes available in [ImagesConfiguration.poster_sizes].
+ * [backdrop_path] - the path of the backdrop image. This needs to be used to configure
+ * the full URL of the image, using the sizes available in [ImagesConfiguration.poster_sizes].
+ * [vote_count] - the total number of votes the movie has in the community.
+ * [vote_average] - the average of votes that the movie has in the community.
+ * [popularity] - represents how popular the movie is in the community, based in the
+ * relative number of votes.
+ */
+data class Movie(val id: Double,
+                 val title: String,
+                 val original_title: String,
+                 val overview: String,
+                 val release_date: String,
+                 val original_language: String,
+                 val poster_path: String?,
+                 val backdrop_path: String?,
+                 val vote_count: Double,
+                 val vote_average: Float,
+                 val popularity: Float)
