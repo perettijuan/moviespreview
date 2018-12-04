@@ -13,8 +13,11 @@ interface ConfigurationRepository {
 }
 
 /**
- * Repository definition to handle all the data storage related to [Movie]s
+ * Repository definition to handle all the data storage related to [Movie]s.
  */
 interface MoviesRepository {
     fun getNowPlayingMoviePage(page: Int): MoviePage?
+    fun getPopularMoviePage(page: Int): MoviePage?
+    fun getTopRatedMoviePage(page: Int): MoviePage?
+    fun getUpcomingMoviePage(page: Int): MoviePage?
 }
