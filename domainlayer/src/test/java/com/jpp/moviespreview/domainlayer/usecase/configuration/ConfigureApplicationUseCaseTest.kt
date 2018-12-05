@@ -19,7 +19,6 @@ import org.junit.jupiter.params.provider.MethodSource
 @ExtendWith(MockKExtension::class)
 class ConfigureApplicationUseCaseTest {
 
-
     companion object {
 
         @JvmStatic
@@ -53,6 +52,4 @@ class ConfigureApplicationUseCaseTest {
 
         assertEquals(expected, actual)
     }
-
-
 }

@@ -14,3 +14,12 @@ package com.jpp.moviespreview.domainlayer.usecase
  * [ConfigureApplicationResult] only indicates the success or failed execution.
  */
 interface ConfigureApplicationUseCase : UseCase<EmptyParam, ConfigureApplicationResult>
+
+
+/**
+ * [UseCase] to retrieve a given movie page.
+ *
+ * [MoviePageParam] indicates the page to retrieve.
+ * [MoviePageResult] represents the result of the execution.
+ */
+interface GetMoviePageUseCase : UseCase<MoviePageParam, MoviePageResult>
