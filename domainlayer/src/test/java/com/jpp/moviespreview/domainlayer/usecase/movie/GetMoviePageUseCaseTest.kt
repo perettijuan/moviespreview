@@ -46,7 +46,7 @@ class GetMoviePageUseCaseTest {
                 ExecuteTestParameter(
                         moviePage = 1,
                         connectedToNetwork = true,
-                        expectedResult = MoviePageResult.Success(resultDomainPageMock)
+                        expectedResult = MoviePageResult.ErrorUnknown
                 ),
                 ExecuteTestParameter(
                         moviePage = 1,
