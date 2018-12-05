@@ -17,7 +17,7 @@ class GetMoviePageUseCaseImpl(private val moviesRepository: MoviesRepository,
             when (it.section) {
                 MovieSection.Playing -> moviesRepository.getNowPlayingMoviePage(it.page)
                 MovieSection.Popular -> moviesRepository.getPopularMoviePage(it.page)
-                MovieSection.TopRated -> moviesRepository.getPopularMoviePage(it.page)
+                MovieSection.TopRated -> moviesRepository.getTopRatedMoviePage(it.page)
                 MovieSection.Upcoming -> moviesRepository.getUpcomingMoviePage(it.page)
             }?.let { page ->
                 MoviePageResult.Success(mapper.mapDataPageToDomainPage(page))
