@@ -6,4 +6,6 @@ package com.jpp.moviespreview.datalayer.db.cache
 interface MPCache {
     fun isAppConfigurationUpToDate(): Boolean
     fun updateAppConfigurationInserted()
+    fun areMoviesUpToDate(): Boolean
+    fun updateMoviesInserted()
 }

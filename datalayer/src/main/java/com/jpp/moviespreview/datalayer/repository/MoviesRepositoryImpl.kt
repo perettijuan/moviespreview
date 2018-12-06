@@ -1,10 +1,9 @@
 package com.jpp.moviespreview.datalayer.repository
 
 import com.jpp.moviespreview.datalayer.MoviePage
-import com.jpp.moviespreview.datalayer.api.ServerRepository
 
 class MoviesRepositoryImpl(private val dbRepository: MoviesRepository,
-                           private val serverRepository: ServerRepository) : MoviesRepository {
+                           private val serverRepository: MoviesRepository) : MoviesRepository {
 
     override fun getNowPlayingMoviePage(page: Int): MoviePage? {
         return getMoviePage(page = page,
