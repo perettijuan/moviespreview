@@ -5,8 +5,8 @@ import com.jpp.moviespreview.BuildConfig
 import com.jpp.moviespreview.datalayer.api.ServerRepository
 import com.jpp.moviespreview.datalayer.db.MoviesPreviewDataBase
 import com.jpp.moviespreview.datalayer.db.MoviesPreviewDataBaseImpl
-import com.jpp.moviespreview.datalayer.db.cache.MPCache
-import com.jpp.moviespreview.datalayer.db.cache.MPCacheImpl
+import com.jpp.moviespreview.datalayer.db.cache.MPTimestamps
+import com.jpp.moviespreview.datalayer.db.cache.MPTimestampsImpl
 import com.jpp.moviespreview.datalayer.db.repository.DBConfigurationRepository
 import com.jpp.moviespreview.datalayer.db.room.RoomModelAdapter
 import com.jpp.moviespreview.datalayer.repository.ConfigurationRepository
@@ -28,7 +28,7 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesDBConfigurationRepository(mpCache: MPCache, mpDataBase: MoviesPreviewDataBase)
+    fun providesDBConfigurationRepository(mpCache: MPTimestamps, mpDataBase: MoviesPreviewDataBase)
             : DBConfigurationRepository = DBConfigurationRepository(mpCache, mpDataBase)
 
     @Singleton
@@ -37,7 +37,7 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesMPCache(context: Context): MPCache = MPCacheImpl(context)
+    fun providesMPCache(context: Context): MPTimestamps = MPTimestampsImpl(context)
 
     @Singleton
     @Provides

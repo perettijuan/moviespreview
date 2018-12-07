@@ -2,7 +2,7 @@ package com.jpp.moviespreview.datalayer.db.repository
 
 import com.jpp.moviespreview.datalayer.AppConfiguration
 import com.jpp.moviespreview.datalayer.db.MoviesPreviewDataBase
-import com.jpp.moviespreview.datalayer.db.cache.MPCache
+import com.jpp.moviespreview.datalayer.db.cache.MPTimestamps
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
@@ -20,7 +20,7 @@ class DBConfigurationRepositoryTest {
 
 
     @RelaxedMockK
-    private lateinit var mpCache: MPCache
+    private lateinit var mpCache: MPTimestamps
     @RelaxedMockK
     private lateinit var mpDatabase: MoviesPreviewDataBase
 

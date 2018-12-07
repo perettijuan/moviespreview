@@ -3,13 +3,12 @@ package com.jpp.moviespreview.datalayer.db.repository
 import com.jpp.moviespreview.datalayer.MoviePage
 import com.jpp.moviespreview.datalayer.db.MovieType
 import com.jpp.moviespreview.datalayer.db.MoviesPreviewDataBase
-import com.jpp.moviespreview.datalayer.db.cache.MPCache
+import com.jpp.moviespreview.datalayer.db.cache.MPTimestamps
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -67,7 +66,7 @@ class DBMoviesRepositoryTest {
     }
 
     @RelaxedMockK
-    private lateinit var mpCache: MPCache
+    private lateinit var mpCache: MPTimestamps
     @RelaxedMockK
     private lateinit var mpDatabase: MoviesPreviewDataBase
 

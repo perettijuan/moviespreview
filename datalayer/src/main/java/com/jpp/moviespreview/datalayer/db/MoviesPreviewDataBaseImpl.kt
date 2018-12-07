@@ -1,6 +1,7 @@
 package com.jpp.moviespreview.datalayer.db
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.jpp.moviespreview.datalayer.AppConfiguration
 import com.jpp.moviespreview.datalayer.MoviePage
@@ -33,12 +34,17 @@ class MoviesPreviewDataBaseImpl(private val context: Context,
     }
 
 
-    override fun isCurrentMovieTypeStored(movieType: MovieType): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun isCurrentMovieTypeStored(movieType: MovieType): Boolean =
+        with(getSharedPreferences()) {
+            getString(MOVIE_TYPE_STORED_KEY, null)?.equals(movieType) ?: false
+        }
+
 
     override fun updateCurrentMovieTypeStored(movieType: MovieType) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        with(getSharedPreferences().edit()) {
+            putString(MOVIE_TYPE_STORED_KEY, movieType.toString())
+            apply()
+        }
     }
 
     override fun getMoviePage(page: Int): MoviePage? =
@@ -70,5 +76,11 @@ class MoviesPreviewDataBaseImpl(private val context: Context,
             moviesDao().deleteAllMovies()
             moviePageDao().deleteAllPages()
         }
+    }
+
+    private fun getSharedPreferences(): SharedPreferences = context.getSharedPreferences("mp_database", Context.MODE_PRIVATE)
+
+    companion object {
+        private const val MOVIE_TYPE_STORED_KEY = "MPDatabase:MovieType"
     }
 }

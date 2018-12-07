@@ -4,11 +4,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import java.util.concurrent.TimeUnit
 
-class MPCacheImpl(private val context: Context) : MPCache {
+class MPTimestampsImpl(private val context: Context) : MPTimestamps {
 
     private sealed class TimestampId(val id: String, val refreshTime: Long) {
-        object CacheAppConfiguration : TimestampId("MPCache:AppConfiguration", TimeUnit.MINUTES.toMillis(30))
-        object CacheMoviePagePage : TimestampId("MPCache:CacheMovies", TimeUnit.MINUTES.toMillis(30))
+        object CacheAppConfiguration : TimestampId("MPTimestamps:AppConfiguration", TimeUnit.MINUTES.toMillis(30))
+        object CacheMoviePagePage : TimestampId("MPTimestamps:CacheMovies", TimeUnit.MINUTES.toMillis(30))
     }
 
     override fun isAppConfigurationUpToDate(): Boolean = with(TimestampId.CacheAppConfiguration) {
