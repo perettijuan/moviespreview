@@ -1,4 +1,4 @@
-package com.jpp.moviespreview.datalayer.db.cache
+package com.jpp.moviespreview.datalayer.cache.timestamp
 
 /**
  * Defines the signature of the timestamps that the cache stores locally.

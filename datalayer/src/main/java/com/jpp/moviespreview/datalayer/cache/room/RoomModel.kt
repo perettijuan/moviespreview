@@ -1,4 +1,4 @@
-package com.jpp.moviespreview.datalayer.db.room
+package com.jpp.moviespreview.datalayer.cache.room
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

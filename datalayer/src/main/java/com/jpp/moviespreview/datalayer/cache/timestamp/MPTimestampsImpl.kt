@@ -1,4 +1,4 @@
-package com.jpp.moviespreview.datalayer.db.cache
+package com.jpp.moviespreview.datalayer.cache.timestamp
 
 import android.content.Context
 import android.content.SharedPreferences

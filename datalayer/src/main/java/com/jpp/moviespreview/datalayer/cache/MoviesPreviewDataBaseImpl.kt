@@ -1,12 +1,12 @@
-package com.jpp.moviespreview.datalayer.db
+package com.jpp.moviespreview.datalayer.cache
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
 import com.jpp.moviespreview.datalayer.AppConfiguration
 import com.jpp.moviespreview.datalayer.MoviePage
-import com.jpp.moviespreview.datalayer.db.room.MPRoomDataBase
-import com.jpp.moviespreview.datalayer.db.room.RoomModelAdapter
+import com.jpp.moviespreview.datalayer.cache.room.MPRoomDataBase
+import com.jpp.moviespreview.datalayer.cache.room.RoomModelAdapter
 
 class MoviesPreviewDataBaseImpl(private val context: Context,
                                 private val adapter: RoomModelAdapter) : MoviesPreviewDataBase {

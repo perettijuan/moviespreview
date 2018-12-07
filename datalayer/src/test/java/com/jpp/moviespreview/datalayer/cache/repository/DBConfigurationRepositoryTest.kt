@@ -1,8 +1,8 @@
-package com.jpp.moviespreview.datalayer.db.repository
+package com.jpp.moviespreview.datalayer.cache.repository
 
 import com.jpp.moviespreview.datalayer.AppConfiguration
-import com.jpp.moviespreview.datalayer.db.MoviesPreviewDataBase
-import com.jpp.moviespreview.datalayer.db.cache.MPTimestamps
+import com.jpp.moviespreview.datalayer.cache.MoviesPreviewDataBase
+import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestamps
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension

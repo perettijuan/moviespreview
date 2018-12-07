@@ -1,4 +1,4 @@
-package com.jpp.moviespreview.datalayer.db
+package com.jpp.moviespreview.datalayer.cache
 
 import com.jpp.moviespreview.datalayer.AppConfiguration
 import com.jpp.moviespreview.datalayer.MoviePage

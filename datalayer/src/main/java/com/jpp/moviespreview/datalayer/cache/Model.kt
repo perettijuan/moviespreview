@@ -1,4 +1,4 @@
-package com.jpp.moviespreview.datalayer.db
+package com.jpp.moviespreview.datalayer.cache
 
 /***************************************************************************************************
  *********** Contains all the model classes that the specific to the database package.  ************
