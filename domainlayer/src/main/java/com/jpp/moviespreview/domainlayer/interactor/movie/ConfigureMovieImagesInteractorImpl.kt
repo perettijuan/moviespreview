@@ -2,11 +2,11 @@ package com.jpp.moviespreview.domainlayer.interactor.movie
 
 import com.jpp.moviespreview.common.extensions.transformToInt
 import com.jpp.moviespreview.datalayer.repository.ConfigurationRepository
-import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImagesUseCase
+import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImagesInteractor
 import com.jpp.moviespreview.domainlayer.interactor.MovieImagesParam
 import com.jpp.moviespreview.domainlayer.interactor.MovieImagesResult
 
-class ConfigureMovieImagesUseCaseImpl(private val configRepository: ConfigurationRepository) : ConfigureMovieImagesUseCase {
+class ConfigureMovieImagesInteractorImpl(private val configRepository: ConfigurationRepository) : ConfigureMovieImagesInteractor {
 
     override fun execute(parameter: MovieImagesParam?): MovieImagesResult {
         return parameter?.let {

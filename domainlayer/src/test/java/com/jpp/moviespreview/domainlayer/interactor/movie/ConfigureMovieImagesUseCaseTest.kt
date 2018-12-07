@@ -4,7 +4,7 @@ import com.jpp.moviespreview.datalayer.AppConfiguration
 import com.jpp.moviespreview.datalayer.ImagesConfiguration
 import com.jpp.moviespreview.datalayer.repository.ConfigurationRepository
 import com.jpp.moviespreview.domainlayer.Movie
-import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImagesUseCase
+import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImagesInteractor
 import com.jpp.moviespreview.domainlayer.interactor.MovieImagesParam
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -31,11 +31,11 @@ class ConfigureMovieImagesUseCaseTest {
 
     @MockK
     private lateinit var configRepository: ConfigurationRepository
-    private lateinit var subject: ConfigureMovieImagesUseCase
+    private lateinit var subject: ConfigureMovieImagesInteractor
 
     @BeforeEach
     fun setUp() {
-        subject = ConfigureMovieImagesUseCaseImpl(configRepository)
+        subject = ConfigureMovieImagesInteractorImpl(configRepository)
     }
 
 

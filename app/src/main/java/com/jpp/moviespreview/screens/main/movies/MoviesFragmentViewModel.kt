@@ -3,14 +3,14 @@ package com.jpp.moviespreview.screens.main.movies
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplicationResult
-import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplicationUseCase
+import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplicationInteractor
 import com.jpp.moviespreview.screens.MPScopedViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class MoviesFragmentViewModel @Inject constructor(private val configAppUseCase: ConfigureApplicationUseCase) : MPScopedViewModel() {
+class MoviesFragmentViewModel @Inject constructor(private val configAppUseCase: ConfigureApplicationInteractor) : MPScopedViewModel() {
 
     private val viewState by lazy { MutableLiveData<MoviesFragmentViewState>().apply { value = MoviesFragmentViewState.Loading } }
 

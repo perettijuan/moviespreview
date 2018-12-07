@@ -3,13 +3,13 @@ package com.jpp.moviespreview.domainlayer.interactor.movie
 import com.jpp.moviespreview.datalayer.repository.MoviesRepository
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifier
 import com.jpp.moviespreview.domainlayer.MovieSection
-import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageUseCase
+import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageInteractor
 import com.jpp.moviespreview.domainlayer.interactor.MoviePageParam
 import com.jpp.moviespreview.domainlayer.interactor.MoviePageResult
 
-class GetMoviePageUseCaseImpl(private val moviesRepository: MoviesRepository,
-                              private val mapper: MovieDomainMapper,
-                              private val connectivityVerifier: ConnectivityVerifier) : GetMoviePageUseCase {
+class GetMoviePageInteractorImpl(private val moviesRepository: MoviesRepository,
+                                 private val mapper: MovieDomainMapper,
+                                 private val connectivityVerifier: ConnectivityVerifier) : GetMoviePageInteractor {
 
 
     override fun execute(parameter: MoviePageParam?): MoviePageResult {

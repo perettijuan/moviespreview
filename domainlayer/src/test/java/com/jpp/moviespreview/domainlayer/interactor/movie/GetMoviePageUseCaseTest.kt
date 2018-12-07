@@ -3,7 +3,7 @@ package com.jpp.moviespreview.domainlayer.interactor.movie
 import com.jpp.moviespreview.datalayer.repository.MoviesRepository
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifier
 import com.jpp.moviespreview.domainlayer.MovieSection
-import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageUseCase
+import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageInteractor
 import com.jpp.moviespreview.domainlayer.interactor.MoviePageParam
 import com.jpp.moviespreview.domainlayer.interactor.MoviePageResult
 import io.mockk.every
@@ -63,11 +63,11 @@ class GetMoviePageUseCaseTest {
     @MockK
     private lateinit var connectivityVerifier: ConnectivityVerifier
 
-    private lateinit var subject: GetMoviePageUseCase
+    private lateinit var subject: GetMoviePageInteractor
 
     @BeforeEach
     fun setUp() {
-        subject = GetMoviePageUseCaseImpl(moviesRepository, mapper, connectivityVerifier)
+        subject = GetMoviePageInteractorImpl(moviesRepository, mapper, connectivityVerifier)
     }
 
     @ParameterizedTest

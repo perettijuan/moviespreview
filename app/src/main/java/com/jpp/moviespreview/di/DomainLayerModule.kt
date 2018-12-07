@@ -4,8 +4,8 @@ import android.content.Context
 import com.jpp.moviespreview.datalayer.repository.ConfigurationRepository
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifier
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifierImpl
-import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplicationUseCase
-import com.jpp.moviespreview.domainlayer.interactor.configuration.ConfigureApplicationUseCaseImpl
+import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplicationInteractor
+import com.jpp.moviespreview.domainlayer.interactor.configuration.ConfigureApplicationInteractorImpl
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -24,6 +24,6 @@ class DomainLayerModule {
     @Provides
     @Singleton
     fun providesConfigureApplicationUseCase(configRepository: ConfigurationRepository,
-                                            connectivityVerifier: ConnectivityVerifier): ConfigureApplicationUseCase = ConfigureApplicationUseCaseImpl(configRepository, connectivityVerifier)
+                                            connectivityVerifier: ConnectivityVerifier): ConfigureApplicationInteractor = ConfigureApplicationInteractorImpl(configRepository, connectivityVerifier)
 
 }
