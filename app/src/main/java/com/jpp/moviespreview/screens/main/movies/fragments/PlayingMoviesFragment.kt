@@ -1,14 +1,10 @@
 package com.jpp.moviespreview.screens.main.movies.fragments
 
-import android.os.Bundle
-import android.util.Log
-import android.view.View
+import com.jpp.moviespreview.domainlayer.MovieSection
 import com.jpp.moviespreview.screens.main.movies.MoviesFragment
 
 class PlayingMoviesFragment : MoviesFragment() {
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Log.d("JPPLogging", "Playing")
-    }
+    override fun getMoviesSection(): MovieSection = MovieSection.Playing
+
 }
