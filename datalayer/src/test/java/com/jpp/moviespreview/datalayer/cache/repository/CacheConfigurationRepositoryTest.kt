@@ -1,8 +1,8 @@
-package com.jpp.moviespreview.datalayer.db.repository
+package com.jpp.moviespreview.datalayer.cache.repository
 
 import com.jpp.moviespreview.datalayer.AppConfiguration
-import com.jpp.moviespreview.datalayer.db.MoviesPreviewDataBase
-import com.jpp.moviespreview.datalayer.db.cache.MPCache
+import com.jpp.moviespreview.datalayer.cache.MPDataBase
+import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestamps
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
@@ -16,19 +16,19 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
-class DBConfigurationRepositoryTest {
+class CacheConfigurationRepositoryTest {
 
 
     @RelaxedMockK
-    private lateinit var mpCache: MPCache
+    private lateinit var mpCache: MPTimestamps
     @RelaxedMockK
-    private lateinit var mpDatabase: MoviesPreviewDataBase
+    private lateinit var mpDatabase: MPDataBase
 
-    private lateinit var subject: DBConfigurationRepository
+    private lateinit var subject: CacheConfigurationRepository
 
     @BeforeEach
     fun setUp() {
-        subject = DBConfigurationRepository(mpCache, mpDatabase)
+        subject = CacheConfigurationRepository(mpCache, mpDatabase)
     }
 
     @Test

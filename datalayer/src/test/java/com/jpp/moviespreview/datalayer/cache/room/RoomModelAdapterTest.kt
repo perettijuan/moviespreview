@@ -1,4 +1,4 @@
-package com.jpp.moviespreview.datalayer.db.room
+package com.jpp.moviespreview.datalayer.cache.room
 
 import com.jpp.moviespreview.datalayer.AppConfiguration
 import com.jpp.moviespreview.datalayer.ImagesConfiguration

@@ -33,7 +33,7 @@ class GetMoviePageUseCaseTest {
 
     companion object {
 
-        val resultDomainPageMock = mockk<DomainMoviePage>()
+        private val resultDomainPageMock = mockk<DomainMoviePage>()
 
         @JvmStatic
         fun executeParameters() = listOf(

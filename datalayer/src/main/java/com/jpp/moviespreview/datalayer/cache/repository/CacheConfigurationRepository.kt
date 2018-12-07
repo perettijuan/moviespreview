@@ -1,12 +1,12 @@
-package com.jpp.moviespreview.datalayer.db.repository
+package com.jpp.moviespreview.datalayer.cache.repository
 
 import com.jpp.moviespreview.datalayer.AppConfiguration
-import com.jpp.moviespreview.datalayer.db.MoviesPreviewDataBase
-import com.jpp.moviespreview.datalayer.db.cache.MPCache
+import com.jpp.moviespreview.datalayer.cache.MPDataBase
+import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestamps
 import com.jpp.moviespreview.datalayer.repository.ConfigurationRepository
 
-class DBConfigurationRepository(private val mpCache: MPCache,
-                                private val mpDatabase: MoviesPreviewDataBase) : ConfigurationRepository {
+class CacheConfigurationRepository(private val mpCache: MPTimestamps,
+                                   private val mpDatabase: MPDataBase) : ConfigurationRepository {
 
     override fun getConfiguration(): AppConfiguration? {
         return when (mpCache.isAppConfigurationUpToDate()) {

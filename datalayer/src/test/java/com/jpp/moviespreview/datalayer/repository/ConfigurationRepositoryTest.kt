@@ -29,10 +29,8 @@ class ConfigurationRepositoryTest {
         subject = ConfigurationRepositoryImpl(dbRepository, serverRepository)
     }
 
-
     @Test
-    @DisplayName("Should never use server data when data is stored locally")
-    fun getConfiguration_whenDataIsInDB() {
+    fun `Should never use server data when data is stored locally`() {
         val expected = mockk<AppConfiguration>()
 
         every { dbRepository.getConfiguration() } returns expected
@@ -44,10 +42,8 @@ class ConfigurationRepositoryTest {
         verify(exactly = 0) { serverRepository.getConfiguration() }
     }
 
-
     @Test
-    @DisplayName("Should retrieve data from server and update the local DB when data is not stored")
-    fun getConfiguration_whenDataIsNotInDB() {
+    fun `Should retrieve data from server and update the local DB when data is not stored`() {
         val expected = mockk<AppConfiguration>()
 
         every { dbRepository.getConfiguration() } returns null
@@ -62,8 +58,7 @@ class ConfigurationRepositoryTest {
     }
 
     @Test
-    @DisplayName("Should retrieve null when data is not stored and server fails")
-    fun getConfiguration_whenDataIsNotInDB_andServerFails() {
+    fun `Should retrieve null when data is not stored and server fails`() {
         every { dbRepository.getConfiguration() } returns null
         every { serverRepository.getConfiguration() } returns null
 
@@ -73,5 +68,4 @@ class ConfigurationRepositoryTest {
 
         verify(exactly = 0) { dbRepository.updateAppConfiguration(any()) }
     }
-
 }

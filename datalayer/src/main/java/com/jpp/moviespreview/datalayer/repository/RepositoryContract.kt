@@ -20,4 +20,8 @@ interface MoviesRepository {
     fun getPopularMoviePage(page: Int): MoviePage?
     fun getTopRatedMoviePage(page: Int): MoviePage?
     fun getUpcomingMoviePage(page: Int): MoviePage?
+    fun updateNowPlayingMoviePage(moviePage: MoviePage)
+    fun updatePopularMoviePage(moviePage: MoviePage)
+    fun updateTopRatedMoviePage(moviePage: MoviePage)
+    fun updateUpcomingMoviePage(moviePage: MoviePage)
 }
