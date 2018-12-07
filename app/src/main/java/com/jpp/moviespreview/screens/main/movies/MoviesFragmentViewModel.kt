@@ -1,34 +1,36 @@
 package com.jpp.moviespreview.screens.main.movies
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplicationResult
-import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplicationInteractor
-import com.jpp.moviespreview.screens.MPScopedViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
+import com.jpp.moviespreview.domainlayer.MovieSection
+import com.jpp.moviespreview.screens.main.movies.paging.MoviesPagingDataSourceFactory
+import java.util.concurrent.Executors
 import javax.inject.Inject
 
-class MoviesFragmentViewModel @Inject constructor(private val configInteractor: ConfigureApplicationInteractor) : MPScopedViewModel() {
+class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFactory: MoviesPagingDataSourceFactory) : ViewModel() {
 
-    private val viewState by lazy { MutableLiveData<MoviesFragmentViewState>().apply { value = MoviesFragmentViewState.Loading } }
+    private lateinit var viewState: LiveData<MoviesFragmentViewState>
 
     fun bindViewState(): LiveData<MoviesFragmentViewState> = viewState
 
-    fun onIntent(intent: MoviesFragmentIntent) {
-        launch {
-            when (intent) {
-                MoviesFragmentIntent.ConfigureApplication -> viewState.value = withContext(Dispatchers.Default) { configure() }
-            }
-        }
-    }
+    //TODO this should not be called this way, some mapping should happen
+    fun getMovieList(movieSection: MovieSection) = {
+        pagingDataSourceFactory.currentSection = movieSection
 
-    private fun configure(): MoviesFragmentViewState {
-        return when (configInteractor()) {
-            ConfigureApplicationResult.ErrorNoConnectivity -> MoviesFragmentViewState.ErrorNoConnectivity
-            ConfigureApplicationResult.ErrorUnknown -> MoviesFragmentViewState.ErrorUnknown
-            ConfigureApplicationResult.Success -> MoviesFragmentViewState.Configured
+        viewState = Transformations.switchMap(pagingDataSourceFactory.dataSourceLiveData) {
+            it.viewStateLiveData
         }
+
+        val config = PagedList.Config.Builder()
+                .setEnablePlaceholders(false)
+                .setPrefetchDistance(2) // 2 pre-loads now
+                .build()
+
+        LivePagedListBuilder(pagingDataSourceFactory, config)
+                .setFetchExecutor(Executors.newFixedThreadPool(5))
+                .build()
     }
 }
