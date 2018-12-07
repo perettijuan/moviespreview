@@ -17,7 +17,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
 @ExtendWith(MockKExtension::class)
-class DBMoviesRepositoryTest {
+class CacheMoviesRepositoryTest {
 
     data class GetMoviePageParameter(
             val caseName: String,
@@ -70,11 +70,11 @@ class DBMoviesRepositoryTest {
     @RelaxedMockK
     private lateinit var mpDatabase: MoviesPreviewDataBase
 
-    private lateinit var subject: DBMoviesRepository
+    private lateinit var subject: CacheMoviesRepository
 
     @BeforeEach
     fun setUp() {
-        subject = DBMoviesRepository(mpCache, mpDatabase)
+        subject = CacheMoviesRepository(mpCache, mpDatabase)
     }
 
     @ParameterizedTest

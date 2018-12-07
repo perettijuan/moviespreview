@@ -2,38 +2,38 @@ package com.jpp.moviespreview.datalayer.repository
 
 import com.jpp.moviespreview.datalayer.MoviePage
 
-class MoviesRepositoryImpl(private val dbRepository: MoviesRepository,
+class MoviesRepositoryImpl(private val cacheRepository: MoviesRepository,
                            private val serverRepository: MoviesRepository) : MoviesRepository {
 
     override fun getNowPlayingMoviePage(page: Int): MoviePage? {
         return getMoviePage(page = page,
-                dbFunction = { dbRepository.getNowPlayingMoviePage(it) },
+                dbFunction = { cacheRepository.getNowPlayingMoviePage(it) },
                 serverFunction = { serverRepository.getNowPlayingMoviePage(it) },
-                updateFunction = { dbRepository.updateNowPlayingMoviePage(it) }
+                updateFunction = { cacheRepository.updateNowPlayingMoviePage(it) }
         )
     }
 
     override fun getPopularMoviePage(page: Int): MoviePage? {
         return getMoviePage(page = page,
-                dbFunction = { dbRepository.getPopularMoviePage(it) },
+                dbFunction = { cacheRepository.getPopularMoviePage(it) },
                 serverFunction = { serverRepository.getPopularMoviePage(it) },
-                updateFunction = { dbRepository.updatePopularMoviePage(it) }
+                updateFunction = { cacheRepository.updatePopularMoviePage(it) }
         )
     }
 
     override fun getTopRatedMoviePage(page: Int): MoviePage? {
         return getMoviePage(page = page,
-                dbFunction = { dbRepository.getTopRatedMoviePage(it) },
+                dbFunction = { cacheRepository.getTopRatedMoviePage(it) },
                 serverFunction = { serverRepository.getTopRatedMoviePage(it) },
-                updateFunction = { dbRepository.updateTopRatedMoviePage(it) }
+                updateFunction = { cacheRepository.updateTopRatedMoviePage(it) }
         )
     }
 
     override fun getUpcomingMoviePage(page: Int): MoviePage? {
         return getMoviePage(page = page,
-                dbFunction = { dbRepository.getUpcomingMoviePage(it) },
+                dbFunction = { cacheRepository.getUpcomingMoviePage(it) },
                 serverFunction = { serverRepository.getUpcomingMoviePage(it) },
-                updateFunction = { dbRepository.updateUpcomingMoviePage(it) }
+                updateFunction = { cacheRepository.updateUpcomingMoviePage(it) }
         )
     }
 

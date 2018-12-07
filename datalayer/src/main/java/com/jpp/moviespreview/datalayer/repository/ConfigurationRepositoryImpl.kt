@@ -2,13 +2,13 @@ package com.jpp.moviespreview.datalayer.repository
 
 import com.jpp.moviespreview.datalayer.AppConfiguration
 
-class ConfigurationRepositoryImpl(private val dbRepository: ConfigurationRepository,
+class ConfigurationRepositoryImpl(private val cacheRepository: ConfigurationRepository,
                                   private val serverRepository: ConfigurationRepository) : ConfigurationRepository {
 
 
     override fun getConfiguration(): AppConfiguration? {
-        return dbRepository.getConfiguration() ?: serverRepository.getConfiguration()?.apply {
-            dbRepository.updateAppConfiguration(this)
+        return cacheRepository.getConfiguration() ?: serverRepository.getConfiguration()?.apply {
+            cacheRepository.updateAppConfiguration(this)
         }
     }
 

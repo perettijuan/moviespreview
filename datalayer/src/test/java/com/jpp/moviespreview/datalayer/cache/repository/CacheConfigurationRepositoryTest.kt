@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
-class DBConfigurationRepositoryTest {
+class CacheConfigurationRepositoryTest {
 
 
     @RelaxedMockK
@@ -24,11 +24,11 @@ class DBConfigurationRepositoryTest {
     @RelaxedMockK
     private lateinit var mpDatabase: MoviesPreviewDataBase
 
-    private lateinit var subject: DBConfigurationRepository
+    private lateinit var subject: CacheConfigurationRepository
 
     @BeforeEach
     fun setUp() {
-        subject = DBConfigurationRepository(mpCache, mpDatabase)
+        subject = CacheConfigurationRepository(mpCache, mpDatabase)
     }
 
     @Test
