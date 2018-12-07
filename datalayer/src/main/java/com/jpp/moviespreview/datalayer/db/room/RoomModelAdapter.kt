@@ -3,6 +3,8 @@ package com.jpp.moviespreview.datalayer.db.room
 import com.jpp.moviespreview.common.extensions.addAllMapping
 import com.jpp.moviespreview.datalayer.AppConfiguration
 import com.jpp.moviespreview.datalayer.ImagesConfiguration
+import com.jpp.moviespreview.datalayer.Movie
+import com.jpp.moviespreview.datalayer.MoviePage
 
 
 /**
@@ -23,11 +25,17 @@ class RoomModelAdapter {
      */
     fun adaptAppConfigurationToImageSizes(appConfiguration: AppConfiguration): List<DBImageSize> {
         return appConfiguration.images.poster_sizes
-                .map { DBImageSize(appConfiguration.images.base_url, it, ImageTypes.PosterType.id) }
+                .map {
+                    DBImageSize(baseUrl = appConfiguration.images.base_url,
+                            size = it,
+                            imageType = ImageTypes.PosterType.id)
+                }
                 .toMutableList()
                 .addAllMapping {
                     appConfiguration.images.profile_sizes.map { posterSize ->
-                        DBImageSize(appConfiguration.images.base_url, posterSize, ImageTypes.ProfileType.id)
+                        DBImageSize(baseUrl = appConfiguration.images.base_url,
+                                size = posterSize,
+                                imageType = ImageTypes.ProfileType.id)
                     }
                 }
     }
@@ -37,13 +45,75 @@ class RoomModelAdapter {
      */
     fun adaptImageSizesToAppConfiguration(dbSizes: List<DBImageSize>): AppConfiguration {
         return AppConfiguration(ImagesConfiguration(
-                dbSizes[0].baseUrl,
-                dbSizes
+                base_url = dbSizes[0].baseUrl,
+                poster_sizes = dbSizes
                         .filter { it.imageType == ImageTypes.PosterType.id }
                         .map { it.size },
-                dbSizes
+                profile_sizes = dbSizes
                         .filter { it.imageType == ImageTypes.ProfileType.id }
                         .map { it.size }
         ))
+    }
+
+    /**
+     * Adapts the provided [DBMoviePage] to a data layer [MoviePage] with the same data.
+     */
+    fun adaptDBMoviePageToDataMoviePage(dbMoviePage: DBMoviePage, movies: List<DBMovie>): MoviePage = with(dbMoviePage) {
+        MoviePage(
+                page = page,
+                results = movies.map { adaptDBMovieToDataMovie(it) },
+                total_pages = totalPages,
+                total_results = totalResults
+        )
+    }
+
+    /**
+     * Adapts the provided [DBMovie] to a data layer [Movie] with the same data.
+     */
+    private fun adaptDBMovieToDataMovie(dbMovie: DBMovie): Movie = with(dbMovie) {
+        Movie(
+                id = id,
+                title = title,
+                original_title = originalTile,
+                overview = overview,
+                release_date = releaseDate,
+                original_language = originalLanguage,
+                poster_path = posterPath,
+                backdrop_path = backdropPath,
+                vote_count = voteCount,
+                vote_average = voteAverage,
+                popularity = popularity
+        )
+    }
+
+    /**
+     * Adapts the provided [MoviePage] to a [DBMoviePage] with the same data.
+     */
+    fun adaptDataMoviePageToDBMoviePage(dataMoviePage: MoviePage): DBMoviePage = with(dataMoviePage) {
+        DBMoviePage(
+                page = page,
+                totalPages = total_pages,
+                totalResults = total_results
+        )
+    }
+
+    /**
+     * Adapts the provided [Movie] to a [DBMovie] with the respective data.
+     */
+    fun adaptDataMovieToDBMovie(dataMovie: Movie, pageId: Int): DBMovie = with(dataMovie) {
+        DBMovie(
+                id = id,
+                title = title,
+                originalTile = original_title,
+                overview = overview,
+                releaseDate = release_date,
+                originalLanguage = original_language,
+                posterPath = poster_path,
+                backdropPath = backdrop_path,
+                voteCount = vote_count,
+                voteAverage = vote_average,
+                popularity = popularity,
+                pageId = pageId
+        )
     }
 }
