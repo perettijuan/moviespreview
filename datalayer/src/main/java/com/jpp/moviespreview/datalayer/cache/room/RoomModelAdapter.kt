@@ -17,6 +17,7 @@ class RoomModelAdapter {
         sealed class ImageTypes(val id: Int) {
             object PosterType : ImageTypes(11)
             object ProfileType : ImageTypes(22)
+            object BackdropType : ImageTypes(33)
         }
     }
 
@@ -38,6 +39,14 @@ class RoomModelAdapter {
                                 imageType = ImageTypes.ProfileType.id)
                     }
                 }
+                .toMutableList()
+                .addAllMapping {
+                    appConfiguration.images.backdrop_sizes.map { backdropSize ->
+                        DBImageSize(baseUrl = appConfiguration.images.base_url,
+                                size = backdropSize,
+                                imageType = ImageTypes.BackdropType.id)
+                    }
+                }
     }
 
     /**
@@ -51,6 +60,9 @@ class RoomModelAdapter {
                         .map { it.size },
                 profile_sizes = dbSizes
                         .filter { it.imageType == ImageTypes.ProfileType.id }
+                        .map { it.size },
+                backdrop_sizes = dbSizes
+                        .filter { it.imageType == ImageTypes.BackdropType.id }
                         .map { it.size }
         ))
     }

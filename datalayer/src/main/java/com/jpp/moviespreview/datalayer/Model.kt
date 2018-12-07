@@ -24,10 +24,12 @@ data class AppConfiguration(val images: ImagesConfiguration)
  * [base_url] - represents the base URL (https://image.tmdb.org/t/p/)
  * [poster_sizes] - represents the possible sizes for poster images (w500).
  * [profile_sizes] - represents the possible sizes for profile images (w500).
+ * [backdrop_sizes] - represents the possible sizes for backdrop images.
  */
 data class ImagesConfiguration(val base_url: String,
                                val poster_sizes: List<String>,
-                               val profile_sizes: List<String>)
+                               val profile_sizes: List<String>,
+                               val backdrop_sizes: List<String>)
 
 /**
  * Represents a page of [Movie] retrieved from the API server.
@@ -53,7 +55,7 @@ data class MoviePage(val page: Int,
  * [poster_path] - the path of the poster image. This needs to be used to configure
  * the full URL of the image, using the sizes available in [ImagesConfiguration.poster_sizes].
  * [backdrop_path] - the path of the backdrop image. This needs to be used to configure
- * the full URL of the image, using the sizes available in [ImagesConfiguration.poster_sizes].
+ * the full URL of the image, using the sizes available in [ImagesConfiguration.backdrop_sizes].
  * [vote_count] - the total number of votes the movie has in the community.
  * [vote_average] - the average of votes that the movie has in the community.
  * [popularity] - represents how popular the movie is in the community, based in the
