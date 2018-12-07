@@ -2,12 +2,12 @@ package com.jpp.moviespreview.datalayer.cache.repository
 
 import com.jpp.moviespreview.datalayer.MoviePage
 import com.jpp.moviespreview.datalayer.cache.MovieType
-import com.jpp.moviespreview.datalayer.cache.MoviesPreviewDataBase
+import com.jpp.moviespreview.datalayer.cache.MPDataBase
 import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestamps
 import com.jpp.moviespreview.datalayer.repository.MoviesRepository
 
 class CacheMoviesRepository(private val mpCache: MPTimestamps,
-                            private val mpDatabase: MoviesPreviewDataBase) : MoviesRepository {
+                            private val mpDatabase: MPDataBase) : MoviesRepository {
 
     override fun getNowPlayingMoviePage(page: Int): MoviePage? = getMoviePageOrClearDataBaseIfNeeded(MovieType.NowPlaying, page)
 

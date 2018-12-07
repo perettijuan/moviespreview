@@ -8,8 +8,8 @@ import com.jpp.moviespreview.datalayer.MoviePage
 import com.jpp.moviespreview.datalayer.cache.room.MPRoomDataBase
 import com.jpp.moviespreview.datalayer.cache.room.RoomModelAdapter
 
-class MoviesPreviewDataBaseImpl(private val context: Context,
-                                private val adapter: RoomModelAdapter) : MoviesPreviewDataBase {
+class MPDataBaseImpl(private val context: Context,
+                     private val adapter: RoomModelAdapter) : MPDataBase {
 
 
     private val roomDatabase by lazy {

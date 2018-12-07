@@ -3,8 +3,8 @@ package com.jpp.moviespreview.di
 import android.content.Context
 import com.jpp.moviespreview.BuildConfig
 import com.jpp.moviespreview.datalayer.api.ServerRepository
-import com.jpp.moviespreview.datalayer.cache.MoviesPreviewDataBase
-import com.jpp.moviespreview.datalayer.cache.MoviesPreviewDataBaseImpl
+import com.jpp.moviespreview.datalayer.cache.MPDataBase
+import com.jpp.moviespreview.datalayer.cache.MPDataBaseImpl
 import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestamps
 import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestampsImpl
 import com.jpp.moviespreview.datalayer.cache.repository.CacheConfigurationRepository
@@ -28,7 +28,7 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesDBConfigurationRepository(mpCache: MPTimestamps, mpDataBase: MoviesPreviewDataBase)
+    fun providesDBConfigurationRepository(mpCache: MPTimestamps, mpDataBase: MPDataBase)
             : CacheConfigurationRepository = CacheConfigurationRepository(mpCache, mpDataBase)
 
     @Singleton
@@ -41,5 +41,5 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesMPDataBase(context: Context): MoviesPreviewDataBase = MoviesPreviewDataBaseImpl(context, RoomModelAdapter())
+    fun providesMPDataBase(context: Context): MPDataBase = MPDataBaseImpl(context, RoomModelAdapter())
 }
