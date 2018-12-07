@@ -1,5 +1,6 @@
 package com.jpp.moviespreview.domainlayer.usecase
 
+import com.jpp.moviespreview.domainlayer.Movie
 import com.jpp.moviespreview.domainlayer.MovieSection
 
 /***************************************************************************************************
@@ -18,3 +19,13 @@ sealed class EmptyParam
  * [section] - the section of the movie pages to retrieve.
  */
 data class MoviePageParam(val page: Int, val section: MovieSection)
+
+
+/**
+ * Parameter to execute [ConfigureMovieImagesUseCase].
+ *
+ * [movie] - the Movie that needs to be configured.
+ * [backdropSize] - the target size of the backdrop image.
+ * [posterSize] - the target size of the poster image.
+ */
+data class MovieImagesParam(val movie: Movie, val backdropSize: Int, val posterSize: Int)

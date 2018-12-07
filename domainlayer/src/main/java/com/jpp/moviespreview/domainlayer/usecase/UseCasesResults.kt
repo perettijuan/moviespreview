@@ -1,5 +1,6 @@
 package com.jpp.moviespreview.domainlayer.usecase
 
+import com.jpp.moviespreview.domainlayer.Movie
 import com.jpp.moviespreview.domainlayer.MoviePage
 
 /***************************************************************************************************
@@ -24,3 +25,8 @@ sealed class MoviePageResult {
     data class Success(val moviePage: MoviePage) : MoviePageResult()
     data class BadParams(val message: String) : MoviePageResult()
 }
+
+/**
+ * Represents the result of [ConfigureMovieImagesUseCase].
+ */
+data class MovieImagesResult(val movie: Movie)
