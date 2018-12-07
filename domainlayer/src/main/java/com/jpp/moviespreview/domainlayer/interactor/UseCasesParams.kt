@@ -1,4 +1,4 @@
-package com.jpp.moviespreview.domainlayer.usecase
+package com.jpp.moviespreview.domainlayer.interactor
 
 import com.jpp.moviespreview.domainlayer.Movie
 import com.jpp.moviespreview.domainlayer.MovieSection

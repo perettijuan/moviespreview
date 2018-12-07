@@ -2,8 +2,8 @@ package com.jpp.moviespreview.screens.main.movies
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.jpp.moviespreview.domainlayer.usecase.ConfigureApplicationResult
-import com.jpp.moviespreview.domainlayer.usecase.ConfigureApplicationUseCase
+import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplicationResult
+import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplicationUseCase
 import com.jpp.moviespreview.screens.MPScopedViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

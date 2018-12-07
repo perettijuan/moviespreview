@@ -4,8 +4,8 @@ import android.content.Context
 import com.jpp.moviespreview.datalayer.repository.ConfigurationRepository
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifier
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifierImpl
-import com.jpp.moviespreview.domainlayer.usecase.ConfigureApplicationUseCase
-import com.jpp.moviespreview.domainlayer.usecase.configuration.ConfigureApplicationUseCaseImpl
+import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplicationUseCase
+import com.jpp.moviespreview.domainlayer.interactor.configuration.ConfigureApplicationUseCaseImpl
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

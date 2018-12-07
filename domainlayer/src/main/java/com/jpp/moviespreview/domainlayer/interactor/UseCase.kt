@@ -1,4 +1,4 @@
-package com.jpp.moviespreview.domainlayer.usecase
+package com.jpp.moviespreview.domainlayer.interactor
 
 /**
  * Defines the signature of a UseCase that encapsulates a specific feature.

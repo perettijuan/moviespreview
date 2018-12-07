@@ -1,11 +1,11 @@
-package com.jpp.moviespreview.domainlayer.usecase.movie
+package com.jpp.moviespreview.domainlayer.interactor.movie
 
 import com.jpp.moviespreview.datalayer.repository.MoviesRepository
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifier
 import com.jpp.moviespreview.domainlayer.MovieSection
-import com.jpp.moviespreview.domainlayer.usecase.GetMoviePageUseCase
-import com.jpp.moviespreview.domainlayer.usecase.MoviePageParam
-import com.jpp.moviespreview.domainlayer.usecase.MoviePageResult
+import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageUseCase
+import com.jpp.moviespreview.domainlayer.interactor.MoviePageParam
+import com.jpp.moviespreview.domainlayer.interactor.MoviePageResult
 
 class GetMoviePageUseCaseImpl(private val moviesRepository: MoviesRepository,
                               private val mapper: MovieDomainMapper,

@@ -1,4 +1,4 @@
-package com.jpp.moviespreview.domainlayer.usecase
+package com.jpp.moviespreview.domainlayer.interactor
 
 /***************************************************************************************************
  ******** Contains the definition of all the Use Cases that the application can execute.  **********

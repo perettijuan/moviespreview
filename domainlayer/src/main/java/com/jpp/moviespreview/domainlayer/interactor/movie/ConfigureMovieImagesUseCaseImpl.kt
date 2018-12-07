@@ -1,10 +1,10 @@
-package com.jpp.moviespreview.domainlayer.usecase.movie
+package com.jpp.moviespreview.domainlayer.interactor.movie
 
 import com.jpp.moviespreview.common.extensions.transformToInt
 import com.jpp.moviespreview.datalayer.repository.ConfigurationRepository
-import com.jpp.moviespreview.domainlayer.usecase.ConfigureMovieImagesUseCase
-import com.jpp.moviespreview.domainlayer.usecase.MovieImagesParam
-import com.jpp.moviespreview.domainlayer.usecase.MovieImagesResult
+import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImagesUseCase
+import com.jpp.moviespreview.domainlayer.interactor.MovieImagesParam
+import com.jpp.moviespreview.domainlayer.interactor.MovieImagesResult
 
 class ConfigureMovieImagesUseCaseImpl(private val configRepository: ConfigurationRepository) : ConfigureMovieImagesUseCase {
 
