@@ -23,7 +23,7 @@ class DomainLayerModule {
 
     @Provides
     @Singleton
-    fun providesConfigureApplicationUseCase(configRepository: ConfigurationRepository,
+    fun providesConfigureApplicationInteractor(configRepository: ConfigurationRepository,
                                             connectivityVerifier: ConnectivityVerifier): ConfigureApplicationInteractor = ConfigureApplicationInteractorImpl(configRepository, connectivityVerifier)
 
 }

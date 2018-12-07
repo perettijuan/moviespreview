@@ -17,7 +17,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
 @ExtendWith(MockKExtension::class)
-class ConfigureMovieImagesUseCaseTest {
+class ConfigureMovieImagesInteractorTest {
 
     data class ExecuteTestParameter(
             val case: String,

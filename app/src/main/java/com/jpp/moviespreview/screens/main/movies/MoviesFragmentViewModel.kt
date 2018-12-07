@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class MoviesFragmentViewModel @Inject constructor(private val configAppUseCase: ConfigureApplicationInteractor) : MPScopedViewModel() {
+class MoviesFragmentViewModel @Inject constructor(private val configInteractor: ConfigureApplicationInteractor) : MPScopedViewModel() {
 
     private val viewState by lazy { MutableLiveData<MoviesFragmentViewState>().apply { value = MoviesFragmentViewState.Loading } }
 
@@ -25,7 +25,7 @@ class MoviesFragmentViewModel @Inject constructor(private val configAppUseCase: 
     }
 
     private fun configure(): MoviesFragmentViewState {
-        return when (configAppUseCase()) {
+        return when (configInteractor()) {
             ConfigureApplicationResult.ErrorNoConnectivity -> MoviesFragmentViewState.ErrorNoConnectivity
             ConfigureApplicationResult.ErrorUnknown -> MoviesFragmentViewState.ErrorUnknown
             ConfigureApplicationResult.Success -> MoviesFragmentViewState.Configured

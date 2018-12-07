@@ -21,7 +21,7 @@ import com.jpp.moviespreview.datalayer.MoviePage as DataMoviePage
 import com.jpp.moviespreview.domainlayer.MoviePage as DomainMoviePage
 
 @ExtendWith(MockKExtension::class)
-class GetMoviePageUseCaseTest {
+class GetMoviePageInteractorTest {
 
     data class ExecuteTestParameter(
             val moviePage: Int,
