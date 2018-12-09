@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.domainlayer.Movie
-import com.jpp.moviespreview.domainlayer.MovieSection
+import com.jpp.moviespreview.ext.getScreenSizeInPixels
 import com.jpp.moviespreview.ext.setInvisible
 import com.jpp.moviespreview.ext.setVisible
 import dagger.android.support.AndroidSupportInjection
@@ -74,7 +74,7 @@ abstract class MoviesFragment : Fragment() {
          * Hook-up the LiveData that will be updated when the data source is created
          * and then update the adapter with the new data.
          */
-        viewModel.getMovieList(getMoviesSection()).observe(this, Observer<PagedList<Movie>> {
+        viewModel.getMovieList(getMoviesSection(), getScreenSizeInPixels().x, getScreenSizeInPixels().x).observe(this, Observer<PagedList<Movie>> {
             (moviesList.adapter as MoviesAdapter).submitList(it)
         })
 
@@ -137,7 +137,7 @@ abstract class MoviesFragment : Fragment() {
 
             fun bindMovie(movie: Movie) {
                 itemView.movieTitle.text = movie.title
-                itemView.movieOverview.text = movie.overview
+                itemView.movieOverview.text = movie.backdropPath
             }
 
         }

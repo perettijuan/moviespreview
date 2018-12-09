@@ -34,8 +34,12 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
      * IMPORTANT: every time this method is called, a new DataSource is created to fetch the
      * movies that are related to the provided [movieSection] in here.
      */
-    fun getMovieList(movieSection: UiMovieSection): LiveData<PagedList<Movie>> {
-        pagingDataSourceFactory.currentSection = movieSection
+    fun getMovieList(movieSection: UiMovieSection, moviePosterSize: Int, movieBackdropSize: Int): LiveData<PagedList<Movie>> {
+        pagingDataSourceFactory.config = MoviesPagingDataSourceFactory.MoviesPagingConfig(
+                section = movieSection,
+                moviePosterSize = moviePosterSize,
+                movieBackdropSize = movieBackdropSize
+        )
 
         viewState = Transformations.switchMap(pagingDataSourceFactory.dataSourceLiveData) {
             it.viewStateLiveData

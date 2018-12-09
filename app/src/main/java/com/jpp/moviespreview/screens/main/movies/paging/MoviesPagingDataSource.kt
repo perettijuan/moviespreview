@@ -4,9 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.jpp.moviespreview.domainlayer.Movie
 import com.jpp.moviespreview.domainlayer.MovieSection
-import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageInteractor
-import com.jpp.moviespreview.domainlayer.interactor.MoviePageParam
-import com.jpp.moviespreview.domainlayer.interactor.MoviePageResult
+import com.jpp.moviespreview.domainlayer.interactor.*
 import com.jpp.moviespreview.screens.main.movies.MoviesFragmentViewState
 import com.jpp.moviespreview.screens.main.movies.UiMovieSection
 
@@ -24,7 +22,10 @@ import com.jpp.moviespreview.screens.main.movies.UiMovieSection
  *
  */
 class MoviesPagingDataSource(private val moviePageInteractor: GetMoviePageInteractor,
-                             private val currentSection: UiMovieSection) : PageKeyedDataSource<Int, Movie>() {
+                             private val configureMovieImagesInteractor: ConfigureMovieImagesInteractor,
+                             private val currentSection: UiMovieSection,
+                             private val moviePosterSize: Int,
+                             private val movieBackdropSize: Int) : PageKeyedDataSource<Int, Movie>() {
 
 
     val viewStateLiveData by lazy { MutableLiveData<MoviesFragmentViewState>() }
@@ -73,8 +74,12 @@ class MoviesPagingDataSource(private val moviePageInteractor: GetMoviePageIntera
                 MoviePageResult.ErrorNoConnectivity -> viewStateLiveData.postValue(MoviesFragmentViewState.ErrorNoConnectivity)
                 MoviePageResult.ErrorUnknown -> viewStateLiveData.postValue(MoviesFragmentViewState.ErrorNoConnectivity)
                 is MoviePageResult.Success -> {
-                    viewStateLiveData.postValue(MoviesFragmentViewState.InitialPageLoaded)
-                    callback.invoke(it.moviePage.movies)
+                    it.moviePage.movies
+                            .map { movie -> configureMovieImagesInteractor.invoke(MovieImagesParam(movie, movieBackdropSize, moviePosterSize)) }
+                            .run {
+                                viewStateLiveData.postValue(MoviesFragmentViewState.InitialPageLoaded)
+                                callback.invoke(this.map { result -> result.movie })
+                            }
                 }
             }
         }

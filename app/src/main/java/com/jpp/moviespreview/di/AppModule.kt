@@ -2,6 +2,7 @@ package com.jpp.moviespreview.di
 
 import android.content.Context
 import com.jpp.moviespreview.MPApp
+import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImagesInteractor
 import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageInteractor
 import com.jpp.moviespreview.screens.main.movies.paging.MoviesPagingDataSourceFactory
 import dagger.Module
@@ -20,6 +21,6 @@ class AppModule(private val appInstance: MPApp) {
 
     //TODO JPP -> this should live in a different module
     @Provides
-    fun providesPagingDs(moviePageInteractor: GetMoviePageInteractor)
-            :  MoviesPagingDataSourceFactory = MoviesPagingDataSourceFactory(moviePageInteractor)
+    fun providesPagingDs(moviePageInteractor: GetMoviePageInteractor, configureMovieImagesInteractor: ConfigureMovieImagesInteractor)
+            :  MoviesPagingDataSourceFactory = MoviesPagingDataSourceFactory(moviePageInteractor, configureMovieImagesInteractor)
 }
