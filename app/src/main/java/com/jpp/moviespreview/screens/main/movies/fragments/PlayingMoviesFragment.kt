@@ -1,10 +1,10 @@
 package com.jpp.moviespreview.screens.main.movies.fragments
 
-import com.jpp.moviespreview.domainlayer.MovieSection
 import com.jpp.moviespreview.screens.main.movies.MoviesFragment
+import com.jpp.moviespreview.screens.main.movies.UiMovieSection
 
 class PlayingMoviesFragment : MoviesFragment() {
 
-    override fun getMoviesSection(): MovieSection = MovieSection.Playing
+    override fun getMoviesSection(): UiMovieSection = UiMovieSection.Playing
 
 }

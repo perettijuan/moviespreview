@@ -1,9 +1,9 @@
 package com.jpp.moviespreview.screens.main.movies.fragments
 
-import com.jpp.moviespreview.domainlayer.MovieSection
 import com.jpp.moviespreview.screens.main.movies.MoviesFragment
+import com.jpp.moviespreview.screens.main.movies.UiMovieSection
 
 class UpcomingMoviesFragment : MoviesFragment() {
 
-    override fun getMoviesSection(): MovieSection = MovieSection.Upcoming
+    override fun getMoviesSection(): UiMovieSection = UiMovieSection.Upcoming
 }

@@ -5,6 +5,7 @@ import androidx.paging.DataSource
 import com.jpp.moviespreview.domainlayer.Movie
 import com.jpp.moviespreview.domainlayer.MovieSection
 import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageInteractor
+import com.jpp.moviespreview.screens.main.movies.UiMovieSection
 import java.lang.IllegalStateException
 
 
@@ -17,7 +18,7 @@ class MoviesPagingDataSourceFactory(private val moviePageInteractor: GetMoviePag
 
 
     val dataSourceLiveData by lazy { MutableLiveData<MoviesPagingDataSource>() }
-    var currentSection: MovieSection? = null
+    var currentSection: UiMovieSection? = null
 
 
     override fun create(): DataSource<Int, Movie> {
