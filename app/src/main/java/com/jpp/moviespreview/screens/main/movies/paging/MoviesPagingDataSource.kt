@@ -1,5 +1,6 @@
 package com.jpp.moviespreview.screens.main.movies.paging
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.jpp.moviespreview.domainlayer.Movie
@@ -36,6 +37,8 @@ class MoviesPagingDataSource(private val moviePageInteractor: GetMoviePageIntera
      */
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, Movie>) {
 
+        Log.d("MPLog", "load initial -> $currentSection")
+
         viewStateLiveData.postValue(MoviesFragmentViewState.Loading)
 
         moviePageInteractor(MoviePageParam(1, currentSection)).let {
@@ -58,6 +61,8 @@ class MoviesPagingDataSource(private val moviePageInteractor: GetMoviePageIntera
      * The "params.key" variable will have the updated value.
      */
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) {
+
+        Log.d("MPLog", "load after -> $currentSection with page $params.key")
 
         moviePageInteractor(MoviePageParam(params.key, currentSection)).let {
             when (it) {

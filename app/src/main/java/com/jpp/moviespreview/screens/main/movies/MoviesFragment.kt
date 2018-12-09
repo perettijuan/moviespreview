@@ -50,6 +50,12 @@ abstract class MoviesFragment : Fragment() {
             ViewModelProviders.of(this, viewModelFactory).get(MoviesFragmentViewModel::class.java)
         } ?: throw RuntimeException("Invalid Activity")
 
+        moviesList.layoutManager = LinearLayoutManager(activity)
+        val adapter = MoviesAdapter()
+        viewModel.getMovieList(getMoviesSection()).observe(this, Observer<PagedList<Movie>> {
+            adapter.submitList(it)
+        })
+        moviesList.adapter = adapter
 
         viewModel.bindViewState().observe(this, Observer {
             when (it) {
@@ -77,14 +83,6 @@ abstract class MoviesFragment : Fragment() {
             }
         })
 
-
-        val adapter = MoviesAdapter()
-        moviesList.layoutManager = LinearLayoutManager(activity)
-        if (savedInstanceState == null) {
-            viewModel.getMovieList(getMoviesSection()).observe(this, Observer<PagedList<Movie>> {
-                adapter.submitList(it)
-            })
-        }
     }
 
     //TODO JPP this should be different
