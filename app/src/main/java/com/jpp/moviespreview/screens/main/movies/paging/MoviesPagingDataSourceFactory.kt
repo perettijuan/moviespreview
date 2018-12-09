@@ -3,11 +3,10 @@ package com.jpp.moviespreview.screens.main.movies.paging
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import com.jpp.moviespreview.domainlayer.Movie
-import com.jpp.moviespreview.domainlayer.MovieSection
 import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImagesInteractor
 import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageInteractor
 import com.jpp.moviespreview.screens.main.movies.UiMovieSection
-import java.lang.IllegalStateException
+import javax.inject.Inject
 
 
 /**
@@ -15,8 +14,8 @@ import java.lang.IllegalStateException
  * of the application.
  * An instance of this class is injected into the ViewModels to hook the callbacks to the UI.
  */
-class MoviesPagingDataSourceFactory(private val moviePageInteractor: GetMoviePageInteractor,
-                                    private val configureMovieImagesInteractor: ConfigureMovieImagesInteractor) : DataSource.Factory<Int, Movie>() {
+class MoviesPagingDataSourceFactory @Inject constructor(private val moviePageInteractor: GetMoviePageInteractor,
+                                                        private val configureMovieImagesInteractor: ConfigureMovieImagesInteractor) : DataSource.Factory<Int, Movie>() {
 
 
     val dataSourceLiveData by lazy { MutableLiveData<MoviesPagingDataSource>() }
