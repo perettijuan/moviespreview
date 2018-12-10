@@ -26,15 +26,27 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
 
     private lateinit var viewState: LiveData<MoviesFragmentViewState>
 
+    private lateinit var pagedList: LiveData<PagedList<Movie>>
+
+
     fun bindViewState(): LiveData<MoviesFragmentViewState> = viewState
 
     /**
      * Retrieves a [LiveData] object that is notified when a new [PagedList] is available
      * for rendering.
-     * IMPORTANT: every time this method is called, a new DataSource is created to fetch the
-     * movies that are related to the provided [movieSection] in here.
+     *
+     * IMPORTANT: this method checks if [pagedList] has been initialized and, if it is, it returns the
+     * already initialized object. The use case that this is affecting is rotation: when the
+     * device rotates, the Activity gets destroyed, the Fragment gets destroyed but the ViewModel
+     * remains the same. When the Fragment is recreated and hook himself to the ViewModel, we want
+     * that hooking to the original PagedList and not to a new instance.
      */
     fun getMovieList(movieSection: UiMovieSection, moviePosterSize: Int, movieBackdropSize: Int): LiveData<PagedList<Movie>> {
+        if (::pagedList.isInitialized) {
+            return pagedList
+        }
+
+
         pagingDataSourceFactory.config = MoviesPagingDataSourceFactory.MoviesPagingConfig(
                 section = movieSection,
                 moviePosterSize = moviePosterSize,
@@ -50,8 +62,10 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
                 .setPrefetchDistance(2) // 2 pre-loads now
                 .build()
 
-        return LivePagedListBuilder(pagingDataSourceFactory, config)
+        pagedList = LivePagedListBuilder(pagingDataSourceFactory, config)
                 .setFetchExecutor(Executors.newFixedThreadPool(5))
                 .build()
+
+        return pagedList
     }
 }
