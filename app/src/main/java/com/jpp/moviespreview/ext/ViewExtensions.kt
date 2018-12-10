@@ -2,10 +2,14 @@ package com.jpp.moviespreview.ext
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import com.squareup.picasso.Callback
+import com.squareup.picasso.Picasso
 
 /**
  * Extension function for the View class to make a View visible
@@ -89,6 +93,25 @@ fun View.animateToAlpha(toAlpha: Float,
                 }
             })
             .start()
+}
+
+/**
+ * Loads an image retrieved from the provided [imageUrl]
+ * into the ImageView.
+ */
+fun ImageView.loadImageUrl(imageUrl: String) {
+    Picasso
+            .with(context)
+            .load(imageUrl)
+            .into(this, object : Callback {
+                override fun onSuccess() {
+                    Log.d("JPPLOG", "Loaded -> $imageUrl")
+                }
+
+                override fun onError() {
+                    Log.d("JPPLOG", "ERROR -> $imageUrl")
+                }
+            })
 }
 
 

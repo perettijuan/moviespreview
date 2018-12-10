@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.domainlayer.Movie
 import com.jpp.moviespreview.ext.getScreenSizeInPixels
+import com.jpp.moviespreview.ext.loadImageUrl
 import com.jpp.moviespreview.ext.setInvisible
 import com.jpp.moviespreview.ext.setVisible
 import dagger.android.support.AndroidSupportInjection
@@ -132,14 +133,11 @@ abstract class MoviesFragment : Fragment() {
             }
         }
 
-
         class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 
             fun bindMovie(movie: Movie) {
-                itemView.movieTitle.text = movie.title
-                itemView.movieOverview.text = movie.backdropPath
+                itemView.movieListItemImage.loadImageUrl(movie.posterPath ?: "error path")
             }
-
         }
     }
 
