@@ -5,8 +5,8 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.jpp.moviespreview.domainlayer.Movie
-import com.jpp.moviespreview.domainlayer.MovieSection
+import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImagesInteractor
+import com.jpp.moviespreview.domainlayer.interactor.MovieImagesParam
 import com.jpp.moviespreview.screens.main.movies.paging.MoviesPagingDataSourceFactory
 import java.util.concurrent.Executors
 import javax.inject.Inject
@@ -22,7 +22,8 @@ import javax.inject.Inject
  * Check [MoviesPagingDataSource] for a more detailed explanation of the architecture followed
  * in this case.
  */
-class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFactory: MoviesPagingDataSourceFactory) : ViewModel() {
+class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFactory: MoviesPagingDataSourceFactory,
+                                                  private val configureMovieImagesInteractor: ConfigureMovieImagesInteractor) : ViewModel() {
 
     private lateinit var viewState: LiveData<MoviesFragmentViewState>
 
@@ -46,19 +47,19 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
             return pagedList
         }
 
-        val mapped = pagingDataSourceFactory.map { movie ->
-            MovieItem(headerImageUrl = movie.backdropPath ?: "",
-                    title = movie.title,
-                    contentImageUrl = movie.posterPath ?: "",
-                    popularity = movie.popularity.toString(),
-                    voteCount = movie.voteCount.toString())
-        }
+        val mapped = pagingDataSourceFactory
+                .map { movie -> configureMovieImagesInteractor.invoke(MovieImagesParam(movie, movieBackdropSize, moviePosterSize)) }
+                .map { configUseCaseResult ->
+                    with(configUseCaseResult) {
+                        MovieItem(headerImageUrl = movie.backdropPath ?: "",
+                                title = movie.title,
+                                contentImageUrl = movie.posterPath ?: "",
+                                popularity = movie.popularity.toString(),
+                                voteCount = movie.voteCount.toString())
+                    }
+                }
 
-        pagingDataSourceFactory.config = MoviesPagingDataSourceFactory.MoviesPagingConfig(
-                section = movieSection,
-                moviePosterSize = moviePosterSize,
-                movieBackdropSize = movieBackdropSize
-        )
+        pagingDataSourceFactory.section = movieSection
 
         viewState = Transformations.switchMap(pagingDataSourceFactory.dataSourceLiveData) {
             it.viewStateLiveData
