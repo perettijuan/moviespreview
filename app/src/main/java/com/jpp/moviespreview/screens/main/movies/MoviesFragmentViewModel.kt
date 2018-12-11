@@ -26,7 +26,7 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
 
     private lateinit var viewState: LiveData<MoviesFragmentViewState>
 
-    private lateinit var pagedList: LiveData<PagedList<Movie>>
+    private lateinit var pagedList: LiveData<PagedList<MovieItem>>
 
 
     fun bindViewState(): LiveData<MoviesFragmentViewState> = viewState
@@ -41,11 +41,18 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
      * remains the same. When the Fragment is recreated and hook himself to the ViewModel, we want
      * that hooking to the original PagedList and not to a new instance.
      */
-    fun getMovieList(movieSection: UiMovieSection, moviePosterSize: Int, movieBackdropSize: Int): LiveData<PagedList<Movie>> {
+    fun getMovieList(movieSection: UiMovieSection, moviePosterSize: Int, movieBackdropSize: Int): LiveData<PagedList<MovieItem>> {
         if (::pagedList.isInitialized) {
             return pagedList
         }
 
+        val mapped = pagingDataSourceFactory.map { movie ->
+            MovieItem(headerImageUrl = movie.backdropPath ?: "",
+                    title = movie.title,
+                    contentImageUrl = movie.posterPath ?: "",
+                    popularity = movie.popularity.toString(),
+                    voteCount = movie.voteCount.toString())
+        }
 
         pagingDataSourceFactory.config = MoviesPagingDataSourceFactory.MoviesPagingConfig(
                 section = movieSection,
@@ -62,7 +69,7 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
                 .setPrefetchDistance(2) // 2 pre-loads now
                 .build()
 
-        pagedList = LivePagedListBuilder(pagingDataSourceFactory, config)
+        pagedList = LivePagedListBuilder(mapped, config)
                 .setFetchExecutor(Executors.newFixedThreadPool(5))
                 .build()
 

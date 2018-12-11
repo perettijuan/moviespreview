@@ -14,3 +14,14 @@ sealed class UiMovieSection {
     object TopRated : UiMovieSection()
     object Upcoming : UiMovieSection()
 }
+
+/**
+ * Represents an item in the list of Movies shown in the initial screen of the application.
+ */
+data class MovieItem(
+        val headerImageUrl: String,
+        val title: String,
+        val contentImageUrl: String,
+        val popularity: String,
+        val voteCount: String
+)
