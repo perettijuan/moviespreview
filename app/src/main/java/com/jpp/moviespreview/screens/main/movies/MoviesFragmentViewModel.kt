@@ -43,9 +43,13 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
      * that hooking to the original PagedList and not to a new instance.
      */
     fun getMovieList(movieSection: UiMovieSection, moviePosterSize: Int, movieBackdropSize: Int): LiveData<PagedList<MovieItem>> {
-        if (::pagedList.isInitialized) {
-            return pagedList
+        if(movieSection == pagingDataSourceFactory.section) {
+            if (::pagedList.isInitialized) {
+                return pagedList
+            }
         }
+
+        pagingDataSourceFactory.section = movieSection
 
         val mapped = pagingDataSourceFactory
                 .map { movie -> configureMovieImagesInteractor.invoke(MovieImagesParam(movie, movieBackdropSize, moviePosterSize)) }
@@ -58,8 +62,6 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
                                 voteCount = movie.voteCount.toString())
                     }
                 }
-
-        pagingDataSourceFactory.section = movieSection
 
         viewState = Transformations.switchMap(pagingDataSourceFactory.dataSourceLiveData) {
             it.viewStateLiveData

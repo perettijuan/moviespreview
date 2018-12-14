@@ -20,7 +20,7 @@ import com.jpp.moviespreview.screens.main.movies.UiMovieSection
  * Therefore, you should see this class as a UI component and not as a DataSource that should
  * live in the data layer of the application.
  *
- * TODO JPP -> can we use [PageKeyedDataSource#mapByPage] to map the domain results to UI layer results?
+ * TODO JPP -> move this guy to the domain layer.
  *
  */
 class MoviesPagingDataSource(private val moviePageInteractor: GetMoviePageInteractor,
