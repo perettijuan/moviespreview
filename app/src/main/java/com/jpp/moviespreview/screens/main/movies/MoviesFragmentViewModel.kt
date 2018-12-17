@@ -7,6 +7,7 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImagesInteractor
 import com.jpp.moviespreview.domainlayer.interactor.MovieImagesParam
+import com.jpp.moviespreview.screens.main.movies.paging.MoviesDataSourceState
 import com.jpp.moviespreview.screens.main.movies.paging.MoviesPagingDataSourceFactory
 import java.util.concurrent.Executors
 import javax.inject.Inject
@@ -51,6 +52,15 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
 
         pagingDataSourceFactory.section = movieSection
 
+        viewState = Transformations.map(pagingDataSourceFactory.dataSourceLiveData) {
+            when(it) {
+                MoviesDataSourceState.LoadingInitial -> MoviesFragmentViewState.Loading
+                MoviesDataSourceState.ErrorUnknown -> MoviesFragmentViewState.ErrorUnknown
+                MoviesDataSourceState.ErrorNoConnectivity -> MoviesFragmentViewState.ErrorNoConnectivity
+                else -> MoviesFragmentViewState.InitialPageLoaded
+            }
+        }
+
         val mapped = pagingDataSourceFactory
                 .map { movie -> configureMovieImagesInteractor.invoke(MovieImagesParam(movie, movieBackdropSize, moviePosterSize)) }
                 .map { configUseCaseResult ->
@@ -62,10 +72,6 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
                                 voteCount = movie.voteCount.toString())
                     }
                 }
-
-        viewState = Transformations.switchMap(pagingDataSourceFactory.dataSourceLiveData) {
-            it.viewStateLiveData
-        }
 
         val config = PagedList.Config.Builder()
                 .setEnablePlaceholders(false)

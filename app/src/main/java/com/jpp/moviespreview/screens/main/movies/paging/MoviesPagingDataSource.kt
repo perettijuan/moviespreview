@@ -1,5 +1,6 @@
 package com.jpp.moviespreview.screens.main.movies.paging
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.jpp.moviespreview.domainlayer.Movie
@@ -7,8 +8,6 @@ import com.jpp.moviespreview.domainlayer.MovieSection
 import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageInteractor
 import com.jpp.moviespreview.domainlayer.interactor.MoviePageParam
 import com.jpp.moviespreview.domainlayer.interactor.MoviePageResult
-import com.jpp.moviespreview.screens.main.movies.MoviesFragmentViewState
-import com.jpp.moviespreview.screens.main.movies.UiMovieSection
 
 /**
  * This is the data source that provides to the paging library of items to show in the list.
@@ -19,23 +18,14 @@ import com.jpp.moviespreview.screens.main.movies.UiMovieSection
  * the results to the model expected by the UI.
  * Therefore, you should see this class as a UI component and not as a DataSource that should
  * live in the data layer of the application.
- *
- * TODO JPP -> move this guy to the domain layer.
- *
  */
 class MoviesPagingDataSource(private val moviePageInteractor: GetMoviePageInteractor,
-                             private val currentSection: UiMovieSection) : PageKeyedDataSource<Int, Movie>() {
+                             private val currentSection: MovieSection) : PageKeyedDataSource<Int, Movie>() {
 
 
-    val viewStateLiveData by lazy { MutableLiveData<MoviesFragmentViewState>() }
-    private val movieSectionMapper: (UiMovieSection) -> MovieSection = {
-        when (it) {
-            UiMovieSection.Playing -> MovieSection.Playing
-            UiMovieSection.Popular -> MovieSection.Popular
-            UiMovieSection.TopRated -> MovieSection.TopRated
-            UiMovieSection.Upcoming -> MovieSection.Upcoming
-        }
-    }
+    private val viewStateLiveData by lazy { MutableLiveData<MoviesDataSourceState>() }
+
+    fun getViewState(): LiveData<MoviesDataSourceState> = viewStateLiveData
 
     /*
      * This method is responsible to load the data initially
@@ -44,9 +34,9 @@ class MoviesPagingDataSource(private val moviePageInteractor: GetMoviePageIntera
      * and passing it via the callback method to the UI.
      */
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, Movie>) {
-        viewStateLiveData.postValue(MoviesFragmentViewState.Loading)
+        viewStateLiveData.postValue(MoviesDataSourceState.LoadingInitial)
         fetchMoviePage(1) {
-            viewStateLiveData.postValue(MoviesFragmentViewState.InitialPageLoaded)
+            viewStateLiveData.postValue(MoviesDataSourceState.LoadingInitialDone)
             callback.onResult(it, null, 2)
         }
     }
@@ -69,10 +59,10 @@ class MoviesPagingDataSource(private val moviePageInteractor: GetMoviePageIntera
     }
 
     private fun fetchMoviePage(page: Int, callback: (List<Movie>) -> Unit) {
-        moviePageInteractor(MoviePageParam(page, movieSectionMapper.invoke(currentSection))).let {
+        moviePageInteractor(MoviePageParam(page, currentSection)).let {
             when (it) {
-                MoviePageResult.ErrorNoConnectivity -> viewStateLiveData.postValue(MoviesFragmentViewState.ErrorNoConnectivity)
-                MoviePageResult.ErrorUnknown -> viewStateLiveData.postValue(MoviesFragmentViewState.ErrorNoConnectivity)
+                MoviePageResult.ErrorNoConnectivity -> viewStateLiveData.postValue(MoviesDataSourceState.ErrorNoConnectivity)
+                MoviePageResult.ErrorUnknown -> viewStateLiveData.postValue(MoviesDataSourceState.ErrorUnknown)
                 is MoviePageResult.Success -> callback.invoke(it.moviePage.movies)
             }
         }
