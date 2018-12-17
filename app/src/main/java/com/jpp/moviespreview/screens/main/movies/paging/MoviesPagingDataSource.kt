@@ -49,7 +49,9 @@ class MoviesPagingDataSource(private val moviePageInteractor: GetMoviePageIntera
      * The "params.key" variable will have the updated value.
      */
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) {
+        viewStateLiveData.postValue(MoviesDataSourceState.LoadingAfter)
         fetchMoviePage(params.key) {
+            viewStateLiveData.postValue(MoviesDataSourceState.LoadingAfterDone)
             callback.onResult(it, params.key + 1)
         }
     }

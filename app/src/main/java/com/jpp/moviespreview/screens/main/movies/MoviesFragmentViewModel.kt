@@ -3,13 +3,12 @@ package com.jpp.moviespreview.screens.main.movies
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import com.jpp.moviespreview.domainlayer.MovieSection
 import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImagesInteractor
 import com.jpp.moviespreview.domainlayer.interactor.MovieImagesParam
 import com.jpp.moviespreview.screens.main.movies.paging.MoviesDataSourceState
 import com.jpp.moviespreview.screens.main.movies.paging.MoviesPagingDataSourceFactory
-import java.util.concurrent.Executors
 import javax.inject.Inject
 
 /**
@@ -30,6 +29,8 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
 
     private lateinit var pagedList: LiveData<PagedList<MovieItem>>
 
+    private lateinit var currentSection: UiMovieSection
+
 
     fun bindViewState(): LiveData<MoviesFragmentViewState> = viewState
 
@@ -37,23 +38,36 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
      * Retrieves a [LiveData] object that is notified when a new [PagedList] is available
      * for rendering.
      *
-     * IMPORTANT: this method checks if [pagedList] has been initialized and, if it is, it returns the
+     * IMPORTANT: this method checks if [pagedList] has been initialized and, if it is, returns the
      * already initialized object. The use case that this is affecting is rotation: when the
      * device rotates, the Activity gets destroyed, the Fragment gets destroyed but the ViewModel
      * remains the same. When the Fragment is recreated and hook himself to the ViewModel, we want
      * that hooking to the original PagedList and not to a new instance.
      */
     fun getMovieList(movieSection: UiMovieSection, moviePosterSize: Int, movieBackdropSize: Int): LiveData<PagedList<MovieItem>> {
-        if(movieSection == pagingDataSourceFactory.section) {
-            if (::pagedList.isInitialized) {
-                return pagedList
+        if (::currentSection.isInitialized
+                && currentSection == movieSection
+                && ::pagedList.isInitialized) {
+            /*
+             * Avoid loading if we're already showing the requested pages.
+             */
+            return pagedList
+        }
+
+        currentSection = movieSection
+
+        pagedList = pagingDataSourceFactory.getMovieList(movieSectionMapper.invoke(currentSection)) { domainMovie ->
+            with(configureMovieImagesInteractor.invoke(MovieImagesParam(domainMovie, movieBackdropSize, moviePosterSize)).movie) {
+                MovieItem(headerImageUrl = backdropPath ?: "",
+                        title = title,
+                        contentImageUrl = posterPath ?: "",
+                        popularity = popularity.toString(),
+                        voteCount = voteCount.toString())
             }
         }
 
-        pagingDataSourceFactory.section = movieSection
-
         viewState = Transformations.map(pagingDataSourceFactory.dataSourceLiveData) {
-            when(it) {
+            when (it) {
                 MoviesDataSourceState.LoadingInitial -> MoviesFragmentViewState.Loading
                 MoviesDataSourceState.ErrorUnknown -> MoviesFragmentViewState.ErrorUnknown
                 MoviesDataSourceState.ErrorNoConnectivity -> MoviesFragmentViewState.ErrorNoConnectivity
@@ -61,27 +75,15 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
             }
         }
 
-        val mapped = pagingDataSourceFactory
-                .map { movie -> configureMovieImagesInteractor.invoke(MovieImagesParam(movie, movieBackdropSize, moviePosterSize)) }
-                .map { configUseCaseResult ->
-                    with(configUseCaseResult) {
-                        MovieItem(headerImageUrl = movie.backdropPath ?: "",
-                                title = movie.title,
-                                contentImageUrl = movie.posterPath ?: "",
-                                popularity = movie.popularity.toString(),
-                                voteCount = movie.voteCount.toString())
-                    }
-                }
-
-        val config = PagedList.Config.Builder()
-                .setEnablePlaceholders(false)
-                .setPrefetchDistance(2) // 2 pre-loads now
-                .build()
-
-        pagedList = LivePagedListBuilder(mapped, config)
-                .setFetchExecutor(Executors.newFixedThreadPool(5))
-                .build()
-
         return pagedList
+    }
+
+    private val movieSectionMapper: (UiMovieSection) -> MovieSection = {
+        when (it) {
+            UiMovieSection.Playing -> MovieSection.Playing
+            UiMovieSection.Popular -> MovieSection.Popular
+            UiMovieSection.TopRated -> MovieSection.TopRated
+            UiMovieSection.Upcoming -> MovieSection.Upcoming
+        }
     }
 }
