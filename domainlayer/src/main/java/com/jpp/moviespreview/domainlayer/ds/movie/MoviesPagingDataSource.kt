@@ -11,6 +11,18 @@ import com.jpp.moviespreview.domainlayer.interactor.MoviePageResult
 
 /**
  * DataSource (Paging Library) implementation to retrieve the pages of a given [MovieSection].
+ * It executes the provided [moviePageInteractor] in order to retrieve the next movie page.
+ *
+ * In order to model the state of pages retrieval, this class exposes a LiveData element that
+ * is notified whenever a new request is initiated and finished (and if an error is detected).
+ * Therefore, you can say that this class has two output streams:
+ * 1 - One to indicate if it is retrieving information.
+ * 2 - One to indicate that a new page is available and needs to be rendered.
+ *
+ * DESIGN DECISION: This class could be modeled as an interactor that fetches the movie
+ * lists from the repository, but I decided to model this DS as a different entity in order to
+ * highlight the fact that exists because I'm using the Android Paging Library.
+ * Another reason for this decision is that it makes unit testing easier.
  */
 class MoviesPagingDataSource(private val moviePageInteractor: GetMoviePageInteractor,
                              private val currentSection: MovieSection) : PageKeyedDataSource<Int, Movie>() {

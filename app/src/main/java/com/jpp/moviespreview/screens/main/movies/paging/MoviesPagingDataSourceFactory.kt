@@ -15,26 +15,32 @@ import javax.inject.Inject
 
 /**
  * Factory class to create the DataSource that will provide the pages to show in the movies section
- * of the application.
- * An instance of this class is injected into the ViewModels to hook the callbacks to the UI.
+ * of the application. An instance of this class is injected into the ViewModels to hook the
+ * callbacks to the UI.
+ *
+ * This class represents the middle ground (can be seen as a mediator) between the UI layer and the
+ * Domain layer when it comes to movie lists:
+ * It receives commands from the ViewModels and creates new dataSource instances as needed.
  */
 class MoviesPagingDataSourceFactory @Inject constructor(private val moviePageInteractor: GetMoviePageInteractor) : DataSource.Factory<Int, Movie>() {
 
-
+    // the current MoviesPagingDataSource being used.
     private lateinit var dataSource: MoviesPagingDataSource
+    // used to map the state of MoviesPagingDataSource to UI state.
     lateinit var dataSourceLiveData: LiveData<MoviesDataSourceState>
 
-    override fun create(): DataSource<Int, Movie> {
-        if (::dataSource.isInitialized) {
-            return dataSource
-        }
-        throw IllegalStateException("You need to provide a section to initialize the data source")
-    }
-
-
+    /**
+     * Called to retrieve the [PagedList] that will hold the list of movies retrieved from the server.
+     * [movieSection] indicates the section needed.
+     * [mapper] a mapping function to transform domain objects into another layer objects.
+     */
     fun <T> getMovieList(movieSection: MovieSection, mapper: (Movie) -> T): LiveData<PagedList<T>> {
-
         if (::dataSource.isInitialized) {
+            /*
+             * This method enforces a new call to create() in order to hook up the newly created
+             * ds. Whenever a ds gets invalidated, the Paging Library marks it as invalid to retrieve
+             * data and aks the factory to provide a new instance.
+             */
             dataSource.invalidate()
         }
 
@@ -50,4 +56,15 @@ class MoviesPagingDataSourceFactory @Inject constructor(private val moviePageInt
                 .setFetchExecutor(Executors.newFixedThreadPool(5))
                 .build()
     }
+
+    /**
+     * From [DataSource.Factory#create()]
+     */
+    override fun create(): DataSource<Int, Movie> {
+        if (::dataSource.isInitialized) {
+            return dataSource
+        }
+        throw IllegalStateException("You need to provide a section to initialize the data source")
+    }
+
 }

@@ -56,6 +56,11 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
 
         currentSection = movieSection
 
+        /*
+         * Verified behavior: here we are mapping the ds provided by pagingDataSourceFactory into a new one in order to obtain a list
+         * of MovieItem. configureMovieImagesInteractor.invoke() and the mapping to the UI item is being executed in the same background
+         * thread that the factory assigns to the ds.
+         */
         pagedList = pagingDataSourceFactory.getMovieList(movieSectionMapper.invoke(currentSection)) { domainMovie ->
             with(configureMovieImagesInteractor.invoke(MovieImagesParam(domainMovie, movieBackdropSize, moviePosterSize)).movie) {
                 MovieItem(headerImageUrl = backdropPath ?: "",
@@ -66,6 +71,10 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
             }
         }
 
+
+        /*
+         * Very cool way to map the ds internal state to a state that the UI understands without coupling the UI to de domain.
+         */
         viewState = Transformations.map(pagingDataSourceFactory.dataSourceLiveData) {
             when (it) {
                 MoviesDataSourceState.LoadingInitial -> MoviesFragmentViewState.Loading
