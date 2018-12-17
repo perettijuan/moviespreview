@@ -1,4 +1,4 @@
-package com.jpp.moviespreview.screens.main.movies.paging
+package com.jpp.moviespreview.domainlayer.ds.movie
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,14 +10,7 @@ import com.jpp.moviespreview.domainlayer.interactor.MoviePageParam
 import com.jpp.moviespreview.domainlayer.interactor.MoviePageResult
 
 /**
- * This is the data source that provides to the paging library of items to show in the list.
- *
- * DESIGN DECISION: even though this is a DataSource (from Paging Library), for the current
- * design in MoviesPreview, this class behaves more as a ViewModel in the sense that executes
- * several interactors in order to fetch the movie list from the repository system and adapt
- * the results to the model expected by the UI.
- * Therefore, you should see this class as a UI component and not as a DataSource that should
- * live in the data layer of the application.
+ * DataSource (Paging Library) implementation to retrieve the pages of a given [MovieSection].
  */
 class MoviesPagingDataSource(private val moviePageInteractor: GetMoviePageInteractor,
                              private val currentSection: MovieSection) : PageKeyedDataSource<Int, Movie>() {

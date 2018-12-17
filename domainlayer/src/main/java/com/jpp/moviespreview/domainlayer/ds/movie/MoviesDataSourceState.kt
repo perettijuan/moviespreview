@@ -1,4 +1,4 @@
-package com.jpp.moviespreview.screens.main.movies.paging
+package com.jpp.moviespreview.domainlayer.ds.movie
 
 sealed class MoviesDataSourceState {
     object LoadingInitial : MoviesDataSourceState()

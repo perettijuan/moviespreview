@@ -6,6 +6,8 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.moviespreview.domainlayer.Movie
 import com.jpp.moviespreview.domainlayer.MovieSection
+import com.jpp.moviespreview.domainlayer.ds.movie.MoviesDataSourceState
+import com.jpp.moviespreview.domainlayer.ds.movie.MoviesPagingDataSource
 import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageInteractor
 import java.util.concurrent.Executors
 import javax.inject.Inject

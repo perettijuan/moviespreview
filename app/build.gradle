@@ -56,7 +56,7 @@ dependencies {
     kapt "androidx.lifecycle:lifecycle-compiler:2.0.0"
 
     // Paging library
-    implementation "androidx.paging:paging-runtime:2.1.0-rc01"
+    implementation deps.androidx.paging
 
     // Dagger
     def daggerVersion = '2.15'

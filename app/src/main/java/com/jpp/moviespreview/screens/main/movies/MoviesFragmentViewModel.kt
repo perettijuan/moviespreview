@@ -7,7 +7,7 @@ import androidx.paging.PagedList
 import com.jpp.moviespreview.domainlayer.MovieSection
 import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImagesInteractor
 import com.jpp.moviespreview.domainlayer.interactor.MovieImagesParam
-import com.jpp.moviespreview.screens.main.movies.paging.MoviesDataSourceState
+import com.jpp.moviespreview.domainlayer.ds.movie.MoviesDataSourceState
 import com.jpp.moviespreview.screens.main.movies.paging.MoviesPagingDataSourceFactory
 import javax.inject.Inject
 
