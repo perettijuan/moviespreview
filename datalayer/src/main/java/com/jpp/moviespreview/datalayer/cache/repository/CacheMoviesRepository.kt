@@ -1,13 +1,16 @@
 package com.jpp.moviespreview.datalayer.cache.repository
 
-import com.jpp.moviespreview.datalayer.MoviePage
+
+import com.jpp.moviespreview.datalayer.DataModelMapper
 import com.jpp.moviespreview.datalayer.cache.MovieType
 import com.jpp.moviespreview.datalayer.cache.MPDataBase
 import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestamps
-import com.jpp.moviespreview.datalayer.repository.MoviesRepository
+import com.jpp.moviespreview.domainlayer.MoviePage
+import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
 
 class CacheMoviesRepository(private val mpCache: MPTimestamps,
-                            private val mpDatabase: MPDataBase) : MoviesRepository {
+                            private val mpDatabase: MPDataBase,
+                            private val mapper: DataModelMapper) : MoviesRepository {
 
     override fun getNowPlayingMoviePage(page: Int): MoviePage? = getMoviePageOrClearDataBaseIfNeeded(MovieType.NowPlaying, page)
 
@@ -29,7 +32,7 @@ class CacheMoviesRepository(private val mpCache: MPTimestamps,
     private fun updateMoviePage(movieType: MovieType, moviePage: MoviePage) {
         with(mpDatabase) {
             updateCurrentMovieTypeStored(movieType)
-            updateMoviePage(moviePage)
+            updateMoviePage(mapper.mapDomainMoviePage(moviePage))
         }.also {
             mpCache.updateMoviesInserted()
         }
@@ -37,7 +40,7 @@ class CacheMoviesRepository(private val mpCache: MPTimestamps,
 
     private fun getMoviePageOrClearDataBaseIfNeeded(movieType: MovieType, page: Int): MoviePage? {
         return when (shouldRetrieveMoviePage(movieType)) {
-            true -> mpDatabase.getMoviePage(page)
+            true -> mpDatabase.getMoviePage(page)?.let { mapper.mapDataMoviePage(it) }
             else -> {
                 mpDatabase.clearMoviePagesStored()
                 null

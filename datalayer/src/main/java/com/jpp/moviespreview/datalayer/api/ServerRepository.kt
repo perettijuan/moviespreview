@@ -1,10 +1,11 @@
 package com.jpp.moviespreview.datalayer.api
 
-import com.jpp.moviespreview.datalayer.AppConfiguration
 import com.jpp.moviespreview.datalayer.BuildConfig
-import com.jpp.moviespreview.datalayer.MoviePage
-import com.jpp.moviespreview.datalayer.repository.ConfigurationRepository
-import com.jpp.moviespreview.datalayer.repository.MoviesRepository
+import com.jpp.moviespreview.datalayer.DataModelMapper
+import com.jpp.moviespreview.domainlayer.ImagesConfiguration
+import com.jpp.moviespreview.domainlayer.MoviePage
+import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
+import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -17,7 +18,8 @@ import retrofit2.converter.gson.GsonConverterFactory
  * to provide a single point of access to the API.
  * It hides the Retrofit implementation to the clients of the data layer.
  */
-class ServerRepository(private val serverApiKey: String)
+class ServerRepository(private val serverApiKey: String,
+                       private val mapper: DataModelMapper)
     : ConfigurationRepository,
         MoviesRepository {
 
@@ -36,23 +38,23 @@ class ServerRepository(private val serverApiKey: String)
         }
     }
 
-    override fun getConfiguration(): AppConfiguration? =
-        tryCatchOrReturnNull { API.getAppConfiguration(serverApiKey).execute().body() }
+    override fun getConfiguration(): ImagesConfiguration? =
+        tryCatchOrReturnNull { API.getAppConfiguration(serverApiKey).execute().body() }?.let { mapper.mapDataAppConfiguration(it) }
 
-    override fun updateAppConfiguration(appConfiguration: AppConfiguration) =
+    override fun updateAppConfiguration(imagesConfiguration: ImagesConfiguration) =
         throw UnsupportedOperationException("Updating AppConfiguration is not supported by the server")
 
     override fun getNowPlayingMoviePage(page: Int): MoviePage? =
-        tryCatchOrReturnNull { API.getNowPlaying(page, serverApiKey).execute().body() }
+        tryCatchOrReturnNull { API.getNowPlaying(page, serverApiKey).execute().body() }?.let { mapper.mapDataMoviePage(it) }
 
     override fun getPopularMoviePage(page: Int): MoviePage? =
-        tryCatchOrReturnNull { API.getPopular(page, serverApiKey).execute().body() }
+        tryCatchOrReturnNull { API.getPopular(page, serverApiKey).execute().body() }?.let { mapper.mapDataMoviePage(it) }
 
     override fun getTopRatedMoviePage(page: Int): MoviePage? =
-        tryCatchOrReturnNull { API.getTopRated(page, serverApiKey).execute().body() }
+        tryCatchOrReturnNull { API.getTopRated(page, serverApiKey).execute().body() }?.let { mapper.mapDataMoviePage(it) }
 
     override fun getUpcomingMoviePage(page: Int): MoviePage? =
-        tryCatchOrReturnNull { API.getUpcoming(page, serverApiKey).execute().body() }
+        tryCatchOrReturnNull { API.getUpcoming(page, serverApiKey).execute().body() }?.let { mapper.mapDataMoviePage(it) }
 
     override fun updateNowPlayingMoviePage(moviePage: MoviePage) =
         throw UnsupportedOperationException("Updating playing movies is not supported by the server")

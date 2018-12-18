@@ -1,6 +1,8 @@
 package com.jpp.moviespreview.datalayer.repository
 
-import com.jpp.moviespreview.datalayer.MoviePage
+
+import com.jpp.moviespreview.domainlayer.MoviePage
+import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
 
 class MoviesRepositoryImpl(private val cacheRepository: MoviesRepository,
                            private val serverRepository: MoviesRepository) : MoviesRepository {

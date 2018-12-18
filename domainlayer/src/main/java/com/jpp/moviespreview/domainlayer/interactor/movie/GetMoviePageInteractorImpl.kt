@@ -1,14 +1,13 @@
 package com.jpp.moviespreview.domainlayer.interactor.movie
 
-import com.jpp.moviespreview.datalayer.repository.MoviesRepository
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifier
 import com.jpp.moviespreview.domainlayer.MovieSection
 import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageInteractor
 import com.jpp.moviespreview.domainlayer.interactor.MoviePageParam
 import com.jpp.moviespreview.domainlayer.interactor.MoviePageResult
+import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
 
 class GetMoviePageInteractorImpl(private val moviesRepository: MoviesRepository,
-                                 private val mapper: MovieDomainMapper,
                                  private val connectivityVerifier: ConnectivityVerifier) : GetMoviePageInteractor {
 
 
@@ -20,7 +19,7 @@ class GetMoviePageInteractorImpl(private val moviesRepository: MoviesRepository,
                 MovieSection.TopRated -> moviesRepository.getTopRatedMoviePage(it.page)
                 MovieSection.Upcoming -> moviesRepository.getUpcomingMoviePage(it.page)
             }?.let { page ->
-                MoviePageResult.Success(mapper.mapDataPageToDomainPage(page))
+                MoviePageResult.Success(page)
             } ?: run {
                 when (connectivityVerifier.isConnectedToNetwork()) {
                     true -> MoviePageResult.ErrorUnknown

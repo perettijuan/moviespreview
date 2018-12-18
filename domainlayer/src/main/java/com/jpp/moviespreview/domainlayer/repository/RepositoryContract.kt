@@ -1,15 +1,16 @@
-package com.jpp.moviespreview.datalayer.repository
+package com.jpp.moviespreview.domainlayer.repository
 
-import com.jpp.moviespreview.datalayer.AppConfiguration
-import com.jpp.moviespreview.datalayer.MoviePage
+import com.jpp.moviespreview.domainlayer.ImagesConfiguration
+import com.jpp.moviespreview.domainlayer.MoviePage
+
 
 /**
- * Repository definition to retrieve the [AppConfiguration] from
+ * Repository definition to retrieve the [ImagesConfiguration] from
  * the data module.
  */
 interface ConfigurationRepository {
-    fun getConfiguration(): AppConfiguration?
-    fun updateAppConfiguration(appConfiguration: AppConfiguration)
+    fun getConfiguration(): ImagesConfiguration?
+    fun updateAppConfiguration(imagesConfiguration: ImagesConfiguration)
 }
 
 /**

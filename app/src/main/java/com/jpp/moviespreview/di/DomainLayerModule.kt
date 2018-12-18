@@ -1,8 +1,6 @@
 package com.jpp.moviespreview.di
 
 import android.content.Context
-import com.jpp.moviespreview.datalayer.repository.ConfigurationRepository
-import com.jpp.moviespreview.datalayer.repository.MoviesRepository
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifier
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifierImpl
 import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplicationInteractor
@@ -11,7 +9,8 @@ import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageInteractor
 import com.jpp.moviespreview.domainlayer.interactor.configuration.ConfigureApplicationInteractorImpl
 import com.jpp.moviespreview.domainlayer.interactor.movie.ConfigureMovieImagesInteractorImpl
 import com.jpp.moviespreview.domainlayer.interactor.movie.GetMoviePageInteractorImpl
-import com.jpp.moviespreview.domainlayer.interactor.movie.MovieDomainMapper
+import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
+import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -34,7 +33,7 @@ class DomainLayerModule {
     @Provides
     @Singleton
     fun providesGetMoviePageInteractor(moviesRepository: MoviesRepository, connectivityVerifier: ConnectivityVerifier)
-            : GetMoviePageInteractor = GetMoviePageInteractorImpl(moviesRepository, MovieDomainMapper(), connectivityVerifier)
+            : GetMoviePageInteractor = GetMoviePageInteractorImpl(moviesRepository, connectivityVerifier)
 
     @Provides
     @Singleton
