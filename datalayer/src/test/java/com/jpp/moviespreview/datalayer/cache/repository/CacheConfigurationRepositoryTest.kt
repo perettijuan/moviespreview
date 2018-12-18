@@ -1,9 +1,12 @@
 package com.jpp.moviespreview.datalayer.cache.repository
 
 import com.jpp.moviespreview.datalayer.AppConfiguration
+import com.jpp.moviespreview.datalayer.DataModelMapper
 import com.jpp.moviespreview.datalayer.cache.MPDataBase
 import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestamps
+import com.jpp.moviespreview.domainlayer.ImagesConfiguration
 import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
@@ -23,21 +26,26 @@ class CacheConfigurationRepositoryTest {
     private lateinit var mpCache: MPTimestamps
     @RelaxedMockK
     private lateinit var mpDatabase: MPDataBase
+    @MockK
+    private lateinit var mapper: DataModelMapper
 
     private lateinit var subject: CacheConfigurationRepository
 
+
     @BeforeEach
     fun setUp() {
-        subject = CacheConfigurationRepository(mpCache, mpDatabase)
+        subject = CacheConfigurationRepository(mpCache, mpDatabase, mapper)
     }
 
     @Test
     @DisplayName("Should retrieve data from DB when cache is valid ")
     fun getConfiguration_whenDataIsCached() {
-        val expected = mockk<AppConfiguration>()
+        val dataAppConfiguration = mockk<AppConfiguration>()
+        val expected = mockk<ImagesConfiguration>()
 
         every { mpCache.isAppConfigurationUpToDate() } returns true
-        every { mpDatabase.getStoredAppConfiguration() } returns expected
+        every { mpDatabase.getStoredAppConfiguration() } returns dataAppConfiguration
+        every { mapper.mapDataAppConfiguration(dataAppConfiguration) } returns expected
 
         val actual = subject.getConfiguration()
 
@@ -64,9 +72,12 @@ class CacheConfigurationRepositoryTest {
     @Test
     @DisplayName("Should update database and cache when updating app configuration")
     fun updateAppConfiguration() {
+        val domainImagesConfigMock = mockk<ImagesConfiguration>()
         val appConfigMock = mockk<AppConfiguration>()
 
-        subject.updateAppConfiguration(appConfigMock)
+        every { mapper.mapDomainImagesConfiguration(domainImagesConfigMock) } returns appConfigMock
+
+        subject.updateAppConfiguration(domainImagesConfigMock)
 
         verify { mpDatabase.updateAppConfiguration(appConfigMock) }
         verify { mpCache.updateAppConfigurationInserted() }

@@ -1,7 +1,8 @@
 package com.jpp.moviespreview.datalayer.repository
 
-import com.jpp.moviespreview.datalayer.MoviePage
+import com.jpp.moviespreview.domainlayer.MoviePage
 import com.jpp.moviespreview.datalayer.api.ServerRepository
+import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK

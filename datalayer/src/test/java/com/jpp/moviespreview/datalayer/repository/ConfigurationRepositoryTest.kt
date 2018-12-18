@@ -1,6 +1,7 @@
 package com.jpp.moviespreview.datalayer.repository
 
-import com.jpp.moviespreview.datalayer.AppConfiguration
+import com.jpp.moviespreview.domainlayer.ImagesConfiguration
+import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
@@ -9,7 +10,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -31,7 +31,7 @@ class ConfigurationRepositoryTest {
 
     @Test
     fun `Should never use server data when data is stored locally`() {
-        val expected = mockk<AppConfiguration>()
+        val expected = mockk<ImagesConfiguration>()
 
         every { dbRepository.getConfiguration() } returns expected
 
@@ -44,7 +44,7 @@ class ConfigurationRepositoryTest {
 
     @Test
     fun `Should retrieve data from server and update the local DB when data is not stored`() {
-        val expected = mockk<AppConfiguration>()
+        val expected = mockk<ImagesConfiguration>()
 
         every { dbRepository.getConfiguration() } returns null
         every { serverRepository.getConfiguration() } returns expected
