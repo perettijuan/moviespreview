@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.moviespreview.R
-import com.jpp.moviespreview.domainlayer.Movie
 import com.jpp.moviespreview.ext.getScreenSizeInPixels
+import com.jpp.moviespreview.ext.loadImageUrl
 import com.jpp.moviespreview.ext.setInvisible
 import com.jpp.moviespreview.ext.setVisible
 import dagger.android.support.AndroidSupportInjection
@@ -74,7 +74,7 @@ abstract class MoviesFragment : Fragment() {
          * Hook-up the LiveData that will be updated when the data source is created
          * and then update the adapter with the new data.
          */
-        viewModel.getMovieList(getMoviesSection(), getScreenSizeInPixels().x, getScreenSizeInPixels().x).observe(this, Observer<PagedList<Movie>> {
+        viewModel.getMovieList(getMoviesSection(), getScreenSizeInPixels().x, getScreenSizeInPixels().x).observe(this, Observer<PagedList<MovieItem>> {
             (moviesList.adapter as MoviesAdapter).submitList(it)
         })
 
@@ -121,7 +121,7 @@ abstract class MoviesFragment : Fragment() {
     abstract fun getMoviesSection(): UiMovieSection
 
 
-    class MoviesAdapter : PagedListAdapter<Movie, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {
+    class MoviesAdapter : PagedListAdapter<MovieItem, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.movie_list_item, parent, false))
@@ -132,26 +132,23 @@ abstract class MoviesFragment : Fragment() {
             }
         }
 
-
         class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 
-            fun bindMovie(movie: Movie) {
-                itemView.movieTitle.text = movie.title
-                itemView.movieOverview.text = movie.backdropPath
+            fun bindMovie(movie: MovieItem) {
+                itemView.movieListItemImage.loadImageUrl(movie.contentImageUrl)
             }
-
         }
     }
 
 
-    class MovieDiffCallback : DiffUtil.ItemCallback<Movie>() {
+    class MovieDiffCallback : DiffUtil.ItemCallback<MovieItem>() {
 
-        override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
-            return oldItem.id == newItem.id
+        override fun areItemsTheSame(oldItem: MovieItem, newItem: MovieItem): Boolean {
+            return oldItem.title == newItem.title
         }
 
-        override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
-            return oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: MovieItem, newItem: MovieItem): Boolean {
+            return oldItem.title == newItem.title
         }
     }
 

@@ -56,7 +56,7 @@ dependencies {
     kapt "androidx.lifecycle:lifecycle-compiler:2.0.0"
 
     // Paging library
-    implementation "androidx.paging:paging-runtime:2.1.0-beta01"
+    implementation deps.androidx.paging
 
     // Dagger
     def daggerVersion = '2.15'
@@ -64,6 +64,9 @@ dependencies {
     kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
     implementation "com.google.dagger:dagger:$daggerVersion"
     implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+
+    // image loading library Picasso
+    implementation "com.squareup.picasso:picasso:2.5.2"
 
 
     implementation project(path: ':domainlayer')
