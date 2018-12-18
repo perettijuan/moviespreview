@@ -8,9 +8,12 @@ import com.jpp.moviespreview.datalayer.cache.MPDataBaseImpl
 import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestamps
 import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestampsImpl
 import com.jpp.moviespreview.datalayer.cache.repository.CacheConfigurationRepository
+import com.jpp.moviespreview.datalayer.cache.repository.CacheMoviesRepository
 import com.jpp.moviespreview.datalayer.cache.room.RoomModelAdapter
 import com.jpp.moviespreview.datalayer.repository.ConfigurationRepository
 import com.jpp.moviespreview.datalayer.repository.ConfigurationRepositoryImpl
+import com.jpp.moviespreview.datalayer.repository.MoviesRepository
+import com.jpp.moviespreview.datalayer.repository.MoviesRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -23,13 +26,23 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun provideConfigurationRepository(dbConfigurationRepository: CacheConfigurationRepository, serverRepositoryImpl: ServerRepository)
+    fun providesConfigurationRepository(dbConfigurationRepository: CacheConfigurationRepository, serverRepositoryImpl: ServerRepository)
             : ConfigurationRepository = ConfigurationRepositoryImpl(dbConfigurationRepository, serverRepositoryImpl)
 
     @Singleton
     @Provides
-    fun providesDBConfigurationRepository(mpCache: MPTimestamps, mpDataBase: MPDataBase)
+    fun providesMoviesRepository(cacheMoviesRepository: CacheMoviesRepository, serverRepositoryImpl: ServerRepository)
+            : MoviesRepository = MoviesRepositoryImpl(cacheMoviesRepository, serverRepositoryImpl)
+
+    @Singleton
+    @Provides
+    fun providesCacheConfigurationRepository(mpCache: MPTimestamps, mpDataBase: MPDataBase)
             : CacheConfigurationRepository = CacheConfigurationRepository(mpCache, mpDataBase)
+
+    @Singleton
+    @Provides
+    fun providesCacheMovieRepository(mpCache: MPTimestamps, mpDatabase: MPDataBase)
+            : CacheMoviesRepository = CacheMoviesRepository(mpCache, mpDatabase)
 
     @Singleton
     @Provides

@@ -5,6 +5,12 @@
   android:layout_height="match_parent"
   android:orientation="vertical">
 
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/moviesList"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="invisible"/>
+
   <com.jpp.moviespreview.views.MPLoadingErrorView
     android:id="@+id/moviesLoadingErrorView"
     android:layout_width="0dp"

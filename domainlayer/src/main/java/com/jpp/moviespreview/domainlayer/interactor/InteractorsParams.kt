@@ -1,4 +1,4 @@
-package com.jpp.moviespreview.domainlayer.usecase
+package com.jpp.moviespreview.domainlayer.interactor
 
 import com.jpp.moviespreview.domainlayer.Movie
 import com.jpp.moviespreview.domainlayer.MovieSection
@@ -13,7 +13,7 @@ import com.jpp.moviespreview.domainlayer.MovieSection
 sealed class EmptyParam
 
 /**
- * Parameter to execute [GetMoviePageUseCase].
+ * Parameter to execute [GetMoviePageInteractor].
  *
  * [page] - the number of the page to retrieve.
  * [section] - the section of the movie pages to retrieve.
@@ -22,7 +22,7 @@ data class MoviePageParam(val page: Int, val section: MovieSection)
 
 
 /**
- * Parameter to execute [ConfigureMovieImagesUseCase].
+ * Parameter to execute [ConfigureMovieImagesInteractor].
  *
  * [movie] - the Movie that needs to be configured.
  * [backdropSize] - the target size of the backdrop image.

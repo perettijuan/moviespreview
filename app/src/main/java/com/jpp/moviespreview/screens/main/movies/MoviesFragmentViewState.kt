@@ -4,5 +4,5 @@ sealed class MoviesFragmentViewState {
     object Loading : MoviesFragmentViewState()
     object ErrorNoConnectivity : MoviesFragmentViewState()
     object ErrorUnknown : MoviesFragmentViewState()
-    object Configured: MoviesFragmentViewState()
+    object InitialPageLoaded : MoviesFragmentViewState()
 }

@@ -1,4 +1,4 @@
-package com.jpp.moviespreview.domainlayer.usecase.movie
+package com.jpp.moviespreview.domainlayer.interactor.movie
 
 import com.jpp.moviespreview.datalayer.MoviePage as DataMoviePage
 import com.jpp.moviespreview.datalayer.Movie as DataMovie

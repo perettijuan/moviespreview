@@ -1,16 +1,14 @@
-package com.jpp.moviespreview.domainlayer.usecase.movie
+package com.jpp.moviespreview.domainlayer.interactor.movie
 
 import com.jpp.moviespreview.datalayer.AppConfiguration
 import com.jpp.moviespreview.datalayer.ImagesConfiguration
 import com.jpp.moviespreview.datalayer.repository.ConfigurationRepository
 import com.jpp.moviespreview.domainlayer.Movie
-import com.jpp.moviespreview.domainlayer.usecase.ConfigureMovieImagesUseCase
-import com.jpp.moviespreview.domainlayer.usecase.MovieImagesParam
-import com.jpp.moviespreview.domainlayer.usecase.MovieImagesResult
+import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImagesInteractor
+import com.jpp.moviespreview.domainlayer.interactor.MovieImagesParam
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -19,7 +17,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
 @ExtendWith(MockKExtension::class)
-class ConfigureMovieImagesUseCaseTest {
+class ConfigureMovieImagesInteractorTest {
 
     data class ExecuteTestParameter(
             val case: String,
@@ -33,11 +31,11 @@ class ConfigureMovieImagesUseCaseTest {
 
     @MockK
     private lateinit var configRepository: ConfigurationRepository
-    private lateinit var subject: ConfigureMovieImagesUseCase
+    private lateinit var subject: ConfigureMovieImagesInteractor
 
     @BeforeEach
     fun setUp() {
-        subject = ConfigureMovieImagesUseCaseImpl(configRepository)
+        subject = ConfigureMovieImagesInteractorImpl(configRepository)
     }
 
 

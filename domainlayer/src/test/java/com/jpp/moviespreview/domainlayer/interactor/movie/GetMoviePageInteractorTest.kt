@@ -1,11 +1,11 @@
-package com.jpp.moviespreview.domainlayer.usecase.movie
+package com.jpp.moviespreview.domainlayer.interactor.movie
 
 import com.jpp.moviespreview.datalayer.repository.MoviesRepository
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifier
 import com.jpp.moviespreview.domainlayer.MovieSection
-import com.jpp.moviespreview.domainlayer.usecase.GetMoviePageUseCase
-import com.jpp.moviespreview.domainlayer.usecase.MoviePageParam
-import com.jpp.moviespreview.domainlayer.usecase.MoviePageResult
+import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageInteractor
+import com.jpp.moviespreview.domainlayer.interactor.MoviePageParam
+import com.jpp.moviespreview.domainlayer.interactor.MoviePageResult
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -21,7 +21,7 @@ import com.jpp.moviespreview.datalayer.MoviePage as DataMoviePage
 import com.jpp.moviespreview.domainlayer.MoviePage as DomainMoviePage
 
 @ExtendWith(MockKExtension::class)
-class GetMoviePageUseCaseTest {
+class GetMoviePageInteractorTest {
 
     data class ExecuteTestParameter(
             val moviePage: Int,
@@ -63,11 +63,11 @@ class GetMoviePageUseCaseTest {
     @MockK
     private lateinit var connectivityVerifier: ConnectivityVerifier
 
-    private lateinit var subject: GetMoviePageUseCase
+    private lateinit var subject: GetMoviePageInteractor
 
     @BeforeEach
     fun setUp() {
-        subject = GetMoviePageUseCaseImpl(moviesRepository, mapper, connectivityVerifier)
+        subject = GetMoviePageInteractorImpl(moviesRepository, mapper, connectivityVerifier)
     }
 
     @ParameterizedTest

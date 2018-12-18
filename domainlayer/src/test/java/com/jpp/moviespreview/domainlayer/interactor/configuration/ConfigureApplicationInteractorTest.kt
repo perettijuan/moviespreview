@@ -1,10 +1,10 @@
-package com.jpp.moviespreview.domainlayer.usecase.configuration
+package com.jpp.moviespreview.domainlayer.interactor.configuration
 
 import com.jpp.moviespreview.datalayer.AppConfiguration
 import com.jpp.moviespreview.datalayer.repository.ConfigurationRepository
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifier
-import com.jpp.moviespreview.domainlayer.usecase.ConfigureApplicationResult
-import com.jpp.moviespreview.domainlayer.usecase.ConfigureApplicationUseCase
+import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplicationResult
+import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplicationInteractor
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -17,7 +17,7 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
 @ExtendWith(MockKExtension::class)
-class ConfigureApplicationUseCaseTest {
+class ConfigureApplicationInteractorTest {
 
     companion object {
 
@@ -34,12 +34,12 @@ class ConfigureApplicationUseCaseTest {
     @MockK
     private lateinit var connectivityVerifier: ConnectivityVerifier
 
-    private lateinit var subject: ConfigureApplicationUseCase
+    private lateinit var subject: ConfigureApplicationInteractor
 
 
     @BeforeEach
     fun setUp() {
-        subject = ConfigureApplicationUseCaseImpl(configRepository, connectivityVerifier)
+        subject = ConfigureApplicationInteractorImpl(configRepository, connectivityVerifier)
     }
 
     @ParameterizedTest
