@@ -22,8 +22,7 @@ import javax.inject.Inject
  * Check [MoviesPagingDataSource] for a more detailed explanation of the architecture followed
  * in this case.
  */
-class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFactory: MoviesPagingDataSourceFactory,
-                                                  private val configureMovieImagesInteractor: ConfigureMovieImagesInteractor) : ViewModel() {
+class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFactory: MoviesPagingDataSourceFactory) : ViewModel() {
 
     private lateinit var viewState: LiveData<MoviesFragmentViewState>
 
@@ -61,14 +60,13 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
          * of MovieItem. configureMovieImagesInteractor.invoke() and the mapping to the UI item is being executed in the same background
          * thread that the factory assigns to the ds.
          */
-        pagedList = pagingDataSourceFactory.getMovieList(movieSectionMapper.invoke(currentSection)) { domainMovie ->
-            with(configureMovieImagesInteractor.invoke(MovieImagesParam(domainMovie, movieBackdropSize, moviePosterSize)).movie) {
-                MovieItem(headerImageUrl = backdropPath ?: "",
-                        title = title,
-                        contentImageUrl = posterPath ?: "",
-                        popularity = popularity.toString(),
-                        voteCount = voteCount.toString())
-            }
+        pagedList = pagingDataSourceFactory.getMovieList(movieSectionMapper(currentSection), movieBackdropSize, moviePosterSize) { domainMovie ->
+            MovieItem(headerImageUrl = domainMovie.backdropPath ?: "",
+                    title = domainMovie.title,
+                    contentImageUrl = domainMovie.posterPath ?: "",
+                    popularity = domainMovie.popularity.toString(),
+                    voteCount = domainMovie.voteCount.toString()
+            )
         }
 
 

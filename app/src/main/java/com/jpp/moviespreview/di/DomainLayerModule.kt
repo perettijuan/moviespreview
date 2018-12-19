@@ -5,9 +5,11 @@ import com.jpp.moviespreview.domainlayer.ConnectivityVerifier
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifierImpl
 import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplication
 import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImagesInteractor
+import com.jpp.moviespreview.domainlayer.interactor.GetConfiguredMoviePage
 import com.jpp.moviespreview.domainlayer.interactor.GetMoviePage
 import com.jpp.moviespreview.domainlayer.interactor.configuration.ConfigureApplicationImpl
 import com.jpp.moviespreview.domainlayer.interactor.movie.ConfigureMovieImagesInteractorImpl
+import com.jpp.moviespreview.domainlayer.interactor.movie.GetConfiguredMoviePageImpl
 import com.jpp.moviespreview.domainlayer.interactor.movie.GetMoviePageImpl
 import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
 import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
@@ -27,17 +29,22 @@ class DomainLayerModule {
 
     @Provides
     @Singleton
-    fun providesConfigureApplicationInteractor(configRepository: ConfigurationRepository, connectivityVerifier: ConnectivityVerifier)
+    fun providesConfigureApplication(configRepository: ConfigurationRepository, connectivityVerifier: ConnectivityVerifier)
             : ConfigureApplication = ConfigureApplicationImpl(configRepository, connectivityVerifier)
 
     @Provides
     @Singleton
-    fun providesGetMoviePageInteractor(moviesRepository: MoviesRepository, connectivityVerifier: ConnectivityVerifier)
+    fun providesGetMoviePage(moviesRepository: MoviesRepository, connectivityVerifier: ConnectivityVerifier)
             : GetMoviePage = GetMoviePageImpl(moviesRepository, connectivityVerifier)
 
     @Provides
     @Singleton
-    fun providesConfigureMovieImagesInteractor(configRepository: ConfigurationRepository)
+    fun providesConfigureMovieImages(configRepository: ConfigurationRepository)
             : ConfigureMovieImagesInteractor = ConfigureMovieImagesInteractorImpl(configRepository)
+
+    @Provides
+    @Singleton
+    fun providesGetConfiguredMoviePage(getMoviePage: GetMoviePage, configureMovieImages: ConfigureMovieImagesInteractor)
+            : GetConfiguredMoviePage = GetConfiguredMoviePageImpl(getMoviePage, configureMovieImages)
 
 }
