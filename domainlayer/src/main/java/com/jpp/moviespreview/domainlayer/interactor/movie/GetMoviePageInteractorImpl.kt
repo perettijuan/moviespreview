@@ -11,24 +11,22 @@ class GetMoviePageInteractorImpl(private val moviesRepository: MoviesRepository,
                                  private val connectivityVerifier: ConnectivityVerifier) : GetMoviePageInteractor {
 
 
-    override fun execute(parameter: MoviePageParam?): MoviePageResult {
-        return parameter?.let {
-            when (it.section) {
-                MovieSection.Playing -> moviesRepository.getNowPlayingMoviePage(it.page)
-                MovieSection.Popular -> moviesRepository.getPopularMoviePage(it.page)
-                MovieSection.TopRated -> moviesRepository.getTopRatedMoviePage(it.page)
-                MovieSection.Upcoming -> moviesRepository.getUpcomingMoviePage(it.page)
-            }.let { result ->
-                when (result) {
-                    is MoviesRepository.MoviesRepositoryOutput.Success -> MoviePageResult.Success(result.page)
-                    else -> {
-                        when (connectivityVerifier.isConnectedToNetwork()) {
-                            true -> MoviePageResult.ErrorUnknown
-                            else -> MoviePageResult.ErrorNoConnectivity
-                        }
+    override fun execute(parameter: MoviePageParam): MoviePageResult {
+        return when (parameter.section) {
+            MovieSection.Playing -> moviesRepository.getNowPlayingMoviePage(parameter.page)
+            MovieSection.Popular -> moviesRepository.getPopularMoviePage(parameter.page)
+            MovieSection.TopRated -> moviesRepository.getTopRatedMoviePage(parameter.page)
+            MovieSection.Upcoming -> moviesRepository.getUpcomingMoviePage(parameter.page)
+        }.let { result ->
+            when (result) {
+                is MoviesRepository.MoviesRepositoryOutput.Success -> MoviePageResult.Success(result.page)
+                else -> {
+                    when (connectivityVerifier.isConnectedToNetwork()) {
+                        true -> MoviePageResult.ErrorUnknown
+                        else -> MoviePageResult.ErrorNoConnectivity
                     }
                 }
             }
-        } ?: MoviePageResult.BadParams("MoviePageParam can not be null at this point")
+        }
     }
 }

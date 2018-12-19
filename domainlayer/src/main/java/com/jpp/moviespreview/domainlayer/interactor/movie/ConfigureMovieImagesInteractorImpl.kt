@@ -8,22 +8,20 @@ import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
 
 class ConfigureMovieImagesInteractorImpl(private val configRepository: ConfigurationRepository) : ConfigureMovieImagesInteractor {
 
-    override fun execute(parameter: MovieImagesParam?): MovieImagesResult {
-        return parameter?.let {
-            configRepository.getConfiguration().let { appConfig ->
-                when (appConfig) {
-                    ConfigurationRepository.ConfigurationRepositoryOutput.Error -> MovieImagesResult(parameter.movie)
-                    is ConfigurationRepository.ConfigurationRepositoryOutput.Success -> {
-                        with(parameter.movie) {
-                            MovieImagesResult(copy(
-                                    posterPath = createUrlForPath(posterPath, appConfig.config.baseUrl, appConfig.config.posterSizes, parameter.posterSize),
-                                    backdropPath = createUrlForPath(backdropPath, appConfig.config.baseUrl, appConfig.config.backdropSizes, parameter.backdropSize)
-                            ))
-                        }
+    override fun execute(parameter: MovieImagesParam): MovieImagesResult {
+        return configRepository.getConfiguration().let { appConfig ->
+            when (appConfig) {
+                ConfigurationRepository.ConfigurationRepositoryOutput.Error -> MovieImagesResult(parameter.movie)
+                is ConfigurationRepository.ConfigurationRepositoryOutput.Success -> {
+                    with(parameter.movie) {
+                        MovieImagesResult(copy(
+                                posterPath = createUrlForPath(posterPath, appConfig.config.baseUrl, appConfig.config.posterSizes, parameter.posterSize),
+                                backdropPath = createUrlForPath(backdropPath, appConfig.config.baseUrl, appConfig.config.backdropSizes, parameter.backdropSize)
+                        ))
                     }
                 }
             }
-        } ?: throw IllegalArgumentException("The provided parameter can not be null")
+        }
     }
 
     private fun createUrlForPath(original: String?, baseUrl: String, sizes: List<String>, targetSize: Int): String? {

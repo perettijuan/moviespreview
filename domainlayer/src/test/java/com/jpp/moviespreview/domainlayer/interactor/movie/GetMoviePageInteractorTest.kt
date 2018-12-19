@@ -120,11 +120,4 @@ class GetMoviePageInteractorTest {
         assertEquals(testParam.expectedResult, actual)
         verify(exactly = 1) { moviesRepository.getUpcomingMoviePage(param.page) }
     }
-
-    @Test
-    fun `execute no params`() {
-        val actual = subject.invoke()
-        assertEquals(MoviePageResult.BadParams("MoviePageParam can not be null at this point"), actual)
-    }
-
 }

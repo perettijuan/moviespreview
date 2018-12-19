@@ -23,7 +23,6 @@ sealed class MoviePageResult {
     object ErrorNoConnectivity : MoviePageResult()
     object ErrorUnknown : MoviePageResult()
     data class Success(val moviePage: MoviePage) : MoviePageResult()
-    data class BadParams(val message: String) : MoviePageResult()
 }
 
 /**
@@ -38,5 +37,4 @@ sealed class ConfiguredMoviePageResult {
     object ErrorNoConnectivity : ConfiguredMoviePageResult()
     object ErrorUnknown : ConfiguredMoviePageResult()
     data class Success(val moviePage: MoviePage) : ConfiguredMoviePageResult()
-    data class BadParams(val message: String) : ConfiguredMoviePageResult()
 }
