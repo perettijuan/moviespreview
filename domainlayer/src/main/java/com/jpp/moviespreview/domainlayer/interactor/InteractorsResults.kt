@@ -26,7 +26,7 @@ sealed class MoviePageResult {
 }
 
 /**
- * Represents the result of [ConfigureMovieImagesInteractor].
+ * Represents the result of [ConfigureMovieImages].
  */
 data class MovieImagesResult(val movie: Movie)
 

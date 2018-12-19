@@ -34,7 +34,7 @@ interface GetMoviePage : Interactor<MoviePageParam, MoviePageResult>
  * [MovieImagesParam] indicates the Movie and the target sizes.
  * [MovieImagesResult] contains the Movie already configured.
  */
-interface ConfigureMovieImagesInteractor : Interactor<MovieImagesParam, MovieImagesResult>
+interface ConfigureMovieImages : Interactor<MovieImagesParam, MovieImagesResult>
 
 
 /**

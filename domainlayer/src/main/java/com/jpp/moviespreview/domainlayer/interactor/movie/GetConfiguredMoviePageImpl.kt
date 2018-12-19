@@ -8,7 +8,7 @@ import com.jpp.moviespreview.domainlayer.interactor.*
  * AN INTERACTOR OF GENERAL PURPOSE IN ORDER TO SIMPLIFY THE CLIENT CODE.
  */
 class GetConfiguredMoviePageImpl(private val getMoviePage: GetMoviePage,
-                                 private val configureMovie: ConfigureMovieImagesInteractor) : GetConfiguredMoviePage {
+                                 private val configureMovie: ConfigureMovieImages) : GetConfiguredMoviePage {
 
     override fun execute(parameter: ConfiguredMoviePageParam): ConfiguredMoviePageResult {
         return getMoviePage(MoviePageParam(parameter.page, parameter.section)).let {

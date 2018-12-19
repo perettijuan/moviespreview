@@ -3,7 +3,7 @@ package com.jpp.moviespreview.domainlayer.interactor.movie
 
 import com.jpp.moviespreview.domainlayer.ImagesConfiguration
 import com.jpp.moviespreview.domainlayer.Movie
-import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImagesInteractor
+import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImages
 import com.jpp.moviespreview.domainlayer.interactor.MovieImagesParam
 import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
 import io.mockk.every
@@ -17,7 +17,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
 @ExtendWith(MockKExtension::class)
-class ConfigureMovieImagesInteractorTest {
+class ConfigureMovieImagesTest {
 
     data class ExecuteTestParameter(
             val case: String,
@@ -31,11 +31,11 @@ class ConfigureMovieImagesInteractorTest {
 
     @MockK
     private lateinit var configRepository: ConfigurationRepository
-    private lateinit var subject: ConfigureMovieImagesInteractor
+    private lateinit var subject: ConfigureMovieImages
 
     @BeforeEach
     fun setUp() {
-        subject = ConfigureMovieImagesInteractorImpl(configRepository)
+        subject = ConfigureMovieImagesImpl(configRepository)
     }
 
 

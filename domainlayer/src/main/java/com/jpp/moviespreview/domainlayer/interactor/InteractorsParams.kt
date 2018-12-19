@@ -22,7 +22,7 @@ data class MoviePageParam(val page: Int, val section: MovieSection)
 
 
 /**
- * Parameter to execute [ConfigureMovieImagesInteractor].
+ * Parameter to execute [ConfigureMovieImages].
  *
  * [movie] - the Movie that needs to be configured.
  * [backdropSize] - the target size of the backdrop image.
