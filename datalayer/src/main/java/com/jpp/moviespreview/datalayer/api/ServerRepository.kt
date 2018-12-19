@@ -45,16 +45,16 @@ class ServerRepository(private val serverApiKey: String,
     override fun updateAppConfiguration(imagesConfiguration: ImagesConfiguration) =
         throw UnsupportedOperationException("Updating AppConfiguration is not supported by the server")
 
-    override fun getNowPlayingMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult =
+    override fun getNowPlayingMoviePage(page: Int): MoviesRepository.MoviesRepositoryOutput =
         getMoviePage { API.getNowPlaying(page, serverApiKey).execute().body() }
 
-    override fun getPopularMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult =
+    override fun getPopularMoviePage(page: Int): MoviesRepository.MoviesRepositoryOutput =
         getMoviePage { API.getPopular(page, serverApiKey).execute().body() }
 
-    override fun getTopRatedMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult =
+    override fun getTopRatedMoviePage(page: Int): MoviesRepository.MoviesRepositoryOutput =
         getMoviePage { API.getTopRated(page, serverApiKey).execute().body() }
 
-    override fun getUpcomingMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult =
+    override fun getUpcomingMoviePage(page: Int): MoviesRepository.MoviesRepositoryOutput =
         getMoviePage { API.getUpcoming(page, serverApiKey).execute().body() }
 
     override fun updateNowPlayingMoviePage(moviePage: MoviePage) =
@@ -74,10 +74,10 @@ class ServerRepository(private val serverApiKey: String,
      * Support method to encapsulate the movie retrieval logic. It receives a function as parameter that
      * takes care of executing the API call.
      */
-    private fun getMoviePage(apiCall: () -> DataMoviePage?): MoviesRepository.MoviesRepositoryResult =
+    private fun getMoviePage(apiCall: () -> DataMoviePage?): MoviesRepository.MoviesRepositoryOutput =
         tryCatchOrReturnNull { apiCall.invoke() }
-                ?.let { MoviesRepository.MoviesRepositoryResult.Success(mapper.mapDataMoviePage(it)) }
-                ?: run { MoviesRepository.MoviesRepositoryResult.Error }
+                ?.let { MoviesRepository.MoviesRepositoryOutput.Success(mapper.mapDataMoviePage(it)) }
+                ?: run { MoviesRepository.MoviesRepositoryOutput.Error }
 
 
     /**

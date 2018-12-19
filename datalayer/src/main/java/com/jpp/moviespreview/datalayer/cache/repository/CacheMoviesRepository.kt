@@ -15,13 +15,13 @@ class CacheMoviesRepository(private val mpCache: MPTimestamps,
                             private val mpDatabase: MPDataBase,
                             private val mapper: DataModelMapper) : MoviesRepository {
 
-    override fun getNowPlayingMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult = getMoviePageOrClearDataBaseIfNeeded(MovieType.NowPlaying, page)
+    override fun getNowPlayingMoviePage(page: Int): MoviesRepository.MoviesRepositoryOutput = getMoviePageOrClearDataBaseIfNeeded(MovieType.NowPlaying, page)
 
-    override fun getPopularMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult = getMoviePageOrClearDataBaseIfNeeded(MovieType.Popular, page)
+    override fun getPopularMoviePage(page: Int): MoviesRepository.MoviesRepositoryOutput = getMoviePageOrClearDataBaseIfNeeded(MovieType.Popular, page)
 
-    override fun getTopRatedMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult = getMoviePageOrClearDataBaseIfNeeded(MovieType.TopRated, page)
+    override fun getTopRatedMoviePage(page: Int): MoviesRepository.MoviesRepositoryOutput = getMoviePageOrClearDataBaseIfNeeded(MovieType.TopRated, page)
 
-    override fun getUpcomingMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult = getMoviePageOrClearDataBaseIfNeeded(MovieType.Upcoming, page)
+    override fun getUpcomingMoviePage(page: Int): MoviesRepository.MoviesRepositoryOutput = getMoviePageOrClearDataBaseIfNeeded(MovieType.Upcoming, page)
 
     override fun updateNowPlayingMoviePage(moviePage: MoviePage) = updateMoviePage(MovieType.NowPlaying, moviePage)
 
@@ -49,14 +49,14 @@ class CacheMoviesRepository(private val mpCache: MPTimestamps,
      * Verifies if the data stored in the database is valid (based on the timestamp) and retrieves it
      * if it is. If it is not valid, it clears the local storage in order to keep the database clean.
      */
-    private fun getMoviePageOrClearDataBaseIfNeeded(movieType: MovieType, page: Int): MoviesRepository.MoviesRepositoryResult {
+    private fun getMoviePageOrClearDataBaseIfNeeded(movieType: MovieType, page: Int): MoviesRepository.MoviesRepositoryOutput {
         return when (shouldRetrieveMoviePage(movieType)) {
             true -> mpDatabase.getMoviePage(page)
-                    ?.let { MoviesRepository.MoviesRepositoryResult.Success(mapper.mapDataMoviePage(it)) }
-                    ?: run { MoviesRepository.MoviesRepositoryResult.Error }
+                    ?.let { MoviesRepository.MoviesRepositoryOutput.Success(mapper.mapDataMoviePage(it)) }
+                    ?: run { MoviesRepository.MoviesRepositoryOutput.Error }
             else -> {
                 mpDatabase.clearMoviePagesStored()
-                MoviesRepository.MoviesRepositoryResult.Error
+                MoviesRepository.MoviesRepositoryOutput.Error
             }
         }
     }

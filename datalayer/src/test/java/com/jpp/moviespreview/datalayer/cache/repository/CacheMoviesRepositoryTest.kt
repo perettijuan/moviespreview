@@ -32,7 +32,7 @@ class CacheMoviesRepositoryTest {
             val getMoviePageTimes: Int,
             val dataMoviePage: DataMoviePage?,
             val domainMoviePage: DomainMoviePage?,
-            val expectedResult: MoviesRepository.MoviesRepositoryResult
+            val expectedResult: MoviesRepository.MoviesRepositoryOutput
     )
 
     companion object {
@@ -51,7 +51,7 @@ class CacheMoviesRepositoryTest {
                         getMoviePageTimes = 1,
                         dataMoviePage = dataPageMock,
                         domainMoviePage = domainPageMock,
-                        expectedResult = MoviesRepository.MoviesRepositoryResult.Success(domainPageMock)
+                        expectedResult = MoviesRepository.MoviesRepositoryOutput.Success(domainPageMock)
                 ),
                 GetMoviePageParameter(
                         caseName = "MovieType stored in DB and invalid cache",
@@ -62,7 +62,7 @@ class CacheMoviesRepositoryTest {
                         getMoviePageTimes = 0,
                         dataMoviePage = null,
                         domainMoviePage = null,
-                        expectedResult = MoviesRepository.MoviesRepositoryResult.Error
+                        expectedResult = MoviesRepository.MoviesRepositoryOutput.Error
                 ),
                 GetMoviePageParameter(
                         caseName = "MovieType not stored in DB and invalid cache",
@@ -73,7 +73,7 @@ class CacheMoviesRepositoryTest {
                         getMoviePageTimes = 0,
                         dataMoviePage = null,
                         domainMoviePage = null,
-                        expectedResult = MoviesRepository.MoviesRepositoryResult.Error
+                        expectedResult = MoviesRepository.MoviesRepositoryOutput.Error
                 )
         )
     }

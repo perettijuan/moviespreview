@@ -20,7 +20,7 @@ class GetMoviePageInteractorImpl(private val moviesRepository: MoviesRepository,
                 MovieSection.Upcoming -> moviesRepository.getUpcomingMoviePage(it.page)
             }.let { result ->
                 when (result) {
-                    is MoviesRepository.MoviesRepositoryResult.Success -> MoviePageResult.Success(result.page)
+                    is MoviesRepository.MoviesRepositoryOutput.Success -> MoviePageResult.Success(result.page)
                     else -> {
                         when (connectivityVerifier.isConnectedToNetwork()) {
                             true -> MoviePageResult.ErrorUnknown

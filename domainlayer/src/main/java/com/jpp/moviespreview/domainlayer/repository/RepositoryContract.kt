@@ -9,6 +9,9 @@ import com.jpp.moviespreview.domainlayer.MoviePage
  * the data module.
  */
 interface ConfigurationRepository {
+
+
+
     fun getConfiguration(): ImagesConfiguration?
     fun updateAppConfiguration(imagesConfiguration: ImagesConfiguration)
 }
@@ -18,15 +21,15 @@ interface ConfigurationRepository {
  */
 interface MoviesRepository {
 
-    sealed class MoviesRepositoryResult {
-        object Error : MoviesRepositoryResult()
-        data class Success(val page: MoviePage) : MoviesRepositoryResult()
+    sealed class MoviesRepositoryOutput {
+        object Error : MoviesRepositoryOutput()
+        data class Success(val page: MoviePage) : MoviesRepositoryOutput()
     }
 
-    fun getNowPlayingMoviePage(page: Int): MoviesRepositoryResult
-    fun getPopularMoviePage(page: Int): MoviesRepositoryResult
-    fun getTopRatedMoviePage(page: Int): MoviesRepositoryResult
-    fun getUpcomingMoviePage(page: Int): MoviesRepositoryResult
+    fun getNowPlayingMoviePage(page: Int): MoviesRepositoryOutput
+    fun getPopularMoviePage(page: Int): MoviesRepositoryOutput
+    fun getTopRatedMoviePage(page: Int): MoviesRepositoryOutput
+    fun getUpcomingMoviePage(page: Int): MoviesRepositoryOutput
     fun updateNowPlayingMoviePage(moviePage: MoviePage)
     fun updatePopularMoviePage(moviePage: MoviePage)
     fun updateTopRatedMoviePage(moviePage: MoviePage)

@@ -24,9 +24,9 @@ class MoviesRepositoryTest {
             val dbRepositoryCallTimes: Int,
             val serverRepositoryCallTimes: Int,
             val updateDbCallTimes: Int,
-            val dbResult: MoviesRepository.MoviesRepositoryResult,
-            val serverResult: MoviesRepository.MoviesRepositoryResult,
-            val expectedResult: MoviesRepository.MoviesRepositoryResult
+            val dbResult: MoviesRepository.MoviesRepositoryOutput,
+            val serverResult: MoviesRepository.MoviesRepositoryOutput,
+            val expectedResult: MoviesRepository.MoviesRepositoryOutput
     )
 
     companion object {
@@ -41,9 +41,9 @@ class MoviesRepositoryTest {
                         dbRepositoryCallTimes = 1,
                         serverRepositoryCallTimes = 0,
                         updateDbCallTimes = 0,
-                        dbResult = MoviesRepository.MoviesRepositoryResult.Success(resultPageMock),
-                        serverResult = MoviesRepository.MoviesRepositoryResult.Error,
-                        expectedResult = MoviesRepository.MoviesRepositoryResult.Success(resultPageMock)
+                        dbResult = MoviesRepository.MoviesRepositoryOutput.Success(resultPageMock),
+                        serverResult = MoviesRepository.MoviesRepositoryOutput.Error,
+                        expectedResult = MoviesRepository.MoviesRepositoryOutput.Success(resultPageMock)
                 ),
                 ExecuteTestParameter(
                         caseName = "Data retrieved from server",
@@ -51,9 +51,9 @@ class MoviesRepositoryTest {
                         dbRepositoryCallTimes = 1,
                         serverRepositoryCallTimes = 1,
                         updateDbCallTimes = 1,
-                        dbResult = MoviesRepository.MoviesRepositoryResult.Error,
-                        serverResult = MoviesRepository.MoviesRepositoryResult.Success(resultPageMock),
-                        expectedResult = MoviesRepository.MoviesRepositoryResult.Success(resultPageMock)
+                        dbResult = MoviesRepository.MoviesRepositoryOutput.Error,
+                        serverResult = MoviesRepository.MoviesRepositoryOutput.Success(resultPageMock),
+                        expectedResult = MoviesRepository.MoviesRepositoryOutput.Success(resultPageMock)
                 ),
                 ExecuteTestParameter(
                         caseName = "Fails to retrieve from server",
@@ -61,9 +61,9 @@ class MoviesRepositoryTest {
                         dbRepositoryCallTimes = 1,
                         serverRepositoryCallTimes = 1,
                         updateDbCallTimes = 0,
-                        dbResult = MoviesRepository.MoviesRepositoryResult.Error,
-                        serverResult = MoviesRepository.MoviesRepositoryResult.Error,
-                        expectedResult = MoviesRepository.MoviesRepositoryResult.Error
+                        dbResult = MoviesRepository.MoviesRepositoryOutput.Error,
+                        serverResult = MoviesRepository.MoviesRepositoryOutput.Error,
+                        expectedResult = MoviesRepository.MoviesRepositoryOutput.Error
                 )
         )
     }
@@ -93,7 +93,7 @@ class MoviesRepositoryTest {
         verify(exactly = testParam.serverRepositoryCallTimes) { serverRepository.getNowPlayingMoviePage(testParam.page) }
         assertEquals(testParam.expectedResult, actual, testParam.caseName)
 
-        if (testParam.serverResult is MoviesRepository.MoviesRepositoryResult.Success) {
+        if (testParam.serverResult is MoviesRepository.MoviesRepositoryOutput.Success) {
             verify(exactly = testParam.updateDbCallTimes) { dbRepository.updateNowPlayingMoviePage(testParam.serverResult.page) }
         }
     }
@@ -110,7 +110,7 @@ class MoviesRepositoryTest {
         verify(exactly = testParam.serverRepositoryCallTimes) { serverRepository.getPopularMoviePage(testParam.page) }
         assertEquals(testParam.expectedResult, actual, testParam.caseName)
 
-        if (testParam.serverResult is MoviesRepository.MoviesRepositoryResult.Success) {
+        if (testParam.serverResult is MoviesRepository.MoviesRepositoryOutput.Success) {
             verify(exactly = testParam.updateDbCallTimes) { dbRepository.updatePopularMoviePage(testParam.serverResult.page) }
         }
     }
@@ -127,7 +127,7 @@ class MoviesRepositoryTest {
         verify(exactly = testParam.serverRepositoryCallTimes) { serverRepository.getTopRatedMoviePage(testParam.page) }
         assertEquals(testParam.expectedResult, actual, testParam.caseName)
 
-        if (testParam.serverResult is MoviesRepository.MoviesRepositoryResult.Success) {
+        if (testParam.serverResult is MoviesRepository.MoviesRepositoryOutput.Success) {
             verify(exactly = testParam.updateDbCallTimes) { dbRepository.updateTopRatedMoviePage(testParam.serverResult.page) }
         }
     }
@@ -144,7 +144,7 @@ class MoviesRepositoryTest {
         verify(exactly = testParam.serverRepositoryCallTimes) { serverRepository.getUpcomingMoviePage(testParam.page) }
         assertEquals(testParam.expectedResult, actual, testParam.caseName)
 
-        if (testParam.serverResult is MoviesRepository.MoviesRepositoryResult.Success) {
+        if (testParam.serverResult is MoviesRepository.MoviesRepositoryOutput.Success) {
             verify(exactly = testParam.updateDbCallTimes) { dbRepository.updateUpcomingMoviePage(testParam.serverResult.page) }
         }
     }
