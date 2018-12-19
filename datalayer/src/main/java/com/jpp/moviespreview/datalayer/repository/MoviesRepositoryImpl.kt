@@ -7,7 +7,7 @@ import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
 class MoviesRepositoryImpl(private val cacheRepository: MoviesRepository,
                            private val serverRepository: MoviesRepository) : MoviesRepository {
 
-    override fun getNowPlayingMoviePage(page: Int): MoviePage? {
+    override fun getNowPlayingMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult {
         return getMoviePage(page = page,
                 dbFunction = { cacheRepository.getNowPlayingMoviePage(it) },
                 serverFunction = { serverRepository.getNowPlayingMoviePage(it) },
@@ -15,7 +15,7 @@ class MoviesRepositoryImpl(private val cacheRepository: MoviesRepository,
         )
     }
 
-    override fun getPopularMoviePage(page: Int): MoviePage? {
+    override fun getPopularMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult {
         return getMoviePage(page = page,
                 dbFunction = { cacheRepository.getPopularMoviePage(it) },
                 serverFunction = { serverRepository.getPopularMoviePage(it) },
@@ -23,7 +23,7 @@ class MoviesRepositoryImpl(private val cacheRepository: MoviesRepository,
         )
     }
 
-    override fun getTopRatedMoviePage(page: Int): MoviePage? {
+    override fun getTopRatedMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult {
         return getMoviePage(page = page,
                 dbFunction = { cacheRepository.getTopRatedMoviePage(it) },
                 serverFunction = { serverRepository.getTopRatedMoviePage(it) },
@@ -31,7 +31,7 @@ class MoviesRepositoryImpl(private val cacheRepository: MoviesRepository,
         )
     }
 
-    override fun getUpcomingMoviePage(page: Int): MoviePage? {
+    override fun getUpcomingMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult {
         return getMoviePage(page = page,
                 dbFunction = { cacheRepository.getUpcomingMoviePage(it) },
                 serverFunction = { serverRepository.getUpcomingMoviePage(it) },
@@ -63,9 +63,19 @@ class MoviesRepositoryImpl(private val cacheRepository: MoviesRepository,
      * using [updateFunction] if the execution is successful.
      */
     private fun getMoviePage(page: Int,
-                             dbFunction: (Int) -> MoviePage?,
-                             serverFunction: (Int) -> MoviePage?,
-                             updateFunction: (MoviePage) -> Unit): MoviePage? {
-        return dbFunction.invoke(page) ?: serverFunction.invoke(page)?.apply(updateFunction)
+                             dbFunction: (Int) -> MoviesRepository.MoviesRepositoryResult,
+                             serverFunction: (Int) -> MoviesRepository.MoviesRepositoryResult,
+                             updateFunction: (MoviePage) -> Unit): MoviesRepository.MoviesRepositoryResult {
+
+        return with(dbFunction(page)) {
+            when (this) {
+                is MoviesRepository.MoviesRepositoryResult.Success -> this
+                else -> serverFunction(page).apply {
+                    if (this is MoviesRepository.MoviesRepositoryResult.Success) {
+                        updateFunction(this.page)
+                    }
+                }
+            }
+        }
     }
 }

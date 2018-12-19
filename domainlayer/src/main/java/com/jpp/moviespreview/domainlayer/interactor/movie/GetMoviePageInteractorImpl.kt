@@ -18,12 +18,15 @@ class GetMoviePageInteractorImpl(private val moviesRepository: MoviesRepository,
                 MovieSection.Popular -> moviesRepository.getPopularMoviePage(it.page)
                 MovieSection.TopRated -> moviesRepository.getTopRatedMoviePage(it.page)
                 MovieSection.Upcoming -> moviesRepository.getUpcomingMoviePage(it.page)
-            }?.let { page ->
-                MoviePageResult.Success(page)
-            } ?: run {
-                when (connectivityVerifier.isConnectedToNetwork()) {
-                    true -> MoviePageResult.ErrorUnknown
-                    else -> MoviePageResult.ErrorNoConnectivity
+            }.let { result ->
+                when (result) {
+                    is MoviesRepository.MoviesRepositoryResult.Success -> MoviePageResult.Success(result.page)
+                    else -> {
+                        when (connectivityVerifier.isConnectedToNetwork()) {
+                            true -> MoviePageResult.ErrorUnknown
+                            else -> MoviePageResult.ErrorNoConnectivity
+                        }
+                    }
                 }
             }
         } ?: MoviePageResult.BadParams("MoviePageParam can not be null at this point")

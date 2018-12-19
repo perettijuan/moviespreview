@@ -25,7 +25,7 @@ class GetMoviePageInteractorTest {
 
     data class ExecuteTestParameter(
             val moviePage: Int,
-            val resultDomainPage: DomainMoviePage? = null,
+            val resultDomainPage: MoviesRepository.MoviesRepositoryResult,
             val connectedToNetwork: Boolean = true,
             val expectedResult: MoviePageResult
     )
@@ -38,16 +38,18 @@ class GetMoviePageInteractorTest {
         fun executeParameters() = listOf(
                 ExecuteTestParameter(
                         moviePage = 1,
-                        resultDomainPage = resultDomainPageMock,
+                        resultDomainPage =  MoviesRepository.MoviesRepositoryResult.Success(resultDomainPageMock),
                         expectedResult = MoviePageResult.Success(resultDomainPageMock)
                 ),
                 ExecuteTestParameter(
                         moviePage = 1,
+                        resultDomainPage =  MoviesRepository.MoviesRepositoryResult.Error,
                         connectedToNetwork = true,
                         expectedResult = MoviePageResult.ErrorUnknown
                 ),
                 ExecuteTestParameter(
                         moviePage = 1,
+                        resultDomainPage =  MoviesRepository.MoviesRepositoryResult.Error,
                         connectedToNetwork = false,
                         expectedResult = MoviePageResult.ErrorNoConnectivity
                 )

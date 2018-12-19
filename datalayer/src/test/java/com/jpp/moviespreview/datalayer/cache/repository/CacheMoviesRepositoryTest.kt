@@ -4,6 +4,7 @@ import com.jpp.moviespreview.datalayer.DataModelMapper
 import com.jpp.moviespreview.datalayer.cache.MPDataBase
 import com.jpp.moviespreview.datalayer.cache.MovieType
 import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestamps
+import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
@@ -30,7 +31,8 @@ class CacheMoviesRepositoryTest {
             val dbClearTimes: Int,
             val getMoviePageTimes: Int,
             val dataMoviePage: DataMoviePage?,
-            val expectedResult: DomainMoviePage?
+            val domainMoviePage: DomainMoviePage?,
+            val expectedResult: MoviesRepository.MoviesRepositoryResult
     )
 
     companion object {
@@ -48,7 +50,8 @@ class CacheMoviesRepositoryTest {
                         dbClearTimes = 0,
                         getMoviePageTimes = 1,
                         dataMoviePage = dataPageMock,
-                        expectedResult = domainPageMock
+                        domainMoviePage = domainPageMock,
+                        expectedResult = MoviesRepository.MoviesRepositoryResult.Success(domainPageMock)
                 ),
                 GetMoviePageParameter(
                         caseName = "MovieType stored in DB and invalid cache",
@@ -58,7 +61,8 @@ class CacheMoviesRepositoryTest {
                         dbClearTimes = 1,
                         getMoviePageTimes = 0,
                         dataMoviePage = null,
-                        expectedResult = null
+                        domainMoviePage = null,
+                        expectedResult = MoviesRepository.MoviesRepositoryResult.Error
                 ),
                 GetMoviePageParameter(
                         caseName = "MovieType not stored in DB and invalid cache",
@@ -68,7 +72,8 @@ class CacheMoviesRepositoryTest {
                         dbClearTimes = 1,
                         getMoviePageTimes = 0,
                         dataMoviePage = null,
-                        expectedResult = null
+                        domainMoviePage = null,
+                        expectedResult = MoviesRepository.MoviesRepositoryResult.Error
                 )
         )
     }
@@ -93,10 +98,9 @@ class CacheMoviesRepositoryTest {
         every { mpDatabase.isCurrentMovieTypeStored(MovieType.NowPlaying) } returns param.isCurrentMovieTypeStored
         every { mpCache.areMoviesUpToDate() } returns param.areMoviesUpToDate
         every { mpDatabase.getMoviePage(param.page) } returns param.dataMoviePage
-        if (param.dataMoviePage != null && param.expectedResult != null) {
-            every { mapper.mapDataMoviePage(param.dataMoviePage) } returns param.expectedResult
+        if (param.dataMoviePage != null && param.domainMoviePage != null) {
+            every { mapper.mapDataMoviePage(param.dataMoviePage) } returns param.domainMoviePage
         }
-
 
         val actual = subject.getNowPlayingMoviePage(param.page)
 
@@ -111,8 +115,8 @@ class CacheMoviesRepositoryTest {
         every { mpDatabase.isCurrentMovieTypeStored(MovieType.Popular) } returns param.isCurrentMovieTypeStored
         every { mpCache.areMoviesUpToDate() } returns param.areMoviesUpToDate
         every { mpDatabase.getMoviePage(param.page) } returns param.dataMoviePage
-        if (param.dataMoviePage != null && param.expectedResult != null) {
-            every { mapper.mapDataMoviePage(param.dataMoviePage) } returns param.expectedResult
+        if (param.dataMoviePage != null && param.domainMoviePage != null) {
+            every { mapper.mapDataMoviePage(param.dataMoviePage) } returns param.domainMoviePage
         }
 
         val actual = subject.getPopularMoviePage(param.page)
@@ -128,8 +132,8 @@ class CacheMoviesRepositoryTest {
         every { mpDatabase.isCurrentMovieTypeStored(MovieType.TopRated) } returns param.isCurrentMovieTypeStored
         every { mpCache.areMoviesUpToDate() } returns param.areMoviesUpToDate
         every { mpDatabase.getMoviePage(param.page) } returns param.dataMoviePage
-        if (param.dataMoviePage != null && param.expectedResult != null) {
-            every { mapper.mapDataMoviePage(param.dataMoviePage) } returns param.expectedResult
+        if (param.dataMoviePage != null && param.domainMoviePage != null) {
+            every { mapper.mapDataMoviePage(param.dataMoviePage) } returns param.domainMoviePage
         }
 
         val actual = subject.getTopRatedMoviePage(param.page)
@@ -145,8 +149,8 @@ class CacheMoviesRepositoryTest {
         every { mpDatabase.isCurrentMovieTypeStored(MovieType.Upcoming) } returns param.isCurrentMovieTypeStored
         every { mpCache.areMoviesUpToDate() } returns param.areMoviesUpToDate
         every { mpDatabase.getMoviePage(param.page) } returns param.dataMoviePage
-        if (param.dataMoviePage != null && param.expectedResult != null) {
-            every { mapper.mapDataMoviePage(param.dataMoviePage) } returns param.expectedResult
+        if (param.dataMoviePage != null && param.domainMoviePage != null) {
+            every { mapper.mapDataMoviePage(param.dataMoviePage) } returns param.domainMoviePage
         }
 
         val actual = subject.getUpcomingMoviePage(param.page)

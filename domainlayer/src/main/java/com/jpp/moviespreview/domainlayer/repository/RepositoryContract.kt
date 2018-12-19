@@ -17,10 +17,16 @@ interface ConfigurationRepository {
  * Repository definition to handle all the data storage related to [Movie]s.
  */
 interface MoviesRepository {
-    fun getNowPlayingMoviePage(page: Int): MoviePage?
-    fun getPopularMoviePage(page: Int): MoviePage?
-    fun getTopRatedMoviePage(page: Int): MoviePage?
-    fun getUpcomingMoviePage(page: Int): MoviePage?
+
+    sealed class MoviesRepositoryResult {
+        object Error : MoviesRepositoryResult()
+        data class Success(val page: MoviePage) : MoviesRepositoryResult()
+    }
+
+    fun getNowPlayingMoviePage(page: Int): MoviesRepositoryResult
+    fun getPopularMoviePage(page: Int): MoviesRepositoryResult
+    fun getTopRatedMoviePage(page: Int): MoviesRepositoryResult
+    fun getUpcomingMoviePage(page: Int): MoviesRepositoryResult
     fun updateNowPlayingMoviePage(moviePage: MoviePage)
     fun updatePopularMoviePage(moviePage: MoviePage)
     fun updateTopRatedMoviePage(moviePage: MoviePage)

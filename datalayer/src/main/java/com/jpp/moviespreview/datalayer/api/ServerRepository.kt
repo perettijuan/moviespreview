@@ -1,5 +1,6 @@
 package com.jpp.moviespreview.datalayer.api
 
+import com.jpp.moviespreview.datalayer.MoviePage as DataMoviePage
 import com.jpp.moviespreview.datalayer.BuildConfig
 import com.jpp.moviespreview.datalayer.DataModelMapper
 import com.jpp.moviespreview.domainlayer.ImagesConfiguration
@@ -44,17 +45,17 @@ class ServerRepository(private val serverApiKey: String,
     override fun updateAppConfiguration(imagesConfiguration: ImagesConfiguration) =
         throw UnsupportedOperationException("Updating AppConfiguration is not supported by the server")
 
-    override fun getNowPlayingMoviePage(page: Int): MoviePage? =
-        tryCatchOrReturnNull { API.getNowPlaying(page, serverApiKey).execute().body() }?.let { mapper.mapDataMoviePage(it) }
+    override fun getNowPlayingMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult =
+        getMoviePage { API.getNowPlaying(page, serverApiKey).execute().body() }
 
-    override fun getPopularMoviePage(page: Int): MoviePage? =
-        tryCatchOrReturnNull { API.getPopular(page, serverApiKey).execute().body() }?.let { mapper.mapDataMoviePage(it) }
+    override fun getPopularMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult =
+        getMoviePage { API.getPopular(page, serverApiKey).execute().body() }
 
-    override fun getTopRatedMoviePage(page: Int): MoviePage? =
-        tryCatchOrReturnNull { API.getTopRated(page, serverApiKey).execute().body() }?.let { mapper.mapDataMoviePage(it) }
+    override fun getTopRatedMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult =
+        getMoviePage { API.getTopRated(page, serverApiKey).execute().body() }
 
-    override fun getUpcomingMoviePage(page: Int): MoviePage? =
-        tryCatchOrReturnNull { API.getUpcoming(page, serverApiKey).execute().body() }?.let { mapper.mapDataMoviePage(it) }
+    override fun getUpcomingMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult =
+        getMoviePage { API.getUpcoming(page, serverApiKey).execute().body() }
 
     override fun updateNowPlayingMoviePage(moviePage: MoviePage) =
         throw UnsupportedOperationException("Updating playing movies is not supported by the server")
@@ -67,6 +68,17 @@ class ServerRepository(private val serverApiKey: String,
 
     override fun updateUpcomingMoviePage(moviePage: MoviePage) =
         throw UnsupportedOperationException("Updating upcoming movies is not supported by the server")
+
+
+    /**
+     * Support method to encapsulate the movie retrieval logic. It receives a function as parameter that
+     * takes care of executing the API call.
+     */
+    private fun getMoviePage(apiCall: () -> DataMoviePage?): MoviesRepository.MoviesRepositoryResult =
+        tryCatchOrReturnNull { apiCall.invoke() }
+                ?.let { MoviesRepository.MoviesRepositoryResult.Success(mapper.mapDataMoviePage(it)) }
+                ?: run { MoviesRepository.MoviesRepositoryResult.Error }
+
 
     /**
      * Executes the provided [block] in a try-catch block and returns the result.

@@ -8,17 +8,20 @@ import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestamps
 import com.jpp.moviespreview.domainlayer.MoviePage
 import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
 
+/**
+ * [MoviesRepository] implementation with cache functionality.
+ */
 class CacheMoviesRepository(private val mpCache: MPTimestamps,
                             private val mpDatabase: MPDataBase,
                             private val mapper: DataModelMapper) : MoviesRepository {
 
-    override fun getNowPlayingMoviePage(page: Int): MoviePage? = getMoviePageOrClearDataBaseIfNeeded(MovieType.NowPlaying, page)
+    override fun getNowPlayingMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult = getMoviePageOrClearDataBaseIfNeeded(MovieType.NowPlaying, page)
 
-    override fun getPopularMoviePage(page: Int): MoviePage? = getMoviePageOrClearDataBaseIfNeeded(MovieType.Popular, page)
+    override fun getPopularMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult = getMoviePageOrClearDataBaseIfNeeded(MovieType.Popular, page)
 
-    override fun getTopRatedMoviePage(page: Int): MoviePage? = getMoviePageOrClearDataBaseIfNeeded(MovieType.TopRated, page)
+    override fun getTopRatedMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult = getMoviePageOrClearDataBaseIfNeeded(MovieType.TopRated, page)
 
-    override fun getUpcomingMoviePage(page: Int): MoviePage? = getMoviePageOrClearDataBaseIfNeeded(MovieType.Upcoming, page)
+    override fun getUpcomingMoviePage(page: Int): MoviesRepository.MoviesRepositoryResult = getMoviePageOrClearDataBaseIfNeeded(MovieType.Upcoming, page)
 
     override fun updateNowPlayingMoviePage(moviePage: MoviePage) = updateMoviePage(MovieType.NowPlaying, moviePage)
 
@@ -29,6 +32,10 @@ class CacheMoviesRepository(private val mpCache: MPTimestamps,
     override fun updateUpcomingMoviePage(moviePage: MoviePage) = updateMoviePage(MovieType.Upcoming, moviePage)
 
 
+    /**
+     * Updates the [MoviePage] in the local storage and the timestamp for when the movie page
+     * has been inserted.
+     */
     private fun updateMoviePage(movieType: MovieType, moviePage: MoviePage) {
         with(mpDatabase) {
             updateCurrentMovieTypeStored(movieType)
@@ -38,12 +45,18 @@ class CacheMoviesRepository(private val mpCache: MPTimestamps,
         }
     }
 
-    private fun getMoviePageOrClearDataBaseIfNeeded(movieType: MovieType, page: Int): MoviePage? {
+    /**
+     * Verifies if the data stored in the database is valid (based on the timestamp) and retrieves it
+     * if it is. If it is not valid, it clears the local storage in order to keep the database clean.
+     */
+    private fun getMoviePageOrClearDataBaseIfNeeded(movieType: MovieType, page: Int): MoviesRepository.MoviesRepositoryResult {
         return when (shouldRetrieveMoviePage(movieType)) {
-            true -> mpDatabase.getMoviePage(page)?.let { mapper.mapDataMoviePage(it) }
+            true -> mpDatabase.getMoviePage(page)
+                    ?.let { MoviesRepository.MoviesRepositoryResult.Success(mapper.mapDataMoviePage(it)) }
+                    ?: run { MoviesRepository.MoviesRepositoryResult.Error }
             else -> {
                 mpDatabase.clearMoviePagesStored()
-                null
+                MoviesRepository.MoviesRepositoryResult.Error
             }
         }
     }
