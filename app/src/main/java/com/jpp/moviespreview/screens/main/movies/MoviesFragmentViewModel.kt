@@ -20,7 +20,8 @@ import javax.inject.Inject
  * Check [MoviesPagingDataSource] for a more detailed explanation of the architecture followed
  * in this case.
  */
-class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFactory: MoviesPagingDataSourceFactory) : ViewModel() {
+class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFactory: MoviesPagingDataSourceFactory,
+                                                  private val mapper: MovieItemMapper) : ViewModel() {
 
     private lateinit var viewState: LiveData<MoviesFragmentViewState>
 
@@ -58,14 +59,10 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
          * of MovieItem. configureMovieImagesInteractor.invoke() and the mapping to the UI item is being executed in the same background
          * thread that the factory assigns to the ds.
          */
-        pagedList = pagingDataSourceFactory.getMovieList(movieSectionMapper(currentSection), movieBackdropSize, moviePosterSize) { domainMovie ->
-            MovieItem(headerImageUrl = domainMovie.backdropPath ?: "",
-                    title = domainMovie.title,
-                    contentImageUrl = domainMovie.posterPath ?: "",
-                    popularity = domainMovie.popularity.toString(),
-                    voteCount = domainMovie.voteCount.toString()
-            )
-        }
+        pagedList = pagingDataSourceFactory
+                .getMovieList(mapper.mapMovieSection(currentSection), movieBackdropSize, moviePosterSize) { domainMovie ->
+                    mapper.mapDomainMovie(domainMovie)
+                }
 
 
         /*
@@ -81,14 +78,5 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
         }
 
         return pagedList
-    }
-
-    private val movieSectionMapper: (UiMovieSection) -> MovieSection = {
-        when (it) {
-            UiMovieSection.Playing -> MovieSection.Playing
-            UiMovieSection.Popular -> MovieSection.Popular
-            UiMovieSection.TopRated -> MovieSection.TopRated
-            UiMovieSection.Upcoming -> MovieSection.Upcoming
-        }
     }
 }
