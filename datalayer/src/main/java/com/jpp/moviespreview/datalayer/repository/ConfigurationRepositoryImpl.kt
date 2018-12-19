@@ -7,9 +7,16 @@ class ConfigurationRepositoryImpl(private val cacheRepository: ConfigurationRepo
                                   private val serverRepository: ConfigurationRepository) : ConfigurationRepository {
 
 
-    override fun getConfiguration(): ImagesConfiguration? {
-        return cacheRepository.getConfiguration() ?: serverRepository.getConfiguration()?.apply {
-            cacheRepository.updateAppConfiguration(this)
+    override fun getConfiguration(): ConfigurationRepository.ConfigurationRepositoryOutput {
+        return cacheRepository.getConfiguration().let {
+            when (it) {
+                is ConfigurationRepository.ConfigurationRepositoryOutput.Success -> it
+                else -> serverRepository.getConfiguration().apply {
+                    if (this is ConfigurationRepository.ConfigurationRepositoryOutput.Success) {
+                        cacheRepository.updateAppConfiguration(config)
+                    }
+                }
+            }
         }
     }
 

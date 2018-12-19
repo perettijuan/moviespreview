@@ -39,8 +39,10 @@ class ServerRepository(private val serverApiKey: String,
         }
     }
 
-    override fun getConfiguration(): ImagesConfiguration? =
-        tryCatchOrReturnNull { API.getAppConfiguration(serverApiKey).execute().body() }?.let { mapper.mapDataAppConfiguration(it) }
+    override fun getConfiguration(): ConfigurationRepository.ConfigurationRepositoryOutput =
+        tryCatchOrReturnNull { API.getAppConfiguration(serverApiKey).execute().body() }
+                ?.let { ConfigurationRepository.ConfigurationRepositoryOutput.Success(mapper.mapDataAppConfiguration(it)) }
+                ?: run { ConfigurationRepository.ConfigurationRepositoryOutput.Error }
 
     override fun updateAppConfiguration(imagesConfiguration: ImagesConfiguration) =
         throw UnsupportedOperationException("Updating AppConfiguration is not supported by the server")

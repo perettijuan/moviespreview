@@ -5,6 +5,7 @@ import com.jpp.moviespreview.datalayer.DataModelMapper
 import com.jpp.moviespreview.datalayer.cache.MPDataBase
 import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestamps
 import com.jpp.moviespreview.domainlayer.ImagesConfiguration
+import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
@@ -12,7 +13,6 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -41,11 +41,12 @@ class CacheConfigurationRepositoryTest {
     @DisplayName("Should retrieve data from DB when cache is valid ")
     fun getConfiguration_whenDataIsCached() {
         val dataAppConfiguration = mockk<AppConfiguration>()
-        val expected = mockk<ImagesConfiguration>()
+        val mappedImagesConfig = mockk<ImagesConfiguration>()
+        val expected = ConfigurationRepository.ConfigurationRepositoryOutput.Success(mappedImagesConfig)
 
         every { mpCache.isAppConfigurationUpToDate() } returns true
         every { mpDatabase.getStoredAppConfiguration() } returns dataAppConfiguration
-        every { mapper.mapDataAppConfiguration(dataAppConfiguration) } returns expected
+        every { mapper.mapDataAppConfiguration(dataAppConfiguration) } returns mappedImagesConfig
 
         val actual = subject.getConfiguration()
 
@@ -57,15 +58,13 @@ class CacheConfigurationRepositoryTest {
     @Test
     @DisplayName("Should return null when data in cache is out of date ")
     fun getConfiguration_whenDataInCacheIsOutdated() {
-        val expected = mockk<AppConfiguration>()
+        val expected = ConfigurationRepository.ConfigurationRepositoryOutput.Error
 
         every { mpCache.isAppConfigurationUpToDate() } returns false
-        every { mpDatabase.getStoredAppConfiguration() } returns expected
 
         val actual = subject.getConfiguration()
 
-        assertNull(actual)
-
+        assertEquals(expected, actual)
         verify(exactly = 0) { mpDatabase.getStoredAppConfiguration() }
     }
 

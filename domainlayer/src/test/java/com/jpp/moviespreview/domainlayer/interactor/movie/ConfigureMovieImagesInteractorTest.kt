@@ -42,7 +42,7 @@ class ConfigureMovieImagesInteractorTest {
     @ParameterizedTest
     @MethodSource("executeParameters")
     fun `execute should return result with new movie created`(param: ExecuteTestParameter) {
-        every { configRepository.getConfiguration() } returns param.imagesConfig
+        every { configRepository.getConfiguration() } returns ConfigurationRepository.ConfigurationRepositoryOutput.Success(param.imagesConfig)
 
         val result = subject.execute(MovieImagesParam(param.movie, param.targetBackdropSize, param.targetPosterSize))
 
@@ -51,8 +51,8 @@ class ConfigureMovieImagesInteractorTest {
     }
 
     @Test
-    fun `execute should return result with the same movie when config in repository is null`() {
-        every { configRepository.getConfiguration() } returns null
+    fun `execute should return result with the same movie when config in repository is failed`() {
+        every { configRepository.getConfiguration() } returns ConfigurationRepository.ConfigurationRepositoryOutput.Error
 
         val result = subject.execute(MovieImagesParam(movie, 780, 340))
 

@@ -10,9 +10,13 @@ import com.jpp.moviespreview.domainlayer.MoviePage
  */
 interface ConfigurationRepository {
 
+    sealed class ConfigurationRepositoryOutput {
+        object Error : ConfigurationRepositoryOutput()
+        data class Success(val config: ImagesConfiguration) : ConfigurationRepositoryOutput()
+    }
 
 
-    fun getConfiguration(): ImagesConfiguration?
+    fun getConfiguration(): ConfigurationRepositoryOutput
     fun updateAppConfiguration(imagesConfiguration: ImagesConfiguration)
 }
 

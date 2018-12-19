@@ -10,10 +10,12 @@ class CacheConfigurationRepository(private val mpCache: MPTimestamps,
                                    private val mpDatabase: MPDataBase,
                                    private val mapper: DataModelMapper) : ConfigurationRepository {
 
-    override fun getConfiguration(): ImagesConfiguration? {
+    override fun getConfiguration(): ConfigurationRepository.ConfigurationRepositoryOutput {
         return when (mpCache.isAppConfigurationUpToDate()) {
-            true -> mpDatabase.getStoredAppConfiguration()?.let { mapper.mapDataAppConfiguration(it) }
-            false -> null
+            true -> mpDatabase.getStoredAppConfiguration()
+                    ?.let { ConfigurationRepository.ConfigurationRepositoryOutput.Success(mapper.mapDataAppConfiguration(it)) }
+                    ?: run { ConfigurationRepository.ConfigurationRepositoryOutput.Error }
+            false -> ConfigurationRepository.ConfigurationRepositoryOutput.Error
         }
     }
 
