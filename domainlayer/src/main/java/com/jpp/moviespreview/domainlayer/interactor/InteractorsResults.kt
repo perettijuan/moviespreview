@@ -8,7 +8,7 @@ import com.jpp.moviespreview.domainlayer.MoviePage
  ***************************************************************************************************/
 
 /**
- * Represents the results that can be returned by [ConfigureApplicationInteractor].
+ * Represents the results that can be returned by [ConfigureApplication].
  */
 sealed class ConfigureApplicationResult {
     object ErrorNoConnectivity : ConfigureApplicationResult()
@@ -17,7 +17,7 @@ sealed class ConfigureApplicationResult {
 }
 
 /**
- * Represents the results that can be returned by [GetMoviePageInteractor].
+ * Represents the results that can be returned by [GetMoviePage].
  */
 sealed class MoviePageResult {
     object ErrorNoConnectivity : MoviePageResult()

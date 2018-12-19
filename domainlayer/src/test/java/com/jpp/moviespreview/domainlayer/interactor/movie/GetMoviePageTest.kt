@@ -3,7 +3,7 @@ package com.jpp.moviespreview.domainlayer.interactor.movie
 
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifier
 import com.jpp.moviespreview.domainlayer.MovieSection
-import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageInteractor
+import com.jpp.moviespreview.domainlayer.interactor.GetMoviePage
 import com.jpp.moviespreview.domainlayer.interactor.MoviePageParam
 import com.jpp.moviespreview.domainlayer.interactor.MoviePageResult
 import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
@@ -14,58 +14,24 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import com.jpp.moviespreview.domainlayer.MoviePage as DomainMoviePage
 
 @ExtendWith(MockKExtension::class)
-class GetMoviePageInteractorTest {
-
-    data class ExecuteTestParameter(
-            val moviePage: Int,
-            val resultDomainPage: MoviesRepository.MoviesRepositoryOutput,
-            val connectedToNetwork: Boolean = true,
-            val expectedResult: MoviePageResult
-    )
-
-    companion object {
-
-        private val resultDomainPageMock = mockk<DomainMoviePage>()
-
-        @JvmStatic
-        fun executeParameters() = listOf(
-                ExecuteTestParameter(
-                        moviePage = 1,
-                        resultDomainPage =  MoviesRepository.MoviesRepositoryOutput.Success(resultDomainPageMock),
-                        expectedResult = MoviePageResult.Success(resultDomainPageMock)
-                ),
-                ExecuteTestParameter(
-                        moviePage = 1,
-                        resultDomainPage =  MoviesRepository.MoviesRepositoryOutput.Error,
-                        connectedToNetwork = true,
-                        expectedResult = MoviePageResult.ErrorUnknown
-                ),
-                ExecuteTestParameter(
-                        moviePage = 1,
-                        resultDomainPage =  MoviesRepository.MoviesRepositoryOutput.Error,
-                        connectedToNetwork = false,
-                        expectedResult = MoviePageResult.ErrorNoConnectivity
-                )
-        )
-    }
+class GetMoviePageTest {
 
     @MockK
     private lateinit var moviesRepository: MoviesRepository
     @MockK
     private lateinit var connectivityVerifier: ConnectivityVerifier
 
-    private lateinit var subject: GetMoviePageInteractor
+    private lateinit var subject: GetMoviePage
 
     @BeforeEach
     fun setUp() {
-        subject = GetMoviePageInteractorImpl(moviesRepository, connectivityVerifier)
+        subject = GetMoviePageImpl(moviesRepository, connectivityVerifier)
     }
 
     @ParameterizedTest
@@ -119,5 +85,37 @@ class GetMoviePageInteractorTest {
 
         assertEquals(testParam.expectedResult, actual)
         verify(exactly = 1) { moviesRepository.getUpcomingMoviePage(param.page) }
+    }
+
+
+    data class ExecuteTestParameter(
+            val moviePage: Int,
+            val resultDomainPage: MoviesRepository.MoviesRepositoryOutput,
+            val connectedToNetwork: Boolean = true,
+            val expectedResult: MoviePageResult
+    )
+
+    companion object {
+        private val resultDomainPageMock = mockk<DomainMoviePage>()
+        @JvmStatic
+        fun executeParameters() = listOf(
+                ExecuteTestParameter(
+                        moviePage = 1,
+                        resultDomainPage =  MoviesRepository.MoviesRepositoryOutput.Success(resultDomainPageMock),
+                        expectedResult = MoviePageResult.Success(resultDomainPageMock)
+                ),
+                ExecuteTestParameter(
+                        moviePage = 1,
+                        resultDomainPage =  MoviesRepository.MoviesRepositoryOutput.Error,
+                        connectedToNetwork = true,
+                        expectedResult = MoviePageResult.ErrorUnknown
+                ),
+                ExecuteTestParameter(
+                        moviePage = 1,
+                        resultDomainPage =  MoviesRepository.MoviesRepositoryOutput.Error,
+                        connectedToNetwork = false,
+                        expectedResult = MoviePageResult.ErrorNoConnectivity
+                )
+        )
     }
 }

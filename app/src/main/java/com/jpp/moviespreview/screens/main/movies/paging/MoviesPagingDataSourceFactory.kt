@@ -8,7 +8,7 @@ import com.jpp.moviespreview.domainlayer.Movie
 import com.jpp.moviespreview.domainlayer.MovieSection
 import com.jpp.moviespreview.domainlayer.ds.movie.MoviesDataSourceState
 import com.jpp.moviespreview.domainlayer.ds.movie.MoviesPagingDataSource
-import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageInteractor
+import com.jpp.moviespreview.domainlayer.interactor.GetMoviePage
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
@@ -22,7 +22,7 @@ import javax.inject.Inject
  * Domain layer when it comes to movie lists:
  * It receives commands from the ViewModels and creates new dataSource instances as needed.
  */
-class MoviesPagingDataSourceFactory @Inject constructor(private val moviePageInteractor: GetMoviePageInteractor) : DataSource.Factory<Int, Movie>() {
+class MoviesPagingDataSourceFactory @Inject constructor(private val moviePageInteractor: GetMoviePage) : DataSource.Factory<Int, Movie>() {
 
     // the current MoviesPagingDataSource being used.
     private lateinit var dataSource: MoviesPagingDataSource

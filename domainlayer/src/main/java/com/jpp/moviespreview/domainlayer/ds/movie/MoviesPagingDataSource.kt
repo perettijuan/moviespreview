@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.jpp.moviespreview.domainlayer.Movie
 import com.jpp.moviespreview.domainlayer.MovieSection
-import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageInteractor
+import com.jpp.moviespreview.domainlayer.interactor.GetMoviePage
 import com.jpp.moviespreview.domainlayer.interactor.MoviePageParam
 import com.jpp.moviespreview.domainlayer.interactor.MoviePageResult
 
@@ -24,7 +24,7 @@ import com.jpp.moviespreview.domainlayer.interactor.MoviePageResult
  * highlight the fact that exists because I'm using the Android Paging Library.
  * Another reason for this decision is that it makes unit testing easier.
  */
-class MoviesPagingDataSource(private val moviePageInteractor: GetMoviePageInteractor,
+class MoviesPagingDataSource(private val moviePageInteractor: GetMoviePage,
                              private val currentSection: MovieSection) : PageKeyedDataSource<Int, Movie>() {
 
 

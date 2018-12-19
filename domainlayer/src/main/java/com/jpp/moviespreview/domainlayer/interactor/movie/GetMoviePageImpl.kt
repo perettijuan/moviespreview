@@ -2,13 +2,13 @@ package com.jpp.moviespreview.domainlayer.interactor.movie
 
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifier
 import com.jpp.moviespreview.domainlayer.MovieSection
-import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageInteractor
+import com.jpp.moviespreview.domainlayer.interactor.GetMoviePage
 import com.jpp.moviespreview.domainlayer.interactor.MoviePageParam
 import com.jpp.moviespreview.domainlayer.interactor.MoviePageResult
 import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
 
-class GetMoviePageInteractorImpl(private val moviesRepository: MoviesRepository,
-                                 private val connectivityVerifier: ConnectivityVerifier) : GetMoviePageInteractor {
+class GetMoviePageImpl(private val moviesRepository: MoviesRepository,
+                       private val connectivityVerifier: ConnectivityVerifier) : GetMoviePage {
 
 
     override fun execute(parameter: MoviePageParam): MoviePageResult {

@@ -13,7 +13,7 @@ import com.jpp.moviespreview.domainlayer.MovieSection
 sealed class EmptyParam
 
 /**
- * Parameter to execute [GetMoviePageInteractor].
+ * Parameter to execute [GetMoviePage].
  *
  * [page] - the number of the page to retrieve.
  * [section] - the section of the movie pages to retrieve.

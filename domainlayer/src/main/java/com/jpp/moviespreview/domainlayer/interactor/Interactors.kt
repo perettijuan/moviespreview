@@ -13,7 +13,7 @@ package com.jpp.moviespreview.domainlayer.interactor
  * [EmptyParam] is to respect the [Interactor] definition.
  * [ConfigureApplicationResult] only indicates the success or failed execution.
  */
-interface ConfigureApplicationInteractor : Interactor<EmptyParam, ConfigureApplicationResult>
+interface ConfigureApplication : Interactor<EmptyParam, ConfigureApplicationResult>
 
 
 /**
@@ -22,7 +22,7 @@ interface ConfigureApplicationInteractor : Interactor<EmptyParam, ConfigureAppli
  * [MoviePageParam] indicates the page to retrieve.
  * [MoviePageResult] represents the result of the execution.
  */
-interface GetMoviePageInteractor : Interactor<MoviePageParam, MoviePageResult>
+interface GetMoviePage : Interactor<MoviePageParam, MoviePageResult>
 
 
 /**

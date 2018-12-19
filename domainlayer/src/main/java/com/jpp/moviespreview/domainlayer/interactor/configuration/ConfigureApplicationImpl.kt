@@ -2,13 +2,13 @@ package com.jpp.moviespreview.domainlayer.interactor.configuration
 
 
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifier
-import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplicationInteractor
+import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplication
 import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplicationResult
 import com.jpp.moviespreview.domainlayer.interactor.EmptyParam
 import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
 
-class ConfigureApplicationInteractorImpl(private val configRepository: ConfigurationRepository,
-                                         private val connectivityVerifier: ConnectivityVerifier) : ConfigureApplicationInteractor {
+class ConfigureApplicationImpl(private val configRepository: ConfigurationRepository,
+                               private val connectivityVerifier: ConnectivityVerifier) : ConfigureApplication {
 
     override fun execute(parameter: EmptyParam): ConfigureApplicationResult {
         return configRepository.getConfiguration().let {

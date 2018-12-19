@@ -2,7 +2,7 @@ package com.jpp.moviespreview.domainlayer.interactor.movie
 
 import com.jpp.moviespreview.domainlayer.interactor.*
 
-class GetConfiguredMoviePageImpl(private val getMoviePage: GetMoviePageInteractor,
+class GetConfiguredMoviePageImpl(private val getMoviePage: GetMoviePage,
                                  private val configureMovie: ConfigureMovieImagesInteractor) : GetConfiguredMoviePage {
 
     override fun execute(parameter: ConfiguredMoviePageParam): ConfiguredMoviePageResult {
