@@ -1,17 +1,18 @@
 package com.jpp.moviespreview.di
 
 import android.content.Context
-import com.jpp.moviespreview.datalayer.repository.ConfigurationRepository
-import com.jpp.moviespreview.datalayer.repository.MoviesRepository
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifier
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifierImpl
-import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplicationInteractor
-import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImagesInteractor
-import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageInteractor
-import com.jpp.moviespreview.domainlayer.interactor.configuration.ConfigureApplicationInteractorImpl
-import com.jpp.moviespreview.domainlayer.interactor.movie.ConfigureMovieImagesInteractorImpl
-import com.jpp.moviespreview.domainlayer.interactor.movie.GetMoviePageInteractorImpl
-import com.jpp.moviespreview.domainlayer.interactor.movie.MovieDomainMapper
+import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplication
+import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImages
+import com.jpp.moviespreview.domainlayer.interactor.GetConfiguredMoviePage
+import com.jpp.moviespreview.domainlayer.interactor.GetMoviePage
+import com.jpp.moviespreview.domainlayer.interactor.configuration.ConfigureApplicationImpl
+import com.jpp.moviespreview.domainlayer.interactor.movie.ConfigureMovieImagesImpl
+import com.jpp.moviespreview.domainlayer.interactor.movie.GetConfiguredMoviePageImpl
+import com.jpp.moviespreview.domainlayer.interactor.movie.GetMoviePageImpl
+import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
+import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -28,17 +29,22 @@ class DomainLayerModule {
 
     @Provides
     @Singleton
-    fun providesConfigureApplicationInteractor(configRepository: ConfigurationRepository, connectivityVerifier: ConnectivityVerifier)
-            : ConfigureApplicationInteractor = ConfigureApplicationInteractorImpl(configRepository, connectivityVerifier)
+    fun providesConfigureApplication(configRepository: ConfigurationRepository, connectivityVerifier: ConnectivityVerifier)
+            : ConfigureApplication = ConfigureApplicationImpl(configRepository, connectivityVerifier)
 
     @Provides
     @Singleton
-    fun providesGetMoviePageInteractor(moviesRepository: MoviesRepository, connectivityVerifier: ConnectivityVerifier)
-            : GetMoviePageInteractor = GetMoviePageInteractorImpl(moviesRepository, MovieDomainMapper(), connectivityVerifier)
+    fun providesGetMoviePage(moviesRepository: MoviesRepository, connectivityVerifier: ConnectivityVerifier)
+            : GetMoviePage = GetMoviePageImpl(moviesRepository, connectivityVerifier)
 
     @Provides
     @Singleton
-    fun providesConfigureMovieImagesInteractor(configRepository: ConfigurationRepository)
-            : ConfigureMovieImagesInteractor = ConfigureMovieImagesInteractorImpl(configRepository)
+    fun providesConfigureMovieImages(configRepository: ConfigurationRepository)
+            : ConfigureMovieImages = ConfigureMovieImagesImpl(configRepository)
+
+    @Provides
+    @Singleton
+    fun providesGetConfiguredMoviePage(getMoviePage: GetMoviePage, configureMovieImages: ConfigureMovieImages)
+            : GetConfiguredMoviePage = GetConfiguredMoviePageImpl(getMoviePage, configureMovieImages)
 
 }

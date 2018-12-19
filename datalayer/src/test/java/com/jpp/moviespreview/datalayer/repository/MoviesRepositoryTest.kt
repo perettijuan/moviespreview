@@ -1,7 +1,8 @@
 package com.jpp.moviespreview.datalayer.repository
 
-import com.jpp.moviespreview.datalayer.MoviePage
+import com.jpp.moviespreview.domainlayer.MoviePage
 import com.jpp.moviespreview.datalayer.api.ServerRepository
+import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
@@ -23,9 +24,9 @@ class MoviesRepositoryTest {
             val dbRepositoryCallTimes: Int,
             val serverRepositoryCallTimes: Int,
             val updateDbCallTimes: Int,
-            val dbPage: MoviePage?,
-            val serverPage: MoviePage?,
-            val expectedResult: MoviePage?
+            val dbResult: MoviesRepository.MoviesRepositoryOutput,
+            val serverResult: MoviesRepository.MoviesRepositoryOutput,
+            val expectedResult: MoviesRepository.MoviesRepositoryOutput
     )
 
     companion object {
@@ -40,9 +41,9 @@ class MoviesRepositoryTest {
                         dbRepositoryCallTimes = 1,
                         serverRepositoryCallTimes = 0,
                         updateDbCallTimes = 0,
-                        dbPage = resultPageMock,
-                        serverPage = null,
-                        expectedResult = resultPageMock
+                        dbResult = MoviesRepository.MoviesRepositoryOutput.Success(resultPageMock),
+                        serverResult = MoviesRepository.MoviesRepositoryOutput.Error,
+                        expectedResult = MoviesRepository.MoviesRepositoryOutput.Success(resultPageMock)
                 ),
                 ExecuteTestParameter(
                         caseName = "Data retrieved from server",
@@ -50,9 +51,9 @@ class MoviesRepositoryTest {
                         dbRepositoryCallTimes = 1,
                         serverRepositoryCallTimes = 1,
                         updateDbCallTimes = 1,
-                        dbPage = null,
-                        serverPage = resultPageMock,
-                        expectedResult = resultPageMock
+                        dbResult = MoviesRepository.MoviesRepositoryOutput.Error,
+                        serverResult = MoviesRepository.MoviesRepositoryOutput.Success(resultPageMock),
+                        expectedResult = MoviesRepository.MoviesRepositoryOutput.Success(resultPageMock)
                 ),
                 ExecuteTestParameter(
                         caseName = "Fails to retrieve from server",
@@ -60,9 +61,9 @@ class MoviesRepositoryTest {
                         dbRepositoryCallTimes = 1,
                         serverRepositoryCallTimes = 1,
                         updateDbCallTimes = 0,
-                        dbPage = null,
-                        serverPage = null,
-                        expectedResult = null
+                        dbResult = MoviesRepository.MoviesRepositoryOutput.Error,
+                        serverResult = MoviesRepository.MoviesRepositoryOutput.Error,
+                        expectedResult = MoviesRepository.MoviesRepositoryOutput.Error
                 )
         )
     }
@@ -83,64 +84,68 @@ class MoviesRepositoryTest {
     @ParameterizedTest
     @MethodSource("executeParameters")
     fun getNowPlayingMoviePage(testParam: ExecuteTestParameter) {
-        every { dbRepository.getNowPlayingMoviePage(testParam.page) } returns testParam.dbPage
-        every { serverRepository.getNowPlayingMoviePage(testParam.page) } returns testParam.serverPage
+        every { dbRepository.getNowPlayingMoviePage(testParam.page) } returns testParam.dbResult
+        every { serverRepository.getNowPlayingMoviePage(testParam.page) } returns testParam.serverResult
 
         val actual = subject.getNowPlayingMoviePage(testParam.page)
 
         verify(exactly = testParam.dbRepositoryCallTimes) { dbRepository.getNowPlayingMoviePage(testParam.page) }
         verify(exactly = testParam.serverRepositoryCallTimes) { serverRepository.getNowPlayingMoviePage(testParam.page) }
-        testParam.serverPage?.let {
-            verify(exactly = testParam.updateDbCallTimes) { dbRepository.updateNowPlayingMoviePage(it) }
-        }
         assertEquals(testParam.expectedResult, actual, testParam.caseName)
+
+        if (testParam.serverResult is MoviesRepository.MoviesRepositoryOutput.Success) {
+            verify(exactly = testParam.updateDbCallTimes) { dbRepository.updateNowPlayingMoviePage(testParam.serverResult.page) }
+        }
     }
 
     @ParameterizedTest
     @MethodSource("executeParameters")
     fun getPopularMoviePage(testParam: ExecuteTestParameter) {
-        every { dbRepository.getPopularMoviePage(testParam.page) } returns testParam.dbPage
-        every { serverRepository.getPopularMoviePage(testParam.page) } returns testParam.serverPage
+        every { dbRepository.getPopularMoviePage(testParam.page) } returns testParam.dbResult
+        every { serverRepository.getPopularMoviePage(testParam.page) } returns testParam.serverResult
 
         val actual = subject.getPopularMoviePage(testParam.page)
 
         verify(exactly = testParam.dbRepositoryCallTimes) { dbRepository.getPopularMoviePage(testParam.page) }
         verify(exactly = testParam.serverRepositoryCallTimes) { serverRepository.getPopularMoviePage(testParam.page) }
-        testParam.serverPage?.let {
-            verify(exactly = testParam.updateDbCallTimes) { dbRepository.updatePopularMoviePage(it) }
-        }
         assertEquals(testParam.expectedResult, actual, testParam.caseName)
+
+        if (testParam.serverResult is MoviesRepository.MoviesRepositoryOutput.Success) {
+            verify(exactly = testParam.updateDbCallTimes) { dbRepository.updatePopularMoviePage(testParam.serverResult.page) }
+        }
     }
 
     @ParameterizedTest
     @MethodSource("executeParameters")
     fun getTopRatedMoviePage(testParam: ExecuteTestParameter) {
-        every { dbRepository.getTopRatedMoviePage(testParam.page) } returns testParam.dbPage
-        every { serverRepository.getTopRatedMoviePage(testParam.page) } returns testParam.serverPage
+        every { dbRepository.getTopRatedMoviePage(testParam.page) } returns testParam.dbResult
+        every { serverRepository.getTopRatedMoviePage(testParam.page) } returns testParam.serverResult
 
         val actual = subject.getTopRatedMoviePage(testParam.page)
 
         verify(exactly = testParam.dbRepositoryCallTimes) { dbRepository.getTopRatedMoviePage(testParam.page) }
         verify(exactly = testParam.serverRepositoryCallTimes) { serverRepository.getTopRatedMoviePage(testParam.page) }
-        testParam.serverPage?.let {
-            verify(exactly = testParam.updateDbCallTimes) { dbRepository.updateTopRatedMoviePage(it) }
-        }
         assertEquals(testParam.expectedResult, actual, testParam.caseName)
+
+        if (testParam.serverResult is MoviesRepository.MoviesRepositoryOutput.Success) {
+            verify(exactly = testParam.updateDbCallTimes) { dbRepository.updateTopRatedMoviePage(testParam.serverResult.page) }
+        }
     }
 
     @ParameterizedTest
     @MethodSource("executeParameters")
     fun getUpcomingMoviePage(testParam: ExecuteTestParameter) {
-        every { dbRepository.getUpcomingMoviePage(testParam.page) } returns testParam.dbPage
-        every { serverRepository.getUpcomingMoviePage(testParam.page) } returns testParam.serverPage
+        every { dbRepository.getUpcomingMoviePage(testParam.page) } returns testParam.dbResult
+        every { serverRepository.getUpcomingMoviePage(testParam.page) } returns testParam.serverResult
 
         val actual = subject.getUpcomingMoviePage(testParam.page)
 
         verify(exactly = testParam.dbRepositoryCallTimes) { dbRepository.getUpcomingMoviePage(testParam.page) }
         verify(exactly = testParam.serverRepositoryCallTimes) { serverRepository.getUpcomingMoviePage(testParam.page) }
-        testParam.serverPage?.let {
-            verify(exactly = testParam.updateDbCallTimes) { dbRepository.updateUpcomingMoviePage(it) }
-        }
         assertEquals(testParam.expectedResult, actual, testParam.caseName)
+
+        if (testParam.serverResult is MoviesRepository.MoviesRepositoryOutput.Success) {
+            verify(exactly = testParam.updateDbCallTimes) { dbRepository.updateUpcomingMoviePage(testParam.serverResult.page) }
+        }
     }
 }

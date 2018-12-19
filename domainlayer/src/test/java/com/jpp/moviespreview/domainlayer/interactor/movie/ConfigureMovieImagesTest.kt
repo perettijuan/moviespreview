@@ -1,11 +1,11 @@
 package com.jpp.moviespreview.domainlayer.interactor.movie
 
-import com.jpp.moviespreview.datalayer.AppConfiguration
-import com.jpp.moviespreview.datalayer.ImagesConfiguration
-import com.jpp.moviespreview.datalayer.repository.ConfigurationRepository
+
+import com.jpp.moviespreview.domainlayer.ImagesConfiguration
 import com.jpp.moviespreview.domainlayer.Movie
-import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImagesInteractor
+import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImages
 import com.jpp.moviespreview.domainlayer.interactor.MovieImagesParam
+import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -17,11 +17,11 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
 @ExtendWith(MockKExtension::class)
-class ConfigureMovieImagesInteractorTest {
+class ConfigureMovieImagesTest {
 
     data class ExecuteTestParameter(
             val case: String,
-            val appConfig: ImagesConfiguration,
+            val imagesConfig: ImagesConfiguration,
             val movie: Movie,
             val targetBackdropSize: Int,
             val targetPosterSize : Int,
@@ -31,18 +31,18 @@ class ConfigureMovieImagesInteractorTest {
 
     @MockK
     private lateinit var configRepository: ConfigurationRepository
-    private lateinit var subject: ConfigureMovieImagesInteractor
+    private lateinit var subject: ConfigureMovieImages
 
     @BeforeEach
     fun setUp() {
-        subject = ConfigureMovieImagesInteractorImpl(configRepository)
+        subject = ConfigureMovieImagesImpl(configRepository)
     }
 
 
     @ParameterizedTest
     @MethodSource("executeParameters")
     fun `execute should return result with new movie created`(param: ExecuteTestParameter) {
-        every { configRepository.getConfiguration() } returns AppConfiguration(param.appConfig)
+        every { configRepository.getConfiguration() } returns ConfigurationRepository.ConfigurationRepositoryOutput.Success(param.imagesConfig)
 
         val result = subject.execute(MovieImagesParam(param.movie, param.targetBackdropSize, param.targetPosterSize))
 
@@ -51,8 +51,8 @@ class ConfigureMovieImagesInteractorTest {
     }
 
     @Test
-    fun `execute should return result with the same movie when config in repository is null`() {
-        every { configRepository.getConfiguration() } returns null
+    fun `execute should return result with the same movie when config in repository is failed`() {
+        every { configRepository.getConfiguration() } returns ConfigurationRepository.ConfigurationRepositoryOutput.Error
 
         val result = subject.execute(MovieImagesParam(movie, 780, 340))
 
@@ -66,7 +66,7 @@ class ConfigureMovieImagesInteractorTest {
         fun executeParameters() = listOf(
                 ExecuteTestParameter(
                         case = "Should configure with exact value",
-                        appConfig = imagesConfig,
+                        imagesConfig = imagesConfig,
                         movie = movie,
                         targetBackdropSize = 780,
                         targetPosterSize = 342,
@@ -75,7 +75,7 @@ class ConfigureMovieImagesInteractorTest {
                 ),
                 ExecuteTestParameter(
                         case = "Should configure with first higher value",
-                        appConfig = imagesConfig,
+                        imagesConfig = imagesConfig,
                         movie = movie,
                         targetBackdropSize = 800,
                         targetPosterSize = 551,
@@ -84,7 +84,7 @@ class ConfigureMovieImagesInteractorTest {
                 ),
                 ExecuteTestParameter(
                         case = "Should configure with first lower value",
-                        appConfig = imagesConfig,
+                        imagesConfig = imagesConfig,
                         movie = movie,
                         targetBackdropSize = 40,
                         targetPosterSize = 40,
@@ -93,7 +93,7 @@ class ConfigureMovieImagesInteractorTest {
                 ),
                 ExecuteTestParameter(
                         case = "Should configure with last when no value is accepted",
-                        appConfig = imagesConfig,
+                        imagesConfig = imagesConfig,
                         movie = movie,
                         targetBackdropSize = 1400,
                         targetPosterSize = 800,
@@ -102,7 +102,7 @@ class ConfigureMovieImagesInteractorTest {
                 ),
                 ExecuteTestParameter(
                         case = "Should leave as null when paths are null",
-                        appConfig = imagesConfig,
+                        imagesConfig = imagesConfig,
                         movie = movie.copy(backdropPath = null, posterPath = null),
                         targetBackdropSize = 1400,
                         targetPosterSize = 800,
@@ -112,19 +112,19 @@ class ConfigureMovieImagesInteractorTest {
         )
 
         private val imagesConfig = ImagesConfiguration(
-                base_url = "baseUrl/",
-                poster_sizes = listOf("w92",
+                baseUrl = "baseUrl/",
+                posterSizes = listOf("w92",
                         "w154",
                         "w185",
                         "w342",
                         "w500",
                         "w780",
                         "original"),
-                profile_sizes = listOf("w45",
+                profileSizes = listOf("w45",
                         "w185",
                         "h632",
                         "original"),
-                backdrop_sizes = listOf("w300",
+                backdropSizes = listOf("w300",
                         "w780",
                         "w1280",
                         "original")

@@ -5,8 +5,6 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
 import com.jpp.moviespreview.domainlayer.MovieSection
-import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImagesInteractor
-import com.jpp.moviespreview.domainlayer.interactor.MovieImagesParam
 import com.jpp.moviespreview.domainlayer.ds.movie.MoviesDataSourceState
 import com.jpp.moviespreview.screens.main.movies.paging.MoviesPagingDataSourceFactory
 import javax.inject.Inject
@@ -23,7 +21,7 @@ import javax.inject.Inject
  * in this case.
  */
 class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFactory: MoviesPagingDataSourceFactory,
-                                                  private val configureMovieImagesInteractor: ConfigureMovieImagesInteractor) : ViewModel() {
+                                                  private val mapper: MovieItemMapper) : ViewModel() {
 
     private lateinit var viewState: LiveData<MoviesFragmentViewState>
 
@@ -61,15 +59,10 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
          * of MovieItem. configureMovieImagesInteractor.invoke() and the mapping to the UI item is being executed in the same background
          * thread that the factory assigns to the ds.
          */
-        pagedList = pagingDataSourceFactory.getMovieList(movieSectionMapper.invoke(currentSection)) { domainMovie ->
-            with(configureMovieImagesInteractor.invoke(MovieImagesParam(domainMovie, movieBackdropSize, moviePosterSize)).movie) {
-                MovieItem(headerImageUrl = backdropPath ?: "",
-                        title = title,
-                        contentImageUrl = posterPath ?: "",
-                        popularity = popularity.toString(),
-                        voteCount = voteCount.toString())
-            }
-        }
+        pagedList = pagingDataSourceFactory
+                .getMovieList(mapper.mapMovieSection(currentSection), movieBackdropSize, moviePosterSize) { domainMovie ->
+                    mapper.mapDomainMovie(domainMovie)
+                }
 
 
         /*
@@ -85,14 +78,5 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
         }
 
         return pagedList
-    }
-
-    private val movieSectionMapper: (UiMovieSection) -> MovieSection = {
-        when (it) {
-            UiMovieSection.Playing -> MovieSection.Playing
-            UiMovieSection.Popular -> MovieSection.Popular
-            UiMovieSection.TopRated -> MovieSection.TopRated
-            UiMovieSection.Upcoming -> MovieSection.Upcoming
-        }
     }
 }

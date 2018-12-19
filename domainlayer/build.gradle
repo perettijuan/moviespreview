@@ -26,9 +26,6 @@ android {
 dependencies {
     implementation deps.kotlin.stdlib
 
-    // Data layer -> DO NOT leak dependency
-    implementation project(path: ':datalayer')
-
     // Common module -> DO NOT leak dependency
     implementation project(path: ':common')
 

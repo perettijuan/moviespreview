@@ -6,6 +6,6 @@ package com.jpp.moviespreview.domainlayer.interactor
  * piece of functionality, following the single responsibility principle.
  */
 interface Interactor<in Param : Any, out Result> {
-    operator fun invoke(parameter: Param? = null) : Result = execute(parameter)
-    fun execute(parameter: Param?) : Result
+    operator fun invoke(parameter: Param): Result = execute(parameter)
+    fun execute(parameter: Param): Result
 }

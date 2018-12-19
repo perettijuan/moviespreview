@@ -5,9 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.jpp.moviespreview.domainlayer.Movie
 import com.jpp.moviespreview.domainlayer.MovieSection
-import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageInteractor
-import com.jpp.moviespreview.domainlayer.interactor.MoviePageParam
-import com.jpp.moviespreview.domainlayer.interactor.MoviePageResult
+import com.jpp.moviespreview.domainlayer.interactor.*
 
 /**
  * DataSource (Paging Library) implementation to retrieve the pages of a given [MovieSection].
@@ -24,8 +22,10 @@ import com.jpp.moviespreview.domainlayer.interactor.MoviePageResult
  * highlight the fact that exists because I'm using the Android Paging Library.
  * Another reason for this decision is that it makes unit testing easier.
  */
-class MoviesPagingDataSource(private val moviePageInteractor: GetMoviePageInteractor,
-                             private val currentSection: MovieSection) : PageKeyedDataSource<Int, Movie>() {
+class MoviesPagingDataSource(private val moviePage: GetConfiguredMoviePage,
+                             private val currentSection: MovieSection,
+                             private val backdropSize: Int,
+                             private val posterSize: Int) : PageKeyedDataSource<Int, Movie>() {
 
 
     private val viewStateLiveData by lazy { MutableLiveData<MoviesDataSourceState>() }
@@ -66,11 +66,11 @@ class MoviesPagingDataSource(private val moviePageInteractor: GetMoviePageIntera
     }
 
     private fun fetchMoviePage(page: Int, callback: (List<Movie>) -> Unit) {
-        moviePageInteractor(MoviePageParam(page, currentSection)).let {
+        moviePage(ConfiguredMoviePageParam(page, currentSection, backdropSize, posterSize)).let {
             when (it) {
-                MoviePageResult.ErrorNoConnectivity -> viewStateLiveData.postValue(MoviesDataSourceState.ErrorNoConnectivity)
-                MoviePageResult.ErrorUnknown -> viewStateLiveData.postValue(MoviesDataSourceState.ErrorUnknown)
-                is MoviePageResult.Success -> callback.invoke(it.moviePage.movies)
+                ConfiguredMoviePageResult.ErrorNoConnectivity -> viewStateLiveData.postValue(MoviesDataSourceState.ErrorNoConnectivity)
+                ConfiguredMoviePageResult.ErrorUnknown -> viewStateLiveData.postValue(MoviesDataSourceState.ErrorUnknown)
+                is ConfiguredMoviePageResult.Success -> callback.invoke(it.moviePage.movies)
             }
         }
     }

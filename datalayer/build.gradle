@@ -31,6 +31,7 @@ dependencies {
 
     // Common module -> DO NOT leak dependency
     implementation project(path: ':common')
+    implementation project(path: ':domainlayer')
 
     // Retrofit
     def retrofit_version = '2.3.0'

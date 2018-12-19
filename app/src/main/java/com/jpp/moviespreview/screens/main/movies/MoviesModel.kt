@@ -1,5 +1,9 @@
 package com.jpp.moviespreview.screens.main.movies
 
+import com.jpp.moviespreview.domainlayer.MovieSection
+import javax.inject.Inject
+import com.jpp.moviespreview.domainlayer.Movie as DomainMovie
+
 /***************************************************************************************************
  ********* Contains all the model classes that the movies section in the UI layer supports. ********
  ***************************************************************************************************/
@@ -25,3 +29,26 @@ data class MovieItem(
         val popularity: String,
         val voteCount: String
 )
+
+
+class MovieItemMapper @Inject constructor() {
+
+
+    fun mapDomainMovie(domainMovie: DomainMovie) = with(domainMovie) {
+        MovieItem(headerImageUrl = backdropPath ?: "",
+                title = title,
+                contentImageUrl = posterPath ?: "",
+                popularity = popularity.toString(),
+                voteCount = voteCount.toString()
+        )
+    }
+
+    fun mapMovieSection(uiMovieSection: UiMovieSection) =
+        when (uiMovieSection) {
+            UiMovieSection.Playing -> MovieSection.Playing
+            UiMovieSection.Popular -> MovieSection.Popular
+            UiMovieSection.TopRated -> MovieSection.TopRated
+            UiMovieSection.Upcoming -> MovieSection.Upcoming
+        }
+
+}

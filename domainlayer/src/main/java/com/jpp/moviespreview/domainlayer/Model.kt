@@ -8,6 +8,14 @@ package com.jpp.moviespreview.domainlayer
 
 
 /**
+ * Represents the configuration of the images that the application supports.
+ */
+data class ImagesConfiguration(val baseUrl: String,
+                               val posterSizes: List<String>,
+                               val profileSizes: List<String>,
+                               val backdropSizes: List<String>)
+
+/**
  * Represents a section of the application in terms of the movies that can be shown.
  */
 sealed class MovieSection {

@@ -8,7 +8,8 @@ import com.jpp.moviespreview.domainlayer.Movie
 import com.jpp.moviespreview.domainlayer.MovieSection
 import com.jpp.moviespreview.domainlayer.ds.movie.MoviesDataSourceState
 import com.jpp.moviespreview.domainlayer.ds.movie.MoviesPagingDataSource
-import com.jpp.moviespreview.domainlayer.interactor.GetMoviePageInteractor
+import com.jpp.moviespreview.domainlayer.interactor.GetConfiguredMoviePage
+import com.jpp.moviespreview.domainlayer.interactor.GetMoviePage
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
@@ -22,7 +23,7 @@ import javax.inject.Inject
  * Domain layer when it comes to movie lists:
  * It receives commands from the ViewModels and creates new dataSource instances as needed.
  */
-class MoviesPagingDataSourceFactory @Inject constructor(private val moviePageInteractor: GetMoviePageInteractor) : DataSource.Factory<Int, Movie>() {
+class MoviesPagingDataSourceFactory @Inject constructor(private val moviePage: GetConfiguredMoviePage) : DataSource.Factory<Int, Movie>() {
 
     // the current MoviesPagingDataSource being used.
     private lateinit var dataSource: MoviesPagingDataSource
@@ -34,7 +35,10 @@ class MoviesPagingDataSourceFactory @Inject constructor(private val moviePageInt
      * [movieSection] indicates the section needed.
      * [mapper] a mapping function to transform domain objects into another layer objects.
      */
-    fun <T> getMovieList(movieSection: MovieSection, mapper: (Movie) -> T): LiveData<PagedList<T>> {
+    fun <T> getMovieList(movieSection: MovieSection,
+                         backdropSize: Int,
+                         posterSize: Int,
+                         mapper: (Movie) -> T): LiveData<PagedList<T>> {
         if (::dataSource.isInitialized) {
             /*
              * This method enforces a new call to create() in order to hook up the newly created
@@ -44,7 +48,7 @@ class MoviesPagingDataSourceFactory @Inject constructor(private val moviePageInt
             dataSource.invalidate()
         }
 
-        dataSource = MoviesPagingDataSource(moviePageInteractor, movieSection)
+        dataSource = MoviesPagingDataSource(moviePage, movieSection, backdropSize, posterSize)
         dataSourceLiveData = dataSource.getViewState()
 
         val config = PagedList.Config.Builder()
