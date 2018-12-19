@@ -30,3 +30,13 @@ sealed class MoviePageResult {
  * Represents the result of [ConfigureMovieImagesInteractor].
  */
 data class MovieImagesResult(val movie: Movie)
+
+/**
+ * Represents the result of [GetConfiguredMoviePage].
+ */
+sealed class ConfiguredMoviePageResult {
+    object ErrorNoConnectivity : ConfiguredMoviePageResult()
+    object ErrorUnknown : ConfiguredMoviePageResult()
+    data class Success(val moviePage: MoviePage) : ConfiguredMoviePageResult()
+    data class BadParams(val message: String) : ConfiguredMoviePageResult()
+}
