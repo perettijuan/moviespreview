@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
-import com.jpp.moviespreview.domainlayer.MovieSection
 import com.jpp.moviespreview.domainlayer.ds.movie.MoviesDataSourceState
 import com.jpp.moviespreview.screens.main.movies.paging.MoviesPagingDataSourceFactory
 import javax.inject.Inject
@@ -74,5 +73,9 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
         }
 
         return pagedList
+    }
+
+    fun retryMoviesListFetch() {
+        pagingDataSourceFactory.retryLastDSCall()
     }
 }

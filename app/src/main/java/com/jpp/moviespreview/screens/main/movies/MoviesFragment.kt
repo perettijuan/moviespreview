@@ -94,12 +94,12 @@ abstract class MoviesFragment : Fragment() {
                 MoviesFragmentViewState.ErrorUnknown -> {
                     moviesList.toZeroAlpha()
                     moviesLoadingErrorView.toOneAlpha()
-                    moviesLoadingErrorView.animateToUnknownError {}
+                    moviesLoadingErrorView.animateToUnknownError { viewModel.retryMoviesListFetch() }
                 }
                 MoviesFragmentViewState.ErrorNoConnectivity -> {
                     moviesList.toZeroAlpha()
                     moviesLoadingErrorView.toOneAlpha()
-                    moviesLoadingErrorView.animateToNoConnectivityError {}
+                    moviesLoadingErrorView.animateToNoConnectivityError { viewModel.retryMoviesListFetch() }
                 }
                 MoviesFragmentViewState.InitialPageLoaded -> {
                     moviesLoadingErrorView.hideWithAnimation(500, 300) {

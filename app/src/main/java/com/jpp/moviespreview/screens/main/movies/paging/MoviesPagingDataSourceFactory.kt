@@ -48,7 +48,7 @@ class MoviesPagingDataSourceFactory @Inject constructor(private val moviePage: G
             dataSource.invalidate()
         }
 
-        dataSource = MoviesPagingDataSource(moviePage, movieSection, backdropSize, posterSize)
+        dataSource = MoviesPagingDataSource(moviePage, movieSection, backdropSize, posterSize, Executors.newFixedThreadPool(5))
         dataSourceLiveData = dataSource.getViewState()
 
         val config = PagedList.Config.Builder()
@@ -59,6 +59,12 @@ class MoviesPagingDataSourceFactory @Inject constructor(private val moviePage: G
         return LivePagedListBuilder(map { mapper.invoke(it) }, config)
                 .setFetchExecutor(Executors.newFixedThreadPool(5))
                 .build()
+    }
+
+    fun retryLastDSCall() {
+        if (::dataSource.isInitialized) {
+            dataSource.retryAllFailed()
+        }
     }
 
     /**
