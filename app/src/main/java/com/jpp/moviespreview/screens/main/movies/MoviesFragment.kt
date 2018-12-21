@@ -87,24 +87,24 @@ abstract class MoviesFragment : Fragment() {
         with(viewState) {
             when (this) {
                 MoviesFragmentViewState.Loading -> {
-                    moviesList.setInvisible()
-                    moviesLoadingErrorView.setVisible()
-                    moviesLoadingErrorView.animateToLoading()
+                    moviesList.toZeroAlpha()
+                    moviesLoadingErrorView.toOneAlpha()
+                    moviesLoadingErrorView.showLoadingImmediate()
                 }
                 MoviesFragmentViewState.ErrorUnknown -> {
-                    moviesList.setInvisible()
-                    moviesLoadingErrorView.setVisible()
+                    moviesList.toZeroAlpha()
+                    moviesLoadingErrorView.toOneAlpha()
                     moviesLoadingErrorView.animateToUnknownError {}
                 }
                 MoviesFragmentViewState.ErrorNoConnectivity -> {
-                    moviesList.setInvisible()
-                    moviesLoadingErrorView.setVisible()
+                    moviesList.toZeroAlpha()
+                    moviesLoadingErrorView.toOneAlpha()
                     moviesLoadingErrorView.animateToNoConnectivityError {}
                 }
                 MoviesFragmentViewState.InitialPageLoaded -> {
-                    moviesLoadingErrorView.hideWithAnimation {
-                        moviesLoadingErrorView.setInvisible()
-                        moviesList.setVisible()
+                    moviesLoadingErrorView.hideWithAnimation(500, 300) {
+                        moviesLoadingErrorView.toZeroAlpha()
+                        moviesList.animateToOneAlpha()
                     }
                 }
             }
