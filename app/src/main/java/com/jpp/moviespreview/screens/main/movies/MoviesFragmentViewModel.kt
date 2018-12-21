@@ -54,15 +54,11 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
 
         currentSection = movieSection
 
-        /*
-         * Verified behavior: here we are mapping the ds provided by pagingDataSourceFactory into a new one in order to obtain a list
-         * of MovieItem. configureMovieImagesInteractor.invoke() and the mapping to the UI item is being executed in the same background
-         * thread that the factory assigns to the ds.
-         */
-        pagedList = pagingDataSourceFactory
-                .getMovieList(mapper.mapMovieSection(currentSection), movieBackdropSize, moviePosterSize) { domainMovie ->
-                    mapper.mapDomainMovie(domainMovie)
-                }
+        pagedList = pagingDataSourceFactory.getMovieList(mapper.mapMovieSection(currentSection),
+                movieBackdropSize,
+                moviePosterSize) { domainMovie ->
+            mapper.mapDomainMovie(domainMovie)
+        }
 
 
         /*

@@ -135,7 +135,13 @@ abstract class MoviesFragment : Fragment() {
         class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 
             fun bindMovie(movie: MovieItem) {
-                itemView.movieListItemImage.loadImageUrl(movie.contentImageUrl)
+                with(itemView) {
+                    movieListItemHeaderIcon.loadImageUrl(movie.headerImageUrl)
+                    movieListItemTitle.text = movie.title
+                    movieListItemImage.loadImageUrl(movie.contentImageUrl)
+                    movieListItemPopularityText.text = movie.popularity
+                    movieListItemVoteCountText.text = movie.voteCount
+                }
             }
         }
     }
