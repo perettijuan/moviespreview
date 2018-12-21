@@ -15,10 +15,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.moviespreview.R
-import com.jpp.moviespreview.ext.getScreenSizeInPixels
-import com.jpp.moviespreview.ext.loadImageUrl
-import com.jpp.moviespreview.ext.setInvisible
-import com.jpp.moviespreview.ext.setVisible
+import com.jpp.moviespreview.ext.*
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movies.*
 import kotlinx.android.synthetic.main.movie_list_item.view.*
@@ -90,24 +87,24 @@ abstract class MoviesFragment : Fragment() {
         with(viewState) {
             when (this) {
                 MoviesFragmentViewState.Loading -> {
-                    moviesList.setInvisible()
-                    moviesLoadingErrorView.setVisible()
-                    moviesLoadingErrorView.animateToLoading()
+                    moviesList.toZeroAlpha()
+                    moviesLoadingErrorView.toOneAlpha()
+                    moviesLoadingErrorView.showLoadingImmediate()
                 }
                 MoviesFragmentViewState.ErrorUnknown -> {
-                    moviesList.setInvisible()
-                    moviesLoadingErrorView.setVisible()
-                    moviesLoadingErrorView.animateToUnknownError {}
+                    moviesList.toZeroAlpha()
+                    moviesLoadingErrorView.toOneAlpha()
+                    moviesLoadingErrorView.animateToUnknownError { viewModel.retryMoviesListFetch() }
                 }
                 MoviesFragmentViewState.ErrorNoConnectivity -> {
-                    moviesList.setInvisible()
-                    moviesLoadingErrorView.setVisible()
-                    moviesLoadingErrorView.animateToNoConnectivityError {}
+                    moviesList.toZeroAlpha()
+                    moviesLoadingErrorView.toOneAlpha()
+                    moviesLoadingErrorView.animateToNoConnectivityError { viewModel.retryMoviesListFetch() }
                 }
                 MoviesFragmentViewState.InitialPageLoaded -> {
-                    moviesLoadingErrorView.hideWithAnimation {
-                        moviesLoadingErrorView.setInvisible()
-                        moviesList.setVisible()
+                    moviesLoadingErrorView.hideWithAnimation(500, 300) {
+                        moviesLoadingErrorView.toZeroAlpha()
+                        moviesList.animateToOneAlpha()
                     }
                 }
             }
@@ -135,7 +132,13 @@ abstract class MoviesFragment : Fragment() {
         class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 
             fun bindMovie(movie: MovieItem) {
-                itemView.movieListItemImage.loadImageUrl(movie.contentImageUrl)
+                with(itemView) {
+                    movieListItemHeaderIcon.loadImageUrlAsCircular(movie.headerImageUrl)
+                    movieListItemTitle.text = movie.title
+                    movieListItemImage.loadImageUrl(movie.contentImageUrl)
+                    movieListItemPopularityText.text = movie.popularity
+                    movieListItemVoteCountText.text = movie.voteCount
+                }
             }
         }
     }

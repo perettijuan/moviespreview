@@ -21,4 +21,9 @@
     <item name="android:fontFamily">@font/poppins_bold</item>
   </style>
 
+  <style name="MPTextViewSmall" parent="@android:style/TextAppearance.Small">
+    <item name="android:textColor">@android:color/black</item>
+    <item name="android:fontFamily">@font/poppins</item>
+  </style>
+
 </resources>

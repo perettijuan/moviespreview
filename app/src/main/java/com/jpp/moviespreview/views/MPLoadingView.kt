@@ -28,7 +28,7 @@ import com.jpp.moviespreview.ext.getColor
  */
 class MPLoadingView : View {
 
-    private val animDuration = 750
+    private val animDuration = 550
 
     private var primaryColor: Paint? = null
     private var secondaryColor: Paint? = null

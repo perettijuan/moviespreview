@@ -5,7 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.jpp.moviespreview.domainlayer.Movie
 import com.jpp.moviespreview.domainlayer.MovieSection
-import com.jpp.moviespreview.domainlayer.interactor.*
+import com.jpp.moviespreview.domainlayer.interactor.ConfiguredMoviePageParam
+import com.jpp.moviespreview.domainlayer.interactor.ConfiguredMoviePageResult
+import com.jpp.moviespreview.domainlayer.interactor.GetConfiguredMoviePage
+import java.util.concurrent.Executor
 
 /**
  * DataSource (Paging Library) implementation to retrieve the pages of a given [MovieSection].
@@ -25,8 +28,11 @@ import com.jpp.moviespreview.domainlayer.interactor.*
 class MoviesPagingDataSource(private val moviePage: GetConfiguredMoviePage,
                              private val currentSection: MovieSection,
                              private val backdropSize: Int,
-                             private val posterSize: Int) : PageKeyedDataSource<Int, Movie>() {
+                             private val posterSize: Int,
+                             private val retryExecutor: Executor) : PageKeyedDataSource<Int, Movie>() {
 
+    // keep a function reference for the retry event
+    private var retry: (() -> Any)? = null
 
     private val viewStateLiveData by lazy { MutableLiveData<MoviesDataSourceState>() }
 
@@ -40,7 +46,7 @@ class MoviesPagingDataSource(private val moviePage: GetConfiguredMoviePage,
      */
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, Movie>) {
         viewStateLiveData.postValue(MoviesDataSourceState.LoadingInitial)
-        fetchMoviePage(1) {
+        fetchMoviePage(page = 1, retryFunc = { loadInitial(params, callback) }) {
             viewStateLiveData.postValue(MoviesDataSourceState.LoadingInitialDone)
             callback.onResult(it, null, 2)
         }
@@ -55,7 +61,7 @@ class MoviesPagingDataSource(private val moviePage: GetConfiguredMoviePage,
      */
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) {
         viewStateLiveData.postValue(MoviesDataSourceState.LoadingAfter)
-        fetchMoviePage(params.key) {
+        fetchMoviePage(page = params.key, retryFunc = { loadAfter(params, callback) }) {
             viewStateLiveData.postValue(MoviesDataSourceState.LoadingAfterDone)
             callback.onResult(it, params.key + 1)
         }
@@ -65,12 +71,34 @@ class MoviesPagingDataSource(private val moviePage: GetConfiguredMoviePage,
         //no-op
     }
 
-    private fun fetchMoviePage(page: Int, callback: (List<Movie>) -> Unit) {
+    /*
+     * Ref => https://github.com/googlesamples/android-architecture-components/blob/master/PagingWithNetworkSample/app/src/main/java/com/android/example/paging/pagingwithnetwork/reddit/repository/inMemory/byPage/PageKeyedSubredditDataSource.kt#L50
+     */
+    fun retryAllFailed() {
+        val prevRetry = retry
+        retry = null
+        prevRetry?.let {
+            retryExecutor.execute {
+                it.invoke()
+            }
+        }
+    }
+
+    private fun fetchMoviePage(page: Int, retryFunc: (() -> Any), callback: (List<Movie>) -> Unit) {
         moviePage(ConfiguredMoviePageParam(page, currentSection, backdropSize, posterSize)).let {
             when (it) {
-                ConfiguredMoviePageResult.ErrorNoConnectivity -> viewStateLiveData.postValue(MoviesDataSourceState.ErrorNoConnectivity)
-                ConfiguredMoviePageResult.ErrorUnknown -> viewStateLiveData.postValue(MoviesDataSourceState.ErrorUnknown)
-                is ConfiguredMoviePageResult.Success -> callback.invoke(it.moviePage.movies)
+                ConfiguredMoviePageResult.ErrorNoConnectivity -> {
+                    retry = retryFunc
+                    viewStateLiveData.postValue(MoviesDataSourceState.ErrorNoConnectivity)
+                }
+                ConfiguredMoviePageResult.ErrorUnknown -> {
+                    retry = retryFunc
+                    viewStateLiveData.postValue(MoviesDataSourceState.ErrorUnknown)
+                }
+                is ConfiguredMoviePageResult.Success -> {
+                    retry = null
+                    callback.invoke(it.moviePage.movies)
+                }
             }
         }
     }

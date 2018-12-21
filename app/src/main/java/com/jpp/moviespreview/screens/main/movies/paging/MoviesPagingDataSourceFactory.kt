@@ -48,17 +48,23 @@ class MoviesPagingDataSourceFactory @Inject constructor(private val moviePage: G
             dataSource.invalidate()
         }
 
-        dataSource = MoviesPagingDataSource(moviePage, movieSection, backdropSize, posterSize)
+        dataSource = MoviesPagingDataSource(moviePage, movieSection, backdropSize, posterSize, Executors.newFixedThreadPool(5))
         dataSourceLiveData = dataSource.getViewState()
 
         val config = PagedList.Config.Builder()
-                .setEnablePlaceholders(false)
+                .setEnablePlaceholders(true) //This does actually nothing (and it sucks). -> placeholders can only be enabled if your DataSource provides total items count.
                 .setPrefetchDistance(1)
                 .build()
 
         return LivePagedListBuilder(map { mapper.invoke(it) }, config)
                 .setFetchExecutor(Executors.newFixedThreadPool(5))
                 .build()
+    }
+
+    fun retryLastDSCall() {
+        if (::dataSource.isInitialized) {
+            dataSource.retryAllFailed()
+        }
     }
 
     /**

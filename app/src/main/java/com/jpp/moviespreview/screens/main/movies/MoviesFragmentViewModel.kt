@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
-import com.jpp.moviespreview.domainlayer.MovieSection
 import com.jpp.moviespreview.domainlayer.ds.movie.MoviesDataSourceState
 import com.jpp.moviespreview.screens.main.movies.paging.MoviesPagingDataSourceFactory
 import javax.inject.Inject
@@ -54,15 +53,9 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
 
         currentSection = movieSection
 
-        /*
-         * Verified behavior: here we are mapping the ds provided by pagingDataSourceFactory into a new one in order to obtain a list
-         * of MovieItem. configureMovieImagesInteractor.invoke() and the mapping to the UI item is being executed in the same background
-         * thread that the factory assigns to the ds.
-         */
-        pagedList = pagingDataSourceFactory
-                .getMovieList(mapper.mapMovieSection(currentSection), movieBackdropSize, moviePosterSize) { domainMovie ->
-                    mapper.mapDomainMovie(domainMovie)
-                }
+        pagedList = pagingDataSourceFactory.getMovieList(mapper.mapMovieSection(currentSection),
+                movieBackdropSize,
+                moviePosterSize) { domainMovie -> mapper.mapDomainMovie(domainMovie) }
 
 
         /*
@@ -78,5 +71,9 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
         }
 
         return pagedList
+    }
+
+    fun retryMoviesListFetch() {
+        pagingDataSourceFactory.retryLastDSCall()
     }
 }
