@@ -52,7 +52,7 @@ class MoviesPagingDataSourceFactory @Inject constructor(private val moviePage: G
         dataSourceLiveData = dataSource.getViewState()
 
         val config = PagedList.Config.Builder()
-                .setEnablePlaceholders(false)
+                .setEnablePlaceholders(true) //This does actually nothing (and it sucks). -> placeholders can only be enabled if your DataSource provides total items count.
                 .setPrefetchDistance(1)
                 .build()
 
