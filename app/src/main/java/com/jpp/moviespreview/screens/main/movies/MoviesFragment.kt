@@ -15,10 +15,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.moviespreview.R
-import com.jpp.moviespreview.ext.getScreenSizeInPixels
-import com.jpp.moviespreview.ext.loadImageUrl
-import com.jpp.moviespreview.ext.setInvisible
-import com.jpp.moviespreview.ext.setVisible
+import com.jpp.moviespreview.ext.*
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movies.*
 import kotlinx.android.synthetic.main.movie_list_item.view.*
@@ -136,7 +133,7 @@ abstract class MoviesFragment : Fragment() {
 
             fun bindMovie(movie: MovieItem) {
                 with(itemView) {
-                    movieListItemHeaderIcon.loadImageUrl(movie.headerImageUrl)
+                    movieListItemHeaderIcon.loadImageUrlAsCircular(movie.headerImageUrl)
                     movieListItemTitle.text = movie.title
                     movieListItemImage.loadImageUrl(movie.contentImageUrl)
                     movieListItemPopularityText.text = movie.popularity
