@@ -55,9 +55,7 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
 
         pagedList = pagingDataSourceFactory.getMovieList(mapper.mapMovieSection(currentSection),
                 movieBackdropSize,
-                moviePosterSize) { domainMovie ->
-            mapper.mapDomainMovie(domainMovie)
-        }
+                moviePosterSize) { domainMovie -> mapper.mapDomainMovie(domainMovie) }
 
 
         /*
