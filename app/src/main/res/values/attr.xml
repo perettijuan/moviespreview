@@ -5,6 +5,11 @@
        ref = https://medium.com/mindorks/mastering-android-themes-chapter-3-26a5b7773b6b -->
   <attr name="mpActionBarHeightExpanded" format="reference"/>
   <attr name="mpActionBarHeightNormal" format="reference"/>
+  <attr name="mpMovieItemHeaderImageWidth" format="reference"/>
+  <attr name="mpMovieItemHeaderImageHeight" format="reference"/>
+  <attr name="mpMovieItemImageHeight" format="reference"/>
+  <attr name="mpMovieItemBottomIconSize" format="reference"/>
+
 
 
   <declare-styleable name="MPLoadingView">

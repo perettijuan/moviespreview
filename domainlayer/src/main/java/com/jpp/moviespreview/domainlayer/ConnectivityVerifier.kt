@@ -2,6 +2,12 @@ package com.jpp.moviespreview.domainlayer
 
 import android.content.Context
 
+/**
+ * Has the responsibility of verifying if the device is currently
+ * connected to a network.
+ * It doesn't checks if there is internet access, just checks that a network
+ * can be accessed.
+ */
 interface ConnectivityVerifier {
     fun isConnectedToNetwork(): Boolean
 }

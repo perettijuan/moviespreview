@@ -29,9 +29,9 @@ class MPLoadingErrorView : ConstraintLayout {
      * Shows the loading spinner immediately (no animation performed).
      */
     fun showLoadingImmediate() {
-        loadingView.apply {
-            toOneAlpha()
-            start()
+        loadingView.let {
+            it.start()
+            it.toOneAlpha()
         }
         errorImageView.toZeroAlpha()
         errorTitleTextView.toZeroAlpha()
@@ -43,9 +43,9 @@ class MPLoadingErrorView : ConstraintLayout {
      * and the rest of the views immediately.
      */
     fun hideImmediate() {
-        loadingView.apply {
-            toZeroAlpha()
-            stop()
+        loadingView.let {
+            it.toZeroAlpha()
+            it.stop()
         }
         errorImageView.toZeroAlpha()
         errorTitleTextView.toZeroAlpha()

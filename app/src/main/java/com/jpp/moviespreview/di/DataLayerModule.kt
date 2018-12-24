@@ -2,15 +2,19 @@ package com.jpp.moviespreview.di
 
 import android.content.Context
 import com.jpp.moviespreview.BuildConfig
+import com.jpp.moviespreview.datalayer.DataModelMapper
 import com.jpp.moviespreview.datalayer.api.ServerRepository
-import com.jpp.moviespreview.datalayer.db.MoviesPreviewDataBase
-import com.jpp.moviespreview.datalayer.db.MoviesPreviewDataBaseImpl
-import com.jpp.moviespreview.datalayer.db.cache.MPCache
-import com.jpp.moviespreview.datalayer.db.cache.MPCacheImpl
-import com.jpp.moviespreview.datalayer.db.repository.DBConfigurationRepository
-import com.jpp.moviespreview.datalayer.db.room.RoomModelAdapter
-import com.jpp.moviespreview.datalayer.repository.ConfigurationRepository
+import com.jpp.moviespreview.datalayer.cache.MPDataBase
+import com.jpp.moviespreview.datalayer.cache.MPDataBaseImpl
+import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestamps
+import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestampsImpl
+import com.jpp.moviespreview.datalayer.cache.repository.CacheConfigurationRepository
+import com.jpp.moviespreview.datalayer.cache.repository.CacheMoviesRepository
+import com.jpp.moviespreview.datalayer.cache.room.RoomModelAdapter
 import com.jpp.moviespreview.datalayer.repository.ConfigurationRepositoryImpl
+import com.jpp.moviespreview.datalayer.repository.MoviesRepositoryImpl
+import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
+import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -23,23 +27,37 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun provideConfigurationRepository(dbConfigurationRepository: DBConfigurationRepository, serverRepositoryImpl: ServerRepository)
+    fun providesDataMapper(): DataModelMapper = DataModelMapper()
+
+    @Singleton
+    @Provides
+    fun providesConfigurationRepository(dbConfigurationRepository: CacheConfigurationRepository, serverRepositoryImpl: ServerRepository)
             : ConfigurationRepository = ConfigurationRepositoryImpl(dbConfigurationRepository, serverRepositoryImpl)
 
     @Singleton
     @Provides
-    fun providesDBConfigurationRepository(mpCache: MPCache, mpDataBase: MoviesPreviewDataBase)
-            : DBConfigurationRepository = DBConfigurationRepository(mpCache, mpDataBase)
+    fun providesMoviesRepository(cacheMoviesRepository: CacheMoviesRepository, serverRepositoryImpl: ServerRepository)
+            : MoviesRepository = MoviesRepositoryImpl(cacheMoviesRepository, serverRepositoryImpl)
 
     @Singleton
     @Provides
-    fun providesServerRepositoryImpl() = ServerRepository(BuildConfig.API_KEY)
+    fun providesCacheConfigurationRepository(mpCache: MPTimestamps, mpDataBase: MPDataBase, mapper: DataModelMapper)
+            : CacheConfigurationRepository = CacheConfigurationRepository(mpCache, mpDataBase, mapper)
 
     @Singleton
     @Provides
-    fun providesMPCache(context: Context): MPCache = MPCacheImpl(context)
+    fun providesCacheMovieRepository(mpCache: MPTimestamps, mpDatabase: MPDataBase, mapper: DataModelMapper)
+            : CacheMoviesRepository = CacheMoviesRepository(mpCache, mpDatabase, mapper)
 
     @Singleton
     @Provides
-    fun providesMPDataBase(context: Context): MoviesPreviewDataBase = MoviesPreviewDataBaseImpl(context, RoomModelAdapter())
+    fun providesServerRepositoryImpl(mapper: DataModelMapper) = ServerRepository(BuildConfig.API_KEY, mapper)
+
+    @Singleton
+    @Provides
+    fun providesMPCache(context: Context): MPTimestamps = MPTimestampsImpl(context)
+
+    @Singleton
+    @Provides
+    fun providesMPDataBase(context: Context): MPDataBase = MPDataBaseImpl(context, RoomModelAdapter())
 }

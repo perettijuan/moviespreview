@@ -26,13 +26,13 @@ android {
 dependencies {
     implementation deps.kotlin.stdlib
 
-    // Data layer -> DO NOT leak dependency
-    implementation project(path: ':datalayer')
-
     // Common module -> DO NOT leak dependency
     implementation project(path: ':common')
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Paging library
+    implementation deps.androidx.paging
 
     testImplementation deps.test.junit5.jupiter.api         // <-- allows running JUnit5 tests
     testImplementation deps.test.junit5.jupiter.params      // <-- allows running JUnit5 parameterized tests
