@@ -39,8 +39,6 @@ import javax.inject.Inject
  * in order to control whether the NavComponent should control or not the click on the top bar
  * icon. If we fail to do this, every time the user clicks the burger icon, the NavController
  * will attempt to add the startDestination Fragment in the back stack.
- *
- *
  */
 class MainActivity : AppCompatActivity(),  HasSupportFragmentInjector {
 
@@ -57,7 +55,24 @@ class MainActivity : AppCompatActivity(),  HasSupportFragmentInjector {
     }
 
     override fun onSupportNavigateUp(): Boolean {
+        /*
+         * 12/26/2018 - Navigation Library 1.0.0-alpha07
+         *
+         * Manage inner navigation: since we have multiple home destinations (all the fragments that
+         * are sub-classes of MoviesFragment) we need to manage the ActionBar button click for some cases (the
+         * burger or the arrow). If we fail to do so, the navigation library is assuming we're trying to
+         * open the nav drawer from the current destination.
+         * The logic here determinate if the current destination is one of the non-home destination fragments
+         * (the ones that are deeper in the navigation structure) and if it is the case asks the nav controller
+         * to navigate one step up.
+         * If it is a home destination, it opens the drawer and asks the nav controller to manage the navigation
+         * as usual.
+         */
         if(findNavController(this, R.id.mainNavHostFragment).currentDestination?.id == R.id.searchFragment) {
+            return navigateUp(findNavController(this, R.id.mainNavHostFragment), mainDrawerLayout)
+        }
+
+        if(findNavController(this, R.id.mainNavHostFragment).currentDestination?.id == R.id.movieDetailsFragment) {
             return navigateUp(findNavController(this, R.id.mainNavHostFragment), mainDrawerLayout)
         }
 

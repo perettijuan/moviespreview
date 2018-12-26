@@ -6,4 +6,7 @@ import com.jpp.moviespreview.screens.main.movies.UiMovieSection
 class UpcomingMoviesFragment : MoviesFragment() {
 
     override fun getMoviesSection(): UiMovieSection = UiMovieSection.Upcoming
+
+    override fun getNavDirectionsForMovieDetails(movieId: String) =
+        UpcomingMoviesFragmentDirections.actionUpcomingMoviesFragmentToMovieDetailsFragment(movieId)
 }

@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'androidx.navigation.safeargs'
 
 android {
     compileSdkVersion 28
@@ -47,9 +48,8 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout-solver:$constraintLayoutVersion"
 
     // Navigation Components
-    def navigationVersion = "1.0.0-alpha07"
-    implementation "android.arch.navigation:navigation-fragment-ktx:$navigationVersion"
-    implementation "android.arch.navigation:navigation-ui-ktx:$navigationVersion"
+    implementation deps.android.arch.navigation.fragment
+    implementation deps.android.arch.navigation.ui
 
     // ViewModel and LiveData
     implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"

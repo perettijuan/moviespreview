@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -43,6 +45,10 @@ abstract class MoviesFragment : Fragment() {
 
     private lateinit var viewModel: MoviesFragmentViewModel
 
+    private val movieSelectionListener: (MovieItem) -> Unit = {
+        findNavController().navigate(getNavDirectionsForMovieDetails(it.movieId.toString()))
+    }
+
 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
@@ -65,7 +71,7 @@ abstract class MoviesFragment : Fragment() {
         /* Set up the MovieList */
         moviesList.apply {
             layoutManager = LinearLayoutManager(activity)
-            adapter = MoviesAdapter()
+            adapter = MoviesAdapter(movieSelectionListener)
         }
         /*
          * Hook-up the LiveData that will be updated when the data source is created
@@ -117,27 +123,34 @@ abstract class MoviesFragment : Fragment() {
      */
     abstract fun getMoviesSection(): UiMovieSection
 
+    /**
+     * MUST be implemented for all fragments that are showing a list of movies in order to enable
+     * navigation to the movie details section.
+     */
+    abstract fun getNavDirectionsForMovieDetails(movieId: String): NavDirections
 
-    class MoviesAdapter : PagedListAdapter<MovieItem, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {
+
+    class MoviesAdapter(private val movieSelectionListener: (MovieItem) -> Unit) : PagedListAdapter<MovieItem, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.movie_list_item, parent, false))
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             getItem(position)?.let {
-                holder.bindMovie(it)
+                holder.bindMovie(it, movieSelectionListener)
             }
         }
 
         class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 
-            fun bindMovie(movie: MovieItem) {
+            fun bindMovie(movie: MovieItem, movieSelectionListener: (MovieItem) -> Unit) {
                 with(itemView) {
                     movieListItemHeaderIcon.loadImageUrlAsCircular(movie.headerImageUrl)
                     movieListItemTitle.text = movie.title
                     movieListItemImage.loadImageUrl(movie.contentImageUrl)
                     movieListItemPopularityText.text = movie.popularity
                     movieListItemVoteCountText.text = movie.voteCount
+                    setOnClickListener { movieSelectionListener(movie) }
                 }
             }
         }

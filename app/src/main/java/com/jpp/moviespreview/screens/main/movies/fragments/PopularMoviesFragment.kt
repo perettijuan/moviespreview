@@ -6,4 +6,7 @@ import com.jpp.moviespreview.screens.main.movies.UiMovieSection
 class PopularMoviesFragment : MoviesFragment() {
 
     override fun getMoviesSection(): UiMovieSection = UiMovieSection.Popular
+
+    override fun getNavDirectionsForMovieDetails(movieId: String) =
+        PopularMoviesFragmentDirections.actionPopularMoviesFragmentToMovieDetailsFragment(movieId)
 }
