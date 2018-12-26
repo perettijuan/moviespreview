@@ -51,7 +51,7 @@ class CacheMoviesRepositoryTest {
                         getMoviePageTimes = 1,
                         dataMoviePage = dataPageMock,
                         domainMoviePage = domainPageMock,
-                        expectedResult = MoviesRepository.MoviesRepositoryOutput.Success(domainPageMock)
+                        expectedResult = MoviesRepository.MoviesRepositoryOutput.MoviePageRetrieved(domainPageMock)
                 ),
                 GetMoviePageParameter(
                         caseName = "MovieType stored in DB and invalid cache",

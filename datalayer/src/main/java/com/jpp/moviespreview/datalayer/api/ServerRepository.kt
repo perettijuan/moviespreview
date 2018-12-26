@@ -78,7 +78,7 @@ class ServerRepository(private val serverApiKey: String,
      */
     private fun getMoviePage(apiCall: () -> DataMoviePage?): MoviesRepository.MoviesRepositoryOutput =
         tryCatchOrReturnNull { apiCall.invoke() }
-                ?.let { MoviesRepository.MoviesRepositoryOutput.Success(mapper.mapDataMoviePage(it)) }
+                ?.let { MoviesRepository.MoviesRepositoryOutput.MoviePageRetrieved(mapper.mapDataMoviePage(it)) }
                 ?: run { MoviesRepository.MoviesRepositoryOutput.Error }
 
 

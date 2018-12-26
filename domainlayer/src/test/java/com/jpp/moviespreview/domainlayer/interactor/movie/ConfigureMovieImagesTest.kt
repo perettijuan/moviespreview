@@ -19,16 +19,6 @@ import org.junit.jupiter.params.provider.MethodSource
 @ExtendWith(MockKExtension::class)
 class ConfigureMovieImagesTest {
 
-    data class ExecuteTestParameter(
-            val case: String,
-            val imagesConfig: ImagesConfiguration,
-            val movie: Movie,
-            val targetBackdropSize: Int,
-            val targetPosterSize : Int,
-            val expectedPosterPath: String?,
-            val expectedBackdropPath: String?
-    )
-
     @MockK
     private lateinit var configRepository: ConfigurationRepository
     private lateinit var subject: ConfigureMovieImages
@@ -59,6 +49,15 @@ class ConfigureMovieImagesTest {
         assertEquals(movie, result.movie)
     }
 
+    data class ExecuteTestParameter(
+            val case: String,
+            val imagesConfig: ImagesConfiguration,
+            val movie: Movie,
+            val targetBackdropSize: Int,
+            val targetPosterSize : Int,
+            val expectedPosterPath: String?,
+            val expectedBackdropPath: String?
+    )
 
     companion object {
 

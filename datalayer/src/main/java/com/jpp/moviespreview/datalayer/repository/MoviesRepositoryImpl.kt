@@ -69,9 +69,9 @@ class MoviesRepositoryImpl(private val cacheRepository: MoviesRepository,
 
         return with(dbFunction(page)) {
             when (this) {
-                is MoviesRepository.MoviesRepositoryOutput.Success -> this
+                is MoviesRepository.MoviesRepositoryOutput.MoviePageRetrieved -> this
                 else -> serverFunction(page).apply {
-                    if (this is MoviesRepository.MoviesRepositoryOutput.Success) {
+                    if (this is MoviesRepository.MoviesRepositoryOutput.MoviePageRetrieved) {
                         updateFunction(this.page)
                     }
                 }

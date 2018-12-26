@@ -101,7 +101,7 @@ class GetMoviePageTest {
         fun executeParameters() = listOf(
                 ExecuteTestParameter(
                         moviePage = 1,
-                        resultDomainPage =  MoviesRepository.MoviesRepositoryOutput.Success(resultDomainPageMock),
+                        resultDomainPage =  MoviesRepository.MoviesRepositoryOutput.MoviePageRetrieved(resultDomainPageMock),
                         expectedResult = MoviePageResult.Success(resultDomainPageMock)
                 ),
                 ExecuteTestParameter(

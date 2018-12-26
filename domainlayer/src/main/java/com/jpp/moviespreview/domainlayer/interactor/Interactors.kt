@@ -50,3 +50,11 @@ interface ConfigureMovieImages : Interactor<MovieImagesParam, MovieImagesResult>
  * [ConfiguredMoviePageResult] when successful, contains the Movies already configured.
  */
 interface GetConfiguredMoviePage : Interactor<ConfiguredMoviePageParam, ConfiguredMoviePageResult>
+
+/**
+ * [Interactor] to retrieve the details of a given movie.
+ *
+ * [MovieDetailsParam] contains the identifier of the movie to get the details.
+ * [MovieDetailsResult] when the execution is successful, it contains the details of the movie requested.
+ */
+interface GetMovieDetails : Interactor<MovieDetailsParam, MovieDetailsResult>

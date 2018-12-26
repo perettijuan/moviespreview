@@ -1,6 +1,7 @@
 package com.jpp.moviespreview.domainlayer.interactor
 
 import com.jpp.moviespreview.domainlayer.Movie
+import com.jpp.moviespreview.domainlayer.MovieDetail
 import com.jpp.moviespreview.domainlayer.MoviePage
 
 /***************************************************************************************************
@@ -37,4 +38,14 @@ sealed class ConfiguredMoviePageResult {
     object ErrorNoConnectivity : ConfiguredMoviePageResult()
     object ErrorUnknown : ConfiguredMoviePageResult()
     data class Success(val moviePage: MoviePage) : ConfiguredMoviePageResult()
+}
+
+
+/**
+ * Represents the result of [GetMovieDetails].
+ */
+sealed class MovieDetailsResult {
+    object ErrorNoConnectivity : MovieDetailsResult()
+    object ErrorUnknown : MovieDetailsResult()
+    data class Success(val moviePage: MovieDetail) : MovieDetailsResult()
 }

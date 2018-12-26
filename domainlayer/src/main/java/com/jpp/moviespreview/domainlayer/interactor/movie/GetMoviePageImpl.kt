@@ -19,7 +19,7 @@ class GetMoviePageImpl(private val moviesRepository: MoviesRepository,
             MovieSection.Upcoming -> moviesRepository.getUpcomingMoviePage(parameter.page)
         }.let { result ->
             when (result) {
-                is MoviesRepository.MoviesRepositoryOutput.Success -> MoviePageResult.Success(result.page)
+                is MoviesRepository.MoviesRepositoryOutput.MoviePageRetrieved -> MoviePageResult.Success(result.page)
                 else -> {
                     when (connectivityVerifier.isConnectedToNetwork()) {
                         true -> MoviePageResult.ErrorUnknown

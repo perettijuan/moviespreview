@@ -52,7 +52,7 @@ class CacheMoviesRepository(private val mpCache: MPTimestamps,
     private fun getMoviePageOrClearDataBaseIfNeeded(movieType: MovieType, page: Int): MoviesRepository.MoviesRepositoryOutput {
         return when (shouldRetrieveMoviePage(movieType)) {
             true -> mpDatabase.getMoviePage(page)
-                    ?.let { MoviesRepository.MoviesRepositoryOutput.Success(mapper.mapDataMoviePage(it)) }
+                    ?.let { MoviesRepository.MoviesRepositoryOutput.MoviePageRetrieved(mapper.mapDataMoviePage(it)) }
                     ?: run { MoviesRepository.MoviesRepositoryOutput.Error }
             else -> {
                 mpDatabase.clearMoviePagesStored()
