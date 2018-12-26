@@ -1,6 +1,7 @@
 package com.jpp.moviespreview.di
 
 import com.jpp.moviespreview.screens.main.MainActivity
+import com.jpp.moviespreview.screens.main.details.MovieDetailsFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.PlayingMoviesFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.PopularMoviesFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.TopRatedMoviesFragment
@@ -24,4 +25,7 @@ abstract class BuildersModule {
 
     @ContributesAndroidInjector
     abstract fun bindUpcomingMoviesFragment(): UpcomingMoviesFragment
+
+    @ContributesAndroidInjector
+    abstract fun bindMovieDetailsFragment(): MovieDetailsFragment
 }

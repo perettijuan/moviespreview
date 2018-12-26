@@ -7,6 +7,6 @@ class PopularMoviesFragment : MoviesFragment() {
 
     override fun getMoviesSection(): UiMovieSection = UiMovieSection.Popular
 
-    override fun getNavDirectionsForMovieDetails(movieId: String) =
-        PopularMoviesFragmentDirections.actionPopularMoviesFragmentToMovieDetailsFragment(movieId)
+    override fun getNavDirectionsForMovieDetails(movieId: String, movieImageUrl: String) =
+        PopularMoviesFragmentDirections.actionPopularMoviesFragmentToMovieDetailsFragment(movieId, movieImageUrl)
 }

@@ -7,6 +7,6 @@ class UpcomingMoviesFragment : MoviesFragment() {
 
     override fun getMoviesSection(): UiMovieSection = UiMovieSection.Upcoming
 
-    override fun getNavDirectionsForMovieDetails(movieId: String) =
-        UpcomingMoviesFragmentDirections.actionUpcomingMoviesFragmentToMovieDetailsFragment(movieId)
+    override fun getNavDirectionsForMovieDetails(movieId: String, movieImageUrl: String) =
+        UpcomingMoviesFragmentDirections.actionUpcomingMoviesFragmentToMovieDetailsFragment(movieId, movieImageUrl)
 }

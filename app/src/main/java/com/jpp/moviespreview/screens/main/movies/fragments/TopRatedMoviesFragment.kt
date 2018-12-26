@@ -7,6 +7,6 @@ class TopRatedMoviesFragment : MoviesFragment() {
 
     override fun getMoviesSection(): UiMovieSection = UiMovieSection.TopRated
 
-    override fun getNavDirectionsForMovieDetails(movieId: String) =
-        TopRatedMoviesFragmentDirections.actionTopRatedMoviesFragmentToMovieDetailsFragment(movieId)
+    override fun getNavDirectionsForMovieDetails(movieId: String, movieImageUrl: String) =
+        TopRatedMoviesFragmentDirections.actionTopRatedMoviesFragmentToMovieDetailsFragment(movieId, movieImageUrl)
 }

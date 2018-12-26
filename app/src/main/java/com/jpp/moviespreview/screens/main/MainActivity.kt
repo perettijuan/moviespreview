@@ -1,5 +1,6 @@
 package com.jpp.moviespreview.screens.main
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -14,12 +15,14 @@ import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.*
 import com.jpp.moviespreview.R
+import com.jpp.moviespreview.ext.loadImageUrl
 import com.jpp.moviespreview.ext.setGone
+import com.jpp.moviespreview.ext.setVisible
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.activity_main.*
-import dagger.android.DispatchingAndroidInjector
 import javax.inject.Inject
 
 
@@ -61,14 +64,15 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         viewModel.bindViewState().observe(this, Observer { viewState ->
             when (viewState) {
                 MainActivityViewState.ActionBarLocked -> lockActionBar()
-                is MainActivityViewState.ActionBarUnlocked -> TODO()
+                is MainActivityViewState.ActionBarUnlocked -> {
+                    mainImageView.loadImageUrl(viewState.contentImageUrl)
+                    unlockActionBar()
+                }
             }
         })
 
-
         setSupportActionBar(mainToolbar)
         setupNavigation()
-
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -173,6 +177,33 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         }
         mainImageView.setGone()
     }
+
+
+    /**
+     * Unlock the AppBarLayout with an animation.
+     * The idea is that the Fragments that are shown by this Activity, takes the responsibility
+     * of enabling/disabling the scrolling behavior of the CollapsingToolbarLayout that is
+     * hosted in this Activity.
+     */
+    private fun unlockActionBar() {
+        mainAppBarLayout.apply {
+            setExpanded(true, false)
+            isActivated = true
+        }
+
+        ValueAnimator.ofInt(mainAppBarLayout.measuredHeight, resources.getDimension(R.dimen.action_bar_height_expanded).toInt())
+                .apply { duration = 300 }
+                .also {
+                    it.addUpdateListener {
+                        val newHeight = it.animatedValue as Int
+                        val lp = mainAppBarLayout.layoutParams as CoordinatorLayout.LayoutParams
+                        lp.height = newHeight
+                        mainAppBarLayout.layoutParams = lp
+                    }
+                }.run { start() }
+        mainImageView.setVisible()
+    }
+
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentDispatchingAndroidInjector
 }
