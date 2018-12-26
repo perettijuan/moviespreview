@@ -1,5 +1,6 @@
 package com.jpp.moviespreview.screens.main
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -7,18 +8,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.*
 import com.jpp.moviespreview.R
+import com.jpp.moviespreview.ext.loadImageUrl
 import com.jpp.moviespreview.ext.setGone
+import com.jpp.moviespreview.ext.setVisible
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.activity_main.*
-import dagger.android.DispatchingAndroidInjector
 import javax.inject.Inject
-
 
 
 /**
@@ -39,25 +44,56 @@ import javax.inject.Inject
  * in order to control whether the NavComponent should control or not the click on the top bar
  * icon. If we fail to do this, every time the user clicks the burger icon, the NavController
  * will attempt to add the startDestination Fragment in the back stack.
- *
- *
  */
-class MainActivity : AppCompatActivity(),  HasSupportFragmentInjector {
+class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     @Inject
     lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private lateinit var viewModel: MainActivityViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this);
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainActivityViewModel::class.java)
+        viewModel.bindViewState().observe(this, Observer { viewState ->
+            when (viewState) {
+                MainActivityViewState.ActionBarLocked -> lockActionBar()
+                is MainActivityViewState.ActionBarUnlocked -> {
+                    mainImageView.loadImageUrl(viewState.contentImageUrl)
+                    unlockActionBar()
+                }
+            }
+        })
+
         setSupportActionBar(mainToolbar)
         setupNavigation()
-        lockActionBar()
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        if(findNavController(this, R.id.mainNavHostFragment).currentDestination?.id == R.id.searchFragment) {
+        /*
+         * 12/26/2018 - Navigation Library 1.0.0-alpha07
+         *
+         * Manage inner navigation: since we have multiple home destinations (all the fragments that
+         * are sub-classes of MoviesFragment) we need to manage the ActionBar button click for some cases (the
+         * burger or the arrow). If we fail to do so, the navigation library is assuming we're trying to
+         * open the nav drawer from the current destination.
+         * The logic here determinate if the current destination is one of the non-home destination fragments
+         * (the ones that are deeper in the navigation structure) and if it is the case asks the nav controller
+         * to navigate one step up.
+         * If it is a home destination, it opens the drawer and asks the nav controller to manage the navigation
+         * as usual.
+         */
+        if (findNavController(this, R.id.mainNavHostFragment).currentDestination?.id == R.id.searchFragment) {
+            return navigateUp(findNavController(this, R.id.mainNavHostFragment), mainDrawerLayout)
+        }
+
+        if (findNavController(this, R.id.mainNavHostFragment).currentDestination?.id == R.id.movieDetailsFragment) {
             return navigateUp(findNavController(this, R.id.mainNavHostFragment), mainDrawerLayout)
         }
 
@@ -141,6 +177,33 @@ class MainActivity : AppCompatActivity(),  HasSupportFragmentInjector {
         }
         mainImageView.setGone()
     }
+
+
+    /**
+     * Unlock the AppBarLayout with an animation.
+     * The idea is that the Fragments that are shown by this Activity, takes the responsibility
+     * of enabling/disabling the scrolling behavior of the CollapsingToolbarLayout that is
+     * hosted in this Activity.
+     */
+    private fun unlockActionBar() {
+        mainAppBarLayout.apply {
+            setExpanded(true, false)
+            isActivated = true
+        }
+
+        ValueAnimator.ofInt(mainAppBarLayout.measuredHeight, resources.getDimension(R.dimen.action_bar_height_expanded).toInt())
+                .apply { duration = 300 }
+                .also {
+                    it.addUpdateListener {
+                        val newHeight = it.animatedValue as Int
+                        val lp = mainAppBarLayout.layoutParams as CoordinatorLayout.LayoutParams
+                        lp.height = newHeight
+                        mainAppBarLayout.layoutParams = lp
+                    }
+                }.run { start() }
+        mainImageView.setVisible()
+    }
+
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentDispatchingAndroidInjector
 }

@@ -16,13 +16,17 @@ class GetConfiguredMoviePageImpl(private val getMoviePage: GetMoviePage,
                 MoviePageResult.ErrorNoConnectivity -> ConfiguredMoviePageResult.ErrorNoConnectivity
                 MoviePageResult.ErrorUnknown -> ConfiguredMoviePageResult.ErrorUnknown
                 is MoviePageResult.Success -> {
-                    ConfiguredMoviePageResult.Success(
-                            MoviePage(
-                                    pageNumber = it.moviePage.pageNumber,
-                                    totalPages = it.moviePage.totalPages,
-                                    movies = it.moviePage.movies.map { configureMovie(MovieImagesParam(it, parameter.backdropSize, parameter.posterSize)).movie }
-                            )
-                    )
+                    it.moviePage.movies
+                            .map { movieToConfigure -> configureMovie(MovieImagesParam(movieToConfigure, parameter.backdropSize, parameter.posterSize)).movie }
+                            .let { configuredMovies ->
+                                ConfiguredMoviePageResult.Success(
+                                        MoviePage(
+                                                pageNumber = it.moviePage.pageNumber,
+                                                totalPages = it.moviePage.totalPages,
+                                                movies = configuredMovies
+                                        )
+                                )
+                            }
                 }
             }
         }

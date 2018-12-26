@@ -7,4 +7,8 @@ class PlayingMoviesFragment : MoviesFragment() {
 
     override fun getMoviesSection(): UiMovieSection = UiMovieSection.Playing
 
+
+    override fun getNavDirectionsForMovieDetails(movieId: String, movieImageUrl: String) =
+        PlayingMoviesFragmentDirections.actionPlayingMoviesFragmentToMovieDetailsFragment(movieId, movieImageUrl)
+
 }

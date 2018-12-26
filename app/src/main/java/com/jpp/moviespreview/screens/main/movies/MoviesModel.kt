@@ -23,6 +23,7 @@ sealed class UiMovieSection {
  * Represents an item in the list of Movies shown in the initial screen of the application.
  */
 data class MovieItem(
+        val movieId: Double,
         val headerImageUrl: String,
         val title: String,
         val contentImageUrl: String,
@@ -35,7 +36,8 @@ class MovieItemMapper @Inject constructor() {
 
 
     fun mapDomainMovie(domainMovie: DomainMovie) = with(domainMovie) {
-        MovieItem(headerImageUrl = backdropPath ?: "emptyPath",
+        MovieItem(movieId = id,
+                headerImageUrl = backdropPath ?: "emptyPath",
                 title = title,
                 contentImageUrl = posterPath ?: "emptyPath",
                 popularity = popularity.toString(),
