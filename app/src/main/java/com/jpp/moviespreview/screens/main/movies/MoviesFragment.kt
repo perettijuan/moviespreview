@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
@@ -18,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.ext.*
+import com.jpp.moviespreview.screens.main.MainActivityAction
+import com.jpp.moviespreview.screens.main.MainActivityViewModel
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movies.*
 import kotlinx.android.synthetic.main.movie_list_item.view.*
@@ -43,12 +44,9 @@ abstract class MoviesFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var viewModel: MoviesFragmentViewModel
-
     private val movieSelectionListener: (MovieItem) -> Unit = {
         findNavController().navigate(getNavDirectionsForMovieDetails(it.movieId.toString()))
     }
-
 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
@@ -59,31 +57,34 @@ abstract class MoviesFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_movies, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        /* Set up the ViewModel */
-        viewModel = activity?.run {
-            ViewModelProviders.of(this, viewModelFactory).get(MoviesFragmentViewModel::class.java)
-        } ?: throw RuntimeException("Invalid Activity")
 
         /* Set up the MovieList */
         moviesList.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = MoviesAdapter(movieSelectionListener)
         }
+
+        /* Disable extended action bar in main activity */
+        withViewModel<MainActivityViewModel>(viewModelFactory) {
+            onAction(MainActivityAction.UserSelectedMovieList)
+        }
+
         /*
          * Hook-up the LiveData that will be updated when the data source is created
          * and then update the adapter with the new data.
          */
-        viewModel.getMovieList(getMoviesSection(), getScreenSizeInPixels().x, getScreenSizeInPixels().x).observe(this, Observer<PagedList<MovieItem>> {
-            (moviesList.adapter as MoviesAdapter).submitList(it)
-        })
-
-        viewModel.bindViewState().observe(this, Observer {
-            renderViewState(it)
-        })
+        withViewModel<MoviesFragmentViewModel>(viewModelFactory) {
+            getMovieList(getMoviesSection(), getScreenSizeInPixels().x, getScreenSizeInPixels().x)
+                    .observe(this@MoviesFragment, Observer<PagedList<MovieItem>> {
+                        (moviesList.adapter as MoviesAdapter).submitList(it)
+                    })
+        }.also {
+            it.bindViewState().observe(this, Observer { viewState ->
+                renderViewState(viewState)
+            })
+        }
     }
 
     /**
@@ -100,12 +101,20 @@ abstract class MoviesFragment : Fragment() {
                 MoviesFragmentViewState.ErrorUnknown -> {
                     moviesList.toZeroAlpha()
                     moviesLoadingErrorView.toOneAlpha()
-                    moviesLoadingErrorView.animateToUnknownError { viewModel.retryMoviesListFetch() }
+                    moviesLoadingErrorView.animateToUnknownError {
+                        withViewModel<MoviesFragmentViewModel>(viewModelFactory) {
+                            retryMoviesListFetch()
+                        }
+                    }
                 }
                 MoviesFragmentViewState.ErrorNoConnectivity -> {
                     moviesList.toZeroAlpha()
                     moviesLoadingErrorView.toOneAlpha()
-                    moviesLoadingErrorView.animateToNoConnectivityError { viewModel.retryMoviesListFetch() }
+                    moviesLoadingErrorView.animateToNoConnectivityError {
+                        withViewModel<MoviesFragmentViewModel>(viewModelFactory) {
+                            retryMoviesListFetch()
+                        }
+                    }
                 }
                 MoviesFragmentViewState.InitialPageLoaded -> {
                     moviesLoadingErrorView.hideWithAnimation(500, 300) {

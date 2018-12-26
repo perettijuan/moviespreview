@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.*
@@ -18,7 +21,6 @@ import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.activity_main.*
 import dagger.android.DispatchingAndroidInjector
 import javax.inject.Inject
-
 
 
 /**
@@ -40,18 +42,33 @@ import javax.inject.Inject
  * icon. If we fail to do this, every time the user clicks the burger icon, the NavController
  * will attempt to add the startDestination Fragment in the back stack.
  */
-class MainActivity : AppCompatActivity(),  HasSupportFragmentInjector {
+class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     @Inject
     lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private lateinit var viewModel: MainActivityViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this);
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainActivityViewModel::class.java)
+        viewModel.bindViewState().observe(this, Observer { viewState ->
+            when (viewState) {
+                MainActivityViewState.ActionBarLocked -> lockActionBar()
+                is MainActivityViewState.ActionBarUnlocked -> TODO()
+            }
+        })
+
+
         setSupportActionBar(mainToolbar)
         setupNavigation()
-        lockActionBar()
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -68,11 +85,11 @@ class MainActivity : AppCompatActivity(),  HasSupportFragmentInjector {
          * If it is a home destination, it opens the drawer and asks the nav controller to manage the navigation
          * as usual.
          */
-        if(findNavController(this, R.id.mainNavHostFragment).currentDestination?.id == R.id.searchFragment) {
+        if (findNavController(this, R.id.mainNavHostFragment).currentDestination?.id == R.id.searchFragment) {
             return navigateUp(findNavController(this, R.id.mainNavHostFragment), mainDrawerLayout)
         }
 
-        if(findNavController(this, R.id.mainNavHostFragment).currentDestination?.id == R.id.movieDetailsFragment) {
+        if (findNavController(this, R.id.mainNavHostFragment).currentDestination?.id == R.id.movieDetailsFragment) {
             return navigateUp(findNavController(this, R.id.mainNavHostFragment), mainDrawerLayout)
         }
 

@@ -2,6 +2,7 @@ package com.jpp.moviespreview.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.jpp.moviespreview.screens.main.MainActivityViewModel
 import com.jpp.moviespreview.screens.main.movies.MoviesFragmentViewModel
 import dagger.Binds
 import dagger.Module
@@ -21,5 +22,9 @@ abstract class ViewModelModule {
     @ViewModelKey(MoviesFragmentViewModel::class)
     internal abstract fun postMoviesFragmentViewModel(viewModel: MoviesFragmentViewModel): ViewModel
 
-    // Add more view models here
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MainActivityViewModel::class)
+    internal abstract fun postMainActivityViewModel(viewModel: MainActivityViewModel): ViewModel
 }
