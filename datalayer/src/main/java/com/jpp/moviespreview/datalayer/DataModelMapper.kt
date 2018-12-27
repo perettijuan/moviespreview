@@ -7,6 +7,10 @@ import com.jpp.moviespreview.domainlayer.Movie as DomainMovie
 import com.jpp.moviespreview.datalayer.Movie as DataMovie
 import com.jpp.moviespreview.domainlayer.MoviePage as DomainMoviePage
 import com.jpp.moviespreview.datalayer.MoviePage as DataMoviePage
+import com.jpp.moviespreview.domainlayer.MovieDetail as DomainMovieDetail
+import com.jpp.moviespreview.datalayer.MovieDetail as DataMovieDetail
+import com.jpp.moviespreview.domainlayer.Genre as DomainGenre
+import com.jpp.moviespreview.datalayer.MovieGenre as DataGenre
 
 /**
  * Maps all domain classes into data module classes.
@@ -105,6 +109,35 @@ class DataModelMapper {
                     vote_count = voteCount,
                     vote_average = voteAverage,
                     popularity = popularity
+            )
+        }
+
+    /**
+     * Maps a [DataMovieDetail] into a [DomainMovieDetail].
+     */
+    fun mapDataMovieDetail(dataMovieDetail: DataMovieDetail): DomainMovieDetail =
+        with(dataMovieDetail) {
+            DomainMovieDetail(
+                    id = id,
+                    title = title,
+                    overview = overview,
+                    releaseDate = release_date,
+                    posterPath = poster_path,
+                    genres = genres.map { mapDataGenre(it) },
+                    voteCount = vote_count,
+                    voteAverage = vote_average,
+                    popularity = popularity
+            )
+        }
+
+    /**
+     * Maps a [DataGenre] into a [DomainGenre].
+     */
+    fun mapDataGenre(dataGenre: DataGenre): DomainGenre =
+        with(dataGenre) {
+            DomainGenre(
+                    id = id,
+                    name = name
             )
         }
 

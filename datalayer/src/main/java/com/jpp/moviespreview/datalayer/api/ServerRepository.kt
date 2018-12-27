@@ -59,6 +59,11 @@ class ServerRepository(private val serverApiKey: String,
     override fun getUpcomingMoviePage(page: Int): MoviesRepository.MoviesRepositoryOutput =
         getMoviePage { API.getUpcoming(page, serverApiKey).execute().body() }
 
+    override fun getMovieDetail(movieId: Double): MoviesRepository.MoviesRepositoryOutput =
+        tryCatchOrReturnNull { API.getMovieDetails(movieId, serverApiKey).execute().body() }
+                ?.let { MoviesRepository.MoviesRepositoryOutput.MovieDetailsRetrieved(mapper.mapDataMovieDetail(it)) }
+                ?: run { MoviesRepository.MoviesRepositoryOutput.Error }
+
     override fun updateNowPlayingMoviePage(moviePage: MoviePage) =
         throw UnsupportedOperationException("Updating playing movies is not supported by the server")
 

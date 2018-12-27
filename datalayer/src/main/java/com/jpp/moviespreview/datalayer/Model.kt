@@ -72,3 +72,36 @@ data class Movie(val id: Double,
                  val vote_count: Double,
                  val vote_average: Float,
                  val popularity: Float)
+
+/**
+ * Represents the Genre of a movie.
+ * [id] - the identifier of the Genre.
+ * [name] - the name to show.
+ */
+data class MovieGenre(val id: Int,
+                      val name: String)
+
+/**
+ * Represents the details of a given Movie.
+ * [id] - the identifier of the movie.
+ * [title] - the title of the movie to be shown.
+ * [overview] - an synopsis of the movie.
+ * [release_date] - the date in which the movie was originally released. The format
+ * depends on the language used to fetch the movie.
+ * [poster_path] - the path of the poster image. This needs to be used to configure
+ * the full URL of the image, using the sizes available in [ImagesConfiguration.poster_sizes].
+ * [genres] - the list of genres that the movie is listed in.
+ * [vote_count] - the total number of votes the movie has in the community.
+ * [vote_average] - the average of votes that the movie has in the community.
+ * [popularity] - represents how popular the movie is in the community, based in the
+ * relative number of votes.
+ */
+data class MovieDetail(val id: Double,
+                       val title: String,
+                       val overview: String,
+                       val release_date: String,
+                       val poster_path: String?,
+                       val genres: List<MovieGenre>,
+                       val vote_count: Double,
+                       val vote_average: Float,
+                       val popularity: Float)
