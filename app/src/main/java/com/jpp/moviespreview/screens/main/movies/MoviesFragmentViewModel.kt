@@ -5,7 +5,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
 import com.jpp.moviespreview.domainlayer.ds.movie.MoviesDataSourceState
-import com.jpp.moviespreview.screens.main.movies.paging.MoviesPagingDataSourceFactory
+import com.jpp.moviespreview.domainlayer.repository.MovieListRepository
 import javax.inject.Inject
 
 /**
@@ -19,7 +19,7 @@ import javax.inject.Inject
  * Check [MoviesPagingDataSource] for a more detailed explanation of the architecture followed
  * in this case.
  */
-class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFactory: MoviesPagingDataSourceFactory,
+class MoviesFragmentViewModel @Inject constructor(private val movieListRepository: MovieListRepository,
                                                   private val mapper: MovieItemMapper) : ViewModel() {
 
     private lateinit var viewState: LiveData<MoviesFragmentViewState>
@@ -53,15 +53,17 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
 
         currentSection = movieSection
 
-        pagedList = pagingDataSourceFactory.getMovieList(mapper.mapMovieSection(currentSection),
+        val listing = movieListRepository.moviePageOfSection(mapper.mapMovieSection(currentSection),
                 movieBackdropSize,
                 moviePosterSize) { domainMovie -> mapper.mapDomainMovie(domainMovie) }
+
+        pagedList = listing.pagedList
 
 
         /*
          * Very cool way to map the ds internal state to a state that the UI understands without coupling the UI to de domain.
          */
-        viewState = Transformations.map(pagingDataSourceFactory.dataSourceLiveData) {
+        viewState = Transformations.map(listing.dataSourceLiveData) {
             when (it) {
                 MoviesDataSourceState.LoadingInitial -> MoviesFragmentViewState.Loading
                 MoviesDataSourceState.ErrorUnknown -> MoviesFragmentViewState.ErrorUnknown
@@ -74,6 +76,6 @@ class MoviesFragmentViewModel @Inject constructor(private val pagingDataSourceFa
     }
 
     fun retryMoviesListFetch() {
-        pagingDataSourceFactory.retryLastDSCall()
+        //pagingDataSourceFactory.retryLastDSCall()
     }
 }

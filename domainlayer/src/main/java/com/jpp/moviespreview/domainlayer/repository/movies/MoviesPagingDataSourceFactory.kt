@@ -1,4 +1,4 @@
-package com.jpp.moviespreview.screens.main.movies.paging
+package com.jpp.moviespreview.domainlayer.repository.movies
 
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
@@ -9,9 +9,7 @@ import com.jpp.moviespreview.domainlayer.MovieSection
 import com.jpp.moviespreview.domainlayer.ds.movie.MoviesDataSourceState
 import com.jpp.moviespreview.domainlayer.ds.movie.MoviesPagingDataSource
 import com.jpp.moviespreview.domainlayer.interactor.GetConfiguredMoviePage
-import com.jpp.moviespreview.domainlayer.interactor.GetMoviePage
 import java.util.concurrent.Executors
-import javax.inject.Inject
 
 
 /**
@@ -23,7 +21,7 @@ import javax.inject.Inject
  * Domain layer when it comes to movie lists:
  * It receives commands from the ViewModels and creates new dataSource instances as needed.
  */
-class MoviesPagingDataSourceFactory @Inject constructor(private val moviePage: GetConfiguredMoviePage) : DataSource.Factory<Int, Movie>() {
+class MoviesPagingDataSourceFactory(private val moviePage: GetConfiguredMoviePage) : DataSource.Factory<Int, Movie>() {
 
     // the current MoviesPagingDataSource being used.
     private lateinit var dataSource: MoviesPagingDataSource

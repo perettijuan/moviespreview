@@ -10,7 +10,10 @@ import com.jpp.moviespreview.domainlayer.interactor.movie.ConfigureMovieImagesIm
 import com.jpp.moviespreview.domainlayer.interactor.movie.GetConfiguredMoviePageImpl
 import com.jpp.moviespreview.domainlayer.interactor.movie.GetMoviePageImpl
 import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
+import com.jpp.moviespreview.domainlayer.repository.MovieListRepository
 import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
+import com.jpp.moviespreview.domainlayer.repository.movies.MovieListRepositoryImpl
+import com.jpp.moviespreview.domainlayer.repository.movies.MoviesPagingDataSourceFactory
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -39,5 +42,10 @@ class DomainLayerModule {
     @Singleton
     fun providesGetConfiguredMoviePage(getMoviePage: GetMoviePage, configureMovieImages: ConfigureMovieImages)
             : GetConfiguredMoviePage = GetConfiguredMoviePageImpl(getMoviePage, configureMovieImages)
+
+    @Provides
+    @Singleton
+    fun providesMovieListRepository(moviePage: GetConfiguredMoviePage): MovieListRepository =
+        MovieListRepositoryImpl(dataSourceFactory = MoviesPagingDataSourceFactory(moviePage))
 
 }

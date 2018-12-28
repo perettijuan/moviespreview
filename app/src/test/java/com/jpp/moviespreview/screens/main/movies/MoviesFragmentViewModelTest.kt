@@ -5,7 +5,7 @@ import androidx.paging.PagedList
 import com.jpp.moviespreview.domainlayer.Movie
 import com.jpp.moviespreview.domainlayer.MovieSection
 import com.jpp.moviespreview.domainlayer.ds.movie.MoviesDataSourceState
-import com.jpp.moviespreview.screens.main.movies.paging.MoviesPagingDataSourceFactory
+import com.jpp.moviespreview.domainlayer.repository.movies.MoviesPagingDataSourceFactory
 import com.jpp.moviespreview.screens.main.utiltest.InstantTaskExecutorExtension
 import io.mockk.every
 import io.mockk.impl.annotations.MockK

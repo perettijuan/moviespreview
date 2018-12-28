@@ -3,6 +3,7 @@ package com.jpp.moviespreview.domainlayer.repository
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import com.jpp.moviespreview.domainlayer.*
+import com.jpp.moviespreview.domainlayer.ds.movie.MoviesDataSourceState
 
 
 /**
@@ -44,7 +45,6 @@ interface MoviesRepository {
 }
 
 
-
 /***********************/
 
 
@@ -57,14 +57,15 @@ interface MovieListRepository {
      * [targetPosterSize] indicates the size target of the backdrop images of the Movies. Needed to configure the
      * poster URL path.
      */
-    fun moviePageOfSection(section: MovieSection, targetBackdropSize: Int, targetPosterSize: Int): MovieListing
+    fun <T> moviePageOfSection(section: MovieSection, targetBackdropSize: Int, targetPosterSize: Int, mapper: (Movie) -> T): MovieListing<T>
 }
 
 /**
  * Data class that models the response of the repository layer when the feature is requesting data as
  * a list backed by the paging library.
  */
-data class MovieListing(
+data class MovieListing<T>(
         // the LiveData of paged lists for the UI to observe
-        val pagedList: LiveData<PagedList<MoviePage>>
+        val pagedList: LiveData<PagedList<T>>,
+        val dataSourceLiveData: LiveData<MoviesDataSourceState>
 )
