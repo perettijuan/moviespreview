@@ -141,4 +141,27 @@ class DataModelMapper {
             )
         }
 
+    fun mapDomainMovieDetail(domainMovieDetail: DomainMovieDetail): DataMovieDetail =
+        with(domainMovieDetail) {
+            DataMovieDetail(
+                    id = id,
+                    title = title,
+                    overview = overview,
+                    release_date = releaseDate,
+                    poster_path = posterPath,
+                    genres = genres.map { mapDomainGenre(it) },
+                    vote_count = voteCount,
+                    vote_average = voteAverage,
+                    popularity = popularity
+            )
+        }
+
+    fun mapDomainGenre(domainMovieGenre: DomainGenre): DataGenre =
+        with(domainMovieGenre) {
+            DataGenre(
+                    id = id,
+                    name = name
+            )
+        }
+
 }

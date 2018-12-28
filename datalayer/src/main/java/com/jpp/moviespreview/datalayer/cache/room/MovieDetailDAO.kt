@@ -11,7 +11,7 @@ interface MovieDetailDAO {
     fun insertMovieDetail(dbMovieDetail: DBMovieDetail)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMovieGenre(movieGenre: DBMovieGenre)
+    fun insertMovieGenres(movieGenres: List<DBMovieGenre>)
 
     @Query("select * from movies_details where _id = :detailId")
     fun getMovieDetail(detailId: Double): DBMovieDetail?

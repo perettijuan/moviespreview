@@ -41,4 +41,5 @@ interface MoviesRepository {
     fun updatePopularMoviePage(moviePage: MoviePage)
     fun updateTopRatedMoviePage(moviePage: MoviePage)
     fun updateUpcomingMoviePage(moviePage: MoviePage)
+    fun updateMovieDetail(movieDetail: MovieDetail)
 }

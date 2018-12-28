@@ -5,6 +5,7 @@ import com.jpp.moviespreview.datalayer.DataModelMapper
 import com.jpp.moviespreview.datalayer.cache.MovieType
 import com.jpp.moviespreview.datalayer.cache.MPDataBase
 import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestamps
+import com.jpp.moviespreview.domainlayer.MovieDetail
 import com.jpp.moviespreview.domainlayer.MoviePage
 import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
 
@@ -28,7 +29,7 @@ class CacheMoviesRepository(private val mpCache: MPTimestamps,
         return when (mpCache.isMovieDetailUpToDate(movieId)) {
             true -> mpDatabase.getMovieDetail(movieId)
                     ?.let { MoviesRepository.MoviesRepositoryOutput.MovieDetailsRetrieved(mapper.mapDataMovieDetail(it)) }
-                    ?: run { MoviesRepository.MoviesRepositoryOutput.Error }
+                    ?: let { MoviesRepository.MoviesRepositoryOutput.Error }
             false -> {
                 mpDatabase.cleanMovieDetail(movieId)
                 MoviesRepository.MoviesRepositoryOutput.Error
@@ -44,6 +45,11 @@ class CacheMoviesRepository(private val mpCache: MPTimestamps,
 
     override fun updateUpcomingMoviePage(moviePage: MoviePage) = updateMoviePage(MovieType.Upcoming, moviePage)
 
+    override fun updateMovieDetail(movieDetail: MovieDetail) {
+        with(mpDatabase) {
+            saveMovieDetail(mapper.mapDomainMovieDetail(movieDetail))
+        }
+    }
 
     /**
      * Updates the [MoviePage] in the local storage and the timestamp for when the movie page

@@ -12,6 +12,7 @@ import com.jpp.moviespreview.datalayer.cache.room.*
 class MPDataBaseImpl(private val context: Context,
                      private val adapter: RoomModelAdapter) : MPDataBase {
 
+
     private val roomDatabase by lazy {
         Room.databaseBuilder(context, MPRoomDataBase::class.java, "MPRoomDataBase")
                 .build()
@@ -77,6 +78,13 @@ class MPDataBaseImpl(private val context: Context,
     override fun cleanMovieDetail(movieDetailId: Double) {
         withMovieDetailsDao {
             cleanMovieDetail(movieDetailId)
+        }
+    }
+
+    override fun saveMovieDetail(movieDetail: MovieDetail) {
+        withMovieDetailsDao {
+            insertMovieDetail(transformWithAdapter { adaptDataMovieDetail(movieDetail) })
+            insertMovieGenres(transformWithAdapter { movieDetail.genres.map { adaptDataGenre(it, movieDetail) } })
         }
     }
 

@@ -14,4 +14,5 @@ interface MPDataBase {
     fun clearMoviePagesStored()
     fun getMovieDetail(movieDetailId: Double): MovieDetail?
     fun cleanMovieDetail(movieDetailId: Double)
+    fun saveMovieDetail(movieDetail: MovieDetail)
 }

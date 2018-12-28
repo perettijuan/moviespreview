@@ -147,4 +147,28 @@ class RoomModelAdapter {
     fun adaptDBMovieGenre(dbMovieGenre: DBMovieGenre): MovieGenre = with(dbMovieGenre) {
         MovieGenre(id = id, name = name)
     }
+
+
+    fun adaptDataMovieDetail(dataMovieDetail: MovieDetail): DBMovieDetail =
+        with(dataMovieDetail) {
+            DBMovieDetail(
+                    id = id,
+                    title = title,
+                    overview = overview,
+                    releaseDate = release_date,
+                    posterPath = poster_path,
+                    voteCount = vote_count,
+                    voteAverage = vote_average,
+                    popularity = popularity
+            )
+        }
+
+    fun adaptDataGenre(dataGenre: MovieGenre, dataMovieDetail: MovieDetail): DBMovieGenre =
+        with(dataGenre) {
+            DBMovieGenre(
+                    id = id,
+                    name = name,
+                    movieDetailId = dataMovieDetail.id
+            )
+        }
 }
