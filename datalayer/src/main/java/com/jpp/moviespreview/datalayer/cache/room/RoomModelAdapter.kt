@@ -1,10 +1,7 @@
 package com.jpp.moviespreview.datalayer.cache.room
 
 import com.jpp.moviespreview.common.extensions.addAllMapping
-import com.jpp.moviespreview.datalayer.AppConfiguration
-import com.jpp.moviespreview.datalayer.ImagesConfiguration
-import com.jpp.moviespreview.datalayer.Movie
-import com.jpp.moviespreview.datalayer.MoviePage
+import com.jpp.moviespreview.datalayer.*
 
 
 /**
@@ -127,5 +124,27 @@ class RoomModelAdapter {
                 popularity = popularity,
                 pageId = pageId
         )
+    }
+
+    /**
+     * Adapts a [DBMovieDetail] to a [MovieDetail].
+     */
+    fun adaptDBMovieDetail(dbMovieDetail: DBMovieDetail, dbGenres: List<DBMovieGenre>): MovieDetail = with(dbMovieDetail) {
+        MovieDetail(
+                id = id,
+                title = title,
+                overview = overview,
+                release_date = releaseDate,
+                poster_path = posterPath,
+                vote_count = voteCount,
+                vote_average = voteAverage,
+                popularity = popularity,
+                genres = dbGenres.map { adaptDBMovieGenre(it) }
+        )
+    }
+
+
+    fun adaptDBMovieGenre(dbMovieGenre: DBMovieGenre): MovieGenre = with(dbMovieGenre) {
+        MovieGenre(id = id, name = name)
     }
 }

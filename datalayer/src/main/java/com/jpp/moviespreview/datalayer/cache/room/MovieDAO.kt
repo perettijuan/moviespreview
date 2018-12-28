@@ -8,7 +8,7 @@ import androidx.room.Query
 @Dao
 interface MovieDAO {
     @Insert(onConflict =  OnConflictStrategy.REPLACE)
-    fun insertMovie(dbMovie: DBMovie)
+    fun insertMovies(dbMovies: List<DBMovie>)
 
     @Query("select * from movies where page_id = :pageId")
     fun getMoviesFromPage(pageId: Int) : List<DBMovie>?

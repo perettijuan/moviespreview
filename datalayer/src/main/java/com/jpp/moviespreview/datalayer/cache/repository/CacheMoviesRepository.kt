@@ -15,6 +15,7 @@ class CacheMoviesRepository(private val mpCache: MPTimestamps,
                             private val mpDatabase: MPDataBase,
                             private val mapper: DataModelMapper) : MoviesRepository {
 
+
     override fun getNowPlayingMoviePage(page: Int): MoviesRepository.MoviesRepositoryOutput = getMoviePageOrClearDataBaseIfNeeded(MovieType.NowPlaying, page)
 
     override fun getPopularMoviePage(page: Int): MoviesRepository.MoviesRepositoryOutput = getMoviePageOrClearDataBaseIfNeeded(MovieType.Popular, page)
@@ -22,6 +23,18 @@ class CacheMoviesRepository(private val mpCache: MPTimestamps,
     override fun getTopRatedMoviePage(page: Int): MoviesRepository.MoviesRepositoryOutput = getMoviePageOrClearDataBaseIfNeeded(MovieType.TopRated, page)
 
     override fun getUpcomingMoviePage(page: Int): MoviesRepository.MoviesRepositoryOutput = getMoviePageOrClearDataBaseIfNeeded(MovieType.Upcoming, page)
+
+    override fun getMovieDetail(movieId: Double): MoviesRepository.MoviesRepositoryOutput {
+        return when (mpCache.isMovieDetailUpToDate(movieId)) {
+            true -> mpDatabase.getMovieDetail(movieId)
+                    ?.let { MoviesRepository.MoviesRepositoryOutput.MovieDetailsRetrieved(mapper.mapDataMovieDetail(it)) }
+                    ?: run { MoviesRepository.MoviesRepositoryOutput.Error }
+            false -> {
+                mpDatabase.cleanMovieDetail(movieId)
+                MoviesRepository.MoviesRepositoryOutput.Error
+            }
+        }
+    }
 
     override fun updateNowPlayingMoviePage(moviePage: MoviePage) = updateMoviePage(MovieType.NowPlaying, moviePage)
 
@@ -53,7 +66,7 @@ class CacheMoviesRepository(private val mpCache: MPTimestamps,
         return when (shouldRetrieveMoviePage(movieType)) {
             true -> mpDatabase.getMoviePage(page)
                     ?.let { MoviesRepository.MoviesRepositoryOutput.MoviePageRetrieved(mapper.mapDataMoviePage(it)) }
-                    ?: run { MoviesRepository.MoviesRepositoryOutput.Error }
+                    ?: let { MoviesRepository.MoviesRepositoryOutput.Error }
             else -> {
                 mpDatabase.clearMoviePagesStored()
                 MoviesRepository.MoviesRepositoryOutput.Error

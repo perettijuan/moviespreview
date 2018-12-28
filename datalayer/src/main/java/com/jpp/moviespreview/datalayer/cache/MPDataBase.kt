@@ -1,6 +1,7 @@
 package com.jpp.moviespreview.datalayer.cache
 
 import com.jpp.moviespreview.datalayer.AppConfiguration
+import com.jpp.moviespreview.datalayer.MovieDetail
 import com.jpp.moviespreview.datalayer.MoviePage
 
 interface MPDataBase {
@@ -11,4 +12,6 @@ interface MPDataBase {
     fun getMoviePage(page: Int): MoviePage?
     fun updateMoviePage(page: MoviePage)
     fun clearMoviePagesStored()
+    fun getMovieDetail(movieDetailId: Double): MovieDetail?
+    fun cleanMovieDetail(movieDetailId: Double)
 }

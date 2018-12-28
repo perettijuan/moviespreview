@@ -8,4 +8,5 @@ interface MPTimestamps {
     fun updateAppConfigurationInserted()
     fun areMoviesUpToDate(): Boolean
     fun updateMoviesInserted()
+    fun isMovieDetailUpToDate(movieDetailId: Double): Boolean
 }
