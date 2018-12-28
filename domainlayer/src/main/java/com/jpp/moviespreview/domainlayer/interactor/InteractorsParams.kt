@@ -40,3 +40,11 @@ data class MovieImagesParam(val movie: Movie, val backdropSize: Int, val posterS
  * [posterSize] - the target size of the poster image.
  */
 data class ConfiguredMoviePageParam(val page: Int, val section: MovieSection, val backdropSize: Int, val posterSize: Int)
+
+
+/**
+ * Parameter to execute [GetMovieDetails].
+ *
+ * [movieId] - the identifier of the movie to get the details for.
+ */
+data class MovieDetailsParam(val movieId: Double)

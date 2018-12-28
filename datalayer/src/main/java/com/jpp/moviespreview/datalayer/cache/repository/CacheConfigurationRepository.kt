@@ -1,5 +1,6 @@
 package com.jpp.moviespreview.datalayer.cache.repository
 
+import com.jpp.moviespreview.common.extensions.and
 import com.jpp.moviespreview.datalayer.DataModelMapper
 import com.jpp.moviespreview.datalayer.cache.MPDataBase
 import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestamps
@@ -14,7 +15,7 @@ class CacheConfigurationRepository(private val mpCache: MPTimestamps,
         return when (mpCache.isAppConfigurationUpToDate()) {
             true -> mpDatabase.getStoredAppConfiguration()
                     ?.let { ConfigurationRepository.ConfigurationRepositoryOutput.Success(mapper.mapDataAppConfiguration(it)) }
-                    ?: run { ConfigurationRepository.ConfigurationRepositoryOutput.Error }
+                    ?: let { ConfigurationRepository.ConfigurationRepositoryOutput.Error }
             false -> ConfigurationRepository.ConfigurationRepositoryOutput.Error
         }
     }
@@ -22,7 +23,7 @@ class CacheConfigurationRepository(private val mpCache: MPTimestamps,
     override fun updateAppConfiguration(imagesConfiguration: ImagesConfiguration) {
         mapper.mapDomainImagesConfiguration(imagesConfiguration)
                 .let { mpDatabase.updateAppConfiguration(it) }
-                .run { mpCache.updateAppConfigurationInserted() }
+                .and { mpCache.updateAppConfigurationInserted() }
     }
 
 }

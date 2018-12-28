@@ -9,23 +9,22 @@ class MPTimestampsImpl(private val context: Context) : MPTimestamps {
     private sealed class TimestampId(val id: String, val refreshTime: Long) {
         object CacheAppConfiguration : TimestampId("MPTimestamps:AppConfiguration", TimeUnit.MINUTES.toMillis(30))
         object CacheMoviePagePage : TimestampId("MPTimestamps:CacheMovies", TimeUnit.MINUTES.toMillis(30))
+        data class CacheMovieDetail(val detailId: Double) : TimestampId("MPTimestamps:CacheMovies:$detailId", TimeUnit.MINUTES.toMillis(30))
     }
 
-    override fun isAppConfigurationUpToDate(): Boolean = with(TimestampId.CacheAppConfiguration) {
-        isTimestampUpToDate(getTimestamp(this), refreshTime)
-    }
+    override fun isAppConfigurationUpToDate(): Boolean = isTimestampUpToDate(TimestampId.CacheAppConfiguration)
 
     override fun updateAppConfigurationInserted() {
         updateTimestamp(TimestampId.CacheAppConfiguration, currentTimeInMillis())
     }
 
-    override fun areMoviesUpToDate(): Boolean = with(TimestampId.CacheMoviePagePage) {
-        isTimestampUpToDate(getTimestamp(this), refreshTime)
-    }
+    override fun areMoviesUpToDate(): Boolean = isTimestampUpToDate(TimestampId.CacheMoviePagePage)
 
     override fun updateMoviesInserted() {
         updateTimestamp(TimestampId.CacheMoviePagePage, currentTimeInMillis())
     }
+
+    override fun isMovieDetailUpToDate(movieDetailId: Double): Boolean = isTimestampUpToDate(TimestampId.CacheMovieDetail(movieDetailId))
 
     /**
      * Retrieves a Long value that represents the Timestamp provided. If the
@@ -50,6 +49,10 @@ class MPTimestampsImpl(private val context: Context) : MPTimestamps {
      * Wrap currentTimeInMillis method.
      */
     private fun currentTimeInMillis() = System.currentTimeMillis()
+
+    private fun isTimestampUpToDate(timestampId: TimestampId) = with(timestampId) {
+        isTimestampUpToDate(getTimestamp(this), refreshTime)
+    }
 
     /**
      * Determinate if the provided [timestamp] is outdated based on the [refreshTime].

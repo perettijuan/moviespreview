@@ -1,11 +1,13 @@
 package com.jpp.moviespreview.datalayer.repository
 
 
+import com.jpp.moviespreview.domainlayer.MovieDetail
 import com.jpp.moviespreview.domainlayer.MoviePage
 import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
 
 class MoviesRepositoryImpl(private val cacheRepository: MoviesRepository,
                            private val serverRepository: MoviesRepository) : MoviesRepository {
+
 
     override fun getNowPlayingMoviePage(page: Int): MoviesRepository.MoviesRepositoryOutput {
         return getMoviePage(page = page,
@@ -56,6 +58,25 @@ class MoviesRepositoryImpl(private val cacheRepository: MoviesRepository,
         throw UnsupportedOperationException("Updating MoviePage is not supported by the application")
     }
 
+    override fun updateMovieDetail(movieDetail: MovieDetail) {
+        throw UnsupportedOperationException("Updating a MovieDetail is not supported by the application")
+    }
+
+    override fun getMovieDetail(movieId: Double): MoviesRepository.MoviesRepositoryOutput {
+        return with(cacheRepository.getMovieDetail(movieId)) {
+            when (this) {
+                is MoviesRepository.MoviesRepositoryOutput.MovieDetailsRetrieved -> this
+                else -> {
+                    serverRepository.getMovieDetail(movieId).apply {
+                        if (this is MoviesRepository.MoviesRepositoryOutput.MovieDetailsRetrieved) {
+                            cacheRepository.updateMovieDetail(this.detail)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Helper function to retrieve a [MoviePage].
      * Attempt to load the page from the local storage using [dbFunction].
@@ -69,9 +90,9 @@ class MoviesRepositoryImpl(private val cacheRepository: MoviesRepository,
 
         return with(dbFunction(page)) {
             when (this) {
-                is MoviesRepository.MoviesRepositoryOutput.Success -> this
+                is MoviesRepository.MoviesRepositoryOutput.MoviePageRetrieved -> this
                 else -> serverFunction(page).apply {
-                    if (this is MoviesRepository.MoviesRepositoryOutput.Success) {
+                    if (this is MoviesRepository.MoviesRepositoryOutput.MoviePageRetrieved) {
                         updateFunction(this.page)
                     }
                 }

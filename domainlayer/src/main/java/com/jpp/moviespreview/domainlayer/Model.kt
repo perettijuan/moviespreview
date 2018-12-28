@@ -47,3 +47,24 @@ data class Movie(val id: Double,
                  val voteCount: Double,
                  val voteAverage: Float,
                  val popularity: Float)
+
+
+/**
+ * Represents the details of a given Movie.
+ */
+data class MovieDetail(val id: Double,
+                       val title: String,
+                       val overview: String,
+                       val releaseDate: String,
+                       val posterPath: String?,
+                       val genres: List<Genre>,
+                       val voteCount: Double,
+                       val voteAverage: Float,
+                       val popularity: Float)
+
+
+/**
+ * Represents a movie Genre.
+ */
+data class Genre(val id: Int,
+                 val name: String)
