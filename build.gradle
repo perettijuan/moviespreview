@@ -25,7 +25,7 @@ buildscript {
                     ]
             ],
             'androidx': [
-                    'paging': "androidx.paging:paging-runtime:${versions.pagingLib}"
+                    'paging': "androidx.paging:paging-runtime-ktx:${versions.pagingLib}"
             ],
             'kotlin'  : [
                     'plugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
