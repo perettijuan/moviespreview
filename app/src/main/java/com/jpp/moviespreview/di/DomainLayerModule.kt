@@ -3,11 +3,9 @@ package com.jpp.moviespreview.di
 import android.content.Context
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifier
 import com.jpp.moviespreview.domainlayer.ConnectivityVerifierImpl
-import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplication
 import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImages
 import com.jpp.moviespreview.domainlayer.interactor.GetConfiguredMoviePage
 import com.jpp.moviespreview.domainlayer.interactor.GetMoviePage
-import com.jpp.moviespreview.domainlayer.interactor.configuration.ConfigureApplicationImpl
 import com.jpp.moviespreview.domainlayer.interactor.movie.ConfigureMovieImagesImpl
 import com.jpp.moviespreview.domainlayer.interactor.movie.GetConfiguredMoviePageImpl
 import com.jpp.moviespreview.domainlayer.interactor.movie.GetMoviePageImpl
@@ -26,11 +24,6 @@ class DomainLayerModule {
     @Provides
     @Singleton
     fun providesConnectivityVerifier(context: Context): ConnectivityVerifier = ConnectivityVerifierImpl(context)
-
-    @Provides
-    @Singleton
-    fun providesConfigureApplication(configRepository: ConfigurationRepository, connectivityVerifier: ConnectivityVerifier)
-            : ConfigureApplication = ConfigureApplicationImpl(configRepository, connectivityVerifier)
 
     @Provides
     @Singleton

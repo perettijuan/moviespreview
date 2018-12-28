@@ -9,15 +9,6 @@ import com.jpp.moviespreview.domainlayer.MoviePage
  ***************************************************************************************************/
 
 /**
- * Represents the results that can be returned by [ConfigureApplication].
- */
-sealed class ConfigureApplicationResult {
-    object ErrorNoConnectivity : ConfigureApplicationResult()
-    object ErrorUnknown : ConfigureApplicationResult()
-    object Success : ConfigureApplicationResult()
-}
-
-/**
  * Represents the results that can be returned by [GetMoviePage].
  */
 sealed class MoviePageResult {
