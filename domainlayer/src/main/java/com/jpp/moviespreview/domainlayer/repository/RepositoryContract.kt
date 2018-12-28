@@ -19,7 +19,6 @@ interface ConfigurationRepository {
 
 
     fun getConfiguration(): ConfigurationRepositoryOutput
-    fun updateAppConfiguration(appConfiguration: AppConfiguration)
 }
 
 /**

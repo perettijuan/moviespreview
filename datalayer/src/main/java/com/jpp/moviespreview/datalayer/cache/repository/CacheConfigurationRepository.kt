@@ -3,18 +3,16 @@ package com.jpp.moviespreview.datalayer.cache.repository
 import com.jpp.moviespreview.common.extensions.and
 import com.jpp.moviespreview.datalayer.cache.MPDataBase
 import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestamps
+import com.jpp.moviespreview.datalayer.repository.configuration.ConfigurationCache
 import com.jpp.moviespreview.domainlayer.AppConfiguration
-import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
 
 class CacheConfigurationRepository(private val mpCache: MPTimestamps,
-                                   private val mpDatabase: MPDataBase) : ConfigurationRepository {
+                                   private val mpDatabase: MPDataBase) : ConfigurationCache {
 
-    override fun getConfiguration(): ConfigurationRepository.ConfigurationRepositoryOutput {
+    override fun getConfiguration(): AppConfiguration? {
         return when (mpCache.isAppConfigurationUpToDate()) {
             true -> mpDatabase.getStoredAppConfiguration()
-                    ?.let { ConfigurationRepository.ConfigurationRepositoryOutput.Success(it) }
-                    ?: let { ConfigurationRepository.ConfigurationRepositoryOutput.Error }
-            false -> ConfigurationRepository.ConfigurationRepositoryOutput.Error
+            false -> null
         }
     }
 

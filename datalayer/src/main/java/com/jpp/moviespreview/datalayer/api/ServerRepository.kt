@@ -1,10 +1,10 @@
 package com.jpp.moviespreview.datalayer.api
 
 import com.jpp.moviespreview.datalayer.BuildConfig
+import com.jpp.moviespreview.datalayer.repository.configuration.ConfigurationServer
 import com.jpp.moviespreview.domainlayer.AppConfiguration
 import com.jpp.moviespreview.domainlayer.MovieDetail
 import com.jpp.moviespreview.domainlayer.MoviePage
-import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
 import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -19,7 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * It hides the Retrofit implementation to the clients of the data layer.
  */
 class ServerRepository(private val serverApiKey: String)
-    : ConfigurationRepository,
+    : ConfigurationServer,
         MoviesRepository {
 
     companion object {
@@ -37,13 +37,7 @@ class ServerRepository(private val serverApiKey: String)
         }
     }
 
-    override fun getConfiguration(): ConfigurationRepository.ConfigurationRepositoryOutput =
-        tryCatchOrReturnNull { API.getAppConfiguration(serverApiKey).execute().body() }
-                ?.let { ConfigurationRepository.ConfigurationRepositoryOutput.Success(it) }
-                ?: let { ConfigurationRepository.ConfigurationRepositoryOutput.Error }
-
-    override fun updateAppConfiguration(appConfiguration: AppConfiguration) =
-        throw UnsupportedOperationException("Updating AppConfiguration is not supported by the server")
+    override fun getAppConfiguration(): AppConfiguration? = tryCatchOrReturnNull { API.getAppConfiguration(serverApiKey).execute().body() }
 
     override fun getNowPlayingMoviePage(page: Int): MoviesRepository.MoviesRepositoryOutput =
         getMoviePage { API.getNowPlaying(page, serverApiKey).execute().body() }

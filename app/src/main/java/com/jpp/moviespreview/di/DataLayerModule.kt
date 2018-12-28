@@ -10,7 +10,7 @@ import com.jpp.moviespreview.datalayer.cache.repository.CacheMoviesRepository
 import com.jpp.moviespreview.datalayer.cache.room.RoomModelAdapter
 import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestamps
 import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestampsImpl
-import com.jpp.moviespreview.datalayer.repository.ConfigurationRepositoryImpl
+import com.jpp.moviespreview.datalayer.repository.configuration.ConfigurationRepositoryImpl
 import com.jpp.moviespreview.datalayer.repository.MoviesRepositoryImpl
 import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
 import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
