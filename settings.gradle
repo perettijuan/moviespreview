@@ -1,1 +1,1 @@
-include ':app', ':common', ':datalayer', ':domainlayer'
+include ':app', ':common', ':datalayer', ':domainlayer', ':mpdomain', ':mpdata'

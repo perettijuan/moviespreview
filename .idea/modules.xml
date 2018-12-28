@@ -7,6 +7,8 @@
       <module fileurl="file://$PROJECT_DIR$/datalayer/datalayer.iml" filepath="$PROJECT_DIR$/datalayer/datalayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/domainlayer/domainlayer.iml" filepath="$PROJECT_DIR$/domainlayer/domainlayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/moviespreview.iml" filepath="$PROJECT_DIR$/moviespreview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mpdata/mpdata.iml" filepath="$PROJECT_DIR$/mpdata/mpdata.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mpdomain/mpdomain.iml" filepath="$PROJECT_DIR$/mpdomain/mpdomain.iml" />
     </modules>
   </component>
 </project>
