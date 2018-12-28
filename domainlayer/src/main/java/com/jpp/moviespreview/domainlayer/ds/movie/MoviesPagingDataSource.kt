@@ -97,7 +97,7 @@ class MoviesPagingDataSource(private val moviePage: GetConfiguredMoviePage,
                 }
                 is ConfiguredMoviePageResult.Success -> {
                     retry = null
-                    callback.invoke(it.moviePage.movies)
+                    callback.invoke(it.moviePage.results)
                 }
             }
         }

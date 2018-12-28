@@ -2,15 +2,14 @@ package com.jpp.moviespreview.di
 
 import android.content.Context
 import com.jpp.moviespreview.BuildConfig
-import com.jpp.moviespreview.datalayer.DataModelMapper
 import com.jpp.moviespreview.datalayer.api.ServerRepository
 import com.jpp.moviespreview.datalayer.cache.MPDataBase
 import com.jpp.moviespreview.datalayer.cache.MPDataBaseImpl
-import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestamps
-import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestampsImpl
 import com.jpp.moviespreview.datalayer.cache.repository.CacheConfigurationRepository
 import com.jpp.moviespreview.datalayer.cache.repository.CacheMoviesRepository
 import com.jpp.moviespreview.datalayer.cache.room.RoomModelAdapter
+import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestamps
+import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestampsImpl
 import com.jpp.moviespreview.datalayer.repository.ConfigurationRepositoryImpl
 import com.jpp.moviespreview.datalayer.repository.MoviesRepositoryImpl
 import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
@@ -27,10 +26,6 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesDataMapper(): DataModelMapper = DataModelMapper()
-
-    @Singleton
-    @Provides
     fun providesConfigurationRepository(dbConfigurationRepository: CacheConfigurationRepository, serverRepositoryImpl: ServerRepository)
             : ConfigurationRepository = ConfigurationRepositoryImpl(dbConfigurationRepository, serverRepositoryImpl)
 
@@ -41,17 +36,17 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesCacheConfigurationRepository(mpCache: MPTimestamps, mpDataBase: MPDataBase, mapper: DataModelMapper)
-            : CacheConfigurationRepository = CacheConfigurationRepository(mpCache, mpDataBase, mapper)
+    fun providesCacheConfigurationRepository(mpCache: MPTimestamps, mpDataBase: MPDataBase)
+            : CacheConfigurationRepository = CacheConfigurationRepository(mpCache, mpDataBase)
 
     @Singleton
     @Provides
-    fun providesCacheMovieRepository(mpCache: MPTimestamps, mpDatabase: MPDataBase, mapper: DataModelMapper)
-            : CacheMoviesRepository = CacheMoviesRepository(mpCache, mpDatabase, mapper)
+    fun providesCacheMovieRepository(mpCache: MPTimestamps, mpDatabase: MPDataBase)
+            : CacheMoviesRepository = CacheMoviesRepository(mpCache, mpDatabase)
 
     @Singleton
     @Provides
-    fun providesServerRepositoryImpl(mapper: DataModelMapper) = ServerRepository(BuildConfig.API_KEY, mapper)
+    fun providesServerRepositoryImpl() = ServerRepository(BuildConfig.API_KEY)
 
     @Singleton
     @Provides

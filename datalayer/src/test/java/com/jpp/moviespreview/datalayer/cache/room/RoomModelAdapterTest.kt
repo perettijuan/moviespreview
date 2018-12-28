@@ -1,7 +1,7 @@
 package com.jpp.moviespreview.datalayer.cache.room
 
-import com.jpp.moviespreview.datalayer.AppConfiguration
-import com.jpp.moviespreview.datalayer.ImagesConfiguration
+import com.jpp.moviespreview.domainlayer.AppConfiguration
+import com.jpp.moviespreview.domainlayer.ImagesConfiguration
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

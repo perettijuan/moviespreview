@@ -1,9 +1,8 @@
 package com.jpp.moviespreview.datalayer.cache.repository
 
 
-import com.jpp.moviespreview.datalayer.DataModelMapper
-import com.jpp.moviespreview.datalayer.cache.MovieType
 import com.jpp.moviespreview.datalayer.cache.MPDataBase
+import com.jpp.moviespreview.datalayer.cache.MovieType
 import com.jpp.moviespreview.datalayer.cache.timestamp.MPTimestamps
 import com.jpp.moviespreview.domainlayer.MovieDetail
 import com.jpp.moviespreview.domainlayer.MoviePage
@@ -13,8 +12,7 @@ import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
  * [MoviesRepository] implementation with cache functionality.
  */
 class CacheMoviesRepository(private val mpCache: MPTimestamps,
-                            private val mpDatabase: MPDataBase,
-                            private val mapper: DataModelMapper) : MoviesRepository {
+                            private val mpDatabase: MPDataBase) : MoviesRepository {
 
 
     override fun getNowPlayingMoviePage(page: Int): MoviesRepository.MoviesRepositoryOutput = getMoviePageOrClearDataBaseIfNeeded(MovieType.NowPlaying, page)
@@ -28,7 +26,7 @@ class CacheMoviesRepository(private val mpCache: MPTimestamps,
     override fun getMovieDetail(movieId: Double): MoviesRepository.MoviesRepositoryOutput {
         return when (mpCache.isMovieDetailUpToDate(movieId)) {
             true -> mpDatabase.getMovieDetail(movieId)
-                    ?.let { MoviesRepository.MoviesRepositoryOutput.MovieDetailsRetrieved(mapper.mapDataMovieDetail(it)) }
+                    ?.let { MoviesRepository.MoviesRepositoryOutput.MovieDetailsRetrieved(it) }
                     ?: let { MoviesRepository.MoviesRepositoryOutput.Error }
             false -> {
                 mpDatabase.cleanMovieDetail(movieId)
@@ -47,7 +45,7 @@ class CacheMoviesRepository(private val mpCache: MPTimestamps,
 
     override fun updateMovieDetail(movieDetail: MovieDetail) {
         with(mpDatabase) {
-            saveMovieDetail(mapper.mapDomainMovieDetail(movieDetail))
+            saveMovieDetail(movieDetail)
         }
     }
 
@@ -58,7 +56,7 @@ class CacheMoviesRepository(private val mpCache: MPTimestamps,
     private fun updateMoviePage(movieType: MovieType, moviePage: MoviePage) {
         with(mpDatabase) {
             updateCurrentMovieTypeStored(movieType)
-            updateMoviePage(mapper.mapDomainMoviePage(moviePage))
+            updateMoviePage(moviePage)
         }.also {
             mpCache.updateMoviesInserted()
         }
@@ -71,7 +69,7 @@ class CacheMoviesRepository(private val mpCache: MPTimestamps,
     private fun getMoviePageOrClearDataBaseIfNeeded(movieType: MovieType, page: Int): MoviesRepository.MoviesRepositoryOutput {
         return when (shouldRetrieveMoviePage(movieType)) {
             true -> mpDatabase.getMoviePage(page)
-                    ?.let { MoviesRepository.MoviesRepositoryOutput.MoviePageRetrieved(mapper.mapDataMoviePage(it)) }
+                    ?.let { MoviesRepository.MoviesRepositoryOutput.MoviePageRetrieved(it) }
                     ?: let { MoviesRepository.MoviesRepositoryOutput.Error }
             else -> {
                 mpDatabase.clearMoviePagesStored()

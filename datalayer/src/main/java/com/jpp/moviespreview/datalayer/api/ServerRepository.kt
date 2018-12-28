@@ -1,9 +1,7 @@
 package com.jpp.moviespreview.datalayer.api
 
-import com.jpp.moviespreview.datalayer.MoviePage as DataMoviePage
 import com.jpp.moviespreview.datalayer.BuildConfig
-import com.jpp.moviespreview.datalayer.DataModelMapper
-import com.jpp.moviespreview.domainlayer.ImagesConfiguration
+import com.jpp.moviespreview.domainlayer.AppConfiguration
 import com.jpp.moviespreview.domainlayer.MovieDetail
 import com.jpp.moviespreview.domainlayer.MoviePage
 import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
@@ -20,8 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * to provide a single point of access to the API.
  * It hides the Retrofit implementation to the clients of the data layer.
  */
-class ServerRepository(private val serverApiKey: String,
-                       private val mapper: DataModelMapper)
+class ServerRepository(private val serverApiKey: String)
     : ConfigurationRepository,
         MoviesRepository {
 
@@ -42,10 +39,10 @@ class ServerRepository(private val serverApiKey: String,
 
     override fun getConfiguration(): ConfigurationRepository.ConfigurationRepositoryOutput =
         tryCatchOrReturnNull { API.getAppConfiguration(serverApiKey).execute().body() }
-                ?.let { ConfigurationRepository.ConfigurationRepositoryOutput.Success(mapper.mapDataAppConfiguration(it)) }
+                ?.let { ConfigurationRepository.ConfigurationRepositoryOutput.Success(it) }
                 ?: let { ConfigurationRepository.ConfigurationRepositoryOutput.Error }
 
-    override fun updateAppConfiguration(imagesConfiguration: ImagesConfiguration) =
+    override fun updateAppConfiguration(appConfiguration: AppConfiguration) =
         throw UnsupportedOperationException("Updating AppConfiguration is not supported by the server")
 
     override fun getNowPlayingMoviePage(page: Int): MoviesRepository.MoviesRepositoryOutput =
@@ -62,7 +59,7 @@ class ServerRepository(private val serverApiKey: String,
 
     override fun getMovieDetail(movieId: Double): MoviesRepository.MoviesRepositoryOutput =
         tryCatchOrReturnNull { API.getMovieDetails(movieId, serverApiKey).execute().body() }
-                ?.let { MoviesRepository.MoviesRepositoryOutput.MovieDetailsRetrieved(mapper.mapDataMovieDetail(it)) }
+                ?.let { MoviesRepository.MoviesRepositoryOutput.MovieDetailsRetrieved(it) }
                 ?: let { MoviesRepository.MoviesRepositoryOutput.Error }
 
     override fun updateNowPlayingMoviePage(moviePage: MoviePage) =
@@ -84,9 +81,9 @@ class ServerRepository(private val serverApiKey: String,
      * Support method to encapsulate the movie retrieval logic. It receives a function as parameter that
      * takes care of executing the API call.
      */
-    private fun getMoviePage(apiCall: () -> DataMoviePage?): MoviesRepository.MoviesRepositoryOutput =
+    private fun getMoviePage(apiCall: () -> MoviePage?): MoviesRepository.MoviesRepositoryOutput =
         tryCatchOrReturnNull { apiCall.invoke() }
-                ?.let { MoviesRepository.MoviesRepositoryOutput.MoviePageRetrieved(mapper.mapDataMoviePage(it)) }
+                ?.let { MoviesRepository.MoviesRepositoryOutput.MoviePageRetrieved(it) }
                 ?: let { MoviesRepository.MoviesRepositoryOutput.Error }
 
 

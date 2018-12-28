@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
 import com.jpp.moviespreview.common.extensions.and
-import com.jpp.moviespreview.datalayer.AppConfiguration
-import com.jpp.moviespreview.datalayer.MovieDetail
-import com.jpp.moviespreview.datalayer.MoviePage
 import com.jpp.moviespreview.datalayer.cache.room.*
+import com.jpp.moviespreview.domainlayer.AppConfiguration
+import com.jpp.moviespreview.domainlayer.MovieDetail
+import com.jpp.moviespreview.domainlayer.MoviePage
 
 class MPDataBaseImpl(private val context: Context,
                      private val adapter: RoomModelAdapter) : MPDataBase {

@@ -1,6 +1,6 @@
 package com.jpp.moviespreview.datalayer.repository
 
-import com.jpp.moviespreview.domainlayer.ImagesConfiguration
+import com.jpp.moviespreview.domainlayer.AppConfiguration
 import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
 
 class ConfigurationRepositoryImpl(private val cacheRepository: ConfigurationRepository,
@@ -20,7 +20,7 @@ class ConfigurationRepositoryImpl(private val cacheRepository: ConfigurationRepo
         }
     }
 
-    override fun updateAppConfiguration(imagesConfiguration: ImagesConfiguration) {
+    override fun updateAppConfiguration(appConfiguration: AppConfiguration) {
         throw UnsupportedOperationException("Updating AppConfiguration is not supported by the application")
     }
 }

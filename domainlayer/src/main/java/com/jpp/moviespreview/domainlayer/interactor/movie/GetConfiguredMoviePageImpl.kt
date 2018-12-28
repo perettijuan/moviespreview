@@ -1,6 +1,5 @@
 package com.jpp.moviespreview.domainlayer.interactor.movie
 
-import com.jpp.moviespreview.domainlayer.MoviePage
 import com.jpp.moviespreview.domainlayer.interactor.*
 
 /**
@@ -16,16 +15,10 @@ class GetConfiguredMoviePageImpl(private val getMoviePage: GetMoviePage,
                 MoviePageResult.ErrorNoConnectivity -> ConfiguredMoviePageResult.ErrorNoConnectivity
                 MoviePageResult.ErrorUnknown -> ConfiguredMoviePageResult.ErrorUnknown
                 is MoviePageResult.Success -> {
-                    it.moviePage.movies
+                    it.moviePage.results
                             .map { movieToConfigure -> configureMovie(MovieImagesParam(movieToConfigure, parameter.backdropSize, parameter.posterSize)).movie }
                             .let { configuredMovies ->
-                                ConfiguredMoviePageResult.Success(
-                                        MoviePage(
-                                                pageNumber = it.moviePage.pageNumber,
-                                                totalPages = it.moviePage.totalPages,
-                                                movies = configuredMovies
-                                        )
-                                )
+                                ConfiguredMoviePageResult.Success(it.moviePage.copy(results = configuredMovies))
                             }
                 }
             }
