@@ -4,10 +4,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
 import com.jpp.moviespreview.common.extensions.and
-import com.jpp.moviespreview.datalayer.AppConfiguration
-import com.jpp.moviespreview.datalayer.MovieDetail
-import com.jpp.moviespreview.datalayer.MoviePage
 import com.jpp.moviespreview.datalayer.cache.room.*
+import com.jpp.moviespreview.domainlayer.AppConfiguration
+import com.jpp.moviespreview.domainlayer.MovieDetail
+import com.jpp.moviespreview.domainlayer.MoviePage
+import com.jpp.moviespreview.domainlayer.MovieSection
 
 class MPDataBaseImpl(private val context: Context,
                      private val adapter: RoomModelAdapter) : MPDataBase {
@@ -31,12 +32,12 @@ class MPDataBaseImpl(private val context: Context,
         }
     }
 
-    override fun isCurrentMovieTypeStored(movieType: MovieType): Boolean =
+    override fun isCurrentMovieTypeStored(movieType: MovieSection): Boolean =
         withSharedPreferences {
             getString(MOVIE_TYPE_STORED_KEY, null)?.equals(movieType) ?: false
         }
 
-    override fun updateCurrentMovieTypeStored(movieType: MovieType) {
+    override fun updateCurrentMovieTypeStored(movieType: MovieSection) {
         withSharedPreferencesEditor {
             putString(MOVIE_TYPE_STORED_KEY, movieType.toString())
             apply()

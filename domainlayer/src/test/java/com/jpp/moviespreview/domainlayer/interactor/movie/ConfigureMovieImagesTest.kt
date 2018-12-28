@@ -1,6 +1,7 @@
 package com.jpp.moviespreview.domainlayer.interactor.movie
 
 
+import com.jpp.moviespreview.domainlayer.AppConfiguration
 import com.jpp.moviespreview.domainlayer.ImagesConfiguration
 import com.jpp.moviespreview.domainlayer.Movie
 import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImages
@@ -36,8 +37,8 @@ class ConfigureMovieImagesTest {
 
         val result = subject.execute(MovieImagesParam(param.movie, param.targetBackdropSize, param.targetPosterSize))
 
-        assertEquals(param.expectedPosterPath, result.movie.posterPath, param.case)
-        assertEquals(param.expectedBackdropPath, result.movie.backdropPath, param.case)
+        assertEquals(param.expectedPosterPath, result.movie.poster_path, param.case)
+        assertEquals(param.expectedBackdropPath, result.movie.backdrop_path, param.case)
     }
 
     @Test
@@ -51,10 +52,10 @@ class ConfigureMovieImagesTest {
 
     data class ExecuteTestParameter(
             val case: String,
-            val imagesConfig: ImagesConfiguration,
+            val imagesConfig: AppConfiguration,
             val movie: Movie,
             val targetBackdropSize: Int,
-            val targetPosterSize : Int,
+            val targetPosterSize: Int,
             val expectedPosterPath: String?,
             val expectedBackdropPath: String?
     )
@@ -65,7 +66,7 @@ class ConfigureMovieImagesTest {
         fun executeParameters() = listOf(
                 ExecuteTestParameter(
                         case = "Should configure with exact value",
-                        imagesConfig = imagesConfig,
+                        imagesConfig = AppConfiguration(imagesConfig),
                         movie = movie,
                         targetBackdropSize = 780,
                         targetPosterSize = 342,
@@ -74,7 +75,7 @@ class ConfigureMovieImagesTest {
                 ),
                 ExecuteTestParameter(
                         case = "Should configure with first higher value",
-                        imagesConfig = imagesConfig,
+                        imagesConfig = AppConfiguration(imagesConfig),
                         movie = movie,
                         targetBackdropSize = 800,
                         targetPosterSize = 551,
@@ -83,7 +84,7 @@ class ConfigureMovieImagesTest {
                 ),
                 ExecuteTestParameter(
                         case = "Should configure with first lower value",
-                        imagesConfig = imagesConfig,
+                        imagesConfig = AppConfiguration(imagesConfig),
                         movie = movie,
                         targetBackdropSize = 40,
                         targetPosterSize = 40,
@@ -92,7 +93,7 @@ class ConfigureMovieImagesTest {
                 ),
                 ExecuteTestParameter(
                         case = "Should configure with last when no value is accepted",
-                        imagesConfig = imagesConfig,
+                        imagesConfig = AppConfiguration(imagesConfig),
                         movie = movie,
                         targetBackdropSize = 1400,
                         targetPosterSize = 800,
@@ -101,8 +102,8 @@ class ConfigureMovieImagesTest {
                 ),
                 ExecuteTestParameter(
                         case = "Should leave as null when paths are null",
-                        imagesConfig = imagesConfig,
-                        movie = movie.copy(backdropPath = null, posterPath = null),
+                        imagesConfig = AppConfiguration(imagesConfig),
+                        movie = movie.copy(backdrop_path = null, poster_path = null),
                         targetBackdropSize = 1400,
                         targetPosterSize = 800,
                         expectedBackdropPath = null,
@@ -111,19 +112,19 @@ class ConfigureMovieImagesTest {
         )
 
         private val imagesConfig = ImagesConfiguration(
-                baseUrl = "baseUrl/",
-                posterSizes = listOf("w92",
+                base_url = "baseUrl/",
+                poster_sizes = listOf("w92",
                         "w154",
                         "w185",
                         "w342",
                         "w500",
                         "w780",
                         "original"),
-                profileSizes = listOf("w45",
+                profile_sizes = listOf("w45",
                         "w185",
                         "h632",
                         "original"),
-                backdropSizes = listOf("w300",
+                backdrop_sizes = listOf("w300",
                         "w780",
                         "w1280",
                         "original")
@@ -133,14 +134,14 @@ class ConfigureMovieImagesTest {
         private val movie = Movie(
                 id = 12.toDouble(),
                 title = "Titanic",
-                originalTitle = "Titanic",
+                original_title = "Titanic",
                 overview = "An overview",
-                releaseDate = "",
-                originalLanguage = "En",
-                posterPath = "/m110vLaDDOCca4hfOcS5mK5cDke.jpg",
-                backdropPath = "/m110vLaDDOCca4hfOcS5mK5cDke.jpg",
-                voteCount = 1233.toDouble(),
-                voteAverage = 0F,
+                release_date = "",
+                original_language = "En",
+                poster_path = "/m110vLaDDOCca4hfOcS5mK5cDke.jpg",
+                backdrop_path = "/m110vLaDDOCca4hfOcS5mK5cDke.jpg",
+                vote_count = 1233.toDouble(),
+                vote_average = 0F,
                 popularity = 0F
         )
     }

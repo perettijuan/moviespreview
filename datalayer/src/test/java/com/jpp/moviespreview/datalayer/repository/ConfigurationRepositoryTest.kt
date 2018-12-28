@@ -1,5 +1,6 @@
 package com.jpp.moviespreview.datalayer.repository
 
+import com.jpp.moviespreview.datalayer.repository.configuration.ConfigurationRepositoryImpl
 import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
 import io.mockk.every
 import io.mockk.impl.annotations.MockK

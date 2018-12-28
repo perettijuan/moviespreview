@@ -1,5 +1,6 @@
 package com.jpp.moviespreview.domainlayer.repository
 
+import com.jpp.moviespreview.domainlayer.AppConfiguration
 import com.jpp.moviespreview.domainlayer.ImagesConfiguration
 import com.jpp.moviespreview.domainlayer.MovieDetail
 import com.jpp.moviespreview.domainlayer.MoviePage
@@ -13,12 +14,11 @@ interface ConfigurationRepository {
 
     sealed class ConfigurationRepositoryOutput {
         object Error : ConfigurationRepositoryOutput()
-        data class Success(val config: ImagesConfiguration) : ConfigurationRepositoryOutput()
+        data class Success(val config: AppConfiguration) : ConfigurationRepositoryOutput()
     }
 
 
     fun getConfiguration(): ConfigurationRepositoryOutput
-    fun updateAppConfiguration(imagesConfiguration: ImagesConfiguration)
 }
 
 /**

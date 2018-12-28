@@ -37,11 +37,11 @@ class MovieItemMapper @Inject constructor() {
 
     fun mapDomainMovie(domainMovie: DomainMovie) = with(domainMovie) {
         MovieItem(movieId = id,
-                headerImageUrl = backdropPath ?: "emptyPath",
+                headerImageUrl = backdrop_path ?: "emptyPath",
                 title = title,
-                contentImageUrl = posterPath ?: "emptyPath",
+                contentImageUrl = poster_path ?: "emptyPath",
                 popularity = popularity.toString(),
-                voteCount = voteCount.toString()
+                voteCount = vote_count.toString()
         )
     }
 

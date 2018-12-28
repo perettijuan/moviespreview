@@ -1,7 +1,7 @@
 package com.jpp.moviespreview.datalayer.cache.room
 
 import com.jpp.moviespreview.common.extensions.addAllMapping
-import com.jpp.moviespreview.datalayer.*
+import com.jpp.moviespreview.domainlayer.*
 
 
 /**

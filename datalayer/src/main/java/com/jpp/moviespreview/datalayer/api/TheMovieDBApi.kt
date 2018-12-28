@@ -1,8 +1,9 @@
 package com.jpp.moviespreview.datalayer.api
 
-import com.jpp.moviespreview.datalayer.AppConfiguration
-import com.jpp.moviespreview.datalayer.MovieDetail
-import com.jpp.moviespreview.datalayer.MoviePage
+
+import com.jpp.moviespreview.domainlayer.AppConfiguration
+import com.jpp.moviespreview.domainlayer.MovieDetail
+import com.jpp.moviespreview.domainlayer.MoviePage
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -29,7 +30,7 @@ interface TheMovieDBApi {
      */
     @GET("movie/now_playing")
     fun getNowPlaying(@Query("page") page: Int,
-                      @Query("api_key") api_key: String ,
+                      @Query("api_key") api_key: String,
                       @Query("language") language: String? = null,
                       @Query("region") region: String? = null): Call<MoviePage>
 
@@ -45,6 +46,7 @@ interface TheMovieDBApi {
                    @Query("api_key") api_key: String,
                    @Query("language") language: String? = null,
                    @Query("region") region: String? = null): Call<MoviePage>
+
     /**
      * Retrieves the list of top rated movies.
      * [page] the current page to retrieve.

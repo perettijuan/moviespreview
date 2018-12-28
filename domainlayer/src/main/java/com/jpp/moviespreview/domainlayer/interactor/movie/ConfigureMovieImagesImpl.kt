@@ -15,8 +15,8 @@ class ConfigureMovieImagesImpl(private val configRepository: ConfigurationReposi
                 is ConfigurationRepository.ConfigurationRepositoryOutput.Success -> {
                     with(parameter.movie) {
                         MovieImagesResult(copy(
-                                posterPath = createUrlForPath(posterPath, appConfig.config.baseUrl, appConfig.config.posterSizes, parameter.posterSize),
-                                backdropPath = createUrlForPath(backdropPath, appConfig.config.baseUrl, appConfig.config.backdropSizes, parameter.backdropSize)
+                                poster_path = createUrlForPath(poster_path, appConfig.config.images.base_url, appConfig.config.images.poster_sizes, parameter.posterSize),
+                                backdrop_path = createUrlForPath(backdrop_path, appConfig.config.images.base_url, appConfig.config.images.backdrop_sizes, parameter.backdropSize)
                         ))
                     }
                 }

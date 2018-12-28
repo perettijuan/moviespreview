@@ -4,18 +4,6 @@ package com.jpp.moviespreview.domainlayer.interactor
  ******* Contains the definition of all the Interactors that the application can execute.  *********
  ***************************************************************************************************/
 
-
-/**
- * [Interactor] to configure the application. It will retrieve all configurations needed
- * to the normal execution of the application and it stores those configurations to be
- * used later.
- *
- * [EmptyParam] is to respect the [Interactor] definition.
- * [ConfigureApplicationResult] only indicates the success or failed execution.
- */
-interface ConfigureApplication : Interactor<EmptyParam, ConfigureApplicationResult>
-
-
 /**
  * [Interactor] to retrieve a given movie page.
  *
