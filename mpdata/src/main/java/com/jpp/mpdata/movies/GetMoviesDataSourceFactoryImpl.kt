@@ -16,6 +16,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
+ * TODO JPP -> can we make this logic live in GetMovieListRepository?
+ *
  * [GetMoviesDataSourceFactory] implementation to provide a [PagedList] of the movies to show.
  * It implements [DataSource.Factory] in order to be used with the paging library.
  */
