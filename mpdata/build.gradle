@@ -10,6 +10,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        buildConfigField 'String', 'API_KEY', '"eddf6980a6d7dadd72386f55f94ab571"'
         buildConfigField 'String', 'API_ENDPOINT', '"https://api.themoviedb.org/3/"'
     }
 

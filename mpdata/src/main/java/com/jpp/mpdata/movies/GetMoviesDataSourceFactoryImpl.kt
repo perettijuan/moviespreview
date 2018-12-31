@@ -5,18 +5,19 @@ import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mpdata.ConnectivityHandler
-import com.jpp.mpdomain.handlers.ConfigurationHandler
+import com.jpp.mpdata.api.MoviesApi
+import com.jpp.mpdata.cache.MoviesDb
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.repository.OperationState
 import com.jpp.mpdomain.repository.movies.GetMoviesDataSourceFactory
 import java.util.concurrent.Executor
-import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
  * TODO JPP -> can we make this logic live in GetMovieListRepository?
+ * I think so because this guy should live in the domain layer and BE the repository.
  *
  * [GetMoviesDataSourceFactory] implementation to provide a [PagedList] of the movies to show.
  * It implements [DataSource.Factory] in order to be used with the paging library.

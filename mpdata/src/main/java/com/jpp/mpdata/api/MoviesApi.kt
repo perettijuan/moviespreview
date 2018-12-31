@@ -1,4 +1,4 @@
-package com.jpp.mpdata.movies
+package com.jpp.mpdata.api
 
 import com.jpp.mpdomain.MoviePage
 

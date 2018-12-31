@@ -1,36 +1,38 @@
 package com.jpp.mpdata.api
 
 import com.jpp.mpdata.BuildConfig
-import com.jpp.mpdata.movies.MoviesApi
 import com.jpp.mpdomain.MoviePage
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Represents the remote API that MoviesPreview supports. It is a wrapper
  * around Retrofit classes to provide a clean access to the API.
  */
-class MoviesPreviewApi(private val serverApiKey: String)
+@Singleton
+class MPApi @Inject constructor()
     : MoviesApi {
 
 
     override fun getNowPlayingMoviePage(page: Int): MoviePage? {
-        return tryCatchOrReturnNull { API.getNowPlaying(page, serverApiKey) }
+        return tryCatchOrReturnNull { API.getNowPlaying(page, API_KEY) }
     }
 
     override fun getPopularMoviePage(page: Int): MoviePage? {
-        return tryCatchOrReturnNull { API.getPopular(page, serverApiKey) }
+        return tryCatchOrReturnNull { API.getPopular(page, API_KEY) }
     }
 
     override fun getTopRatedMoviePage(page: Int): MoviePage? {
-        return tryCatchOrReturnNull { API.getTopRated(page, serverApiKey) }
+        return tryCatchOrReturnNull { API.getTopRated(page, API_KEY) }
     }
 
     override fun getUpcomingMoviePage(page: Int): MoviePage? {
-        return tryCatchOrReturnNull { API.getUpcoming(page, serverApiKey) }
+        return tryCatchOrReturnNull { API.getUpcoming(page, API_KEY) }
     }
 
 
@@ -47,6 +49,7 @@ class MoviesPreviewApi(private val serverApiKey: String)
     }
 
     companion object {
+        const val API_KEY = BuildConfig.API_KEY
         val API: TheMovieDBApi by lazy {
             Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
