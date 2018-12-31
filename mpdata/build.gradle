@@ -31,7 +31,7 @@ dependencies {
 
     // Common module -> DO NOT leak dependency
     implementation project(path: ':common')
-    implementation project(path: ':domainlayer')
+    implementation project(path: ':mpdomain')
 
     // Paging library
     implementation deps.androidx.paging

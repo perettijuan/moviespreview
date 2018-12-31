@@ -5,5 +5,6 @@ package com.jpp.mpdomain.repository
 sealed class OperationState {
     object Loaded : OperationState()
     object Loading : OperationState()
-    object Error : OperationState()
+    object ErrorUnknown : OperationState()
+    object ErrorNoConnectivity : OperationState()
 }
