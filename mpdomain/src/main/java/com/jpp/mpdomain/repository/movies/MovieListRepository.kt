@@ -3,7 +3,7 @@ package com.jpp.mpdomain.repository.movies
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
 
-interface GetMovieListRepository {
+interface MovieListRepository {
     /**
      * Retrieves a [MovieListing] that can be use to show a list of movies retrieved from the server.
      * [section] indicates the section of interest for the request.

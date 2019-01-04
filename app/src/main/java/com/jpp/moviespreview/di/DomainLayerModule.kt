@@ -1,21 +1,17 @@
 package com.jpp.moviespreview.di
 
 import android.content.Context
-import com.jpp.moviespreview.domainlayer.ConnectivityVerifier
-import com.jpp.moviespreview.domainlayer.ConnectivityVerifierImpl
-import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImages
-import com.jpp.moviespreview.domainlayer.interactor.GetConfiguredMoviePage
-import com.jpp.moviespreview.domainlayer.interactor.GetMoviePage
-import com.jpp.moviespreview.domainlayer.interactor.movie.ConfigureMovieImagesImpl
-import com.jpp.moviespreview.domainlayer.interactor.movie.GetConfiguredMoviePageImpl
-import com.jpp.moviespreview.domainlayer.interactor.movie.GetMoviePageImpl
-import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
-import com.jpp.moviespreview.domainlayer.repository.MovieListRepository
-import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
-import com.jpp.moviespreview.domainlayer.repository.movies.MovieListRepositoryImpl
-import com.jpp.moviespreview.domainlayer.repository.movies.MoviesPagingDataSourceFactory
+import com.jpp.mpdomain.handlers.ConnectivityHandler
+import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
+import com.jpp.mpdomain.handlers.configuration.ConfigurationHandlerImpl
+import com.jpp.mpdomain.repository.movies.MovieListRepository
+import com.jpp.mpdomain.repository.movies.MovieListRepositoryImpl
+import com.jpp.mpdomain.repository.movies.MoviesApi
+import com.jpp.mpdomain.repository.movies.MoviesDb
 import dagger.Module
 import dagger.Provides
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 import javax.inject.Singleton
 
 /**
@@ -24,28 +20,26 @@ import javax.inject.Singleton
 @Module
 class DomainLayerModule {
 
-    @Provides
-    @Singleton
-    fun providesConnectivityVerifier(context: Context): ConnectivityVerifier = ConnectivityVerifierImpl(context)
+    private val NETWORK_IO = Executors.newFixedThreadPool(5)
 
     @Provides
     @Singleton
-    fun providesGetMoviePage(moviesRepository: MoviesRepository, connectivityVerifier: ConnectivityVerifier)
-            : GetMoviePage = GetMoviePageImpl(moviesRepository, connectivityVerifier)
+    fun providesConnectivityHandler(context: Context): ConnectivityHandler = ConnectivityHandler.ConnectivityHandlerImpl(context)
 
     @Provides
     @Singleton
-    fun providesConfigureMovieImages(configRepository: ConfigurationRepository)
-            : ConfigureMovieImages = ConfigureMovieImagesImpl(configRepository)
+    fun providesConfigurationHandler(): ConfigurationHandler = ConfigurationHandlerImpl()
 
     @Provides
     @Singleton
-    fun providesGetConfiguredMoviePage(getMoviePage: GetMoviePage, configureMovieImages: ConfigureMovieImages)
-            : GetConfiguredMoviePage = GetConfiguredMoviePageImpl(getMoviePage, configureMovieImages)
+    fun providesNetworkExecutor(): Executor = NETWORK_IO
 
     @Provides
     @Singleton
-    fun providesMovieListRepository(moviePage: GetConfiguredMoviePage): MovieListRepository =
-        MovieListRepositoryImpl(dataSourceFactory = MoviesPagingDataSourceFactory(moviePage))
-
+    fun providesMovieListRepository(moviesApi: MoviesApi,
+                                    moviesDb: MoviesDb,
+                                    connectivityHandler: ConnectivityHandler,
+                                    configurationHandler: ConfigurationHandler,
+                                    networkExecutor: Executor) : MovieListRepository
+            = MovieListRepositoryImpl(moviesApi, moviesDb, connectivityHandler, configurationHandler, networkExecutor)
 }

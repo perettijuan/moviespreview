@@ -1,11 +1,13 @@
 package com.jpp.moviespreview.screens.main.movies
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations.map
+import androidx.lifecycle.Transformations.switchMap
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
-import com.jpp.moviespreview.domainlayer.ds.movie.MoviesDataSourceState
-import com.jpp.moviespreview.domainlayer.repository.MovieListRepository
+import com.jpp.mpdomain.repository.OperationState
+import com.jpp.mpdomain.repository.movies.MovieListRepository
 import javax.inject.Inject
 
 /**
@@ -22,14 +24,30 @@ import javax.inject.Inject
 class MoviesFragmentViewModel @Inject constructor(private val movieListRepository: MovieListRepository,
                                                   private val mapper: MovieItemMapper) : ViewModel() {
 
-    private lateinit var viewState: LiveData<MoviesFragmentViewState>
 
-    private lateinit var pagedList: LiveData<PagedList<MovieItem>>
+    private val fetchMovieList = MutableLiveData<MoviesListParam>()
+    private val repoResult = map(fetchMovieList) { param ->
+        mapper
+                .mapMovieSection(param.section)
+                .let {
+                    movieListRepository.moviePageForSection(it, param.targetBackdropSize, param.targetPosterSize) { domainMovie ->
+                        mapper.mapDomainMovie(domainMovie)
+                    }
+                }
 
-    private lateinit var currentSection: UiMovieSection
+    }
 
+    private val repoState = map(repoResult) { it.operationState }
+    val pagedList = switchMap(repoResult) { it.pagedList }
 
-    fun bindViewState(): LiveData<MoviesFragmentViewState> = viewState
+    fun bindViewState(): LiveData<MoviesFragmentViewState> = map(repoState) {
+        when (it.value) {
+            OperationState.Loading -> MoviesFragmentViewState.Loading
+            OperationState.ErrorUnknown -> MoviesFragmentViewState.ErrorUnknown
+            OperationState.ErrorNoConnectivity -> MoviesFragmentViewState.ErrorNoConnectivity
+            else -> MoviesFragmentViewState.InitialPageLoaded
+        }
+    }
 
     /**
      * Retrieves a [LiveData] object that is notified when a new [PagedList] is available
@@ -41,41 +59,47 @@ class MoviesFragmentViewModel @Inject constructor(private val movieListRepositor
      * remains the same. When the Fragment is recreated and hook himself to the ViewModel, we want
      * that hooking to the original PagedList and not to a new instance.
      */
-    fun getMovieList(movieSection: UiMovieSection, moviePosterSize: Int, movieBackdropSize: Int): LiveData<PagedList<MovieItem>> {
-        if (::currentSection.isInitialized
-                && currentSection == movieSection
-                && ::pagedList.isInitialized) {
-            /*
-             * Avoid loading if we're already showing the requested pages.
-             */
-            return pagedList
-        }
-
-        currentSection = movieSection
-
-        val listing = movieListRepository.moviePageOfSection(mapper.mapMovieSection(currentSection),
-                movieBackdropSize,
-                moviePosterSize) { domainMovie -> mapper.mapDomainMovie(domainMovie) }
-
-        pagedList = listing.pagedList
-
-
-        /*
-         * Very cool way to map the ds internal state to a state that the UI understands without coupling the UI to de domain.
-         */
-        viewState = Transformations.map(listing.dataSourceLiveData) {
-            when (it) {
-                MoviesDataSourceState.LoadingInitial -> MoviesFragmentViewState.Loading
-                MoviesDataSourceState.ErrorUnknown -> MoviesFragmentViewState.ErrorUnknown
-                MoviesDataSourceState.ErrorNoConnectivity -> MoviesFragmentViewState.ErrorNoConnectivity
-                else -> MoviesFragmentViewState.InitialPageLoaded
-            }
-        }
-
-        return pagedList
+    fun getMovieList(movieSection: UiMovieSection, moviePosterSize: Int, movieBackdropSize: Int) {
+//        if (::currentSection.isInitialized
+//                && currentSection == movieSection
+//                && ::pagedList.isInitialized) {
+//            /*
+//             * Avoid loading if we're already showing the requested pages.
+//             */
+//            return pagedList
+//        }
+//
+//        currentSection = movieSection
+//
+//        val listing = movieListRepository.moviePageOfSection(mapper.mapMovieSection(currentSection),
+//                movieBackdropSize,
+//                moviePosterSize) { domainMovie -> mapper.mapDomainMovie(domainMovie) }
+//
+//        pagedList = listing.pagedList
+//
+//
+//        /*
+//         * Very cool way to map the ds internal state to a state that the UI understands without coupling the UI to de domain.
+//         */
+//        repoState = Transformations.map(listing.dataSourceLiveData) {
+//            when (it) {
+//                MoviesDataSourceState.LoadingInitial -> MoviesFragmentViewState.Loading
+//                MoviesDataSourceState.ErrorUnknown -> MoviesFragmentViewState.ErrorUnknown
+//                MoviesDataSourceState.ErrorNoConnectivity -> MoviesFragmentViewState.ErrorNoConnectivity
+//                else -> MoviesFragmentViewState.InitialPageLoaded
+//            }
+//        }
+//
+//        return pagedList
+        fetchMovieList.postValue(MoviesListParam(movieSection, movieBackdropSize, moviePosterSize))
     }
 
     fun retryMoviesListFetch() {
         //pagingDataSourceFactory.retryLastDSCall()
     }
+
+
+    private data class MoviesListParam(val section: UiMovieSection,
+                                       val targetBackdropSize: Int,
+                                       val targetPosterSize: Int)
 }

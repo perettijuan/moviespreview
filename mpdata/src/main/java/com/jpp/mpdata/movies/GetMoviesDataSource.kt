@@ -3,9 +3,9 @@ package com.jpp.mpdata.movies
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
-import com.jpp.mpdata.ConnectivityHandler
-import com.jpp.mpdata.api.MoviesApi
-import com.jpp.mpdata.cache.MoviesDb
+import com.jpp.mpdomain.handlers.ConnectivityHandler
+import com.jpp.mpdomain.repository.movies.MoviesApi
+import com.jpp.mpdomain.repository.movies.MoviesDb
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.repository.OperationState

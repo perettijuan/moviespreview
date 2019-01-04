@@ -1,2 +1,4 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.jpp.mpdomain" />
+  package="com.jpp.mpdomain" >
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+</manifest>

@@ -1,8 +1,8 @@
 package com.jpp.moviespreview.screens.main.movies
 
-import com.jpp.moviespreview.domainlayer.MovieSection
+import com.jpp.mpdomain.MovieSection
 import javax.inject.Inject
-import com.jpp.moviespreview.domainlayer.Movie as DomainMovie
+import com.jpp.mpdomain.Movie as DomainMovie
 
 /***************************************************************************************************
  ********* Contains all the model classes that the movies section in the UI layer supports. ********

@@ -2,21 +2,18 @@ package com.jpp.mpdata.api
 
 import com.jpp.mpdata.BuildConfig
 import com.jpp.mpdomain.MoviePage
+import com.jpp.mpdomain.repository.movies.MoviesApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Represents the remote API that MoviesPreview supports. It is a wrapper
  * around Retrofit classes to provide a clean access to the API.
  */
-@Singleton
-class MPApi @Inject constructor()
-    : MoviesApi {
+class MPApi : MoviesApi {
 
 
     override fun getNowPlayingMoviePage(page: Int): MoviePage? {

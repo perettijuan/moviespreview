@@ -9,14 +9,15 @@ import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdata.cache.timestamps.MPTimestamps
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
+import com.jpp.mpdomain.repository.movies.MoviesDb
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
-class MPCache @Inject constructor(private val context: Context,
-                                  private val timestamps: MPTimestamps,
-                                  private val roomDatabase: MPRoomDataBase,
-                                  private val adapter: RoomModelAdapter)
+
+class MPCache(private val context: Context,
+              private val timestamps: MPTimestamps,
+              private val roomDatabase: MPRoomDataBase,
+              private val adapter: RoomModelAdapter)
     : MoviesDb {
 
 
@@ -41,6 +42,7 @@ class MPCache @Inject constructor(private val context: Context,
             insertMoviePage(transformWithAdapter { adaptDataMoviePageToDBMoviePage(moviePage) })
             insertMovies(moviePage.results.map { movie -> transformWithAdapter { adaptDataMovieToDBMovie(movie, moviePage.page) } })
         }.run {
+            timestamps.updateMoviePageInserted()
             updateCurrentMovieTypeStored(section)
         }
     }

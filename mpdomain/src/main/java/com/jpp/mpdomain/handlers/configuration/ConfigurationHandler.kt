@@ -1,4 +1,4 @@
-package com.jpp.mpdomain.handlers
+package com.jpp.mpdomain.handlers.configuration
 
 import com.jpp.mpdomain.Movie
 

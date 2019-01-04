@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.jpp.mpdata.ConnectivityHandler
-import com.jpp.mpdata.api.MoviesApi
-import com.jpp.mpdata.cache.MoviesDb
+import com.jpp.mpdomain.handlers.ConnectivityHandler
+import com.jpp.mpdomain.repository.movies.MoviesApi
+import com.jpp.mpdomain.repository.movies.MoviesDb
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.repository.OperationState
@@ -22,11 +22,10 @@ import javax.inject.Singleton
  * [GetMoviesDataSourceFactory] implementation to provide a [PagedList] of the movies to show.
  * It implements [DataSource.Factory] in order to be used with the paging library.
  */
-@Singleton
-class GetMoviesDataSourceFactoryImpl @Inject constructor(private val moviesApi: MoviesApi,
-                                                         private val moviesDb: MoviesDb,
-                                                         private val connectivityHandler: ConnectivityHandler,
-                                                         private val networkExecutor: Executor)
+class GetMoviesDataSourceFactoryImpl(private val moviesApi: MoviesApi,
+                                     private val moviesDb: MoviesDb,
+                                     private val connectivityHandler: ConnectivityHandler,
+                                     private val networkExecutor: Executor)
     : GetMoviesDataSourceFactory,
         DataSource.Factory<Int, Movie>() {
 

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.moviespreview.R
+import com.jpp.moviespreview.common.extensions.and
 import com.jpp.moviespreview.ext.*
 import com.jpp.moviespreview.screens.main.MainActivityAction
 import com.jpp.moviespreview.screens.main.MainActivityViewModel
@@ -76,14 +77,15 @@ abstract class MoviesFragment : Fragment() {
          * and then update the adapter with the new data.
          */
         withViewModel<MoviesFragmentViewModel>(viewModelFactory) {
-            getMovieList(getMoviesSection(), getScreenSizeInPixels().x, getScreenSizeInPixels().x)
-                    .observe(this@MoviesFragment, Observer<PagedList<MovieItem>> {
+            pagedList.observe(this@MoviesFragment, Observer<PagedList<MovieItem>> {
                         (moviesList.adapter as MoviesAdapter).submitList(it)
                     })
         }.also {
             it.bindViewState().observe(this, Observer { viewState ->
                 renderViewState(viewState)
             })
+        }.and {
+            it.getMovieList(getMoviesSection(), getScreenSizeInPixels().x, getScreenSizeInPixels().x)
         }
     }
 
