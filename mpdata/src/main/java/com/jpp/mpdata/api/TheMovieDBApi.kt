@@ -1,5 +1,6 @@
 package com.jpp.mpdata.api
 
+import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.MoviePage
 import retrofit2.Call
 import retrofit2.http.GET
@@ -10,6 +11,11 @@ import retrofit2.http.Query
  */
 interface TheMovieDBApi {
 
+    /**
+     * Retrieves the current configuration from the server.
+     */
+    @GET("configuration")
+    fun getAppConfiguration(@Query("api_key") api_key: String): Call<AppConfiguration>
 
     /**
      * Retrieves the list of movies currently playing in theaters.

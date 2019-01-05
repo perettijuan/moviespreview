@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.jpp.mpdomain.handlers.ConnectivityHandler
-import com.jpp.mpdomain.repository.movies.MoviesApi
-import com.jpp.mpdomain.repository.movies.MoviesDb
+import com.jpp.mpdomain.repository.MoviesApi
+import com.jpp.mpdomain.repository.MoviesDb
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.repository.OperationState

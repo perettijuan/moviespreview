@@ -4,10 +4,12 @@ import android.content.Context
 import com.jpp.mpdomain.handlers.ConnectivityHandler
 import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
 import com.jpp.mpdomain.handlers.configuration.ConfigurationHandlerImpl
+import com.jpp.mpdomain.repository.ConfigurationApi
+import com.jpp.mpdomain.repository.ConfigurationDb
 import com.jpp.mpdomain.repository.movies.MovieListRepository
 import com.jpp.mpdomain.repository.movies.MovieListRepositoryImpl
-import com.jpp.mpdomain.repository.movies.MoviesApi
-import com.jpp.mpdomain.repository.movies.MoviesDb
+import com.jpp.mpdomain.repository.MoviesApi
+import com.jpp.mpdomain.repository.MoviesDb
 import dagger.Module
 import dagger.Provides
 import java.util.concurrent.Executor
@@ -38,8 +40,10 @@ class DomainLayerModule {
     @Singleton
     fun providesMovieListRepository(moviesApi: MoviesApi,
                                     moviesDb: MoviesDb,
+                                    configurationApi: ConfigurationApi,
+                                    configurationDb: ConfigurationDb,
                                     connectivityHandler: ConnectivityHandler,
                                     configurationHandler: ConfigurationHandler,
                                     networkExecutor: Executor) : MovieListRepository
-            = MovieListRepositoryImpl(moviesApi, moviesDb, connectivityHandler, configurationHandler, networkExecutor)
+            = MovieListRepositoryImpl(moviesApi, moviesDb, configurationApi, configurationDb, connectivityHandler, configurationHandler, networkExecutor)
 }

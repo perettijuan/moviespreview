@@ -5,15 +5,13 @@ import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mpdomain.handlers.ConnectivityHandler
-import com.jpp.mpdomain.repository.movies.MoviesApi
-import com.jpp.mpdomain.repository.movies.MoviesDb
+import com.jpp.mpdomain.repository.MoviesApi
+import com.jpp.mpdomain.repository.MoviesDb
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.repository.OperationState
 import com.jpp.mpdomain.repository.movies.GetMoviesDataSourceFactory
 import java.util.concurrent.Executor
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * TODO JPP -> can we make this logic live in GetMovieListRepository?

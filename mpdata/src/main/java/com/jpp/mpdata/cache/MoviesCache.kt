@@ -9,29 +9,27 @@ import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdata.cache.timestamps.MPTimestamps
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
-import com.jpp.mpdomain.repository.movies.MoviesDb
-import javax.inject.Inject
-import javax.inject.Singleton
+import com.jpp.mpdomain.repository.MoviesDb
 
 
-class MPCache(private val context: Context,
-              private val timestamps: MPTimestamps,
-              private val roomDatabase: MPRoomDataBase,
-              private val adapter: RoomModelAdapter)
-    : MoviesDb {
+class MoviesCache(private val context: Context,
+                  private val timestamps: MPTimestamps,
+                  private val roomDatabase: MPRoomDataBase,
+                  private val adapter: RoomModelAdapter) : MoviesDb {
 
 
     override fun getMoviePageForSection(page: Int, section: MovieSection): MoviePage? {
-        return if (isCurrentMovieTypeStored(section) && timestamps.isMoviePageUpToDate()) {
-            withMovieDao {
-                getMoviePage(page)
-                        ?.and { getMoviesFromPage(it.page) }
-                        ?.let { pair ->
-                            transformWithAdapter { pair.second?.let { movies -> adaptDBMoviePageToDataMoviePage(pair.first, movies) } }
-                        }
+        return when (isCurrentMovieTypeStored(section) && timestamps.isMoviePageUpToDate()) {
+            true -> {
+                withMovieDao {
+                    getMoviePage(page)
+                            ?.and { getMoviesFromPage(it.page) }
+                            ?.let { pair ->
+                                transformWithAdapter { pair.second?.let { movies -> adaptDBMoviePageToDataMoviePage(pair.first, movies) } }
+                            }
+                }
             }
-        } else {
-            null
+            else -> null
         }
     }
 
@@ -72,7 +70,7 @@ class MPCache(private val context: Context,
 
     private fun <T> withSharedPreferencesEditor(action: SharedPreferences.Editor.() -> T): T = with(getSharedPreferences().edit()) { action.invoke(this) }
 
-    private fun getSharedPreferences(): SharedPreferences = context.getSharedPreferences("mp_database", Context.MODE_PRIVATE)
+    private fun getSharedPreferences(): SharedPreferences = context.getSharedPreferences("movies_cache", Context.MODE_PRIVATE)
 
     companion object {
         private const val MOVIE_TYPE_STORED_KEY = "MPDatabase:MovieType"

@@ -5,6 +5,8 @@ package com.jpp.mpdata.cache.timestamps
  * if the data stored is up-to-date or it should be updated.
  */
 interface MPTimestamps {
+    fun isAppConfigurationUpToDate(): Boolean
+    fun updateAppConfigurationInserted()
     fun isMoviePageUpToDate(): Boolean
     fun updateMoviePageInserted()
 }

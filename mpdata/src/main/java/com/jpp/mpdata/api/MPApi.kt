@@ -1,8 +1,10 @@
 package com.jpp.mpdata.api
 
 import com.jpp.mpdata.BuildConfig
+import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.MoviePage
-import com.jpp.mpdomain.repository.movies.MoviesApi
+import com.jpp.mpdomain.repository.ConfigurationApi
+import com.jpp.mpdomain.repository.MoviesApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -13,8 +15,13 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Represents the remote API that MoviesPreview supports. It is a wrapper
  * around Retrofit classes to provide a clean access to the API.
  */
-class MPApi : MoviesApi {
+class MPApi
+    : ConfigurationApi,
+        MoviesApi {
 
+    override fun getAppConfiguration(): AppConfiguration? {
+        return tryCatchOrReturnNull { API.getAppConfiguration(API_KEY) }
+    }
 
     override fun getNowPlayingMoviePage(page: Int): MoviePage? {
         return tryCatchOrReturnNull { API.getNowPlaying(page, API_KEY) }

@@ -5,16 +5,20 @@ import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PageKeyedDataSource
 import androidx.paging.PagedList
+import com.jpp.moviespreview.common.extensions.and
+import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
 import com.jpp.mpdomain.handlers.ConnectivityHandler
-import com.jpp.mpdomain.repository.OperationState
+import com.jpp.mpdomain.repository.*
 import java.util.concurrent.Executor
 
 
 class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
                               private val moviesDb: MoviesDb,
+                              private val configurationApi: ConfigurationApi,
+                              private val configurationDb: ConfigurationDb,
                               private val connectivityHandler: ConnectivityHandler,
                               private val configurationHandler: ConfigurationHandler,
                               private val networkExecutor: Executor) : MovieListRepository {
@@ -30,7 +34,7 @@ class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
         }
 
         val pagedList = dataSourceFactory
-                .map { configurationHandler.configureMovie(it, targetBackdropSize, targetPosterSize) }
+                .map { configureMovieImagesPath(it, targetBackdropSize, targetPosterSize) }
                 .map { mapper(it) }
                 .let {
                     val config = PagedList.Config.Builder()
@@ -52,6 +56,7 @@ class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
 
 
     private fun fetchMoviePage(page: Int, section: MovieSection, callback: (List<Movie>, Int) -> Unit) {
+        //TODO JPP -> improve this code
         when (connectivityHandler.isConnectedToNetwork()) {
             true -> {
                 if (page == 1) {
@@ -88,6 +93,26 @@ class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
             moviesDb.saveMoviePageForSection(it, section)
             it.results
         }
+    }
+
+
+    private fun configureMovieImagesPath(movie: Movie,
+                                         targetBackdropSize: Int,
+                                         targetPosterSize: Int): Movie {
+
+        return getAppConfiguration()
+                ?.let {
+                    configurationHandler.configureMovie(movie, it.images, targetBackdropSize, targetPosterSize)
+                }
+                ?: run { movie }
+    }
+
+
+    private fun getAppConfiguration(): AppConfiguration? {
+        return configurationDb.getAppConfiguration()
+                ?: run {
+                    configurationApi.getAppConfiguration()?.also { configurationDb.saveAppConfiguration(it) }
+                }
     }
 
 

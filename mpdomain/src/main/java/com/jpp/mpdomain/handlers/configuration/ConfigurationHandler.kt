@@ -1,5 +1,6 @@
 package com.jpp.mpdomain.handlers.configuration
 
+import com.jpp.mpdomain.ImagesConfiguration
 import com.jpp.mpdomain.Movie
 
 /**
@@ -9,6 +10,7 @@ import com.jpp.mpdomain.Movie
  */
 interface ConfigurationHandler {
     fun configureMovie(movie: Movie,
+                       imagesConfig: ImagesConfiguration,
                        targetBackdropSize: Int,
                        targetPosterSize: Int): Movie
 }
