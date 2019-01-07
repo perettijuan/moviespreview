@@ -72,7 +72,7 @@ class RoomModelAdapter @Inject constructor() {
      */
     private fun adaptDBMovieToDataMovie(dbMovie: DBMovie): Movie = with(dbMovie) {
         Movie(
-                id = id,
+                id = movieId,
                 title = title,
                 original_title = originalTile,
                 overview = overview,
@@ -89,20 +89,22 @@ class RoomModelAdapter @Inject constructor() {
     /**
      * Adapts the provided [MoviePage] to a [DBMoviePage] with the same data.
      */
-    fun adaptDataMoviePageToDBMoviePage(dataMoviePage: MoviePage): DBMoviePage = with(dataMoviePage) {
+    fun adaptDataMoviePageToDBMoviePage(dataMoviePage: MoviePage, sectionName: String, dueDate: Long): DBMoviePage = with(dataMoviePage) {
         DBMoviePage(
                 page = page,
                 totalPages = total_pages,
-                totalResults = total_results
+                totalResults = total_results,
+                section = sectionName,
+                dueDate = dueDate
         )
     }
 
     /**
      * Adapts the provided [Movie] to a [DBMovie] with the respective data.
      */
-    fun adaptDataMovieToDBMovie(dataMovie: Movie, pageId: Int): DBMovie = with(dataMovie) {
+    fun adaptDataMovieToDBMovie(dataMovie: Movie, pageId: Long): DBMovie = with(dataMovie) {
         DBMovie(
-                id = id,
+                movieId = id,
                 title = title,
                 originalTile = original_title,
                 overview = overview,

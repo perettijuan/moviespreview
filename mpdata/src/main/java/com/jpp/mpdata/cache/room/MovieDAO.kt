@@ -7,22 +7,15 @@ import androidx.room.Query
 
 @Dao
 interface MovieDAO {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMoviePage(dbMoviePage: DBMoviePage)
+    fun insertMoviePage(dbMoviePage: DBMoviePage): Long
 
-    @Query("select * from movie_pages where _id = :page")
-    fun getMoviePage(page: Int): DBMoviePage?
-
-    @Query("DELETE FROM movie_pages")
-    fun deleteAllPages()
+    @Query("select * from movie_pages where _id = :page and section = :section and duedate >= :nowDate ")
+    fun getMoviePage(page: Int, section: String, nowDate: Long): DBMoviePage?
 
     @Insert(onConflict =  OnConflictStrategy.REPLACE)
     fun insertMovies(dbMovies: List<DBMovie>)
 
     @Query("select * from movies where page_id = :pageId")
     fun getMoviesFromPage(pageId: Int) : List<DBMovie>?
-
-    @Query("DELETE FROM movies")
-    fun deleteAllMovies()
 }

@@ -3,6 +3,7 @@ package com.jpp.moviespreview.di
 import android.content.Context
 import androidx.room.Room
 import com.jpp.mpdata.api.MPApi
+import com.jpp.mpdata.cache.CacheTimestampHelper
 import com.jpp.mpdata.cache.ConfigurationCache
 import com.jpp.mpdata.cache.MoviesCache
 import com.jpp.mpdata.cache.room.MPRoomDataBase
@@ -47,6 +48,10 @@ class DataLayerModule {
     @Provides
     fun providesRoomModelAdapter() = RoomModelAdapter()
 
+    @Singleton
+    @Provides
+    fun providesCacheTimestampHelper() = CacheTimestampHelper()
+
 
     /***********************************
      ****** MOVIES DEPENDENCIES ********
@@ -58,10 +63,9 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesMoviesDb(context: Context,
-                         mpTimestamps: MPTimestamps,
-                         roomDb: MPRoomDataBase,
-                         adapter: RoomModelAdapter): MoviesDb = MoviesCache(context, mpTimestamps, roomDb, adapter)
+    fun providesMoviesDb(roomDb: MPRoomDataBase,
+                         adapter: RoomModelAdapter,
+                         timestampHelper: CacheTimestampHelper): MoviesDb = MoviesCache(roomDb, adapter, timestampHelper)
 
     /*****************************************
      ****** CONFIGURATION DEPENDENCIES *******

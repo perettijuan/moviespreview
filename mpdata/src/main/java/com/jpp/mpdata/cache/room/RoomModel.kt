@@ -25,11 +25,16 @@ data class DBImageSize(@ColumnInfo(name = "base_url") var baseUrl: String,
 /**
  * Represents a Movie Page in the database.
  * [page] - is the page number and it is used as the primary key.
+ * [dueDate] - represents the date until this page is valid.
  */
 @Entity(tableName = "movie_pages")
-data class DBMoviePage(@PrimaryKey @ColumnInfo(name = "_id") var page: Int,
+data class DBMoviePage(@ColumnInfo(name = "page") var page: Int,
                        @ColumnInfo(name = "totalPages") var totalPages: Int,
-                       @ColumnInfo(name = "totalResults") var totalResults: Int)
+                       @ColumnInfo(name = "totalResults") var totalResults: Int,
+                       @ColumnInfo(name = "section") var section: String,
+                       @ColumnInfo(name = "duedate") var dueDate: Long) {
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "_id") var id: Int = 0
+}
 
 
 /**
@@ -41,7 +46,7 @@ data class DBMoviePage(@PrimaryKey @ColumnInfo(name = "_id") var page: Int,
                 parentColumns = arrayOf("_id"),
                 childColumns = arrayOf("page_id"),
                 onDelete = ForeignKey.CASCADE))])
-data class DBMovie(@PrimaryKey @ColumnInfo(name = "_id") var id: Double,
+data class DBMovie(@ColumnInfo(name = "movieId") var movieId: Double,
                    @ColumnInfo(name = "title") var title: String,
                    @ColumnInfo(name = "original_title") var originalTile: String,
                    @ColumnInfo(name = "overview") var overview: String,
@@ -52,4 +57,6 @@ data class DBMovie(@PrimaryKey @ColumnInfo(name = "_id") var id: Double,
                    @ColumnInfo(name = "vote_count") var voteCount: Double,
                    @ColumnInfo(name = "vote_average") var voteAverage: Float,
                    @ColumnInfo(name = "popularity") var popularity: Float,
-                   @ColumnInfo(name = "page_id") var pageId: Int)
+                   @ColumnInfo(name = "page_id") var pageId: Long) {
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "_id") var id: Int = 0
+}
