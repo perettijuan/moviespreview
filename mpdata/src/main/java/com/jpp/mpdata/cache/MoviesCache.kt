@@ -9,7 +9,7 @@ import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdata.cache.timestamps.MPTimestamps
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
-import com.jpp.mpdomain.repository.MoviesDb
+import com.jpp.mpdomain.repository.movies.MoviesDb
 
 
 class MoviesCache(private val context: Context,
@@ -52,12 +52,13 @@ class MoviesCache(private val context: Context,
      */
     private fun isCurrentMovieTypeStored(movieType: MovieSection): Boolean =
         withSharedPreferences {
-            getString(MOVIE_TYPE_STORED_KEY, null)?.equals(movieType) ?: false
+            //TODO JPP -> this should be done in a configuration step
+            getString(MOVIE_TYPE_STORED_KEY, MovieSection.Playing.name)?.equals(movieType.name) ?: false
         }
 
     private fun updateCurrentMovieTypeStored(movieType: MovieSection) {
         withSharedPreferencesEditor {
-            putString(MOVIE_TYPE_STORED_KEY, movieType.toString())
+            putString(MOVIE_TYPE_STORED_KEY, movieType.name)
             apply()
         }
     }

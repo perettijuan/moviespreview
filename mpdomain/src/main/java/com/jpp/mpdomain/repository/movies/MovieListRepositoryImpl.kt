@@ -5,13 +5,15 @@ import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PageKeyedDataSource
 import androidx.paging.PagedList
-import com.jpp.moviespreview.common.extensions.and
 import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.Movie
+import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
-import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
 import com.jpp.mpdomain.handlers.ConnectivityHandler
-import com.jpp.mpdomain.repository.*
+import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
+import com.jpp.mpdomain.repository.OperationState
+import com.jpp.mpdomain.repository.configuration.ConfigurationApi
+import com.jpp.mpdomain.repository.configuration.ConfigurationDb
 import java.util.concurrent.Executor
 
 
@@ -24,13 +26,21 @@ class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
                               private val networkExecutor: Executor) : MovieListRepository {
 
     private val operationState by lazy { MutableLiveData<OperationState>() }
+    private val postPreFecthOperationState: (page: Int) -> Unit = { page ->
+        operationState.postValue(
+                when (page == 1) {
+                    true -> OperationState.Loading
+                    false -> OperationState.None
+                }
+        )
+    }
 
 
     override fun <T> moviePageForSection(section: MovieSection, targetBackdropSize: Int, targetPosterSize: Int, mapper: (Movie) -> T): MovieListing<T> {
         //TODO JPP -> you have to map retryAllFailed
 
         val dataSourceFactory = GetMoviesDataSourceFactory { page, callback ->
-            fetchMoviePage(page, section, callback)
+            getMoviePageForSection(page, section, callback)
         }
 
         val pagedList = dataSourceFactory
@@ -55,43 +65,37 @@ class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
     }
 
 
-    private fun fetchMoviePage(page: Int, section: MovieSection, callback: (List<Movie>, Int) -> Unit) {
-        //TODO JPP -> improve this code
+    private fun getMoviePageForSection(page: Int, section: MovieSection, callback: (List<Movie>, Int) -> Unit) {
         when (connectivityHandler.isConnectedToNetwork()) {
             true -> {
-                if (page == 1) {
-                    operationState.postValue(OperationState.Loading)
+                postPreFecthOperationState.invoke(page)
+                getMoviePage(page, section)?.let { fetchedMoviePage ->
+                    operationState.postValue(OperationState.Loaded)
+                    callback(fetchedMoviePage.results, page + 1)
+                } ?: run {
+                    operationState.postValue(OperationState.ErrorUnknown)
                 }
-
-                moviesDb.getMoviePageForSection(page, section)
-                        ?.let {
-                            operationState.postValue(OperationState.Loaded)
-                            callback(it.results, page + 1)
-                        }
-                        ?: run {
-                            fetchAndStoreMoviePage(page, section)
-                        }?.let {
-                            operationState.postValue(OperationState.Loaded)
-                            callback(it, page + 1)
-                        }
-                        ?: run {
-                            operationState.postValue(OperationState.ErrorUnknown)
-                        }
             }
             else -> operationState.postValue(OperationState.ErrorNoConnectivity)
         }
     }
 
+    private fun getMoviePage(page: Int, section: MovieSection): MoviePage? {
+        return moviesDb.getMoviePageForSection(page, section)?.let {
+            it
+        } ?: run {
+            fetchAndStoreMoviePage(page, section)
+        }
+    }
 
-    private fun fetchAndStoreMoviePage(page: Int, section: MovieSection): List<Movie>? {
+    private fun fetchAndStoreMoviePage(page: Int, section: MovieSection): MoviePage? {
         return when (section) {
             MovieSection.Playing -> moviesApi.getNowPlayingMoviePage(page)
             MovieSection.Popular -> moviesApi.getPopularMoviePage(page)
             MovieSection.TopRated -> moviesApi.getTopRatedMoviePage(page)
             MovieSection.Upcoming -> moviesApi.getUpcomingMoviePage(page)
-        }?.let {
+        }?.also {
             moviesDb.saveMoviePageForSection(it, section)
-            it.results
         }
     }
 

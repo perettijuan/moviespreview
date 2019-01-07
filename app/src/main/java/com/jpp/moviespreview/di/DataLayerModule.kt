@@ -1,4 +1,4 @@
-package com.jpp.mpdata
+package com.jpp.moviespreview.di
 
 import android.content.Context
 import androidx.room.Room
@@ -9,10 +9,10 @@ import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdata.cache.timestamps.MPTimestamps
 import com.jpp.mpdata.cache.timestamps.MPTimestampsImpl
-import com.jpp.mpdomain.repository.ConfigurationApi
-import com.jpp.mpdomain.repository.ConfigurationDb
-import com.jpp.mpdomain.repository.MoviesApi
-import com.jpp.mpdomain.repository.MoviesDb
+import com.jpp.mpdomain.repository.configuration.ConfigurationApi
+import com.jpp.mpdomain.repository.configuration.ConfigurationDb
+import com.jpp.mpdomain.repository.movies.MoviesApi
+import com.jpp.mpdomain.repository.movies.MoviesDb
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -27,7 +27,6 @@ class DataLayerModule {
      ****** COMMON INNER DEPENDENCIES ********
      *****************************************/
 
-    private lateinit var roomDataBase: MPRoomDataBase
 
     @Singleton
     @Provides
@@ -37,15 +36,12 @@ class DataLayerModule {
     @Provides
     fun providesMPTimestamps(context: Context): MPTimestamps = MPTimestampsImpl(context)
 
-
-    private fun getRoomDb(context: Context): MPRoomDataBase {
-        if(!::roomDataBase.isInitialized) {
-            roomDataBase =  Room
-                    .databaseBuilder(context, MPRoomDataBase::class.java, "MPRoomDataBase")
-                    .build()
-        }
-        return roomDataBase
-    }
+    @Provides
+    @Singleton
+    fun providesTheMoviesDBRoomDb(context: Context)
+            : MPRoomDataBase = Room
+            .databaseBuilder(context, MPRoomDataBase::class.java, "MPRoomDataBase")
+            .build()
 
     @Singleton
     @Provides
@@ -64,7 +60,8 @@ class DataLayerModule {
     @Provides
     fun providesMoviesDb(context: Context,
                          mpTimestamps: MPTimestamps,
-                         adapter: RoomModelAdapter): MoviesDb = MoviesCache(context, mpTimestamps, getRoomDb(context), adapter)
+                         roomDb: MPRoomDataBase,
+                         adapter: RoomModelAdapter): MoviesDb = MoviesCache(context, mpTimestamps, roomDb, adapter)
 
     /*****************************************
      ****** CONFIGURATION DEPENDENCIES *******
@@ -76,7 +73,7 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesConfigurationDb(context: Context,
-                                mpTimestamps: MPTimestamps,
-                                adapter: RoomModelAdapter): ConfigurationDb = ConfigurationCache(mpTimestamps, getRoomDb(context), adapter)
+    fun providesConfigurationDb(mpTimestamps: MPTimestamps,
+                                roomDb: MPRoomDataBase,
+                                adapter: RoomModelAdapter): ConfigurationDb = ConfigurationCache(mpTimestamps, roomDb, adapter)
 }

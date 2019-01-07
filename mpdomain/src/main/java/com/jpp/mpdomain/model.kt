@@ -110,9 +110,9 @@ data class MovieDetail(val id: Double,
 /**
  * Represents a section of the application in terms of the movies that can be shown.
  */
-sealed class MovieSection {
-    object Playing : MovieSection()
-    object Popular : MovieSection()
-    object TopRated : MovieSection()
-    object Upcoming : MovieSection()
+sealed class MovieSection(val name: String) {
+    object Playing : MovieSection("playing")
+    object Popular : MovieSection("popular")
+    object TopRated : MovieSection("toprated")
+    object Upcoming : MovieSection("upcoming")
 }

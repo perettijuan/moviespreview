@@ -5,7 +5,7 @@ import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdata.cache.timestamps.MPTimestamps
 import com.jpp.mpdomain.AppConfiguration
-import com.jpp.mpdomain.repository.ConfigurationDb
+import com.jpp.mpdomain.repository.configuration.ConfigurationDb
 
 class ConfigurationCache(private val timestamps: MPTimestamps,
                          private val roomDatabase: MPRoomDataBase,
