@@ -26,5 +26,4 @@ class CacheTimestampHelper {
      * data.
      */
     fun appConfigRefreshTime(): Long = TimeUnit.DAYS.toMillis(7)
-
 }

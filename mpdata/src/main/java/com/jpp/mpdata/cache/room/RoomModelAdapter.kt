@@ -5,9 +5,8 @@ import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.ImagesConfiguration
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
-import javax.inject.Inject
 
-class RoomModelAdapter @Inject constructor() {
+class RoomModelAdapter {
 
     /**
      * Adapts the provided [appConfiguration] to a list of [DBImageSize].

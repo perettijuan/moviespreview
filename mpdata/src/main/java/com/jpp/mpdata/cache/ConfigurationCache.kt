@@ -6,6 +6,10 @@ import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.repository.configuration.ConfigurationDb
 
+/**
+ * [ConfigurationDb] implementation with a cache mechanism to verify that the data stored in the application
+ * is valid after a period of time.
+ */
 class ConfigurationCache(private val roomDatabase: MPRoomDataBase,
                          private val adapter: RoomModelAdapter,
                          private val timestampHelper: CacheTimestampHelper) : ConfigurationDb {

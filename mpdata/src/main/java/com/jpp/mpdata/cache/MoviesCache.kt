@@ -7,7 +7,10 @@ import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.repository.movies.MoviesDb
 
-
+/**
+ * [MoviesDb] implementation with a cache mechanism to verify that the data stored in the application
+ * is valid after a period of time.
+ */
 class MoviesCache(private val roomDatabase: MPRoomDataBase,
                   private val adapter: RoomModelAdapter,
                   private val timestampHelper: CacheTimestampHelper) : MoviesDb {
@@ -16,7 +19,7 @@ class MoviesCache(private val roomDatabase: MPRoomDataBase,
     override fun getMoviePageForSection(page: Int, section: MovieSection): MoviePage? {
         return withMovieDao {
             getMoviePage(page, section.name, now())?.let { dbMoviePage ->
-                getMoviesFromPage(dbMoviePage.page)?.let { movieList ->
+                getMoviesFromPage(dbMoviePage.id)?.let { movieList ->
                     transformWithAdapter { adaptDBMoviePageToDataMoviePage(dbMoviePage, movieList) }
                 }
             }
