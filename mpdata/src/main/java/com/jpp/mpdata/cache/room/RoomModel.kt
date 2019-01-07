@@ -16,7 +16,8 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "image_size")
 data class DBImageSize(@ColumnInfo(name = "base_url") var baseUrl: String,
                        @ColumnInfo(name = "size") var size: String,
-                       @ColumnInfo(name = "image_type") val imageType: Int /* receives: poster or profile */) {
+                       @ColumnInfo(name = "image_type") val imageType: Int /* receives: poster or profile */,
+                       @ColumnInfo(name = "duedate") var dueDate: Long /* represents the date until the data is valid */) {
     @ColumnInfo(name = "_id")
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
@@ -25,14 +26,13 @@ data class DBImageSize(@ColumnInfo(name = "base_url") var baseUrl: String,
 /**
  * Represents a Movie Page in the database.
  * [page] - is the page number and it is used as the primary key.
- * [dueDate] - represents the date until this page is valid.
  */
 @Entity(tableName = "movie_pages")
 data class DBMoviePage(@ColumnInfo(name = "page") var page: Int,
                        @ColumnInfo(name = "totalPages") var totalPages: Int,
                        @ColumnInfo(name = "totalResults") var totalResults: Int,
                        @ColumnInfo(name = "section") var section: String,
-                       @ColumnInfo(name = "duedate") var dueDate: Long) {
+                       @ColumnInfo(name = "duedate") var dueDate: Long /* represents the date until the data is valid */) {
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "_id") var id: Int = 0
 }
 

@@ -18,6 +18,13 @@ class CacheTimestampHelper {
      * @return a Long value that represents the maximum refresh time for all the movie
      * pages stored in the device.
      */
-    fun moviePagesRefreshTime(): Long = now() + TimeUnit.MINUTES.toMillis(30)
+    fun moviePagesRefreshTime(): Long = TimeUnit.MINUTES.toMillis(30)
+
+
+    /**
+     * @return a Long value that represents the maximum refresh time for the app configuration
+     * data.
+     */
+    fun appConfigRefreshTime(): Long = TimeUnit.DAYS.toMillis(7)
 
 }

@@ -15,20 +15,18 @@ class MoviesCache(private val roomDatabase: MPRoomDataBase,
 
     override fun getMoviePageForSection(page: Int, section: MovieSection): MoviePage? {
         return withMovieDao {
-            getMoviePage(page, section.name, timestampHelper.now())
-                    ?.let { dbMoviePage ->
-                        getMoviesFromPage(dbMoviePage.page)
-                                ?.let { movieList ->
-                                    transformWithAdapter { adaptDBMoviePageToDataMoviePage(dbMoviePage, movieList) }
-                                }
-                    }
+            getMoviePage(page, section.name, now())?.let { dbMoviePage ->
+                getMoviesFromPage(dbMoviePage.page)?.let { movieList ->
+                    transformWithAdapter { adaptDBMoviePageToDataMoviePage(dbMoviePage, movieList) }
+                }
+            }
         }
     }
 
     override fun saveMoviePageForSection(moviePage: MoviePage, section: MovieSection) {
         withMovieDao {
             insertMoviePage(transformWithAdapter {
-                adaptDataMoviePageToDBMoviePage(moviePage, section.name, timestampHelper.moviePagesRefreshTime())
+                adaptDataMoviePageToDBMoviePage(moviePage, section.name, moviePagesRefreshTime())
             })
         }.let {
             moviePage.results.map { movie -> transformWithAdapter { adaptDataMovieToDBMovie(movie, it) } }
@@ -42,4 +40,7 @@ class MoviesCache(private val roomDatabase: MPRoomDataBase,
 
     private fun <T> withMovieDao(action: MovieDAO.() -> T): T = with(roomDatabase.moviesDao()) { action.invoke(this) }
 
+    private fun now() = timestampHelper.now()
+
+    private fun moviePagesRefreshTime() = with(timestampHelper) { now() + moviePagesRefreshTime() }
 }

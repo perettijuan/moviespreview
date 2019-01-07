@@ -8,8 +8,6 @@ import com.jpp.mpdata.cache.ConfigurationCache
 import com.jpp.mpdata.cache.MoviesCache
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter
-import com.jpp.mpdata.cache.timestamps.MPTimestamps
-import com.jpp.mpdata.cache.timestamps.MPTimestampsImpl
 import com.jpp.mpdomain.repository.configuration.ConfigurationApi
 import com.jpp.mpdomain.repository.configuration.ConfigurationDb
 import com.jpp.mpdomain.repository.movies.MoviesApi
@@ -28,14 +26,9 @@ class DataLayerModule {
      ****** COMMON INNER DEPENDENCIES ********
      *****************************************/
 
-
     @Singleton
     @Provides
     fun providesMPApi() = MPApi()
-
-    @Singleton
-    @Provides
-    fun providesMPTimestamps(context: Context): MPTimestamps = MPTimestampsImpl(context)
 
     @Provides
     @Singleton
@@ -77,7 +70,7 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesConfigurationDb(mpTimestamps: MPTimestamps,
-                                roomDb: MPRoomDataBase,
-                                adapter: RoomModelAdapter): ConfigurationDb = ConfigurationCache(mpTimestamps, roomDb, adapter)
+    fun providesConfigurationDb(roomDb: MPRoomDataBase,
+                                adapter: RoomModelAdapter,
+                                timestampHelper: CacheTimestampHelper): ConfigurationDb = ConfigurationCache(roomDb, adapter, timestampHelper)
 }

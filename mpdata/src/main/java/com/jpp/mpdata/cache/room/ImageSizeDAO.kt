@@ -10,6 +10,6 @@ interface ImageSizeDAO {
     @Insert(onConflict =  OnConflictStrategy.REPLACE)
     fun insertImageSizes(sizes: List<DBImageSize>)
 
-    @Query("select * from image_size")
-    fun getImageSizes(): List<DBImageSize>?
+    @Query("select * from image_size where duedate >= :nowDate")
+    fun getImageSizes(nowDate: Long): List<DBImageSize>
 }

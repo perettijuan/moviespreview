@@ -12,19 +12,19 @@ class RoomModelAdapter @Inject constructor() {
     /**
      * Adapts the provided [appConfiguration] to a list of [DBImageSize].
      */
-    fun adaptAppConfigurationToImageSizes(appConfiguration: AppConfiguration): List<DBImageSize> {
+    fun adaptAppConfigurationToImageSizes(appConfiguration: AppConfiguration, dueDate: Long): List<DBImageSize> {
         return appConfiguration.images.poster_sizes
                 .map {
                     DBImageSize(baseUrl = appConfiguration.images.base_url,
                             size = it,
-                            imageType = ImageTypes.PosterType.id)
+                            imageType = ImageTypes.PosterType.id, dueDate = dueDate)
                 }
                 .toMutableList()
                 .addAllMapping {
                     appConfiguration.images.profile_sizes.map { posterSize ->
                         DBImageSize(baseUrl = appConfiguration.images.base_url,
                                 size = posterSize,
-                                imageType = ImageTypes.ProfileType.id)
+                                imageType = ImageTypes.ProfileType.id, dueDate = dueDate)
                     }
                 }
                 .toMutableList()
@@ -32,7 +32,7 @@ class RoomModelAdapter @Inject constructor() {
                     appConfiguration.images.backdrop_sizes.map { backdropSize ->
                         DBImageSize(baseUrl = appConfiguration.images.base_url,
                                 size = backdropSize,
-                                imageType = ImageTypes.BackdropType.id)
+                                imageType = ImageTypes.BackdropType.id, dueDate = dueDate)
                     }
                 }
     }
