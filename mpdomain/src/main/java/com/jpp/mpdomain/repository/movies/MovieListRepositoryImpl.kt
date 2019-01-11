@@ -45,7 +45,7 @@ class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
             getMoviePageForSection(page, section, callback)
         }
 
-        val retryFunc = { dataSourceFactory.retryLast() }
+        val retryFunc = { networkExecutor.execute { dataSourceFactory.retryLast() } }
 
         val pagedList = dataSourceFactory
                 .map { configureMovieImagesPath(it, targetBackdropSize, targetPosterSize) }

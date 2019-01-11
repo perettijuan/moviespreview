@@ -2,6 +2,7 @@ package com.jpp.moviespreview.screens.main.movies
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -94,29 +95,33 @@ abstract class MoviesFragment : Fragment() {
         with(viewState) {
             when (this) {
                 MoviesFragmentViewState.Loading -> {
+                    Log.d("JPPLOG", "Render Loading")
                     moviesList.toZeroAlpha()
                     moviesLoadingErrorView.toOneAlpha()
                     moviesLoadingErrorView.showLoadingImmediate()
                 }
                 MoviesFragmentViewState.ErrorUnknown -> {
+                    Log.d("JPPLOG", "Render Error Unknown")
                     moviesList.toZeroAlpha()
                     moviesLoadingErrorView.toOneAlpha()
                     moviesLoadingErrorView.animateToUnknownError {
-                        withViewModel<MoviesFragmentViewModel>(viewModelFactory) {
+                        with(getViewModelInstance(viewModelFactory)) {
                             retryMoviesListFetch()
                         }
                     }
                 }
                 MoviesFragmentViewState.ErrorNoConnectivity -> {
+                    Log.d("JPPLOG", "Render Error No Connectivity")
                     moviesList.toZeroAlpha()
                     moviesLoadingErrorView.toOneAlpha()
                     moviesLoadingErrorView.animateToNoConnectivityError {
-                        withViewModel<MoviesFragmentViewModel>(viewModelFactory) {
+                        with(getViewModelInstance(viewModelFactory)) {
                             retryMoviesListFetch()
                         }
                     }
                 }
                 MoviesFragmentViewState.InitialPageLoaded -> {
+                    Log.d("JPPLOG", "Render InitialPageLoaded")
                     moviesLoadingErrorView.hideWithAnimation(500, 300) {
                         moviesLoadingErrorView.toZeroAlpha()
                         moviesList.animateToOneAlpha()

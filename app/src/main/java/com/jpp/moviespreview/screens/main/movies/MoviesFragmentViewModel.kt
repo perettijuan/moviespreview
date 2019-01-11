@@ -23,6 +23,7 @@ abstract class MoviesFragmentViewModel(private val movieListRepository: MovieLis
 
     private lateinit var viewState: LiveData<MoviesFragmentViewState>
     private lateinit var pagedList: LiveData<PagedList<MovieItem>>
+    private lateinit var retryFun: () -> Unit
 
     /**
      * Binds two LiveData objects to the provided [viewStateBinder]:
@@ -35,7 +36,7 @@ abstract class MoviesFragmentViewModel(private val movieListRepository: MovieLis
                         viewStateBinder: (LiveData<MoviesFragmentViewState>, LiveData<PagedList<MovieItem>>) -> Unit) {
 
 
-        if (::viewState.isInitialized && ::pagedList.isInitialized) {
+        if (::pagedList.isInitialized && pagedList.value?.isNotEmpty() == true) {
             /*
              * Since the ViewModel survives rotation, we need a way
              * to avoid re-executing the repository on rotation.
@@ -63,10 +64,11 @@ abstract class MoviesFragmentViewModel(private val movieListRepository: MovieLis
         }
 
         pagedList = listing.pagedList
+        retryFun = listing.retry
         viewStateBinder.invoke(viewState, pagedList)
     }
 
     fun retryMoviesListFetch() {
-        //pagingDataSourceFactory.retryLastDSCall()
+        retryFun.invoke()
     }
 }
