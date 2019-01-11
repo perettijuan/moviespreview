@@ -1,5 +1,6 @@
 package com.jpp.mpdomain.repository.movies
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList

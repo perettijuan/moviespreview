@@ -2,7 +2,6 @@ package com.jpp.moviespreview.screens.main.movies
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,6 +65,10 @@ abstract class MoviesFragment : Fragment() {
             layoutManager = LinearLayoutManager(activity)
             adapter = MoviesAdapter(movieSelectionListener)
         }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         /* Disable extended action bar in main activity */
         withViewModel<MainActivityViewModel>(viewModelFactory) {
@@ -78,10 +81,10 @@ abstract class MoviesFragment : Fragment() {
          */
         with(getViewModelInstance(viewModelFactory)) {
             getMovieListing(getScreenSizeInPixels().x, getScreenSizeInPixels().x) { viewState, pagedList ->
-                viewState.observe(this@MoviesFragment, Observer { fragmentViewState ->
+                viewState.observe(this@MoviesFragment.viewLifecycleOwner, Observer { fragmentViewState ->
                     renderViewState(fragmentViewState)
                 })
-                pagedList.observe(this@MoviesFragment, Observer<PagedList<MovieItem>> {
+                pagedList.observe(this@MoviesFragment.viewLifecycleOwner, Observer<PagedList<MovieItem>> {
                     (moviesList.adapter as MoviesAdapter).submitList(it)
                 })
             }
@@ -95,13 +98,11 @@ abstract class MoviesFragment : Fragment() {
         with(viewState) {
             when (this) {
                 MoviesFragmentViewState.Loading -> {
-                    Log.d("JPPLOG", "Render Loading")
                     moviesList.toZeroAlpha()
                     moviesLoadingErrorView.toOneAlpha()
                     moviesLoadingErrorView.showLoadingImmediate()
                 }
                 MoviesFragmentViewState.ErrorUnknown -> {
-                    Log.d("JPPLOG", "Render Error Unknown")
                     moviesList.toZeroAlpha()
                     moviesLoadingErrorView.toOneAlpha()
                     moviesLoadingErrorView.animateToUnknownError {
@@ -111,7 +112,6 @@ abstract class MoviesFragment : Fragment() {
                     }
                 }
                 MoviesFragmentViewState.ErrorNoConnectivity -> {
-                    Log.d("JPPLOG", "Render Error No Connectivity")
                     moviesList.toZeroAlpha()
                     moviesLoadingErrorView.toOneAlpha()
                     moviesLoadingErrorView.animateToNoConnectivityError {
@@ -121,7 +121,6 @@ abstract class MoviesFragment : Fragment() {
                     }
                 }
                 MoviesFragmentViewState.InitialPageLoaded -> {
-                    Log.d("JPPLOG", "Render InitialPageLoaded")
                     moviesLoadingErrorView.hideWithAnimation(500, 300) {
                         moviesLoadingErrorView.toZeroAlpha()
                         moviesList.animateToOneAlpha()

@@ -37,7 +37,6 @@ class DomainLayerModule {
     fun providesNetworkExecutor(): Executor = NETWORK_IO
 
     @Provides
-    @Singleton
     fun providesMovieListRepository(moviesApi: MoviesApi,
                                     moviesDb: MoviesDb,
                                     configurationApi: ConfigurationApi,
