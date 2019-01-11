@@ -106,7 +106,7 @@ class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
                                          targetPosterSize: Int): Movie {
 
         return getAppConfiguration().let {
-            when(it) {
+            when (it) {
                 null -> movie
                 else -> configurationHandler.configureMovie(movie, it.images, targetBackdropSize, targetPosterSize)
             }

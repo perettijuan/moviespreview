@@ -2,6 +2,7 @@ package com.jpp.moviespreview.screens.main.movies
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.moviespreview.R
-import com.jpp.moviespreview.common.extensions.and
 import com.jpp.moviespreview.ext.*
 import com.jpp.moviespreview.screens.main.MainActivityAction
 import com.jpp.moviespreview.screens.main.MainActivityViewModel
@@ -76,16 +76,15 @@ abstract class MoviesFragment : Fragment() {
          * Hook-up the LiveData that will be updated when the data source is created
          * and then update the adapter with the new data.
          */
-        withViewModel<MoviesFragmentViewModel>(viewModelFactory) {
-            pagedList.observe(this@MoviesFragment, Observer<PagedList<MovieItem>> {
-                        (moviesList.adapter as MoviesAdapter).submitList(it)
-                    })
-        }.also {
-            it.bindViewState().observe(this, Observer { viewState ->
-                renderViewState(viewState)
-            })
-        }.and {
-            it.getMovieList(getMoviesSection(), getScreenSizeInPixels().x, getScreenSizeInPixels().x)
+        with(getViewModelInstance(viewModelFactory)) {
+            getMovieList(getScreenSizeInPixels().x, getScreenSizeInPixels().x) { viewState, pagedList ->
+                viewState.observe(this@MoviesFragment, Observer { fragmentViewState ->
+                    renderViewState(fragmentViewState)
+                })
+                pagedList.observe(this@MoviesFragment, Observer<PagedList<MovieItem>> {
+                    (moviesList.adapter as MoviesAdapter).submitList(it)
+                })
+            }
         }
     }
 
@@ -128,17 +127,14 @@ abstract class MoviesFragment : Fragment() {
         }
     }
 
-    /**
-     * MUST be implemented for all fragments that are showing a list of movies, providing the
-     * section that is rendering.
-     */
-    abstract fun getMoviesSection(): UiMovieSection
 
     /**
      * MUST be implemented for all fragments that are showing a list of movies in order to enable
      * navigation to the movie details section.
      */
     abstract fun getNavDirectionsForMovieDetails(movieId: String, movieImageUrl: String): NavDirections
+
+    abstract fun getViewModelInstance(viewModelFactory: ViewModelProvider.Factory): MoviesFragmentViewModel
 
 
     class MoviesAdapter(private val movieSelectionListener: (MovieItem) -> Unit) : PagedListAdapter<MovieItem, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {
