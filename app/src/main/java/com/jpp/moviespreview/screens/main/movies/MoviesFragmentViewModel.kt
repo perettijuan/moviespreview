@@ -15,9 +15,6 @@ import com.jpp.mpdomain.repository.movies.MovieListRepository
  * defined in MPScopedViewModel. This is because this section of the application is using the
  * Paging Library to support unlimited scrolling and that library requires that the DataSource
  * behaves more as a controller in the architecture defined in MoviesPreview.
- *
- * Check [MoviesPagingDataSource] for a more detailed explanation of the architecture followed
- * in this case.
  */
 abstract class MoviesFragmentViewModel(private val movieListRepository: MovieListRepository,
                                        private val mapper: MovieItemMapper,
@@ -28,21 +25,21 @@ abstract class MoviesFragmentViewModel(private val movieListRepository: MovieLis
     private lateinit var pagedList: LiveData<PagedList<MovieItem>>
 
     /**
-     * Retrieves a [LiveData] object that is notified when a new [PagedList] is available
-     * for rendering.
-     *
-     * IMPORTANT: this method checks if [pagedList] has been initialized and, if it is, returns the
-     * already initialized object. The use case that this is affecting is rotation: when the
-     * device rotates, the Activity gets destroyed, the Fragment gets destroyed but the ViewModel
-     * remains the same. When the Fragment is recreated and hook himself to the ViewModel, we want
-     * that hooking to the original PagedList and not to a new instance.
+     * Binds two LiveData objects to the provided [viewStateBinder]:
+     * - a [MoviesFragmentViewState] LiveData that represents the view state to be rendered.
+     * - a [PagedList] of [MovieItem] that will be queried by the Paging Library adapter to fetch
+     * new items as the user scrolls.
      */
-    fun getMovieList(moviePosterSize: Int,
-                     movieBackdropSize: Int,
-                     viewStateBinder: (LiveData<MoviesFragmentViewState>, LiveData<PagedList<MovieItem>>) -> Unit) {
+    fun getMovieListing(moviePosterSize: Int,
+                        movieBackdropSize: Int,
+                        viewStateBinder: (LiveData<MoviesFragmentViewState>, LiveData<PagedList<MovieItem>>) -> Unit) {
 
 
         if (::viewState.isInitialized && ::pagedList.isInitialized) {
+            /*
+             * Since the ViewModel survives rotation, we need a way
+             * to avoid re-executing the repository on rotation.
+             */
             viewStateBinder.invoke(viewState, pagedList)
             return
         }

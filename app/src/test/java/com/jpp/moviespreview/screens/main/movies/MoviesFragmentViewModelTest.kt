@@ -50,7 +50,7 @@ class MoviesFragmentViewModelTest {
         every { pagingDataSourceFactory.getMovieList(domainSection, movieBackdropSize, moviePosterSize, any<(Movie) -> MovieItem>()) } returns expected
         every { pagingDataSourceFactory.dataSourceLiveData } returns dsFactoryLiveData
 
-        val actual = subject.getMovieList(movieSection, moviePosterSize, movieBackdropSize)
+        val actual = subject.getMovieListing(movieSection, moviePosterSize, movieBackdropSize)
 
         assertEquals(actual, expected)
     }
@@ -66,9 +66,9 @@ class MoviesFragmentViewModelTest {
         every { pagingDataSourceFactory.dataSourceLiveData } returns dsFactoryLiveData
 
         //1st call
-        subject.getMovieList(movieSection, moviePosterSize, movieBackdropSize)
+        subject.getMovieListing(movieSection, moviePosterSize, movieBackdropSize)
         //2nd call -> i.e. rotation
-        val actual = subject.getMovieList(movieSection, moviePosterSize, movieBackdropSize)
+        val actual = subject.getMovieListing(movieSection, moviePosterSize, movieBackdropSize)
 
         assertEquals(actual, expected)
         verify(exactly = 1) { pagingDataSourceFactory.getMovieList(domainSection, movieBackdropSize, moviePosterSize, any<(Movie) -> MovieItem>()) }
@@ -87,9 +87,9 @@ class MoviesFragmentViewModelTest {
         every { pagingDataSourceFactory.dataSourceLiveData } returns dsFactoryLiveData
 
         //1st call
-        subject.getMovieList(movieSection, moviePosterSize, movieBackdropSize)
+        subject.getMovieListing(movieSection, moviePosterSize, movieBackdropSize)
         //2nd call -> changes section
-        val actual = subject.getMovieList(UiMovieSection.Upcoming, moviePosterSize, movieBackdropSize)
+        val actual = subject.getMovieListing(UiMovieSection.Upcoming, moviePosterSize, movieBackdropSize)
 
         assertEquals(actual, expected)
         // 1st call
@@ -111,7 +111,7 @@ class MoviesFragmentViewModelTest {
         every { lifecycleOwner.lifecycle } returns lifecycle
 
 
-        subject.getMovieList(movieSection, moviePosterSize, movieBackdropSize)
+        subject.getMovieListing(movieSection, moviePosterSize, movieBackdropSize)
 
         subject.bindViewState().observe(lifecycleOwner, Observer {
             assertEquals(stateToVerify, it)

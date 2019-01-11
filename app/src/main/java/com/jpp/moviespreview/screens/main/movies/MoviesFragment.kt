@@ -2,7 +2,6 @@ package com.jpp.moviespreview.screens.main.movies
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -77,7 +76,7 @@ abstract class MoviesFragment : Fragment() {
          * and then update the adapter with the new data.
          */
         with(getViewModelInstance(viewModelFactory)) {
-            getMovieList(getScreenSizeInPixels().x, getScreenSizeInPixels().x) { viewState, pagedList ->
+            getMovieListing(getScreenSizeInPixels().x, getScreenSizeInPixels().x) { viewState, pagedList ->
                 viewState.observe(this@MoviesFragment, Observer { fragmentViewState ->
                     renderViewState(fragmentViewState)
                 })
