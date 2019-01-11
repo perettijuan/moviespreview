@@ -6,7 +6,7 @@ import androidx.lifecycle.Transformations.map
 import androidx.lifecycle.Transformations.switchMap
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
-import com.jpp.mpdomain.repository.OperationState
+import com.jpp.mpdomain.repository.RepositoryState
 import com.jpp.mpdomain.repository.movies.MovieListRepository
 import javax.inject.Inject
 
@@ -42,9 +42,9 @@ class MoviesFragmentViewModel @Inject constructor(private val movieListRepositor
 
     fun bindViewState(): LiveData<MoviesFragmentViewState> = map(repoState) {
         when (it.value) {
-            OperationState.Loading -> MoviesFragmentViewState.Loading
-            OperationState.ErrorUnknown -> MoviesFragmentViewState.ErrorUnknown
-            OperationState.ErrorNoConnectivity -> MoviesFragmentViewState.ErrorNoConnectivity
+            RepositoryState.Loading -> MoviesFragmentViewState.Loading
+            RepositoryState.ErrorUnknown -> MoviesFragmentViewState.ErrorUnknown
+            RepositoryState.ErrorNoConnectivity -> MoviesFragmentViewState.ErrorNoConnectivity
             else -> MoviesFragmentViewState.InitialPageLoaded
         }
     }
