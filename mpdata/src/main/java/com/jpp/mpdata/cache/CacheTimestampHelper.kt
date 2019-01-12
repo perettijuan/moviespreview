@@ -26,4 +26,10 @@ class CacheTimestampHelper {
      * data.
      */
     fun appConfigRefreshTime(): Long = TimeUnit.DAYS.toMillis(7)
+
+    /**
+     * @return a Long value that represents the maximum refresh time for the movie details
+     * stored in the application.
+     */
+    fun movieDetailsRefreshTime(): Long = TimeUnit.MINUTES.toMillis(30)
 }
