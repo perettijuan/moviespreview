@@ -68,10 +68,8 @@ dependencies {
     implementation "com.squareup.picasso:picasso:2.5.2"
 
     // Room persistence
-    //TODO JPP
-    def room_version = "2.0.0"
-    implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
+    implementation deps.androidx.room.runtime
+    kapt deps.androidx.room.compiler
 
 
     implementation project(path: ':mpdomain')

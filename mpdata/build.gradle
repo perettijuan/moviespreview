@@ -52,9 +52,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
 
     // Room persistence
-    def room_version = "2.0.0"
-    implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
+    implementation deps.androidx.room.runtime
+    kapt deps.androidx.room.compiler
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 

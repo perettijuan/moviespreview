@@ -11,7 +11,8 @@ buildscript {
             'hamcrest' : '1.3',
             'pagingLib': '2.1.0-rc01',
             'navigationLib' : '1.0.0-alpha07',
-            'dagger' : '2.15'
+            'dagger' : '2.15',
+            'room' : '2.0.0'
     ]
 
     ext.deps = [
@@ -26,7 +27,11 @@ buildscript {
                     ]
             ],
             'androidx': [
-                    'paging': "androidx.paging:paging-runtime-ktx:${versions.pagingLib}"
+                    'paging': "androidx.paging:paging-runtime-ktx:${versions.pagingLib}",
+                    'room': [
+                            'runtime' : "androidx.room:room-runtime:${versions.room}",
+                            'compiler' : "androidx.room:room-compiler:${versions.room}"
+                    ]
             ],
             'kotlin'  : [
                     'plugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
