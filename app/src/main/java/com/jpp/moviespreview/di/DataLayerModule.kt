@@ -5,11 +5,14 @@ import androidx.room.Room
 import com.jpp.mpdata.api.MPApi
 import com.jpp.mpdata.cache.CacheTimestampHelper
 import com.jpp.mpdata.cache.ConfigurationCache
+import com.jpp.mpdata.cache.MovieDetailsCache
 import com.jpp.mpdata.cache.MoviesCache
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdomain.repository.configuration.ConfigurationApi
 import com.jpp.mpdomain.repository.configuration.ConfigurationDb
+import com.jpp.mpdomain.repository.details.MovieDetailsApi
+import com.jpp.mpdomain.repository.details.MovieDetailsDb
 import com.jpp.mpdomain.repository.movies.MoviesApi
 import com.jpp.mpdomain.repository.movies.MoviesDb
 import dagger.Module
@@ -73,4 +76,18 @@ class DataLayerModule {
     fun providesConfigurationDb(roomDb: MPRoomDataBase,
                                 adapter: RoomModelAdapter,
                                 timestampHelper: CacheTimestampHelper): ConfigurationDb = ConfigurationCache(roomDb, adapter, timestampHelper)
+
+    /*****************************************
+     ****** MOVIE DETAILS DEPENDENCIES *******
+     *****************************************/
+
+    @Singleton
+    @Provides
+    fun providesMovieDetailsApi(mpApiInstance: MPApi): MovieDetailsApi = mpApiInstance
+
+    @Singleton
+    @Provides
+    fun providesMovieDetailsDb(roomDb: MPRoomDataBase,
+                               adapter: RoomModelAdapter,
+                               timestampHelper: CacheTimestampHelper) : MovieDetailsDb = MovieDetailsCache(roomDb, adapter, timestampHelper)
 }

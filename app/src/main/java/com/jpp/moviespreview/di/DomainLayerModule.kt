@@ -6,6 +6,10 @@ import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
 import com.jpp.mpdomain.handlers.configuration.ConfigurationHandlerImpl
 import com.jpp.mpdomain.repository.configuration.ConfigurationApi
 import com.jpp.mpdomain.repository.configuration.ConfigurationDb
+import com.jpp.mpdomain.repository.details.MovieDetailsApi
+import com.jpp.mpdomain.repository.details.MovieDetailsDb
+import com.jpp.mpdomain.repository.details.MovieDetailsRepository
+import com.jpp.mpdomain.repository.details.MovieDetailsRepositoryImpl
 import com.jpp.mpdomain.repository.movies.MovieListRepository
 import com.jpp.mpdomain.repository.movies.MovieListRepositoryImpl
 import com.jpp.mpdomain.repository.movies.MoviesApi
@@ -43,6 +47,13 @@ class DomainLayerModule {
                                     configurationDb: ConfigurationDb,
                                     connectivityHandler: ConnectivityHandler,
                                     configurationHandler: ConfigurationHandler,
-                                    networkExecutor: Executor) : MovieListRepository
-            = MovieListRepositoryImpl(moviesApi, moviesDb, configurationApi, configurationDb, connectivityHandler, configurationHandler, networkExecutor)
+                                    networkExecutor: Executor)
+            : MovieListRepository = MovieListRepositoryImpl(moviesApi, moviesDb, configurationApi, configurationDb, connectivityHandler, configurationHandler, networkExecutor)
+
+
+    @Provides
+    fun providesMoviesDetailsRepository(movieDetailsApi: MovieDetailsApi,
+                                        movieDetailsDb: MovieDetailsDb,
+                                        connectivityHandler: ConnectivityHandler)
+            : MovieDetailsRepository = MovieDetailsRepositoryImpl(movieDetailsApi, movieDetailsDb, connectivityHandler)
 }

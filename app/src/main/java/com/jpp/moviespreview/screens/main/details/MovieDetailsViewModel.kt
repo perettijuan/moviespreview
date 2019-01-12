@@ -8,8 +8,9 @@ import com.jpp.mpdomain.repository.details.MovieDetailsRepositoryState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class MovieDetailsViewModel(private val detailsRepository: MovieDetailsRepository) : MPScopedViewModel() {
+class MovieDetailsViewModel @Inject constructor(private val detailsRepository: MovieDetailsRepository) : MPScopedViewModel() {
 
     private val viewState by lazy { MutableLiveData<MovieDetailsFragmentViewState>() }
 

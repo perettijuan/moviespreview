@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.ext.withViewModel
@@ -30,17 +31,37 @@ class MovieDetailsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_details, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         with(fromBundle(arguments)) {
-            detailsId.text = movieId
-
             /* Enable extended action bar in main activity */
             withViewModel<MainActivityViewModel>(viewModelFactory) {
                 onAction(MainActivityAction.UserSelectedMovieDetails(movieImageUrl))
             }
         }
 
+        when (savedInstanceState) {
+            null -> {
+                withViewModel<MovieDetailsViewModel>(viewModelFactory) {
+                    init(fromBundle(arguments).movieId.toDouble())
+                }
+            }
+        }
+
+        withViewModel<MovieDetailsViewModel>(viewModelFactory) {
+            viewState().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { viewState ->
+                when (viewState) {
+                    MovieDetailsFragmentViewState.Loading -> detailsId.text = "Loading"
+                    MovieDetailsFragmentViewState.ErrorUnknown -> detailsId.text = "Error"
+                    MovieDetailsFragmentViewState.ErrorNoConnectivity -> detailsId.text = "Error Connectivity"
+                    is MovieDetailsFragmentViewState.ShowDetail -> {
+                            detailsId.text = viewState.detail.overview
+                    }
+                }
+            })
+        }
     }
+
 }
