@@ -66,6 +66,20 @@ abstract class MoviesFragment : Fragment() {
             adapter = MoviesAdapter(movieSelectionListener)
         }
 
+        moviesList.toZeroAlpha()
+        moviesLoadingErrorView.toZeroAlpha()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        when (savedInstanceState) {
+            null -> withViewModel {
+                init(getScreenSizeInPixels().x, getScreenSizeInPixels().x)
+            }
+        }
+
+
         /* Disable extended action bar in main activity */
         withViewModel<MainActivityViewModel>(viewModelFactory) {
             onAction(MainActivityAction.UserSelectedMovieList)
@@ -75,14 +89,17 @@ abstract class MoviesFragment : Fragment() {
          * Hook-up the LiveData that will be updated when the data source is created
          * and then update the adapter with the new data.
          */
-        withViewModel<MoviesFragmentViewModel>(viewModelFactory) {
-            getMovieList(getMoviesSection(), getScreenSizeInPixels().x, getScreenSizeInPixels().x)
-                    .observe(this@MoviesFragment, Observer<PagedList<MovieItem>> {
-                        (moviesList.adapter as MoviesAdapter).submitList(it)
-                    })
-        }.also {
-            it.bindViewState().observe(this, Observer { viewState ->
-                renderViewState(viewState)
+        withViewModel {
+            /*
+             * VERY IMPORTANT: whenever we're adding an Observer to a LiveData in a Fragment,
+             * we MUST use viewLifecycleOwner.
+             * Discussion here: https://www.reddit.com/r/androiddev/comments/8j4ei3/fix_for_livedata_problems_with_fragments/
+             */
+            viewState.observe(this@MoviesFragment.viewLifecycleOwner, Observer { fragmentViewState ->
+                renderViewState(fragmentViewState)
+            })
+            pagedList.observe(this@MoviesFragment.viewLifecycleOwner, Observer<PagedList<MovieItem>> {
+                (moviesList.adapter as MoviesAdapter).submitList(it)
             })
         }
     }
@@ -102,18 +119,24 @@ abstract class MoviesFragment : Fragment() {
                     moviesList.toZeroAlpha()
                     moviesLoadingErrorView.toOneAlpha()
                     moviesLoadingErrorView.animateToUnknownError {
-                        withViewModel<MoviesFragmentViewModel>(viewModelFactory) {
-                            retryMoviesListFetch()
-                        }
+                        withViewModel { retryMoviesListFetch() }
+                    }
+                }
+                MoviesFragmentViewState.ErrorUnknownWithItems -> {
+                    snackBar(moviesFragmentContent, R.string.error_unexpected_error_message, R.string.error_retry) {
+                        withViewModel { retryMoviesListFetch() }
                     }
                 }
                 MoviesFragmentViewState.ErrorNoConnectivity -> {
                     moviesList.toZeroAlpha()
                     moviesLoadingErrorView.toOneAlpha()
                     moviesLoadingErrorView.animateToNoConnectivityError {
-                        withViewModel<MoviesFragmentViewModel>(viewModelFactory) {
-                            retryMoviesListFetch()
-                        }
+                        withViewModel { retryMoviesListFetch() }
+                    }
+                }
+                MoviesFragmentViewState.ErrorNoConnectivityWithItems -> {
+                    snackBar(moviesFragmentContent, R.string.error_no_network_connection_message, R.string.error_retry) {
+                        withViewModel { retryMoviesListFetch() }
                     }
                 }
                 MoviesFragmentViewState.InitialPageLoaded -> {
@@ -126,17 +149,18 @@ abstract class MoviesFragment : Fragment() {
         }
     }
 
-    /**
-     * MUST be implemented for all fragments that are showing a list of movies, providing the
-     * section that is rendering.
-     */
-    abstract fun getMoviesSection(): UiMovieSection
+    private fun withViewModel(action: MoviesFragmentViewModel.() -> Unit) {
+        getViewModelInstance(viewModelFactory).action()
+    }
+
 
     /**
      * MUST be implemented for all fragments that are showing a list of movies in order to enable
      * navigation to the movie details section.
      */
     abstract fun getNavDirectionsForMovieDetails(movieId: String, movieImageUrl: String): NavDirections
+
+    abstract fun getViewModelInstance(viewModelFactory: ViewModelProvider.Factory): MoviesFragmentViewModel
 
 
     class MoviesAdapter(private val movieSelectionListener: (MovieItem) -> Unit) : PagedListAdapter<MovieItem, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {

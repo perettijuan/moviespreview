@@ -1,9 +1,9 @@
 package com.jpp.moviespreview.domainlayer.repository
 
-import com.jpp.moviespreview.domainlayer.AppConfiguration
-import com.jpp.moviespreview.domainlayer.ImagesConfiguration
-import com.jpp.moviespreview.domainlayer.MovieDetail
-import com.jpp.moviespreview.domainlayer.MoviePage
+import androidx.lifecycle.LiveData
+import androidx.paging.PagedList
+import com.jpp.moviespreview.domainlayer.*
+import com.jpp.moviespreview.domainlayer.ds.movie.MoviesDataSourceState
 
 
 /**
@@ -43,3 +43,29 @@ interface MoviesRepository {
     fun updateUpcomingMoviePage(moviePage: MoviePage)
     fun updateMovieDetail(movieDetail: MovieDetail)
 }
+
+
+/***********************/
+
+
+interface MovieListRepository {
+    /**
+     * Retrieves a [MovieListing] that can be use to show a list of movies retrieved from the server.
+     * [section] indicates the section of interest for the request.
+     * [targetBackdropSize] indicates the size target of the backdrop images of the Movies. Needed to configure the
+     * backdrop URL path.
+     * [targetPosterSize] indicates the size target of the backdrop images of the Movies. Needed to configure the
+     * poster URL path.
+     */
+    fun <T> moviePageOfSection(section: MovieSection, targetBackdropSize: Int, targetPosterSize: Int, mapper: (Movie) -> T): MovieListing<T>
+}
+
+/**
+ * Data class that models the response of the repository layer when the feature is requesting data as
+ * a list backed by the paging library.
+ */
+data class MovieListing<T>(
+        // the LiveData of paged lists for the UI to observe
+        val pagedList: LiveData<PagedList<T>>,
+        val dataSourceLiveData: LiveData<MoviesDataSourceState>
+)
