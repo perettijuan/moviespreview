@@ -15,7 +15,9 @@ class PlayingMoviesFragment : MoviesFragment() {
 
     override fun getViewModelInstance(viewModelFactory: ViewModelProvider.Factory) = getViewModel<PlayingMoviesFragmentViewModel>(viewModelFactory)
 
-    class PlayingMoviesFragmentViewModel @Inject constructor(movieListRepository: MovieListRepository, override val movieSection: MovieSection.Playing)
-        : MoviesFragmentViewModel(movieListRepository)
+    class PlayingMoviesFragmentViewModel @Inject constructor(movieListRepository: MovieListRepository)
+        : MoviesFragmentViewModel(movieListRepository) {
+        override val movieSection: MovieSection = MovieSection.Playing
+    }
 
 }
