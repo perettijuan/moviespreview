@@ -1,10 +1,17 @@
 package com.jpp.moviespreview.ext
 
 import android.graphics.Point
+import android.view.View
+import android.widget.TextView
+import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
+import com.jpp.moviespreview.R
 
 /**
  * Returns a [Point] in which the x value represents the width of the screen in pixels
@@ -17,6 +24,28 @@ fun Fragment.getScreenSizeInPixels(): Point {
         throw IllegalStateException("Activity is null at this point")
     }
 }
+
+/**
+ * Creates and shows a [Snackbar] styled with the application resources.
+ */
+fun Fragment.snackBar(contentView: View,
+                      @StringRes message: Int,
+                      @StringRes actionMessage: Int,
+                      action: () -> Unit) {
+    activity?.let {
+        Snackbar.make(
+                contentView,
+                message,
+                Snackbar.LENGTH_INDEFINITE
+        ).setAction(actionMessage) {
+            action.invoke()
+        }.apply {
+            view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).typeface = ResourcesCompat.getFont(it, R.font.poppins_bold)
+            setActionTextColor(ContextCompat.getColor(it, R.color.primaryColor))
+        }.show()
+    }
+}
+
 
 /**
  * Extension function to find a ViewModel in the Activity of the Fragment.

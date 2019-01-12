@@ -22,6 +22,6 @@ class GetMoviesDataSourceFactory(private val fetchItems: (Int, (List<Movie>, Int
 
 
     fun retryLast() {
-        datasourceInstance.invalidate()
+        datasourceInstance.retryLastCall()
     }
 }

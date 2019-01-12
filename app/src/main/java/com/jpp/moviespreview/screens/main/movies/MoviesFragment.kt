@@ -87,6 +87,11 @@ abstract class MoviesFragment : Fragment() {
          * and then update the adapter with the new data.
          */
         withViewModel {
+            /*
+             * VERY IMPORTANT: whenever we're adding an Observer to a LiveData in a Fragment,
+             * we MUST use viewLifecycleOwner.
+             * Discussion here: https://www.reddit.com/r/androiddev/comments/8j4ei3/fix_for_livedata_problems_with_fragments/
+             */
             viewState.observe(this@MoviesFragment.viewLifecycleOwner, Observer { fragmentViewState ->
                 renderViewState(fragmentViewState)
             })
@@ -114,10 +119,20 @@ abstract class MoviesFragment : Fragment() {
                         withViewModel { retryMoviesListFetch() }
                     }
                 }
+                MoviesFragmentViewState.ErrorUnknownWithItems -> {
+                    snackBar(moviesFragmentContent, R.string.error_unexpected_error_message, R.string.error_retry) {
+                        withViewModel { retryMoviesListFetch() }
+                    }
+                }
                 MoviesFragmentViewState.ErrorNoConnectivity -> {
                     moviesList.toZeroAlpha()
                     moviesLoadingErrorView.toOneAlpha()
                     moviesLoadingErrorView.animateToNoConnectivityError {
+                        withViewModel { retryMoviesListFetch() }
+                    }
+                }
+                MoviesFragmentViewState.ErrorNoConnectivityWithItems -> {
+                    snackBar(moviesFragmentContent, R.string.error_no_network_connection_message, R.string.error_retry) {
                         withViewModel { retryMoviesListFetch() }
                     }
                 }

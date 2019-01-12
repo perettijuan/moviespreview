@@ -71,17 +71,15 @@ class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
 
 
     private fun getMoviePageForSection(page: Int, section: MovieSection, callback: (List<Movie>, Int) -> Unit) {
-        when (connectivityHandler.isConnectedToNetwork()) {
-            true -> {
-                postPreFetchOperationState.invoke(page)
-                getMoviePage(page, section)?.let { fetchedMoviePage ->
-                    operationState.postValue(RepositoryState.Loaded)
-                    callback(fetchedMoviePage.results, page + 1)
-                } ?: run {
-                    operationState.postValue(RepositoryState.ErrorUnknown(page > 1))
-                }
+        postPreFetchOperationState.invoke(page)
+        getMoviePage(page, section)?.let { fetchedMoviePage ->
+            operationState.postValue(RepositoryState.Loaded)
+            callback(fetchedMoviePage.results, page + 1)
+        } ?: run {
+            when (connectivityHandler.isConnectedToNetwork()) {
+                true -> operationState.postValue(RepositoryState.ErrorUnknown(page > 1))
+                else -> operationState.postValue(RepositoryState.ErrorNoConnectivity(page > 1))
             }
-            else -> operationState.postValue(RepositoryState.ErrorNoConnectivity(page > 1))
         }
     }
 
