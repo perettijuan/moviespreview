@@ -1,6 +1,5 @@
 package com.jpp.moviespreview.screens.main.movies
 
-import javax.inject.Inject
 import com.jpp.mpdomain.Movie as DomainMovie
 
 /***************************************************************************************************
@@ -18,18 +17,3 @@ data class MovieItem(
         val popularity: String,
         val voteCount: String
 )
-
-
-class MovieItemMapper @Inject constructor() {
-
-
-    fun mapDomainMovie(domainMovie: DomainMovie) = with(domainMovie) {
-        MovieItem(movieId = id,
-                headerImageUrl = backdrop_path ?: "emptyPath",
-                title = title,
-                contentImageUrl = poster_path ?: "emptyPath",
-                popularity = popularity.toString(),
-                voteCount = vote_count.toString()
-        )
-    }
-}

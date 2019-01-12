@@ -6,6 +6,6 @@ sealed class RepositoryState {
     object None : RepositoryState()
     object Loaded : RepositoryState()
     object Loading : RepositoryState()
-    object ErrorUnknown : RepositoryState()
-    object ErrorNoConnectivity : RepositoryState()
+    data class ErrorUnknown(val hasItems: Boolean) : RepositoryState()
+    data class ErrorNoConnectivity(val hasItems: Boolean) : RepositoryState()
 }

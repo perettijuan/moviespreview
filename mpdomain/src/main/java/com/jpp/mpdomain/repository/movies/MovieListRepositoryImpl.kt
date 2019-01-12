@@ -1,6 +1,5 @@
 package com.jpp.mpdomain.repository.movies
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
@@ -79,10 +78,10 @@ class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
                     operationState.postValue(RepositoryState.Loaded)
                     callback(fetchedMoviePage.results, page + 1)
                 } ?: run {
-                    operationState.postValue(RepositoryState.ErrorUnknown)
+                    operationState.postValue(RepositoryState.ErrorUnknown(page > 1))
                 }
             }
-            else -> operationState.postValue(RepositoryState.ErrorNoConnectivity)
+            else -> operationState.postValue(RepositoryState.ErrorNoConnectivity(page > 1))
         }
     }
 

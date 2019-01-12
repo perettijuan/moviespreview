@@ -2,7 +2,6 @@ package com.jpp.moviespreview.screens.main.movies.fragments
 
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.moviespreview.ext.getViewModel
-import com.jpp.moviespreview.screens.main.movies.MovieItemMapper
 import com.jpp.moviespreview.screens.main.movies.MoviesFragment
 import com.jpp.moviespreview.screens.main.movies.MoviesFragmentViewModel
 import com.jpp.mpdomain.MovieSection
@@ -17,6 +16,6 @@ class PopularMoviesFragment : MoviesFragment() {
 
     override fun getViewModelInstance(viewModelFactory: ViewModelProvider.Factory) = getViewModel<PopularMoviesFragmentViewModel>(viewModelFactory)
 
-    class PopularMoviesFragmentViewModel @Inject constructor(movieListRepository: MovieListRepository, mapper: MovieItemMapper)
-        : MoviesFragmentViewModel(movieListRepository, mapper, MovieSection.Popular)
+    class PopularMoviesFragmentViewModel @Inject constructor(movieListRepository: MovieListRepository)
+        : MoviesFragmentViewModel(movieListRepository, MovieSection.Popular)
 }

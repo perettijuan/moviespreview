@@ -70,6 +70,13 @@ abstract class MoviesFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        when (savedInstanceState) {
+            null -> withViewModel {
+                init(getScreenSizeInPixels().x, getScreenSizeInPixels().x)
+            }
+        }
+
+
         /* Disable extended action bar in main activity */
         withViewModel<MainActivityViewModel>(viewModelFactory) {
             onAction(MainActivityAction.UserSelectedMovieList)
@@ -79,15 +86,13 @@ abstract class MoviesFragment : Fragment() {
          * Hook-up the LiveData that will be updated when the data source is created
          * and then update the adapter with the new data.
          */
-        with(getViewModelInstance(viewModelFactory)) {
-            getMovieListing(getScreenSizeInPixels().x, getScreenSizeInPixels().x) { viewState, pagedList ->
-                viewState.observe(this@MoviesFragment.viewLifecycleOwner, Observer { fragmentViewState ->
-                    renderViewState(fragmentViewState)
-                })
-                pagedList.observe(this@MoviesFragment.viewLifecycleOwner, Observer<PagedList<MovieItem>> {
-                    (moviesList.adapter as MoviesAdapter).submitList(it)
-                })
-            }
+        withViewModel {
+            viewState.observe(this@MoviesFragment.viewLifecycleOwner, Observer { fragmentViewState ->
+                renderViewState(fragmentViewState)
+            })
+            pagedList.observe(this@MoviesFragment.viewLifecycleOwner, Observer<PagedList<MovieItem>> {
+                (moviesList.adapter as MoviesAdapter).submitList(it)
+            })
         }
     }
 
@@ -106,18 +111,14 @@ abstract class MoviesFragment : Fragment() {
                     moviesList.toZeroAlpha()
                     moviesLoadingErrorView.toOneAlpha()
                     moviesLoadingErrorView.animateToUnknownError {
-                        with(getViewModelInstance(viewModelFactory)) {
-                            retryMoviesListFetch()
-                        }
+                        withViewModel { retryMoviesListFetch() }
                     }
                 }
                 MoviesFragmentViewState.ErrorNoConnectivity -> {
                     moviesList.toZeroAlpha()
                     moviesLoadingErrorView.toOneAlpha()
                     moviesLoadingErrorView.animateToNoConnectivityError {
-                        with(getViewModelInstance(viewModelFactory)) {
-                            retryMoviesListFetch()
-                        }
+                        withViewModel { retryMoviesListFetch() }
                     }
                 }
                 MoviesFragmentViewState.InitialPageLoaded -> {
@@ -128,6 +129,10 @@ abstract class MoviesFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun withViewModel(action: MoviesFragmentViewModel.() -> Unit) {
+        getViewModelInstance(viewModelFactory).action()
     }
 
 

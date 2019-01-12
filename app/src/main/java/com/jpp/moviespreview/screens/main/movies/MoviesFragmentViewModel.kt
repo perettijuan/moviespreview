@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations.map
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
+import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.repository.RepositoryState
 import com.jpp.mpdomain.repository.movies.MovieListRepository
@@ -17,58 +18,61 @@ import com.jpp.mpdomain.repository.movies.MovieListRepository
  * behaves more as a controller in the architecture defined in MoviesPreview.
  */
 abstract class MoviesFragmentViewModel(private val movieListRepository: MovieListRepository,
-                                       private val mapper: MovieItemMapper,
                                        private val movieSection: MovieSection) : ViewModel() {
 
 
-    private lateinit var viewState: LiveData<MoviesFragmentViewState>
-    private lateinit var pagedList: LiveData<PagedList<MovieItem>>
+    lateinit var viewState: LiveData<MoviesFragmentViewState>
+    lateinit var pagedList: LiveData<PagedList<MovieItem>>
     private lateinit var retryFun: () -> Unit
 
-    /**
-     * Binds two LiveData objects to the provided [viewStateBinder]:
-     * - a [MoviesFragmentViewState] LiveData that represents the view state to be rendered.
-     * - a [PagedList] of [MovieItem] that will be queried by the Paging Library adapter to fetch
-     * new items as the user scrolls.
-     */
-    fun getMovieListing(moviePosterSize: Int,
-                        movieBackdropSize: Int,
-                        viewStateBinder: (LiveData<MoviesFragmentViewState>, LiveData<PagedList<MovieItem>>) -> Unit) {
 
+    fun init(moviePosterSize: Int,
+             movieBackdropSize: Int) {
 
-        if (::pagedList.isInitialized && pagedList.value?.isNotEmpty() == true) {
+        movieListRepository.moviePageForSection(movieSection, movieBackdropSize, moviePosterSize) { domainMovie ->
+            mapDomainMovie(domainMovie)
+        }.let { listing ->
             /*
-             * Since the ViewModel survives rotation, we need a way
-             * to avoid re-executing the repository on rotation.
+             * Very cool way to map the ds internal state to a state that the UI understands without coupling the UI to de domain.
              */
-            viewStateBinder.invoke(viewState, pagedList)
-            return
-        }
-
-
-        val listing = movieListRepository.moviePageForSection(movieSection, movieBackdropSize, moviePosterSize) { domainMovie ->
-            mapper.mapDomainMovie(domainMovie)
-        }
-
-        /*
-         * Very cool way to map the ds internal state to a state that the UI understands without coupling the UI to de domain.
-         */
-        viewState = map(listing.operationState) {
-            when (it) {
-                RepositoryState.Loading -> MoviesFragmentViewState.Loading
-                RepositoryState.ErrorUnknown -> MoviesFragmentViewState.ErrorUnknown
-                RepositoryState.ErrorNoConnectivity -> MoviesFragmentViewState.ErrorNoConnectivity
-                RepositoryState.Loaded -> MoviesFragmentViewState.InitialPageLoaded
-                else -> MoviesFragmentViewState.None
+            viewState = map(listing.operationState) {
+                when (it) {
+                    RepositoryState.Loading -> MoviesFragmentViewState.Loading
+                    is RepositoryState.ErrorUnknown -> {
+                        when (it.hasItems) {
+                            true -> MoviesFragmentViewState.ErrorUnknownWithItems
+                            false -> MoviesFragmentViewState.ErrorUnknown
+                        }
+                    }
+                    is RepositoryState.ErrorNoConnectivity -> {
+                        when (it.hasItems) {
+                            true -> MoviesFragmentViewState.ErrorNoConnectivityWithItems
+                            false -> MoviesFragmentViewState.ErrorNoConnectivity
+                        }
+                    }
+                    RepositoryState.Loaded -> MoviesFragmentViewState.InitialPageLoaded
+                    else -> MoviesFragmentViewState.None
+                }
             }
-        }
 
-        pagedList = listing.pagedList
-        retryFun = listing.retry
-        viewStateBinder.invoke(viewState, pagedList)
+            pagedList = listing.pagedList
+            retryFun = listing.retry
+        }
     }
+
 
     fun retryMoviesListFetch() {
         retryFun.invoke()
+    }
+
+
+    private fun mapDomainMovie(domainMovie: Movie) = with(domainMovie) {
+        MovieItem(movieId = id,
+                headerImageUrl = backdrop_path ?: "emptyPath",
+                title = title,
+                contentImageUrl = poster_path ?: "emptyPath",
+                popularity = popularity.toString(),
+                voteCount = vote_count.toString()
+        )
     }
 }
