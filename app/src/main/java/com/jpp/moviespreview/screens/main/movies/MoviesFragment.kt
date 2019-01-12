@@ -65,6 +65,9 @@ abstract class MoviesFragment : Fragment() {
             layoutManager = LinearLayoutManager(activity)
             adapter = MoviesAdapter(movieSelectionListener)
         }
+
+        moviesList.toZeroAlpha()
+        moviesLoadingErrorView.toZeroAlpha()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
