@@ -1,4 +1,4 @@
-package com.jpp.moviespreview.screens.main.utiltest
+package com.jpp.mpdomain.utils
 
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor

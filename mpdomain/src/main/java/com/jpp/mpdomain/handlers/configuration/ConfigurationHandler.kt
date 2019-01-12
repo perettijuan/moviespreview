@@ -4,13 +4,20 @@ import com.jpp.mpdomain.ImagesConfiguration
 import com.jpp.mpdomain.Movie
 
 /**
- * TODO JPP implement me -> when implementing this guy, make sure tha the implementation receives
- * an Executor instance where it executes the configuration work. Take an executor from ServiceLocator.getDiskIOExecutor()
- * in the example.
+ * Handles all the tasks that are specific to app configuration. For instance: setting the proper
+ * URL path to the movies images.
  */
 interface ConfigurationHandler {
-    fun configureMovie(movie: Movie,
-                       imagesConfig: ImagesConfiguration,
-                       targetBackdropSize: Int,
-                       targetPosterSize: Int): Movie
+
+    /**
+     * Configures the [Movie.poster_path] and [Movie.backdrop_path] properties setting the
+     * proper URL based on the provided sizes. It looks for the best possible size based on the
+     * supplied ones in the [imagesConfig] to avoid downloading over-sized images.
+     * @return a new [Movie] object with the same attributes as the original one, but with
+     * the images paths configured.
+     */
+    fun configureMovieImagesPath(movie: Movie,
+                                 imagesConfig: ImagesConfiguration,
+                                 targetBackdropSize: Int,
+                                 targetPosterSize: Int): Movie
 }

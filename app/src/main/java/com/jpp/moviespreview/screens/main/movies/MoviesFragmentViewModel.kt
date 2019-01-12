@@ -14,13 +14,14 @@ import com.jpp.mpdomain.repository.movies.MovieListRepository
  *
  * This is a very special ViewModel in the application, since it doesn't follows the pattern
  * defined in MPScopedViewModel. This is because this section of the application is using the
- * Paging Library to support unlimited scrolling and that library requires that the DataSource
- * behaves more as a controller in the architecture defined in MoviesPreview.
+ * Paging Library to support unlimited scrolling and the [MovieListRepository] is using its own
+ * Executor to defer long term operations to another thread (instead of coroutines provided by
+ * the MPScopedViewModel).
  */
-abstract class MoviesFragmentViewModel(private val movieListRepository: MovieListRepository,
-                                       private val movieSection: MovieSection) : ViewModel() {
+abstract class MoviesFragmentViewModel(private val movieListRepository: MovieListRepository) : ViewModel() {
 
 
+    protected abstract val movieSection: MovieSection
     lateinit var viewState: LiveData<MoviesFragmentViewState>
     lateinit var pagedList: LiveData<PagedList<MovieItem>>
     private lateinit var retryFun: () -> Unit

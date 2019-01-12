@@ -106,7 +106,7 @@ class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
         return getAppConfiguration().let {
             when (it) {
                 null -> movie
-                else -> configurationHandler.configureMovie(movie, it.images, targetBackdropSize, targetPosterSize)
+                else -> configurationHandler.configureMovieImagesPath(movie, it.images, targetBackdropSize, targetPosterSize)
             }
         }
     }
