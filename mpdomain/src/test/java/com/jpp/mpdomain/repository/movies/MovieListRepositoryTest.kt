@@ -5,11 +5,10 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.Observer
 import androidx.paging.PageKeyedDataSource
-import com.jpp.mpdomain.Movie
-import com.jpp.mpdomain.MoviePage
-import com.jpp.mpdomain.MovieSection
+import com.jpp.mpdomain.*
 import com.jpp.mpdomain.handlers.ConnectivityHandler
 import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
+import com.jpp.mpdomain.repository.RepositoryState
 import com.jpp.mpdomain.repository.configuration.ConfigurationApi
 import com.jpp.mpdomain.repository.configuration.ConfigurationDb
 import com.jpp.mpdomain.utils.CurrentThreadExecutorService
@@ -19,6 +18,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -60,53 +60,6 @@ class MovieListRepositoryTest {
                 CurrentThreadExecutorService())
     }
 
-
-    /**
-     * Tests that GetMoviesDataSource delegates the retrieval of the first movie page to
-     * the repository, that the repository fetches the data from the database and
-     * the ds notifies the callback.
-     */
-    @Test
-    fun `DataSource should ask to repository to fetch movies with first page and notify result to callback`() {
-        val dsCallback = mockk<PageKeyedDataSource.LoadInitialCallback<Int, Movie>>(relaxed = true)
-        val moviePage = mockk<MoviePage>()
-        val movies = listOf<Movie>(mockk(), mockk(), mockk())
-        val expectedNextPage = 2
-
-        every { moviePage.results } returns movies
-        every { moviesDb.getMoviePageForSection(any(), any()) } returns moviePage
-
-        executeTestUsingDataSource { ds ->
-            ds.loadInitial(PageKeyedDataSource.LoadInitialParams(1, false), dsCallback)
-
-            verify { moviesDb.getMoviePageForSection(1, movieSection) }
-            verify { dsCallback.onResult(any(), null, expectedNextPage) }
-        }
-    }
-
-    /**
-     * Tests that GetMoviesDataSource delegates the retrieval of any movie page to
-     * the repository, that the repository fetches the data from the database and
-     * the ds notifies the callback.
-     */
-    @Test
-    fun `DataSource should ask to repository to fetch movies with any other page and notify result to callback`() {
-        val dsCallback = mockk<PageKeyedDataSource.LoadCallback<Int, Movie>>(relaxed = true)
-        val moviePage = mockk<MoviePage>()
-        val movies = listOf<Movie>(mockk(), mockk(), mockk())
-        val expectedNextPage = 3
-
-        every { moviePage.results } returns movies
-        every { moviesDb.getMoviePageForSection(any(), any()) } returns moviePage
-
-        executeTestUsingDataSource { ds ->
-            ds.loadAfter(PageKeyedDataSource.LoadParams(2, 1), dsCallback)
-
-            verify { moviesDb.getMoviePageForSection(2, movieSection) }
-            verify { dsCallback.onResult(any(), expectedNextPage) }
-        }
-    }
-
     @Test
     fun `Repository should fetch data from API when not available locally and update the local data`() {
         val moviePage = mockk<MoviePage>()
@@ -123,8 +76,98 @@ class MovieListRepositoryTest {
         }
     }
 
+    @Test
+    fun `Repository should config movies path using the application configuration`() {
+        val moviePage = mockk<MoviePage>()
+        val movieMock = mockk<Movie>()
+        val movies = listOf(movieMock)
 
-    private fun executeTestUsingDataSource(test: (PageKeyedDataSource<Int, Movie>) -> Unit) {
+        val appConfig = mockk<AppConfiguration>()
+        val imagesConfig = mockk<ImagesConfiguration>()
+
+        every { moviePage.results } returns movies
+        every { moviesDb.getMoviePageForSection(any(), any()) } returns moviePage
+        every { appConfig.images } returns imagesConfig
+        every { configurationDb.getAppConfiguration() } returns appConfig
+
+        executeMovieFetchingInRepository(2) {
+            verify { configurationHandler.configureMovieImagesPath(movieMock, imagesConfig, targetBackdropSize, targetPosterSize) }
+        }
+    }
+
+    @Test
+    fun `Repository should fetch config from API and store it locally when no data is in database`() {
+        val moviePage = mockk<MoviePage>()
+        val movieMock = mockk<Movie>()
+        val movies = listOf(movieMock)
+
+        val appConfig = mockk<AppConfiguration>()
+        val imagesConfig = mockk<ImagesConfiguration>()
+
+        every { moviePage.results } returns movies
+        every { moviesDb.getMoviePageForSection(any(), any()) } returns moviePage
+        every { appConfig.images } returns imagesConfig
+        every { configurationDb.getAppConfiguration() } returns null
+        every { configurationApi.getAppConfiguration() } returns appConfig
+
+        executeMovieFetchingInRepository(2) {
+            verify { configurationDb.getAppConfiguration() }
+            verify { configurationDb.saveAppConfiguration(appConfig) }
+            verify { configurationApi.getAppConfiguration() }
+        }
+    }
+
+    @Test
+    fun `Repository should notify error unknown with items when an error occurs retrieving movie page`() {
+        every { moviesDb.getMoviePageForSection(any(), any()) } returns null
+        every { moviesApi.getNowPlayingMoviePage(any()) } returns null
+
+        every { connectivityHandler.isConnectedToNetwork() } returns true
+
+        executeMovieFetchingInRepositoryAndNotifyRepositoryState(2) {
+            assertEquals(RepositoryState.ErrorUnknown(true), it)
+        }
+    }
+
+    @Test
+    fun `Repository should notify error unknown without when an error occurs retrieving first movie page`() {
+        every { moviesDb.getMoviePageForSection(any(), any()) } returns null
+        every { moviesApi.getNowPlayingMoviePage(any()) } returns null
+
+        every { connectivityHandler.isConnectedToNetwork() } returns true
+
+        executeMovieFetchingInRepositoryAndNotifyRepositoryState(1) {
+            assertEquals(RepositoryState.ErrorUnknown(false), it)
+        }
+    }
+
+
+    @Test
+    fun `Repository should notify connectivity error with items when an error occurs retrieving movie page`() {
+        every { moviesDb.getMoviePageForSection(any(), any()) } returns null
+        every { moviesApi.getNowPlayingMoviePage(any()) } returns null
+
+        every { connectivityHandler.isConnectedToNetwork() } returns false
+
+        executeMovieFetchingInRepositoryAndNotifyRepositoryState(2) {
+            assertEquals(RepositoryState.ErrorNoConnectivity(true), it)
+        }
+    }
+
+    @Test
+    fun `Repository should notify connectivity error without when an error occurs retrieving first movie page`() {
+        every { moviesDb.getMoviePageForSection(any(), any()) } returns null
+        every { moviesApi.getNowPlayingMoviePage(any()) } returns null
+
+        every { connectivityHandler.isConnectedToNetwork() } returns false
+
+        executeMovieFetchingInRepositoryAndNotifyRepositoryState(1) {
+            assertEquals(RepositoryState.ErrorNoConnectivity(false), it)
+        }
+    }
+
+
+    private fun executeMovieFetchingInRepository(page: Int, verification: () -> Unit) {
         val lifecycleOwner: LifecycleOwner = mockk()
         val lifecycle = LifecycleRegistry(lifecycleOwner)
 
@@ -139,17 +182,35 @@ class MovieListRepositoryTest {
 
         listing.pagedList.observe(lifecycleOwner, Observer {
             val dataSource = it.dataSource as PageKeyedDataSource<Int, Movie>
-            test(dataSource)
+            dataSource.loadAfter(PageKeyedDataSource.LoadParams(page, 1), mockk(relaxed = true))
+            verification.invoke()
         })
 
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
     }
 
+    private fun executeMovieFetchingInRepositoryAndNotifyRepositoryState(page: Int, verification: (RepositoryState) -> Unit) {
+        val lifecycleOwner: LifecycleOwner = mockk()
+        val lifecycle = LifecycleRegistry(lifecycleOwner)
 
-    private fun executeMovieFetchingInRepository(page: Int, verification: () -> Unit) {
-        executeTestUsingDataSource { ds ->
-            ds.loadAfter(PageKeyedDataSource.LoadParams(page, 1), mockk(relaxed = true))
-            verification.invoke()
-        }
+        every { lifecycleOwner.lifecycle } returns lifecycle
+
+        val listing = subject.moviePageForSection(
+                movieSection,
+                targetBackdropSize,
+                targetPosterSize,
+                moviesMapper
+        )
+
+        listing.pagedList.observe(lifecycleOwner, Observer {
+            val dataSource = it.dataSource as PageKeyedDataSource<Int, Movie>
+            dataSource.loadAfter(PageKeyedDataSource.LoadParams(page, 1), mockk(relaxed = true))
+        })
+
+        listing.operationState.observe(lifecycleOwner, Observer {
+            verification.invoke(it)
+        })
+
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
     }
 }
