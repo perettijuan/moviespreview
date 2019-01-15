@@ -54,8 +54,7 @@
     android:id="@+id/detailsId"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="Details"
-    android:visibility="invisible" />
+    android:text="Details" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

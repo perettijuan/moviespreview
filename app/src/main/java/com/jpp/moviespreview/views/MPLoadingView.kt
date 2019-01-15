@@ -45,6 +45,8 @@ class MPLoadingView : View {
     private var startAnim: ValueAnimator? = null
     private var finalAnim: ValueAnimator? = null
 
+    private var start: Boolean = false
+
     constructor(context: Context) : super(context) {
         init(null, 0)
     }
@@ -64,6 +66,7 @@ class MPLoadingView : View {
                     strokeSize = getDimensionPixelSize(R.styleable.MPLoadingView_stroke, resources.getDimensionPixelSize(R.dimen.mp_loading_view_stroke_width))
                     primaryColor = createPaint(Paint.Style.STROKE, strokeSize, loadColor(this, R.styleable.MPLoadingView_primaryColor, R.color.primaryColor))
                     secondaryColor = createPaint(Paint.Style.STROKE, strokeSize, loadColor(this, R.styleable.MPLoadingView_secondaryColor, R.color.accentColor))
+                    start = getBoolean(R.styleable.MPLoadingView_start, start)
                 }.run {
                     recycle()
                 }
@@ -129,6 +132,13 @@ class MPLoadingView : View {
 
         sweepAnim?.start()
         startAnim?.start()
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        if (start) {
+            start()
+        }
     }
 
     override fun onDetachedFromWindow() {

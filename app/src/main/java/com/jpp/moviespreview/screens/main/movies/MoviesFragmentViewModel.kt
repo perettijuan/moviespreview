@@ -30,6 +30,10 @@ abstract class MoviesFragmentViewModel(private val movieListRepository: MovieLis
     fun init(moviePosterSize: Int,
              movieBackdropSize: Int) {
 
+        if (::viewState.isInitialized) {
+            return
+        }
+
         movieListRepository.moviePageForSection(movieSection, movieBackdropSize, moviePosterSize) { domainMovie ->
             mapDomainMovie(domainMovie)
         }.let { listing ->

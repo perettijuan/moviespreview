@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.transition.TransitionManager
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.ext.withViewModel
 import com.jpp.moviespreview.screens.main.MainActivityAction
@@ -53,12 +55,18 @@ class MovieDetailsFragment : Fragment() {
         withViewModel<MovieDetailsViewModel>(viewModelFactory) {
             viewState().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { viewState ->
                 when (viewState) {
-                    MovieDetailsFragmentViewState.Loading -> detailsId.text = "Loading"
-                    MovieDetailsFragmentViewState.ErrorUnknown -> detailsId.text = "Error"
-                    MovieDetailsFragmentViewState.ErrorNoConnectivity -> detailsId.text = "Error Connectivity"
+                    MovieDetailsFragmentViewState.Loading -> R.layout.fragment_details_loading
+                    MovieDetailsFragmentViewState.ErrorUnknown -> R.layout.fragment_details_error_unknown
+                    MovieDetailsFragmentViewState.ErrorNoConnectivity -> R.layout.fragment_details_error_connectivity
                     is MovieDetailsFragmentViewState.ShowDetail -> {
-                            detailsId.text = viewState.detail.overview
+                        detailsId.text = viewState.detail.overview
+                        R.layout.fragment_details_end
                     }
+                }.let {
+                    val constraint = ConstraintSet()
+                    constraint.clone(this@MovieDetailsFragment.context, it)
+                    TransitionManager.beginDelayedTransition(fragmentDetailsRoot)
+                    constraint.applyTo(fragmentDetailsRoot)
                 }
             })
         }

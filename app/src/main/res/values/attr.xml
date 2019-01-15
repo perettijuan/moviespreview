@@ -16,6 +16,7 @@
     <attr name="primaryColor" format="color" />
     <attr name="secondaryColor" format="color" />
     <attr name="stroke" format="dimension|reference" />
+    <attr name="start" format="boolean"/>
   </declare-styleable>
 
 </resources>
