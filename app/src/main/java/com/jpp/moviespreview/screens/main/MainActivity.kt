@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
 
         withViewModel<MainActivityViewModel>(viewModelFactory) {
-            viewState().observe(this@MainActivity, Observer { viewState ->
+            viewState.observe(this@MainActivity, Observer { viewState ->
                 when (viewState) {
                     MainActivityViewState.ActionBarLocked -> lockActionBar()
                     is MainActivityViewState.ActionBarUnlocked -> {
@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
         withViewModel<MainActivityViewModel>(viewModelFactory) {
             for (i in 0 until menu.size()) {
-                menu.getItem(i).isVisible = viewState().value?.menuBarEnabled ?: true
+                menu.getItem(i).isVisible = viewState.value?.menuBarEnabled ?: true
             }
         }
 

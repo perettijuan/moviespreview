@@ -2,6 +2,8 @@ package com.jpp.moviespreview.screens.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.Transformations.map
 import androidx.lifecycle.ViewModel
 import javax.inject.Inject
 
@@ -13,14 +15,16 @@ import javax.inject.Inject
  */
 class MainActivityViewModel @Inject constructor() : ViewModel() {
 
-    private val mainActivityViewState by lazy { MutableLiveData<MainActivityViewState>() }
+    private val actions = MutableLiveData<MainActivityAction>()
 
-    fun viewState(): LiveData<MainActivityViewState> = mainActivityViewState
+    val viewState: LiveData<MainActivityViewState> = map(actions) { action ->
+        when (action) {
+            is MainActivityAction.UserSelectedMovieDetails -> MainActivityViewState.ActionBarUnlocked(action.movieImageUrl, action.movieTitle)
+            MainActivityAction.UserSelectedMovieList -> MainActivityViewState.ActionBarLocked
+        }
+    }
 
     fun onAction(action: MainActivityAction) {
-        when (action) {
-            is MainActivityAction.UserSelectedMovieDetails -> mainActivityViewState.postValue(MainActivityViewState.ActionBarUnlocked(action.movieImageUrl, action.movieTitle))
-            MainActivityAction.UserSelectedMovieList -> mainActivityViewState.postValue(MainActivityViewState.ActionBarLocked)
-        }
+        actions.value = action
     }
 }
