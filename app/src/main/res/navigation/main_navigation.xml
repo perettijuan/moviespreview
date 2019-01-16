@@ -71,6 +71,9 @@
     <argument
       android:name="movieImageUrl"
       app:argType="string" />
+    <argument
+      android:name="movieTitle"
+      app:argType="string" />
   </fragment>
 
   <fragment

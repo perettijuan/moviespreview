@@ -45,7 +45,7 @@ abstract class MoviesFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val movieSelectionListener: (MovieItem) -> Unit = {
-        findNavController().navigate(getNavDirectionsForMovieDetails(it.movieId.toString(), it.contentImageUrl))
+        findNavController().navigate(getNavDirectionsForMovieDetails(it.movieId.toString(), it.contentImageUrl, it.title))
     }
 
     override fun onAttach(context: Context?) {
@@ -158,7 +158,7 @@ abstract class MoviesFragment : Fragment() {
      * MUST be implemented for all fragments that are showing a list of movies in order to enable
      * navigation to the movie details section.
      */
-    abstract fun getNavDirectionsForMovieDetails(movieId: String, movieImageUrl: String): NavDirections
+    abstract fun getNavDirectionsForMovieDetails(movieId: String, movieImageUrl: String, movieTitle: String): NavDirections
 
     abstract fun getViewModelInstance(viewModelFactory: ViewModelProvider.Factory): MoviesFragmentViewModel
 

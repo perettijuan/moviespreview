@@ -5,6 +5,6 @@ package com.jpp.moviespreview.screens.main
  * on the MainActivity UI.
  */
 sealed class MainActivityAction {
-    data class UserSelectedMovieDetails(val movieImageUrl: String) : MainActivityAction()
+    data class UserSelectedMovieDetails(val movieImageUrl: String, val movieTitle: String) : MainActivityAction()
     object UserSelectedMovieList : MainActivityAction()
 }

@@ -19,7 +19,7 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
 
     fun onAction(action: MainActivityAction) {
         when (action) {
-            is MainActivityAction.UserSelectedMovieDetails -> mainActivityViewState.postValue(MainActivityViewState.ActionBarUnlocked(action.movieImageUrl))
+            is MainActivityAction.UserSelectedMovieDetails -> mainActivityViewState.postValue(MainActivityViewState.ActionBarUnlocked(action.movieImageUrl, action.movieTitle))
             MainActivityAction.UserSelectedMovieList -> mainActivityViewState.postValue(MainActivityViewState.ActionBarLocked)
         }
     }

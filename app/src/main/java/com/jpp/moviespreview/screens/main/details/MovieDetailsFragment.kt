@@ -40,7 +40,7 @@ class MovieDetailsFragment : Fragment() {
         with(fromBundle(arguments)) {
             /* Enable extended action bar in main activity */
             withViewModel<MainActivityViewModel>(viewModelFactory) {
-                onAction(MainActivityAction.UserSelectedMovieDetails(movieImageUrl))
+                onAction(MainActivityAction.UserSelectedMovieDetails(movieImageUrl, movieTitle))
             }
         }
 

@@ -66,9 +66,22 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 MainActivityViewState.ActionBarLocked -> lockActionBar()
                 is MainActivityViewState.ActionBarUnlocked -> {
                     mainImageView.loadImageUrl(viewState.contentImageUrl)
+
+                    with(mainCollapsingToolbarLayout) {
+                        title = viewState.movieTitle
+                        isTitleEnabled = true
+                    }
+
                     unlockActionBar()
                 }
             }
+
+            /*
+             * Forces to inflate the menu shown in the Toolbar.
+             * onCreateOptionsMenu() will be re-executed to hide/show the
+             * menu options
+             */
+            invalidateOptionsMenu()
         })
 
         setSupportActionBar(mainToolbar)
@@ -114,8 +127,13 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_activity_menu, menu)
+
+        for (i in 0 until menu.size()) {
+            menu.getItem(i).isVisible = viewModel.bindViewState().value?.menuBarEnabled ?: true
+        }
+
         return true
     }
 
