@@ -98,6 +98,11 @@ fun View.animateToAlpha(toAlpha: Float,
             .start()
 }
 
+
+fun ImageView.clearImage(@DrawableRes placeholderRes: Int = R.drawable.ic_app_icon_black) {
+    setImageResource(placeholderRes)
+}
+
 /**
  * Loads an image retrieved from the provided [imageUrl]
  * into the ImageView.

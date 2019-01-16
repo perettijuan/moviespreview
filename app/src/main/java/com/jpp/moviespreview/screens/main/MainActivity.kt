@@ -1,5 +1,7 @@
 package com.jpp.moviespreview.screens.main
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.Menu
@@ -14,10 +16,7 @@ import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.*
 import com.jpp.moviespreview.R
-import com.jpp.moviespreview.ext.loadImageUrl
-import com.jpp.moviespreview.ext.setGone
-import com.jpp.moviespreview.ext.setVisible
-import com.jpp.moviespreview.ext.withViewModel
+import com.jpp.moviespreview.ext.*
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -64,14 +63,15 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 when (viewState) {
                     MainActivityViewState.ActionBarLocked -> lockActionBar()
                     is MainActivityViewState.ActionBarUnlocked -> {
-                        mainImageView.loadImageUrl(viewState.contentImageUrl)
-
                         with(mainCollapsingToolbarLayout) {
                             title = viewState.movieTitle
                             isTitleEnabled = true
                         }
 
-                        unlockActionBar()
+                        mainImageView.clearImage()
+                        unlockActionBar {
+                            mainImageView.loadImageUrl(viewState.contentImageUrl)
+                        }
                     }
                 }
 
@@ -205,7 +205,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
      * of enabling/disabling the scrolling behavior of the CollapsingToolbarLayout that is
      * hosted in this Activity.
      */
-    private fun unlockActionBar() {
+    private fun unlockActionBar(animationEndListener: () -> Unit) {
         mainAppBarLayout.apply {
             setExpanded(true, false)
             isActivated = true
@@ -220,7 +220,15 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                         lp.height = newHeight
                         mainAppBarLayout.layoutParams = lp
                     }
-                }.run { start() }
+                }
+                .also {
+                    it.addListener(object: AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator?) {
+                            animationEndListener.invoke()
+                        }
+                    })
+                }
+                .run { start() }
         mainImageView.setVisible()
     }
 
