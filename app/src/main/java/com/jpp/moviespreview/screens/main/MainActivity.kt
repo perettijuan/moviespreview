@@ -10,7 +10,6 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.*
@@ -18,6 +17,7 @@ import com.jpp.moviespreview.R
 import com.jpp.moviespreview.ext.loadImageUrl
 import com.jpp.moviespreview.ext.setGone
 import com.jpp.moviespreview.ext.setVisible
+import com.jpp.moviespreview.ext.withViewModel
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -53,36 +53,36 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var viewModel: MainActivityViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainActivityViewModel::class.java)
-        viewModel.bindViewState().observe(this, Observer { viewState ->
-            when (viewState) {
-                MainActivityViewState.ActionBarLocked -> lockActionBar()
-                is MainActivityViewState.ActionBarUnlocked -> {
-                    mainImageView.loadImageUrl(viewState.contentImageUrl)
 
-                    with(mainCollapsingToolbarLayout) {
-                        title = viewState.movieTitle
-                        isTitleEnabled = true
+        withViewModel<MainActivityViewModel>(viewModelFactory) {
+            viewState().observe(this@MainActivity, Observer { viewState ->
+                when (viewState) {
+                    MainActivityViewState.ActionBarLocked -> lockActionBar()
+                    is MainActivityViewState.ActionBarUnlocked -> {
+                        mainImageView.loadImageUrl(viewState.contentImageUrl)
+
+                        with(mainCollapsingToolbarLayout) {
+                            title = viewState.movieTitle
+                            isTitleEnabled = true
+                        }
+
+                        unlockActionBar()
                     }
-
-                    unlockActionBar()
                 }
-            }
 
-            /*
-             * Forces to inflate the menu shown in the Toolbar.
-             * onCreateOptionsMenu() will be re-executed to hide/show the
-             * menu options
-             */
-            invalidateOptionsMenu()
-        })
+                /*
+                 * Forces to inflate the menu shown in the Toolbar.
+                 * onCreateOptionsMenu() will be re-executed to hide/show the
+                 * menu options
+                 */
+                invalidateOptionsMenu()
+            })
+        }
 
         setSupportActionBar(mainToolbar)
         setupNavigation()
@@ -130,8 +130,10 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_activity_menu, menu)
 
-        for (i in 0 until menu.size()) {
-            menu.getItem(i).isVisible = viewModel.bindViewState().value?.menuBarEnabled ?: true
+        withViewModel<MainActivityViewModel>(viewModelFactory) {
+            for (i in 0 until menu.size()) {
+                menu.getItem(i).isVisible = viewState().value?.menuBarEnabled ?: true
+            }
         }
 
         return true

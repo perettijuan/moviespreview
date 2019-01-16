@@ -15,7 +15,7 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
 
     private val mainActivityViewState by lazy { MutableLiveData<MainActivityViewState>() }
 
-    fun bindViewState(): LiveData<MainActivityViewState> = mainActivityViewState
+    fun viewState(): LiveData<MainActivityViewState> = mainActivityViewState
 
     fun onAction(action: MainActivityAction) {
         when (action) {
