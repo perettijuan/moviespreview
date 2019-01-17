@@ -20,6 +20,9 @@ fun Activity.getScreenSizeInPixels(): Point {
     return size
 }
 
+
+
+
 /**
  * Extension function to find a ViewModel in an Activity.
  */

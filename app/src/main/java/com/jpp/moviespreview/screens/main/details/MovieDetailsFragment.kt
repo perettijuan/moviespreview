@@ -37,7 +37,9 @@ class MovieDetailsFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        with(fromBundle(arguments)) {
+        val args = arguments ?: throw IllegalStateException("TODO JPP -> fix this")
+
+        with(fromBundle(args)) {
             /* Enable extended action bar in main activity */
             withViewModel<MainActivityViewModel>(viewModelFactory) {
                 onAction(MainActivityAction.UserSelectedMovieDetails(movieImageUrl, movieTitle))
@@ -47,7 +49,7 @@ class MovieDetailsFragment : Fragment() {
         when (savedInstanceState) {
             null -> {
                 withViewModel<MovieDetailsViewModel>(viewModelFactory) {
-                    init(fromBundle(arguments).movieId.toDouble())
+                    init(fromBundle(args).movieId.toDouble())
                 }
             }
         }

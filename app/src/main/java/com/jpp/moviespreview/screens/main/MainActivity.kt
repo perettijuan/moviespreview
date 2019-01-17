@@ -171,7 +171,11 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         /*
          * Syncs the TopBar title whit the newly added destination.
          */
-        navController.addOnNavigatedListener { _, destination ->
+//        navController.addOnNavigatedListener { _, destination ->
+//            supportActionBar?.title = destination.label
+//            mainCollapsingToolbarLayout.title = destination.label
+//        }
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
             supportActionBar?.title = destination.label
             mainCollapsingToolbarLayout.title = destination.label
         }
