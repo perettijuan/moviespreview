@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.*
+import com.google.android.material.appbar.AppBarLayout
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.ext.*
 import dagger.android.AndroidInjection
@@ -78,6 +79,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             setCollapsedTitleTypeface(tf)
             setExpandedTitleTypeface(tf)
         }
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -198,7 +200,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 unlockActionBarWithAnimation {
                     mainImageView.loadImageUrl(viewState.contentImageUrl)
                     mainCollapsingToolbarLayout.isTitleEnabled = true
-                    setActionBarTitle(viewState.sectionTitle)
+                    enableCollapsingToolBarLayoutTitle(viewState.sectionTitle)
                 }
             }
         }
@@ -213,7 +215,28 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     private fun setActionBarTitle(title: String) {
         supportActionBar?.title = title
-        mainCollapsingToolbarLayout.title = title
+    }
+
+    private fun enableCollapsingToolBarLayoutTitle(title: String) {
+        mainAppBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+
+            var show = true
+            var scrollRange = -1
+
+            override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.totalScrollRange
+                }
+
+                if (scrollRange + verticalOffset == 0) {
+                    mainCollapsingToolbarLayout.title = title
+                    show = true
+                } else if (show) {
+                    mainCollapsingToolbarLayout.title = " "
+                    show = false
+                }
+            }
+        })
     }
 
 
