@@ -71,6 +71,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     override fun onSupportNavigateUp(): Boolean {
         /*
          * 12/26/2018 - Navigation Library 1.0.0-alpha07
+         * 01/18/2019 - Navigation Library 1.0.0-alpha09
          *
          * Manage inner navigation: since we have multiple home destinations (all the fragments that
          * are sub-classes of MoviesFragment) we need to manage the ActionBar button click for some cases (the
@@ -178,18 +179,17 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 } else {
                     lockActionBar()
                 }
+                setActionBarTitle(viewState.sectionTitle)
             }
             is MainActivityViewState.ActionBarUnlocked -> {
-                mainCollapsingToolbarLayout.isTitleEnabled = true
                 mainImageView.clearImage()
                 unlockActionBarWithAnimation {
                     mainImageView.loadImageUrl(viewState.contentImageUrl)
+                    mainCollapsingToolbarLayout.isTitleEnabled = true
+                    setActionBarTitle(viewState.sectionTitle)
                 }
             }
         }
-
-        supportActionBar?.title = viewState.sectionTitle
-        mainCollapsingToolbarLayout.title = viewState.sectionTitle
 
         /*
          * Forces to inflate the menu shown in the Toolbar.
@@ -199,7 +199,10 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         invalidateOptionsMenu()
     }
 
-
+    private fun setActionBarTitle(title: String) {
+        supportActionBar?.title = title
+        mainCollapsingToolbarLayout.title = title
+    }
 
 
     /**
@@ -221,13 +224,23 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     }
 
     private fun lockActionBarWithAnimation() {
+        //This is what performs the visible animation.
         mainAppBarLayout.apply {
             setExpanded(false, true)
             isActivated = false
 
         }
-        ValueAnimator.ofInt(resources.getDimension(R.dimen.action_bar_height_expanded).toInt(), resources.getDimension(R.dimen.action_bar_height_normal).toInt())
+        /*
+         * Sadly, setExpanded has no listener -- in order to ensure
+         * that the unlock animation works as expected, we need to reset
+         * the size of the mainAppBarLayout - that's why we execute this animation, that
+         * actually is not seen because it is delayed until the setExpanded(false, true)
+         * animation is done.
+         */
+        ValueAnimator
+                .ofInt(resources.getDimension(R.dimen.action_bar_height_expanded).toInt(), resources.getDimension(R.dimen.action_bar_height_normal).toInt())
                 .apply { duration = 300 }
+                .also { it.startDelay = 200 }
                 .also {
                     it.addUpdateListener {
                         val newHeight = it.animatedValue as Int
@@ -255,8 +268,9 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             isActivated = true
         }
 
-        ValueAnimator.ofInt(mainAppBarLayout.measuredHeight, resources.getDimension(R.dimen.action_bar_height_expanded).toInt())
-                .apply { duration = 300 }
+        ValueAnimator
+                .ofInt(mainAppBarLayout.measuredHeight, resources.getDimension(R.dimen.action_bar_height_expanded).toInt())
+                .apply { duration = 500 }
                 .also {
                     it.addUpdateListener {
                         val newHeight = it.animatedValue as Int
