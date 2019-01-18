@@ -58,29 +58,9 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         setContentView(R.layout.activity_main)
 
 
-        withViewModel<MainActivityViewModel>(viewModelFactory) {
-            viewState.observe(this@MainActivity, Observer { viewState ->
-                when (viewState) {
-                    MainActivityViewState.ActionBarLocked -> lockActionBar()
-                    is MainActivityViewState.ActionBarUnlocked -> {
-                        with(mainCollapsingToolbarLayout) {
-                            title = viewState.movieTitle
-                            isTitleEnabled = true
-                        }
-
-                        mainImageView.clearImage()
-                        unlockActionBar {
-                            mainImageView.loadImageUrl(viewState.contentImageUrl)
-                        }
-                    }
-                }
-
-                /*
-                 * Forces to inflate the menu shown in the Toolbar.
-                 * onCreateOptionsMenu() will be re-executed to hide/show the
-                 * menu options
-                 */
-                invalidateOptionsMenu()
+        withMainViewModel {
+            viewState().observe(this@MainActivity, Observer { viewState ->
+                renderViewState(viewState)
             })
         }
 
@@ -130,9 +110,9 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_activity_menu, menu)
 
-        withViewModel<MainActivityViewModel>(viewModelFactory) {
+        withMainViewModel {
             for (i in 0 until menu.size()) {
-                menu.getItem(i).isVisible = viewState.value?.menuBarEnabled ?: true
+                menu.getItem(i).isVisible = viewState().value?.menuBarEnabled ?: true
             }
         }
 
@@ -168,20 +148,58 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                         mainDrawerLayout)
         )
 
+
         /*
-         * Syncs the TopBar title whit the newly added destination.
+         * Make sure we update the ViewModel every time a new destination
+         * is selected.
          */
-//        navController.addOnNavigatedListener { _, destination ->
-//            supportActionBar?.title = destination.label
-//            mainCollapsingToolbarLayout.title = destination.label
-//        }
-        navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            supportActionBar?.title = destination.label
-            mainCollapsingToolbarLayout.title = destination.label
+        navController.addOnDestinationChangedListener { _, destination, arguments ->
+            when (destination.id) {
+                R.id.playingMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
+                R.id.popularMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
+                R.id.upcomingMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
+                R.id.topRatedMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
+                R.id.movieDetailsFragment -> {
+                    arguments?.let {
+                        withMainViewModel { userNavigatesToMovieDetails(it.getString("movieTitle"), it.getString("movieImageUrl")) }
+                    }
+                }
+            }
         }
 
         setupWithNavController(mainNavigationView, navController)
     }
+
+    private fun renderViewState(viewState: MainActivityViewState) {
+        when (viewState) {
+            is MainActivityViewState.ActionBarLocked -> {
+                if (viewState.withAnimation) {
+                    lockActionBarWithAnimation()
+                } else {
+                    lockActionBar()
+                }
+            }
+            is MainActivityViewState.ActionBarUnlocked -> {
+                mainCollapsingToolbarLayout.isTitleEnabled = true
+                mainImageView.clearImage()
+                unlockActionBarWithAnimation {
+                    mainImageView.loadImageUrl(viewState.contentImageUrl)
+                }
+            }
+        }
+
+        supportActionBar?.title = viewState.sectionTitle
+        mainCollapsingToolbarLayout.title = viewState.sectionTitle
+
+        /*
+         * Forces to inflate the menu shown in the Toolbar.
+         * onCreateOptionsMenu() will be re-executed to hide/show the
+         * menu options
+         */
+        invalidateOptionsMenu()
+    }
+
+
 
 
     /**
@@ -202,14 +220,36 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         mainImageView.setGone()
     }
 
+    private fun lockActionBarWithAnimation() {
+        mainAppBarLayout.apply {
+            setExpanded(false, true)
+            isActivated = false
 
-    /**
-     * Unlock the AppBarLayout with an animation.
-     * The idea is that the Fragments that are shown by this Activity, takes the responsibility
-     * of enabling/disabling the scrolling behavior of the CollapsingToolbarLayout that is
-     * hosted in this Activity.
-     */
-    private fun unlockActionBar(animationEndListener: () -> Unit) {
+        }
+        ValueAnimator.ofInt(resources.getDimension(R.dimen.action_bar_height_expanded).toInt(), resources.getDimension(R.dimen.action_bar_height_normal).toInt())
+                .apply { duration = 300 }
+                .also {
+                    it.addUpdateListener {
+                        val newHeight = it.animatedValue as Int
+                        val lp = mainAppBarLayout.layoutParams as CoordinatorLayout.LayoutParams
+                        lp.height = newHeight
+                        mainAppBarLayout.layoutParams = lp
+                    }
+                }
+                .also {
+                    it.addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationStart(animation: Animator?) {
+                            mainCollapsingToolbarLayout.apply {
+                                isTitleEnabled = false
+                            }
+                            mainImageView.setGone()
+                        }
+                    })
+                }
+                .run { start() }
+    }
+
+    private fun unlockActionBarWithAnimation(animationEndListener: () -> Unit) {
         mainAppBarLayout.apply {
             setExpanded(true, false)
             isActivated = true
@@ -226,15 +266,18 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                     }
                 }
                 .also {
-                    it.addListener(object: AnimatorListenerAdapter() {
+                    it.addListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator?) {
+                            mainImageView.setVisible()
                             animationEndListener.invoke()
                         }
                     })
                 }
                 .run { start() }
-        mainImageView.setVisible()
     }
+
+
+    private fun withMainViewModel(body: MainActivityViewModel.() -> Unit) = withViewModel<MainActivityViewModel>(viewModelFactory) { body() }
 
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentDispatchingAndroidInjector

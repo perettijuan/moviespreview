@@ -12,8 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionManager
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.ext.withViewModel
-import com.jpp.moviespreview.screens.main.MainActivityAction
-import com.jpp.moviespreview.screens.main.MainActivityViewModel
 import com.jpp.moviespreview.screens.main.details.MovieDetailsFragmentArgs.fromBundle
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_details.*
@@ -38,13 +36,6 @@ class MovieDetailsFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         val args = arguments ?: throw IllegalStateException("TODO JPP -> fix this")
-
-        with(fromBundle(args)) {
-            /* Enable extended action bar in main activity */
-            withViewModel<MainActivityViewModel>(viewModelFactory) {
-                onAction(MainActivityAction.UserSelectedMovieDetails(movieImageUrl, movieTitle))
-            }
-        }
 
         when (savedInstanceState) {
             null -> {

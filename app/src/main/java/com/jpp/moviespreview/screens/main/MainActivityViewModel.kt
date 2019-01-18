@@ -14,16 +14,15 @@ import javax.inject.Inject
  */
 class MainActivityViewModel @Inject constructor() : ViewModel() {
 
-    private val actions = MutableLiveData<MainActivityAction>()
+    private val viewState by lazy { MutableLiveData<MainActivityViewState>() }
 
-    val viewState: LiveData<MainActivityViewState> = map(actions) { action ->
-        when (action) {
-            is MainActivityAction.UserSelectedMovieDetails -> MainActivityViewState.ActionBarUnlocked(action.movieImageUrl, action.movieTitle)
-            MainActivityAction.UserSelectedMovieList -> MainActivityViewState.ActionBarLocked
-        }
+    fun viewState(): LiveData<MainActivityViewState> = viewState
+
+    fun userNavigatesToMovieListSection(sectionName: String) {
+        viewState.postValue(MainActivityViewState.ActionBarLocked(sectionName, viewState.value is MainActivityViewState.ActionBarUnlocked))
     }
 
-    fun onAction(action: MainActivityAction) {
-        actions.value = action
+    fun userNavigatesToMovieDetails(movieTitle: String, contentImageUrl: String) {
+        viewState.postValue(MainActivityViewState.ActionBarUnlocked(movieTitle, contentImageUrl))
     }
 }

@@ -17,8 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.ext.*
-import com.jpp.moviespreview.screens.main.MainActivityAction
-import com.jpp.moviespreview.screens.main.MainActivityViewModel
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movies.*
 import kotlinx.android.synthetic.main.movie_list_item.view.*
@@ -77,12 +75,6 @@ abstract class MoviesFragment : Fragment() {
             null -> withViewModel {
                 init(getScreenSizeInPixels().x, getScreenSizeInPixels().x)
             }
-        }
-
-
-        /* Disable extended action bar in main activity */
-        withViewModel<MainActivityViewModel>(viewModelFactory) {
-            onAction(MainActivityAction.UserSelectedMovieList)
         }
 
         /*
