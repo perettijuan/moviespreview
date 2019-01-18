@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Point
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -20,7 +21,12 @@ fun Activity.getScreenSizeInPixels(): Point {
     return size
 }
 
-
+/**
+ * Sets the provided [title] as title of the ActionBar
+ */
+fun AppCompatActivity.setActionBarTitle(title: String) {
+    supportActionBar?.title = title
+}
 
 
 /**

@@ -10,6 +10,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.jpp.moviespreview.R
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -150,4 +151,17 @@ fun ImageView.loadImageUrlAsCircular(imageUrl: String,
 
 }
 
+/**
+ * Enables the title shown by the CollapsingToolbarLayout
+ */
+fun CollapsingToolbarLayout.enableTitle() {
+    isTitleEnabled = true
+}
 
+
+/**
+ * Disables the title shown by the CollapsingToolbarLayout
+ */
+fun CollapsingToolbarLayout.disableTitle() {
+    isTitleEnabled = false
+}

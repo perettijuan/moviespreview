@@ -125,6 +125,11 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_activity_menu, menu)
 
+        /*
+         * Disable the menu if the current view state requires
+         * to hide the menus - this is true when we're showing
+         * a non-top-level fragment.
+         */
         withMainViewModel {
             for (i in 0 until menu.size()) {
                 menu.getItem(i).isVisible = viewState().value?.menuBarEnabled ?: true
@@ -146,6 +151,13 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     }
 
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentDispatchingAndroidInjector
+
+    /**
+     * Prepare the navigation components by setting the fragments that are going to be used
+     * as top level destinations of the drawer and adding a navigation listener to update
+     * the view state that the ViewModel is showing.
+     */
     private fun setupNavigation() {
         val navController = findNavController(this, R.id.mainNavHostFragment)
 
@@ -185,21 +197,20 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         setupWithNavController(mainNavigationView, navController)
     }
 
+
+    private fun withMainViewModel(body: MainActivityViewModel.() -> Unit) = withViewModel<MainActivityViewModel>(viewModelFactory) { body() }
+
     private fun renderViewState(viewState: MainActivityViewState) {
         when (viewState) {
             is MainActivityViewState.ActionBarLocked -> {
-                if (viewState.withAnimation) {
-                    lockActionBarWithAnimation()
-                } else {
-                    lockActionBar()
-                }
+                if (viewState.withAnimation) lockActionBarWithAnimation() else lockActionBar()
                 setActionBarTitle(viewState.sectionTitle)
             }
             is MainActivityViewState.ActionBarUnlocked -> {
                 mainImageView.clearImage()
                 unlockActionBarWithAnimation {
                     mainImageView.loadImageUrl(viewState.contentImageUrl)
-                    mainCollapsingToolbarLayout.isTitleEnabled = true
+                    mainCollapsingToolbarLayout.enableTitle()
                     enableCollapsingToolBarLayoutTitle(viewState.sectionTitle)
                 }
             }
@@ -213,10 +224,10 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         invalidateOptionsMenu()
     }
 
-    private fun setActionBarTitle(title: String) {
-        supportActionBar?.title = title
-    }
-
+    /**
+     * Hides the mainCollapsingToolbarLayout title when it is fully extended and shows the
+     * title when the user scrolls the content of the Activity.
+     */
     private fun enableCollapsingToolBarLayoutTitle(title: String) {
         mainAppBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
 
@@ -240,10 +251,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     }
 
 
-    /**
-     * Disable the CollapsingToolbarLayout behavior in order to show a fixed
-     * top bar.
-     */
+
     private fun lockActionBar() {
         // disable expanded mode in AppBarLayout container
         mainAppBarLayout.apply {
@@ -252,9 +260,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             val lp = layoutParams as CoordinatorLayout.LayoutParams
             lp.height = resources.getDimension(R.dimen.action_bar_height_normal).toInt()
         }
-        mainCollapsingToolbarLayout.apply {
-            isTitleEnabled = false
-        }
+        mainCollapsingToolbarLayout.disableTitle()
         mainImageView.setGone()
     }
 
@@ -287,9 +293,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 .also {
                     it.addListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationStart(animation: Animator?) {
-                            mainCollapsingToolbarLayout.apply {
-                                isTitleEnabled = false
-                            }
+                            mainCollapsingToolbarLayout.disableTitle()
                             mainImageView.setGone()
                         }
                     })
@@ -324,10 +328,4 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 }
                 .run { start() }
     }
-
-
-    private fun withMainViewModel(body: MainActivityViewModel.() -> Unit) = withViewModel<MainActivityViewModel>(viewModelFactory) { body() }
-
-
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentDispatchingAndroidInjector
 }
