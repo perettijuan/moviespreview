@@ -3,6 +3,7 @@ package com.jpp.moviespreview.screens.main
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -66,6 +67,17 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
         setSupportActionBar(mainToolbar)
         setupNavigation()
+
+        /*
+         * CollapsingToolbarLayout does not supports custom downloadable fonts
+         * - or I couldn't find a way to do it - this is the best approach
+         * I found to load the fonts I want for it.
+         */
+        with(mainCollapsingToolbarLayout) {
+            val tf = Typeface.createFromAsset(assets, "fonts/poppins.ttf")
+            setCollapsedTitleTypeface(tf)
+            setExpandedTitleTypeface(tf)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
