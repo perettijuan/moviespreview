@@ -44,16 +44,10 @@ abstract class MoviesFragmentViewModel(private val movieListRepository: MovieLis
                 when (it) {
                     RepositoryState.Loading -> MoviesFragmentViewState.Loading
                     is RepositoryState.ErrorUnknown -> {
-                        when (it.hasItems) {
-                            true -> MoviesFragmentViewState.ErrorUnknownWithItems
-                            false -> MoviesFragmentViewState.ErrorUnknown
-                        }
+                        if (it.hasItems) MoviesFragmentViewState.ErrorUnknownWithItems else MoviesFragmentViewState.ErrorUnknown
                     }
                     is RepositoryState.ErrorNoConnectivity -> {
-                        when (it.hasItems) {
-                            true -> MoviesFragmentViewState.ErrorNoConnectivityWithItems
-                            false -> MoviesFragmentViewState.ErrorNoConnectivity
-                        }
+                        if (it.hasItems) MoviesFragmentViewState.ErrorNoConnectivityWithItems else  MoviesFragmentViewState.ErrorNoConnectivity
                     }
                     RepositoryState.Loaded -> MoviesFragmentViewState.InitialPageLoaded
                     else -> MoviesFragmentViewState.None

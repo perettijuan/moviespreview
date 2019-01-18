@@ -35,17 +35,12 @@ class MovieDetailsFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val args = arguments ?: throw IllegalStateException("TODO JPP -> fix this")
+        val args = arguments ?: throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the content")
 
-        when (savedInstanceState) {
-            null -> {
-                withViewModel<MovieDetailsViewModel>(viewModelFactory) {
-                    init(fromBundle(args).movieId.toDouble())
-                }
-            }
-        }
 
         withViewModel<MovieDetailsViewModel>(viewModelFactory) {
+            init(fromBundle(args).movieId.toDouble())
+
             viewState().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { viewState ->
                 when (viewState) {
                     MovieDetailsFragmentViewState.Loading -> R.layout.fragment_details_loading

@@ -13,17 +13,22 @@ import javax.inject.Inject
 
 class MovieDetailsViewModel @Inject constructor(private val detailsRepository: MovieDetailsRepository) : MPScopedViewModel() {
 
-    private val viewState by lazy { MutableLiveData<MovieDetailsFragmentViewState>() }
+    private lateinit var viewStateLiveData: MutableLiveData<MovieDetailsFragmentViewState>
 
 
     fun init(movieId: Double) {
-        viewState.postValue(MovieDetailsFragmentViewState.Loading)
+        if (::viewStateLiveData.isInitialized) {
+            return
+        }
+
+        viewStateLiveData = MutableLiveData()
+        viewStateLiveData.postValue(MovieDetailsFragmentViewState.Loading)
         launch {
-            viewState.postValue(withContext(Dispatchers.Default) { fetchMovieDetail(movieId) })
+            viewStateLiveData.postValue(withContext(Dispatchers.Default) { fetchMovieDetail(movieId) })
         }
     }
 
-    fun viewState(): LiveData<MovieDetailsFragmentViewState> = viewState
+    fun viewState(): LiveData<MovieDetailsFragmentViewState> = viewStateLiveData
 
     private fun fetchMovieDetail(movieId: Double): MovieDetailsFragmentViewState =
         detailsRepository
