@@ -52,11 +52,11 @@ class MovieDetailsFragment : Fragment() {
                     MovieDetailsFragmentViewState.Loading -> R.layout.fragment_details_loading
                     MovieDetailsFragmentViewState.ErrorUnknown -> {
                         detailsErrorView.asUnknownError { init(fromBundle(args).movieId.toDouble()) }
-                        R.layout.fragment_details_error_unknown
+                        R.layout.fragment_details_error
                     }
                     MovieDetailsFragmentViewState.ErrorNoConnectivity -> {
                         detailsErrorView.asNoConnectivityError { init(fromBundle(args).movieId.toDouble()) }
-                        R.layout.fragment_details_error_connectivity
+                        R.layout.fragment_details_error
                     }
                     is MovieDetailsFragmentViewState.ShowDetail -> {
                         with(viewState.detail) {

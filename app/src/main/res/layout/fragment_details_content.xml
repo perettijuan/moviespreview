@@ -41,11 +41,13 @@
     android:id="@+id/detailsGenresRv"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/movie_details_vertical_spacing"
-    android:padding="8dp"
+    android:minHeight="60dp"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/detailsGenresTitleTxt" />
+    app:layout_constraintTop_toBottomOf="@+id/detailsGenresTitleTxt"
+    tools:orientation="horizontal"
+    tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    tools:listitem="@layout/details_genre_list_item" />
 
   <TextView
     android:id="@+id/detailsPopularityTitleTxt"
