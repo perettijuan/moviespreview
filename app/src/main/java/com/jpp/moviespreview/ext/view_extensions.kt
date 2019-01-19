@@ -3,7 +3,9 @@ package com.jpp.moviespreview.ext
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.graphics.drawable.BitmapDrawable
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
@@ -14,6 +16,14 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.jpp.moviespreview.R
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+
+
+/**
+ * Inflates a given layout resources and returns the inflated view.
+ */
+fun ViewGroup.inflate(layoutRes: Int): View {
+    return LayoutInflater.from(context).inflate(layoutRes, this, false)
+}
 
 /**
  * Extension function for the View class to make a View visible
@@ -58,7 +68,7 @@ fun View.toOneAlpha() {
 /**
  * Extension function to retrieve a String from the appModule resources.
  */
-fun View.getStringFromResources(@StringRes stringResId: Int) = resources.getString(stringResId)
+fun View.getStringFromResources(@StringRes stringResId: Int): CharSequence = resources.getString(stringResId)
 
 /**
  * Animates the from the current alpha property value to alpha 1.

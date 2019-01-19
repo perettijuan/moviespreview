@@ -9,12 +9,18 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
 import com.jpp.moviespreview.R
+import com.jpp.moviespreview.ext.getStringFromResources
+import com.jpp.moviespreview.ext.inflate
 import com.jpp.moviespreview.ext.withViewModel
 import com.jpp.moviespreview.screens.main.details.MovieDetailsFragmentArgs.fromBundle
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.details_genre_list_item.view.*
 import kotlinx.android.synthetic.main.fragment_details.*
+import kotlinx.android.synthetic.main.fragment_details_content.*
 import javax.inject.Inject
 
 class MovieDetailsFragment : Fragment() {
@@ -53,7 +59,13 @@ class MovieDetailsFragment : Fragment() {
                         R.layout.fragment_details_error_connectivity
                     }
                     is MovieDetailsFragmentViewState.ShowDetail -> {
-                        detailsId.text = viewState.detail.overview
+                        with(viewState.detail) {
+                            detailsOverviewContentTxt.text = overview
+                            detailsPopularityContentTxt.text = popularity.toString()
+                            detailsVoteCountContentTxt.text = voteCount.toString()
+                            detailsReleaseDateContentTxt.text = releaseDate
+                            showMovieGenres(genres)
+                        }
                         R.layout.fragment_details_end
                     }
                 }.let {
@@ -66,4 +78,33 @@ class MovieDetailsFragment : Fragment() {
         }
     }
 
+
+    private fun showMovieGenres(genres: List<MovieGenreItem>) {
+        val layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
+        detailsGenresRv.layoutManager = layoutManager
+        detailsGenresRv.adapter = MovieDetailsGenreAdapter(genres)
+    }
+
+
+    class MovieDetailsGenreAdapter(private val genres: List<MovieGenreItem>) : RecyclerView.Adapter<MovieDetailsGenreAdapter.ViewHolder>() {
+
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(genres[position])
+
+        override fun getItemCount() = genres.size
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent.inflate(R.layout.details_genre_list_item))
+
+
+        class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+            fun bind(genre: MovieGenreItem) {
+                with(genre) {
+                    itemView.genreListItemIv.setImageResource(icon)
+                    itemView.genreListItemTxt.text = itemView.getStringFromResources(name)
+                }
+            }
+
+        }
+    }
 }

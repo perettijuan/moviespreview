@@ -9,6 +9,7 @@
   <attr name="mpMovieItemHeaderImageHeight" format="reference"/>
   <attr name="mpMovieItemImageHeight" format="reference"/>
   <attr name="mpMovieItemBottomIconSize" format="reference"/>
+  <attr name="mpDetailsVerticalSpacing" format="reference"/>
 
 
 
