@@ -3,6 +3,7 @@ package com.jpp.moviespreview.screens.main.details
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jpp.moviespreview.screens.MPScopedViewModel
+import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.repository.details.MovieDetailsRepository
 import com.jpp.mpdomain.repository.details.MovieDetailsRepositoryState
@@ -14,10 +15,11 @@ import javax.inject.Inject
 class MovieDetailsViewModel @Inject constructor(private val detailsRepository: MovieDetailsRepository) : MPScopedViewModel() {
 
     private lateinit var viewStateLiveData: MutableLiveData<MovieDetailsFragmentViewState>
+    private var currentMovieId: Double = INVALID_MOVIE_ID
 
 
     fun init(movieId: Double) {
-        if (::viewStateLiveData.isInitialized) {
+        if (currentMovieId == movieId) {
             return
         }
 
@@ -30,6 +32,12 @@ class MovieDetailsViewModel @Inject constructor(private val detailsRepository: M
 
     fun viewState(): LiveData<MovieDetailsFragmentViewState> = viewStateLiveData
 
+
+    override fun onCleared() {
+        currentMovieId = INVALID_MOVIE_ID
+        super.onCleared()
+    }
+
     private fun fetchMovieDetail(movieId: Double): MovieDetailsFragmentViewState =
         detailsRepository
                 .getDetail(movieId)
@@ -37,24 +45,26 @@ class MovieDetailsViewModel @Inject constructor(private val detailsRepository: M
                     when (it) {
                         MovieDetailsRepositoryState.ErrorUnknown -> MovieDetailsFragmentViewState.ErrorUnknown
                         MovieDetailsRepositoryState.ErrorNoConnectivity -> MovieDetailsFragmentViewState.ErrorNoConnectivity
-                        is MovieDetailsRepositoryState.Success -> {
-                            with(it.detail) {
-                                MovieDetailsFragmentViewState.ShowDetail(
-                                        MovieDetailsItem(
-                                                title = title,
-                                                overview = overview,
-                                                releaseDate = release_date,
-                                                voteCount = vote_count,
-                                                voteAverage = vote_average,
-                                                popularity = popularity,
-                                                genres = genres.map { genre -> mapGenreToIcon(genre) }
-                                        )
-                                )
-                            }
-                        }
+                        is MovieDetailsRepositoryState.Success -> MovieDetailsFragmentViewState.ShowDetail(mapMovieDetailsItem(it.detail))
                     }
                 }
+                .also {
+                    currentMovieId = movieId
+                }
 
+
+    private fun mapMovieDetailsItem(domainDetail: MovieDetail): MovieDetailsItem =
+        with (domainDetail) {
+            MovieDetailsItem(
+                    title = title,
+                    overview = overview,
+                    releaseDate = release_date,
+                    voteCount = vote_count,
+                    voteAverage = vote_average,
+                    popularity = popularity,
+                    genres = genres.map { genre -> mapGenreToIcon(genre) }
+            )
+        }
 
     /**
      * Maps all the known genres with a given icon.
@@ -103,6 +113,7 @@ class MovieDetailsViewModel @Inject constructor(private val detailsRepository: M
         const val THRILLER_GENRE_ID = 53
         const val WAR_GENRE_ID = 10752
         const val WESTERN_GENRE_ID = 37
+        const val INVALID_MOVIE_ID = (-1).toDouble()
     }
 
 }

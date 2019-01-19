@@ -5,38 +5,17 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <ImageView
-    android:id="@+id/errorImageView"
-    style="@style/MPErrorView"
-    app:layout_constraintBottom_toTopOf="@id/errorTitleTextView"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:srcCompat="@drawable/ic_alert_circle" />
-
-  <TextView
-    android:id="@+id/errorTitleTextView"
-    style="@style/MPTextViewTitle"
+  <com.jpp.moviespreview.views.MPErrorView
+    android:id="@+id/detailsErrorView"
     android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    android:text="@string/error_unexpected_error_message"
+    android:layout_height="0dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
-
-  <Button
-    android:id="@+id/errorActionButton"
-    style="@style/MPTextViewNormal"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/error_retry"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/errorTitleTextView" />
+    app:layout_constraintTop_toTopOf="parent"/>
 
   <com.jpp.moviespreview.views.MPLoadingView
-    android:id="@+id/loadingView"
+    android:id="@+id/detailsLoadingView"
     style="@style/MPLoadingViewNormal"
     android:visibility="invisible"
     app:layout_constraintBottom_toBottomOf="parent"
