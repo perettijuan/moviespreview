@@ -99,42 +99,42 @@ abstract class MoviesFragment : Fragment() {
     }
 
     /**
-     * Render the view state by hiding and showing the proper views and animations.
+     * Render the view state that the ViewModels indicates.
+     * This method evaluates the viewState and applies a Transition from the
+     * current state to a final state using a ConstraintLayout animation.
      */
     private fun renderViewState(viewState: MoviesFragmentViewState) {
-        with(viewState) {
-            when (this) {
-                MoviesFragmentViewState.Loading -> R.layout.fragment_movies_loading
-                MoviesFragmentViewState.ErrorUnknown -> {
-                    moviesErrorView.asUnknownError { withViewModel { retryMoviesListFetch() } }
-                    R.layout.fragment_movies_error
-                }
-                MoviesFragmentViewState.ErrorUnknownWithItems -> {
-                    snackBar(moviesFragmentContent, R.string.error_unexpected_error_message, R.string.error_retry) {
-                        withViewModel { retryMoviesListFetch() }
-                    }
-                    R.layout.fragment_movies
-                }
-                MoviesFragmentViewState.ErrorNoConnectivity -> {
-                    moviesErrorView.asNoConnectivityError { withViewModel { retryMoviesListFetch() } }
-                    R.layout.fragment_movies_error
-                }
-                MoviesFragmentViewState.ErrorNoConnectivityWithItems -> {
-                    snackBar(moviesFragmentContent, R.string.error_no_network_connection_message, R.string.error_retry) {
-                        withViewModel { retryMoviesListFetch() }
-                    }
-                    R.layout.fragment_movies
-                }
-                MoviesFragmentViewState.InitialPageLoaded -> {
-                    R.layout.fragment_movies_final
-                }
-                else -> R.layout.fragment_movies
-            }.let { constraintLayoutAnimationsId ->
-                val constraint = ConstraintSet()
-                constraint.clone(this@MoviesFragment.context, constraintLayoutAnimationsId)
-                TransitionManager.beginDelayedTransition(moviesFragmentContent)
-                constraint.applyTo(moviesFragmentContent)
+        when (viewState) {
+            MoviesFragmentViewState.Loading -> R.layout.fragment_movies_loading
+            MoviesFragmentViewState.ErrorUnknown -> {
+                moviesErrorView.asUnknownError { withViewModel { retryMoviesListFetch() } }
+                R.layout.fragment_movies_error
             }
+            MoviesFragmentViewState.ErrorUnknownWithItems -> {
+                snackBar(moviesFragmentContent, R.string.error_unexpected_error_message, R.string.error_retry) {
+                    withViewModel { retryMoviesListFetch() }
+                }
+                R.layout.fragment_movies
+            }
+            MoviesFragmentViewState.ErrorNoConnectivity -> {
+                moviesErrorView.asNoConnectivityError { withViewModel { retryMoviesListFetch() } }
+                R.layout.fragment_movies_error
+            }
+            MoviesFragmentViewState.ErrorNoConnectivityWithItems -> {
+                snackBar(moviesFragmentContent, R.string.error_no_network_connection_message, R.string.error_retry) {
+                    withViewModel { retryMoviesListFetch() }
+                }
+                R.layout.fragment_movies
+            }
+            MoviesFragmentViewState.InitialPageLoaded -> {
+                R.layout.fragment_movies_final
+            }
+            else -> R.layout.fragment_movies
+        }.let { constraintLayoutAnimationsId ->
+            val constraint = ConstraintSet()
+            constraint.clone(this@MoviesFragment.context, constraintLayoutAnimationsId)
+            TransitionManager.beginDelayedTransition(moviesFragmentContent)
+            constraint.applyTo(moviesFragmentContent)
         }
     }
 
@@ -149,6 +149,10 @@ abstract class MoviesFragment : Fragment() {
      */
     abstract fun getNavDirectionsForMovieDetails(movieId: String, movieImageUrl: String, movieTitle: String): NavDirections
 
+    /**
+     * MUST be implemented for all fragments that are showing a list of movies in order to provide
+     * the proper ViewModel instance to use.
+     */
     abstract fun getViewModelInstance(viewModelFactory: ViewModelProvider.Factory): MoviesFragmentViewModel
 
 
