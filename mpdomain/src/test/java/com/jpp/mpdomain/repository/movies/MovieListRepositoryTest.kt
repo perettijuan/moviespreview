@@ -12,7 +12,7 @@ import com.jpp.mpdomain.repository.RepositoryState
 import com.jpp.mpdomain.repository.configuration.ConfigurationApi
 import com.jpp.mpdomain.repository.configuration.ConfigurationDb
 import com.jpp.mpdomain.utils.CurrentThreadExecutorService
-import com.jpp.mpdomain.utils.InstantTaskExecutorExtension
+import com.jpp.moviespreview.utiltest.InstantTaskExecutorExtension
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension

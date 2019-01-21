@@ -2,17 +2,19 @@ package com.jpp.moviespreview.screens.main.details
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.jpp.moviespreview.screens.CoroutineDispatchers
 import com.jpp.moviespreview.screens.MPScopedViewModel
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.repository.details.MovieDetailsRepository
 import com.jpp.mpdomain.repository.details.MovieDetailsRepositoryState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class MovieDetailsViewModel @Inject constructor(private val detailsRepository: MovieDetailsRepository) : MPScopedViewModel() {
+class MovieDetailsViewModel @Inject constructor(
+        dispatchers: CoroutineDispatchers,
+        private val detailsRepository: MovieDetailsRepository) : MPScopedViewModel(dispatchers) {
 
     private lateinit var viewStateLiveData: MutableLiveData<MovieDetailsFragmentViewState>
     private var currentMovieId: Double = INVALID_MOVIE_ID
@@ -26,7 +28,7 @@ class MovieDetailsViewModel @Inject constructor(private val detailsRepository: M
         viewStateLiveData = MutableLiveData()
         viewStateLiveData.postValue(MovieDetailsFragmentViewState.Loading)
         launch {
-            viewStateLiveData.postValue(withContext(Dispatchers.Default) { fetchMovieDetail(movieId) })
+            viewStateLiveData.postValue(withContext(dispatchers.default()) { fetchMovieDetail(movieId) })
         }
     }
 
@@ -54,7 +56,7 @@ class MovieDetailsViewModel @Inject constructor(private val detailsRepository: M
 
 
     private fun mapMovieDetailsItem(domainDetail: MovieDetail): MovieDetailsItem =
-        with (domainDetail) {
+        with(domainDetail) {
             MovieDetailsItem(
                     title = title,
                     overview = overview,

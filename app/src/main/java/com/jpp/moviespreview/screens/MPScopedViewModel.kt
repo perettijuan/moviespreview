@@ -14,12 +14,12 @@ import kotlin.coroutines.CoroutineContext
  * for more information.
  * Example of CoroutineScope = https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/index.html
  */
-abstract class MPScopedViewModel : ViewModel(), CoroutineScope {
+abstract class MPScopedViewModel(val dispatchers: CoroutineDispatchers) : ViewModel(), CoroutineScope {
 
     private val currentJob = Job()
 
     override val coroutineContext: CoroutineContext
-        get() = currentJob + kotlinx.coroutines.Dispatchers.Main
+        get() = currentJob + dispatchers.main()
 
     override fun onCleared() {
         currentJob.cancel()
