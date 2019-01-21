@@ -66,7 +66,7 @@ class MovieDetailsFragment : Fragment() {
                             detailsReleaseDateContentTxt.text = releaseDate
                             showMovieGenres(genres)
                         }
-                        R.layout.fragment_details_end
+                        R.layout.fragment_details_final
                     }
                 }.let {
                     val constraint = ConstraintSet()

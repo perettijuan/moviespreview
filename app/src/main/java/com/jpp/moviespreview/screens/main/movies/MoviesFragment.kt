@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -15,8 +16,12 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionManager
 import com.jpp.moviespreview.R
-import com.jpp.moviespreview.ext.*
+import com.jpp.moviespreview.ext.getScreenSizeInPixels
+import com.jpp.moviespreview.ext.loadImageUrl
+import com.jpp.moviespreview.ext.loadImageUrlAsCircular
+import com.jpp.moviespreview.ext.snackBar
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movies.*
 import kotlinx.android.synthetic.main.movie_list_item.view.*
@@ -63,9 +68,6 @@ abstract class MoviesFragment : Fragment() {
             layoutManager = LinearLayoutManager(activity)
             adapter = MoviesAdapter(movieSelectionListener)
         }
-
-        moviesList.toZeroAlpha()
-        moviesLoadingErrorView.toZeroAlpha()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -102,41 +104,36 @@ abstract class MoviesFragment : Fragment() {
     private fun renderViewState(viewState: MoviesFragmentViewState) {
         with(viewState) {
             when (this) {
-                MoviesFragmentViewState.Loading -> {
-                    moviesList.toZeroAlpha()
-                    moviesLoadingErrorView.toOneAlpha()
-                    moviesLoadingErrorView.showLoadingImmediate()
-                }
+                MoviesFragmentViewState.Loading -> R.layout.fragment_movies_loading
                 MoviesFragmentViewState.ErrorUnknown -> {
-                    moviesList.toZeroAlpha()
-                    moviesLoadingErrorView.toOneAlpha()
-                    moviesLoadingErrorView.animateToUnknownError {
-                        withViewModel { retryMoviesListFetch() }
-                    }
+                    moviesErrorView.asUnknownError { withViewModel { retryMoviesListFetch() } }
+                    R.layout.fragment_movies_error
                 }
                 MoviesFragmentViewState.ErrorUnknownWithItems -> {
                     snackBar(moviesFragmentContent, R.string.error_unexpected_error_message, R.string.error_retry) {
                         withViewModel { retryMoviesListFetch() }
                     }
+                    R.layout.fragment_movies
                 }
                 MoviesFragmentViewState.ErrorNoConnectivity -> {
-                    moviesList.toZeroAlpha()
-                    moviesLoadingErrorView.toOneAlpha()
-                    moviesLoadingErrorView.animateToNoConnectivityError {
-                        withViewModel { retryMoviesListFetch() }
-                    }
+                    moviesErrorView.asNoConnectivityError { withViewModel { retryMoviesListFetch() } }
+                    R.layout.fragment_movies_error
                 }
                 MoviesFragmentViewState.ErrorNoConnectivityWithItems -> {
                     snackBar(moviesFragmentContent, R.string.error_no_network_connection_message, R.string.error_retry) {
                         withViewModel { retryMoviesListFetch() }
                     }
+                    R.layout.fragment_movies
                 }
                 MoviesFragmentViewState.InitialPageLoaded -> {
-                    moviesLoadingErrorView.hideWithAnimation(500, 300) {
-                        moviesLoadingErrorView.toZeroAlpha()
-                        moviesList.animateToOneAlpha()
-                    }
+                    R.layout.fragment_movies_final
                 }
+                else -> R.layout.fragment_movies
+            }.let { constraintLayoutAnimationsId ->
+                val constraint = ConstraintSet()
+                constraint.clone(this@MoviesFragment.context, constraintLayoutAnimationsId)
+                TransitionManager.beginDelayedTransition(moviesFragmentContent)
+                constraint.applyTo(moviesFragmentContent)
             }
         }
     }
