@@ -43,4 +43,9 @@
   <string name="generic_genre">Genérico</string>
   <!-- End Details Fragment -->
 
+
+  <!-- Search -->
+  <string name="search_hint">Busca películas, series y personajes</string>
+  <!-- End Search-->
+
 </resources>

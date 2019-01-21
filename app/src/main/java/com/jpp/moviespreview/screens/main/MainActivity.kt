@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
@@ -54,11 +55,14 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private lateinit var mpToolbarManager: MPToolbarManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        mpToolbarManager = MPToolbarManager()
 
         withMainViewModel {
             viewState().observe(this@MainActivity, Observer { viewState ->
@@ -191,6 +195,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                         withMainViewModel { userNavigatesToMovieDetails(it.getString("movieTitle"), it.getString("movieImageUrl")) }
                     }
                 }
+                R.id.searchFragment -> withMainViewModel { userNavigatesToSearch() }
             }
         }
 
@@ -205,14 +210,25 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             is MainActivityViewState.ActionBarLocked -> {
                 if (viewState.withAnimation) lockActionBarWithAnimation() else lockActionBar()
                 setActionBarTitle(viewState.sectionTitle)
+                mainSearchView.setGone()
             }
             is MainActivityViewState.ActionBarUnlocked -> {
                 mainImageView.clearImage()
+                mainSearchView.setGone()
                 unlockActionBarWithAnimation {
                     mainImageView.loadImageUrl(viewState.contentImageUrl)
                     mainCollapsingToolbarLayout.enableTitle()
                     enableCollapsingToolBarLayoutTitle(viewState.sectionTitle)
                 }
+                mpToolbarManager.clearInsetStartWithNavigation(mainToolbar)
+            }
+            is MainActivityViewState.SearchEnabled -> {
+                with(mainSearchView) {
+                    isIconified = false
+                    setIconifiedByDefault(false)
+                    setVisible()
+                }
+                mpToolbarManager.setInsetStartWithNavigation(0, mainToolbar)
             }
         }
 
@@ -249,7 +265,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             }
         })
     }
-
 
 
     private fun lockActionBar() {
@@ -328,4 +343,34 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 }
                 .run { start() }
     }
+
+
+    /**
+     * Helper class to remove the space between the arrow image and the
+     * text (or the SearchView) that is shown in the Toolbar.
+     * In some screens (e.g.: search screen) we want to remove this
+     * space to provide more space for the content shown right next
+     * to the arrow/burger icon.
+     */
+    private inner class MPToolbarManager {
+        private var originalInsetStartWithNavigation = -1
+
+
+        fun setInsetStartWithNavigation(toSet: Int, toolbar: Toolbar) {
+            originalInsetStartWithNavigation = toSet
+            toolbar.contentInsetStartWithNavigation = toSet
+        }
+
+
+        fun clearInsetStartWithNavigation(toolbar: Toolbar) {
+            when (originalInsetStartWithNavigation != -1) {
+                true -> {
+                    toolbar.contentInsetStartWithNavigation = originalInsetStartWithNavigation
+                    originalInsetStartWithNavigation = -1
+                }
+            }
+        }
+
+    }
+
 }

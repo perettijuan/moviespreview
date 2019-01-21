@@ -6,4 +6,5 @@ package com.jpp.moviespreview.screens.main
 sealed class MainActivityViewState(val sectionTitle: String, val menuBarEnabled: Boolean) {
     data class ActionBarLocked(val abTitle: String, val withAnimation: Boolean) : MainActivityViewState(abTitle, true)
     data class ActionBarUnlocked(val abTitle: String, val contentImageUrl: String) : MainActivityViewState(abTitle, false)
+    object SearchEnabled : MainActivityViewState("Search", false)
 }

@@ -43,4 +43,9 @@
   <string name="generic_genre">Generic</string>
   <!-- End Details Fragment -->
 
+
+  <!-- Search -->
+  <string name="search_hint">Search movies, tv shows and characters</string>
+  <!-- End Search-->
+
 </resources>
