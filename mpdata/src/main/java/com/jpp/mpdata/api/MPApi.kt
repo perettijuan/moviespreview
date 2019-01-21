@@ -2,8 +2,10 @@ package com.jpp.mpdata.api
 
 import com.jpp.mpdata.BuildConfig
 import com.jpp.mpdomain.AppConfiguration
+import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.repository.configuration.ConfigurationApi
+import com.jpp.mpdomain.repository.details.MovieDetailsApi
 import com.jpp.mpdomain.repository.movies.MoviesApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -17,7 +19,9 @@ import retrofit2.converter.gson.GsonConverterFactory
  */
 class MPApi
     : ConfigurationApi,
-        MoviesApi {
+        MoviesApi,
+        MovieDetailsApi{
+
 
     override fun getAppConfiguration(): AppConfiguration? {
         return tryCatchOrReturnNull { API.getAppConfiguration(API_KEY) }
@@ -37,6 +41,10 @@ class MPApi
 
     override fun getUpcomingMoviePage(page: Int): MoviePage? {
         return tryCatchOrReturnNull { API.getUpcoming(page, API_KEY) }
+    }
+
+    override fun getMovieDetails(movieId: Double): MovieDetail? {
+        return tryCatchOrReturnNull { API.getMovieDetails(movieId, API_KEY) }
     }
 
 

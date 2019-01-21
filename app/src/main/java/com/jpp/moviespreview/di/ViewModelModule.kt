@@ -3,6 +3,7 @@ package com.jpp.moviespreview.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.moviespreview.screens.main.MainActivityViewModel
+import com.jpp.moviespreview.screens.main.details.MovieDetailsViewModel
 import com.jpp.moviespreview.screens.main.movies.MoviesFragmentViewModel
 import com.jpp.moviespreview.screens.main.movies.fragments.PlayingMoviesFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.PopularMoviesFragment
@@ -40,6 +41,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(UpcomingMoviesFragment.UpcomingMoviesFragmentViewModel::class)
     internal abstract fun postUpcomingMoviesFragmentViewModel(viewModel: UpcomingMoviesFragment.UpcomingMoviesFragmentViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MovieDetailsViewModel::class)
+    internal abstract fun postMovieDetailsViewModel(viewModel: MovieDetailsViewModel): ViewModel
 
 
     @Binds

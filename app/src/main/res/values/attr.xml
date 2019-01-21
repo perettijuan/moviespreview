@@ -9,6 +9,7 @@
   <attr name="mpMovieItemHeaderImageHeight" format="reference"/>
   <attr name="mpMovieItemImageHeight" format="reference"/>
   <attr name="mpMovieItemBottomIconSize" format="reference"/>
+  <attr name="mpDetailsVerticalSpacing" format="reference"/>
 
 
 
@@ -16,6 +17,7 @@
     <attr name="primaryColor" format="color" />
     <attr name="secondaryColor" format="color" />
     <attr name="stroke" format="dimension|reference" />
+    <attr name="start" format="boolean"/>
   </declare-styleable>
 
 </resources>

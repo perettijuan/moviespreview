@@ -10,8 +10,9 @@ buildscript {
             ],
             'hamcrest' : '1.3',
             'pagingLib': '2.1.0-rc01',
-            'navigationLib' : '1.0.0-alpha07',
-            'dagger' : '2.15'
+            'navigationLib' : '1.0.0-alpha09',
+            'dagger' : '2.15',
+            'room' : '2.0.0'
     ]
 
     ext.deps = [
@@ -26,7 +27,11 @@ buildscript {
                     ]
             ],
             'androidx': [
-                    'paging': "androidx.paging:paging-runtime-ktx:${versions.pagingLib}"
+                    'paging': "androidx.paging:paging-runtime-ktx:${versions.pagingLib}",
+                    'room': [
+                            'runtime' : "androidx.room:room-runtime:${versions.room}",
+                            'compiler' : "androidx.room:room-compiler:${versions.room}"
+                    ]
             ],
             'kotlin'  : [
                     'plugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
@@ -66,6 +71,51 @@ buildscript {
     }
 }
 
+
+/**
+ * Returns sources from common project (only) that are shared between different
+ * modules of the application to execute test code.
+ */
+def getCommonTestResources() {
+    return fileFromProjectRoot(':common', 'src', 'test', 'java').absolutePath
+}
+
+/**
+ * @param projectId the unambiguous id of the project
+ * @param path in one of two forms:
+ *  <ul>
+ *    <li>path the path without the file separator</li>
+ *    <li>a single unix-style path</li>
+ *  </ul>
+ * @return a File object at the path you want
+ */
+def fileFromProjectRoot(String projectId, String... path) {
+    return fileFromProjectRoot(rootProject.project(projectId), path)
+}
+
+/**
+ * @param p the {@link Project} to use as a base directory
+ * @param path the path to add to the project's base directory in one of two forms:
+ *  <ul>
+ *    <li>path the path without the file separator</li>
+ *    <li>a single unix-style path</li>
+ *  </ul>
+ * @return a {@link File} with the path passed in, starting at the project's
+ * base directory
+ */
+def fileFromProjectRoot(Project p, String... path) {
+    return p.file(pathify(path))
+}
+
+/**
+ * @param path An array of string to be made into a path with the
+ * {@link File#separator}
+ * @return the path joined by {@link File#separator}
+ */
+def pathify(String... path) {
+    return path.join(File.separator)
+}
+
 allprojects {
     repositories {
         google()
@@ -76,3 +126,4 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+

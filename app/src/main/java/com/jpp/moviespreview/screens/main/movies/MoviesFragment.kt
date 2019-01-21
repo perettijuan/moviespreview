@@ -17,8 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.ext.*
-import com.jpp.moviespreview.screens.main.MainActivityAction
-import com.jpp.moviespreview.screens.main.MainActivityViewModel
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movies.*
 import kotlinx.android.synthetic.main.movie_list_item.view.*
@@ -45,7 +43,7 @@ abstract class MoviesFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val movieSelectionListener: (MovieItem) -> Unit = {
-        findNavController().navigate(getNavDirectionsForMovieDetails(it.movieId.toString(), it.contentImageUrl))
+        findNavController().navigate(getNavDirectionsForMovieDetails(it.movieId.toString(), it.contentImageUrl, it.title))
     }
 
     override fun onAttach(context: Context?) {
@@ -77,12 +75,6 @@ abstract class MoviesFragment : Fragment() {
             null -> withViewModel {
                 init(getScreenSizeInPixels().x, getScreenSizeInPixels().x)
             }
-        }
-
-
-        /* Disable extended action bar in main activity */
-        withViewModel<MainActivityViewModel>(viewModelFactory) {
-            onAction(MainActivityAction.UserSelectedMovieList)
         }
 
         /*
@@ -158,7 +150,7 @@ abstract class MoviesFragment : Fragment() {
      * MUST be implemented for all fragments that are showing a list of movies in order to enable
      * navigation to the movie details section.
      */
-    abstract fun getNavDirectionsForMovieDetails(movieId: String, movieImageUrl: String): NavDirections
+    abstract fun getNavDirectionsForMovieDetails(movieId: String, movieImageUrl: String, movieTitle: String): NavDirections
 
     abstract fun getViewModelInstance(viewModelFactory: ViewModelProvider.Factory): MoviesFragmentViewModel
 

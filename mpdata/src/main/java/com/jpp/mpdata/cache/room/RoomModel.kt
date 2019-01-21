@@ -60,3 +60,30 @@ data class DBMovie(@ColumnInfo(name = "movieId") var movieId: Double,
                    @ColumnInfo(name = "page_id") var pageId: Long) {
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "_id") var id: Int = 0
 }
+
+
+/**
+ * Represents the detail of a movie in the data base.
+ */
+@Entity(tableName = "movies_details")
+data class DBMovieDetail(@PrimaryKey @ColumnInfo(name = "_id") var id: Double,
+                         @ColumnInfo(name = "title") var title: String,
+                         @ColumnInfo(name = "overview") var overview: String,
+                         @ColumnInfo(name = "release_date") var releaseDate: String,
+                         @ColumnInfo(name = "poster_path") var posterPath: String?,
+                         @ColumnInfo(name = "vote_count") var voteCount: Double,
+                         @ColumnInfo(name = "vote_average") var voteAverage: Float,
+                         @ColumnInfo(name = "popularity") var popularity: Float,
+                         @ColumnInfo(name = "duedate") var dueDate: Long /* represents the date until the data is valid */)
+
+/**
+ * Represents a genre of a movie in the database.
+ */
+@Entity(tableName = "genres",
+        foreignKeys = [(ForeignKey(entity = DBMovieDetail::class,
+                parentColumns = arrayOf("_id"),
+                childColumns = arrayOf("movie_detail_d"),
+                onDelete = ForeignKey.CASCADE))])
+data class DBMovieGenre(@PrimaryKey @ColumnInfo(name = "_id") var id: Int,
+                        @ColumnInfo(name = "name") var name: String,
+                        @ColumnInfo(name = "movie_detail_d") var movieDetailId: Double)

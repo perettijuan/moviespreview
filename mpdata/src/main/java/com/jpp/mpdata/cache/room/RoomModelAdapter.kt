@@ -1,10 +1,7 @@
 package com.jpp.mpdata.cache.room
 
 import com.jpp.moviespreview.common.extensions.addAllMapping
-import com.jpp.mpdomain.AppConfiguration
-import com.jpp.mpdomain.ImagesConfiguration
-import com.jpp.mpdomain.Movie
-import com.jpp.mpdomain.MoviePage
+import com.jpp.mpdomain.*
 
 class RoomModelAdapter {
 
@@ -115,6 +112,62 @@ class RoomModelAdapter {
                 voteAverage = vote_average,
                 popularity = popularity,
                 pageId = pageId
+        )
+    }
+
+    /**
+     * Adapts the provided [MovieDetail] to a [DBMovieDetail] with the respective data.
+     */
+    fun adaptDataMovieDetailToDBMovieDetail(dataMovieDetail: MovieDetail, dueDate: Long): DBMovieDetail = with(dataMovieDetail) {
+        DBMovieDetail(
+                id = id,
+                title = title,
+                overview = overview,
+                releaseDate = release_date,
+                posterPath = poster_path,
+                voteCount = vote_count,
+                voteAverage = vote_average,
+                popularity = popularity,
+                dueDate = dueDate
+        )
+    }
+
+    /**
+     * Adapts the provided [MovieGenre] to a [DBMovieGenre] with the respective data.
+     */
+    fun adaptDataMovieGenreToDBMovieGenre(dataMovieGenre: MovieGenre, detailId: Double): DBMovieGenre = with(dataMovieGenre) {
+        DBMovieGenre(
+                id = id,
+                name = name,
+                movieDetailId = detailId
+        )
+    }
+
+    /**
+     * Adapts the provided [DBMovieDetail] to the respective [MovieDetail].
+     */
+    fun adaptDBMovieDetailToDataMovieDetail(dbMovieDetail: DBMovieDetail, genres: List<DBMovieGenre>): MovieDetail = with(dbMovieDetail) {
+        MovieDetail(
+                id = id,
+                title = title,
+                overview = overview,
+                release_date = releaseDate,
+                poster_path = posterPath,
+                genres = genres.map { adaptDBMovieGenreToDataMovieGenre(it) },
+                vote_count = voteCount,
+                vote_average = voteAverage,
+                popularity = popularity
+        )
+    }
+
+
+    /**
+     * Adapts the provided [DBMovieGenre] to the respective [MovieGenre].
+     */
+    private fun adaptDBMovieGenreToDataMovieGenre(dbMovieGenre: DBMovieGenre): MovieGenre = with(dbMovieGenre) {
+        MovieGenre(
+                id = id,
+                name = name
         )
     }
 

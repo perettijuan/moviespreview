@@ -2,6 +2,7 @@ package com.jpp.moviespreview.screens.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations.map
 import androidx.lifecycle.ViewModel
 import javax.inject.Inject
 
@@ -13,14 +14,15 @@ import javax.inject.Inject
  */
 class MainActivityViewModel @Inject constructor() : ViewModel() {
 
-    private val mainActivityViewState by lazy { MutableLiveData<MainActivityViewState>() }
+    private val viewState by lazy { MutableLiveData<MainActivityViewState>() }
 
-    fun bindViewState(): LiveData<MainActivityViewState> = mainActivityViewState
+    fun viewState(): LiveData<MainActivityViewState> = viewState
 
-    fun onAction(action: MainActivityAction) {
-        when (action) {
-            is MainActivityAction.UserSelectedMovieDetails -> mainActivityViewState.postValue(MainActivityViewState.ActionBarUnlocked(action.movieImageUrl))
-            MainActivityAction.UserSelectedMovieList -> mainActivityViewState.postValue(MainActivityViewState.ActionBarLocked)
-        }
+    fun userNavigatesToMovieListSection(sectionName: String) {
+        viewState.postValue(MainActivityViewState.ActionBarLocked(sectionName, viewState.value is MainActivityViewState.ActionBarUnlocked))
+    }
+
+    fun userNavigatesToMovieDetails(movieTitle: String, contentImageUrl: String) {
+        viewState.postValue(MainActivityViewState.ActionBarUnlocked(movieTitle, contentImageUrl))
     }
 }

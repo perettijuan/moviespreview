@@ -10,8 +10,8 @@ import javax.inject.Inject
 
 class PlayingMoviesFragment : MoviesFragment() {
 
-    override fun getNavDirectionsForMovieDetails(movieId: String, movieImageUrl: String) =
-        PlayingMoviesFragmentDirections.actionPlayingMoviesFragmentToMovieDetailsFragment(movieId, movieImageUrl)
+    override fun getNavDirectionsForMovieDetails(movieId: String, movieImageUrl: String, movieTitle:String) =
+        PlayingMoviesFragmentDirections.actionPlayingMoviesFragmentToMovieDetailsFragment(movieId, movieImageUrl, movieTitle)
 
     override fun getViewModelInstance(viewModelFactory: ViewModelProvider.Factory) = getViewModel<PlayingMoviesFragmentViewModel>(viewModelFactory)
 

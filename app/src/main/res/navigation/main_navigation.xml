@@ -63,13 +63,15 @@
   <fragment
     android:id="@+id/movieDetailsFragment"
     android:name="com.jpp.moviespreview.screens.main.details.MovieDetailsFragment"
-    android:label="MovieDetailsFragment"
     tools:layout="@layout/fragment_details">
     <argument
       android:name="movieId"
       app:argType="string" />
     <argument
       android:name="movieImageUrl"
+      app:argType="string" />
+    <argument
+      android:name="movieTitle"
       app:argType="string" />
   </fragment>
 

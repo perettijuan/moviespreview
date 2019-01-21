@@ -6,9 +6,12 @@ import androidx.room.RoomDatabase
 @Database(entities = [
     (DBMoviePage::class),
     (DBMovie::class),
-    (DBImageSize::class)
+    (DBImageSize::class),
+    (DBMovieDetail::class),
+    (DBMovieGenre::class)
 ], version = 1)
 abstract class MPRoomDataBase : RoomDatabase() {
     abstract fun imageSizeDao() : ImageSizeDAO
     abstract fun moviesDao(): MovieDAO
+    abstract fun movieDetailsDao(): MovieDetailDAO
 }
