@@ -1,20 +1,23 @@
 package com.jpp.moviespreview.di
 
 import android.content.Context
-import com.jpp.moviespreview.domainlayer.ConnectivityVerifier
-import com.jpp.moviespreview.domainlayer.ConnectivityVerifierImpl
-import com.jpp.moviespreview.domainlayer.interactor.ConfigureApplication
-import com.jpp.moviespreview.domainlayer.interactor.ConfigureMovieImages
-import com.jpp.moviespreview.domainlayer.interactor.GetConfiguredMoviePage
-import com.jpp.moviespreview.domainlayer.interactor.GetMoviePage
-import com.jpp.moviespreview.domainlayer.interactor.configuration.ConfigureApplicationImpl
-import com.jpp.moviespreview.domainlayer.interactor.movie.ConfigureMovieImagesImpl
-import com.jpp.moviespreview.domainlayer.interactor.movie.GetConfiguredMoviePageImpl
-import com.jpp.moviespreview.domainlayer.interactor.movie.GetMoviePageImpl
-import com.jpp.moviespreview.domainlayer.repository.ConfigurationRepository
-import com.jpp.moviespreview.domainlayer.repository.MoviesRepository
+import com.jpp.mpdomain.handlers.ConnectivityHandler
+import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
+import com.jpp.mpdomain.handlers.configuration.ConfigurationHandlerImpl
+import com.jpp.mpdomain.repository.configuration.ConfigurationApi
+import com.jpp.mpdomain.repository.configuration.ConfigurationDb
+import com.jpp.mpdomain.repository.details.MovieDetailsApi
+import com.jpp.mpdomain.repository.details.MovieDetailsDb
+import com.jpp.mpdomain.repository.details.MovieDetailsRepository
+import com.jpp.mpdomain.repository.details.MovieDetailsRepositoryImpl
+import com.jpp.mpdomain.repository.movies.MovieListRepository
+import com.jpp.mpdomain.repository.movies.MovieListRepositoryImpl
+import com.jpp.mpdomain.repository.movies.MoviesApi
+import com.jpp.mpdomain.repository.movies.MoviesDb
 import dagger.Module
 import dagger.Provides
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 import javax.inject.Singleton
 
 /**
@@ -23,28 +26,34 @@ import javax.inject.Singleton
 @Module
 class DomainLayerModule {
 
-    @Provides
-    @Singleton
-    fun providesConnectivityVerifier(context: Context): ConnectivityVerifier = ConnectivityVerifierImpl(context)
+    private val NETWORK_IO = Executors.newFixedThreadPool(5)
 
     @Provides
     @Singleton
-    fun providesConfigureApplication(configRepository: ConfigurationRepository, connectivityVerifier: ConnectivityVerifier)
-            : ConfigureApplication = ConfigureApplicationImpl(configRepository, connectivityVerifier)
+    fun providesConnectivityHandler(context: Context): ConnectivityHandler = ConnectivityHandler.ConnectivityHandlerImpl(context)
 
     @Provides
     @Singleton
-    fun providesGetMoviePage(moviesRepository: MoviesRepository, connectivityVerifier: ConnectivityVerifier)
-            : GetMoviePage = GetMoviePageImpl(moviesRepository, connectivityVerifier)
+    fun providesConfigurationHandler(): ConfigurationHandler = ConfigurationHandlerImpl()
 
     @Provides
     @Singleton
-    fun providesConfigureMovieImages(configRepository: ConfigurationRepository)
-            : ConfigureMovieImages = ConfigureMovieImagesImpl(configRepository)
+    fun providesNetworkExecutor(): Executor = NETWORK_IO
 
     @Provides
-    @Singleton
-    fun providesGetConfiguredMoviePage(getMoviePage: GetMoviePage, configureMovieImages: ConfigureMovieImages)
-            : GetConfiguredMoviePage = GetConfiguredMoviePageImpl(getMoviePage, configureMovieImages)
+    fun providesMovieListRepository(moviesApi: MoviesApi,
+                                    moviesDb: MoviesDb,
+                                    configurationApi: ConfigurationApi,
+                                    configurationDb: ConfigurationDb,
+                                    connectivityHandler: ConnectivityHandler,
+                                    configurationHandler: ConfigurationHandler,
+                                    networkExecutor: Executor)
+            : MovieListRepository = MovieListRepositoryImpl(moviesApi, moviesDb, configurationApi, configurationDb, connectivityHandler, configurationHandler, networkExecutor)
 
+
+    @Provides
+    fun providesMoviesDetailsRepository(movieDetailsApi: MovieDetailsApi,
+                                        movieDetailsDb: MovieDetailsDb,
+                                        connectivityHandler: ConnectivityHandler)
+            : MovieDetailsRepository = MovieDetailsRepositoryImpl(movieDetailsApi, movieDetailsDb, connectivityHandler)
 }

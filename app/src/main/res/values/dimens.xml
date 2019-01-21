@@ -19,4 +19,7 @@
   <dimen name="mp_loading_view_default_size">60dp</dimen>
   <dimen name="mp_loading_view_default_height">@dimen/mp_loading_view_default_size</dimen>
   <dimen name="mp_loading_view_default_width">@dimen/mp_loading_view_default_size</dimen>
+
+  <!-- Details Screen -->
+  <dimen name="movie_details_vertical_spacing">10dp</dimen>
 </resources>

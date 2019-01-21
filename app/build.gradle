@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'androidx.navigation.safeargs'
 
 android {
     compileSdkVersion 28
@@ -25,6 +26,15 @@ android {
     kotlinOptions{
         jvmTarget = '1.8'
     }
+
+    sourceSets {
+        /*
+         * Include test sources that are located in the common project
+         */
+        test {
+            java.srcDirs += getCommonTestResources()
+        }
+    }
 }
 
 dependencies {
@@ -47,9 +57,8 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout-solver:$constraintLayoutVersion"
 
     // Navigation Components
-    def navigationVersion = "1.0.0-alpha07"
-    implementation "android.arch.navigation:navigation-fragment-ktx:$navigationVersion"
-    implementation "android.arch.navigation:navigation-ui-ktx:$navigationVersion"
+    implementation deps.android.arch.navigation.fragment
+    implementation deps.android.arch.navigation.ui
 
     // ViewModel and LiveData
     implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
@@ -59,18 +68,21 @@ dependencies {
     implementation deps.androidx.paging
 
     // Dagger
-    def daggerVersion = '2.15'
-    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
-    kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
-    implementation "com.google.dagger:dagger:$daggerVersion"
-    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+    implementation deps.dagger.dagger
+    implementation deps.dagger.android
+    kapt deps.dagger.compiler
+    kapt deps.dagger.processor
 
     // image loading library Picasso
     implementation "com.squareup.picasso:picasso:2.5.2"
 
+    // Room persistence
+    implementation deps.androidx.room.runtime
+    kapt deps.androidx.room.compiler
 
-    implementation project(path: ':domainlayer')
-    implementation project(path: ':datalayer')
+
+    implementation project(path: ':mpdomain')
+    implementation project(path: ':mpdata')
     implementation project(path: ':common')
 
     testImplementation deps.test.junit5.jupiter.api         // <-- allows running JUnit5 tests

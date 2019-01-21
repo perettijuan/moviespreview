@@ -2,7 +2,13 @@ package com.jpp.moviespreview.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.jpp.moviespreview.screens.main.MainActivityViewModel
+import com.jpp.moviespreview.screens.main.details.MovieDetailsViewModel
 import com.jpp.moviespreview.screens.main.movies.MoviesFragmentViewModel
+import com.jpp.moviespreview.screens.main.movies.fragments.PlayingMoviesFragment
+import com.jpp.moviespreview.screens.main.movies.fragments.PopularMoviesFragment
+import com.jpp.moviespreview.screens.main.movies.fragments.TopRatedMoviesFragment
+import com.jpp.moviespreview.screens.main.movies.fragments.UpcomingMoviesFragment
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -18,8 +24,32 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(MoviesFragmentViewModel::class)
-    internal abstract fun postMoviesFragmentViewModel(viewModel: MoviesFragmentViewModel): ViewModel
+    @ViewModelKey(PlayingMoviesFragment.PlayingMoviesFragmentViewModel::class)
+    internal abstract fun postPlayingMoviesFragmentViewModel(viewModel: PlayingMoviesFragment.PlayingMoviesFragmentViewModel): ViewModel
 
-    // Add more view models here
+    @Binds
+    @IntoMap
+    @ViewModelKey(PopularMoviesFragment.PopularMoviesFragmentViewModel::class)
+    internal abstract fun postPopularMoviesFragmentViewModel(viewModel: PopularMoviesFragment.PopularMoviesFragmentViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(TopRatedMoviesFragment.TopRatedMoviesFragmentViewModel::class)
+    internal abstract fun postTopRatedMoviesFragmentViewModel(viewModel: TopRatedMoviesFragment.TopRatedMoviesFragmentViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(UpcomingMoviesFragment.UpcomingMoviesFragmentViewModel::class)
+    internal abstract fun postUpcomingMoviesFragmentViewModel(viewModel: UpcomingMoviesFragment.UpcomingMoviesFragmentViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MovieDetailsViewModel::class)
+    internal abstract fun postMovieDetailsViewModel(viewModel: MovieDetailsViewModel): ViewModel
+
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MainActivityViewModel::class)
+    internal abstract fun postMainActivityViewModel(viewModel: MainActivityViewModel): ViewModel
 }
