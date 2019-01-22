@@ -42,7 +42,17 @@
           android:layout_height="?attr/mpActionBarHeightNormal"
           app:layout_collapseMode="pin"
           app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-          app:theme="@style/MPAppToolbar" />
+          app:theme="@style/MPAppToolbar">
+
+          <androidx.appcompat.widget.SearchView
+            android:id="@+id/mainSearchView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            app:queryHint="@string/search_hint"
+            app:searchIcon="@null" />
+
+        </androidx.appcompat.widget.Toolbar>
 
       </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -54,8 +64,8 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       app:defaultNavHost="true"
-      app:navGraph="@navigation/main_navigation"
-      app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+      app:layout_behavior="@string/appbar_scrolling_view_behavior"
+      app:navGraph="@navigation/main_navigation" />
 
 
   </androidx.coordinatorlayout.widget.CoordinatorLayout>

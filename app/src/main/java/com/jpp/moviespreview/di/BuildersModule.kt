@@ -6,6 +6,7 @@ import com.jpp.moviespreview.screens.main.movies.fragments.PlayingMoviesFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.PopularMoviesFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.TopRatedMoviesFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.UpcomingMoviesFragment
+import com.jpp.moviespreview.screens.main.search.SearchFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -28,4 +29,7 @@ abstract class BuildersModule {
 
     @ContributesAndroidInjector
     abstract fun bindMovieDetailsFragment(): MovieDetailsFragment
+
+    @ContributesAndroidInjector
+    abstract fun bindSearchFragment(): SearchFragment
 }

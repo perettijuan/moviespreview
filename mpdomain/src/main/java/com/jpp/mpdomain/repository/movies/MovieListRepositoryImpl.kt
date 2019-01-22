@@ -9,7 +9,6 @@ import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.handlers.ConnectivityHandler
 import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
-import com.jpp.mpdomain.repository.RepositoryState
 import com.jpp.mpdomain.repository.configuration.ConfigurationApi
 import com.jpp.mpdomain.repository.configuration.ConfigurationDb
 import com.jpp.mpdomain.repository.movies.paging.GetMoviesDataSourceFactory
@@ -29,12 +28,12 @@ class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
                               private val configurationHandler: ConfigurationHandler,
                               private val networkExecutor: Executor) : MovieListRepository {
 
-    private val operationState by lazy { MutableLiveData<RepositoryState>() }
+    private val operationState by lazy { MutableLiveData<MoviesRepositoryState>() }
     private val postPreFetchOperationState: (page: Int) -> Unit = { page ->
         operationState.postValue(
                 when (page == 1) {
-                    true -> RepositoryState.Loading
-                    false -> RepositoryState.None
+                    true -> MoviesRepositoryState.Loading
+                    false -> MoviesRepositoryState.None
                 }
         )
     }
@@ -73,12 +72,12 @@ class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
     private fun getMoviePageForSection(page: Int, section: MovieSection, callback: (List<Movie>, Int) -> Unit) {
         postPreFetchOperationState.invoke(page)
         getMoviePage(page, section)?.let { fetchedMoviePage ->
-            operationState.postValue(RepositoryState.Loaded)
+            operationState.postValue(MoviesRepositoryState.Loaded)
             callback(fetchedMoviePage.results, page + 1)
         } ?: run {
             when (connectivityHandler.isConnectedToNetwork()) {
-                true -> operationState.postValue(RepositoryState.ErrorUnknown(page > 1))
-                else -> operationState.postValue(RepositoryState.ErrorNoConnectivity(page > 1))
+                true -> operationState.postValue(MoviesRepositoryState.ErrorUnknown(page > 1))
+                else -> operationState.postValue(MoviesRepositoryState.ErrorNoConnectivity(page > 1))
             }
         }
     }

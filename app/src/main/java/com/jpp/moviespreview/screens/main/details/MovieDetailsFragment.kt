@@ -49,16 +49,16 @@ class MovieDetailsFragment : Fragment() {
 
             viewState().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { viewState ->
                 when (viewState) {
-                    MovieDetailsFragmentViewState.Loading -> R.layout.fragment_details_loading
-                    MovieDetailsFragmentViewState.ErrorUnknown -> {
+                    MovieDetailsViewState.Loading -> R.layout.fragment_details_loading
+                    MovieDetailsViewState.ErrorUnknown -> {
                         detailsErrorView.asUnknownError { init(fromBundle(args).movieId.toDouble()) }
                         R.layout.fragment_details_error
                     }
-                    MovieDetailsFragmentViewState.ErrorNoConnectivity -> {
+                    MovieDetailsViewState.ErrorNoConnectivity -> {
                         detailsErrorView.asNoConnectivityError { init(fromBundle(args).movieId.toDouble()) }
                         R.layout.fragment_details_error
                     }
-                    is MovieDetailsFragmentViewState.ShowDetail -> {
+                    is MovieDetailsViewState.ShowDetail -> {
                         with(viewState.detail) {
                             detailsOverviewContentTxt.text = overview
                             detailsPopularityContentTxt.text = popularity.toString()

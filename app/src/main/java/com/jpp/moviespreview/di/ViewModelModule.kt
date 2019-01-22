@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.moviespreview.screens.main.MainActivityViewModel
 import com.jpp.moviespreview.screens.main.details.MovieDetailsViewModel
-import com.jpp.moviespreview.screens.main.movies.MoviesFragmentViewModel
 import com.jpp.moviespreview.screens.main.movies.fragments.PlayingMoviesFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.PopularMoviesFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.TopRatedMoviesFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.UpcomingMoviesFragment
+import com.jpp.moviespreview.screens.main.search.SearchViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -47,9 +47,13 @@ abstract class ViewModelModule {
     @ViewModelKey(MovieDetailsViewModel::class)
     internal abstract fun postMovieDetailsViewModel(viewModel: MovieDetailsViewModel): ViewModel
 
-
     @Binds
     @IntoMap
     @ViewModelKey(MainActivityViewModel::class)
     internal abstract fun postMainActivityViewModel(viewModel: MainActivityViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SearchViewModel::class)
+    internal abstract fun postSearchViewModel(viewModel: SearchViewModel): ViewModel
 }

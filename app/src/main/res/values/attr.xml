@@ -10,6 +10,7 @@
   <attr name="mpMovieItemImageHeight" format="reference"/>
   <attr name="mpMovieItemBottomIconSize" format="reference"/>
   <attr name="mpDetailsVerticalSpacing" format="reference"/>
+  <attr name="mpSearchImageSize" format="reference"/>
 
 
 

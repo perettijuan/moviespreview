@@ -15,7 +15,6 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -68,9 +67,9 @@ class MovieDetailsViewModelTest {
         every { detailsRepository.getDetail(movieDetailId) } returns MovieDetailsRepositoryState.Success(movieDetail)
 
         executeInitTest(movieDetailId) {
-            assertTrue(it is MovieDetailsFragmentViewState.ShowDetail)
+            assertTrue(it is MovieDetailsViewState.ShowDetail)
 
-            with((it as MovieDetailsFragmentViewState.ShowDetail).detail) {
+            with((it as MovieDetailsViewState.ShowDetail).detail) {
                 assertEquals(expectedTitle, title)
                 assertEquals(expectedOverview, overview)
                 assertEquals(expectedReleaseDate, releaseDate)
@@ -90,7 +89,7 @@ class MovieDetailsViewModelTest {
         every { detailsRepository.getDetail(movieDetailId) } returns MovieDetailsRepositoryState.ErrorNoConnectivity
 
         executeInitTest(movieDetailId) {
-            assertTrue(it is MovieDetailsFragmentViewState.ErrorNoConnectivity)
+            assertTrue(it is MovieDetailsViewState.ErrorNoConnectivity)
         }
     }
 
@@ -101,7 +100,7 @@ class MovieDetailsViewModelTest {
         every { detailsRepository.getDetail(movieDetailId) } returns MovieDetailsRepositoryState.ErrorUnknown
 
         executeInitTest(movieDetailId) {
-            assertTrue(it is MovieDetailsFragmentViewState.ErrorUnknown)
+            assertTrue(it is MovieDetailsViewState.ErrorUnknown)
         }
     }
 
@@ -121,7 +120,7 @@ class MovieDetailsViewModelTest {
     }
 
 
-    private fun executeInitTest(movieId: Double, verification: (MovieDetailsFragmentViewState) -> Unit) {
+    private fun executeInitTest(movieId: Double, verification: (MovieDetailsViewState) -> Unit) {
         val lifecycleOwner: LifecycleOwner = mockk()
         val lifecycle = LifecycleRegistry(lifecycleOwner)
 

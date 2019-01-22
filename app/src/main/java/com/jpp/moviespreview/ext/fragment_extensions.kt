@@ -3,6 +3,7 @@ package com.jpp.moviespreview.ext
 import android.graphics.Point
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -46,6 +47,14 @@ fun Fragment.snackBar(contentView: View,
     }
 }
 
+/**
+ * Finds the View identified with the provided [id].
+ */
+inline fun <reified T : View> Fragment.findViewById(@IdRes id: Int): T {
+    return activity?.findViewById(id) ?: run {
+        throw IllegalStateException("Activity nor present yet")
+    }
+}
 
 /**
  * Extension function to find a ViewModel in the Activity of the Fragment.
