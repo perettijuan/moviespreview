@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:background="?android:attr/selectableItemBackground"
+  android:padding="?attr/mpSearchItemGeneralPadding">
+
+  <ImageView
+    android:id="@+id/searchItemIv"
+    android:layout_width="?attr/mpSearchItemImageSize"
+    android:layout_height="?attr/mpSearchItemImageSize"
+    app:srcCompat="@drawable/ic_app_icon_black"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+    android:id="@+id/searchItemTitleTxt"
+    style="@style/MPTextViewTitle"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="?attr/mpSearchItemTitlePadding"
+    android:layout_marginLeft="?attr/mpSearchItemTitlePadding"
+    android:layout_marginRight="?attr/mpSearchItemTitlePadding"
+    android:layout_marginStart="?attr/mpSearchItemTitlePadding"
+    android:ellipsize="end"
+    android:maxLines="1"
+    app:layout_constraintEnd_toStartOf="@+id/searchItemChevronIv"
+    app:layout_constraintStart_toEndOf="@+id/searchItemIv"
+    app:layout_constraintTop_toTopOf="@+id/searchItemIv"
+    tools:text="Title" />
+
+
+  <ImageView
+    android:id="@+id/searchItemChevronIv"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="?attr/mpSearchItemChevronPadding"
+    android:layout_marginEnd="?attr/mpSearchItemChevronPadding"
+    android:layout_marginStart="?attr/mpSearchItemChevronPadding"
+    android:layout_marginTop="?attr/mpSearchItemChevronPadding"
+    app:srcCompat="@drawable/ic_chevron_right_black"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+  <ImageView
+    android:id="@+id/searchItemTypeIv"
+    android:layout_width="?attr/mpSearchItemTypeImageSize"
+    android:layout_height="?attr/mpSearchItemTypeImageSize"
+    app:srcCompat="@drawable/ic_clapperboard"
+    app:layout_constraintStart_toStartOf="@+id/searchItemTitleTxt"
+    app:layout_constraintTop_toBottomOf="@+id/searchItemTitleTxt" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

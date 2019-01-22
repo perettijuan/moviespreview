@@ -12,13 +12,19 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.ext.findViewById
 import com.jpp.moviespreview.ext.getScreenSizeInPixels
 import com.jpp.moviespreview.ext.getViewModel
+import com.jpp.moviespreview.ext.loadImageUrlAsCircular
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_search.*
+import kotlinx.android.synthetic.main.list_item_search.view.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.concurrent.schedule
@@ -40,10 +46,21 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        searchResultRv.apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = SearchItemAdapter()
+        }
+
+
         withSearchView { searchView ->
             searchView.setOnQueryTextListener(QuerySubmitter {
                 withViewModel {
                     search(it)
+
+                    pagedList.observe(this@SearchFragment.viewLifecycleOwner, Observer {
+                        (searchResultRv.adapter as SearchItemAdapter).submitList(it)
+                    })
                 }
             })
             findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener {
@@ -91,12 +108,16 @@ class SearchFragment : Fragment() {
                 searchErrorView.asUnknownError { }//TODO JPP
                 R.layout.fragment_search_error
             }
-            is SearchViewState.ErrorUnknownWithItems -> {R.layout.fragment_search_done}//TODO JPP show snackbar
+            is SearchViewState.ErrorUnknownWithItems -> {
+                R.layout.fragment_search_done
+            }//TODO JPP show snackbar
             is SearchViewState.ErrorNoConnectivity -> {
                 searchErrorView.asNoConnectivityError { }//TODO JPP
                 R.layout.fragment_search_error
             }
-            is SearchViewState.ErrorNoConnectivityWithItems -> {R.layout.fragment_search_done}//TODO JPP show snackbar
+            is SearchViewState.ErrorNoConnectivityWithItems -> {
+                R.layout.fragment_search_done
+            }//TODO JPP show snackbar
             is SearchViewState.DoneSearching -> R.layout.fragment_search_done
         }.let {
             val constraint = ConstraintSet()
@@ -119,6 +140,41 @@ class SearchFragment : Fragment() {
 
     private fun withViewModel(action: SearchViewModel.() -> Unit) {
         getViewModel<SearchViewModel>(viewModelFactory).action()
+    }
+
+
+    class SearchItemAdapter : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_search, parent, false))
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            getItem(position)?.let {
+                holder.bindSearchItem(it)
+            }
+        }
+
+
+        class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
+
+            fun bindSearchItem(searchItem: SearchResultItem) {
+                with(itemView) {
+                    searchItemIv.loadImageUrlAsCircular(searchItem.imagePath)
+                    searchItemTitleTxt.text = searchItem.name
+                    searchItemTypeIv.setImageResource(searchItem.icon.iconRes)
+                }
+            }
+
+        }
+
+        class SearchResultDiffCallback : DiffUtil.ItemCallback<SearchResultItem>() {
+            override fun areItemsTheSame(oldItem: SearchResultItem, newItem: SearchResultItem): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: SearchResultItem, newItem: SearchResultItem): Boolean {
+                return oldItem.id == newItem.id
+            }
+        }
     }
 
 

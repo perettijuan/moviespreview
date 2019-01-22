@@ -16,6 +16,11 @@
     <item name="mpMovieItemBottomIconSize">@dimen/movie_item_bottom_bar_icon_size</item>
     <item name="mpDetailsVerticalSpacing">@dimen/movie_details_vertical_spacing</item>
     <item name="mpSearchImageSize">@dimen/search_body_icon_size</item>
+    <item name="mpSearchItemImageSize">@dimen/search_result_image_size</item>
+    <item name="mpSearchItemTitlePadding">@dimen/search_result_title_padding</item>
+    <item name="mpSearchItemChevronPadding">@dimen/search_result_chevron_padding</item>
+    <item name="mpSearchItemTypeImageSize">@dimen/search_result_type_image_size</item>
+    <item name="mpSearchItemGeneralPadding">@dimen/search_result_padding</item>
   </style>
 
   <!-- Used in the Drawer items-->

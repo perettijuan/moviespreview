@@ -59,6 +59,8 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
                         if (it.hasItems) SearchViewState.ErrorNoConnectivityWithItems else SearchViewState.ErrorNoConnectivity
                     }
                     is SearchRepositoryState.Loaded -> SearchViewState.DoneSearching
+                }.let {
+                    viewState.postValue(it)
                 }
             }
 
