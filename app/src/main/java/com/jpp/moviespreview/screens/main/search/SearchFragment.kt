@@ -2,6 +2,8 @@ package com.jpp.moviespreview.screens.main.search
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,7 +42,9 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         withSearchView { searchView ->
             searchView.setOnQueryTextListener(QuerySubmitter {
-                withViewModel { search(it) }
+                withViewModel {
+                    search(it)
+                }
             })
             findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener {
                 withViewModel { clearSearch() }
@@ -59,35 +63,46 @@ class SearchFragment : Fragment() {
              */
             init(getScreenSizeInPixels().x)
 
-
-        }
-
-        withViewModel {
             viewState().observe(this@SearchFragment.viewLifecycleOwner, Observer { viewState ->
-                when (viewState) {
-                    is SearchViewState.Idle -> {
-                        withSearchView {
-                            it.setQuery("", false)
-                            it.requestFocus()
-                        }
-                        R.layout.fragment_search
-                    }
-                    is SearchViewState.Searching -> {
-                        withSearchView { it.clearFocus() }
-                        R.layout.fragment_search_loading
-                    }
-                    is SearchViewState.ErrorUnknown -> {
-                        searchErrorView.asUnknownError { }
-                        R.layout.fragment_search_error
-                    }
-                    is SearchViewState.DoneSearching -> R.layout.fragment_search_done
-                }.let {
-                    val constraint = ConstraintSet()
-                    constraint.clone(this@SearchFragment.context, it)
-                    TransitionManager.beginDelayedTransition(fragmentSearchRoot)
-                    constraint.applyTo(fragmentSearchRoot)
-                }
+                renderViewState(viewState)
             })
+        }
+    }
+
+    /**
+     * Render the view state that the ViewModels indicates.
+     * This method evaluates the viewState and applies a Transition from the
+     * current state to a final state using a ConstraintLayout animation.
+     */
+    private fun renderViewState(viewState: SearchViewState) {
+        when (viewState) {
+            is SearchViewState.Idle -> {
+                withSearchView {
+                    it.setQuery("", false)
+                    it.requestFocus()
+                }
+                R.layout.fragment_search
+            }
+            is SearchViewState.Searching -> {
+                withSearchView { it.clearFocus() }
+                R.layout.fragment_search_loading
+            }
+            is SearchViewState.ErrorUnknown -> {
+                searchErrorView.asUnknownError { }//TODO JPP
+                R.layout.fragment_search_error
+            }
+            is SearchViewState.ErrorUnknownWithItems -> {R.layout.fragment_search_done}//TODO JPP show snackbar
+            is SearchViewState.ErrorNoConnectivity -> {
+                searchErrorView.asNoConnectivityError { }//TODO JPP
+                R.layout.fragment_search_error
+            }
+            is SearchViewState.ErrorNoConnectivityWithItems -> {R.layout.fragment_search_done}//TODO JPP show snackbar
+            is SearchViewState.DoneSearching -> R.layout.fragment_search_done
+        }.let {
+            val constraint = ConstraintSet()
+            constraint.clone(this@SearchFragment.context, it)
+            TransitionManager.beginDelayedTransition(fragmentSearchRoot)
+            constraint.applyTo(fragmentSearchRoot)
         }
     }
 
@@ -140,7 +155,7 @@ class SearchFragment : Fragment() {
             timer = Timer()
             timer.schedule(sleep) {
                 if (!newText.isEmpty()) {
-                    callback.invoke(newText)
+                    Handler(Looper.getMainLooper()).post { callback.invoke(newText) }
                 }
             }
             return true

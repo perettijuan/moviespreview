@@ -1,7 +1,7 @@
 package com.jpp.moviespreview.screens.main.search
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
 import com.jpp.mpdomain.SearchResult
@@ -21,7 +21,7 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(private val repository: SearchRepository) : ViewModel() {
 
     //TODO JPP add retry
-    lateinit var viewState: LiveData<SearchViewState>
+    private val viewState = MediatorLiveData<SearchViewState>()
     lateinit var pagedList: LiveData<PagedList<SearchResultItem>>
     private var targetImageSize: Int = -1
     private var currentSearch = EMPTY_SEARCH
@@ -49,7 +49,7 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
                 )
             }
         }.let { listing ->
-            viewState = Transformations.map(listing.opState) {
+            viewState.addSource(listing.opState) {
                 when (it) {
                     is SearchRepositoryState.Loading -> SearchViewState.Searching
                     is SearchRepositoryState.ErrorUnknown -> {
@@ -61,11 +61,13 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
                     is SearchRepositoryState.Loaded -> SearchViewState.DoneSearching
                 }
             }
+
+            pagedList = listing.pagedList
         }
 
-        pagedList = pagedList
-
     }
+
+    fun viewState(): LiveData<SearchViewState> = viewState
 
 
     fun clearSearch() {
