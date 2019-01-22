@@ -22,4 +22,7 @@
 
   <!-- Details Screen -->
   <dimen name="movie_details_vertical_spacing">10dp</dimen>
+
+  <!-- Search -->
+  <dimen name="search_body_icon_size">300dp</dimen>
 </resources>
