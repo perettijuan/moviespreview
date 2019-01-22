@@ -4,7 +4,20 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.jpp.moviespreview.R
 
-data class MovieDetailsItem(
+/**
+ * Represents the view state of the details fragment.
+ */
+sealed class MovieDetailsViewState {
+    object Loading : MovieDetailsViewState()
+    object ErrorUnknown : MovieDetailsViewState()
+    object ErrorNoConnectivity : MovieDetailsViewState()
+    data class ShowDetail(val detail: UiMovieDetails) : MovieDetailsViewState()
+}
+
+/**
+ * Represents the details of a movie in the UI layer.
+ */
+data class UiMovieDetails(
         val title: String,
         val overview: String,
         val releaseDate: String,
@@ -14,7 +27,9 @@ data class MovieDetailsItem(
         val genres: List<MovieGenreItem>
 )
 
-
+/**
+ * All the supported genres.
+ */
 sealed class MovieGenreItem(@DrawableRes val icon: Int, @StringRes val name: Int) {
     object Action : MovieGenreItem(R.drawable.ic_action, R.string.action_genre)
     object Adventure : MovieGenreItem(R.drawable.ic_adventure, R.string.adventure_genre)
@@ -36,4 +51,3 @@ sealed class MovieGenreItem(@DrawableRes val icon: Int, @StringRes val name: Int
     object Western : MovieGenreItem(R.drawable.ic_western, R.string.western_genre)
     object Generic : MovieGenreItem(R.drawable.ic_generic, R.string.generic_genre)
 }
-

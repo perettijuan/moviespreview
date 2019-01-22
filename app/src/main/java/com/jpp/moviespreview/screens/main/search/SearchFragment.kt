@@ -2,16 +2,20 @@ package com.jpp.moviespreview.screens.main.search
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.transition.TransitionManager
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.ext.findViewById
+import com.jpp.moviespreview.ext.getViewModel
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.fragment_search.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.concurrent.schedule
@@ -33,16 +37,47 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        withSearchView {
-            it.setOnQueryTextListener(QuerySubmitter {
-                Log.d("SEARCHME", "Search with $it")
+        withSearchView { searchView ->
+            searchView.setOnQueryTextListener(QuerySubmitter {
+                withViewModel { search(it) }
             })
             findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener {
-                //TODO JPP handle it
+                withViewModel { clearSearch() }
             }
         }
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        withViewModel {
+            viewState().observe(this@SearchFragment.viewLifecycleOwner, Observer { viewState ->
+                when (viewState) {
+                    is SearchViewState.Idle -> {
+                        withSearchView {
+                            it.setQuery("", false)
+                            it.requestFocus()
+                        }
+                        R.layout.fragment_search
+                    }
+                    is SearchViewState.Searching -> {
+                        withSearchView { it.clearFocus() }
+                        R.layout.fragment_search_loading
+                    }
+                    is SearchViewState.ErrorUnknown -> {
+                        searchErrorView.asUnknownError { }
+                        R.layout.fragment_search_error
+                    }
+                    is SearchViewState.DoneSearching -> R.layout.fragment_search_done
+                }.let {
+                    val constraint = ConstraintSet()
+                    constraint.clone(this@SearchFragment.context, it)
+                    TransitionManager.beginDelayedTransition(fragmentSearchRoot)
+                    constraint.applyTo(fragmentSearchRoot)
+                }
+            })
+        }
+    }
 
     /**
      * The [SearchView] used in the Activity's action bar belongs to the container
@@ -53,6 +88,10 @@ class SearchFragment : Fragment() {
         with(findViewById<SearchView>(R.id.mainSearchView)) {
             action(this)
         }
+    }
+
+    private fun withViewModel(action: SearchViewModel.() -> Unit) {
+        getViewModel<SearchViewModel>(viewModelFactory).action()
     }
 
 

@@ -10,6 +10,7 @@
     android:layout_width="?attr/mpSearchImageSize"
     android:layout_height="?attr/mpSearchImageSize"
     android:alpha="0.3"
+    android:visibility="invisible"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -20,7 +21,6 @@
     android:id="@+id/searchErrorView"
     android:layout_width="0dp"
     android:layout_height="0dp"
-    android:visibility="invisible"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -34,6 +34,6 @@
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    app:start="true" />
+    app:start="true"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

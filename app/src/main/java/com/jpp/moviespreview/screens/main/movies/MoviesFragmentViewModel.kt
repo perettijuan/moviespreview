@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
-import com.jpp.mpdomain.repository.RepositoryState
+import com.jpp.mpdomain.repository.movies.MoviesRepositoryState
 import com.jpp.mpdomain.repository.movies.MovieListRepository
 
 /**
@@ -42,14 +42,14 @@ abstract class MoviesFragmentViewModel(private val movieListRepository: MovieLis
              */
             viewState = map(listing.operationState) {
                 when (it) {
-                    RepositoryState.Loading -> MoviesFragmentViewState.Loading
-                    is RepositoryState.ErrorUnknown -> {
+                    MoviesRepositoryState.Loading -> MoviesFragmentViewState.Loading
+                    is MoviesRepositoryState.ErrorUnknown -> {
                         if (it.hasItems) MoviesFragmentViewState.ErrorUnknownWithItems else MoviesFragmentViewState.ErrorUnknown
                     }
-                    is RepositoryState.ErrorNoConnectivity -> {
+                    is MoviesRepositoryState.ErrorNoConnectivity -> {
                         if (it.hasItems) MoviesFragmentViewState.ErrorNoConnectivityWithItems else  MoviesFragmentViewState.ErrorNoConnectivity
                     }
-                    RepositoryState.Loaded -> MoviesFragmentViewState.InitialPageLoaded
+                    MoviesRepositoryState.Loaded -> MoviesFragmentViewState.InitialPageLoaded
                     else -> MoviesFragmentViewState.None
                 }
             }

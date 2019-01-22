@@ -16,7 +16,7 @@ class MovieDetailsViewModel @Inject constructor(
         dispatchers: CoroutineDispatchers,
         private val detailsRepository: MovieDetailsRepository) : MPScopedViewModel(dispatchers) {
 
-    private lateinit var viewStateLiveData: MutableLiveData<MovieDetailsFragmentViewState>
+    private val viewStateLiveData by lazy { MutableLiveData<MovieDetailsViewState>() }
     private var currentMovieId: Double = INVALID_MOVIE_ID
 
 
@@ -25,14 +25,13 @@ class MovieDetailsViewModel @Inject constructor(
             return
         }
 
-        viewStateLiveData = MutableLiveData()
-        viewStateLiveData.postValue(MovieDetailsFragmentViewState.Loading)
+        viewStateLiveData.postValue(MovieDetailsViewState.Loading)
         launch {
             viewStateLiveData.postValue(withContext(dispatchers.default()) { fetchMovieDetail(movieId) })
         }
     }
 
-    fun viewState(): LiveData<MovieDetailsFragmentViewState> = viewStateLiveData
+    fun viewState(): LiveData<MovieDetailsViewState> = viewStateLiveData
 
 
     override fun onCleared() {
@@ -40,14 +39,14 @@ class MovieDetailsViewModel @Inject constructor(
         super.onCleared()
     }
 
-    private fun fetchMovieDetail(movieId: Double): MovieDetailsFragmentViewState =
+    private fun fetchMovieDetail(movieId: Double): MovieDetailsViewState =
         detailsRepository
                 .getDetail(movieId)
                 .let {
                     when (it) {
-                        MovieDetailsRepositoryState.ErrorUnknown -> MovieDetailsFragmentViewState.ErrorUnknown
-                        MovieDetailsRepositoryState.ErrorNoConnectivity -> MovieDetailsFragmentViewState.ErrorNoConnectivity
-                        is MovieDetailsRepositoryState.Success -> MovieDetailsFragmentViewState.ShowDetail(mapMovieDetailsItem(it.detail))
+                        MovieDetailsRepositoryState.ErrorUnknown -> MovieDetailsViewState.ErrorUnknown
+                        MovieDetailsRepositoryState.ErrorNoConnectivity -> MovieDetailsViewState.ErrorNoConnectivity
+                        is MovieDetailsRepositoryState.Success -> MovieDetailsViewState.ShowDetail(mapMovieDetailsItem(it.detail))
                     }
                 }
                 .also {
@@ -55,9 +54,9 @@ class MovieDetailsViewModel @Inject constructor(
                 }
 
 
-    private fun mapMovieDetailsItem(domainDetail: MovieDetail): MovieDetailsItem =
+    private fun mapMovieDetailsItem(domainDetail: MovieDetail): UiMovieDetails =
         with(domainDetail) {
-            MovieDetailsItem(
+            UiMovieDetails(
                     title = title,
                     overview = overview,
                     releaseDate = release_date,
