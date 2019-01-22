@@ -11,12 +11,12 @@ import com.jpp.mpdomain.handlers.ConnectivityHandler
 import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
 import com.jpp.mpdomain.repository.configuration.ConfigurationApi
 import com.jpp.mpdomain.repository.configuration.ConfigurationDb
-import com.jpp.mpdomain.repository.movies.paging.GetMoviesDataSourceFactory
+import com.jpp.mpdomain.repository.paging.MPPagingDataSourceFactory
 import java.util.concurrent.Executor
 
 /**
  * [MovieListRepository] implementation.
- * Delegates the paging responsibility to the DataSource created by [GetMoviesDataSourceFactory],
+ * Delegates the paging responsibility to the DataSource created by [MPPagingDataSourceFactory],
  * but holds the responsibility of knowing which set of data should be queried to retrieve
  * the data.
  */
@@ -40,7 +40,7 @@ class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
 
 
     override fun <T> moviePageForSection(section: MovieSection, targetBackdropSize: Int, targetPosterSize: Int, mapper: (Movie) -> T): MovieListing<T> {
-        val dataSourceFactory = GetMoviesDataSourceFactory { page, callback ->
+        val dataSourceFactory = MPPagingDataSourceFactory<Movie> { page, callback ->
             getMoviePageForSection(page, section, callback)
         }
 
@@ -101,12 +101,10 @@ class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
     private fun configureMovieImagesPath(movie: Movie,
                                          targetBackdropSize: Int,
                                          targetPosterSize: Int): Movie {
-
-        return getAppConfiguration().let {
-            when (it) {
-                null -> movie
-                else -> configurationHandler.configureMovieImagesPath(movie, it.images, targetBackdropSize, targetPosterSize)
-            }
+        return getAppConfiguration()?.let {
+            configurationHandler.configureMovieImagesPath(movie, it.images, targetBackdropSize, targetPosterSize)
+        } ?: run {
+            movie
         }
     }
 
