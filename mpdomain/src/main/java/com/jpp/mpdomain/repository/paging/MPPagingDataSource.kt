@@ -1,7 +1,6 @@
-package com.jpp.mpdomain.repository.movies.paging
+package com.jpp.mpdomain.repository.paging
 
 import androidx.paging.PageKeyedDataSource
-import com.jpp.mpdomain.Movie
 
 /**
  * [PageKeyedDataSource] implementation for the paging library implementation.
@@ -13,8 +12,8 @@ import com.jpp.mpdomain.Movie
  * proper place (either local database or remote server) and updating the local data when needed,
  * and this class takes care of knowing when a new page is needed.
  */
-class GetMoviesDataSource(private val fetchItems: (Int, (List<Movie>, Int) -> Unit) -> Unit)
-    : PageKeyedDataSource<Int, Movie>() {
+class MPPagingDataSource<T>(private val fetchItems: (Int, (List<T>, Int) -> Unit) -> Unit)
+    : PageKeyedDataSource<Int, T>() {
 
     // keep a function reference for the retry event
     private var retry: (() -> Any)? = null
@@ -25,10 +24,10 @@ class GetMoviesDataSource(private val fetchItems: (Int, (List<Movie>, Int) -> Un
      * We are fetching the first page data from the api
      * and passing it via the callback method to the UI.
      */
-    override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, Movie>) {
+    override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, T>) {
         retry = { loadInitial(params, callback) }
-        fetchItems(1) { movieList, nextPage ->
-            callback.onResult(movieList, null, nextPage)
+        fetchItems(1) { itemList, nextPage ->
+            callback.onResult(itemList, null, nextPage)
         }
     }
 
@@ -39,14 +38,14 @@ class GetMoviesDataSource(private val fetchItems: (Int, (List<Movie>, Int) -> Un
      * and passing it via the callback method to the UI.
      * The "params.key" variable will have the updated value.
      */
-    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) {
+    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, T>) {
         retry = { loadAfter(params, callback) }
-        fetchItems(params.key) { movieList, nextPage ->
-            callback.onResult(movieList, nextPage)
+        fetchItems(params.key) { itemList, nextPage ->
+            callback.onResult(itemList, nextPage)
         }
     }
 
-    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) {
+    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, T>) {
         //no-op
     }
 

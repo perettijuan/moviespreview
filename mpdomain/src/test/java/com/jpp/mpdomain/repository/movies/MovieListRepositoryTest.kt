@@ -56,7 +56,8 @@ class MovieListRepositoryTest {
                 configurationDb,
                 connectivityHandler,
                 configurationHandler,
-                CurrentThreadExecutorService())
+                CurrentThreadExecutorService()
+        )
     }
 
     @Test
