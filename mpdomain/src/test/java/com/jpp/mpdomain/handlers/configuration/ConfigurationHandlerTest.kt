@@ -2,6 +2,7 @@ package com.jpp.mpdomain.handlers.configuration
 
 import com.jpp.mpdomain.ImagesConfiguration
 import com.jpp.mpdomain.Movie
+import com.jpp.mpdomain.SearchResult
 import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -35,6 +36,20 @@ class ConfigurationHandlerTest {
         assertEquals(param.expectedBackdropPath, result.backdrop_path, param.case)
     }
 
+    @ParameterizedTest
+    @MethodSource("executeSearchParameters")
+    fun `Should return a new configured result`(param: ExecuteSearchTestParameter) {
+        val result = subject.configureSearchResult(
+                param.searchResult,
+                param.imagesConfig,
+                param.targetImageSize
+        )
+
+        assertEquals(param.expectedBackdropPath, result.backdrop_path)
+        assertEquals(param.expectedPosterPath, result.poster_path)
+        assertEquals(param.expectedProfilePath, result.profile_path)
+    }
+
 
     data class ExecuteTestParameter(
             val case: String,
@@ -44,6 +59,16 @@ class ConfigurationHandlerTest {
             val targetPosterSize: Int,
             val expectedPosterPath: String?,
             val expectedBackdropPath: String?
+    )
+
+    data class ExecuteSearchTestParameter(
+            val case: String,
+            val imagesConfig: ImagesConfiguration,
+            val searchResult: SearchResult,
+            val targetImageSize: Int,
+            val expectedPosterPath: String?,
+            val expectedBackdropPath: String?,
+            val expectedProfilePath: String?
     )
 
     companion object {
@@ -97,6 +122,48 @@ class ConfigurationHandlerTest {
                 )
         )
 
+
+        @JvmStatic
+        fun executeSearchParameters() = listOf(
+                ExecuteSearchTestParameter(
+                        case = "Should configure movie with exact value",
+                        imagesConfig = imagesConfig,
+                        searchResult = searchResultMovie,
+                        targetImageSize = 780,
+                        expectedBackdropPath = "baseUrl/w780/m110vLaDDOCca4hfOcS5mK5cDke.jpg",
+                        expectedPosterPath = "baseUrl/w780/m110vLaDDOCca4hfOcS5mK5cDke.jpg",
+                        expectedProfilePath = null
+                ),
+                ExecuteSearchTestParameter(
+                        case = "Should configure person with exact value",
+                        imagesConfig = imagesConfig,
+                        searchResult = searchResultPerson,
+                        targetImageSize = 45,
+                        expectedBackdropPath = null,
+                        expectedPosterPath = null,
+                        expectedProfilePath = "baseUrl/w45/m110vLaDDOCca4hfOcS5mK5cDke.jpg"
+                ),
+                ExecuteSearchTestParameter(
+                        case = "Should configure movie with first higher value",
+                        imagesConfig = imagesConfig,
+                        searchResult = searchResultMovie,
+                        targetImageSize = 350,
+                        expectedBackdropPath = "baseUrl/w780/m110vLaDDOCca4hfOcS5mK5cDke.jpg",
+                        expectedPosterPath = "baseUrl/w500/m110vLaDDOCca4hfOcS5mK5cDke.jpg",
+                        expectedProfilePath = null
+                ),
+                ExecuteSearchTestParameter(
+                        case = "Should configure person with first higher value",
+                        imagesConfig = imagesConfig,
+                        searchResult = searchResultPerson,
+                        targetImageSize = 190,
+                        expectedBackdropPath = null,
+                        expectedPosterPath = null,
+                        expectedProfilePath = "baseUrl/h632/m110vLaDDOCca4hfOcS5mK5cDke.jpg"
+                )
+        )
+
+
         private val imagesConfig = ImagesConfiguration(
                 base_url = "baseUrl/",
                 poster_sizes = listOf("w92",
@@ -129,6 +196,42 @@ class ConfigurationHandlerTest {
                 vote_count = 1233.toDouble(),
                 vote_average = 0F,
                 popularity = 0F
+        )
+
+        private val searchResultMovie = SearchResult(
+                id = 15.toDouble(),
+                poster_path = "/m110vLaDDOCca4hfOcS5mK5cDke.jpg",
+                backdrop_path = "/m110vLaDDOCca4hfOcS5mK5cDke.jpg",
+                profile_path = null,
+                media_type = "movie",
+                title = "aMovie",
+                name = null,
+                original_title = null,
+                original_language = null,
+                overview = null,
+                release_date = null,
+                genre_ids = null,
+                vote_count = null,
+                vote_average = null,
+                popularity = null
+        )
+
+        private val searchResultPerson = SearchResult(
+                id = 15.toDouble(),
+                poster_path = null,
+                backdrop_path = null,
+                profile_path = "/m110vLaDDOCca4hfOcS5mK5cDke.jpg",
+                media_type = "person",
+                title = null,
+                name = "aPerson",
+                original_title = null,
+                original_language = null,
+                overview = null,
+                release_date = null,
+                genre_ids = null,
+                vote_count = null,
+                vote_average = null,
+                popularity = null
         )
     }
 }
