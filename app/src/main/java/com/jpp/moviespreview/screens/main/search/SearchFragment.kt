@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionManager
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.ext.findViewById
+import com.jpp.moviespreview.ext.getScreenSizeInPixels
 import com.jpp.moviespreview.ext.getViewModel
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -49,6 +50,17 @@ class SearchFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+
+        withViewModel {
+            /*
+             * Loading this images in such a big configuration is only
+             * to favor the transition to details
+             */
+            init(getScreenSizeInPixels().x)
+
+
+        }
 
         withViewModel {
             viewState().observe(this@SearchFragment.viewLifecycleOwner, Observer { viewState ->
