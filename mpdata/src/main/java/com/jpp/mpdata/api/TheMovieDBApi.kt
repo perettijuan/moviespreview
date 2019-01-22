@@ -3,6 +3,7 @@ package com.jpp.mpdata.api
 import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MoviePage
+import com.jpp.mpdomain.SearchPage
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -81,5 +82,21 @@ interface TheMovieDBApi {
     fun getMovieDetails(@Path("movie_id") movieId: Double,
                         @Query("api_key") api_key: String,
                         @Query("language") language: String? = null): Call<MovieDetail>
+
+
+    /**
+     * Executes a multi searchFirstPage API call.
+     * [page] the current page to retrieve.
+     * [api_key] the api key provided by themoviedb.
+     * [language] Pass a ISO 639-1 value to display translated data for the fields that support it. - Optional.
+     * [region] Specify a ISO 3166-1 code to filter release dates. Must be uppercase. - Optional.
+     * [query] The query to execute.
+     */
+    @GET("search/multi")
+    fun search(@Query("query") query: String,
+                    @Query("page") page: Int,
+                    @Query("api_key") api_key: String,
+                    @Query("language") language: String? = null,
+                    @Query("region") region: String? = null): Call<SearchPage>
 
 }
