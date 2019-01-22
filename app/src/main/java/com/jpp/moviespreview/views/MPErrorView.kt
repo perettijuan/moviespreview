@@ -7,7 +7,8 @@ import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.ext.getStringFromResources
-import kotlinx.android.synthetic.main.loading_error_layout.view.*
+import kotlinx.android.synthetic.main.layout_mp_error_view.view.*
+
 
 /**
  * Custom [ConstraintLayout] implementation to wrap the error views that are shown in the application

@@ -47,7 +47,7 @@
     app:layout_constraintTop_toBottomOf="@+id/detailsGenresTitleTxt"
     tools:orientation="horizontal"
     tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    tools:listitem="@layout/details_genre_list_item" />
+    tools:listitem="@layout/list_item_details_genre" />
 
   <TextView
     android:id="@+id/detailsPopularityTitleTxt"
