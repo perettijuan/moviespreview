@@ -31,6 +31,8 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
                 )
             }
         }.also { listing ->
+            viewState.removeSource(listing.opState)
+        }.also { listing ->
             viewState.addSource(listing.opState) { repoState ->
                 when (repoState) {
                     is SearchRepositoryState.Loading -> SearchViewState.Searching
@@ -47,14 +49,16 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
     }
 
 
-    val viewState = MediatorLiveData<SearchViewState>()
+
     val listing: LiveData<PagedList<SearchResultItem>> = Transformations.switchMap(repoResult) { it.pagedList }
     private var targetImageSize: Int = -1
-
+    private val viewState = MediatorLiveData<SearchViewState>()
 
     fun init(imageSize: Int) {
         targetImageSize = imageSize
     }
+
+    fun viewState(): LiveData<SearchViewState> = viewState
 
     fun search(searchText: String) {
         if (searchLiveData.value != searchText) {
@@ -63,7 +67,7 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
     }
 
     fun clearSearch() {
-        //TODO JPP can i use a mediator to do this? -> viewState.postValue(SearchViewState.Idle)
+        viewState.postValue(SearchViewState.Idle)
     }
 
 

@@ -74,7 +74,7 @@ class SearchFragment : Fragment() {
              */
             init(getScreenSizeInPixels().x)
 
-            viewState.observe(this@SearchFragment.viewLifecycleOwner, Observer { viewState ->
+            viewState().observe(this@SearchFragment.viewLifecycleOwner, Observer { viewState ->
                 renderViewState(viewState)
             })
 
@@ -96,6 +96,7 @@ class SearchFragment : Fragment() {
                     it.setQuery("", false)
                     it.requestFocus()
                 }
+                (searchResultRv.adapter as SearchItemAdapter).clear()
                 R.layout.fragment_search
             }
             is SearchViewState.Searching -> {
@@ -154,6 +155,10 @@ class SearchFragment : Fragment() {
             }
         }
 
+        fun clear() {
+            //Submitting a null paged list causes the adapter to remove all items in the RecyclerView
+            submitList(null)
+        }
 
         class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 
