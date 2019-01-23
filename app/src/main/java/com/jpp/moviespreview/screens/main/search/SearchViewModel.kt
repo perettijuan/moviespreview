@@ -22,9 +22,7 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
 
     //TODO JPP add retry
     private val viewState = MediatorLiveData<SearchViewState>()
-    lateinit var pagedList: LiveData<PagedList<SearchResultItem>>
     private var targetImageSize: Int = -1
-    private var currentSearch = EMPTY_SEARCH
 
 
     fun init(imageSize: Int) {
@@ -32,14 +30,8 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
     }
 
 
-    fun search(searchText: String) {
-        if (searchText == currentSearch) {
-            return
-        }
-
-        currentSearch = searchText
-
-        repository.search(currentSearch, targetImageSize) { domainSearchResult ->
+    fun search(searchText: String): LiveData<PagedList<SearchResultItem>> {
+        repository.search(searchText, targetImageSize) { domainSearchResult ->
             with(domainSearchResult) {
                 SearchResultItem(
                         id = id,
@@ -63,8 +55,7 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
                     viewState.postValue(it)
                 }
             }
-
-            pagedList = listing.pagedList
+            return listing.pagedList
         }
 
     }
@@ -73,7 +64,6 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
 
 
     fun clearSearch() {
-        currentSearch = EMPTY_SEARCH
         //TODO JPP can i use a mediator to do this? -> viewState.postValue(SearchViewState.Idle)
     }
 
@@ -92,9 +82,4 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
         true -> SearchResultTypeIcon.MovieType
         else -> SearchResultTypeIcon.PersonType
     }
-
-    companion object {
-        const val EMPTY_SEARCH = ""
-    }
-
 }

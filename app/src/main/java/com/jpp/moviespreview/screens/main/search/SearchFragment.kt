@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,9 +26,7 @@ import com.jpp.moviespreview.ext.loadImageUrlAsCircular
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.list_item_search.view.*
-import java.util.*
 import javax.inject.Inject
-import kotlin.concurrent.schedule
 
 class SearchFragment : Fragment() {
 
@@ -56,16 +55,15 @@ class SearchFragment : Fragment() {
         withSearchView { searchView ->
             searchView.setOnQueryTextListener(QuerySubmitter {
                 withViewModel {
-                    search(it)
-
-                    pagedList.observe(this@SearchFragment.viewLifecycleOwner, Observer {
+                    search(it).observe(this@SearchFragment.viewLifecycleOwner, Observer {
                         (searchResultRv.adapter as SearchItemAdapter).submitList(it)
                     })
                 }
             })
-            findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener {
-                withViewModel { clearSearch() }
-            }
+        }
+
+        findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener {
+            withViewModel { clearSearch() }
         }
     }
 
@@ -182,37 +180,32 @@ class SearchFragment : Fragment() {
      * Inner [SearchView.OnQueryTextListener] implementation to handle the user search over the
      * SearchView. It waits to submit the query a given amount of time that is based on the size
      * of the text introduced by the user.
+     *
+     * Note that this custom implementation could be a lot simpler using Android RxBindings, but
+     * I don't want to bring RxJava into the project for this single reason.
      */
     private inner class QuerySubmitter(private val callback: (String) -> Unit) : SearchView.OnQueryTextListener {
 
-        var timer = Timer()
+        private lateinit var queryToSubmit: String
+        private var isTyping = false
+        private val typingTimeout = 1000L // 1 second
+        private val timeoutHandler = Handler(Looper.getMainLooper())
+        private val timeoutTask = Runnable {
+            isTyping = false
+            callback(queryToSubmit)
+        }
 
         override fun onQueryTextSubmit(query: String): Boolean {
-            timer.cancel()
-            if (!query.isEmpty()) {
-                callback.invoke(query)
-            }
+            timeoutHandler.removeCallbacks(timeoutTask)
+            callback(query)
             return true
         }
 
         override fun onQueryTextChange(newText: String): Boolean {
-            if (newText.length < 3) {
-                return true
-            }
-
-            timer.cancel()
-
-            val sleep = when (newText.length) {
-                3 -> 1000L
-                4, 5 -> 700L
-                6, 7 -> 500L
-                else -> 300L
-            }
-            timer = Timer()
-            timer.schedule(sleep) {
-                if (!newText.isEmpty()) {
-                    Handler(Looper.getMainLooper()).post { callback.invoke(newText) }
-                }
+            timeoutHandler.removeCallbacks(timeoutTask)
+            if (newText.length > 3) {
+                queryToSubmit = newText
+                timeoutHandler.postDelayed(timeoutTask, typingTimeout)
             }
             return true
         }

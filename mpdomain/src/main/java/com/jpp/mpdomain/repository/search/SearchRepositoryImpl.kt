@@ -40,7 +40,7 @@ class SearchRepositoryImpl(private val searchApi: SearchApi,
                 .let {
                     // build the PagedList
                     val config = PagedList.Config.Builder()
-                            .setPrefetchDistance(1)
+                            .setPrefetchDistance(3)
                             .build()
                     LivePagedListBuilder(it, config)
                             .setFetchExecutor(networkExecutor)
