@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,13 +50,10 @@ class SearchFragment : Fragment() {
             adapter = SearchItemAdapter()
         }
 
-
         withSearchView { searchView ->
             searchView.setOnQueryTextListener(QuerySubmitter {
                 withViewModel {
-                    search(it).observe(this@SearchFragment.viewLifecycleOwner, Observer {
-                        (searchResultRv.adapter as SearchItemAdapter).submitList(it)
-                    })
+                    search(it)
                 }
             })
         }
@@ -78,8 +74,12 @@ class SearchFragment : Fragment() {
              */
             init(getScreenSizeInPixels().x)
 
-            viewState().observe(this@SearchFragment.viewLifecycleOwner, Observer { viewState ->
+            viewState.observe(this@SearchFragment.viewLifecycleOwner, Observer { viewState ->
                 renderViewState(viewState)
+            })
+
+            listing.observe(this@SearchFragment.viewLifecycleOwner, Observer {
+                (searchResultRv.adapter as SearchItemAdapter).submitList(it)
             })
         }
     }
@@ -141,6 +141,9 @@ class SearchFragment : Fragment() {
     }
 
 
+    /**
+     * [PagedListAdapter] implementation to show the list of search results.
+     */
     class SearchItemAdapter : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_search, parent, false))

@@ -1,8 +1,6 @@
 package com.jpp.moviespreview.screens.main.search
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import androidx.paging.PagedList
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.repository.search.SearchRepository
@@ -21,17 +19,9 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(private val repository: SearchRepository) : ViewModel() {
 
     //TODO JPP add retry
-    private val viewState = MediatorLiveData<SearchViewState>()
-    private var targetImageSize: Int = -1
-
-
-    fun init(imageSize: Int) {
-        targetImageSize = imageSize
-    }
-
-
-    fun search(searchText: String): LiveData<PagedList<SearchResultItem>> {
-        repository.search(searchText, targetImageSize) { domainSearchResult ->
+    private val searchLiveData = MutableLiveData<String>()
+    private val repoResult = Transformations.map(searchLiveData) {
+        repository.search(it, targetImageSize) { domainSearchResult ->
             with(domainSearchResult) {
                 SearchResultItem(
                         id = id,
@@ -40,28 +30,37 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
                         icon = getIconForSearchResult(this)
                 )
             }
-        }.let { listing ->
-            viewState.addSource(listing.opState) {
-                when (it) {
+        }.also { listing ->
+            viewState.addSource(listing.opState) { repoState ->
+                when (repoState) {
                     is SearchRepositoryState.Loading -> SearchViewState.Searching
                     is SearchRepositoryState.ErrorUnknown -> {
-                        if (it.hasItems) SearchViewState.ErrorUnknownWithItems else SearchViewState.ErrorUnknown
+                        if (repoState.hasItems) SearchViewState.ErrorUnknownWithItems else SearchViewState.ErrorUnknown
                     }
                     is SearchRepositoryState.ErrorNoConnectivity -> {
-                        if (it.hasItems) SearchViewState.ErrorNoConnectivityWithItems else SearchViewState.ErrorNoConnectivity
+                        if (repoState.hasItems) SearchViewState.ErrorNoConnectivityWithItems else SearchViewState.ErrorNoConnectivity
                     }
                     is SearchRepositoryState.Loaded -> SearchViewState.DoneSearching
-                }.let {
-                    viewState.postValue(it)
-                }
+                }.let { postViewState -> viewState.postValue(postViewState) }
             }
-            return listing.pagedList
         }
-
     }
 
-    fun viewState(): LiveData<SearchViewState> = viewState
 
+    val viewState = MediatorLiveData<SearchViewState>()
+    val listing: LiveData<PagedList<SearchResultItem>> = Transformations.switchMap(repoResult) { it.pagedList }
+    private var targetImageSize: Int = -1
+
+
+    fun init(imageSize: Int) {
+        targetImageSize = imageSize
+    }
+
+    fun search(searchText: String) {
+        if (searchLiveData.value != searchText) {
+            searchLiveData.postValue(searchText)
+        }
+    }
 
     fun clearSearch() {
         //TODO JPP can i use a mediator to do this? -> viewState.postValue(SearchViewState.Idle)
