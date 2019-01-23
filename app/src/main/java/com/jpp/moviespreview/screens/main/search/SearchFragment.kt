@@ -18,11 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
 import com.jpp.moviespreview.R
-import com.jpp.moviespreview.ext.findViewById
-import com.jpp.moviespreview.ext.getScreenSizeInPixels
-import com.jpp.moviespreview.ext.getViewModel
-import com.jpp.moviespreview.ext.loadImageUrlAsCircular
+import com.jpp.moviespreview.ext.*
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.fragment_movies.*
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.list_item_search.view.*
 import javax.inject.Inject
@@ -104,19 +102,25 @@ class SearchFragment : Fragment() {
                 R.layout.fragment_search_loading
             }
             is SearchViewState.ErrorUnknown -> {
-                searchErrorView.asUnknownError { }//TODO JPP
+                searchErrorView.asUnknownError { withViewModel { retryLastSearch() } }
                 R.layout.fragment_search_error
             }
             is SearchViewState.ErrorUnknownWithItems -> {
+                snackBar(fragmentSearchRoot, R.string.error_unexpected_error_message, R.string.error_retry) {
+                    withViewModel { retryLastSearch() }
+                }
                 R.layout.fragment_search_done
-            }//TODO JPP show snackbar
+            }
             is SearchViewState.ErrorNoConnectivity -> {
-                searchErrorView.asNoConnectivityError { }//TODO JPP
+                searchErrorView.asNoConnectivityError { withViewModel { retryLastSearch() } }
                 R.layout.fragment_search_error
             }
             is SearchViewState.ErrorNoConnectivityWithItems -> {
+                snackBar(fragmentSearchRoot, R.string.error_no_network_connection_message, R.string.error_retry) {
+                    withViewModel { retryLastSearch() }
+                }
                 R.layout.fragment_search_done
-            }//TODO JPP show snackbar
+            }
             is SearchViewState.DoneSearching -> R.layout.fragment_search_done
         }.let {
             val constraint = ConstraintSet()

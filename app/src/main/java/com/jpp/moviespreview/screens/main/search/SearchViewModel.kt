@@ -70,6 +70,9 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
         viewState.postValue(SearchViewState.Idle)
     }
 
+    fun retryLastSearch() {
+        repoResult?.value?.retry?.invoke()
+    }
 
     private fun extractImagePathFromSearchResult(domainSearchResult: SearchResult) = when (domainSearchResult.isMovie()) {
         true -> domainSearchResult.poster_path ?: "Unknown"
