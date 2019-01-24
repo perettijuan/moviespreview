@@ -6,9 +6,13 @@ env:
   matrix:
     - ANDROID_TARGET=android-18  ANDROID_ABI=armeabi-v7a
     - ANDROID_TARGET=android-19  ANDROID_ABI=armeabi-v7a
-    - ANDROID_TARGET=android-20  ANDROID_ABI=armeabi-v7a
     - ANDROID_TARGET=android-21  ANDROID_ABI=armeabi-v7a
     - ANDROID_TARGET=android-22  ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-24  ANDROID_ABI=arm64-v8a
+    - ANDROID_TARGET=android-25  ANDROID_ABI=arm64-v8a
+    - ANDROID_TARGET=android-26  ANDROID_ABI=arm64-v8a
+    - ANDROID_TARGET=android-26  ANDROID_ABI=arm64-v8a
+    - ANDROID_TARGET=android-28  ANDROID_ABI=arm64-v8a
 
 android:
   components:
