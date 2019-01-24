@@ -18,7 +18,7 @@ import com.jpp.moviespreview.ext.inflate
 import com.jpp.moviespreview.ext.withViewModel
 import com.jpp.moviespreview.screens.main.details.MovieDetailsFragmentArgs.fromBundle
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.details_genre_list_item.view.*
+import kotlinx.android.synthetic.main.list_item_details_genre.view.*
 import kotlinx.android.synthetic.main.fragment_details.*
 import kotlinx.android.synthetic.main.fragment_details_content.*
 import javax.inject.Inject
@@ -93,7 +93,7 @@ class MovieDetailsFragment : Fragment() {
 
         override fun getItemCount() = genres.size
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent.inflate(R.layout.details_genre_list_item))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent.inflate(R.layout.list_item_details_genre))
 
 
         class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

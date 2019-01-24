@@ -4,9 +4,11 @@ import com.jpp.mpdata.BuildConfig
 import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MoviePage
+import com.jpp.mpdomain.SearchPage
 import com.jpp.mpdomain.repository.configuration.ConfigurationApi
 import com.jpp.mpdomain.repository.details.MovieDetailsApi
 import com.jpp.mpdomain.repository.movies.MoviesApi
+import com.jpp.mpdomain.repository.search.SearchApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -20,8 +22,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MPApi
     : ConfigurationApi,
         MoviesApi,
-        MovieDetailsApi{
-
+        MovieDetailsApi,
+        SearchApi {
 
     override fun getAppConfiguration(): AppConfiguration? {
         return tryCatchOrReturnNull { API.getAppConfiguration(API_KEY) }
@@ -45,6 +47,10 @@ class MPApi
 
     override fun getMovieDetails(movieId: Double): MovieDetail? {
         return tryCatchOrReturnNull { API.getMovieDetails(movieId, API_KEY) }
+    }
+
+    override fun performSearch(query: String, page: Int): SearchPage? {
+        return tryCatchOrReturnNull { API.search(query, page, API_KEY) }
     }
 
 

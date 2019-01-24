@@ -11,7 +11,7 @@
     android:id="@+id/moviesList"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:listitem="@layout/movie_list_item" />
+    tools:listitem="@layout/list_item_movies" />
 
   <com.jpp.moviespreview.views.MPErrorView
     android:id="@+id/moviesErrorView"

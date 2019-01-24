@@ -15,6 +15,7 @@ import com.jpp.mpdomain.repository.details.MovieDetailsApi
 import com.jpp.mpdomain.repository.details.MovieDetailsDb
 import com.jpp.mpdomain.repository.movies.MoviesApi
 import com.jpp.mpdomain.repository.movies.MoviesDb
+import com.jpp.mpdomain.repository.search.SearchApi
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -90,4 +91,12 @@ class DataLayerModule {
     fun providesMovieDetailsDb(roomDb: MPRoomDataBase,
                                adapter: RoomModelAdapter,
                                timestampHelper: CacheTimestampHelper) : MovieDetailsDb = MovieDetailsCache(roomDb, adapter, timestampHelper)
+
+
+    /**********************************
+     ****** SEARCH DEPENDENCIES *******
+     **********************************/
+    @Singleton
+    @Provides
+    fun providesSearchApi(mpApiInstance: MPApi): SearchApi = mpApiInstance
 }

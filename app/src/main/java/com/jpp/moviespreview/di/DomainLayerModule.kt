@@ -14,6 +14,9 @@ import com.jpp.mpdomain.repository.movies.MovieListRepository
 import com.jpp.mpdomain.repository.movies.MovieListRepositoryImpl
 import com.jpp.mpdomain.repository.movies.MoviesApi
 import com.jpp.mpdomain.repository.movies.MoviesDb
+import com.jpp.mpdomain.repository.search.SearchApi
+import com.jpp.mpdomain.repository.search.SearchRepository
+import com.jpp.mpdomain.repository.search.SearchRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import java.util.concurrent.Executor
@@ -56,4 +59,13 @@ class DomainLayerModule {
                                         movieDetailsDb: MovieDetailsDb,
                                         connectivityHandler: ConnectivityHandler)
             : MovieDetailsRepository = MovieDetailsRepositoryImpl(movieDetailsApi, movieDetailsDb, connectivityHandler)
+
+    @Provides
+    fun providesSearchRepository(searchApi: SearchApi,
+                                 configurationApi: ConfigurationApi,
+                                 configurationDb: ConfigurationDb,
+                                 connectivityHandler: ConnectivityHandler,
+                                 configurationHandler: ConfigurationHandler,
+                                 networkExecutor: Executor)
+            : SearchRepository = SearchRepositoryImpl(searchApi, configurationApi, configurationDb, connectivityHandler, configurationHandler, networkExecutor)
 }
