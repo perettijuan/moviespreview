@@ -89,6 +89,14 @@ dependencies {
     testImplementation deps.test.junit5.jupiter.params      // <-- allows running JUnit5 parameterized tests
     testRuntimeOnly deps.test.junit5.jupiter.engine         // <-- allows running JUnit5 tests
     testImplementation deps.test.mockk
+
+    // Core library
+    def androidTestLibVersion = '1.1.0'
+    androidTestImplementation "androidx.test:core:$androidTestLibVersion"
+    androidTestImplementation "androidx.test:runner:$androidTestLibVersion"
+    androidTestImplementation "androidx.test:rules:$androidTestLibVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidTestLibVersion"
+    androidTestImplementation "androidx.arch.core:core-testing:2.0.0"
 }
 
 
