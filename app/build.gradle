@@ -96,6 +96,7 @@ dependencies {
     androidTestImplementation "androidx.test:runner:$androidTestLibVersion"
     androidTestImplementation "androidx.test:rules:$androidTestLibVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidTestLibVersion"
+    androidTestImplementation "androidx.test:core:$androidTestLibVersion"
     androidTestImplementation "androidx.arch.core:core-testing:2.0.0"
     androidTestImplementation deps.test.mockk
 }

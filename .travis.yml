@@ -22,6 +22,7 @@ android:
     - extra-android-support
     - extra-android-m2repository
     - extra-google-m2repository
+    - addon-google_apis-google-$ANDROID_TARGET
   licenses:
     - 'android-sdk-preview-license-52d11cd2'
     - 'android-sdk-license-.+'
