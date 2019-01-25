@@ -5,9 +5,13 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
@@ -67,6 +71,12 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         withMainViewModel {
             viewState().observe(this@MainActivity, Observer { viewState ->
                 renderViewState(viewState)
+            })
+        }
+
+        withSearchViewViewModel {
+            searchEvents().observe(this@MainActivity, Observer { event ->
+                onSearchEvent(event)
             })
         }
 
@@ -203,7 +213,8 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     }
 
 
-    private fun withMainViewModel(body: MainActivityViewModel.() -> Unit) = withViewModel<MainActivityViewModel>(viewModelFactory) { body() }
+    private fun withMainViewModel(action: MainActivityViewModel.() -> Unit) = withViewModel<MainActivityViewModel>(viewModelFactory) { action() }
+    private fun withSearchViewViewModel(action: SearchViewViewModel.() -> Unit) = withViewModel<SearchViewViewModel>(viewModelFactory) { action() }
 
     private fun renderViewState(viewState: MainActivityViewState) {
         when (viewState) {
@@ -226,9 +237,14 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 with(mainSearchView) {
                     isIconified = false
                     setIconifiedByDefault(false)
+                    setOnQueryTextListener(QuerySubmitter { withSearchViewViewModel { search(it) } })
                     setVisible()
+                    findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener {
+                        withSearchViewViewModel { clearSearch() }
+                    }
                 }
                 mpToolbarManager.setInsetStartWithNavigation(0, mainToolbar)
+
             }
         }
 
@@ -239,6 +255,23 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
          */
         invalidateOptionsMenu()
     }
+
+    private fun onSearchEvent(event: SearchEvent) {
+        when (event) {
+            is SearchEvent.ClearSearch -> {
+                with(mainSearchView) {
+                    setQuery("", false)
+                    requestFocus()
+                }
+            }
+            is SearchEvent.Search -> {
+                with(mainSearchView) {
+                    clearFocus()
+                }
+            }
+        }
+    }
+
 
     /**
      * Hides the mainCollapsingToolbarLayout title when it is fully extended and shows the
@@ -371,6 +404,42 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             }
         }
 
+    }
+
+
+    /**
+     * Inner [SearchView.OnQueryTextListener] implementation to handle the user search over the
+     * SearchView. It waits to submit the query a given amount of time that is based on the size
+     * of the text introduced by the user.
+     *
+     * Note that this custom implementation could be a lot simpler using Android RxBindings, but
+     * I don't want to bring RxJava into the project for this single reason.
+     */
+    private inner class QuerySubmitter(private val callback: (String) -> Unit) : SearchView.OnQueryTextListener {
+
+        private lateinit var queryToSubmit: String
+        private var isTyping = false
+        private val typingTimeout = 1000L // 1 second
+        private val timeoutHandler = Handler(Looper.getMainLooper())
+        private val timeoutTask = Runnable {
+            isTyping = false
+            callback(queryToSubmit)
+        }
+
+        override fun onQueryTextSubmit(query: String): Boolean {
+            timeoutHandler.removeCallbacks(timeoutTask)
+            callback(query)
+            return true
+        }
+
+        override fun onQueryTextChange(newText: String): Boolean {
+            timeoutHandler.removeCallbacks(timeoutTask)
+            if (newText.length > 3) {
+                queryToSubmit = newText
+                timeoutHandler.postDelayed(timeoutTask, typingTimeout)
+            }
+            return true
+        }
     }
 
 }

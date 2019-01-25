@@ -18,7 +18,6 @@ import javax.inject.Inject
  */
 class SearchViewModel @Inject constructor(private val repository: SearchRepository) : ViewModel() {
 
-    //TODO JPP add retry
     private val searchLiveData = MutableLiveData<String>()
     private val repoResult = Transformations.map(searchLiveData) {
         repository.search(it, targetImageSize) { domainSearchResult ->
