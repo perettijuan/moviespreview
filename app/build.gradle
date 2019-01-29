@@ -14,7 +14,7 @@ android {
         versionCode 6
         versionName "1.3.2"
         buildConfigField 'String', 'API_KEY', '"eddf6980a6d7dadd72386f55f94ab571"'
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -88,7 +88,7 @@ dependencies {
     testImplementation deps.test.junit5.jupiter.api         // <-- allows running JUnit5 tests
     testImplementation deps.test.junit5.jupiter.params      // <-- allows running JUnit5 parameterized tests
     testRuntimeOnly deps.test.junit5.jupiter.engine         // <-- allows running JUnit5 tests
-    testImplementation deps.test.mockk
+    testImplementation deps.test.mockk.unit
 
     // Core library
     def androidTestLibVersion = '1.1.0'
@@ -98,7 +98,9 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidTestLibVersion"
     androidTestImplementation "androidx.test:core:$androidTestLibVersion"
     androidTestImplementation "androidx.arch.core:core-testing:2.0.0"
-    androidTestImplementation deps.test.mockk
+    androidTestImplementation deps.test.mockk.android
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation 'junit:junit:4.12'
 }
 
 
