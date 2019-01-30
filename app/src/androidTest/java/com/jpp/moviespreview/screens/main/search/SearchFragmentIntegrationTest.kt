@@ -42,13 +42,12 @@ import org.junit.runner.RunWith
 class SearchFragmentIntegrationTest {
 
 
-//    //TODO JPP do I need this?
-//    @get:Rule
-//    var testRule = CountingTaskExecutorRule()
-
     @get:Rule
     val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java) {
         override fun afterActivityLaunched() {
+            runOnUiThread {
+                activity.startFragment(SearchFragment(), this@SearchFragmentIntegrationTest::inject)
+            }
         }
     }
 
@@ -96,8 +95,6 @@ class SearchFragmentIntegrationTest {
 
     @Test
     fun shouldStartASearchWhenASearchIsTriggered() {
-esto tenes que ver
-        activityTestRule.activity.startFragment(SearchFragment(), this@SearchFragmentIntegrationTest::inject)
 
         val pages = searchPages(10)
 
