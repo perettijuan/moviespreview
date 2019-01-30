@@ -85,6 +85,14 @@ def getCommonTestResources() {
 }
 
 /**
+ * Returns sources from common project (only) that are shared between different
+ * modules of the application to execute test code.
+ */
+def getCommonJunit5TestResources() {
+    return fileFromProjectRoot(':common', 'src', 'test', 'junit5').absolutePath
+}
+
+/**
  * @param projectId the unambiguous id of the project
  * @param path in one of two forms:
  *  <ul>

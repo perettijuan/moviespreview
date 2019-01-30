@@ -33,6 +33,11 @@ android {
          */
         test {
             java.srcDirs += getCommonTestResources()
+            java.srcDirs += getCommonJunit5TestResources()
+        }
+
+        androidTest {
+            java.srcDirs += getCommonTestResources()
         }
     }
 }
@@ -92,6 +97,7 @@ dependencies {
 
     // Core library
     def androidTestLibVersion = '1.1.0'
+    def espressoVersion = '3.1.1'
     androidTestImplementation "androidx.test:core:$androidTestLibVersion"
     androidTestImplementation "androidx.test:runner:$androidTestLibVersion"
     androidTestImplementation "androidx.test:rules:$androidTestLibVersion"
@@ -99,7 +105,8 @@ dependencies {
     androidTestImplementation "androidx.test:core:$androidTestLibVersion"
     androidTestImplementation "androidx.arch.core:core-testing:2.0.0"
     androidTestImplementation deps.test.mockk.android
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
+    androidTestImplementation 'com.azimolabs.conditionwatcher:conditionwatcher:0.2'
     androidTestImplementation 'junit:junit:4.12'
 }
 

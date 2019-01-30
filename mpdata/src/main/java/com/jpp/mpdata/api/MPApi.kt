@@ -19,7 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Represents the remote API that MoviesPreview supports. It is a wrapper
  * around Retrofit classes to provide a clean access to the API.
  */
-class MPApi
+open class MPApi
     : ConfigurationApi,
         MoviesApi,
         MovieDetailsApi,

@@ -1,4 +1,4 @@
-package com.jpp.mpdomain.utils
+package com.jpp.moviespreview.utiltest
 
 import java.util.concurrent.Executor
 
