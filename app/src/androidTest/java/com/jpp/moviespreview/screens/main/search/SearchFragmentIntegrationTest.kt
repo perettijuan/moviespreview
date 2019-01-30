@@ -2,15 +2,16 @@ package com.jpp.moviespreview.screens.main.search
 
 
 import android.content.Intent
-import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.azimolabs.conditionwatcher.ConditionWatcher
 import com.azimolabs.conditionwatcher.Instruction
 import com.jpp.moviespreview.R
+import com.jpp.moviespreview.assertions.itemCount
 import com.jpp.moviespreview.di.TestMPViewModelFactory
 import com.jpp.moviespreview.screens.main.SearchViewViewModel
 import com.jpp.moviespreview.testutils.FragmentTestActivity
@@ -67,7 +68,7 @@ class SearchFragmentIntegrationTest {
         )
 
         // real ViewModel
-        val searchViewModel = SearchViewModel(repository)
+        searchViewModel = SearchViewModel(repository)
         // custom ViewModelFactory to inject the dependencies
         val vmFactory = TestMPViewModelFactory().apply {
             addVm(searchViewModel)
@@ -86,6 +87,7 @@ class SearchFragmentIntegrationTest {
 
     // Hold this reference to perform a search
     private val searchViewViewModel by lazy { SearchViewViewModel() }
+    private lateinit var searchViewModel: SearchViewModel
 
     @Before
     fun setUp() {
@@ -103,28 +105,23 @@ class SearchFragmentIntegrationTest {
 
         searchViewViewModel.search("aQuery")
 
-        waitForItemsRendering()
+        waitDoneSearching()
 
-//        Log.d("JPPLOG", "isIdle -> ${testRule.isIdle}")
+        onView(withId(R.id.searchResultRv))
+                .check(matches(isDisplayed()))
 
-        Espresso.onView(ViewMatchers.withId(R.id.searchResultRv))
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.searchResultRv))
+                .check(itemCount(20))
 
     }
 
 
-    private fun waitForItemsRendering() {
+    private fun waitDoneSearching() {
         ConditionWatcher.waitForCondition(object : Instruction() {
             override fun getDescription(): String = "Waiting for items in list"
 
             override fun checkCondition(): Boolean {
-
-                val recyclerView = activityTestRule.activity.findViewById<RecyclerView>(R.id.searchResultRv)
-                        ?: return false
-
-
-                val adapter = recyclerView.adapter ?: return false
-                return adapter.itemCount >= 20
+                return searchViewModel.viewState().value == SearchViewState.DoneSearching
             }
         })
     }
