@@ -1,6 +1,8 @@
 package com.jpp.moviespreview.screens.main.search
 
 import androidx.annotation.DrawableRes
+import androidx.lifecycle.LiveData
+import androidx.paging.PagedList
 import com.jpp.moviespreview.R
 
 /**
@@ -14,6 +16,13 @@ sealed class SearchViewState {
     object ErrorNoConnectivity : SearchViewState()
     object ErrorNoConnectivityWithItems : SearchViewState()
     object DoneSearching : SearchViewState()
+}
+
+sealed class SearchViewStateV2 {
+    object Searching : SearchViewStateV2()
+    object ErrorUnknown : SearchViewStateV2()
+    object ErrorNoConnectivity : SearchViewStateV2()
+    data class DoneSearching(val listing: LiveData<PagedList<SearchResultItem>>) : SearchViewStateV2()
 }
 
 sealed class SearchResultTypeIcon(@DrawableRes val iconRes: Int) {
