@@ -1,4 +1,4 @@
-package com.jpp.mpdomain.repository.paging
+package com.jpp.mpdomain.paging
 
 import androidx.paging.PageKeyedDataSource
 

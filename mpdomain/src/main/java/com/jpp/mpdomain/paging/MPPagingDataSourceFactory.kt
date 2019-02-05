@@ -1,4 +1,4 @@
-package com.jpp.mpdomain.repository.paging
+package com.jpp.mpdomain.paging
 
 import androidx.paging.DataSource
 
@@ -9,18 +9,18 @@ import androidx.paging.DataSource
 class MPPagingDataSourceFactory<T>(private val fetchItems: (Int, (List<T>, Int) -> Unit) -> Unit)
     : DataSource.Factory<Int, T>() {
 
-    lateinit var datasourceInstance: MPPagingDataSource<T>
+    private lateinit var dsInstance: MPPagingDataSource<T>
 
     /**
      * From [DataSource.Factory#create()]
      */
     override fun create(): DataSource<Int, T> {
-        datasourceInstance = MPPagingDataSource(fetchItems)
-        return datasourceInstance
+        dsInstance = MPPagingDataSource(fetchItems)
+        return dsInstance
     }
 
 
     fun retryLast() {
-        datasourceInstance.retryLastCall()
+        dsInstance.retryLastCall()
     }
 }

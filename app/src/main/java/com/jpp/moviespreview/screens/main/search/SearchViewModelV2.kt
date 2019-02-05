@@ -5,10 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mpdomain.SearchResult
-import com.jpp.mpdomain.repository.paging.MPPagingDataSourceFactory
+import com.jpp.mpdomain.paging.MPPagingDataSourceFactory
 import com.jpp.mpdomain.usecase.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.SearchUseCase
 import com.jpp.mpdomain.usecase.SearchUseCaseResult
+import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
+import com.jpp.mpdomain.usecase.search.SearchUseCase
+import com.jpp.mpdomain.usecase.search.SearchUseCaseResult
 import java.util.concurrent.Executor
 import javax.inject.Inject
 
@@ -33,7 +36,6 @@ class SearchViewModelV2 @Inject constructor(
                 .search(query)
                 .let { result ->
                     when (result) {
-                        is SearchUseCaseResult.ErrorUnknown -> SearchViewStateV2.ErrorUnknown
                         is SearchUseCaseResult.ErrorNoConnectivity -> SearchViewStateV2.ErrorNoConnectivity
                         is SearchUseCaseResult.Success -> SearchViewStateV2.DoneSearching(createSearchPagedList(result.dsFactory))
                     }

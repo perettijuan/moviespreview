@@ -1,4 +1,4 @@
-package com.jpp.mpdomain.repository.search
+package com.jpp.mpdata.repository.search
 
 import com.jpp.mpdomain.SearchPage
 

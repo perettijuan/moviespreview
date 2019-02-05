@@ -1,6 +1,7 @@
 package com.jpp.mpdomain.repository.search
 
 import com.jpp.mpdomain.SearchResult
+import com.jpp.mpdomain.paging.MPPagingDataSourceFactory
 
 /**
  * Repository definition to perform a search.
@@ -8,13 +9,7 @@ import com.jpp.mpdomain.SearchResult
 interface SearchRepository {
 
     /**
-     * Performs a search using the provided [query] and returns a [SearchListing] that can be used to
-     * show the list of search results.
-     * [query] - the string that identifies the search to perform.
-     * [imageSizeTarget] - the size of the images to configure the [SearchResult] images paths.
-     * [mapper] - a mapping function to transform domain objects into another layer objects.
+     * Creates a [MPPagingDataSourceFactory] that can be used to perform a search.
      */
-    fun <T> search(query: String,
-                   imageSizeTarget: Int,
-                   mapper: (SearchResult) -> T) : SearchListing<T>
+    fun search(query: String): MPPagingDataSourceFactory<SearchResult>
 }
