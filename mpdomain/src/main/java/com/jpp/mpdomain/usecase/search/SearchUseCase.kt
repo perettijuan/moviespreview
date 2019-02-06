@@ -5,7 +5,10 @@ import com.jpp.mpdomain.handlers.ConnectivityHandler
 import com.jpp.mpdomain.repository.SearchRepository
 
 /**
- * Defines a UseCase that executes the searchPage.
+ * Defines a UseCase that executes the search.
+ * UseCase definition: verify if there's internet connection (the application does not work if
+ * not connected). If connected, perform the search. If not connected, return an error that
+ * indicates such state.
  */
 interface SearchUseCase {
     /**
