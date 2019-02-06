@@ -66,8 +66,15 @@ class SearchFragment : Fragment() {
                 renderViewState(viewState)
             })
 
-            listing.observe(this@SearchFragment.viewLifecycleOwner, Observer {
-                (searchResultRv.adapter as SearchItemAdapter).submitList(it)
+
+            searchResultRv.adapter?.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+                    searchListUpdated(itemCount)
+                }
+
+                override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
+                    searchListUpdated(itemCount)
+                }
             })
         }
 
@@ -91,34 +98,38 @@ class SearchFragment : Fragment() {
      * current state to a final state using a ConstraintLayout animation.
      */
     private fun renderViewState(viewState: SearchViewState) {
+        //TODO JPP -> improve this
         when (viewState) {
-            is SearchViewState.Idle -> {
-                (searchResultRv.adapter as SearchItemAdapter).clear()
-                R.layout.fragment_search
-            }
+//            is SearchViewState.Idle -> {
+//                (searchResultRv.adapter as SearchItemAdapter).clear()
+//                R.layout.fragment_search
+//            }
             is SearchViewState.Searching -> {
+                viewState.listing.observe(this@SearchFragment.viewLifecycleOwner, Observer {
+                    (searchResultRv.adapter as SearchItemAdapter).submitList(it)
+                })
                 R.layout.fragment_search_loading
             }
             is SearchViewState.ErrorUnknown -> {
                 searchErrorView.asUnknownError { withViewModel { retryLastSearch() } }
                 R.layout.fragment_search_error
             }
-            is SearchViewState.ErrorUnknownWithItems -> {
-                snackBar(fragmentSearchRoot, R.string.error_unexpected_error_message, R.string.error_retry) {
-                    withViewModel { retryLastSearch() }
-                }
-                R.layout.fragment_search_done
-            }
+//            is SearchViewState.ErrorUnknownWithItems -> {
+//                snackBar(fragmentSearchRoot, R.string.error_unexpected_error_message, R.string.error_retry) {
+//                    withViewModel { retryLastSearch() }
+//                }
+//                R.layout.fragment_search_done
+//            }
             is SearchViewState.ErrorNoConnectivity -> {
                 searchErrorView.asNoConnectivityError { withViewModel { retryLastSearch() } }
                 R.layout.fragment_search_error
             }
-            is SearchViewState.ErrorNoConnectivityWithItems -> {
-                snackBar(fragmentSearchRoot, R.string.error_no_network_connection_message, R.string.error_retry) {
-                    withViewModel { retryLastSearch() }
-                }
-                R.layout.fragment_search_done
-            }
+//            is SearchViewState.ErrorNoConnectivityWithItems -> {
+//                snackBar(fragmentSearchRoot, R.string.error_no_network_connection_message, R.string.error_retry) {
+//                    withViewModel { retryLastSearch() }
+//                }
+//                R.layout.fragment_search_done
+//            }
             is SearchViewState.DoneSearching -> R.layout.fragment_search_done
         }.let {
             val constraint = ConstraintSet()

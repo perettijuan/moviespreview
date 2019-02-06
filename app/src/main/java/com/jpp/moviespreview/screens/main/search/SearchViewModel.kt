@@ -1,10 +1,17 @@
 package com.jpp.moviespreview.screens.main.search
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.ViewModel
+import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mpdomain.SearchResult
+import com.jpp.mpdomain.paging.MPPagingDataSourceFactory
 import com.jpp.mpdomain.repository.search.SearchRepository
-import com.jpp.mpdomain.repository.search.SearchRepositoryState
+import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
+import com.jpp.mpdomain.usecase.search.SearchUseCase
+import com.jpp.mpdomain.usecase.search.SearchUseCaseResult
+import java.util.concurrent.Executor
 import javax.inject.Inject
 
 /**
@@ -16,40 +23,11 @@ import javax.inject.Inject
  * Executor to defer long term operations to another thread (instead of coroutines provided by
  * the MPScopedViewModel).
  */
-class SearchViewModel @Inject constructor(private val repository: SearchRepository) : ViewModel() {
-
-    private val searchLiveData = MutableLiveData<String>()
-    private val repoResult = Transformations.map(searchLiveData) {
-        repository.search(it, targetImageSize) { domainSearchResult ->
-            with(domainSearchResult) {
-                SearchResultItem(
-                        id = id,
-                        imagePath = extractImagePathFromSearchResult(this),
-                        name = extractTitleFromSearchResult(this),
-                        icon = getIconForSearchResult(this)
-                )
-            }
-        }.also { listing ->
-            viewState.removeSource(listing.opState)
-        }.also { listing ->
-            viewState.addSource(listing.opState) { repoState ->
-                when (repoState) {
-                    is SearchRepositoryState.Loading -> SearchViewState.Searching
-                    is SearchRepositoryState.ErrorUnknown -> {
-                        if (repoState.hasItems) SearchViewState.ErrorUnknownWithItems else SearchViewState.ErrorUnknown
-                    }
-                    is SearchRepositoryState.ErrorNoConnectivity -> {
-                        if (repoState.hasItems) SearchViewState.ErrorNoConnectivityWithItems else SearchViewState.ErrorNoConnectivity
-                    }
-                    is SearchRepositoryState.Loaded -> SearchViewState.DoneSearching
-                }.let { postViewState -> viewState.postValue(postViewState) }
-            }
-        }
-    }
+class SearchViewModel @Inject constructor(private val searchUseCase: SearchUseCase,
+                                          private val configSearchResultUseCase: ConfigSearchResultUseCase,
+                                          private val networkExecutor: Executor) : ViewModel() {
 
 
-
-    val listing: LiveData<PagedList<SearchResultItem>> = Transformations.switchMap(repoResult) { it.pagedList }
     private var targetImageSize: Int = -1
     private val viewState = MediatorLiveData<SearchViewState>()
 
@@ -60,17 +38,58 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
     fun viewState(): LiveData<SearchViewState> = viewState
 
     fun search(searchText: String) {
-        if (searchLiveData.value != searchText) {
-            searchLiveData.postValue(searchText)
+        searchUseCase
+                .search(searchText)
+                .let { ucResult ->
+                    when (ucResult) {
+                        is SearchUseCaseResult.ErrorNoConnectivity -> SearchViewState.ErrorNoConnectivity
+                        is SearchUseCaseResult.Success -> SearchViewState.Searching(createSearchPagedList(ucResult.dsFactory))
+                    }
+                }.also { viewStateUpdate ->
+                    viewState.postValue(viewStateUpdate)
+                }
+    }
+
+    fun searchListUpdated(count: Int) {
+        when (count) {
+            0 -> SearchViewState.ErrorUnknown
+            else -> SearchViewState.DoneSearching
         }
     }
 
     fun clearSearch() {
-        viewState.postValue(SearchViewState.Idle)
+
     }
 
     fun retryLastSearch() {
-        repoResult?.value?.retry?.invoke()
+
+    }
+
+
+    private fun createSearchPagedList(dsFactory: MPPagingDataSourceFactory<SearchResult>): LiveData<PagedList<SearchResultItem>> {
+        return dsFactory
+                .map { configSearchResultUseCase.configure(targetImageSize, it) }
+                .map { mapSearchResult(it) }
+                .let {
+                    // build the PagedList
+                    val config = PagedList.Config.Builder()
+                            .setPrefetchDistance(3)
+                            .build()
+                    LivePagedListBuilder(it, config)
+                            .setFetchExecutor(networkExecutor)
+                            .build()
+                }
+    }
+
+    private fun mapSearchResult(searchResult: SearchResult) = with(searchResult) {
+        with(searchResult) {
+            SearchResultItem(
+                    id = id,
+                    imagePath = extractImagePathFromSearchResult(this),
+                    name = extractTitleFromSearchResult(this),
+                    icon = getIconForSearchResult(this)
+            )
+        }
     }
 
     private fun extractImagePathFromSearchResult(domainSearchResult: SearchResult) = when (domainSearchResult.isMovie()) {

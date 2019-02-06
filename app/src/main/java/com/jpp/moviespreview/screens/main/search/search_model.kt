@@ -9,20 +9,10 @@ import com.jpp.moviespreview.R
  * Represents the view state of the search screen.
  */
 sealed class SearchViewState {
-    object Idle : SearchViewState()
-    object Searching : SearchViewState()
-    object ErrorUnknown : SearchViewState()
-    object ErrorUnknownWithItems : SearchViewState()
-    object ErrorNoConnectivity : SearchViewState()
-    object ErrorNoConnectivityWithItems : SearchViewState()
     object DoneSearching : SearchViewState()
-}
-
-sealed class SearchViewStateV2 {
-    object Searching : SearchViewStateV2()
-    object ErrorUnknown : SearchViewStateV2()
-    object ErrorNoConnectivity : SearchViewStateV2()
-    data class DoneSearching(val listing: LiveData<PagedList<SearchResultItem>>) : SearchViewStateV2()
+    object ErrorUnknown : SearchViewState()
+    object ErrorNoConnectivity : SearchViewState()
+    data class Searching(val listing: LiveData<PagedList<SearchResultItem>>) : SearchViewState()
 }
 
 sealed class SearchResultTypeIcon(@DrawableRes val iconRes: Int) {
