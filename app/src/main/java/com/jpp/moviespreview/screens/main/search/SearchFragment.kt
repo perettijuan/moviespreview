@@ -87,9 +87,7 @@ class SearchFragment : Fragment() {
                 when (event) {
                     is SearchEvent.ClearSearch -> withViewModel { clearSearch() }
                     is SearchEvent.Search -> withViewModel {
-                        search(event.query).observe(this@SearchFragment.viewLifecycleOwner, Observer {
-                            (searchResultRv.adapter as SearchItemAdapter).submitList(it)
-                        })
+                        search(event.query)
                     }
                 }
             })
@@ -109,6 +107,7 @@ class SearchFragment : Fragment() {
 //                R.layout.fragment_search
 //            }
             is SearchViewState.Searching -> {
+                (searchResultRv.adapter as SearchItemAdapter).submitList(viewState.pagedList)
                 R.layout.fragment_search_loading
             }
             is SearchViewState.ErrorUnknown -> {

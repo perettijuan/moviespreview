@@ -7,22 +7,13 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.paging.MPPagingDataSourceFactory
-import com.jpp.mpdomain.repository.SearchRepository
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCaseResult
 import java.util.concurrent.Executor
 import javax.inject.Inject
 
-/**
- * [ViewModel] to provide searchPage functionality.
- *
- * This is a very special ViewModel in the application, since it doesn't follows the pattern
- * defined in MPScopedViewModel. This is because this section of the application is using the
- * Paging Library to support unlimited scrolling and the [SearchRepository] is using its own
- * Executor to defer long term operations to another thread (instead of coroutines provided by
- * the MPScopedViewModel).
- */
+//TODO JPP add docs
 class SearchViewModel @Inject constructor(private val searchUseCase: SearchUseCase,
                                           private val configSearchResultUseCase: ConfigSearchResultUseCase,
                                           private val networkExecutor: Executor) : ViewModel() {
@@ -37,8 +28,12 @@ class SearchViewModel @Inject constructor(private val searchUseCase: SearchUseCa
 
     fun viewState(): LiveData<SearchViewState> = viewState
 
-    fun search(searchText: String): LiveData<PagedList<SearchResultItem>> {
-        return createSearchPagedList(searchText)
+    fun search(searchText: String) {
+        createSearchPagedList(searchText).let {
+            viewState.addSource(it) {
+                viewState.postValue(SearchViewState.Searching(it))
+            }
+        }
     }
 
     fun searchListUpdated(count: Int) {
@@ -55,7 +50,6 @@ class SearchViewModel @Inject constructor(private val searchUseCase: SearchUseCa
     fun retryLastSearch() {
 
     }
-
 
     private fun createSearchPagedList(query: String): LiveData<PagedList<SearchResultItem>> {
         return MPPagingDataSourceFactory<SearchResult> { page, callback ->
@@ -76,16 +70,13 @@ class SearchViewModel @Inject constructor(private val searchUseCase: SearchUseCa
 
 
     private fun searchMoviePage(queryString: String, page: Int, callback: (List<SearchResult>, Int) -> Unit) {
-        if (page == 1) {
-            viewState.postValue(SearchViewState.Searching)
-        }
         searchUseCase
                 .search(queryString, page)
                 .let { ucResult ->
                     when (ucResult) {
                         is SearchUseCaseResult.ErrorNoConnectivity -> viewState.postValue(SearchViewState.ErrorNoConnectivity)
                         is SearchUseCaseResult.ErrorUnknown -> viewState.postValue(SearchViewState.ErrorUnknown)
-                        is SearchUseCaseResult.Success -> callback(ucResult.result.results, page + 1)
+                        is SearchUseCaseResult.Success -> callback(ucResult.searchPage.results, page + 1)
                     }
                 }
     }
