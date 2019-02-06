@@ -3,7 +3,7 @@ package com.jpp.mpdomain.usecase.search
 import com.jpp.mpdomain.SearchPage
 
 /**
- * Represents the result of a search execution.
+ * Represents the result of a searchPage execution.
  */
 sealed class SearchUseCaseResult {
     /**

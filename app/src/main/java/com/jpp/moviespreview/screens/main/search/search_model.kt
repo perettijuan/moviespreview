@@ -6,7 +6,7 @@ import androidx.paging.PagedList
 import com.jpp.moviespreview.R
 
 /**
- * Represents the view state of the search screen.
+ * Represents the view state of the searchPage screen.
  */
 sealed class SearchViewState {
     object DoneSearching : SearchViewState()

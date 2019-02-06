@@ -19,7 +19,7 @@ import com.jpp.mpdomain.repository.details.MovieDetailsApi
 import com.jpp.mpdomain.repository.details.MovieDetailsDb
 import com.jpp.mpdomain.repository.movies.MoviesApi
 import com.jpp.mpdomain.repository.movies.MoviesDb
-import com.jpp.mpdomain.repository.search.SearchRepository
+import com.jpp.mpdomain.repository.SearchRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

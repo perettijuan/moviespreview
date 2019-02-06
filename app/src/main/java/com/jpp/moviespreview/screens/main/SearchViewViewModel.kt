@@ -8,7 +8,7 @@ import javax.inject.Inject
 /**
  * [ViewModel] used to handle the SearchView interactions.
  *
- * MOTIVATION: since the SearchView used to detect user input in the search feature is hosted
+ * MOTIVATION: since the SearchView used to detect user input in the searchPage feature is hosted
  * by the Activity and the Search feature is actually implemented by the SearchFragment, we need
  * a mechanism to communicate the SearchFragment with the MainActivity in order to let it
  * handle the SearchView.

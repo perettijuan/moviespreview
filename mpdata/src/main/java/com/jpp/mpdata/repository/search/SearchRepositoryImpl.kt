@@ -1,10 +1,14 @@
 package com.jpp.mpdata.repository.search
 
 import com.jpp.mpdomain.SearchPage
-import com.jpp.mpdomain.repository.search.SearchRepository
+import com.jpp.mpdomain.repository.SearchRepository
 
+/**
+ * [SearchRepository] implementation. Search does not supports caching, therefore the repository
+ * is only accessing the data in the API.
+ */
 class SearchRepositoryImpl(private val searchApi: SearchApi) : SearchRepository {
-    override fun search(query: String, page: Int): SearchPage? {
+    override fun searchPage(query: String, page: Int): SearchPage? {
         return searchApi.performSearch(query, page)
     }
 }

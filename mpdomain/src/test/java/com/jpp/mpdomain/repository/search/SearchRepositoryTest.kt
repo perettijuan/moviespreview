@@ -15,6 +15,7 @@ import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
 import com.jpp.mpdomain.repository.configuration.ConfigurationApi
 import com.jpp.mpdomain.repository.configuration.ConfigurationDb
 import com.jpp.moviespreview.utiltest.CurrentThreadExecutorService
+import com.jpp.mpdomain.repository.SearchRepository
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
@@ -189,7 +190,7 @@ class SearchRepositoryTest {
 
         every { lifecycleOwner.lifecycle } returns lifecycle
 
-        val listing = subject.search(
+        val listing = subject.searchPage(
                 searchQuery,
                 targetImageSize,
                 searchResultMapper
@@ -215,7 +216,7 @@ class SearchRepositoryTest {
 
         every { lifecycleOwner.lifecycle } returns lifecycle
 
-        val listing = subject.search(
+        val listing = subject.searchPage(
                 searchQuery,
                 targetImageSize,
                 searchResultMapper

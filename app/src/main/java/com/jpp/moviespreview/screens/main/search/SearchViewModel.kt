@@ -2,13 +2,12 @@ package com.jpp.moviespreview.screens.main.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.paging.MPPagingDataSourceFactory
-import com.jpp.mpdomain.repository.search.SearchRepository
+import com.jpp.mpdomain.repository.SearchRepository
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCaseResult
@@ -16,7 +15,7 @@ import java.util.concurrent.Executor
 import javax.inject.Inject
 
 /**
- * [ViewModel] to provide search functionality.
+ * [ViewModel] to provide searchPage functionality.
  *
  * This is a very special ViewModel in the application, since it doesn't follows the pattern
  * defined in MPScopedViewModel. This is because this section of the application is using the

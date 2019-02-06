@@ -381,7 +381,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     /**
      * Helper class to remove the space between the arrow image and the
      * text (or the SearchView) that is shown in the Toolbar.
-     * In some screens (e.g.: search screen) we want to remove this
+     * In some screens (e.g.: searchPage screen) we want to remove this
      * space to provide more space for the content shown right next
      * to the arrow/burger icon.
      */
@@ -408,7 +408,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
 
     /**
-     * Inner [SearchView.OnQueryTextListener] implementation to handle the user search over the
+     * Inner [SearchView.OnQueryTextListener] implementation to handle the user searchPage over the
      * SearchView. It waits to submit the query a given amount of time that is based on the size
      * of the text introduced by the user.
      *

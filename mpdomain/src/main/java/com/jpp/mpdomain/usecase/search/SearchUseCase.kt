@@ -2,17 +2,17 @@ package com.jpp.mpdomain.usecase.search
 
 import com.jpp.mpdomain.SearchPage
 import com.jpp.mpdomain.handlers.ConnectivityHandler
-import com.jpp.mpdomain.repository.search.SearchRepository
+import com.jpp.mpdomain.repository.SearchRepository
 
 /**
- * Defines a UseCase that executes the search.
+ * Defines a UseCase that executes the searchPage.
  */
 interface SearchUseCase {
     /**
-     * Performs a search based in the provided [query].
+     * Performs a searchPage based in the provided [query].
      * @return
      *          - [SearchUseCaseResult.ErrorNoConnectivity] when the UC detects that the application has no internet connectivity.
-     *          - [SearchUseCaseResult.Success] when there is internet connectivity and the search can be executed.
+     *          - [SearchUseCaseResult.Success] when there is internet connectivity and the searchPage can be executed.
      */
     fun search(query: String, page: Int): SearchUseCaseResult
 
@@ -23,7 +23,7 @@ interface SearchUseCase {
         override fun search(query: String, page: Int): SearchUseCaseResult {
             return when (connectivityHandler.isConnectedToNetwork()) {
                 false -> SearchUseCaseResult.ErrorNoConnectivity
-                true -> searchRepository.search(query, page)?.let {
+                true -> searchRepository.searchPage(query, page)?.let {
                     SearchUseCaseResult.Success(sanitizeSearchPage(it))
                 } ?: run {
                     SearchUseCaseResult.ErrorUnknown

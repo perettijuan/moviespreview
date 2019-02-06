@@ -23,7 +23,7 @@ import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
 import com.jpp.mpdomain.repository.configuration.ConfigurationApi
 import com.jpp.mpdomain.repository.configuration.ConfigurationDb
 import com.jpp.mpdomain.repository.search.SearchApi
-import com.jpp.mpdomain.repository.search.SearchRepository
+import com.jpp.mpdomain.repository.SearchRepository
 import com.jpp.mpdomain.repository.search.SearchRepositoryImpl
 import io.mockk.every
 import io.mockk.mockk
@@ -85,7 +85,7 @@ class SearchFragmentIntegrationTest {
     private val mockConnectivityHandler = mockk<ConnectivityHandler>(relaxed = true)
     private val mockConfigurationHandler = mockk<ConfigurationHandler>(relaxed = true)
 
-    // Hold this reference to perform a search
+    // Hold this reference to perform a searchPage
     private val searchViewViewModel by lazy { SearchViewViewModel() }
     private lateinit var searchViewModel: SearchViewModel
 

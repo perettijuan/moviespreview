@@ -92,7 +92,7 @@ interface TheMovieDBApi {
      * [region] Specify a ISO 3166-1 code to filter release dates. Must be uppercase. - Optional.
      * [query] The query to execute.
      */
-    @GET("search/multi")
+    @GET("searchPage/multi")
     fun search(@Query("query") query: String,
                     @Query("page") page: Int,
                     @Query("api_key") api_key: String,

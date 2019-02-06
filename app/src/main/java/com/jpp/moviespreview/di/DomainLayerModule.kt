@@ -15,7 +15,7 @@ import com.jpp.mpdomain.repository.movies.MovieListRepository
 import com.jpp.mpdomain.repository.movies.MovieListRepositoryImpl
 import com.jpp.mpdomain.repository.movies.MoviesApi
 import com.jpp.mpdomain.repository.movies.MoviesDb
-import com.jpp.mpdomain.repository.search.SearchRepository
+import com.jpp.mpdomain.repository.SearchRepository
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
 import dagger.Module

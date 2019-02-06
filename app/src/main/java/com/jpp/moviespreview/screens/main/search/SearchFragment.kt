@@ -80,7 +80,7 @@ class SearchFragment : Fragment() {
 
 
         /*
-         * React to search events posted by the MainActivity
+         * React to searchPage events posted by the MainActivity
          */
         withSearchViewViewModel {
             searchEvents().observe(this@SearchFragment.viewLifecycleOwner, Observer { event ->
@@ -146,7 +146,7 @@ class SearchFragment : Fragment() {
     }
 
     /**
-     * The SearchView that triggers the search is in the MainActivity view hierarchy.
+     * The SearchView that triggers the searchPage is in the MainActivity view hierarchy.
      * SearchViewViewModel allows the communication between this fragment and the SearchView
      * in the MainActivity.
      */
@@ -156,7 +156,7 @@ class SearchFragment : Fragment() {
 
 
     /**
-     * [PagedListAdapter] implementation to show the list of search results.
+     * [PagedListAdapter] implementation to show the list of searchPage results.
      */
     class SearchItemAdapter : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
 
