@@ -86,7 +86,11 @@ class SearchFragment : Fragment() {
             searchEvents().observe(this@SearchFragment.viewLifecycleOwner, Observer { event ->
                 when (event) {
                     is SearchEvent.ClearSearch -> withViewModel { clearSearch() }
-                    is SearchEvent.Search -> withViewModel { search(event.query) }
+                    is SearchEvent.Search -> withViewModel {
+                        search(event.query).observe(this@SearchFragment.viewLifecycleOwner, Observer {
+                            (searchResultRv.adapter as SearchItemAdapter).submitList(it)
+                        })
+                    }
                 }
             })
         }
@@ -105,9 +109,6 @@ class SearchFragment : Fragment() {
 //                R.layout.fragment_search
 //            }
             is SearchViewState.Searching -> {
-                viewState.listing.observe(this@SearchFragment.viewLifecycleOwner, Observer {
-                    (searchResultRv.adapter as SearchItemAdapter).submitList(it)
-                })
                 R.layout.fragment_search_loading
             }
             is SearchViewState.ErrorUnknown -> {

@@ -12,7 +12,7 @@ sealed class SearchViewState {
     object DoneSearching : SearchViewState()
     object ErrorUnknown : SearchViewState()
     object ErrorNoConnectivity : SearchViewState()
-    data class Searching(val listing: LiveData<PagedList<SearchResultItem>>) : SearchViewState()
+    object Searching : SearchViewState()
 }
 
 sealed class SearchResultTypeIcon(@DrawableRes val iconRes: Int) {

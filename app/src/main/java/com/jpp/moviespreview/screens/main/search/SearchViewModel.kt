@@ -2,6 +2,7 @@ package com.jpp.moviespreview.screens.main.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
@@ -37,17 +38,8 @@ class SearchViewModel @Inject constructor(private val searchUseCase: SearchUseCa
 
     fun viewState(): LiveData<SearchViewState> = viewState
 
-    fun search(searchText: String) {
-        searchUseCase
-                .search(searchText)
-                .let { ucResult ->
-                    when (ucResult) {
-                        is SearchUseCaseResult.ErrorNoConnectivity -> SearchViewState.ErrorNoConnectivity
-                        is SearchUseCaseResult.Success -> SearchViewState.Searching(createSearchPagedList(ucResult.dsFactory))
-                    }
-                }.also { viewStateUpdate ->
-                    viewState.postValue(viewStateUpdate)
-                }
+    fun search(searchText: String): LiveData<PagedList<SearchResultItem>> {
+        return createSearchPagedList(searchText)
     }
 
     fun searchListUpdated(count: Int) {
@@ -66,8 +58,10 @@ class SearchViewModel @Inject constructor(private val searchUseCase: SearchUseCa
     }
 
 
-    private fun createSearchPagedList(dsFactory: MPPagingDataSourceFactory<SearchResult>): LiveData<PagedList<SearchResultItem>> {
-        return dsFactory
+    private fun createSearchPagedList(query: String): LiveData<PagedList<SearchResultItem>> {
+        return MPPagingDataSourceFactory<SearchResult> { page, callback ->
+            searchMoviePage(query, page, callback)
+        }
                 .map { configSearchResultUseCase.configure(targetImageSize, it) }
                 .map { mapSearchResult(it) }
                 .let {
@@ -78,6 +72,22 @@ class SearchViewModel @Inject constructor(private val searchUseCase: SearchUseCa
                     LivePagedListBuilder(it, config)
                             .setFetchExecutor(networkExecutor)
                             .build()
+                }
+    }
+
+
+    private fun searchMoviePage(queryString: String, page: Int, callback: (List<SearchResult>, Int) -> Unit) {
+        if (page == 1) {
+            viewState.postValue(SearchViewState.Searching)
+        }
+        searchUseCase
+                .search(queryString, page)
+                .let { ucResult ->
+                    when (ucResult) {
+                        is SearchUseCaseResult.ErrorNoConnectivity -> viewState.postValue(SearchViewState.ErrorNoConnectivity)
+                        is SearchUseCaseResult.ErrorUnknown -> viewState.postValue(SearchViewState.ErrorUnknown)
+                        is SearchUseCaseResult.Success -> callback(ucResult.result.results, page + 1)
+                    }
                 }
     }
 
