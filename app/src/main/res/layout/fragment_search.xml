@@ -4,7 +4,8 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/fragmentSearchRoot"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  android:animateLayoutChanges="true">
 
   <ImageView
     android:id="@+id/searchPlaceHolderIv"
@@ -16,6 +17,18 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     app:srcCompat="@drawable/ic_app_icon_black" />
+
+  <TextView
+    android:id="@+id/emptySearch"
+    style="@style/MPTextViewTitle"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:visibility="invisible"
+    app:layout_constraintTop_toBottomOf="@+id/searchPlaceHolderIv"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    tools:text="No result for your search" />
 
   <com.jpp.moviespreview.views.MPErrorView
     android:id="@+id/searchErrorView"

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -13,12 +12,8 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.TransitionManager
 import com.jpp.moviespreview.R
-import com.jpp.moviespreview.ext.getScreenSizeInPixels
-import com.jpp.moviespreview.ext.getViewModel
-import com.jpp.moviespreview.ext.loadImageUrlAsCircular
-import com.jpp.moviespreview.ext.snackBar
+import com.jpp.moviespreview.ext.*
 import com.jpp.moviespreview.screens.main.SearchEvent
 import com.jpp.moviespreview.screens.main.SearchViewViewModel
 import dagger.android.support.AndroidSupportInjection
@@ -65,17 +60,6 @@ class SearchFragment : Fragment() {
             viewState().observe(this@SearchFragment.viewLifecycleOwner, Observer { viewState ->
                 renderViewState(viewState)
             })
-
-
-            searchResultRv.adapter?.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-                override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-                    searchListUpdated(itemCount)
-                }
-
-                override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
-                    searchListUpdated(itemCount)
-                }
-            })
         }
 
 
@@ -100,42 +84,41 @@ class SearchFragment : Fragment() {
      * current state to a final state using a ConstraintLayout animation.
      */
     private fun renderViewState(viewState: SearchViewState) {
-        //TODO JPP -> improve this
         when (viewState) {
-//            is SearchViewState.Idle -> {
-//                (searchResultRv.adapter as SearchItemAdapter).clear()
-//                R.layout.fragment_search
-//            }
+            is SearchViewState.Idle -> {
+                withRecyclerViewAdapter { clear() }
+                renderIdle()
+            }
             is SearchViewState.Searching -> {
-                (searchResultRv.adapter as SearchItemAdapter).submitList(viewState.pagedList)
-                R.layout.fragment_search_loading
+                renderSearching()
             }
             is SearchViewState.ErrorUnknown -> {
+                renderError()
                 searchErrorView.asUnknownError { withViewModel { retryLastSearch() } }
-                R.layout.fragment_search_error
             }
-//            is SearchViewState.ErrorUnknownWithItems -> {
-//                snackBar(fragmentSearchRoot, R.string.error_unexpected_error_message, R.string.error_retry) {
-//                    withViewModel { retryLastSearch() }
-//                }
-//                R.layout.fragment_search_done
-//            }
+            is SearchViewState.ErrorUnknownWithItems -> {
+                snackBar(fragmentSearchRoot, R.string.error_unexpected_error_message, R.string.error_retry) {
+                    withViewModel { retryLastSearch() }
+                }
+                renderDoneSearching()
+            }
             is SearchViewState.ErrorNoConnectivity -> {
+                renderError()
                 searchErrorView.asNoConnectivityError { withViewModel { retryLastSearch() } }
-                R.layout.fragment_search_error
             }
-//            is SearchViewState.ErrorNoConnectivityWithItems -> {
-//                snackBar(fragmentSearchRoot, R.string.error_no_network_connection_message, R.string.error_retry) {
-//                    withViewModel { retryLastSearch() }
-//                }
-//                R.layout.fragment_search_done
-//            }
-            is SearchViewState.DoneSearching -> R.layout.fragment_search_done
-        }.let {
-            val constraint = ConstraintSet()
-            constraint.clone(this@SearchFragment.context, it)
-            TransitionManager.beginDelayedTransition(fragmentSearchRoot)
-            constraint.applyTo(fragmentSearchRoot)
+            is SearchViewState.ErrorNoConnectivityWithItems -> {
+                snackBar(fragmentSearchRoot, R.string.error_no_network_connection_message, R.string.error_retry) {
+                    withViewModel { retryLastSearch() }
+                }
+                renderDoneSearching()
+            }
+            is SearchViewState.EmptySearch -> {
+                renderEmptySearch()
+            }
+            is SearchViewState.DoneSearching -> {
+                withRecyclerViewAdapter { submitList(viewState.pagedList) }
+                renderDoneSearching()
+            }
         }
     }
 
@@ -153,6 +136,55 @@ class SearchFragment : Fragment() {
         getViewModel<SearchViewViewModel>(viewModelFactory).action()
     }
 
+    private fun withRecyclerViewAdapter(action: SearchItemAdapter.() -> Unit) {
+        (searchResultRv.adapter as SearchItemAdapter).action()
+    }
+
+    private fun renderIdle() {
+        emptySearch.setInvisible()
+        searchErrorView.setInvisible()
+        searchLoadingView.setInvisible()
+        searchResultRv.setInvisible()
+
+        searchPlaceHolderIv.setVisible()
+        searchPlaceHolderIv.alpha = 0.3F
+    }
+
+    private fun renderSearching() {
+        searchPlaceHolderIv.setInvisible()
+        emptySearch.setInvisible()
+        searchErrorView.setInvisible()
+        searchResultRv.setInvisible()
+
+        searchLoadingView.setVisible()
+    }
+
+    private fun renderError() {
+        searchPlaceHolderIv.setInvisible()
+        emptySearch.setInvisible()
+        searchLoadingView.setInvisible()
+        searchResultRv.setInvisible()
+
+        searchErrorView.setVisible()
+    }
+
+    private fun renderDoneSearching() {
+        searchPlaceHolderIv.setInvisible()
+        emptySearch.setInvisible()
+        searchErrorView.setInvisible()
+        searchLoadingView.setInvisible()
+
+        searchResultRv.setVisible()
+    }
+
+    private fun renderEmptySearch() {
+        searchPlaceHolderIv.setInvisible()
+        searchErrorView.setInvisible()
+        searchLoadingView.setInvisible()
+        searchResultRv.setInvisible()
+
+        emptySearch.setVisible()
+    }
 
     /**
      * [PagedListAdapter] implementation to show the list of searchPage results.
