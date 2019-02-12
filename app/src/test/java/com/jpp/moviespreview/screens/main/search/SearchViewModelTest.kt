@@ -12,6 +12,7 @@ import com.jpp.mpdomain.usecase.search.SearchUseCaseResult
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.slot
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -104,8 +105,9 @@ class SearchViewModelTest {
         val searchViewStates = mutableListOf<SearchViewState>()
 
 
+        val searchResultCapture = slot<SearchResult>()
         every { searchUseCase.search(any(), 1) } returns SearchUseCaseResult.Success(createSearchPage(1, 10))
-        every { configSearchResultUseCase.configure(any(), any()) } answers { arg(1) }
+        every { configSearchResultUseCase.configure(imageSize, capture(searchResultCapture)) } answers { searchResultCapture.captured }
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             searchViewStates.add(it)
