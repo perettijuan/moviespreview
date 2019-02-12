@@ -1,11 +1,9 @@
 package com.jpp.moviespreview.screens.main.details
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.Observer
 import com.jpp.moviespreview.screens.main.TestCoroutineDispatchers
 import com.jpp.moviespreview.utiltest.InstantTaskExecutorExtension
+import com.jpp.moviespreview.utiltest.resumedLifecycleOwner
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.repository.details.MovieDetailsRepository
@@ -15,7 +13,8 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -121,18 +120,11 @@ class MovieDetailsViewModelTest {
 
 
     private fun executeInitTest(movieId: Double, verification: (MovieDetailsViewState) -> Unit) {
-        val lifecycleOwner: LifecycleOwner = mockk()
-        val lifecycle = LifecycleRegistry(lifecycleOwner)
-
-        every { lifecycleOwner.lifecycle } returns lifecycle
-
         subject.init(movieId)
 
-        subject.viewState().observe(lifecycleOwner, Observer {
+        subject.viewState().observe(resumedLifecycleOwner(), Observer {
             verification.invoke(it)
         })
-
-        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
     }
 
 }

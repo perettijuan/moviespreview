@@ -131,7 +131,7 @@ class SearchViewModel @Inject constructor(private val searchUseCase: SearchUseCa
                             viewState.postValue(if (page > 1) SearchViewState.ErrorNoConnectivityWithItems else SearchViewState.ErrorNoConnectivity)
                         }
                         is SearchUseCaseResult.ErrorUnknown -> {
-                            viewState.postValue(if (page > 1) SearchViewState.ErrorNoConnectivityWithItems else SearchViewState.ErrorUnknown)
+                            viewState.postValue(if (page > 1) SearchViewState.ErrorUnknownWithItems else SearchViewState.ErrorUnknown)
                         }
                         is SearchUseCaseResult.Success -> {
                             with(ucResult.searchPage.results) {
@@ -143,14 +143,12 @@ class SearchViewModel @Inject constructor(private val searchUseCase: SearchUseCa
     }
 
     private fun mapSearchResult(searchResult: SearchResult) = with(searchResult) {
-        with(searchResult) {
-            SearchResultItem(
-                    id = id,
-                    imagePath = extractImagePathFromSearchResult(this),
-                    name = extractTitleFromSearchResult(this),
-                    icon = getIconForSearchResult(this)
-            )
-        }
+        SearchResultItem(
+                id = id,
+                imagePath = extractImagePathFromSearchResult(this),
+                name = extractTitleFromSearchResult(this),
+                icon = getIconForSearchResult(this)
+        )
     }
 
     private fun extractImagePathFromSearchResult(domainSearchResult: SearchResult) = when (domainSearchResult.isMovie()) {
