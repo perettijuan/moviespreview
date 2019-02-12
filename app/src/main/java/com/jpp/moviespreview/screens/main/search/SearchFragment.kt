@@ -21,6 +21,20 @@ import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.list_item_search.view.*
 import javax.inject.Inject
 
+/**
+ * Fragment that shows and supports the search functionality in the application.
+ * This Fragment is backed by [SearchViewModel] that is the VM that takes care of performing the
+ * search and updating the UI when the results is back from the server. The Fragment reacts to
+ * [SearchViewState] state updates, meaning that any given state of the UI shown by the Fragment
+ * can be reproduced with the given state.
+ *
+ * Since the Fragment is contained in the MainActivity and the SearchView that the user interacts
+ * with is hosted by the MainActivity, this Fragment also reacts to [SearchEvent]s that are pushed
+ * by the [SearchViewViewModel].
+ * This [SearchViewViewModel] is a ViewModel that is shared between the MainActivity and this Fragment.
+ * Whenever the MainActivity detects that the user has entered data in the SearchView, it pushes a new
+ * event to this Fragment via the ViewModel.
+ */
 class SearchFragment : Fragment() {
 
     @Inject
