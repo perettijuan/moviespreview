@@ -3,6 +3,7 @@ package com.jpp.moviespreview.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.moviespreview.screens.main.MainActivityViewModel
+import com.jpp.moviespreview.screens.main.SearchViewViewModel
 import com.jpp.moviespreview.screens.main.details.MovieDetailsViewModel
 import com.jpp.moviespreview.screens.main.movies.fragments.PlayingMoviesFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.PopularMoviesFragment
@@ -56,4 +57,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SearchViewModel::class)
     internal abstract fun postSearchViewModel(viewModel: SearchViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SearchViewViewModel::class)
+    internal abstract fun postSearchViewViewModel(viewmodel: SearchViewViewModel): ViewModel
 }

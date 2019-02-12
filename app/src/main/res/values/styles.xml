@@ -35,6 +35,14 @@
     <item name="android:layout_width">@dimen/mp_loading_view_default_width</item>
   </style>
 
+
+  <!-- MPLoadingView -->
+  <style name="MPProgressBar">
+    <item name="android:layout_height">@dimen/mp_loading_view_default_height</item>
+    <item name="android:layout_width">@dimen/mp_loading_view_default_width</item>
+    <item name="android:indeterminateDrawable">@drawable/mp_progress_bar</item>
+  </style>
+
   <!-- MPLoadingErrorView -->
   <style name="MPErrorView">
     <item name="android:layout_height">@dimen/error_image_view_default_height</item>

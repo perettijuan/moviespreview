@@ -4,17 +4,21 @@ sudo: false
 
 env:
   matrix:
+    - ANDROID_TARGET=android-18  ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-19  ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-21  ANDROID_ABI=armeabi-v7a
     - ANDROID_TARGET=android-22  ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-24  ANDROID_ABI=arm64-v8a
 
 android:
   components:
-    - build-tools-26.0.2
+    - build-tools-28.0.3
     - $ANDROID_TARGET
     - sys-img-armeabi-v7a-$ANDROID_TARGET
     - extra-android-support
     - extra-android-m2repository
     - extra-google-m2repository
-    - sys-img-armeabi-v7a-google_apis-22
+    - addon-google_apis-google-$ANDROID_TARGET
   licenses:
     - 'android-sdk-preview-license-52d11cd2'
     - 'android-sdk-license-.+'
@@ -33,11 +37,12 @@ cache:
     - $HOME/.gradle/wrapper     #Cache the gradle
 
 # Enable to run android instrumented tests
-# efore_script:
- # - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
- # - emulator -avd test -no-window &
- # - android-wait-for-emulator
- # - adb shell input keyevent 82 &
+before_script:
+  - android-update-sdk --components=sys-img-$ANDROID_ABI-$ANDROID_TARGET --accept-licenses='android-sdk-license-[0-9a-f]{8}'
+  - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
+  - emulator -avd test -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
 
 
 script:

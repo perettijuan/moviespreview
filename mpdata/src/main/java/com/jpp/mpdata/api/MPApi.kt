@@ -1,6 +1,7 @@
 package com.jpp.mpdata.api
 
 import com.jpp.mpdata.BuildConfig
+import com.jpp.mpdata.repository.search.SearchApi
 import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MoviePage
@@ -8,7 +9,6 @@ import com.jpp.mpdomain.SearchPage
 import com.jpp.mpdomain.repository.configuration.ConfigurationApi
 import com.jpp.mpdomain.repository.details.MovieDetailsApi
 import com.jpp.mpdomain.repository.movies.MoviesApi
-import com.jpp.mpdomain.repository.search.SearchApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -19,7 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Represents the remote API that MoviesPreview supports. It is a wrapper
  * around Retrofit classes to provide a clean access to the API.
  */
-class MPApi
+open class MPApi
     : ConfigurationApi,
         MoviesApi,
         MovieDetailsApi,

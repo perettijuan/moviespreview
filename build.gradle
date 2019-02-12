@@ -12,7 +12,8 @@ buildscript {
             'pagingLib': '2.1.0-rc01',
             'navigationLib' : '1.0.0-alpha09',
             'dagger' : '2.15',
-            'room' : '2.0.0'
+            'room' : '2.0.0',
+            'mockk' : '1.8.13.kotlin13'
     ]
 
     ext.deps = [
@@ -54,7 +55,10 @@ buildscript {
                     'hamcrest': [
                             'integration': "org.hamcrest:hamcrest-integration:${versions.hamcrest}"
                     ],
-                    'mockk'   : "io.mockk:mockk:1.8.13.kotlin13"
+                    'mockk'   : [
+                            'unit' : "io.mockk:mockk:${versions.mockk}",
+                            'android' : "io.mockk:mockk-android:${versions.mockk}"
+                    ]
             ]
     ]
 
@@ -78,6 +82,14 @@ buildscript {
  */
 def getCommonTestResources() {
     return fileFromProjectRoot(':common', 'src', 'test', 'java').absolutePath
+}
+
+/**
+ * Returns sources from common project (only) that are shared between different
+ * modules of the application to execute test code.
+ */
+def getCommonJunit5TestResources() {
+    return fileFromProjectRoot(':common', 'src', 'test', 'junit5').absolutePath
 }
 
 /**

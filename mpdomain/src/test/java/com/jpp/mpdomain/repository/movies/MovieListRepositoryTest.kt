@@ -10,7 +10,7 @@ import com.jpp.mpdomain.handlers.ConnectivityHandler
 import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
 import com.jpp.mpdomain.repository.configuration.ConfigurationApi
 import com.jpp.mpdomain.repository.configuration.ConfigurationDb
-import com.jpp.mpdomain.utils.CurrentThreadExecutorService
+import com.jpp.moviespreview.utiltest.CurrentThreadExecutorService
 import com.jpp.moviespreview.utiltest.InstantTaskExecutorExtension
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK

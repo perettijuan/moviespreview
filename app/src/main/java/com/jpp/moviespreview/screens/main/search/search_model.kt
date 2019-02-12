@@ -1,19 +1,22 @@
 package com.jpp.moviespreview.screens.main.search
 
 import androidx.annotation.DrawableRes
+import androidx.lifecycle.LiveData
+import androidx.paging.PagedList
 import com.jpp.moviespreview.R
 
 /**
- * Represents the view state of the search screen.
+ * Represents the view state of the searchPage screen.
  */
 sealed class SearchViewState {
     object Idle : SearchViewState()
-    object Searching : SearchViewState()
     object ErrorUnknown : SearchViewState()
     object ErrorUnknownWithItems : SearchViewState()
     object ErrorNoConnectivity : SearchViewState()
     object ErrorNoConnectivityWithItems : SearchViewState()
-    object DoneSearching : SearchViewState()
+    object Searching : SearchViewState()
+    data class EmptySearch(val searchText: String) : SearchViewState()
+    data class DoneSearching(val pagedList: PagedList<SearchResultItem>) : SearchViewState()
 }
 
 sealed class SearchResultTypeIcon(@DrawableRes val iconRes: Int) {

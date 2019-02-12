@@ -2,13 +2,9 @@ package com.jpp.moviespreview.screens.main.search
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.SearchView
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,15 +12,29 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.TransitionManager
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.ext.*
+import com.jpp.moviespreview.screens.main.SearchEvent
+import com.jpp.moviespreview.screens.main.SearchViewViewModel
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_movies.*
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.list_item_search.view.*
 import javax.inject.Inject
 
+/**
+ * Fragment that shows and supports the search functionality in the application.
+ * This Fragment is backed by [SearchViewModel] that is the VM that takes care of performing the
+ * search and updating the UI when the results is back from the server. The Fragment reacts to
+ * [SearchViewState] state updates, meaning that any given state of the UI shown by the Fragment
+ * can be reproduced with the given state.
+ *
+ * Since the Fragment is contained in the MainActivity and the SearchView that the user interacts
+ * with is hosted by the MainActivity, this Fragment also reacts to [SearchEvent]s that are pushed
+ * by the [SearchViewViewModel].
+ * This [SearchViewViewModel] is a ViewModel that is shared between the MainActivity and this Fragment.
+ * Whenever the MainActivity detects that the user has entered data in the SearchView, it pushes a new
+ * event to this Fragment via the ViewModel.
+ */
 class SearchFragment : Fragment() {
 
     @Inject
@@ -48,17 +58,6 @@ class SearchFragment : Fragment() {
             adapter = SearchItemAdapter()
         }
 
-        withSearchView { searchView ->
-            searchView.setOnQueryTextListener(QuerySubmitter {
-                withViewModel {
-                    search(it)
-                }
-            })
-        }
-
-        findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener {
-            withViewModel { clearSearch() }
-        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -75,9 +74,20 @@ class SearchFragment : Fragment() {
             viewState().observe(this@SearchFragment.viewLifecycleOwner, Observer { viewState ->
                 renderViewState(viewState)
             })
+        }
 
-            listing.observe(this@SearchFragment.viewLifecycleOwner, Observer {
-                (searchResultRv.adapter as SearchItemAdapter).submitList(it)
+
+        /*
+         * React to searchPage events posted by the MainActivity
+         */
+        withSearchViewViewModel {
+            searchEvents().observe(this@SearchFragment.viewLifecycleOwner, Observer { event ->
+                when (event) {
+                    is SearchEvent.ClearSearch -> withViewModel { clearSearch() }
+                    is SearchEvent.Search -> withViewModel {
+                        search(event.query)
+                    }
+                }
             })
         }
     }
@@ -90,64 +100,108 @@ class SearchFragment : Fragment() {
     private fun renderViewState(viewState: SearchViewState) {
         when (viewState) {
             is SearchViewState.Idle -> {
-                withSearchView {
-                    it.setQuery("", false)
-                    it.requestFocus()
-                }
-                (searchResultRv.adapter as SearchItemAdapter).clear()
-                R.layout.fragment_search
+                withRecyclerViewAdapter { clear() }
+                renderIdle()
             }
             is SearchViewState.Searching -> {
-                withSearchView { it.clearFocus() }
-                R.layout.fragment_search_loading
+                renderSearching()
             }
             is SearchViewState.ErrorUnknown -> {
+                renderError()
                 searchErrorView.asUnknownError { withViewModel { retryLastSearch() } }
-                R.layout.fragment_search_error
             }
             is SearchViewState.ErrorUnknownWithItems -> {
                 snackBar(fragmentSearchRoot, R.string.error_unexpected_error_message, R.string.error_retry) {
                     withViewModel { retryLastSearch() }
                 }
-                R.layout.fragment_search_done
+                renderDoneSearching()
             }
             is SearchViewState.ErrorNoConnectivity -> {
+                renderError()
                 searchErrorView.asNoConnectivityError { withViewModel { retryLastSearch() } }
-                R.layout.fragment_search_error
             }
             is SearchViewState.ErrorNoConnectivityWithItems -> {
                 snackBar(fragmentSearchRoot, R.string.error_no_network_connection_message, R.string.error_retry) {
                     withViewModel { retryLastSearch() }
                 }
-                R.layout.fragment_search_done
+                renderDoneSearching()
             }
-            is SearchViewState.DoneSearching -> R.layout.fragment_search_done
-        }.let {
-            val constraint = ConstraintSet()
-            constraint.clone(this@SearchFragment.context, it)
-            TransitionManager.beginDelayedTransition(fragmentSearchRoot)
-            constraint.applyTo(fragmentSearchRoot)
+            is SearchViewState.EmptySearch -> {
+                renderEmptySearch()
+            }
+            is SearchViewState.DoneSearching -> {
+                withRecyclerViewAdapter { submitList(viewState.pagedList) }
+                renderDoneSearching()
+            }
         }
     }
 
-    /**
-     * The [SearchView] used in the Activity's action bar belongs to the container
-     * activity (MainActivity). This function facilitates accessing the view that
-     * belongs to the Activity view hierarchy.
-     */
-    private fun withSearchView(action: (SearchView) -> Unit) {
-        with(findViewById<SearchView>(R.id.mainSearchView)) {
-            action(this)
-        }
-    }
 
     private fun withViewModel(action: SearchViewModel.() -> Unit) {
         getViewModel<SearchViewModel>(viewModelFactory).action()
     }
 
+    /**
+     * The SearchView that triggers the searchPage is in the MainActivity view hierarchy.
+     * SearchViewViewModel allows the communication between this fragment and the SearchView
+     * in the MainActivity.
+     */
+    private fun withSearchViewViewModel(action: SearchViewViewModel.() -> Unit) {
+        getViewModel<SearchViewViewModel>(viewModelFactory).action()
+    }
+
+    private fun withRecyclerViewAdapter(action: SearchItemAdapter.() -> Unit) {
+        (searchResultRv.adapter as SearchItemAdapter).action()
+    }
+
+    private fun renderIdle() {
+        emptySearch.setInvisible()
+        searchErrorView.setInvisible()
+        searchLoadingView.setInvisible()
+        searchResultRv.setInvisible()
+
+        searchPlaceHolderIv.setVisible()
+        searchPlaceHolderIv.alpha = 0.3F
+    }
+
+    private fun renderSearching() {
+        searchPlaceHolderIv.setInvisible()
+        emptySearch.setInvisible()
+        searchErrorView.setInvisible()
+        searchResultRv.setInvisible()
+
+        searchLoadingView.setVisible()
+    }
+
+    private fun renderError() {
+        searchPlaceHolderIv.setInvisible()
+        emptySearch.setInvisible()
+        searchLoadingView.setInvisible()
+        searchResultRv.setInvisible()
+
+        searchErrorView.setVisible()
+    }
+
+    private fun renderDoneSearching() {
+        searchPlaceHolderIv.setInvisible()
+        emptySearch.setInvisible()
+        searchErrorView.setInvisible()
+        searchLoadingView.setInvisible()
+
+        searchResultRv.setVisible()
+    }
+
+    private fun renderEmptySearch() {
+        searchPlaceHolderIv.setInvisible()
+        searchErrorView.setInvisible()
+        searchLoadingView.setInvisible()
+        searchResultRv.setInvisible()
+
+        emptySearch.setVisible()
+    }
 
     /**
-     * [PagedListAdapter] implementation to show the list of search results.
+     * [PagedListAdapter] implementation to show the list of searchPage results.
      */
     class SearchItemAdapter : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
 
@@ -186,41 +240,4 @@ class SearchFragment : Fragment() {
             }
         }
     }
-
-
-    /**
-     * Inner [SearchView.OnQueryTextListener] implementation to handle the user search over the
-     * SearchView. It waits to submit the query a given amount of time that is based on the size
-     * of the text introduced by the user.
-     *
-     * Note that this custom implementation could be a lot simpler using Android RxBindings, but
-     * I don't want to bring RxJava into the project for this single reason.
-     */
-    private inner class QuerySubmitter(private val callback: (String) -> Unit) : SearchView.OnQueryTextListener {
-
-        private lateinit var queryToSubmit: String
-        private var isTyping = false
-        private val typingTimeout = 1000L // 1 second
-        private val timeoutHandler = Handler(Looper.getMainLooper())
-        private val timeoutTask = Runnable {
-            isTyping = false
-            callback(queryToSubmit)
-        }
-
-        override fun onQueryTextSubmit(query: String): Boolean {
-            timeoutHandler.removeCallbacks(timeoutTask)
-            callback(query)
-            return true
-        }
-
-        override fun onQueryTextChange(newText: String): Boolean {
-            timeoutHandler.removeCallbacks(timeoutTask)
-            if (newText.length > 3) {
-                queryToSubmit = newText
-                timeoutHandler.postDelayed(timeoutTask, typingTimeout)
-            }
-            return true
-        }
-    }
-
 }

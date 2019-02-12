@@ -122,8 +122,8 @@ sealed class MovieSection(val name: String) {
  * Represents a page of results of a searchFirstPage retrieved from the backend.
  * [page] - the page number.
  * [results] - the list of [SearchResult] contained by the page.
- * [total_pages] - the total number of pages that can be retrieved for the current search.
- * [total_results] - the total number of [SearchResult] available for the search.
+ * [total_pages] - the total number of pages that can be retrieved for the current searchPage.
+ * [total_results] - the total number of [SearchResult] available for the searchPage.
  */
 data class SearchPage(val page: Int,
                       val results: List<SearchResult>,
@@ -131,7 +131,7 @@ data class SearchPage(val page: Int,
                       val total_results: Int)
 
 /**
- * Represents an item in a page of search results.
+ * Represents an item in a page of searchPage results.
  * [id] - the identifier that represents this movie in the model.
  * [poster_path] - the path of the poster image. This needs to be used to configure
  * the full URL of the image, using the sizes available in [ImagesConfiguration.poster_sizes].

@@ -9,13 +9,17 @@ import com.jpp.mpdata.cache.MovieDetailsCache
 import com.jpp.mpdata.cache.MoviesCache
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter
+import com.jpp.mpdata.repository.configuration.ConfigurationRepositoryImpl
+import com.jpp.mpdata.repository.search.SearchApi
+import com.jpp.mpdata.repository.search.SearchRepositoryImpl
 import com.jpp.mpdomain.repository.configuration.ConfigurationApi
 import com.jpp.mpdomain.repository.configuration.ConfigurationDb
+import com.jpp.mpdomain.repository.configuration.ConfigurationRepository
 import com.jpp.mpdomain.repository.details.MovieDetailsApi
 import com.jpp.mpdomain.repository.details.MovieDetailsDb
 import com.jpp.mpdomain.repository.movies.MoviesApi
 import com.jpp.mpdomain.repository.movies.MoviesDb
-import com.jpp.mpdomain.repository.search.SearchApi
+import com.jpp.mpdomain.repository.SearchRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -78,6 +82,12 @@ class DataLayerModule {
                                 adapter: RoomModelAdapter,
                                 timestampHelper: CacheTimestampHelper): ConfigurationDb = ConfigurationCache(roomDb, adapter, timestampHelper)
 
+    @Singleton
+    @Provides
+    fun providesConfigurationRepository(configurationApi: ConfigurationApi,
+                                        configurationDb: ConfigurationDb)
+            : ConfigurationRepository = ConfigurationRepositoryImpl(configurationApi, configurationDb)
+
     /*****************************************
      ****** MOVIE DETAILS DEPENDENCIES *******
      *****************************************/
@@ -90,7 +100,7 @@ class DataLayerModule {
     @Provides
     fun providesMovieDetailsDb(roomDb: MPRoomDataBase,
                                adapter: RoomModelAdapter,
-                               timestampHelper: CacheTimestampHelper) : MovieDetailsDb = MovieDetailsCache(roomDb, adapter, timestampHelper)
+                               timestampHelper: CacheTimestampHelper): MovieDetailsDb = MovieDetailsCache(roomDb, adapter, timestampHelper)
 
 
     /**********************************
@@ -99,4 +109,8 @@ class DataLayerModule {
     @Singleton
     @Provides
     fun providesSearchApi(mpApiInstance: MPApi): SearchApi = mpApiInstance
+
+    @Provides
+    fun providesSearchRepository(searchApi: SearchApi)
+            : SearchRepository = SearchRepositoryImpl(searchApi)
 }
