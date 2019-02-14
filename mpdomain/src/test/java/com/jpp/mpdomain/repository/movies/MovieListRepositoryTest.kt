@@ -8,10 +8,9 @@ import androidx.paging.PageKeyedDataSource
 import com.jpp.mpdomain.*
 import com.jpp.mpdomain.handlers.ConnectivityHandler
 import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
-import com.jpp.mpdomain.repository.RepositoryState
 import com.jpp.mpdomain.repository.configuration.ConfigurationApi
 import com.jpp.mpdomain.repository.configuration.ConfigurationDb
-import com.jpp.mpdomain.utils.CurrentThreadExecutorService
+import com.jpp.moviespreview.utiltest.CurrentThreadExecutorService
 import com.jpp.moviespreview.utiltest.InstantTaskExecutorExtension
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -57,7 +56,8 @@ class MovieListRepositoryTest {
                 configurationDb,
                 connectivityHandler,
                 configurationHandler,
-                CurrentThreadExecutorService())
+                CurrentThreadExecutorService()
+        )
     }
 
     @Test
@@ -125,7 +125,7 @@ class MovieListRepositoryTest {
         every { connectivityHandler.isConnectedToNetwork() } returns true
 
         executeMovieFetchingInRepositoryAndNotifyRepositoryState(2) {
-            assertEquals(RepositoryState.ErrorUnknown(true), it)
+            assertEquals(MoviesRepositoryState.ErrorUnknown(true), it)
         }
     }
 
@@ -137,7 +137,7 @@ class MovieListRepositoryTest {
         every { connectivityHandler.isConnectedToNetwork() } returns true
 
         executeMovieFetchingInRepositoryAndNotifyRepositoryState(1) {
-            assertEquals(RepositoryState.ErrorUnknown(false), it)
+            assertEquals(MoviesRepositoryState.ErrorUnknown(false), it)
         }
     }
 
@@ -150,7 +150,7 @@ class MovieListRepositoryTest {
         every { connectivityHandler.isConnectedToNetwork() } returns false
 
         executeMovieFetchingInRepositoryAndNotifyRepositoryState(2) {
-            assertEquals(RepositoryState.ErrorNoConnectivity(true), it)
+            assertEquals(MoviesRepositoryState.ErrorNoConnectivity(true), it)
         }
     }
 
@@ -162,7 +162,7 @@ class MovieListRepositoryTest {
         every { connectivityHandler.isConnectedToNetwork() } returns false
 
         executeMovieFetchingInRepositoryAndNotifyRepositoryState(1) {
-            assertEquals(RepositoryState.ErrorNoConnectivity(false), it)
+            assertEquals(MoviesRepositoryState.ErrorNoConnectivity(false), it)
         }
     }
 
@@ -189,7 +189,7 @@ class MovieListRepositoryTest {
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
     }
 
-    private fun executeMovieFetchingInRepositoryAndNotifyRepositoryState(page: Int, verification: (RepositoryState) -> Unit) {
+    private fun executeMovieFetchingInRepositoryAndNotifyRepositoryState(page: Int, verification: (MoviesRepositoryState) -> Unit) {
         val lifecycleOwner: LifecycleOwner = mockk()
         val lifecycle = LifecycleRegistry(lifecycleOwner)
 

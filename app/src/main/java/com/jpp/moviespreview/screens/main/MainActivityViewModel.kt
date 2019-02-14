@@ -25,4 +25,8 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
     fun userNavigatesToMovieDetails(movieTitle: String, contentImageUrl: String) {
         viewState.postValue(MainActivityViewState.ActionBarUnlocked(movieTitle, contentImageUrl))
     }
+
+    fun userNavigatesToSearch() {
+        viewState.postValue(MainActivityViewState.SearchEnabled)
+    }
 }

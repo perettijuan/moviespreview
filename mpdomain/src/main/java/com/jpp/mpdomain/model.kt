@@ -116,3 +116,59 @@ sealed class MovieSection(val name: String) {
     object TopRated : MovieSection("toprated")
     object Upcoming : MovieSection("upcoming")
 }
+
+
+/**
+ * Represents a page of results of a searchFirstPage retrieved from the backend.
+ * [page] - the page number.
+ * [results] - the list of [SearchResult] contained by the page.
+ * [total_pages] - the total number of pages that can be retrieved for the current searchPage.
+ * [total_results] - the total number of [SearchResult] available for the searchPage.
+ */
+data class SearchPage(val page: Int,
+                      val results: List<SearchResult>,
+                      val total_pages: Int,
+                      val total_results: Int)
+
+/**
+ * Represents an item in a page of searchPage results.
+ * [id] - the identifier that represents this movie in the model.
+ * [poster_path] - the path of the poster image. This needs to be used to configure
+ * the full URL of the image, using the sizes available in [ImagesConfiguration.poster_sizes].
+ * [profile_path] - the path of the profile image. This needs to be used to configure
+ * the full URL of the image, using the sizes available in [ImagesConfiguration.profile_sizes].
+ * [media_type] - represents the type of the result. It might be one of the three: movie, tv, person.
+ * [name] - the name of the result. Valid when [media_type] is person.
+ * [title] - the title of the result to be shown. Valid when [media_type] is tv or movie.
+ * [original_title] - the original title of the movie or tv show,
+ * without any translation. Valid when [media_type] is tv or movie.
+ * [overview] - an synopsis of the movie or tv show. Valid when [media_type] is tv or movie.
+ * [release_date] - the date in which the movie was originally released. The format
+ * depends on the language used to fetch the movie.
+ * [backdrop_path] - the path of the backdrop image. This needs to be used to configure
+ * the full URL of the image, using the sizes available in [ImagesConfiguration.backdrop_sizes].
+ * [vote_count] - the total number of votes the movie has in the community.
+ * [vote_average] - the average of votes that the movie has in the community.
+ * [popularity] - represents how popular the movie is in the community, based in the
+ * relative number of votes.
+ */
+data class SearchResult(val id: Double,
+                        val poster_path: String?,
+                        val profile_path: String?,
+                        val media_type: String,
+                        val name: String?,
+                        val title: String?,
+                        val original_title: String?,
+                        val overview: String?,
+                        val release_date: String?,
+                        val original_language: String?,
+                        val backdrop_path: String?,
+                        val genre_ids: List<Int>?,
+                        val vote_count: Double?,
+                        val vote_average: Float?,
+                        val popularity: Float?) {
+
+    fun isMovie(): Boolean = media_type == "movie"
+    fun isTvShow(): Boolean = media_type == "tv"
+    fun isPerson(): Boolean = media_type == "person"
+}

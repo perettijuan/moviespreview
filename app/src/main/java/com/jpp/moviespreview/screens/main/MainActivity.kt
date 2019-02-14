@@ -5,9 +5,14 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
@@ -54,15 +59,24 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private lateinit var mpToolbarManager: MPToolbarManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        mpToolbarManager = MPToolbarManager()
 
         withMainViewModel {
             viewState().observe(this@MainActivity, Observer { viewState ->
                 renderViewState(viewState)
+            })
+        }
+
+        withSearchViewViewModel {
+            searchEvents().observe(this@MainActivity, Observer { event ->
+                onSearchEvent(event)
             })
         }
 
@@ -191,6 +205,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                         withMainViewModel { userNavigatesToMovieDetails(it.getString("movieTitle"), it.getString("movieImageUrl")) }
                     }
                 }
+                R.id.searchFragment -> withMainViewModel { userNavigatesToSearch() }
             }
         }
 
@@ -198,21 +213,38 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     }
 
 
-    private fun withMainViewModel(body: MainActivityViewModel.() -> Unit) = withViewModel<MainActivityViewModel>(viewModelFactory) { body() }
+    private fun withMainViewModel(action: MainActivityViewModel.() -> Unit) = withViewModel<MainActivityViewModel>(viewModelFactory) { action() }
+    private fun withSearchViewViewModel(action: SearchViewViewModel.() -> Unit) = withViewModel<SearchViewViewModel>(viewModelFactory) { action() }
 
     private fun renderViewState(viewState: MainActivityViewState) {
         when (viewState) {
             is MainActivityViewState.ActionBarLocked -> {
                 if (viewState.withAnimation) lockActionBarWithAnimation() else lockActionBar()
                 setActionBarTitle(viewState.sectionTitle)
+                mainSearchView.setGone()
             }
             is MainActivityViewState.ActionBarUnlocked -> {
                 mainImageView.clearImage()
+                mainSearchView.setGone()
                 unlockActionBarWithAnimation {
                     mainImageView.loadImageUrl(viewState.contentImageUrl)
                     mainCollapsingToolbarLayout.enableTitle()
                     enableCollapsingToolBarLayoutTitle(viewState.sectionTitle)
                 }
+                mpToolbarManager.clearInsetStartWithNavigation(mainToolbar)
+            }
+            is MainActivityViewState.SearchEnabled -> {
+                with(mainSearchView) {
+                    isIconified = false
+                    setIconifiedByDefault(false)
+                    setOnQueryTextListener(QuerySubmitter { withSearchViewViewModel { search(it) } })
+                    setVisible()
+                    findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener {
+                        withSearchViewViewModel { clearSearch() }
+                    }
+                }
+                mpToolbarManager.setInsetStartWithNavigation(0, mainToolbar)
+
             }
         }
 
@@ -223,6 +255,23 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
          */
         invalidateOptionsMenu()
     }
+
+    private fun onSearchEvent(event: SearchEvent) {
+        when (event) {
+            is SearchEvent.ClearSearch -> {
+                with(mainSearchView) {
+                    setQuery("", false)
+                    requestFocus()
+                }
+            }
+            is SearchEvent.Search -> {
+                with(mainSearchView) {
+                    clearFocus()
+                }
+            }
+        }
+    }
+
 
     /**
      * Hides the mainCollapsingToolbarLayout title when it is fully extended and shows the
@@ -249,7 +298,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             }
         })
     }
-
 
 
     private fun lockActionBar() {
@@ -328,4 +376,70 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 }
                 .run { start() }
     }
+
+
+    /**
+     * Helper class to remove the space between the arrow image and the
+     * text (or the SearchView) that is shown in the Toolbar.
+     * In some screens (e.g.: searchPage screen) we want to remove this
+     * space to provide more space for the content shown right next
+     * to the arrow/burger icon.
+     */
+    private inner class MPToolbarManager {
+        private var originalInsetStartWithNavigation = -1
+
+
+        fun setInsetStartWithNavigation(toSet: Int, toolbar: Toolbar) {
+            originalInsetStartWithNavigation = toSet
+            toolbar.contentInsetStartWithNavigation = toSet
+        }
+
+
+        fun clearInsetStartWithNavigation(toolbar: Toolbar) {
+            when (originalInsetStartWithNavigation != -1) {
+                true -> {
+                    toolbar.contentInsetStartWithNavigation = originalInsetStartWithNavigation
+                    originalInsetStartWithNavigation = -1
+                }
+            }
+        }
+
+    }
+
+
+    /**
+     * Inner [SearchView.OnQueryTextListener] implementation to handle the user searchPage over the
+     * SearchView. It waits to submit the query a given amount of time that is based on the size
+     * of the text introduced by the user.
+     *
+     * Note that this custom implementation could be a lot simpler using Android RxBindings, but
+     * I don't want to bring RxJava into the project for this single reason.
+     */
+    private inner class QuerySubmitter(private val callback: (String) -> Unit) : SearchView.OnQueryTextListener {
+
+        private lateinit var queryToSubmit: String
+        private var isTyping = false
+        private val typingTimeout = 1000L // 1 second
+        private val timeoutHandler = Handler(Looper.getMainLooper())
+        private val timeoutTask = Runnable {
+            isTyping = false
+            callback(queryToSubmit)
+        }
+
+        override fun onQueryTextSubmit(query: String): Boolean {
+            timeoutHandler.removeCallbacks(timeoutTask)
+            callback(query)
+            return true
+        }
+
+        override fun onQueryTextChange(newText: String): Boolean {
+            timeoutHandler.removeCallbacks(timeoutTask)
+            if (newText.length > 3) {
+                queryToSubmit = newText
+                timeoutHandler.postDelayed(timeoutTask, typingTimeout)
+            }
+            return true
+        }
+    }
+
 }

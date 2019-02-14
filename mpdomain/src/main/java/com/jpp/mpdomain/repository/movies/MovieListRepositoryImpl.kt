@@ -9,15 +9,14 @@ import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.handlers.ConnectivityHandler
 import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
-import com.jpp.mpdomain.repository.RepositoryState
 import com.jpp.mpdomain.repository.configuration.ConfigurationApi
 import com.jpp.mpdomain.repository.configuration.ConfigurationDb
-import com.jpp.mpdomain.repository.movies.paging.GetMoviesDataSourceFactory
+import com.jpp.mpdomain.paging.MPPagingDataSourceFactory
 import java.util.concurrent.Executor
 
 /**
  * [MovieListRepository] implementation.
- * Delegates the paging responsibility to the DataSource created by [GetMoviesDataSourceFactory],
+ * Delegates the paging responsibility to the DataSource created by [MPPagingDataSourceFactory],
  * but holds the responsibility of knowing which set of data should be queried to retrieve
  * the data.
  */
@@ -29,19 +28,19 @@ class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
                               private val configurationHandler: ConfigurationHandler,
                               private val networkExecutor: Executor) : MovieListRepository {
 
-    private val operationState by lazy { MutableLiveData<RepositoryState>() }
+    private val operationState by lazy { MutableLiveData<MoviesRepositoryState>() }
     private val postPreFetchOperationState: (page: Int) -> Unit = { page ->
         operationState.postValue(
                 when (page == 1) {
-                    true -> RepositoryState.Loading
-                    false -> RepositoryState.None
+                    true -> MoviesRepositoryState.Loading
+                    false -> MoviesRepositoryState.None
                 }
         )
     }
 
 
     override fun <T> moviePageForSection(section: MovieSection, targetBackdropSize: Int, targetPosterSize: Int, mapper: (Movie) -> T): MovieListing<T> {
-        val dataSourceFactory = GetMoviesDataSourceFactory { page, callback ->
+        val dataSourceFactory = MPPagingDataSourceFactory<Movie> { page, callback ->
             getMoviePageForSection(page, section, callback)
         }
 
@@ -73,12 +72,12 @@ class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
     private fun getMoviePageForSection(page: Int, section: MovieSection, callback: (List<Movie>, Int) -> Unit) {
         postPreFetchOperationState.invoke(page)
         getMoviePage(page, section)?.let { fetchedMoviePage ->
-            operationState.postValue(RepositoryState.Loaded)
+            operationState.postValue(MoviesRepositoryState.Loaded)
             callback(fetchedMoviePage.results, page + 1)
         } ?: run {
             when (connectivityHandler.isConnectedToNetwork()) {
-                true -> operationState.postValue(RepositoryState.ErrorUnknown(page > 1))
-                else -> operationState.postValue(RepositoryState.ErrorNoConnectivity(page > 1))
+                true -> operationState.postValue(MoviesRepositoryState.ErrorUnknown(page > 1))
+                else -> operationState.postValue(MoviesRepositoryState.ErrorNoConnectivity(page > 1))
             }
         }
     }
@@ -102,12 +101,10 @@ class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
     private fun configureMovieImagesPath(movie: Movie,
                                          targetBackdropSize: Int,
                                          targetPosterSize: Int): Movie {
-
-        return getAppConfiguration().let {
-            when (it) {
-                null -> movie
-                else -> configurationHandler.configureMovieImagesPath(movie, it.images, targetBackdropSize, targetPosterSize)
-            }
+        return getAppConfiguration()?.let {
+            configurationHandler.configureMovieImagesPath(movie, it.images, targetBackdropSize, targetPosterSize)
+        } ?: run {
+            movie
         }
     }
 
