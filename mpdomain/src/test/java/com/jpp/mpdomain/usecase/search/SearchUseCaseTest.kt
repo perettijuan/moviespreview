@@ -31,7 +31,7 @@ class SearchUseCaseTest {
     }
 
     @Test
-    fun `Should should check connectivity before searching and return ErrorNoConnectivity`() {
+    fun `Should check connectivity before searching and return ErrorNoConnectivity`() {
         every { connectivityHandler.isConnectedToNetwork() } returns false
 
         subject.search("aSearch", 1).let { result ->
