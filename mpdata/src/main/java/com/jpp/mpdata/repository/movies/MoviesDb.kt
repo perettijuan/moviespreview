@@ -1,4 +1,4 @@
-package com.jpp.mpdomain.repository.movies
+package com.jpp.mpdata.repository.movies
 
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection

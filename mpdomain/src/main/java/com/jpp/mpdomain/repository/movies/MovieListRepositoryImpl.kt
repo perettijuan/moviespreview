@@ -20,8 +20,7 @@ import java.util.concurrent.Executor
  * but holds the responsibility of knowing which set of data should be queried to retrieve
  * the data.
  */
-class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
-                              private val moviesDb: MoviesDb,
+class MovieListRepositoryImpl(
                               private val configurationApi: ConfigurationApi,
                               private val configurationDb: ConfigurationDb,
                               private val connectivityHandler: ConnectivityHandler,
@@ -71,31 +70,10 @@ class MovieListRepositoryImpl(private val moviesApi: MoviesApi,
 
     private fun getMoviePageForSection(page: Int, section: MovieSection, callback: (List<Movie>, Int) -> Unit) {
         postPreFetchOperationState.invoke(page)
-        getMoviePage(page, section)?.let { fetchedMoviePage ->
-            operationState.postValue(MoviesRepositoryState.Loaded)
-            callback(fetchedMoviePage.results, page + 1)
-        } ?: run {
-            when (connectivityHandler.isConnectedToNetwork()) {
-                true -> operationState.postValue(MoviesRepositoryState.ErrorUnknown(page > 1))
-                else -> operationState.postValue(MoviesRepositoryState.ErrorNoConnectivity(page > 1))
-            }
-        }
+
     }
 
-    private fun getMoviePage(page: Int, section: MovieSection): MoviePage? {
-        return moviesDb.getMoviePageForSection(page, section)?.let {
-            it
-        } ?: run {
-            when (section) {
-                MovieSection.Playing -> moviesApi.getNowPlayingMoviePage(page)
-                MovieSection.Popular -> moviesApi.getPopularMoviePage(page)
-                MovieSection.TopRated -> moviesApi.getTopRatedMoviePage(page)
-                MovieSection.Upcoming -> moviesApi.getUpcomingMoviePage(page)
-            }?.also {
-                moviesDb.saveMoviePageForSection(it, section)
-            }
-        }
-    }
+
 
 
     private fun configureMovieImagesPath(movie: Movie,
