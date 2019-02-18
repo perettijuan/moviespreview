@@ -1,69 +1,129 @@
 package com.jpp.moviespreview.screens.main.movies
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations.map
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
+import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
-import com.jpp.mpdomain.repository.movies.MoviesRepositoryState
-import com.jpp.mpdomain.repository.movies.MovieListRepository
+import com.jpp.mpdomain.paging.MPPagingDataSourceFactory
+import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
+import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
+import com.jpp.mpdomain.usecase.movies.GetMoviesUseCaseResult
+import java.util.concurrent.Executor
 
 /**
  * [ViewModel] to support the movies list section in the application.
  *
- * This is a very special ViewModel in the application, since it doesn't follows the pattern
- * defined in MPScopedViewModel. This is because this section of the application is using the
- * Paging Library to support unlimited scrolling and the [MovieListRepository] is using its own
- * Executor to defer long term operations to another thread (instead of coroutines provided by
- * the MPScopedViewModel).
+ * It exposes a single output in a LiveData object that receives [MoviesViewState] updates as soon
+ * as any new state is identified by the ViewModel.
  */
-abstract class MoviesFragmentViewModel(private val movieListRepository: MovieListRepository) : ViewModel() {
-
+abstract class MoviesFragmentViewModel(private val getMoviesUseCase: GetMoviesUseCase,
+                                       private val configMovieUseCase: ConfigMovieUseCase,
+                                       private val networkExecutor: Executor) : ViewModel() {
 
     protected abstract val movieSection: MovieSection
-    lateinit var viewState: LiveData<MoviesFragmentViewState>
-    lateinit var pagedList: LiveData<PagedList<MovieItem>>
-    private lateinit var retryFun: () -> Unit
 
+    private val viewState = MediatorLiveData<MoviesViewState>()
+    private lateinit var retryFunc: (() -> Unit)
 
+    /**
+     * Called on initialization of the movies fragment.
+     * Each time this method is called, a new movie list will be fetched from the use case
+     * and posted to the viewState, unless a previous list has been fetched.
+     */
     fun init(moviePosterSize: Int,
              movieBackdropSize: Int) {
 
-        if (::viewState.isInitialized) {
+        /*
+         * retryFunc is initialized always in createMoviesPagedList().
+         * Let's use it identify the state of the VM.
+         */
+        if (::retryFunc.isInitialized) {
             return
         }
 
-        movieListRepository.moviePageForSection(movieSection, movieBackdropSize, moviePosterSize) { domainMovie ->
-            mapDomainMovie(domainMovie)
-        }.let { listing ->
-            /*
-             * Very cool way to map the ds internal state to a state that the UI understands without coupling the UI to de domain.
-             */
-            viewState = map(listing.operationState) {
-                when (it) {
-                    MoviesRepositoryState.Loading -> MoviesFragmentViewState.Loading
-                    is MoviesRepositoryState.ErrorUnknown -> {
-                        if (it.hasItems) MoviesFragmentViewState.ErrorUnknownWithItems else MoviesFragmentViewState.ErrorUnknown
-                    }
-                    is MoviesRepositoryState.ErrorNoConnectivity -> {
-                        if (it.hasItems) MoviesFragmentViewState.ErrorNoConnectivityWithItems else  MoviesFragmentViewState.ErrorNoConnectivity
-                    }
-                    MoviesRepositoryState.Loaded -> MoviesFragmentViewState.InitialPageLoaded
-                    else -> MoviesFragmentViewState.None
+        viewState.postValue(MoviesViewState.Loading)
+        createMoviesPagedList(moviePosterSize, movieBackdropSize).let {
+            viewState.addSource(it) { pagedList ->
+                if (pagedList.size > 0) {
+                    viewState.postValue(MoviesViewState.InitialPageLoaded(pagedList))
+                } else {
+                    retryFunc = { init(moviePosterSize, movieBackdropSize) }
                 }
             }
-
-            pagedList = listing.pagedList
-            retryFun = listing.retry
         }
+
     }
 
+    /**
+     * Single output of the ViewModel: it exposes a stream that is updated with a new [MoviesViewState]
+     * each time that a new state is identified.
+     */
+    fun viewState(): LiveData<MoviesViewState> = viewState
 
-    fun retryMoviesListFetch() {
-        retryFun.invoke()
+    /**
+     * Attempts to execute the last movie fetching step that was executed. Typically called after an error
+     * is detected.
+     */
+    fun retryMoviesFetch() {
+        retryFunc.invoke()
     }
 
+    /**
+     * This is the method that creates the actual [PagedList] that will be used to provide
+     * infinite scrolling. It uses a [MPPagingDataSourceFactory] that is mapped to have the
+     * desired model ([MovieItem]) in order to create the [PagedList].
+     *
+     * The steps to create the proper instance of [PagedList] are:
+     * 1 - Create a [MPPagingDataSourceFactory] instance of type [Movie].
+     *      1.1. Create the function that will be used to retry the last movies fetching.
+     * 2 - Map the created instance to a second DataSourceFactory of type [Movie], to
+     *     execute the configurations of the images path of every result.
+     * 3 - Map the instance created in (2) to a new DataSourceFactory that will map the
+     *     [Movie] to a [MovieItem].
+     */
+    private fun createMoviesPagedList(moviePosterSize: Int,
+                                      movieBackdropSize: Int): LiveData<PagedList<MovieItem>> {
+        return MPPagingDataSourceFactory<Movie> { page, callback -> fetchMoviePage(page, callback) } // (1)
+                .apply { retryFunc = { networkExecutor.execute { retryLast() } } } // (1.1)
+                .map { configMovieUseCase.configure(moviePosterSize, movieBackdropSize, it) }// (2)
+                .map { mapDomainMovie(it) } // (3)
+                .let {
+                    // build the PagedList
+                    val config = PagedList.Config.Builder()
+                            .setPrefetchDistance(3)
+                            .build()
+                    LivePagedListBuilder(it, config)
+                            .setFetchExecutor(networkExecutor)
+                            .build()
+                }
+    }
+
+    /**
+     * Fetches a movies page indicated by [page] and invokes the provided [callback] when done.
+     * - [page] indicates the current page number to retrieve.
+     * - [callback] is a callback executed when the movie fetching us successful. The callback
+     *   receives the list of [Movie]s retrieved and the index of the next movies page to fetch.
+     */
+    private fun fetchMoviePage(page: Int, callback: (List<Movie>, Int) -> Unit) {
+        getMoviesUseCase
+                .getMoviePageForSection(page, movieSection)
+                .let { ucResult ->
+                    when (ucResult) {
+                        is GetMoviesUseCaseResult.ErrorNoConnectivity -> {
+                            viewState.postValue(if (page > 1) MoviesViewState.ErrorNoConnectivityWithItems else MoviesViewState.ErrorNoConnectivity)
+                        }
+                        is GetMoviesUseCaseResult.ErrorUnknown -> {
+                            viewState.postValue(if (page > 1) MoviesViewState.ErrorUnknownWithItems else MoviesViewState.ErrorUnknown)
+                        }
+                        is GetMoviesUseCaseResult.Success -> {
+                            callback(ucResult.moviesPage.results, page + 1)
+                        }
+                    }
+                }
+    }
 
     private fun mapDomainMovie(domainMovie: Movie) = with(domainMovie) {
         MovieItem(movieId = id,

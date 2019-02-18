@@ -103,30 +103,30 @@ abstract class MoviesFragment : Fragment() {
      * This method evaluates the viewState and applies a Transition from the
      * current state to a final state using a ConstraintLayout animation.
      */
-    private fun renderViewState(viewState: MoviesFragmentViewState) {
+    private fun renderViewState(viewState: MoviesViewState) {
         when (viewState) {
-            MoviesFragmentViewState.Loading -> R.layout.fragment_movies_loading
-            MoviesFragmentViewState.ErrorUnknown -> {
-                moviesErrorView.asUnknownError { withViewModel { retryMoviesListFetch() } }
+            MoviesViewState.Loading -> R.layout.fragment_movies_loading
+            MoviesViewState.ErrorUnknown -> {
+                moviesErrorView.asUnknownError { withViewModel { retryMoviesFetch() } }
                 R.layout.fragment_movies_error
             }
-            MoviesFragmentViewState.ErrorUnknownWithItems -> {
+            MoviesViewState.ErrorUnknownWithItems -> {
                 snackBar(moviesFragmentContent, R.string.error_unexpected_error_message, R.string.error_retry) {
-                    withViewModel { retryMoviesListFetch() }
+                    withViewModel { retryMoviesFetch() }
                 }
                 R.layout.fragment_movies
             }
-            MoviesFragmentViewState.ErrorNoConnectivity -> {
-                moviesErrorView.asNoConnectivityError { withViewModel { retryMoviesListFetch() } }
+            MoviesViewState.ErrorNoConnectivity -> {
+                moviesErrorView.asNoConnectivityError { withViewModel { retryMoviesFetch() } }
                 R.layout.fragment_movies_error
             }
-            MoviesFragmentViewState.ErrorNoConnectivityWithItems -> {
+            MoviesViewState.ErrorNoConnectivityWithItems -> {
                 snackBar(moviesFragmentContent, R.string.error_no_network_connection_message, R.string.error_retry) {
-                    withViewModel { retryMoviesListFetch() }
+                    withViewModel { retryMoviesFetch() }
                 }
                 R.layout.fragment_movies
             }
-            MoviesFragmentViewState.InitialPageLoaded -> {
+            MoviesViewState.InitialPageLoaded -> {
                 R.layout.fragment_movies_final
             }
             else -> R.layout.fragment_movies
