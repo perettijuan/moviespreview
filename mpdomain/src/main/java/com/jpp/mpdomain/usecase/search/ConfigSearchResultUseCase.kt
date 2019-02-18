@@ -12,7 +12,7 @@ import com.jpp.mpdomain.repository.configuration.ConfigurationRepository
  */
 interface ConfigSearchResultUseCase {
     /**
-     * Configure the provided [searchResult] adjusting the images path with the provided [imageTargetSize].
+     * Configure the provided [searchResult] adjusting the images path with the provided [targetImageSize].
      * @return a [SearchResult] with the exact same properties as the provided one, but with the
      * images path pointing to the correct resource.
      */
