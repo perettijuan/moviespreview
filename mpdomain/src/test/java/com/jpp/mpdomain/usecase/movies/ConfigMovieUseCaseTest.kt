@@ -37,7 +37,7 @@ class ConfigMovieUseCaseTest {
 
         every { configurationRepository.getAppConfiguration() } returns null
 
-        val actualResult = subject.configure(10, expectedResult)
+        val actualResult = subject.configure(10, 5, expectedResult)
 
         verify(exactly = 0) { configurationHandler.configureMovieImagesPath(any(), any(), any(), any()) }
         assertEquals(expectedResult, actualResult)
@@ -53,9 +53,9 @@ class ConfigMovieUseCaseTest {
         every { configurationHandler.configureMovieImagesPath(any(), any(), any(), any()) } returns expectedResult
         every { appConfig.images } returns imagesConfig
 
-        val actualResult = subject.configure(10, expectedResult)
+        val actualResult = subject.configure(10, 5, expectedResult)
 
-        verify { configurationHandler.configureMovieImagesPath(expectedResult, imagesConfig, 10, 10) }
+        verify { configurationHandler.configureMovieImagesPath(expectedResult, imagesConfig, 5, 10) }
         Assertions.assertEquals(expectedResult, actualResult)
     }
 }

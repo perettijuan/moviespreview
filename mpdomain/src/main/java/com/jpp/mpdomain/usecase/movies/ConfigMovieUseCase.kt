@@ -12,19 +12,20 @@ import com.jpp.mpdomain.repository.configuration.ConfigurationRepository
 interface ConfigMovieUseCase {
 
     /**
-     * Configures the provided [movie] adjusting the images path with the provided [targetImageSize].
+     * Configures the provided [movie] adjusting the images path with the provided [posterSize] and
+     * [backdropSize].
      * @return a [Movie] with the exact same properties as the provided one, but with the images path
      * pointing to the correct resource.
      */
-    fun configure(targetImageSize: Int, movie: Movie): Movie
+    fun configure(posterSize: Int, backdropSize: Int, movie: Movie): Movie
 
 
     class Impl(private val configurationRepository: ConfigurationRepository,
                private val configurationHandler: ConfigurationHandler) : ConfigMovieUseCase {
 
-        override fun configure(targetImageSize: Int, movie: Movie): Movie {
+        override fun configure(posterSize: Int, backdropSize: Int, movie: Movie): Movie {
             return configurationRepository.getAppConfiguration()?.let {
-                configurationHandler.configureMovieImagesPath(movie, it.images, targetImageSize, targetImageSize)
+                configurationHandler.configureMovieImagesPath(movie, it.images, backdropSize, posterSize)
             } ?: run {
                 movie
             }
