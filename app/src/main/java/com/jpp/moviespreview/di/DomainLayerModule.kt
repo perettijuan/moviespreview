@@ -4,18 +4,15 @@ import android.content.Context
 import com.jpp.mpdomain.handlers.ConnectivityHandler
 import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
 import com.jpp.mpdomain.handlers.configuration.ConfigurationHandlerImpl
-import com.jpp.mpdomain.repository.configuration.ConfigurationApi
-import com.jpp.mpdomain.repository.configuration.ConfigurationDb
+import com.jpp.mpdomain.repository.MoviesRepository
+import com.jpp.mpdomain.repository.SearchRepository
 import com.jpp.mpdomain.repository.configuration.ConfigurationRepository
 import com.jpp.mpdomain.repository.details.MovieDetailsApi
 import com.jpp.mpdomain.repository.details.MovieDetailsDb
 import com.jpp.mpdomain.repository.details.MovieDetailsRepository
 import com.jpp.mpdomain.repository.details.MovieDetailsRepositoryImpl
-import com.jpp.mpdomain.repository.movies.MovieListRepository
-import com.jpp.mpdomain.repository.movies.MovieListRepositoryImpl
-import com.jpp.mpdomain.repository.movies.MoviesApi
-import com.jpp.mpdomain.repository.movies.MoviesDb
-import com.jpp.mpdomain.repository.SearchRepository
+import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
+import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
 import dagger.Module
@@ -56,17 +53,17 @@ class DomainLayerModule {
                                           configurationHandler: ConfigurationHandler)
             : ConfigSearchResultUseCase = ConfigSearchResultUseCase.Impl(configurationRepository, configurationHandler)
 
-
-    //TODO JPP -> this should live in the data module
     @Provides
-    fun providesMovieListRepository(moviesApi: MoviesApi,
-                                    moviesDb: MoviesDb,
-                                    configurationApi: ConfigurationApi,
-                                    configurationDb: ConfigurationDb,
-                                    connectivityHandler: ConnectivityHandler,
-                                    configurationHandler: ConfigurationHandler,
-                                    networkExecutor: Executor)
-            : MovieListRepository = MovieListRepositoryImpl(moviesApi, moviesDb, configurationApi, configurationDb, connectivityHandler, configurationHandler, networkExecutor)
+    @Singleton
+    fun providesGetMoviesUseCase(moviesRepository: MoviesRepository,
+                                 connectivityHandler: ConnectivityHandler)
+            : GetMoviesUseCase = GetMoviesUseCase.Impl(moviesRepository, connectivityHandler)
+
+    @Provides
+    @Singleton
+    fun providesConfigMovieUseCase(configurationRepository: ConfigurationRepository,
+                                   configurationHandler: ConfigurationHandler)
+            : ConfigMovieUseCase = ConfigMovieUseCase.Impl(configurationRepository, configurationHandler)
 
 
     //TODO JPP -> this should live in the data module

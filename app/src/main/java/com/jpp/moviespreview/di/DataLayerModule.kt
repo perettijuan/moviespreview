@@ -10,15 +10,17 @@ import com.jpp.mpdata.cache.MoviesCache
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdata.repository.configuration.ConfigurationRepositoryImpl
+import com.jpp.mpdata.repository.movies.MoviesApi
+import com.jpp.mpdata.repository.movies.MoviesDb
+import com.jpp.mpdata.repository.movies.MoviesRepositoryImpl
 import com.jpp.mpdata.repository.search.SearchApi
 import com.jpp.mpdata.repository.search.SearchRepositoryImpl
+import com.jpp.mpdomain.repository.MoviesRepository
 import com.jpp.mpdomain.repository.configuration.ConfigurationApi
 import com.jpp.mpdomain.repository.configuration.ConfigurationDb
 import com.jpp.mpdomain.repository.configuration.ConfigurationRepository
 import com.jpp.mpdomain.repository.details.MovieDetailsApi
 import com.jpp.mpdomain.repository.details.MovieDetailsDb
-import com.jpp.mpdomain.repository.movies.MoviesApi
-import com.jpp.mpdomain.repository.movies.MoviesDb
 import com.jpp.mpdomain.repository.SearchRepository
 import dagger.Module
 import dagger.Provides
@@ -67,6 +69,11 @@ class DataLayerModule {
     fun providesMoviesDb(roomDb: MPRoomDataBase,
                          adapter: RoomModelAdapter,
                          timestampHelper: CacheTimestampHelper): MoviesDb = MoviesCache(roomDb, adapter, timestampHelper)
+
+    @Singleton
+    @Provides
+    fun providesMoviesRepository(moviesApi: MoviesApi,
+                                 moviesDb: MoviesDb) : MoviesRepository = MoviesRepositoryImpl(moviesApi, moviesDb)
 
     /*****************************************
      ****** CONFIGURATION DEPENDENCIES *******

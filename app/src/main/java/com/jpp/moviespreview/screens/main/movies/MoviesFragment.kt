@@ -5,23 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
-import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.TransitionManager
 import com.jpp.moviespreview.R
-import com.jpp.moviespreview.ext.getScreenSizeInPixels
-import com.jpp.moviespreview.ext.loadImageUrl
-import com.jpp.moviespreview.ext.loadImageUrlAsCircular
-import com.jpp.moviespreview.ext.snackBar
+import com.jpp.moviespreview.ext.*
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movies.*
 import kotlinx.android.synthetic.main.list_item_movies.view.*
@@ -73,12 +67,6 @@ abstract class MoviesFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        when (savedInstanceState) {
-            null -> withViewModel {
-                init(getScreenSizeInPixels().x, getScreenSizeInPixels().x)
-            }
-        }
-
         /*
          * Hook-up the LiveData that will be updated when the data source is created
          * and then update the adapter with the new data.
@@ -89,12 +77,11 @@ abstract class MoviesFragment : Fragment() {
              * we MUST use viewLifecycleOwner.
              * Discussion here: https://www.reddit.com/r/androiddev/comments/8j4ei3/fix_for_livedata_problems_with_fragments/
              */
-            viewState.observe(this@MoviesFragment.viewLifecycleOwner, Observer { fragmentViewState ->
+            viewState().observe(this@MoviesFragment.viewLifecycleOwner, Observer { fragmentViewState ->
                 renderViewState(fragmentViewState)
             })
-            pagedList.observe(this@MoviesFragment.viewLifecycleOwner, Observer<PagedList<MovieItem>> {
-                (moviesList.adapter as MoviesAdapter).submitList(it)
-            })
+
+            init(getScreenSizeInPixels().x, getScreenSizeInPixels().x)
         }
     }
 
@@ -105,43 +92,49 @@ abstract class MoviesFragment : Fragment() {
      */
     private fun renderViewState(viewState: MoviesViewState) {
         when (viewState) {
-            MoviesViewState.Loading -> R.layout.fragment_movies_loading
-            MoviesViewState.ErrorUnknown -> {
-                moviesErrorView.asUnknownError { withViewModel { retryMoviesFetch() } }
-                R.layout.fragment_movies_error
+            is MoviesViewState.Loading -> {
+                renderLoading()
             }
-            MoviesViewState.ErrorUnknownWithItems -> {
+            is MoviesViewState.ErrorUnknown -> {
+                renderError()
+                moviesErrorView.asUnknownError { withViewModel { retryMoviesFetch() } }
+            }
+            is MoviesViewState.ErrorUnknownWithItems -> {
                 snackBar(moviesFragmentContent, R.string.error_unexpected_error_message, R.string.error_retry) {
                     withViewModel { retryMoviesFetch() }
                 }
-                R.layout.fragment_movies
+                renderInitialPageLoaded()
             }
-            MoviesViewState.ErrorNoConnectivity -> {
+            is MoviesViewState.ErrorNoConnectivity -> {
+                renderError()
                 moviesErrorView.asNoConnectivityError { withViewModel { retryMoviesFetch() } }
-                R.layout.fragment_movies_error
             }
-            MoviesViewState.ErrorNoConnectivityWithItems -> {
+            is MoviesViewState.ErrorNoConnectivityWithItems -> {
                 snackBar(moviesFragmentContent, R.string.error_no_network_connection_message, R.string.error_retry) {
                     withViewModel { retryMoviesFetch() }
                 }
-                R.layout.fragment_movies
+                renderInitialPageLoaded()
             }
-            MoviesViewState.InitialPageLoaded -> {
-                R.layout.fragment_movies_final
+            is MoviesViewState.InitialPageLoaded -> {
+                withRecyclerViewAdapter { submitList(viewState.pagedList) }
+                renderInitialPageLoaded()
             }
-            else -> R.layout.fragment_movies
-        }.let { constraintLayoutAnimationsId ->
-            val constraint = ConstraintSet()
-            constraint.clone(this@MoviesFragment.context, constraintLayoutAnimationsId)
-            TransitionManager.beginDelayedTransition(moviesFragmentContent)
-            constraint.applyTo(moviesFragmentContent)
         }
     }
 
+    /**
+     * Helper function to execute actions with the [MoviesFragmentViewModel].
+     */
     private fun withViewModel(action: MoviesFragmentViewModel.() -> Unit) {
         getViewModelInstance(viewModelFactory).action()
     }
 
+    /**
+     * Helper function to execute functions that are part of the [MoviesAdapter].
+     */
+    private fun withRecyclerViewAdapter(action: MoviesAdapter.() -> Unit) {
+        (moviesList.adapter as MoviesAdapter).action()
+    }
 
     /**
      * MUST be implemented for all fragments that are showing a list of movies in order to enable
@@ -154,6 +147,28 @@ abstract class MoviesFragment : Fragment() {
      * the proper ViewModel instance to use.
      */
     abstract fun getViewModelInstance(viewModelFactory: ViewModelProvider.Factory): MoviesFragmentViewModel
+
+
+    private fun renderLoading() {
+        moviesList.setInvisible()
+        moviesErrorView.setInvisible()
+
+        moviesLoadingView.setVisible()
+    }
+
+    private fun renderError() {
+        moviesList.setInvisible()
+        moviesLoadingView.setInvisible()
+
+        moviesErrorView.setVisible()
+    }
+
+    private fun renderInitialPageLoaded() {
+        moviesErrorView.setInvisible()
+        moviesLoadingView.setInvisible()
+
+        moviesList.setVisible()
+    }
 
 
     class MoviesAdapter(private val movieSelectionListener: (MovieItem) -> Unit) : PagedListAdapter<MovieItem, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {

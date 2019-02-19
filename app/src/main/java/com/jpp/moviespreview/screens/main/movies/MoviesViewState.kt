@@ -8,7 +8,6 @@ import androidx.paging.PagedList
  * can assume.
  */
 sealed class MoviesViewState {
-    object Idle : MoviesViewState()
     object Loading : MoviesViewState()
     object ErrorNoConnectivity : MoviesViewState()
     object ErrorNoConnectivityWithItems : MoviesViewState()
