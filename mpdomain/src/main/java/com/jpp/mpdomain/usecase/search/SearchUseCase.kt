@@ -14,8 +14,9 @@ interface SearchUseCase {
     /**
      * Performs a searchPage based in the provided [query].
      * @return
-     *          - [SearchUseCaseResult.ErrorNoConnectivity] when the UC detects that the application has no internet connectivity.
      *          - [SearchUseCaseResult.Success] when there is internet connectivity and the searchPage can be executed.
+     *          - [SearchUseCaseResult.ErrorNoConnectivity] when the UC detects that the application has no internet connectivity.
+     *          - [SearchUseCaseResult.ErrorUnknown] when an error occur while performing  the search.
      */
     fun search(query: String, page: Int): SearchUseCaseResult
 

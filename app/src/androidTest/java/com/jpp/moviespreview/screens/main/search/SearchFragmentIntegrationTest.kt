@@ -11,10 +11,7 @@ import androidx.test.rule.ActivityTestRule
 import com.azimolabs.conditionwatcher.ConditionWatcher
 import com.azimolabs.conditionwatcher.Instruction
 import com.jpp.moviespreview.R
-import com.jpp.moviespreview.assertions.assertDisplayed
-import com.jpp.moviespreview.assertions.assertItemCount
-import com.jpp.moviespreview.assertions.assertNotDisplayed
-import com.jpp.moviespreview.assertions.withViewInRecyclerView
+import com.jpp.moviespreview.assertions.*
 import com.jpp.moviespreview.di.TestMPViewModelFactory
 import com.jpp.moviespreview.screens.main.SearchViewViewModel
 import com.jpp.moviespreview.testutils.FragmentTestActivity
@@ -33,11 +30,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Tests the interaction between the [SearchFragment], the [SearchViewModel] and the
+ * Tests the interaction between the [SearchFragment], the [SearchFragmentViewModel] and the
  * [SearchViewViewModel].
  * In order to achieve these tests, the [activityTestRule] adds a new instance of the
  * [SearchFragment] to the empty [FragmentTestActivity] and injects an instance of
- * [SearchViewModel] (with a mocked [SearchUseCase] and a mocked [ConfigSearchResultUseCase]).
+ * [SearchFragmentViewModel] (with a mocked [SearchUseCase] and a mocked [ConfigSearchResultUseCase]).
  */
 @RunWith(AndroidJUnit4::class)
 class SearchFragmentIntegrationTest {
@@ -58,7 +55,7 @@ class SearchFragmentIntegrationTest {
      */
     fun inject(searchFragment: SearchFragment) {
         // real ViewModel
-        searchViewModel = SearchViewModel(
+        searchViewModel = SearchFragmentViewModel(
                 searchUseCase = searchUseCase,
                 configSearchResultUseCase = configSearchResultUseCase,
                 networkExecutor = CurrentThreadExecutorService()
@@ -79,7 +76,7 @@ class SearchFragmentIntegrationTest {
 
     // Hold this reference to perform a searchPage
     private val searchViewViewModel by lazy { SearchViewViewModel() }
-    private lateinit var searchViewModel: SearchViewModel
+    private lateinit var searchViewModel: SearchFragmentViewModel
 
     @Before
     fun setUp() {
@@ -102,10 +99,10 @@ class SearchFragmentIntegrationTest {
         onErrorSearchView().assertNotDisplayed()
         onLoadingSearchView().assertNotDisplayed()
         onResultsRecyclerView().assertDisplayed()
-        onResultsRecyclerView().assertItemCount()
+        onResultsRecyclerView().assertItemCount(20)
 
         /*
-         * Here we verify that the SearchViewModel is properly mapping the model classes to
+         * Here we verify that the SearchFragmentViewModel is properly mapping the model classes to
          * UI classes by matching each item in the recycler view with the expected value.
          */
         onView(withViewInRecyclerView(R.id.searchResultRv, 0, R.id.searchItemTitleTxt))
@@ -133,6 +130,7 @@ class SearchFragmentIntegrationTest {
         waitForViewState(SearchViewState.ErrorUnknown)
 
         onErrorSearchView().assertDisplayed()
+        onView(withId(R.id.errorTitleTextView)).assertWithText(R.string.error_unexpected_error_message)
 
         onSearchPlaceHolderView().assertNotDisplayed()
         onEmptySearchView().assertNotDisplayed()
@@ -149,6 +147,7 @@ class SearchFragmentIntegrationTest {
         waitForViewState(SearchViewState.ErrorNoConnectivity)
 
         onErrorSearchView().assertDisplayed()
+        onView(withId(R.id.errorTitleTextView)).assertWithText(R.string.error_no_network_connection_message)
 
         onSearchPlaceHolderView().assertNotDisplayed()
         onEmptySearchView().assertNotDisplayed()

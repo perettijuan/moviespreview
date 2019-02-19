@@ -106,7 +106,7 @@ dependencies {
     androidTestImplementation "androidx.arch.core:core-testing:2.0.0"
     androidTestImplementation deps.test.mockk.android
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
-    androidTestCompile("androidx.test.espresso:espresso-contrib:$espressoVersion") {
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:$espressoVersion") {
         exclude module: 'material'
     }
     androidTestImplementation 'com.azimolabs.conditionwatcher:conditionwatcher:0.2'

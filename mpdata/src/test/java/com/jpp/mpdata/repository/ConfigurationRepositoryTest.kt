@@ -2,8 +2,8 @@ package com.jpp.mpdata.repository
 
 import com.jpp.mpdata.repository.configuration.ConfigurationRepositoryImpl
 import com.jpp.mpdomain.AppConfiguration
-import com.jpp.mpdomain.repository.configuration.ConfigurationApi
-import com.jpp.mpdomain.repository.configuration.ConfigurationDb
+import com.jpp.mpdata.repository.configuration.ConfigurationApi
+import com.jpp.mpdata.repository.configuration.ConfigurationDb
 import com.jpp.mpdomain.repository.configuration.ConfigurationRepository
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK

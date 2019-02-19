@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mpdomain.SearchResult
-import com.jpp.mpdomain.paging.MPPagingDataSourceFactory
+import com.jpp.moviespreview.paging.MPPagingDataSourceFactory
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCaseResult
@@ -19,9 +19,9 @@ import javax.inject.Inject
  * Output: exposes a LiveData of [SearchViewState] that is updated with each new state that is
  * identified by the ViewModel.
  */
-class SearchViewModel @Inject constructor(private val searchUseCase: SearchUseCase,
-                                          private val configSearchResultUseCase: ConfigSearchResultUseCase,
-                                          private val networkExecutor: Executor) : ViewModel() {
+class SearchFragmentViewModel @Inject constructor(private val searchUseCase: SearchUseCase,
+                                                  private val configSearchResultUseCase: ConfigSearchResultUseCase,
+                                                  private val networkExecutor: Executor) : ViewModel() {
 
     private var targetImageSize: Int = -1
     private val viewState = MediatorLiveData<SearchViewState>()

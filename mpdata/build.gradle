@@ -34,9 +34,6 @@ dependencies {
     implementation project(path: ':common')
     implementation project(path: ':mpdomain')
 
-    // Paging library
-    implementation deps.androidx.paging
-
     // Dagger
     implementation deps.dagger.dagger
     implementation deps.dagger.android

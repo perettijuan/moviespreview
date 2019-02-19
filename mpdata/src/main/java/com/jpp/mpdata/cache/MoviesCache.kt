@@ -3,9 +3,9 @@ package com.jpp.mpdata.cache
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.MovieDAO
 import com.jpp.mpdata.cache.room.RoomModelAdapter
+import com.jpp.mpdata.repository.movies.MoviesDb
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
-import com.jpp.mpdomain.repository.movies.MoviesDb
 
 /**
  * [MoviesDb] implementation with a cache mechanism to verify that the data stored in the application
