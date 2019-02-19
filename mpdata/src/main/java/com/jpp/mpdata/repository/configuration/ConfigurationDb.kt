@@ -1,8 +1,9 @@
-package com.jpp.mpdomain.repository.configuration
+package com.jpp.mpdata.repository.configuration
 
 import com.jpp.mpdomain.AppConfiguration
 
 //TODO JPP -> this should live in the data module
-interface ConfigurationApi {
+interface ConfigurationDb {
     fun getAppConfiguration(): AppConfiguration?
+    fun saveAppConfiguration(appConfiguration: AppConfiguration)
 }

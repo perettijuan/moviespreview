@@ -4,7 +4,7 @@ import com.jpp.mpdata.cache.room.ImageSizeDAO
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdomain.AppConfiguration
-import com.jpp.mpdomain.repository.configuration.ConfigurationDb
+import com.jpp.mpdata.repository.configuration.ConfigurationDb
 
 /**
  * [ConfigurationDb] implementation with a cache mechanism to verify that the data stored in the application

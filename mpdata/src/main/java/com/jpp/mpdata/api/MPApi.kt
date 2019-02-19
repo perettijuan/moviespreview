@@ -7,7 +7,7 @@ import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.SearchPage
-import com.jpp.mpdomain.repository.configuration.ConfigurationApi
+import com.jpp.mpdata.repository.configuration.ConfigurationApi
 import com.jpp.mpdomain.repository.details.MovieDetailsApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

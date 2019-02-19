@@ -16,8 +16,8 @@ import com.jpp.mpdata.repository.movies.MoviesRepositoryImpl
 import com.jpp.mpdata.repository.search.SearchApi
 import com.jpp.mpdata.repository.search.SearchRepositoryImpl
 import com.jpp.mpdomain.repository.MoviesRepository
-import com.jpp.mpdomain.repository.configuration.ConfigurationApi
-import com.jpp.mpdomain.repository.configuration.ConfigurationDb
+import com.jpp.mpdata.repository.configuration.ConfigurationApi
+import com.jpp.mpdata.repository.configuration.ConfigurationDb
 import com.jpp.mpdomain.repository.configuration.ConfigurationRepository
 import com.jpp.mpdomain.repository.details.MovieDetailsApi
 import com.jpp.mpdomain.repository.details.MovieDetailsDb
