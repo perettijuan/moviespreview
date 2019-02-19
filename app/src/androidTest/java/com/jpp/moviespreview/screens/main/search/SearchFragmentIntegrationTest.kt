@@ -11,10 +11,7 @@ import androidx.test.rule.ActivityTestRule
 import com.azimolabs.conditionwatcher.ConditionWatcher
 import com.azimolabs.conditionwatcher.Instruction
 import com.jpp.moviespreview.R
-import com.jpp.moviespreview.assertions.assertDisplayed
-import com.jpp.moviespreview.assertions.assertItemCount
-import com.jpp.moviespreview.assertions.assertNotDisplayed
-import com.jpp.moviespreview.assertions.withViewInRecyclerView
+import com.jpp.moviespreview.assertions.*
 import com.jpp.moviespreview.di.TestMPViewModelFactory
 import com.jpp.moviespreview.screens.main.SearchViewViewModel
 import com.jpp.moviespreview.testutils.FragmentTestActivity
@@ -102,7 +99,7 @@ class SearchFragmentIntegrationTest {
         onErrorSearchView().assertNotDisplayed()
         onLoadingSearchView().assertNotDisplayed()
         onResultsRecyclerView().assertDisplayed()
-        onResultsRecyclerView().assertItemCount()
+        onResultsRecyclerView().assertItemCount(20)
 
         /*
          * Here we verify that the SearchFragmentViewModel is properly mapping the model classes to
@@ -133,6 +130,7 @@ class SearchFragmentIntegrationTest {
         waitForViewState(SearchViewState.ErrorUnknown)
 
         onErrorSearchView().assertDisplayed()
+        onView(withId(R.id.errorTitleTextView)).assertWithText(R.string.error_unexpected_error_message)
 
         onSearchPlaceHolderView().assertNotDisplayed()
         onEmptySearchView().assertNotDisplayed()
@@ -149,6 +147,7 @@ class SearchFragmentIntegrationTest {
         waitForViewState(SearchViewState.ErrorNoConnectivity)
 
         onErrorSearchView().assertDisplayed()
+        onView(withId(R.id.errorTitleTextView)).assertWithText(R.string.error_no_network_connection_message)
 
         onSearchPlaceHolderView().assertNotDisplayed()
         onEmptySearchView().assertNotDisplayed()

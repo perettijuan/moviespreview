@@ -4,8 +4,7 @@ import androidx.lifecycle.Observer
 import com.jpp.moviespreview.utiltest.CurrentThreadExecutorService
 import com.jpp.moviespreview.utiltest.InstantTaskExecutorExtension
 import com.jpp.moviespreview.utiltest.resumedLifecycleOwner
-import com.jpp.mpdomain.Movie
-import com.jpp.mpdomain.MoviePage
+import com.jpp.moviespreview.utiltest.successGetMoviesUCExecution
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
@@ -50,7 +49,7 @@ class MoviesFragmentViewModelTest {
         val viewStates = mutableListOf<MoviesViewState>()
         val moviesInPageCount = 10
 
-        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns successUCExecution(moviesInPageCount)
+        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns successGetMoviesUCExecution(moviesInPageCount)
         every { configMovieUseCase.configure(any(), any(), any()) } answers { arg(2) }
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
@@ -73,7 +72,7 @@ class MoviesFragmentViewModelTest {
         val viewStates = mutableListOf<MoviesViewState>()
         val moviesInPageCount = 10
 
-        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns successUCExecution(moviesInPageCount)
+        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns successGetMoviesUCExecution(moviesInPageCount)
         every { configMovieUseCase.configure(any(), any(), any()) } answers { arg(2) }
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
@@ -176,38 +175,5 @@ class MoviesFragmentViewModelTest {
                                                     movieSectionForTest: MovieSection)
         : MoviesFragmentViewModel(getMoviesUseCase, configMovieUseCase, networkExecutor) {
         override val movieSection: MovieSection = movieSectionForTest
-    }
-
-
-    private companion object {
-
-        fun successUCExecution(moviesInPageCount: Int) = GetMoviesUseCaseResult.Success(createMoviesPage(1, moviesInPageCount))
-
-        private fun createMoviesPage(page: Int, totalResults: Int) = MoviePage(
-                page = page,
-                results = createMoviesForPage(page, totalResults),
-                total_pages = 10,
-                total_results = 1000
-        )
-
-        private fun createMoviesForPage(page: Int, totalResults: Int = 10): List<Movie> {
-            return mutableListOf<Movie>().apply {
-                for (i in 1..totalResults) {
-                    add(Movie(
-                            id = (page + i).toDouble(),
-                            poster_path = "/m110vLaDDOCca4hfOcS5mK5cDke.jpg",
-                            backdrop_path = "/m110vLaDDOCca4hfOcS5mK5cDke.jpg",
-                            title = "Movie $i",
-                            original_title = "Movie Title $i",
-                            original_language = "US",
-                            overview = "Overview for $i",
-                            release_date = "aReleaseDate for $i",
-                            vote_count = i.toDouble(),
-                            vote_average = i.toFloat(),
-                            popularity = i.toFloat()
-                    ))
-                }
-            }
-        }
     }
 }
