@@ -1,4 +1,4 @@
-package com.jpp.mpdomain.paging
+package com.jpp.moviespreview.paging
 
 import androidx.paging.DataSource
 

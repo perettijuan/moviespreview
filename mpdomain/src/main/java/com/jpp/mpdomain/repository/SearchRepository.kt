@@ -1,8 +1,6 @@
 package com.jpp.mpdomain.repository
 
 import com.jpp.mpdomain.SearchPage
-import com.jpp.mpdomain.SearchResult
-import com.jpp.mpdomain.paging.MPPagingDataSourceFactory
 
 /**
  * Repository definition to perform a search.

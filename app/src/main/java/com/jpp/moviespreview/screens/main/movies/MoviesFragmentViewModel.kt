@@ -7,7 +7,7 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
-import com.jpp.mpdomain.paging.MPPagingDataSourceFactory
+import com.jpp.moviespreview.paging.MPPagingDataSourceFactory
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCaseResult

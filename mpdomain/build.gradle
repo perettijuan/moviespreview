@@ -42,9 +42,6 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    // Paging library
-    implementation deps.androidx.paging
-
     // Dagger
     implementation deps.dagger.dagger
     implementation deps.dagger.android

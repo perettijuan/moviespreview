@@ -38,7 +38,7 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class MoviesFragmentIntegrationTest {
-    
+
     @get:Rule
     val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java) {}
 
