@@ -9,7 +9,7 @@ import com.jpp.moviespreview.screens.main.movies.fragments.PlayingMoviesFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.PopularMoviesFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.TopRatedMoviesFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.UpcomingMoviesFragment
-import com.jpp.moviespreview.screens.main.search.SearchViewModel
+import com.jpp.moviespreview.screens.main.search.SearchFragmentViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -55,8 +55,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(SearchViewModel::class)
-    internal abstract fun postSearchViewModel(viewModel: SearchViewModel): ViewModel
+    @ViewModelKey(SearchFragmentViewModel::class)
+    internal abstract fun postSearchViewModel(viewModel: SearchFragmentViewModel): ViewModel
 
     @Binds
     @IntoMap

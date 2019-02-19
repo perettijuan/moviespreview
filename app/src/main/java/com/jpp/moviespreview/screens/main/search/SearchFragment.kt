@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 /**
  * Fragment that shows and supports the search functionality in the application.
- * This Fragment is backed by [SearchViewModel] that is the VM that takes care of performing the
+ * This Fragment is backed by [SearchFragmentViewModel] that is the VM that takes care of performing the
  * search and updating the UI when the results is back from the server. The Fragment reacts to
  * [SearchViewState] state updates, meaning that any given state of the UI shown by the Fragment
  * can be reproduced with the given state.
@@ -137,8 +137,8 @@ class SearchFragment : Fragment() {
     }
 
 
-    private fun withViewModel(action: SearchViewModel.() -> Unit) {
-        getViewModel<SearchViewModel>(viewModelFactory).action()
+    private fun withViewModel(action: SearchFragmentViewModel.() -> Unit) {
+        getViewModel<SearchFragmentViewModel>(viewModelFactory).action()
     }
 
     /**

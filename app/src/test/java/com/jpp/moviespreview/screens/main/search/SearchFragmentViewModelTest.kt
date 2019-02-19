@@ -20,19 +20,19 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
-class SearchViewModelTest {
+class SearchFragmentViewModelTest {
 
     @MockK
     private lateinit var searchUseCase: SearchUseCase
     @MockK
     private lateinit var configSearchResultUseCase: ConfigSearchResultUseCase
 
-    private lateinit var subject: SearchViewModel
+    private lateinit var subject: SearchFragmentViewModel
     private val imageSize: Int = 12
 
     @BeforeEach
     fun setUp() {
-        subject = SearchViewModel(
+        subject = SearchFragmentViewModel(
                 searchUseCase = searchUseCase,
                 configSearchResultUseCase = configSearchResultUseCase,
                 networkExecutor = CurrentThreadExecutorService()

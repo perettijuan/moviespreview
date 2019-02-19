@@ -33,11 +33,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Tests the interaction between the [SearchFragment], the [SearchViewModel] and the
+ * Tests the interaction between the [SearchFragment], the [SearchFragmentViewModel] and the
  * [SearchViewViewModel].
  * In order to achieve these tests, the [activityTestRule] adds a new instance of the
  * [SearchFragment] to the empty [FragmentTestActivity] and injects an instance of
- * [SearchViewModel] (with a mocked [SearchUseCase] and a mocked [ConfigSearchResultUseCase]).
+ * [SearchFragmentViewModel] (with a mocked [SearchUseCase] and a mocked [ConfigSearchResultUseCase]).
  */
 @RunWith(AndroidJUnit4::class)
 class SearchFragmentIntegrationTest {
@@ -58,7 +58,7 @@ class SearchFragmentIntegrationTest {
      */
     fun inject(searchFragment: SearchFragment) {
         // real ViewModel
-        searchViewModel = SearchViewModel(
+        searchViewModel = SearchFragmentViewModel(
                 searchUseCase = searchUseCase,
                 configSearchResultUseCase = configSearchResultUseCase,
                 networkExecutor = CurrentThreadExecutorService()
@@ -79,7 +79,7 @@ class SearchFragmentIntegrationTest {
 
     // Hold this reference to perform a searchPage
     private val searchViewViewModel by lazy { SearchViewViewModel() }
-    private lateinit var searchViewModel: SearchViewModel
+    private lateinit var searchViewModel: SearchFragmentViewModel
 
     @Before
     fun setUp() {
@@ -105,7 +105,7 @@ class SearchFragmentIntegrationTest {
         onResultsRecyclerView().assertItemCount()
 
         /*
-         * Here we verify that the SearchViewModel is properly mapping the model classes to
+         * Here we verify that the SearchFragmentViewModel is properly mapping the model classes to
          * UI classes by matching each item in the recycler view with the expected value.
          */
         onView(withViewInRecyclerView(R.id.searchResultRv, 0, R.id.searchItemTitleTxt))
