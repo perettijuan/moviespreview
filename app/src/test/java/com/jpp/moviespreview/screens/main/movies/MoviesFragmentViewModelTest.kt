@@ -14,7 +14,6 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -140,6 +139,36 @@ class MoviesFragmentViewModelTest {
         verify(exactly = 1) { getMoviesUseCase.getMoviePageForSection(1, movieSection) }
     }
 
+    @Test
+    fun `Should post ErrorNoConnectivity when not connected to network detected`() {
+        var lastState: MoviesViewState = MoviesViewState.Loading
+
+        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns GetMoviesUseCaseResult.ErrorNoConnectivity
+
+        subject.viewState().observe(resumedLifecycleOwner(), Observer {
+            lastState = it
+        })
+
+        subject.init(moviePosterSize = 5, movieBackdropSize = 10)
+
+        assertTrue(lastState is MoviesViewState.ErrorNoConnectivity)
+    }
+
+    @Test
+    fun `Should post ErrorUnknown when not connected to network detected`() {
+        var lastState: MoviesViewState = MoviesViewState.Loading
+
+        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns GetMoviesUseCaseResult.ErrorUnknown
+
+        subject.viewState().observe(resumedLifecycleOwner(), Observer {
+            lastState = it
+        })
+
+        subject.init(moviePosterSize = 5, movieBackdropSize = 10)
+
+        assertTrue(lastState is MoviesViewState.ErrorUnknown)
+    }
+
 
     private inner class TestMoviesFragmentViewModel(getMoviesUseCase: GetMoviesUseCase,
                                                     configMovieUseCase: ConfigMovieUseCase,
@@ -152,7 +181,7 @@ class MoviesFragmentViewModelTest {
 
     private companion object {
 
-        fun successUCExecution(moviesInPageCount: Int) =  GetMoviesUseCaseResult.Success(createMoviesPage(1, moviesInPageCount))
+        fun successUCExecution(moviesInPageCount: Int) = GetMoviesUseCaseResult.Success(createMoviesPage(1, moviesInPageCount))
 
         private fun createMoviesPage(page: Int, totalResults: Int) = MoviePage(
                 page = page,
