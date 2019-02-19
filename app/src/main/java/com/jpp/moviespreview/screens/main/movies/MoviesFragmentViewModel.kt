@@ -26,6 +26,7 @@ abstract class MoviesFragmentViewModel(private val getMoviesUseCase: GetMoviesUs
     protected abstract val movieSection: MovieSection
 
     private val viewState = MediatorLiveData<MoviesViewState>()
+    private var isInitialized = false
     private lateinit var retryFunc: (() -> Unit)
 
     /**
@@ -33,28 +34,25 @@ abstract class MoviesFragmentViewModel(private val getMoviesUseCase: GetMoviesUs
      * Each time this method is called, a new movie list will be fetched from the use case
      * and posted to the viewState, unless a previous list has been fetched.
      */
-    fun init(moviePosterSize: Int,
-             movieBackdropSize: Int) {
-
-        /*
-         * retryFunc is initialized always in createMoviesPagedList().
-         * Let's use it identify the state of the VM.
-         */
-        if (::retryFunc.isInitialized) {
+    fun init(moviePosterSize: Int, movieBackdropSize: Int) {
+        if (isInitialized) {
             return
         }
 
+        isInitialized = true
         viewState.postValue(MoviesViewState.Loading)
         createMoviesPagedList(moviePosterSize, movieBackdropSize).let {
             viewState.addSource(it) { pagedList ->
                 if (pagedList.size > 0) {
                     viewState.postValue(MoviesViewState.InitialPageLoaded(pagedList))
                 } else {
-                    retryFunc = { init(moviePosterSize, movieBackdropSize) }
+                    retryFunc = {
+                        isInitialized = false
+                        init(moviePosterSize, movieBackdropSize)
+                    }
                 }
             }
         }
-
     }
 
     /**

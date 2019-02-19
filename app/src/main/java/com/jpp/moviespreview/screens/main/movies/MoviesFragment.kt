@@ -81,7 +81,8 @@ abstract class MoviesFragment : Fragment() {
                 renderViewState(fragmentViewState)
             })
 
-            init(getScreenSizeInPixels().x, getScreenSizeInPixels().x)
+            init(moviePosterSize = getScreenSizeInPixels().x,
+                    movieBackdropSize = getScreenSizeInPixels().x)
         }
     }
 

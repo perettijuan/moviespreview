@@ -85,8 +85,6 @@ class SearchFragmentViewModelTest {
         val searchText = "aSearch"
         val searchViewStates = mutableListOf<SearchViewState>()
 
-
-
         every { searchUseCase.search(any(), 1) } returns SearchUseCaseResult.ErrorUnknown
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
