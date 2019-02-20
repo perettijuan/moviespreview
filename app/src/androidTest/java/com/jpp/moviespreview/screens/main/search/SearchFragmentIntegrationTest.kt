@@ -1,7 +1,6 @@
 package com.jpp.moviespreview.screens.main.search
 
 
-import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -13,6 +12,7 @@ import com.azimolabs.conditionwatcher.Instruction
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.assertions.*
 import com.jpp.moviespreview.di.TestMPViewModelFactory
+import com.jpp.moviespreview.extras.launch
 import com.jpp.moviespreview.screens.main.SearchViewViewModel
 import com.jpp.moviespreview.testutils.FragmentTestActivity
 import com.jpp.moviespreview.utiltest.CurrentThreadExecutorService
@@ -80,7 +80,7 @@ class SearchFragmentIntegrationTest {
 
     @Before
     fun setUp() {
-        activityTestRule.launchActivity(Intent())
+        activityTestRule.launch()
     }
 
     @Test

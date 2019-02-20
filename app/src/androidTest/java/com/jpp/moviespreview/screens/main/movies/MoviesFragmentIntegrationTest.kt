@@ -1,6 +1,5 @@
 package com.jpp.moviespreview.screens.main.movies
 
-import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
@@ -12,6 +11,7 @@ import com.azimolabs.conditionwatcher.Instruction
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.assertions.*
 import com.jpp.moviespreview.di.TestMPViewModelFactory
+import com.jpp.moviespreview.extras.launch
 import com.jpp.moviespreview.screens.main.movies.fragments.PlayingMoviesFragment
 import com.jpp.moviespreview.testutils.FragmentTestActivity
 import com.jpp.moviespreview.utiltest.CurrentThreadExecutorService
@@ -40,20 +40,17 @@ import org.junit.runner.RunWith
 class MoviesFragmentIntegrationTest {
 
     @get:Rule
-    val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java) {}
+    val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java, true, false) {}
 
     private fun launchAndInjectFragment() {
         activityTestRule.activity.startFragment(PlayingMoviesFragment(), this@MoviesFragmentIntegrationTest::inject)
     }
 
     private fun inject(fragment: PlayingMoviesFragment) {
-        // custom ViewModelFactory to inject the dependencies
-        val vmFactory = TestMPViewModelFactory().apply {
+        // inject the factory and the ViewModel
+        fragment.viewModelFactory = TestMPViewModelFactory().apply {
             addVm(viewModel)
         }
-
-        // inject the factory and the ViewModel
-        fragment.viewModelFactory = vmFactory
     }
 
     private lateinit var getMoviesUseCase: GetMoviesUseCase
@@ -72,7 +69,7 @@ class MoviesFragmentIntegrationTest {
                 networkExecutor = CurrentThreadExecutorService()
         )
 
-        activityTestRule.launchActivity(Intent())
+        activityTestRule.launch()
     }
 
     @Test
