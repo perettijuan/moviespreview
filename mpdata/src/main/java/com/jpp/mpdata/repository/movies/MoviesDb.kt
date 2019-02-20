@@ -1,5 +1,6 @@
 package com.jpp.mpdata.repository.movies
 
+import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
 
@@ -18,4 +19,15 @@ interface MoviesDb {
      * Stores the provided [MoviePage] in the local database for the provided [section].
      */
     fun saveMoviePageForSection(moviePage: MoviePage, section: MovieSection)
+
+    /**
+     * @return a [MovieDetail] for the provided [movieId] if any is found, null
+     * any other case.
+     */
+    fun getMovieDetails(movieId: Double): MovieDetail?
+
+    /**
+     * Stores the provided [MovieDetail] in the local database.
+     */
+    fun saveMovieDetails(movieDetail: MovieDetail)
 }

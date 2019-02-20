@@ -3,6 +3,7 @@ package com.jpp.mpdata.repository
 import com.jpp.mpdata.repository.movies.MoviesApi
 import com.jpp.mpdata.repository.movies.MoviesDb
 import com.jpp.mpdata.repository.movies.MoviesRepositoryImpl
+import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.repository.MoviesRepository
@@ -14,6 +15,7 @@ import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments.arguments
@@ -37,7 +39,7 @@ class MoviesRepositoryImplTest {
 
     @ParameterizedTest
     @MethodSource("allMovieSections")
-    fun `Should not retrieve from API when valid value in DB`(section: MovieSection) {
+    fun `Should not retrieve from API when valid movie page in DB`(section: MovieSection) {
         val expected = mockk<MoviePage>()
 
         every { moviesDb.getMoviePageForSection(any(), any()) } returns expected
@@ -50,7 +52,7 @@ class MoviesRepositoryImplTest {
 
     @ParameterizedTest
     @MethodSource("movieSectionsAndCount")
-    fun `Should retrieve from API and update DB when value not in DB`(section: MovieSection, countInput: MoviesRepositoryTestInput) {
+    fun `Should retrieve from API and update DB when movie page not in DB`(section: MovieSection, countInput: MoviesRepositoryTestInput) {
         val expected = mockk<MoviePage>()
 
         every { moviesDb.getMoviePageForSection(any(), any()) } returns null
@@ -73,7 +75,7 @@ class MoviesRepositoryImplTest {
 
     @ParameterizedTest
     @MethodSource("movieSectionsAndCount")
-    fun `Should not attempt to store null responses from API`(section: MovieSection, countInput: MoviesRepositoryTestInput) {
+    fun `Should not attempt to store null responses from API when fetching movie page`(section: MovieSection, countInput: MoviesRepositoryTestInput) {
         every { moviesDb.getMoviePageForSection(any(), any()) } returns null
         every { moviesApi.getNowPlayingMoviePage(any()) } returns null
         every { moviesApi.getPopularMoviePage(any()) } returns null
@@ -91,6 +93,44 @@ class MoviesRepositoryImplTest {
 
         assertNull(actual)
     }
+
+    @Test
+    fun `Should not get data from API when details is in DB`() {
+        val movieDetail = mockk<MovieDetail>()
+        every { moviesDb.getMovieDetails(any()) } returns movieDetail
+
+        val result = subject.getMovieDetails(10.toDouble())
+
+        assertEquals(movieDetail, result)
+        verify { moviesDb.getMovieDetails(10.toDouble()) }
+        verify(exactly = 0) { moviesApi.getMovieDetails(any()) }
+    }
+
+    @Test
+    fun `Should get data from API and update the DB when details is not in DB`() {
+        val movieDetail = mockk<MovieDetail>()
+        every { moviesDb.getMovieDetails(any()) } returns null
+        every { moviesApi.getMovieDetails(any()) } returns movieDetail
+
+        val result = subject.getMovieDetails(10.toDouble())
+
+        assertEquals(result, result)
+        verify { moviesDb.getMovieDetails(10.toDouble()) }
+        verify { moviesApi.getMovieDetails(10.toDouble()) }
+        verify { moviesDb.saveMovieDetails(movieDetail) }
+    }
+
+    @Test
+    fun `Should not attempt to store null responses from API when fetching movie details`() {
+        every { moviesDb.getMovieDetails(any()) } returns null
+        every { moviesApi.getMovieDetails(any()) } returns null
+
+        val result = subject.getMovieDetails(10.toDouble())
+
+        assertNull(result)
+        verify(exactly = 0) { moviesDb.saveMovieDetails(any()) }
+    }
+
 
     data class MoviesRepositoryTestInput(
             val callsToNowPlaying: Int = 0,

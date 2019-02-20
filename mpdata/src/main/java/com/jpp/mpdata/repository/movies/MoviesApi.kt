@@ -1,5 +1,6 @@
 package com.jpp.mpdata.repository.movies
 
+import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MoviePage
 
 /**
@@ -26,4 +27,9 @@ interface MoviesApi {
      * Null if no data is available.
      */
     fun getUpcomingMoviePage(page: Int): MoviePage?
+    /**
+     * @return a [MovieDetail] for the provided [movieId] if any is found, null
+     * any other case.
+     */
+    fun getMovieDetails(movieId: Double): MovieDetail?
 }
