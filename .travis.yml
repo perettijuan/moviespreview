@@ -46,4 +46,4 @@ before_script:
 
 
 script:
-    - ./gradlew :mpdata:test :mpdomain:test :app:test -PdisablePreDex --stacktrace
+    - ./gradlew :mpdata:test :mpdomain:test :app:test :app:connectedAndroidTest -PdisablePreDex --stacktrace

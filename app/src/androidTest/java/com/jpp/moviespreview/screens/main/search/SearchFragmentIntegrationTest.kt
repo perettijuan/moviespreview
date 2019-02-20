@@ -41,7 +41,7 @@ class SearchFragmentIntegrationTest {
 
 
     @get:Rule
-    val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java) {
+    val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java, true, false) {
         override fun afterActivityLaunched() {
             runOnUiThread {
                 activity.startFragment(SearchFragment(), this@SearchFragmentIntegrationTest::inject)
