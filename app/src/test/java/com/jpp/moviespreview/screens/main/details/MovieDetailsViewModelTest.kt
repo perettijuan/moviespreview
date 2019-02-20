@@ -6,8 +6,8 @@ import com.jpp.moviespreview.utiltest.InstantTaskExecutorExtension
 import com.jpp.moviespreview.utiltest.resumedLifecycleOwner
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
-import com.jpp.mpdomain.repository.details.MovieDetailsRepository
-import com.jpp.mpdomain.repository.details.MovieDetailsRepositoryState
+import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
+import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCaseResult
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -22,20 +22,18 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
 class MovieDetailsViewModelTest {
 
-
     @MockK
-    private lateinit var detailsRepository: MovieDetailsRepository
+    private lateinit var getMovieDetailsUseCase: GetMovieDetailsUseCase
 
     private lateinit var subject: MovieDetailsViewModel
 
     @BeforeEach
     fun setUp() {
-        subject = MovieDetailsViewModel(TestCoroutineDispatchers(), detailsRepository)
+        subject = MovieDetailsViewModel(TestCoroutineDispatchers(), getMovieDetailsUseCase)
     }
 
-
     @Test
-    fun `Should fetch movie detail from repository, adapt to UI model and post value on init`() {
+    fun `Should execute GetMovieDetailsUseCase, adapt result to UI model and post value on init`() {
         val movieDetailId = 121.toDouble()
         val expectedTitle = "aTitle"
         val expectedOverview = "anOverview"
@@ -63,7 +61,7 @@ class MovieDetailsViewModelTest {
                 )
         )
 
-        every { detailsRepository.getDetail(movieDetailId) } returns MovieDetailsRepositoryState.Success(movieDetail)
+        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsUseCaseResult.Success(movieDetail)
 
         executeInitTest(movieDetailId) {
             assertTrue(it is MovieDetailsViewState.ShowDetail)
@@ -78,14 +76,14 @@ class MovieDetailsViewModelTest {
                 assertEquals(expectedMovieGenres, genres)
             }
         }
-        verify(exactly = 1) { detailsRepository.getDetail(movieDetailId) }
+        verify(exactly = 1) { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) }
     }
 
     @Test
-    fun `Should fetch movie detail from repository and show connectivity error`() {
+    fun `Should execute GetMovieDetailsUseCase and show connectivity error`() {
         val movieDetailId = 121.toDouble()
 
-        every { detailsRepository.getDetail(movieDetailId) } returns MovieDetailsRepositoryState.ErrorNoConnectivity
+        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsUseCaseResult.ErrorNoConnectivity
 
         executeInitTest(movieDetailId) {
             assertTrue(it is MovieDetailsViewState.ErrorNoConnectivity)
@@ -96,7 +94,7 @@ class MovieDetailsViewModelTest {
     fun `Should fetch movie detail from repository and show unknown error`() {
         val movieDetailId = 121.toDouble()
 
-        every { detailsRepository.getDetail(movieDetailId) } returns MovieDetailsRepositoryState.ErrorUnknown
+        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsUseCaseResult.ErrorUnknown
 
         executeInitTest(movieDetailId) {
             assertTrue(it is MovieDetailsViewState.ErrorUnknown)
@@ -107,7 +105,7 @@ class MovieDetailsViewModelTest {
     fun `Should not re-fetch movie detail when init is called twice with the same id`() {
         val movieDetailId = 121.toDouble()
 
-        every { detailsRepository.getDetail(movieDetailId) } returns MovieDetailsRepositoryState.Success(mockk(relaxed = true))
+        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsUseCaseResult.Success(mockk(relaxed = true))
 
         // first call
         subject.init(movieDetailId)
@@ -115,7 +113,7 @@ class MovieDetailsViewModelTest {
         // second call
         subject.init(movieDetailId)
 
-        verify(exactly = 1) { detailsRepository.getDetail(movieDetailId) }
+        verify(exactly = 1) { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) }
     }
 
 
