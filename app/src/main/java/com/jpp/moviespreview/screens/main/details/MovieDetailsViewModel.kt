@@ -6,20 +6,33 @@ import com.jpp.moviespreview.screens.CoroutineDispatchers
 import com.jpp.moviespreview.screens.MPScopedViewModel
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
-import com.jpp.mpdomain.repository.details.MovieDetailsRepository
-import com.jpp.mpdomain.repository.details.MovieDetailsRepositoryState
+import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
+import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCaseResult
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class MovieDetailsViewModel @Inject constructor(
-        dispatchers: CoroutineDispatchers,
-        private val detailsRepository: MovieDetailsRepository) : MPScopedViewModel(dispatchers) {
+/**
+ * [MPScopedViewModel] to handle the state of the MovieDetailsFragment. It is a coroutine-scoped
+ * ViewModel, which indicates that some work will be executed in a background context and synced
+ * to the main context when over.
+ *
+ * It exposes a single output in a LiveData object that receives [MovieDetailsViewState] updates as soon
+ * as any new state is identified by the ViewModel.
+ */
+class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
+                                                private val getMovieDetailsUseCase: GetMovieDetailsUseCase)
+    : MPScopedViewModel(dispatchers) {
 
     private val viewStateLiveData by lazy { MutableLiveData<MovieDetailsViewState>() }
     private var currentMovieId: Double = INVALID_MOVIE_ID
 
-
+    /**
+     * Called on initialization of the MovieDetailsFragment.
+     * Each time this method is called the backing UseCase is executed in order to retrieve
+     * the details of the movie identified by [movieId].
+     * The updates will be posted to the [LiveData] object provided by [viewState()].
+     */
     fun init(movieId: Double) {
         if (currentMovieId == movieId) {
             return
@@ -27,10 +40,21 @@ class MovieDetailsViewModel @Inject constructor(
 
         viewStateLiveData.postValue(MovieDetailsViewState.Loading)
         launch {
-            viewStateLiveData.postValue(withContext(dispatchers.default()) { fetchMovieDetail(movieId) })
+            viewStateLiveData.postValue(
+                    /*
+                     * This work is being executed in the default dispatcher, which indicates that is
+                     * running in a different thread that the UI thread.
+                     * Since the default context in ViewModel is the main context (UI thread), once
+                     * that withContext returns is value, we're back in the main context.
+                     */
+                    withContext(dispatchers.default()) { fetchMovieDetail(movieId) })
+
         }
     }
 
+    /**
+     * Subscribe to this [LiveData] in order to get updates of the [MovieDetailsViewState].
+     */
     fun viewState(): LiveData<MovieDetailsViewState> = viewStateLiveData
 
 
@@ -39,33 +63,40 @@ class MovieDetailsViewModel @Inject constructor(
         super.onCleared()
     }
 
+
+    /**
+     * Fetches the details of the movie identified by [movieId].
+     * @return a [MovieDetailsViewState] that is posted in viewState in order
+     * to update the UI.
+     */
     private fun fetchMovieDetail(movieId: Double): MovieDetailsViewState =
-        detailsRepository
-                .getDetail(movieId)
-                .let {
-                    when (it) {
-                        MovieDetailsRepositoryState.ErrorUnknown -> MovieDetailsViewState.ErrorUnknown
-                        MovieDetailsRepositoryState.ErrorNoConnectivity -> MovieDetailsViewState.ErrorNoConnectivity
-                        is MovieDetailsRepositoryState.Success -> MovieDetailsViewState.ShowDetail(mapMovieDetailsItem(it.detail))
+            getMovieDetailsUseCase
+                    .getDetailsForMovie(movieId)
+                    .also { currentMovieId = movieId }
+                    .let { ucResult ->
+                        when (ucResult) {
+                            is GetMovieDetailsUseCaseResult.ErrorNoConnectivity -> MovieDetailsViewState.ErrorNoConnectivity
+                            is GetMovieDetailsUseCaseResult.ErrorUnknown -> MovieDetailsViewState.ErrorUnknown
+                            is GetMovieDetailsUseCaseResult.Success -> MovieDetailsViewState.ShowDetail(mapMovieDetails(ucResult.details))
+                        }
                     }
-                }
-                .also {
-                    currentMovieId = movieId
-                }
 
 
-    private fun mapMovieDetailsItem(domainDetail: MovieDetail): UiMovieDetails =
-        with(domainDetail) {
-            UiMovieDetails(
-                    title = title,
-                    overview = overview,
-                    releaseDate = release_date,
-                    voteCount = vote_count,
-                    voteAverage = vote_average,
-                    popularity = popularity,
-                    genres = genres.map { genre -> mapGenreToIcon(genre) }
-            )
-        }
+    /**
+     * Maps a domain [MovieDetail] into a UI [UiMovieDetails].
+     */
+    private fun mapMovieDetails(domainDetail: MovieDetail): UiMovieDetails =
+            with(domainDetail) {
+                UiMovieDetails(
+                        title = title,
+                        overview = overview,
+                        releaseDate = release_date,
+                        voteCount = vote_count,
+                        voteAverage = vote_average,
+                        popularity = popularity,
+                        genres = genres.map { genre -> mapGenreToIcon(genre) }
+                )
+            }
 
     /**
      * Maps all the known genres with a given icon.

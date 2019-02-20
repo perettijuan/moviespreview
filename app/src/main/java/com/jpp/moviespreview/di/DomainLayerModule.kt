@@ -7,10 +7,7 @@ import com.jpp.mpdomain.handlers.configuration.ConfigurationHandlerImpl
 import com.jpp.mpdomain.repository.MoviesRepository
 import com.jpp.mpdomain.repository.SearchRepository
 import com.jpp.mpdomain.repository.configuration.ConfigurationRepository
-import com.jpp.mpdomain.repository.details.MovieDetailsApi
-import com.jpp.mpdomain.repository.details.MovieDetailsDb
-import com.jpp.mpdomain.repository.details.MovieDetailsRepository
-import com.jpp.mpdomain.repository.details.MovieDetailsRepositoryImpl
+import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
@@ -65,11 +62,9 @@ class DomainLayerModule {
                                    configurationHandler: ConfigurationHandler)
             : ConfigMovieUseCase = ConfigMovieUseCase.Impl(configurationRepository, configurationHandler)
 
-
-    //TODO JPP -> this should live in the data module
     @Provides
-    fun providesMoviesDetailsRepository(movieDetailsApi: MovieDetailsApi,
-                                        movieDetailsDb: MovieDetailsDb,
-                                        connectivityHandler: ConnectivityHandler)
-            : MovieDetailsRepository = MovieDetailsRepositoryImpl(movieDetailsApi, movieDetailsDb, connectivityHandler)
+    @Singleton
+    fun providesGetMovieDetailsUseCase(moviesRepository: MoviesRepository,
+                                       connectivityHandler: ConnectivityHandler)
+            : GetMovieDetailsUseCase = GetMovieDetailsUseCase.Impl(moviesRepository, connectivityHandler)
 }
