@@ -14,9 +14,9 @@ interface GetMoviesUseCase {
     /**
      * Performs the fetch of the movies page identified by [page] for the provided [section].
      * @return
-     *         - [GetMoviesUseCaseResult.Success] when there is internet connectivity and the movie page is fetched.
-     *         - [GetMoviesUseCaseResult.ErrorNoConnectivity] when the UC detects that the application has no internet connectivity.
-     *         - [GetMoviesUseCaseResult.ErrorUnknown] when an error occur while fetching the page.
+     *  - [GetMoviesUseCaseResult.Success] when there is internet connectivity and the movie page is fetched.
+     *  - [GetMoviesUseCaseResult.ErrorNoConnectivity] when the UC detects that the application has no internet connectivity.
+     *  - [GetMoviesUseCaseResult.ErrorUnknown] when an error occur while fetching the page.
      */
     fun getMoviePageForSection(page: Int, section: MovieSection): GetMoviesUseCaseResult
 
