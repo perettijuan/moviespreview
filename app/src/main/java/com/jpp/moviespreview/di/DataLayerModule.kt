@@ -5,7 +5,6 @@ import androidx.room.Room
 import com.jpp.mpdata.api.MPApi
 import com.jpp.mpdata.cache.CacheTimestampHelper
 import com.jpp.mpdata.cache.ConfigurationCache
-import com.jpp.mpdata.cache.MovieDetailsCache
 import com.jpp.mpdata.cache.MoviesCache
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter

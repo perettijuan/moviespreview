@@ -2,6 +2,7 @@ package com.jpp.mpdata.cache
 
 import com.jpp.mpdata.cache.room.*
 import com.jpp.mpdomain.Movie
+import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
 import io.mockk.every
@@ -21,6 +22,8 @@ class MoviesCacheTest {
 
     @RelaxedMockK
     private lateinit var movieDAO: MovieDAO
+    @RelaxedMockK
+    private lateinit var detailsDAO: MovieDetailDAO
     @MockK
     private lateinit var roomModelAdapter: RoomModelAdapter
     @MockK
@@ -34,6 +37,7 @@ class MoviesCacheTest {
     fun setUp() {
         val roomDatabase = mockk<MPRoomDataBase>()
         every { roomDatabase.moviesDao() } returns movieDAO
+        every { roomDatabase.movieDetailsDao() } returns detailsDAO
         subject = MoviesCache(roomDatabase, roomModelAdapter, timestampHelper)
     }
 
@@ -106,6 +110,49 @@ class MoviesCacheTest {
         verify(exactly = 3) { roomModelAdapter.adaptDataMovieToDBMovie(any(), insertedMoviePageId) }
         verify { movieDAO.insertMoviePage(dbMoviePage) }
         verify { movieDAO.insertMovies(any()) }
+    }
+
+    @Test
+    fun `Should return null when there is no detail stored in Database`() {
+        every { timestampHelper.now() } returns 12L
+        every { detailsDAO.getMovieDetail(any(), any()) } returns null
+
+        val result = subject.getMovieDetails(10.toDouble())
+
+        assertNull(result)
+    }
+
+    @Test
+    fun `Should return null when there are no  genres for detail stored in Database`() {
+        every { timestampHelper.now() } returns 12L
+        every { detailsDAO.getMovieDetail(any(), any()) } returns mockk(relaxed = true)
+        every { detailsDAO.getGenresForDetailId(any()) } returns null
+
+        val result = subject.getMovieDetails(10.toDouble())
+
+        assertNull(result)
+    }
+
+    @Test
+    fun `Should return mapped details`() {
+        val dbMovieDetailId = 17.toDouble()
+        val dbMovieDetail = mockk<DBMovieDetail>()
+        val dbGenres = listOf<DBMovieGenre>(mockk(), mockk())
+        val movieDetail = mockk<MovieDetail>()
+        val now = 12L
+
+        every { dbMovieDetail.id } returns dbMovieDetailId
+        every { timestampHelper.now() } returns now
+        every { detailsDAO.getMovieDetail(any(), any()) } returns dbMovieDetail
+        every { detailsDAO.getGenresForDetailId(any()) } returns dbGenres
+        every { roomModelAdapter.adaptDBMovieDetailToDataMovieDetail(any(), any()) } returns movieDetail
+
+        val result = subject.getMovieDetails(10.toDouble())
+
+        assertEquals(movieDetail, result)
+        verify { detailsDAO.getMovieDetail(10.toDouble(), now) }
+        verify { detailsDAO.getGenresForDetailId(dbMovieDetailId) }
+        verify { roomModelAdapter.adaptDBMovieDetailToDataMovieDetail(dbMovieDetail, dbGenres) }
     }
 
 }

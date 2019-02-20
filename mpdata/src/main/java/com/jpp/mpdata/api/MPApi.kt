@@ -1,14 +1,13 @@
 package com.jpp.mpdata.api
 
 import com.jpp.mpdata.BuildConfig
+import com.jpp.mpdata.repository.configuration.ConfigurationApi
 import com.jpp.mpdata.repository.movies.MoviesApi
 import com.jpp.mpdata.repository.search.SearchApi
 import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.SearchPage
-import com.jpp.mpdata.repository.configuration.ConfigurationApi
-import com.jpp.mpdomain.repository.details.MovieDetailsApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -22,7 +21,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 open class MPApi
     : ConfigurationApi,
         MoviesApi,
-        MovieDetailsApi,
         SearchApi {
 
     override fun getAppConfiguration(): AppConfiguration? {
