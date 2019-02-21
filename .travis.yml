@@ -134,7 +134,8 @@ script:
 #- mvn android:undeploy
 
 #run tests
-- travis_wait 60 ./gradlew check connectedCheck
+#- travis_wait 60 ./gradlew check connectedCheck
+- travis_wait 60 ./gradlew :mpdata:test :mpdomain:test :app:test :app:connectedAndroidTest
 # fun fact, maven runs android tests concurrently for all connected devices, gradle does not
 # since we're using build matrix, each build target compiles the source, fires up it's specific vm, runs the tests, then exits.
 # --stacktrace
