@@ -1,4 +1,4 @@
-package com.jpp.moviespreview.utiltest
+package com.jpp.moviespreview
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner

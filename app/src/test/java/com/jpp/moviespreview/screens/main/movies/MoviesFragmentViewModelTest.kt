@@ -2,8 +2,8 @@ package com.jpp.moviespreview.screens.main.movies
 
 import androidx.lifecycle.Observer
 import com.jpp.moviespreview.utiltest.CurrentThreadExecutorService
-import com.jpp.moviespreview.utiltest.InstantTaskExecutorExtension
-import com.jpp.moviespreview.utiltest.resumedLifecycleOwner
+import com.jpp.moviespreview.InstantTaskExecutorExtension
+import com.jpp.moviespreview.resumedLifecycleOwner
 import com.jpp.moviespreview.utiltest.successGetMoviesUCExecution
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
