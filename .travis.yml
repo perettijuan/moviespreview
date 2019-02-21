@@ -105,17 +105,17 @@ before_script:
 
 #setup for maps forge adapter
 #- wget http://download.mapsforge.org/maps/world/world.map
-- adb shell ls /
-- adb shell ls /sdcard/
-- adb shell ls /sdcard/osmdroid
-- adb root
-- adb shell mount -o rw,remount rootfs /
-- adb shell chmod 777 /mnt/sdcard
-- adb shell mkdir /sdcard/osmdroid/
-- adb push world.map /sdcard/osmdroid/world.map
-- adb push testzoom4.sqlite /sdcard/osmdroid/testzoom4.sqlite
-- adb push testzoom4.zip /sdcard/osmdroid/testzoom4.zip
-- adb push testzoom4.gemf /sdcard/osmdroid/testzoom4.gemf
+#- adb shell ls /
+#- adb shell ls /sdcard/
+#- adb shell ls /sdcard/osmdroid
+#- adb root
+#- adb shell mount -o rw,remount rootfs /
+#- adb shell chmod 777 /mnt/sdcard
+#- adb shell mkdir /sdcard/osmdroid/
+#- adb push world.map /sdcard/osmdroid/world.map
+#- adb push testzoom4.sqlite /sdcard/osmdroid/testzoom4.sqlite
+#- adb push testzoom4.zip /sdcard/osmdroid/testzoom4.zip
+#- adb push testzoom4.gemf /sdcard/osmdroid/testzoom4.gemf
 
 #maybe one day it will be added to the repo- adb push ERDC_Whitehorse_GeoPackage.gpkg /sdcard/osmdroid/ERDC_Whitehorse_GeoPackage.gpkg
 #- adb push resources/usgsbase.gemf /sdcard/osmdroid/usgsbase.gemf
