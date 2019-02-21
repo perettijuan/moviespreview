@@ -69,7 +69,7 @@ buildscript {
     }
 
     dependencies {
-        classpath deps.android.plugin
+        classpath 'com.android.tools.build:gradle:3.3.1'
         classpath deps.kotlin.plugin
         classpath deps.android.arch.navigation.safeargs
     }
