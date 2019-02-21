@@ -1,48 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:clipToPadding="false"
-  android:fillViewport="true">
-
-  <androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/fragmentDetailsRoot"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:fillViewport="true">
 
-    <com.jpp.moviespreview.views.MPErrorView
-      android:id="@+id/detailsErrorView"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
-      android:visibility="invisible"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fragmentDetailsRoot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
 
-    <com.jpp.moviespreview.views.MPLoadingView
-      android:id="@+id/detailsLoadingView"
-      style="@style/MPLoadingViewNormal"
-      android:visibility="invisible"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintLeft_toLeftOf="parent"
-      app:layout_constraintRight_toRightOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      app:start="true" />
+        <com.jpp.moviespreview.views.MPErrorView
+            android:id="@+id/detailsErrorView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <include
-      android:id="@+id/fragmentDetailsContent"
-      layout="@layout/fragment_details_content"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
-      android:visibility="invisible"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+        <ProgressBar
+            android:id="@+id/detailsLoadingView"
+            style="@style/MPProgressBar"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-  </androidx.constraintlayout.widget.ConstraintLayout>
+        <include
+            android:id="@+id/fragmentDetailsContent"
+            layout="@layout/fragment_details_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.core.widget.NestedScrollView>
 

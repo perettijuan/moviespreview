@@ -12,3 +12,4 @@ fun ViewInteraction.assertDisplayed() = check(ViewAssertions.matches(ViewMatcher
 fun ViewInteraction.assertNotDisplayed() = check(ViewAssertions.matches(org.hamcrest.Matchers.not(ViewMatchers.isDisplayed())))
 fun ViewInteraction.assertItemCount(count: Int) = check(itemCount(count))
 fun ViewInteraction.assertWithText(@StringRes stringRes: Int) = check(ViewAssertions.matches(ViewMatchers.withText(stringRes)))
+fun ViewInteraction.assertWithText(value: String) = check(ViewAssertions.matches(ViewMatchers.withText(value)))
