@@ -8,6 +8,8 @@ import androidx.paging.PagedList
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
 import com.jpp.moviespreview.paging.MPPagingDataSourceFactory
+import com.jpp.moviespreview.screens.SingleLiveEvent
+import com.jpp.moviespreview.screens.main.search.SearchViewNavigationEvent
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCaseResult
@@ -26,6 +28,7 @@ abstract class MoviesFragmentViewModel(private val getMoviesUseCase: GetMoviesUs
     protected abstract val movieSection: MovieSection
 
     private val viewState = MediatorLiveData<MoviesViewState>()
+    private val navigationEvents  by lazy { SingleLiveEvent<MoviesViewNavigationEvent>() }
     private var isInitialized = false
     private lateinit var retryFunc: (() -> Unit)
 
@@ -40,11 +43,11 @@ abstract class MoviesFragmentViewModel(private val getMoviesUseCase: GetMoviesUs
         }
 
         isInitialized = true
-        viewState.postValue(MoviesViewState.Loading)
+        viewState.value = MoviesViewState.Loading
         createMoviesPagedList(moviePosterSize, movieBackdropSize).let {
             viewState.addSource(it) { pagedList ->
                 if (pagedList.size > 0) {
-                    viewState.postValue(MoviesViewState.InitialPageLoaded(pagedList))
+                    viewState.value = MoviesViewState.InitialPageLoaded(pagedList)
                 } else {
                     retryFunc = {
                         isInitialized = false
@@ -56,10 +59,30 @@ abstract class MoviesFragmentViewModel(private val getMoviesUseCase: GetMoviesUs
     }
 
     /**
-     * Single output of the ViewModel: it exposes a stream that is updated with a new [MoviesViewState]
+     * Exposes a stream that is updated with a new [MoviesViewState]
      * each time that a new state is identified.
      */
     fun viewState(): LiveData<MoviesViewState> = viewState
+
+    /**
+     * Exposes the events that are triggered when a navigation event is detected.
+     * We need a different LiveData here in order to avoid the problem of back navigation:
+     * - The default LiveData object posts the last value every time a new observer starts observing.
+     */
+    fun navEvents(): LiveData<MoviesViewNavigationEvent> = navigationEvents
+
+    /**
+     * Called when an item is selected in the list of movies.
+     * A new state is posted in navEvents() in order to handle the event.
+     */
+    fun onMovieSelected(movieItem: MovieItem) {
+        with(movieItem) {
+            navigationEvents.value = MoviesViewNavigationEvent.ToMovieDetails(
+                    movieId = movieId.toString(),
+                    movieImageUrl = contentImageUrl,
+                    movieTitle = title)
+        }
+    }
 
     /**
      * Attempts to execute the last movie fetching step that was executed. Typically called after an error
@@ -111,10 +134,10 @@ abstract class MoviesFragmentViewModel(private val getMoviesUseCase: GetMoviesUs
                 .let { ucResult ->
                     when (ucResult) {
                         is GetMoviesUseCaseResult.ErrorNoConnectivity -> {
-                            viewState.postValue(if (page > 1) MoviesViewState.ErrorNoConnectivityWithItems else MoviesViewState.ErrorNoConnectivity)
+                            viewState.value = if (page > 1) MoviesViewState.ErrorNoConnectivityWithItems else MoviesViewState.ErrorNoConnectivity
                         }
                         is GetMoviesUseCaseResult.ErrorUnknown -> {
-                            viewState.postValue(if (page > 1) MoviesViewState.ErrorUnknownWithItems else MoviesViewState.ErrorUnknown)
+                            viewState.value = if (page > 1) MoviesViewState.ErrorUnknownWithItems else MoviesViewState.ErrorUnknown
                         }
                         is GetMoviesUseCaseResult.Success -> {
                             callback(ucResult.moviesPage.results, page + 1)

@@ -23,7 +23,7 @@ sealed class SearchViewState {
  * Represents the navigation events that can be routed through the search section.
  */
 sealed class SearchViewNavigationEvent {
-    data class NavigateToMovieDetails(val movieId: String, val movieImageUrl: String, val movieTitle: String) : SearchViewNavigationEvent()
+    data class ToMovieDetails(val movieId: String, val movieImageUrl: String, val movieTitle: String) : SearchViewNavigationEvent()
 }
 
 sealed class SearchResultTypeIcon(@DrawableRes val iconRes: Int) {

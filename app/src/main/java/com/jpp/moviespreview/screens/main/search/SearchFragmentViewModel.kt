@@ -2,7 +2,6 @@ package com.jpp.moviespreview.screens.main.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
@@ -55,12 +54,12 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
 
     /**
      * Called when an item is selected in the list of search results.
-     * A new state is posted in viewState() in order to handle the event.
+     * A new state is posted in navEvents() in order to handle the event.
      */
     fun onSearchItemSelected(searchResultItem: SearchResultItem) {
         when (searchResultItem.icon) {
             is SearchResultTypeIcon.MovieType -> with(searchResultItem) {
-                navigationEvents.value = SearchViewNavigationEvent.NavigateToMovieDetails(movieId = id.toString(), movieImageUrl = imagePath, movieTitle = name)
+                navigationEvents.value = SearchViewNavigationEvent.ToMovieDetails(movieId = id.toString(), movieImageUrl = imagePath, movieTitle = name)
             }
         }
     }

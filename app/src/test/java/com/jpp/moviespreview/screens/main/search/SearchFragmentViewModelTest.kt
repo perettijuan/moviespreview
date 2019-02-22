@@ -134,8 +134,8 @@ class SearchFragmentViewModelTest {
         }
 
         subject.navEvents().observe(resumedLifecycleOwner(), Observer {
-            assertTrue(it is SearchViewNavigationEvent.NavigateToMovieDetails)
-            with(it as SearchViewNavigationEvent.NavigateToMovieDetails) {
+            assertTrue(it is SearchViewNavigationEvent.ToMovieDetails)
+            with(it as SearchViewNavigationEvent.ToMovieDetails) {
                 assertEquals("22.0", movieId)
                 assertEquals("aPath", movieImageUrl)
                 assertEquals("aName", movieTitle)

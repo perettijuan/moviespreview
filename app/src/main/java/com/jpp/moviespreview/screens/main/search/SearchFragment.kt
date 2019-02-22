@@ -150,7 +150,7 @@ class SearchFragment : Fragment() {
      */
     private fun navigateTo(event: SearchViewNavigationEvent) {
         when (event) {
-            is SearchViewNavigationEvent.NavigateToMovieDetails -> {
+            is SearchViewNavigationEvent.ToMovieDetails -> {
                 findNavController().navigate(
                         SearchFragmentDirections.actionSearchFragmentToMovieDetailsFragment(
                                 event.movieId,
