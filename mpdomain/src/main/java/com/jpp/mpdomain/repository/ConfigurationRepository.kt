@@ -1,4 +1,4 @@
-package com.jpp.mpdomain.repository.configuration
+package com.jpp.mpdomain.repository
 
 import com.jpp.mpdomain.AppConfiguration
 

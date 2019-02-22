@@ -6,7 +6,7 @@ import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
 import com.jpp.mpdomain.handlers.configuration.ConfigurationHandlerImpl
 import com.jpp.mpdomain.repository.MoviesRepository
 import com.jpp.mpdomain.repository.SearchRepository
-import com.jpp.mpdomain.repository.configuration.ConfigurationRepository
+import com.jpp.mpdomain.repository.ConfigurationRepository
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase

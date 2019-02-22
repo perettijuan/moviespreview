@@ -38,17 +38,15 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
             return
         }
 
-        viewStateLiveData.postValue(MovieDetailsViewState.Loading)
+        viewStateLiveData.value = MovieDetailsViewState.Loading
         launch {
-            viewStateLiveData.postValue(
-                    /*
-                     * This work is being executed in the default dispatcher, which indicates that is
-                     * running in a different thread that the UI thread.
-                     * Since the default context in ViewModel is the main context (UI thread), once
-                     * that withContext returns is value, we're back in the main context.
-                     */
-                    withContext(dispatchers.default()) { fetchMovieDetail(movieId) })
-
+            /*
+             * This work is being executed in the default dispatcher, which indicates that is
+             * running in a different thread that the UI thread.
+             * Since the default context in ViewModel is the main context (UI thread), once
+             * that withContext returns is value, we're back in the main context.
+             */
+            viewStateLiveData.value = withContext(dispatchers.default()) { fetchMovieDetail(movieId) }
         }
     }
 

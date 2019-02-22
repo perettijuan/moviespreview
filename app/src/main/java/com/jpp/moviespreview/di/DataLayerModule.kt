@@ -18,7 +18,7 @@ import com.jpp.mpdata.repository.search.SearchApi
 import com.jpp.mpdata.repository.search.SearchRepositoryImpl
 import com.jpp.mpdomain.repository.MoviesRepository
 import com.jpp.mpdomain.repository.SearchRepository
-import com.jpp.mpdomain.repository.configuration.ConfigurationRepository
+import com.jpp.mpdomain.repository.ConfigurationRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

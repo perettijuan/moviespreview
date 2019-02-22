@@ -30,7 +30,7 @@ class GetMovieDetailsUseCaseTest {
     }
 
     @Test
-    fun `Should check connectivity before searching and return ErrorNoConnectivity`() {
+    fun `Should check connectivity before fetching details and return ErrorNoConnectivity`() {
         every { connectivityHandler.isConnectedToNetwork() } returns false
 
         subject.getDetailsForMovie(1.toDouble()).let { result ->
