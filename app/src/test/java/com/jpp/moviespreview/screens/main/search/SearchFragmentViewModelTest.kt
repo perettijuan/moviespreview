@@ -12,6 +12,7 @@ import com.jpp.mpdomain.usecase.search.SearchUseCaseResult
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
 import io.mockk.slot
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -119,6 +120,29 @@ class SearchFragmentViewModelTest {
         subject.clearSearch()
 
         assertTrue(searchViewStates[2] is SearchViewState.Idle)
+    }
+
+    @Test
+    fun `Should navigate to movies when a movie item is selected`() {
+        val searchResultItem = mockk<SearchResultItem>()
+
+        with(searchResultItem) {
+            every { id } returns 22.toDouble()
+            every { imagePath } returns "aPath"
+            every { name } returns "aName"
+            every { icon } returns mockk<SearchResultTypeIcon.MovieType>()
+        }
+
+        subject.navEvents().observe(resumedLifecycleOwner(), Observer {
+            assertTrue(it is SearchViewNavigationEvent.NavigateToMovieDetails)
+            with(it as SearchViewNavigationEvent.NavigateToMovieDetails) {
+                assertEquals("22.0", movieId)
+                assertEquals("aPath", movieImageUrl)
+                assertEquals("aName", movieTitle)
+            }
+        })
+
+        subject.onSearchItemSelected(searchResultItem)
     }
 
 

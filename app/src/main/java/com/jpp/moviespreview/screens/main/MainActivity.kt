@@ -235,6 +235,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             }
             is MainActivityViewState.SearchEnabled -> {
                 if (viewState.withAnimation) lockActionBarWithAnimation() else lockActionBar()
+                setActionBarTitle(viewState.sectionTitle)
                 with(mainSearchView) {
                     isIconified = false
                     setIconifiedByDefault(false)

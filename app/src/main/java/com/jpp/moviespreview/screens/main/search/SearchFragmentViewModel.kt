@@ -41,11 +41,16 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
     }
 
     /**
-     * Single output of the ViewModel: it exposes a stream that is updated with a new state ([SearchViewState])
+     * Exposes a stream that is updated with a new state ([SearchViewState])
      * every time a new state is identified.
      */
     fun viewState(): LiveData<SearchViewState> = viewState
 
+    /**
+     * Exposes the events that are triggered when a navigation event is detected.
+     * We need a different LiveData here in order to avoid the problem of back navigation:
+     * - The default LiveData object posts the last value every time a new observer starts observing.
+     */
     fun navEvents(): LiveData<SearchViewNavigationEvent> = navigationEvents
 
     /**
