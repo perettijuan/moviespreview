@@ -3,11 +3,9 @@ package com.jpp.mpdata.api
 import com.jpp.mpdata.BuildConfig
 import com.jpp.mpdata.repository.configuration.ConfigurationApi
 import com.jpp.mpdata.repository.movies.MoviesApi
+import com.jpp.mpdata.repository.person.PersonApi
 import com.jpp.mpdata.repository.search.SearchApi
-import com.jpp.mpdomain.AppConfiguration
-import com.jpp.mpdomain.MovieDetail
-import com.jpp.mpdomain.MoviePage
-import com.jpp.mpdomain.SearchPage
+import com.jpp.mpdomain.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -21,7 +19,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 open class MPApi
     : ConfigurationApi,
         MoviesApi,
-        SearchApi {
+        SearchApi,
+        PersonApi {
 
     override fun getAppConfiguration(): AppConfiguration? {
         return tryCatchOrReturnNull { API.getAppConfiguration(API_KEY) }
@@ -49,6 +48,10 @@ open class MPApi
 
     override fun performSearch(query: String, page: Int): SearchPage? {
         return tryCatchOrReturnNull { API.search(query, page, API_KEY) }
+    }
+
+    override fun getPerson(personId: Double): Person? {
+        return tryCatchOrReturnNull { API.getPerson(personId, API_KEY) }
     }
 
 
