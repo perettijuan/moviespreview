@@ -19,6 +19,13 @@ sealed class SearchViewState {
     data class DoneSearching(val pagedList: PagedList<SearchResultItem>) : SearchViewState()
 }
 
+/**
+ * Represents the navigation events that can be routed through the search section.
+ */
+sealed class SearchViewNavigationEvent {
+    data class NavigateToMovieDetails(val movieId: String, val movieImageUrl: String, val movieTitle: String) : SearchViewNavigationEvent()
+}
+
 sealed class SearchResultTypeIcon(@DrawableRes val iconRes: Int) {
     object MovieType : SearchResultTypeIcon(R.drawable.ic_clapperboard)
     object PersonType : SearchResultTypeIcon(R.drawable.ic_person_black)

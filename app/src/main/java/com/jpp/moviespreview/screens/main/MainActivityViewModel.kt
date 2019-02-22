@@ -27,6 +27,6 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
     }
 
     fun userNavigatesToSearch() {
-        viewState.postValue(MainActivityViewState.SearchEnabled)
+        viewState.postValue(MainActivityViewState.SearchEnabled(withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked))
     }
 }

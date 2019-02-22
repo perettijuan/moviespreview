@@ -2,11 +2,13 @@ package com.jpp.moviespreview.screens.main.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mpdomain.SearchResult
 import com.jpp.moviespreview.paging.MPPagingDataSourceFactory
+import com.jpp.moviespreview.screens.SingleLiveEvent
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCaseResult
@@ -25,6 +27,7 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
 
     private var targetImageSize: Int = -1
     private val viewState = MediatorLiveData<SearchViewState>()
+    private val navigationEvents  by lazy { SingleLiveEvent<SearchViewNavigationEvent>() }
     private var retryFunc: (() -> Unit)? = null
     private var currentSearch = ""
 
@@ -43,6 +46,20 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
      */
     fun viewState(): LiveData<SearchViewState> = viewState
 
+    fun navEvents(): LiveData<SearchViewNavigationEvent> = navigationEvents
+
+    /**
+     * Called when an item is selected in the list of search results.
+     * A new state is posted in viewState() in order to handle the event.
+     */
+    fun onSearchItemSelected(searchResultItem: SearchResultItem) {
+        when (searchResultItem.icon) {
+            is SearchResultTypeIcon.MovieType -> with(searchResultItem) {
+                navigationEvents.value = SearchViewNavigationEvent.NavigateToMovieDetails(movieId = id.toString(), movieImageUrl = imagePath, movieTitle = name)
+            }
+        }
+    }
+
     /**
      * Performs the search of the provided [searchText] in the application. Posts [SearchViewState]
      * values when new states are identified:
@@ -57,11 +74,11 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
         }
 
         currentSearch = searchText
-        viewState.postValue(SearchViewState.Searching)
+        viewState.value = SearchViewState.Searching
         createSearchPagedList(searchText).let {
             viewState.addSource(it) { pagedList ->
                 if (pagedList.size > 0) {
-                    viewState.postValue(SearchViewState.DoneSearching(pagedList))
+                    viewState.value = SearchViewState.DoneSearching(pagedList)
                 } else {
                     currentSearch = ""
                     retryFunc = { search(searchText) }
@@ -77,7 +94,7 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
     fun clearSearch() {
         retryFunc = null
         currentSearch = ""
-        viewState.postValue(SearchViewState.Idle)
+        viewState.value = SearchViewState.Idle
     }
 
     /**
@@ -128,14 +145,14 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
                 .let { ucResult ->
                     when (ucResult) {
                         is SearchUseCaseResult.ErrorNoConnectivity -> {
-                            viewState.postValue(if (page > 1) SearchViewState.ErrorNoConnectivityWithItems else SearchViewState.ErrorNoConnectivity)
+                            viewState.value = if (page > 1) SearchViewState.ErrorNoConnectivityWithItems else SearchViewState.ErrorNoConnectivity
                         }
                         is SearchUseCaseResult.ErrorUnknown -> {
-                            viewState.postValue(if (page > 1) SearchViewState.ErrorUnknownWithItems else SearchViewState.ErrorUnknown)
+                            viewState.value = if (page > 1) SearchViewState.ErrorUnknownWithItems else SearchViewState.ErrorUnknown
                         }
                         is SearchUseCaseResult.Success -> {
                             with(ucResult.searchPage.results) {
-                                if (size > 0) callback(this, page + 1) else viewState.postValue(SearchViewState.EmptySearch(queryString))
+                                if (size > 0) callback(this, page + 1) else viewState.value = SearchViewState.EmptySearch(queryString)
                             }
                         }
                     }

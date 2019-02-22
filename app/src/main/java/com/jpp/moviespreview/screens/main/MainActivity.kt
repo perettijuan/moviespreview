@@ -234,6 +234,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 mpToolbarManager.clearInsetStartWithNavigation(mainToolbar)
             }
             is MainActivityViewState.SearchEnabled -> {
+                if (viewState.withAnimation) lockActionBarWithAnimation() else lockActionBar()
                 with(mainSearchView) {
                     isIconified = false
                     setIconifiedByDefault(false)
@@ -244,7 +245,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                     }
                 }
                 mpToolbarManager.setInsetStartWithNavigation(0, mainToolbar)
-
             }
         }
 
