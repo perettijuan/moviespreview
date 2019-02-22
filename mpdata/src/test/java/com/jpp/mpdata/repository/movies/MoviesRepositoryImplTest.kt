@@ -1,8 +1,5 @@
-package com.jpp.mpdata.repository
+package com.jpp.mpdata.repository.movies
 
-import com.jpp.mpdata.repository.movies.MoviesApi
-import com.jpp.mpdata.repository.movies.MoviesDb
-import com.jpp.mpdata.repository.movies.MoviesRepositoryImpl
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
