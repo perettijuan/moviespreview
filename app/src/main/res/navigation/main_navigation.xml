@@ -81,6 +81,23 @@
         <action
             android:id="@+id/action_searchFragment_to_movieDetailsFragment"
             app:destination="@id/movieDetailsFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_personFragment"
+            app:destination="@id/personFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/personFragment"
+        android:name="com.jpp.moviespreview.screens.main.person.PersonFragment"
+        tools:layout="@layout/fragment_person">
+        <argument
+            android:name="personId"
+            app:argType="string" />
+        <argument
+            android:name="personImageUrl"
+            app:argType="string" />
+        <argument
+            android:name="personName"
+            app:argType="string" />
     </fragment>
 
 </navigation>

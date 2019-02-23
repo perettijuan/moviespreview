@@ -61,6 +61,9 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
             is SearchResultTypeIcon.MovieType -> with(searchResultItem) {
                 navigationEvents.value = SearchViewNavigationEvent.ToMovieDetails(movieId = id.toString(), movieImageUrl = imagePath, movieTitle = name)
             }
+            is SearchResultTypeIcon.PersonType -> with(searchResultItem) {
+                navigationEvents.value = SearchViewNavigationEvent.ToPerson(personId = id.toString(), personImageUrl = imagePath, personName = name)
+            }
         }
     }
 
@@ -149,10 +152,10 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
                 .let { ucResult ->
                     when (ucResult) {
                         is SearchUseCaseResult.ErrorNoConnectivity -> {
-                            viewState.value = if (page > 1) SearchViewState.ErrorNoConnectivityWithItems else SearchViewState.ErrorNoConnectivity
+                            viewState.postValue(if (page > 1) SearchViewState.ErrorNoConnectivityWithItems else SearchViewState.ErrorNoConnectivity)
                         }
                         is SearchUseCaseResult.ErrorUnknown -> {
-                            viewState.value = if (page > 1) SearchViewState.ErrorUnknownWithItems else SearchViewState.ErrorUnknown
+                            viewState.postValue(if (page > 1) SearchViewState.ErrorUnknownWithItems else SearchViewState.ErrorUnknown)
                         }
                         is SearchUseCaseResult.Success -> {
                             with(ucResult.searchPage.results) {

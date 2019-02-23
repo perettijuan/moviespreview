@@ -134,10 +134,10 @@ abstract class MoviesFragmentViewModel(private val getMoviesUseCase: GetMoviesUs
                 .let { ucResult ->
                     when (ucResult) {
                         is GetMoviesUseCaseResult.ErrorNoConnectivity -> {
-                            viewState.value = if (page > 1) MoviesViewState.ErrorNoConnectivityWithItems else MoviesViewState.ErrorNoConnectivity
+                            viewState.postValue(if (page > 1) MoviesViewState.ErrorNoConnectivityWithItems else MoviesViewState.ErrorNoConnectivity)
                         }
                         is GetMoviesUseCaseResult.ErrorUnknown -> {
-                            viewState.value = if (page > 1) MoviesViewState.ErrorUnknownWithItems else MoviesViewState.ErrorUnknown
+                            viewState.postValue(if (page > 1) MoviesViewState.ErrorUnknownWithItems else MoviesViewState.ErrorUnknown)
                         }
                         is GetMoviesUseCaseResult.Success -> {
                             callback(ucResult.moviesPage.results, page + 1)

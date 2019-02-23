@@ -1,52 +1,58 @@
 <resources>
-  <string name="app_name">MoviesPreview</string>
+    <string name="app_name">MoviesPreview</string>
 
-  <!-- Main Activity -->
-  <string name="main_menu_now_playing">En cines</string>
-  <string name="main_menu_popular">Populares</string>
-  <string name="main_menu_top_rated">Mejor rankeadas</string>
-  <string name="main_menu_upcoming">Por estrenar</string>
-  <string name="main_activity_search_menu_title">Buscar</string>
-  <!-- End Main Activity -->
+    <!-- Main Activity -->
+    <string name="main_menu_now_playing">En cines</string>
+    <string name="main_menu_popular">Populares</string>
+    <string name="main_menu_top_rated">Mejor rankeadas</string>
+    <string name="main_menu_upcoming">Por estrenar</string>
+    <string name="main_activity_search_menu_title">Buscar</string>
+    <!-- End Main Activity -->
 
-  <!-- Errors -->
-  <string name="error_no_network_connection_message">Verifique su conexion a Internet e intente nuevamente.</string>
-  <string name="error_unexpected_error_message">Un error inesperado ha ocurrido. Por favor, intent enuevamente luego.</string>
-  <string name="error_retry">Reintentar</string>
-  <!-- End Errors -->
-
-
-  <!-- Details Fragment -->
-  <string name="overview_title">Sinopsis</string>
-  <string name="genres_title">Géneros</string>
-  <string name="popularity_title">Popularidad</string>
-  <string name="vote_count_title">Votos</string>
-  <string name="release_date_title">Fecha de Estreno</string>
-  <string name="action_genre">Acción</string>
-  <string name="adventure_genre">Aventura</string>
-  <string name="animation_genre">Animación</string>
-  <string name="comedy_genre">Comedia</string>
-  <string name="crime_genre">Crimen</string>
-  <string name="documentary_genre">Documental</string>
-  <string name="drama_genre">Drama</string>
-  <string name="familiy_genre">Familia</string>
-  <string name="fantasy_genre">Fantasia</string>
-  <string name="history_genre">Historia</string>
-  <string name="horror_genre">Terror</string>
-  <string name="music_genre">Música</string>
-  <string name="mystery_genre">Misterio</string>
-  <string name="sci_fi_genre">Ciencia Ficción</string>
-  <string name="tv_movie_genre">Película de Tv</string>
-  <string name="thriller_genre">Thriller</string>
-  <string name="war_genre">Guerra</string>
-  <string name="western_genre">Western</string>
-  <string name="generic_genre">Genérico</string>
-  <!-- End Details Fragment -->
+    <!-- Errors -->
+    <string name="error_no_network_connection_message">Verifique su conexion a Internet e intente nuevamente.</string>
+    <string name="error_unexpected_error_message">Un error inesperado ha ocurrido. Por favor, intent enuevamente luego.</string>
+    <string name="error_retry">Reintentar</string>
+    <!-- End Errors -->
 
 
-  <!-- Search -->
-  <string name="search_hint">Busca películas y personajes</string>
-  <string name="empty_search">No se encontraron resultados para %1$s</string>
-  <!-- End Search-->
+    <!-- Details Fragment -->
+    <string name="overview_title">Sinopsis</string>
+    <string name="genres_title">Géneros</string>
+    <string name="popularity_title">Popularidad</string>
+    <string name="vote_count_title">Votos</string>
+    <string name="release_date_title">Fecha de Estreno</string>
+    <string name="action_genre">Acción</string>
+    <string name="adventure_genre">Aventura</string>
+    <string name="animation_genre">Animación</string>
+    <string name="comedy_genre">Comedia</string>
+    <string name="crime_genre">Crimen</string>
+    <string name="documentary_genre">Documental</string>
+    <string name="drama_genre">Drama</string>
+    <string name="familiy_genre">Familia</string>
+    <string name="fantasy_genre">Fantasia</string>
+    <string name="history_genre">Historia</string>
+    <string name="horror_genre">Terror</string>
+    <string name="music_genre">Música</string>
+    <string name="mystery_genre">Misterio</string>
+    <string name="sci_fi_genre">Ciencia Ficción</string>
+    <string name="tv_movie_genre">Película de Tv</string>
+    <string name="thriller_genre">Thriller</string>
+    <string name="war_genre">Guerra</string>
+    <string name="western_genre">Western</string>
+    <string name="generic_genre">Genérico</string>
+    <!-- End Details Fragment -->
 
+
+    <!-- Search -->
+    <string name="search_hint">Busca películas y personajes</string>
+    <string name="empty_search">No se encontraron resultados para %1$s</string>
+    <!-- End Search-->
+
+    <!-- Person -->
+    <string name="person_birthday_title">Nacimiento</string>
+    <string name="person_birth_place_title">Lugar de nacimiento</string>
+    <string name="person_death_day_title">Muerte</string>
+    <string name="person_bio_title">Biografia</string>
+    <!-- End Person -->
 </resources>

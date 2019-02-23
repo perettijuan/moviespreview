@@ -159,6 +159,15 @@ class SearchFragment : Fragment() {
                         )
                 )
             }
+            is SearchViewNavigationEvent.ToPerson -> {
+                findNavController().navigate(
+                        SearchFragmentDirections.actionSearchFragmentToPersonFragment(
+                                event.personId,
+                                event.personImageUrl,
+                                event.personName
+                        )
+                )
+            }
         }
     }
 

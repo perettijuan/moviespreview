@@ -57,7 +57,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
 
     // ConstraintLayout
-    def constraintLayoutVersion = '1.1.3'
+    def constraintLayoutVersion = '2.0.0-alpha3'
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
     implementation "androidx.constraintlayout:constraintlayout-solver:$constraintLayoutVersion"
 

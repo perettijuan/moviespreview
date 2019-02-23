@@ -1,52 +1,59 @@
 <resources>
-  <string name="app_name">MoviesPreview</string>
+    <string name="app_name">MoviesPreview</string>
 
-  <!-- Main Activity -->
-  <string name="main_menu_now_playing">Now Playing</string>
-  <string name="main_menu_popular">Popular</string>
-  <string name="main_menu_top_rated">Top Rated</string>
-  <string name="main_menu_upcoming">Upcoming</string>
-  <string name="main_activity_search_menu_title">Search</string>
-  <!-- End Main Activity -->
+    <!-- Main Activity -->
+    <string name="main_menu_now_playing">Now Playing</string>
+    <string name="main_menu_popular">Popular</string>
+    <string name="main_menu_top_rated">Top Rated</string>
+    <string name="main_menu_upcoming">Upcoming</string>
+    <string name="main_activity_search_menu_title">Search</string>
+    <!-- End Main Activity -->
 
-  <!-- Errors -->
-  <string name="error_no_network_connection_message">Verify your network connection and try again</string>
-  <string name="error_unexpected_error_message">An unexpected error has occurred. Please, try again later.</string>
-  <string name="error_retry">Retry</string>
-  <!-- End Errors -->
-
-
-  <!-- Details Fragment -->
-  <string name="overview_title">Overview</string>
-  <string name="genres_title">Genres</string>
-  <string name="popularity_title">Popularity</string>
-  <string name="vote_count_title">Vote Count</string>
-  <string name="release_date_title">Release Date</string>
-  <string name="action_genre">Action</string>
-  <string name="adventure_genre">Adventure</string>
-  <string name="animation_genre">Animation</string>
-  <string name="comedy_genre">Comedy</string>
-  <string name="crime_genre">Crime</string>
-  <string name="documentary_genre">Documentary</string>
-  <string name="drama_genre">Drama</string>
-  <string name="familiy_genre">Family</string>
-  <string name="fantasy_genre">Fantasy</string>
-  <string name="history_genre">History</string>
-  <string name="horror_genre">Horror</string>
-  <string name="music_genre">Music</string>
-  <string name="mystery_genre">Mystery</string>
-  <string name="sci_fi_genre">SciFi</string>
-  <string name="tv_movie_genre">Tv Movie</string>
-  <string name="thriller_genre">Thriller</string>
-  <string name="war_genre">War</string>
-  <string name="western_genre">Western</string>
-  <string name="generic_genre">Generic</string>
-  <!-- End Details Fragment -->
+    <!-- Errors -->
+    <string name="error_no_network_connection_message">Verify your network connection and try again</string>
+    <string name="error_unexpected_error_message">An unexpected error has occurred. Please, try again later.</string>
+    <string name="error_retry">Retry</string>
+    <!-- End Errors -->
 
 
-  <!-- Search -->
-  <string name="search_hint">Search movies and characters</string>
-  <string name="empty_search">No results found for %1$s</string>
-  <!-- End Search-->
+    <!-- Details Fragment -->
+    <string name="overview_title">Overview</string>
+    <string name="genres_title">Genres</string>
+    <string name="popularity_title">Popularity</string>
+    <string name="vote_count_title">Vote Count</string>
+    <string name="release_date_title">Release Date</string>
+    <string name="action_genre">Action</string>
+    <string name="adventure_genre">Adventure</string>
+    <string name="animation_genre">Animation</string>
+    <string name="comedy_genre">Comedy</string>
+    <string name="crime_genre">Crime</string>
+    <string name="documentary_genre">Documentary</string>
+    <string name="drama_genre">Drama</string>
+    <string name="familiy_genre">Family</string>
+    <string name="fantasy_genre">Fantasy</string>
+    <string name="history_genre">History</string>
+    <string name="horror_genre">Horror</string>
+    <string name="music_genre">Music</string>
+    <string name="mystery_genre">Mystery</string>
+    <string name="sci_fi_genre">SciFi</string>
+    <string name="tv_movie_genre">Tv Movie</string>
+    <string name="thriller_genre">Thriller</string>
+    <string name="war_genre">War</string>
+    <string name="western_genre">Western</string>
+    <string name="generic_genre">Generic</string>
+    <!-- End Details Fragment -->
+
+
+    <!-- Search -->
+    <string name="search_hint">Search movies and characters</string>
+    <string name="empty_search">No results found for %1$s</string>
+    <!-- End Search-->
+
+    <!-- Person -->
+    <string name="person_birthday_title">Birthday</string>
+    <string name="person_birth_place_title">Place of birth</string>
+    <string name="person_death_day_title">Day of death</string>
+    <string name="person_bio_title">Biography</string>
+    <!-- End Person -->
 
 </resources>

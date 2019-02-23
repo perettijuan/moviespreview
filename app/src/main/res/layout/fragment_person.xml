@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/personContent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="false">
+
+    <!-- Person header-->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/person_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/person_app_bar_height"
+        android:background="@android:color/white"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <include layout="@layout/layout_person_header" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+    <!-- End Person header-->
+
+    <!-- Person Content-->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.jpp.moviespreview.views.MPTitleValueRow
+                android:id="@+id/personBirthdayRow"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:titleText="@string/person_birthday_title" />
+
+            <com.jpp.moviespreview.views.MPTitleValueRow
+                android:id="@+id/personPlaceOfBirthRow"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/personBirthdayRow"
+                app:titleText="@string/person_birth_place_title" />
+
+            <com.jpp.moviespreview.views.MPTitleValueRow
+                android:id="@+id/personDeathDayRow"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/personPlaceOfBirthRow"
+                app:titleText="@string/person_death_day_title" />
+
+            <TextView
+                android:id="@+id/personBioTitleTextView"
+                style="@style/MPTextViewTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="@string/person_bio_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/personDeathDayRow" />
+
+            <TextView
+                android:id="@+id/personBioBodyTextView"
+                style="@style/MPTextViewSmall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/movie_details_vertical_spacing"
+                android:padding="10dp"
+                android:text="Lorem ipsum jaklk lkjaskljaskl  lkjalksjlkjas lkjklkajs klas"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/personBioTitleTextView"
+                tools:text="Lorem ipsum jaklk lkjaskljaskl  lkjalksjlkjas lkjklkajs klas" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+    <!-- End Person Content-->
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

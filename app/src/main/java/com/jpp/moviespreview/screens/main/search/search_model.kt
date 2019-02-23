@@ -24,6 +24,7 @@ sealed class SearchViewState {
  */
 sealed class SearchViewNavigationEvent {
     data class ToMovieDetails(val movieId: String, val movieImageUrl: String, val movieTitle: String) : SearchViewNavigationEvent()
+    data class ToPerson(val personId: String, val personImageUrl: String, val personName: String) : SearchViewNavigationEvent()
 }
 
 sealed class SearchResultTypeIcon(@DrawableRes val iconRes: Int) {
