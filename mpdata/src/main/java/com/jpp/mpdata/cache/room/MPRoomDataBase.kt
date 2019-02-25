@@ -8,10 +8,13 @@ import androidx.room.RoomDatabase
     (DBMovie::class),
     (DBImageSize::class),
     (DBMovieDetail::class),
-    (DBMovieGenre::class)
+    (DBMovieGenre::class),
+    (DBCastCharacter::class),
+    (DBCrewPerson::class)
 ], version = 1)
 abstract class MPRoomDataBase : RoomDatabase() {
     abstract fun imageSizeDao() : ImageSizeDAO
     abstract fun moviesDao(): MovieDAO
     abstract fun movieDetailsDao(): MovieDetailDAO
+    abstract fun creditsDao(): CreditsDao
 }

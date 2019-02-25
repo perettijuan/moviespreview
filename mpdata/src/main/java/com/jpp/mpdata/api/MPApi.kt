@@ -2,6 +2,7 @@ package com.jpp.mpdata.api
 
 import com.jpp.mpdata.BuildConfig
 import com.jpp.mpdata.repository.configuration.ConfigurationApi
+import com.jpp.mpdata.repository.credits.CreditsApi
 import com.jpp.mpdata.repository.movies.MoviesApi
 import com.jpp.mpdata.repository.person.PersonApi
 import com.jpp.mpdata.repository.search.SearchApi
@@ -20,7 +21,8 @@ open class MPApi
     : ConfigurationApi,
         MoviesApi,
         SearchApi,
-        PersonApi {
+        PersonApi,
+        CreditsApi {
 
     override fun getAppConfiguration(): AppConfiguration? {
         return tryCatchOrReturnNull { API.getAppConfiguration(API_KEY) }
@@ -54,6 +56,9 @@ open class MPApi
         return tryCatchOrReturnNull { API.getPerson(personId, API_KEY) }
     }
 
+    override fun getCreditsForMovie(movieId: Double): Credits? {
+        return tryCatchOrReturnNull { API.getMovieCredits(movieId, API_KEY) }
+    }
 
     /**
      * Executes the provided [block] in a try-catch block and returns the result.

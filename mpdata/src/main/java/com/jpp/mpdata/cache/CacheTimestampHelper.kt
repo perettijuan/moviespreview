@@ -32,4 +32,10 @@ class CacheTimestampHelper {
      * stored in the application.
      */
     fun movieDetailsRefreshTime(): Long = TimeUnit.MINUTES.toMillis(30)
+
+    /**
+     * @return a Long value that represents the maximum refresh time for the credits of a movie
+     * stored in the application.
+     */
+    fun creditsRefreshTime(): Long = TimeUnit.MINUTES.toMillis(30)
 }

@@ -33,7 +33,9 @@ data class DBMoviePage(@ColumnInfo(name = "page") var page: Int,
                        @ColumnInfo(name = "totalResults") var totalResults: Int,
                        @ColumnInfo(name = "section") var section: String,
                        @ColumnInfo(name = "duedate") var dueDate: Long /* represents the date until the data is valid */) {
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "_id") var id: Int = 0
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "_id")
+    var id: Int = 0
 }
 
 
@@ -58,7 +60,9 @@ data class DBMovie(@ColumnInfo(name = "movieId") var movieId: Double,
                    @ColumnInfo(name = "vote_average") var voteAverage: Float,
                    @ColumnInfo(name = "popularity") var popularity: Float,
                    @ColumnInfo(name = "page_id") var pageId: Long) {
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "_id") var id: Int = 0
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "_id")
+    var id: Int = 0
 }
 
 
@@ -87,3 +91,41 @@ data class DBMovieDetail(@PrimaryKey @ColumnInfo(name = "_id") var id: Double,
 data class DBMovieGenre(@PrimaryKey @ColumnInfo(name = "_id") var id: Int,
                         @ColumnInfo(name = "name") var name: String,
                         @ColumnInfo(name = "movie_detail_d") var movieDetailId: Double)
+
+/**
+ * Represents a character present in a movie cast. We don't store the MovieCredits
+ * class in the DB. Instead, we store the movie personId on this entity and create the MovieCredits
+ * on demand. Also, the movie personId is not stored as a foreign key since we don't want to
+ * delete (or deal with integrity) at this level.
+ */
+@Entity(tableName = "movie_cast_characters")
+data class DBCastCharacter(@PrimaryKey @ColumnInfo(name = "_id") var id: Double,
+                           @ColumnInfo(name = "character") var character: String,
+                           @ColumnInfo(name = "credit_id") var creditId: String,
+                           @ColumnInfo(name = "gender") var gender: Int,
+                           @ColumnInfo(name = "person_id") var personId: Double,
+                           @ColumnInfo(name = "name") var name: String,
+                           @ColumnInfo(name = "order") var order: Int,
+                           @ColumnInfo(name = "profile_path") var profilePath: String?,
+                           @ColumnInfo(name = "movie_id") var movieId: Double,
+                           @ColumnInfo(name = "duedate") var dueDate: Long /* represents the date until the data is valid */) //-> this represents the ID of the movie to which this cast belongs to.
+// We do not store it as a foreign key since we don't want to delete it on CASCADE and we don't want to deal with integrity at this level.
+
+/**
+ * Represents a crew person present in a movie cast. We don't store the MovieCredits
+ * class in the DB. Instead, we store the movie personId on this entity and create the MovieCredits
+ * on demand. Also, the movie personId is not stored as a foreign key since we don't want to
+ * delete (or deal with integrity) at this level.
+ */
+@Entity(tableName = "movie_crew_person")
+data class DBCrewPerson(@PrimaryKey @ColumnInfo(name = "_id") var id: Double,
+                        @ColumnInfo(name = "department") var department: String,
+                        @ColumnInfo(name = "gender") var gender: Int,
+                        @ColumnInfo(name = "credit_id") var creditId: String,
+                        @ColumnInfo(name = "executionJob") var job: String,
+                        @ColumnInfo(name = "name") var name: String,
+                        @ColumnInfo(name = "profile_path") var profilePath: String?,
+                        @ColumnInfo(name = "movie_id") var movieId: Double,
+                        @ColumnInfo(name = "duedate") var dueDate: Long /* represents the date until the data is valid */) //-> this represents the ID of the movie to which this cast belongs to.
+// We do not store it as a foreign key since we don't want to delete it on CASCADE and we don't want to deal with integrity at this level.
+
