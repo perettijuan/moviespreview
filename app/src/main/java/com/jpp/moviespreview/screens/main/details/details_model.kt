@@ -24,8 +24,36 @@ data class UiMovieDetails(
         val voteCount: Double,
         val voteAverage: Float,
         val popularity: Float,
-        val genres: List<MovieGenreItem>
-)
+        val genres: List<MovieGenreItem>) {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as UiMovieDetails
+
+        if (title != other.title) return false
+        if (overview != other.overview) return false
+        if (releaseDate != other.releaseDate) return false
+        if (voteCount != other.voteCount) return false
+        if (voteAverage != other.voteAverage) return false
+        if (popularity != other.popularity) return false
+        if (genres != other.genres) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = title.hashCode()
+        result = 31 * result + overview.hashCode()
+        result = 31 * result + releaseDate.hashCode()
+        result = 31 * result + voteCount.hashCode()
+        result = 31 * result + voteAverage.hashCode()
+        result = 31 * result + popularity.hashCode()
+        result = 31 * result + genres.hashCode()
+        return result
+    }
+}
 
 /**
  * All the supported genres.
