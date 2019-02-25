@@ -187,3 +187,51 @@ data class Person(val id: Double,
                   val birthday: String?,
                   val deathday: String?,
                   val place_of_birth: String?)
+
+/**
+ * Represents the credits of a particular [Movie].
+ * [id] - the identifier of the credits. This value matches with [Movie.id].
+ * [cast] - the list of [CastCharacter] that are present in these credits.
+ * [crew] - the list if [CrewMember] that are part of these credits.
+ */
+data class Credits(val id: Double,
+                   val cast: List<CastCharacter>,
+                   val crew: List<CrewMember>)
+
+/**
+ * Represents a character that is present in the cast of a [Movie].
+ * [cast_id] - the identifier of the cast member.
+ * [character] - the name of the character represented.
+ * [credit_id] - the identifier of the credit.
+ * [gender] - the gender of the character.
+ * [id] - the identifier of the [Person] that interprets this character.
+ * [name] - name of the [Person] that interprets this character.
+ * [order] - the order of importance of this character in the cast.
+ * [profile_path] - the path to the profile image of the [Person] that interprets this character.
+ */
+data class CastCharacter(val cast_id: Double,
+                         val character: String,
+                         val credit_id: String,
+                         val gender: Int,
+                         val id: Double,
+                         val name: String,
+                         val order: Int,
+                         val profile_path: String?)
+
+/**
+ * Represents a person that is part of a crew of a [Movie].
+ * [credit_id] - the identifier of the credit.
+ * [department] - the department that this crew member belongs to.
+ * [gender] - the gender of this crew member.
+ * [id] - the identifier of the [Person] that is this crew member.
+ * [job] - the job that this [Person] has in the crew.
+ * [name] - name of the [Person] that is this crew member.
+ * [profile_path] - the path to the profile image of the [Person] that is this crew member.
+ */
+data class CrewMember(val credit_id: String,
+                      val department: String,
+                      val gender: Int,
+                      val id: Double,
+                      val job: String,
+                      val name: String,
+                      val profile_path: String?)
