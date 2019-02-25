@@ -49,11 +49,11 @@ class PersonFragment : Fragment() {
                         renderLoading()
                     }
                     is PersonViewState.ErrorUnknown -> {
-                        personErrorView.asUnknownError { TODO() }
+                        personErrorView.asUnknownError { retry() }
                         renderError()
                     }
                     is PersonViewState.ErrorNoConnectivity -> {
-                        personErrorView.asNoConnectivityError { TODO() }
+                        personErrorView.asNoConnectivityError { retry() }
                         renderError()
                     }
                     is PersonViewState.Loaded -> {

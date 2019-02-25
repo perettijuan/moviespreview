@@ -20,15 +20,41 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
     private val viewStateLiveData by lazy { MutableLiveData<PersonViewState>() }
     private var currentPersonId: Double = INVALID_PERSON_ID
+    private lateinit var retryFunc: () -> Unit
 
 
-    fun init(personId: Double,
-             personImageUrl: String,
-             personName: String) {
+    fun init(personId: Double, personImageUrl: String, personName: String) {
         if (currentPersonId == personId) {
             return
         }
+        retryFunc = { pushLoadingAndFetchPersonInfo(personId, personImageUrl, personName) }
+        pushLoadingAndFetchPersonInfo(personId, personImageUrl, personName)
+    }
 
+    /**
+     * Subscribe to this [LiveData] in order to get updates of the [PersonViewState].
+     */
+    fun viewState(): LiveData<PersonViewState> = viewStateLiveData
+
+    /**
+     * Called in order to execute the last attempt to fetch a person's details.
+     */
+    fun retry() {
+        when (viewStateLiveData.value) {
+            is PersonViewState.ErrorNoConnectivity -> retryFunc.invoke()
+            is PersonViewState.ErrorUnknown -> retryFunc.invoke()
+        }
+    }
+
+    override fun onCleared() {
+        currentPersonId = INVALID_PERSON_ID
+        super.onCleared()
+    }
+
+    /**
+     * Pushes the loading state to the view and launches the process to fetch the person's data.
+     */
+    private fun pushLoadingAndFetchPersonInfo(personId: Double, personImageUrl: String, personName: String) {
         viewStateLiveData.value = PersonViewState.Loading(imageUrl = personImageUrl, name = personName)
         launch {
             /*
@@ -40,17 +66,6 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             viewStateLiveData.value = fetchPerson(personId)
         }
     }
-
-    /**
-     * Subscribe to this [LiveData] in order to get updates of the [PersonViewState].
-     */
-    fun viewState(): LiveData<PersonViewState> = viewStateLiveData
-
-    override fun onCleared() {
-        currentPersonId = INVALID_PERSON_ID
-        super.onCleared()
-    }
-
 
     /**
      * Fetches the person that is identified by [personId]

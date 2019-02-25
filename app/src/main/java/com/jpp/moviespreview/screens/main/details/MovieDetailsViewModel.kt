@@ -26,6 +26,7 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
 
     private val viewStateLiveData by lazy { MutableLiveData<MovieDetailsViewState>() }
     private var currentMovieId: Double = INVALID_MOVIE_ID
+    private lateinit var retryFunc: () -> Unit
 
     /**
      * Called on initialization of the MovieDetailsFragment.
@@ -37,7 +38,36 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
         if (currentMovieId == movieId) {
             return
         }
+        retryFunc = { pushLoadingAndFetchMovieDetails(movieId) }
+        pushLoadingAndFetchMovieDetails(movieId)
+    }
 
+    /**
+     * Subscribe to this [LiveData] in order to get updates of the [MovieDetailsViewState].
+     */
+    fun viewState(): LiveData<MovieDetailsViewState> = viewStateLiveData
+
+    /**
+     * Called in order to execute the last attempt to fetch a movie detail.
+     */
+    fun retry() {
+        when (viewStateLiveData.value) {
+            is MovieDetailsViewState.ErrorUnknown -> retryFunc.invoke()
+            is MovieDetailsViewState.ErrorNoConnectivity -> retryFunc.invoke()
+        }
+    }
+
+
+    override fun onCleared() {
+        currentMovieId = INVALID_MOVIE_ID
+        super.onCleared()
+    }
+
+    /**
+     * Pushes the loading state into the view and starts the process to fetch the details
+     * of the movie.
+     */
+    private fun pushLoadingAndFetchMovieDetails(movieId: Double) {
         viewStateLiveData.value = MovieDetailsViewState.Loading
         launch {
             /*
@@ -49,18 +79,6 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
             viewStateLiveData.value = fetchMovieDetail(movieId)
         }
     }
-
-    /**
-     * Subscribe to this [LiveData] in order to get updates of the [MovieDetailsViewState].
-     */
-    fun viewState(): LiveData<MovieDetailsViewState> = viewStateLiveData
-
-
-    override fun onCleared() {
-        currentMovieId = INVALID_MOVIE_ID
-        super.onCleared()
-    }
-
 
     /**
      * Fetches the details of the movie identified by [movieId].
