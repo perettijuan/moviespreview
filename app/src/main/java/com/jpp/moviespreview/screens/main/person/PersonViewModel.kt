@@ -105,9 +105,4 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                         placeOfBirth = place_of_birth ?: ""
                 )
             }
-
-
-    private companion object {
-        const val INVALID_PERSON_ID = (-1).toDouble()
-    }
 }

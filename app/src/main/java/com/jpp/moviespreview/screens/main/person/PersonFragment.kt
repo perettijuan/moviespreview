@@ -30,10 +30,6 @@ class PersonFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_person, container, false)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 

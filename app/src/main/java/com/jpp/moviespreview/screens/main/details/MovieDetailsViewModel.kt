@@ -25,7 +25,6 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
     : MPScopedViewModel(dispatchers) {
 
     private val viewStateLiveData by lazy { MutableLiveData<MovieDetailsViewState>() }
-    private var currentMovieId: Double = INVALID_MOVIE_ID
     private lateinit var retryFunc: () -> Unit
 
     /**
@@ -35,9 +34,6 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
      * The updates will be posted to the [LiveData] object provided by [viewState()].
      */
     fun init(movieId: Double) {
-        if (currentMovieId == movieId) {
-            return
-        }
         retryFunc = { pushLoadingAndFetchMovieDetails(movieId) }
         pushLoadingAndFetchMovieDetails(movieId)
     }
@@ -55,12 +51,6 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
             is MovieDetailsViewState.ErrorUnknown -> retryFunc.invoke()
             is MovieDetailsViewState.ErrorNoConnectivity -> retryFunc.invoke()
         }
-    }
-
-
-    override fun onCleared() {
-        currentMovieId = INVALID_MOVIE_ID
-        super.onCleared()
     }
 
     /**
@@ -88,7 +78,6 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
     private suspend fun fetchMovieDetail(movieId: Double): MovieDetailsViewState = withContext(dispatchers.default()) {
         getMovieDetailsUseCase
                 .getDetailsForMovie(movieId)
-                .also { currentMovieId = movieId }
                 .let { ucResult ->
                     when (ucResult) {
                         is GetMovieDetailsUseCaseResult.ErrorNoConnectivity -> MovieDetailsViewState.ErrorNoConnectivity
@@ -162,7 +151,6 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
         const val THRILLER_GENRE_ID = 53
         const val WAR_GENRE_ID = 10752
         const val WESTERN_GENRE_ID = 37
-        const val INVALID_MOVIE_ID = (-1).toDouble()
     }
 
 }
