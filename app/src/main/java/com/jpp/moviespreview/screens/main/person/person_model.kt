@@ -6,6 +6,7 @@ package com.jpp.moviespreview.screens.main.person
 sealed class PersonViewState {
     object ErrorUnknown : PersonViewState()
     object ErrorNoConnectivity : PersonViewState()
+    object LoadedEmpty : PersonViewState()
     data class Loading(val imageUrl: String, val name: String) : PersonViewState()
     data class Loaded(val person: UiPerson, val showBirthday: Boolean, val showDeathDay: Boolean, val showPlaceOfBirth: Boolean) : PersonViewState()
 }

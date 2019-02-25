@@ -19,14 +19,10 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     : MPScopedViewModel(dispatchers) {
 
     private val viewStateLiveData by lazy { MutableLiveData<PersonViewState>() }
-    private var currentPersonId: Double = INVALID_PERSON_ID
     private lateinit var retryFunc: () -> Unit
 
 
     fun init(personId: Double, personImageUrl: String, personName: String) {
-        if (currentPersonId == personId) {
-            return
-        }
         retryFunc = { pushLoadingAndFetchPersonInfo(personId, personImageUrl, personName) }
         pushLoadingAndFetchPersonInfo(personId, personImageUrl, personName)
     }
@@ -44,11 +40,6 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             is PersonViewState.ErrorNoConnectivity -> retryFunc.invoke()
             is PersonViewState.ErrorUnknown -> retryFunc.invoke()
         }
-    }
-
-    override fun onCleared() {
-        currentPersonId = INVALID_PERSON_ID
-        super.onCleared()
     }
 
     /**
@@ -75,22 +66,30 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private suspend fun fetchPerson(personId: Double): PersonViewState = withContext(dispatchers.default()) {
         getPersonUseCase
                 .getPerson(personId)
-                .also { currentPersonId = personId }
                 .let { ucResult ->
                     when (ucResult) {
                         is GetPersonUseCaseResult.ErrorNoConnectivity -> PersonViewState.ErrorNoConnectivity
                         is GetPersonUseCaseResult.ErrorUnknown -> PersonViewState.ErrorUnknown
                         is GetPersonUseCaseResult.Success -> {
-                            PersonViewState.Loaded(
-                                    person = mapPersonToUiPerson(ucResult.person),
-                                    showBirthday = ucResult.person.birthday != null,
-                                    showDeathDay = ucResult.person.deathday != null,
-                                    showPlaceOfBirth = ucResult.person.place_of_birth != null
-                            )
+                            if (isPersonDataEmpty(ucResult.person)) {
+                                PersonViewState.LoadedEmpty
+                            } else {
+                                PersonViewState.Loaded(
+                                        person = mapPersonToUiPerson(ucResult.person),
+                                        showBirthday = ucResult.person.birthday != null,
+                                        showDeathDay = ucResult.person.deathday != null,
+                                        showPlaceOfBirth = ucResult.person.place_of_birth != null
+                                )
+                            }
                         }
                     }
                 }
     }
+
+    private fun isPersonDataEmpty(person: Person) = person.biography.isEmpty()
+            && person.birthday.isNullOrEmpty()
+            && person.deathday.isNullOrEmpty()
+            && person.place_of_birth.isNullOrEmpty()
 
 
     /**

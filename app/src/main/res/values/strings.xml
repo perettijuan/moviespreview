@@ -54,6 +54,7 @@
     <string name="person_birth_place_title">Place of birth</string>
     <string name="person_death_day_title">Day of death</string>
     <string name="person_bio_title">Biography</string>
+    <string name="person_no_details">No details available at this time</string>
     <!-- End Person -->
 
 </resources>

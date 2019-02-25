@@ -30,6 +30,10 @@ class PersonFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_person, container, false)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -54,6 +58,9 @@ class PersonFragment : Fragment() {
                     is PersonViewState.ErrorNoConnectivity -> {
                         personErrorView.asNoConnectivityError { retry() }
                         renderError()
+                    }
+                    is PersonViewState.LoadedEmpty -> {
+                        renderNoPersonData()
                     }
                     is PersonViewState.Loaded -> {
                         with(viewState.person) {
@@ -80,6 +87,7 @@ class PersonFragment : Fragment() {
         personBioTitleTextView.setInvisible()
         personBioBodyTextView.setInvisible()
         personErrorView.setInvisible()
+        personDetailNoInfoTextView.setInvisible()
 
         personLoadingView.setVisible()
     }
@@ -91,6 +99,7 @@ class PersonFragment : Fragment() {
         personBioTitleTextView.setInvisible()
         personBioBodyTextView.setInvisible()
         personLoadingView.setInvisible()
+        personDetailNoInfoTextView.setInvisible()
 
         personErrorView.setVisible()
     }
@@ -98,11 +107,24 @@ class PersonFragment : Fragment() {
     private fun renderContent(withBirthday: Boolean, withDeathDay: Boolean, withPlaceOfBirth: Boolean) {
         personLoadingView.setInvisible()
         personErrorView.setInvisible()
+        personDetailNoInfoTextView.setInvisible()
 
         personBirthdayRow.setVisibleWhen(withBirthday)
         personPlaceOfBirthRow.setVisibleWhen(withPlaceOfBirth)
         personDeathDayRow.setVisibleWhen(withDeathDay)
         personBioTitleTextView.setVisible()
         personBioBodyTextView.setVisible()
+    }
+
+    private fun renderNoPersonData() {
+        personBirthdayRow.setInvisible()
+        personPlaceOfBirthRow.setInvisible()
+        personDeathDayRow.setInvisible()
+        personBioTitleTextView.setInvisible()
+        personBioBodyTextView.setInvisible()
+        personLoadingView.setInvisible()
+        personErrorView.setInvisible()
+
+        personDetailNoInfoTextView.setVisible()
     }
 }
