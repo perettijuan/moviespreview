@@ -17,4 +17,10 @@
     <attr name="mpSearchItemTypeImageSize" format="reference" />
     <attr name="mpSearchItemGeneralPadding" format="reference" />
 
+
+    <declare-styleable name="MPTitleValueRow">
+        <attr name="titleText" format="reference"/>
+        <attr name="valueText" format="reference"/>
+    </declare-styleable>
+
 </resources>

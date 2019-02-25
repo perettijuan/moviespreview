@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <!-- This MotionScene describes the transitions that take place
+         in fragment_person when the user scrolls the content of the
+         view.-->
+
+    <!-- Perform a single transition with two ConstrainSet:
+       One as start scene
+       One as end scene -->
+    <Transition
+        motion:constraintSetEnd="@+id/person_fragment_end"
+        motion:constraintSetStart="@+id/person_fragment_start"
+        motion:duration="1000"
+        motion:interpolator="linear">
+
+        <!-- First ConstraintSet that represents the start scene:
+             The header has a given height that allows to place
+             the image person and the name text one on top of the other -->
+        <ConstraintSet android:id="@+id/person_fragment_start">
+            <Constraint
+                android:id="@+id/personHeaderBackground"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/accentColor"
+                android:visibility="invisible"
+                motion:layout_constraintBottom_toBottomOf="parent"
+                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintStart_toStartOf="parent"
+                motion:layout_constraintTop_toTopOf="parent" />
+
+            <Constraint
+                android:id="@+id/personImageView"
+                android:layout_width="@dimen/person_image_view_size_start"
+                android:layout_height="@dimen/person_image_view_size_start"
+                android:layout_marginTop="10dp"
+                motion:layout_constraintBottom_toBottomOf="parent"
+                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintStart_toStartOf="parent"
+                motion:layout_constraintTop_toTopOf="parent" />
+        </ConstraintSet>
+
+        <!-- Second ConstraintSet that represents the end scene:
+             The header height is shrinked and a color background is added and, at
+             the same time, the person name is placed right next to the persons image -->
+        <ConstraintSet android:id="@+id/person_fragment_end">
+            <Constraint
+                android:id="@+id/personHeaderBackground"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/accentColor"
+                android:visibility="visible"
+                motion:layout_constraintBottom_toBottomOf="parent"
+                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintStart_toStartOf="parent"
+                motion:layout_constraintTop_toTopOf="parent" />
+
+            <Constraint
+                android:id="@+id/personImageView"
+                android:layout_width="@dimen/person_image_view_size_end"
+                android:layout_height="@dimen/person_image_view_size_end"
+                android:layout_marginStart="8dp"
+                motion:layout_constraintBottom_toBottomOf="parent"
+                motion:layout_constraintStart_toStartOf="parent"/>
+        </ConstraintSet>
+    </Transition>
+</MotionScene>

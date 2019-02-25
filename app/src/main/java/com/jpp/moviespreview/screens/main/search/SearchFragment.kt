@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,6 +41,10 @@ class SearchFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private val searchItemSelectionListener: (SearchResultItem) -> Unit = {
+        withViewModel { onSearchItemSelected(it) }
+    }
+
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -55,7 +60,7 @@ class SearchFragment : Fragment() {
 
         searchResultRv.apply {
             layoutManager = LinearLayoutManager(activity)
-            adapter = SearchItemAdapter()
+            adapter = SearchItemAdapter(searchItemSelectionListener)
         }
 
     }
@@ -73,6 +78,10 @@ class SearchFragment : Fragment() {
 
             viewState().observe(this@SearchFragment.viewLifecycleOwner, Observer { viewState ->
                 renderViewState(viewState)
+            })
+
+            navEvents().observe(this@SearchFragment.viewLifecycleOwner, Observer { navEvent ->
+                navigateTo(navEvent)
             })
         }
 
@@ -132,6 +141,32 @@ class SearchFragment : Fragment() {
             is SearchViewState.DoneSearching -> {
                 withRecyclerViewAdapter { submitList(viewState.pagedList) }
                 renderDoneSearching()
+            }
+        }
+    }
+
+    /**
+     * Handle navigation events.
+     */
+    private fun navigateTo(event: SearchViewNavigationEvent) {
+        when (event) {
+            is SearchViewNavigationEvent.ToMovieDetails -> {
+                findNavController().navigate(
+                        SearchFragmentDirections.actionSearchFragmentToMovieDetailsFragment(
+                                event.movieId,
+                                event.movieImageUrl,
+                                event.movieTitle
+                        )
+                )
+            }
+            is SearchViewNavigationEvent.ToPerson -> {
+                findNavController().navigate(
+                        SearchFragmentDirections.actionSearchFragmentToPersonFragment(
+                                event.personId,
+                                event.personImageUrl,
+                                event.personName
+                        )
+                )
             }
         }
     }
@@ -203,13 +238,13 @@ class SearchFragment : Fragment() {
     /**
      * [PagedListAdapter] implementation to show the list of searchPage results.
      */
-    class SearchItemAdapter : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
+    class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem) -> Unit) : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_search, parent, false))
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             getItem(position)?.let {
-                holder.bindSearchItem(it)
+                holder.bindSearchItem(it, searchSelectionListener)
             }
         }
 
@@ -220,11 +255,12 @@ class SearchFragment : Fragment() {
 
         class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 
-            fun bindSearchItem(searchItem: SearchResultItem) {
+            fun bindSearchItem(searchItem: SearchResultItem, selectionListener: (SearchResultItem) -> Unit) {
                 with(itemView) {
                     searchItemIv.loadImageUrlAsCircular(searchItem.imagePath)
                     searchItemTitleTxt.text = searchItem.name
                     searchItemTypeIv.setImageResource(searchItem.icon.iconRes)
+                    setOnClickListener { selectionListener(searchItem) }
                 }
             }
 

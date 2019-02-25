@@ -34,12 +34,6 @@ dependencies {
     implementation project(path: ':common')
     implementation project(path: ':mpdomain')
 
-    // Dagger
-    implementation deps.dagger.dagger
-    implementation deps.dagger.android
-    kapt deps.dagger.compiler
-    kapt deps.dagger.processor
-
     // Retrofit
     def retrofit_version = '2.3.0'
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"

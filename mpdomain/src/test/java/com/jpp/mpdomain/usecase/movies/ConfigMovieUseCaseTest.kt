@@ -4,7 +4,7 @@ import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.ImagesConfiguration
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
-import com.jpp.mpdomain.repository.configuration.ConfigurationRepository
+import com.jpp.mpdomain.repository.ConfigurationRepository
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension

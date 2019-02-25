@@ -1,9 +1,9 @@
 package com.jpp.moviespreview.screens.main.details
 
 import androidx.lifecycle.Observer
+import com.jpp.moviespreview.InstantTaskExecutorExtension
+import com.jpp.moviespreview.resumedLifecycleOwner
 import com.jpp.moviespreview.screens.main.TestCoroutineDispatchers
-import com.jpp.moviespreview.utiltest.InstantTaskExecutorExtension
-import com.jpp.moviespreview.utiltest.resumedLifecycleOwner
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
@@ -11,7 +11,6 @@ import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCaseResult
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -34,26 +33,18 @@ class MovieDetailsViewModelTest {
 
     @Test
     fun `Should execute GetMovieDetailsUseCase, adapt result to UI model and post value on init`() {
-        val movieDetailId = 121.toDouble()
-        val expectedTitle = "aTitle"
-        val expectedOverview = "anOverview"
-        val expectedReleaseDate = "aReleaseDat"
-        val expectedVoteCount = 12.toDouble()
-        val expectedVoteAverage = 15F
-        val expectedPopularity = 178F
-        val expectedMovieGenres = listOf(
-                MovieGenreItem.Action,
-                MovieGenreItem.Horror
-        )
+        val viewStatePosted = mutableListOf<MovieDetailsViewState>()
 
-        val movieDetail = MovieDetail(
+        val movieDetailId = 121.toDouble()
+
+        val domainDetail = MovieDetail(
                 id = movieDetailId,
-                title = expectedTitle,
-                overview = expectedOverview,
-                release_date = expectedReleaseDate,
-                vote_count = expectedVoteCount,
-                vote_average = expectedVoteAverage,
-                popularity = expectedPopularity,
+                title = "aTitle",
+                overview = "anOverview",
+                release_date = "aReleaseDate",
+                vote_count = 12.toDouble(),
+                vote_average = 15F,
+                popularity = 178F,
                 poster_path = null,
                 genres = listOf(
                         MovieGenre(28, "Action"),
@@ -61,68 +52,64 @@ class MovieDetailsViewModelTest {
                 )
         )
 
-        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsUseCaseResult.Success(movieDetail)
+        val expectedUiMovieDetails = UiMovieDetails(
+                title = domainDetail.title,
+                overview = domainDetail.overview,
+                releaseDate = domainDetail.release_date,
+                voteCount = domainDetail.vote_count,
+                voteAverage = domainDetail.vote_average,
+                popularity = domainDetail.popularity,
+                genres = listOf(
+                        MovieGenreItem.Action,
+                        MovieGenreItem.Horror
+                )
+        )
 
-        executeInitTest(movieDetailId) {
-            assertTrue(it is MovieDetailsViewState.ShowDetail)
+        every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns GetMovieDetailsUseCaseResult.Success(domainDetail)
 
-            with((it as MovieDetailsViewState.ShowDetail).detail) {
-                assertEquals(expectedTitle, title)
-                assertEquals(expectedOverview, overview)
-                assertEquals(expectedReleaseDate, releaseDate)
-                assertEquals(expectedVoteCount, voteCount)
-                assertEquals(expectedVoteAverage, voteAverage)
-                assertEquals(expectedPopularity, popularity)
-                assertEquals(expectedMovieGenres, genres)
-            }
-        }
+        subject.viewState().observe(resumedLifecycleOwner(), Observer {
+            viewStatePosted.add(it)
+        })
+
+        subject.init(movieDetailId)
+
+        assertTrue(viewStatePosted[0] is MovieDetailsViewState.Loading)
+        assertTrue(viewStatePosted[1] is MovieDetailsViewState.ShowDetail)
+        assertEquals(expectedUiMovieDetails, (viewStatePosted[1] as MovieDetailsViewState.ShowDetail).detail)
         verify(exactly = 1) { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) }
     }
 
     @Test
     fun `Should execute GetMovieDetailsUseCase and show connectivity error`() {
+        val viewStatePosted = mutableListOf<MovieDetailsViewState>()
         val movieDetailId = 121.toDouble()
 
         every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsUseCaseResult.ErrorNoConnectivity
 
-        executeInitTest(movieDetailId) {
-            assertTrue(it is MovieDetailsViewState.ErrorNoConnectivity)
-        }
+        subject.viewState().observe(resumedLifecycleOwner(), Observer {
+            viewStatePosted.add(it)
+        })
+
+        subject.init(movieDetailId)
+
+        assertTrue(viewStatePosted[0] is MovieDetailsViewState.Loading)
+        assertTrue(viewStatePosted[1] is MovieDetailsViewState.ErrorNoConnectivity)
     }
 
     @Test
     fun `Should fetch movie detail from repository and show unknown error`() {
+        val viewStatePosted = mutableListOf<MovieDetailsViewState>()
         val movieDetailId = 121.toDouble()
 
         every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsUseCaseResult.ErrorUnknown
 
-        executeInitTest(movieDetailId) {
-            assertTrue(it is MovieDetailsViewState.ErrorUnknown)
-        }
-    }
-
-    @Test
-    fun `Should not re-fetch movie detail when init is called twice with the same id`() {
-        val movieDetailId = 121.toDouble()
-
-        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsUseCaseResult.Success(mockk(relaxed = true))
-
-        // first call
-        subject.init(movieDetailId)
-
-        // second call
-        subject.init(movieDetailId)
-
-        verify(exactly = 1) { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) }
-    }
-
-
-    private fun executeInitTest(movieId: Double, verification: (MovieDetailsViewState) -> Unit) {
-        subject.init(movieId)
-
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            verification.invoke(it)
+            viewStatePosted.add(it)
         })
-    }
 
+        subject.init(movieDetailId)
+
+        assertTrue(viewStatePosted[0] is MovieDetailsViewState.Loading)
+        assertTrue(viewStatePosted[1] is MovieDetailsViewState.ErrorUnknown)
+    }
 }

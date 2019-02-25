@@ -1,9 +1,6 @@
 package com.jpp.mpdata.api
 
-import com.jpp.mpdomain.AppConfiguration
-import com.jpp.mpdomain.MovieDetail
-import com.jpp.mpdomain.MoviePage
-import com.jpp.mpdomain.SearchPage
+import com.jpp.mpdomain.*
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -94,9 +91,20 @@ interface TheMovieDBApi {
      */
     @GET("search/multi")
     fun search(@Query("query") query: String,
-                    @Query("page") page: Int,
-                    @Query("api_key") api_key: String,
-                    @Query("language") language: String? = null,
-                    @Query("region") region: String? = null): Call<SearchPage>
+               @Query("page") page: Int,
+               @Query("api_key") api_key: String,
+               @Query("language") language: String? = null,
+               @Query("region") region: String? = null): Call<SearchPage>
+
+    /**
+     * Retrieves a [Person\] identified by its personId.
+     * [personId] the identifier of the person.
+     * [api_key] the api key provided by themoviedb.
+     * [language] Pass a ISO 639-1 value to display translated data for the fields that support it. - Optional.
+     */
+    @GET("person/{person_id}")
+    fun getPerson(@Path("person_id") personId: Double,
+                  @Query("api_key") api_key: String,
+                  @Query("language") language: String? = null): Call<Person>
 
 }

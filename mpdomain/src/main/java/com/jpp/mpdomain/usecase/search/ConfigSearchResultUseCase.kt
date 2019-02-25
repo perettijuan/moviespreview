@@ -2,7 +2,7 @@ package com.jpp.mpdomain.usecase.search
 
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
-import com.jpp.mpdomain.repository.configuration.ConfigurationRepository
+import com.jpp.mpdomain.repository.ConfigurationRepository
 
 /**
  * Defines a use case that configures the images path of a [SearchResult]. By default the [SearchResult.poster_path],

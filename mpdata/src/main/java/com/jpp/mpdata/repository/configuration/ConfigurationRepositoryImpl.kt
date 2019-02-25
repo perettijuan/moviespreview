@@ -1,7 +1,7 @@
 package com.jpp.mpdata.repository.configuration
 
 import com.jpp.mpdomain.AppConfiguration
-import com.jpp.mpdomain.repository.configuration.ConfigurationRepository
+import com.jpp.mpdomain.repository.ConfigurationRepository
 
 class ConfigurationRepositoryImpl(private val configurationApi: ConfigurationApi,
                                   private val configurationDb: ConfigurationDb) : ConfigurationRepository {

@@ -6,10 +6,12 @@ import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
 import com.jpp.mpdomain.handlers.configuration.ConfigurationHandlerImpl
 import com.jpp.mpdomain.repository.MoviesRepository
 import com.jpp.mpdomain.repository.SearchRepository
-import com.jpp.mpdomain.repository.configuration.ConfigurationRepository
+import com.jpp.mpdomain.repository.ConfigurationRepository
+import com.jpp.mpdomain.repository.PersonRepository
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
+import com.jpp.mpdomain.usecase.person.GetPersonUseCase
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
 import dagger.Module
@@ -67,4 +69,10 @@ class DomainLayerModule {
     fun providesGetMovieDetailsUseCase(moviesRepository: MoviesRepository,
                                        connectivityHandler: ConnectivityHandler)
             : GetMovieDetailsUseCase = GetMovieDetailsUseCase.Impl(moviesRepository, connectivityHandler)
+
+    @Singleton
+    @Provides
+    fun providesGetPersonUseCase(personRepository: PersonRepository,
+                                 connectivityHandler: ConnectivityHandler)
+            : GetPersonUseCase = GetPersonUseCase.Impl(personRepository, connectivityHandler)
 }

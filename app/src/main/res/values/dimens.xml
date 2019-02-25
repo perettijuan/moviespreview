@@ -1,33 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <dimen name="action_bar_height_expanded">340dp</dimen>
-  <dimen name="action_bar_height_normal">48dp</dimen>
-  <dimen name="mp_loading_view_stroke_width">3dp</dimen>
-  <dimen name="title_text_size">14dp</dimen>
-  <dimen name="error_image_view_default_size">180dp</dimen>
-  <dimen name="error_image_view_default_height">@dimen/error_image_view_default_size</dimen>
-  <dimen name="error_image_view_default_width">@dimen/error_image_view_default_size</dimen>
-  <dimen name="movie_item_image_height">400dp</dimen>
-  <dimen name="movie_item_max_height">480dp</dimen>
-  <dimen name="movie_item_header_image_view_size">40dp</dimen>
-  <dimen name="movie_item_header_image_view_height">@dimen/movie_item_header_image_view_size</dimen>
-  <dimen name="movie_item_header_image_view_width">@dimen/movie_item_header_image_view_size</dimen>
-  <dimen name="movie_item_bottom_bar_icon_size">18dp</dimen>
+    <dimen name="action_bar_height_expanded">340dp</dimen>
+    <dimen name="action_bar_height_normal">48dp</dimen>
+    <dimen name="mp_loading_view_stroke_width">3dp</dimen>
+    <dimen name="title_text_size">14dp</dimen>
+    <dimen name="error_image_view_default_size">180dp</dimen>
+    <dimen name="error_image_view_default_height">@dimen/error_image_view_default_size</dimen>
+    <dimen name="error_image_view_default_width">@dimen/error_image_view_default_size</dimen>
+    <dimen name="movie_item_image_height">400dp</dimen>
+    <dimen name="movie_item_max_height">480dp</dimen>
+    <dimen name="movie_item_header_image_view_size">40dp</dimen>
+    <dimen name="movie_item_header_image_view_height">@dimen/movie_item_header_image_view_size
+    </dimen>
+    <dimen name="movie_item_header_image_view_width">@dimen/movie_item_header_image_view_size
+    </dimen>
+    <dimen name="movie_item_bottom_bar_icon_size">18dp</dimen>
 
 
-  <!-- MPLoadingView -->
-  <dimen name="mp_loading_view_default_size">60dp</dimen>
-  <dimen name="mp_loading_view_default_height">@dimen/mp_loading_view_default_size</dimen>
-  <dimen name="mp_loading_view_default_width">@dimen/mp_loading_view_default_size</dimen>
+    <!-- MPLoadingView -->
+    <dimen name="mp_loading_view_default_size">60dp</dimen>
+    <dimen name="mp_loading_view_default_height">@dimen/mp_loading_view_default_size</dimen>
+    <dimen name="mp_loading_view_default_width">@dimen/mp_loading_view_default_size</dimen>
 
-  <!-- Details Screen -->
-  <dimen name="movie_details_vertical_spacing">10dp</dimen>
+    <!-- Details Screen -->
+    <dimen name="movie_details_vertical_spacing">10dp</dimen>
 
-  <!-- Search -->
-  <dimen name="search_body_icon_size">300dp</dimen>
-  <dimen name="search_result_image_size">52dp</dimen>
-  <dimen name="search_result_title_padding">10dp</dimen>
-  <dimen name="search_result_chevron_padding">8dp</dimen>
-  <dimen name="search_result_type_image_size">12dp</dimen>
-  <dimen name="search_result_padding">10dp</dimen>
+    <!-- Search -->
+    <dimen name="search_body_icon_size">300dp</dimen>
+    <dimen name="search_result_image_size">52dp</dimen>
+    <dimen name="search_result_title_padding">10dp</dimen>
+    <dimen name="search_result_chevron_padding">8dp</dimen>
+    <dimen name="search_result_type_image_size">12dp</dimen>
+    <dimen name="search_result_padding">10dp</dimen>
+
+    <!-- Person -->
+    <dimen name="person_app_bar_height">280dp</dimen>
+    <dimen name="person_image_view_size_start">160dp</dimen>
+    <dimen name="person_image_view_size_end">64dp</dimen>
+
 </resources>

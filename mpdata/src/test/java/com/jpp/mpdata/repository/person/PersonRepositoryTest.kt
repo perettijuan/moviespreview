@@ -1,0 +1,65 @@
+package com.jpp.mpdata.repository.person
+
+import com.jpp.mpdomain.Person
+import com.jpp.mpdomain.repository.PersonRepository
+import io.mockk.every
+import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
+import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+
+@ExtendWith(MockKExtension::class)
+class PersonRepositoryTest {
+
+    @RelaxedMockK
+    private lateinit var personApi: PersonApi
+    @RelaxedMockK
+    private lateinit var personDb: PersonDb
+
+    private val personId = 22.toDouble()
+    private lateinit var subject: PersonRepository
+
+    @BeforeEach
+    fun setUp() {
+        subject = PersonRepositoryImpl(personApi, personDb)
+    }
+
+    @Test
+    fun `Should never get from API when data is in cache`() {
+        every { personDb.getPerson(any()) } returns mockk()
+
+        subject.getPerson(personId)
+
+        verify { personDb.getPerson(personId) }
+        verify(exactly = 0) { personApi.getPerson(any()) }
+        verify(exactly = 0) { personDb.savePerson(any()) }
+    }
+
+    @Test
+    fun `Should update cache when data retrieved from API`() {
+        val person = mockk<Person>()
+        every { personDb.getPerson(any()) } returns null
+        every { personApi.getPerson(any()) } returns person
+
+        subject.getPerson(personId)
+
+        verify { personApi.getPerson(personId) }
+        verify { personDb.savePerson(person) }
+    }
+
+    @Test
+    fun `Should return null when it fails`() {
+        every { personDb.getPerson(any()) } returns null
+        every { personApi.getPerson(any()) } returns null
+
+        val result = subject.getPerson(personId)
+
+        verify { personApi.getPerson(personId) }
+        verify { personDb.getPerson(personId) }
+        assertNull(result)
+    }
+}

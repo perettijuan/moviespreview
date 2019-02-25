@@ -14,11 +14,15 @@ import com.jpp.mpdata.repository.configuration.ConfigurationRepositoryImpl
 import com.jpp.mpdata.repository.movies.MoviesApi
 import com.jpp.mpdata.repository.movies.MoviesDb
 import com.jpp.mpdata.repository.movies.MoviesRepositoryImpl
+import com.jpp.mpdata.repository.person.PersonApi
+import com.jpp.mpdata.repository.person.PersonDb
+import com.jpp.mpdata.repository.person.PersonRepositoryImpl
 import com.jpp.mpdata.repository.search.SearchApi
 import com.jpp.mpdata.repository.search.SearchRepositoryImpl
 import com.jpp.mpdomain.repository.MoviesRepository
 import com.jpp.mpdomain.repository.SearchRepository
-import com.jpp.mpdomain.repository.configuration.ConfigurationRepository
+import com.jpp.mpdomain.repository.ConfigurationRepository
+import com.jpp.mpdomain.repository.PersonRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -103,6 +107,25 @@ class DataLayerModule {
     @Provides
     fun providesSearchApi(mpApiInstance: MPApi): SearchApi = mpApiInstance
 
+    @Singleton
     @Provides
     fun providesSearchRepository(searchApi: SearchApi): SearchRepository = SearchRepositoryImpl(searchApi)
+
+    /**********************************
+     ****** PERSON DEPENDENCIES *******
+     **********************************/
+
+    @Singleton
+    @Provides
+    fun providesPersonApi(mpApiInstance: MPApi): PersonApi = mpApiInstance
+
+    @Singleton
+    @Provides
+    fun providesPersonDb(): PersonDb = PersonDb.Impl()
+
+    @Singleton
+    @Provides
+    fun providesPersonRepository(personApi: PersonApi,
+                                 personDb: PersonDb)
+            : PersonRepository = PersonRepositoryImpl(personApi, personDb)
 }

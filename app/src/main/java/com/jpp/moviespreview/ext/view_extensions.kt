@@ -33,6 +33,14 @@ fun View.setVisible() {
 }
 
 /**
+ * Extension function for the View class to make a View visible when [condition] is true.
+ * If [condition] is false, the [defVisibility] is applied.
+ */
+fun View.setVisibleWhen(condition: Boolean, defVisibility: Int = View.GONE) {
+    this.visibility = if (condition) View.VISIBLE else defVisibility
+}
+
+/**
  * Extension function for the View class to make a View gone
  */
 fun View.setGone() {

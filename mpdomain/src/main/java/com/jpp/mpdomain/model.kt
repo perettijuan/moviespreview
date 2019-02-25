@@ -172,3 +172,18 @@ data class SearchResult(val id: Double,
     fun isTvShow(): Boolean = media_type == "tv"
     fun isPerson(): Boolean = media_type == "person"
 }
+
+/**
+ * Represents a person that might be part of a cast or crew.
+ * [id] - the identifier that represents this person in the application.
+ * [name] - the showing name of the person.
+ * [biography] - the bio information of this person.
+ * [birthday] - the birthday of the person, if any.
+ * [place_of_birth] - the place where the person was born, if the data exists.
+ */
+data class Person(val id: Double,
+                  val name: String,
+                  val biography: String,
+                  val birthday: String?,
+                  val deathday: String?,
+                  val place_of_birth: String?)

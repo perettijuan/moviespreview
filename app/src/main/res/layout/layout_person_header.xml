@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.jpp.moviespreview.views.CollapsibleToolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:minHeight="@dimen/person_image_view_size_end"
+    app:layoutDescription="@xml/person_fragment_motion_transition"
+    app:layout_scrollFlags="scroll|enterAlways|snap|exitUntilCollapsed">
+
+    <!-- Custom MotionLayout that performs the transitions for the person_fragment layout.
+         It is fundamental that all views in this layout have the same identifier that the
+         Constrains defined in person_fragment_motion_transition.
+         That way, each Constrain can be automagically applied to each view by the
+         MotionLayout container. -->
+
+    <View
+        android:id="@+id/personHeaderBackground"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/accentColor"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/personImageView"
+        android:layout_width="@dimen/person_image_view_size_start"
+        android:layout_height="@dimen/person_image_view_size_start"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_person_black" />
+
+</com.jpp.moviespreview.views.CollapsibleToolbar>

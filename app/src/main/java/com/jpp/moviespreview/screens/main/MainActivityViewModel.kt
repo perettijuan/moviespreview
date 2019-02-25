@@ -19,14 +19,31 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
     fun viewState(): LiveData<MainActivityViewState> = viewState
 
     fun userNavigatesToMovieListSection(sectionName: String) {
-        viewState.postValue(MainActivityViewState.ActionBarLocked(sectionName, viewState.value is MainActivityViewState.ActionBarUnlocked))
+        viewState.postValue(MainActivityViewState.ActionBarLocked(
+                abTitle = sectionName,
+                withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked,
+                searchEnabled = true)
+        )
     }
 
     fun userNavigatesToMovieDetails(movieTitle: String, contentImageUrl: String) {
-        viewState.postValue(MainActivityViewState.ActionBarUnlocked(movieTitle, contentImageUrl))
+        viewState.postValue(MainActivityViewState.ActionBarUnlocked(
+                abTitle = movieTitle,
+                contentImageUrl = contentImageUrl)
+        )
     }
 
     fun userNavigatesToSearch() {
-        viewState.postValue(MainActivityViewState.SearchEnabled)
+        viewState.postValue(MainActivityViewState.SearchEnabled(
+                withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked)
+        )
+    }
+
+    fun userNavigatesToPerson(sectionName: String) {
+        viewState.postValue(MainActivityViewState.ActionBarLocked(
+                abTitle = sectionName,
+                withAnimation = false,
+                searchEnabled = false)
+        )
     }
 }

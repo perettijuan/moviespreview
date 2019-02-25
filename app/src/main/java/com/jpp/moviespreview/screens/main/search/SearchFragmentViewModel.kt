@@ -7,6 +7,7 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mpdomain.SearchResult
 import com.jpp.moviespreview.paging.MPPagingDataSourceFactory
+import com.jpp.moviespreview.screens.SingleLiveEvent
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCaseResult
@@ -25,6 +26,7 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
 
     private var targetImageSize: Int = -1
     private val viewState = MediatorLiveData<SearchViewState>()
+    private val navigationEvents  by lazy { SingleLiveEvent<SearchViewNavigationEvent>() }
     private var retryFunc: (() -> Unit)? = null
     private var currentSearch = ""
 
@@ -38,10 +40,32 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
     }
 
     /**
-     * Single output of the ViewModel: it exposes a stream that is updated with a new state ([SearchViewState])
+     * Exposes a stream that is updated with a new state ([SearchViewState])
      * every time a new state is identified.
      */
     fun viewState(): LiveData<SearchViewState> = viewState
+
+    /**
+     * Exposes the events that are triggered when a navigation event is detected.
+     * We need a different LiveData here in order to avoid the problem of back navigation:
+     * - The default LiveData object posts the last value every time a new observer starts observing.
+     */
+    fun navEvents(): LiveData<SearchViewNavigationEvent> = navigationEvents
+
+    /**
+     * Called when an item is selected in the list of search results.
+     * A new state is posted in navEvents() in order to handle the event.
+     */
+    fun onSearchItemSelected(searchResultItem: SearchResultItem) {
+        when (searchResultItem.icon) {
+            is SearchResultTypeIcon.MovieType -> with(searchResultItem) {
+                navigationEvents.value = SearchViewNavigationEvent.ToMovieDetails(movieId = id.toString(), movieImageUrl = imagePath, movieTitle = name)
+            }
+            is SearchResultTypeIcon.PersonType -> with(searchResultItem) {
+                navigationEvents.value = SearchViewNavigationEvent.ToPerson(personId = id.toString(), personImageUrl = imagePath, personName = name)
+            }
+        }
+    }
 
     /**
      * Performs the search of the provided [searchText] in the application. Posts [SearchViewState]
@@ -57,11 +81,11 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
         }
 
         currentSearch = searchText
-        viewState.postValue(SearchViewState.Searching)
+        viewState.value = SearchViewState.Searching
         createSearchPagedList(searchText).let {
             viewState.addSource(it) { pagedList ->
                 if (pagedList.size > 0) {
-                    viewState.postValue(SearchViewState.DoneSearching(pagedList))
+                    viewState.value = SearchViewState.DoneSearching(pagedList)
                 } else {
                     currentSearch = ""
                     retryFunc = { search(searchText) }
@@ -77,7 +101,7 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
     fun clearSearch() {
         retryFunc = null
         currentSearch = ""
-        viewState.postValue(SearchViewState.Idle)
+        viewState.value = SearchViewState.Idle
     }
 
     /**

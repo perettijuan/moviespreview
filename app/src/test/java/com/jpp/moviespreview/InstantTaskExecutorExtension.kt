@@ -1,4 +1,4 @@
-package com.jpp.moviespreview.utiltest
+package com.jpp.moviespreview
 
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor

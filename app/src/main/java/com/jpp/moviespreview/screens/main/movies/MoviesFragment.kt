@@ -42,7 +42,7 @@ abstract class MoviesFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val movieSelectionListener: (MovieItem) -> Unit = {
-        findNavController().navigate(getNavDirectionsForMovieDetails(it.movieId.toString(), it.contentImageUrl, it.title))
+        withViewModel { onMovieSelected(it) }
     }
 
     override fun onAttach(context: Context?) {
@@ -79,6 +79,16 @@ abstract class MoviesFragment : Fragment() {
              */
             viewState().observe(this@MoviesFragment.viewLifecycleOwner, Observer { fragmentViewState ->
                 renderViewState(fragmentViewState)
+            })
+
+            navEvents().observe(this@MoviesFragment.viewLifecycleOwner, Observer {
+                when (it) {
+                    is MoviesViewNavigationEvent.ToMovieDetails -> {
+                        findNavController().navigate(
+                                getNavDirectionsForMovieDetails(it.movieId, it.movieImageUrl, it.movieTitle)
+                        )
+                    }
+                }
             })
 
             init(moviePosterSize = getScreenSizeInPixels().x,

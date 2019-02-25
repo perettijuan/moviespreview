@@ -2,7 +2,7 @@ package com.jpp.mpdomain.usecase.movies
 
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
-import com.jpp.mpdomain.repository.configuration.ConfigurationRepository
+import com.jpp.mpdomain.repository.ConfigurationRepository
 
 /**
  * Defines a use case that configures the images path of a [Movie]. This use case produces a [Movie]

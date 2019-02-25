@@ -24,4 +24,7 @@ dependencies {
     // Kotlin standard libs
     implementation deps.kotlin.stdlib
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def androidTestLibVersion = '1.1.0'
+    testImplementation "androidx.test:core:$androidTestLibVersion"
 }
