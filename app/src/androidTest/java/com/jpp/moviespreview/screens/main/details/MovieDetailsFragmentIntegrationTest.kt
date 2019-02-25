@@ -135,10 +135,10 @@ class MovieDetailsFragmentIntegrationTest {
         onReleaseView().assertWithText(domainMovieDetails.release_date)
         onGenresView().assertItemCount(genres.size)
 
-        onView(withViewInRecyclerView(R.id.detailsGenresRv, 0, R.id.genreListItemTxt))
+        onView(withViewInRecyclerView(R.id.detailsGenresRv, 0, R.id.genreListItemTxt, activityTestRule.activity.resources))
                 .check(ViewAssertions.matches(ViewMatchers.withText(genres[0].name)))
 
-        onView(withViewInRecyclerView(R.id.detailsGenresRv, 1, R.id.genreListItemTxt))
+        onView(withViewInRecyclerView(R.id.detailsGenresRv, 1, R.id.genreListItemTxt, activityTestRule.activity.resources))
                 .check(ViewAssertions.matches(ViewMatchers.withText(genres[1].name)))
     }
 

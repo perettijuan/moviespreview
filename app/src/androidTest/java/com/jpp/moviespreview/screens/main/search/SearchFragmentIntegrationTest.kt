@@ -112,16 +112,16 @@ class SearchFragmentIntegrationTest {
          * Here we verify that the SearchFragmentViewModel is properly mapping the model classes to
          * UI classes by matching each item in the recycler view with the expected value.
          */
-        onView(withViewInRecyclerView(R.id.searchResultRv, 0, R.id.searchItemTitleTxt))
+        onView(withViewInRecyclerView(R.id.searchResultRv, 0, R.id.searchItemTitleTxt, activityTestRule.activity.resources))
                 .check(matches(withText(pages[1].results[0].title)))
 
-        onView(withViewInRecyclerView(R.id.searchResultRv, 1, R.id.searchItemTitleTxt))
+        onView(withViewInRecyclerView(R.id.searchResultRv, 1, R.id.searchItemTitleTxt, activityTestRule.activity.resources))
                 .check(matches(withText(pages[1].results[1].title)))
 
-        onView(withViewInRecyclerView(R.id.searchResultRv, 2, R.id.searchItemTitleTxt))
+        onView(withViewInRecyclerView(R.id.searchResultRv, 2, R.id.searchItemTitleTxt, activityTestRule.activity.resources))
                 .check(matches(withText(pages[1].results[2].title)))
 
-        onView(withViewInRecyclerView(R.id.searchResultRv, 3, R.id.searchItemTitleTxt))
+        onView(withViewInRecyclerView(R.id.searchResultRv, 3, R.id.searchItemTitleTxt, activityTestRule.activity.resources))
                 .check(matches(withText(pages[1].results[3].title)))
 
         verify { searchUseCase.search("aQuery", 1) }

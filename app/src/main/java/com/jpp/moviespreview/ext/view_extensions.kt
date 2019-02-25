@@ -3,6 +3,7 @@ package com.jpp.moviespreview.ext
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.jpp.moviespreview.R
@@ -93,8 +95,8 @@ fun ImageView.loadImageUrl(imageUrl: String,
             .load(imageUrl)
             .fit()
             .centerCrop()
-            .placeholder(placeholderRes)
-            .error(errorImageRes)
+            .placeholder(getVectorResAsDrawable(placeholderRes))
+            .error(getVectorResAsDrawable(errorImageRes))
             .into(this)
 }
 
@@ -110,8 +112,8 @@ fun ImageView.loadImageUrlAsCircular(imageUrl: String,
             .load(imageUrl)
             .fit()
             .centerCrop()
-            .placeholder(placeholderRes)
-            .error(errorImageRes)
+            .placeholder(getVectorResAsDrawable(placeholderRes))
+            .error(getVectorResAsDrawable(errorImageRes))
             .into(this, object : Callback {
                 override fun onSuccess() {
                     val imageAsBitmap = (drawable as BitmapDrawable).bitmap
@@ -127,6 +129,8 @@ fun ImageView.loadImageUrlAsCircular(imageUrl: String,
             })
 
 }
+
+fun ImageView.getVectorResAsDrawable(@DrawableRes placeholderRes: Int): Drawable? = ResourcesCompat.getDrawable(resources, placeholderRes, null)
 
 /**
  * Enables the title shown by the CollapsingToolbarLayout

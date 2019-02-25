@@ -101,10 +101,10 @@ class MoviesFragmentIntegrationTest {
          * Here we verify that the MoviesFragmentViewModel is properly mapping the model classes to
          * UI classes by matching each item in the recycler view with the expected value.
          */
-        onView(withViewInRecyclerView(R.id.moviesList, 0, R.id.movieListItemTitle))
+        onView(withViewInRecyclerView(R.id.moviesList, 0, R.id.movieListItemTitle, activityTestRule.activity.resources))
                 .check(ViewAssertions.matches(ViewMatchers.withText(pages[0].results[0].title)))
 
-        onView(withViewInRecyclerView(R.id.moviesList, 1, R.id.movieListItemTitle))
+        onView(withViewInRecyclerView(R.id.moviesList, 1, R.id.movieListItemTitle, activityTestRule.activity.resources))
                 .check(ViewAssertions.matches(ViewMatchers.withText(pages[0].results[1].title)))
 
         verify { getMoviesUseCase.getMoviePageForSection(1, MovieSection.Playing) }

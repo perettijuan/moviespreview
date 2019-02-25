@@ -34,9 +34,9 @@ fun itemCount(expectedItemCount: Int): ViewAssertion = ViewAssertion { view, noV
  */
 fun withViewInRecyclerView(recyclerViewId: Int,
                            position: Int,
-                           targetViewId: Int): Matcher<View> = object : TypeSafeMatcher<View>() {
+                           targetViewId: Int,
+                           resources: Resources): Matcher<View> = object : TypeSafeMatcher<View>() {
 
-    private lateinit var resources: Resources
     private var childView: View? = null
 
     override fun describeTo(description: Description) {
@@ -44,8 +44,6 @@ fun withViewInRecyclerView(recyclerViewId: Int,
     }
 
     override fun matchesSafely(item: View): Boolean {
-        resources = item.resources
-
         if (childView == null) {
             val rvView = item.rootView.findViewById<RecyclerView>(recyclerViewId)
             if (rvView != null && rvView.id == recyclerViewId) {
