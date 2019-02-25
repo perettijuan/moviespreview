@@ -39,16 +39,6 @@
                 motion:layout_constraintEnd_toEndOf="parent"
                 motion:layout_constraintStart_toStartOf="parent"
                 motion:layout_constraintTop_toTopOf="parent" />
-
-            <Constraint
-                android:id="@+id/personNameTextView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:padding="10dp"
-                motion:layout_constraintEnd_toEndOf="parent"
-                motion:layout_constraintStart_toStartOf="parent"
-                motion:layout_constraintTop_toBottomOf="@+id/personDetailImageView" />
         </ConstraintSet>
 
         <!-- Second ConstraintSet that represents the end scene:
@@ -73,16 +63,6 @@
                 android:layout_marginStart="8dp"
                 motion:layout_constraintBottom_toBottomOf="parent"
                 motion:layout_constraintStart_toStartOf="parent"/>
-
-            <Constraint
-                android:id="@+id/personNameTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="start"
-                android:padding="0dp"
-                motion:layout_constraintTop_toTopOf="@+id/personDetailImageView"
-                motion:layout_constraintBottom_toBottomOf="@+id/personDetailImageView"
-                motion:layout_constraintEnd_toEndOf="parent" />
         </ConstraintSet>
     </Transition>
 </MotionScene>

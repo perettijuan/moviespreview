@@ -21,7 +21,8 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
     fun userNavigatesToMovieListSection(sectionName: String) {
         viewState.postValue(MainActivityViewState.ActionBarLocked(
                 abTitle = sectionName,
-                withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked)
+                withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked,
+                searchEnabled = true)
         )
     }
 
@@ -35,6 +36,14 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
     fun userNavigatesToSearch() {
         viewState.postValue(MainActivityViewState.SearchEnabled(
                 withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked)
+        )
+    }
+
+    fun userNavigatesToPerson(sectionName: String) {
+        viewState.postValue(MainActivityViewState.ActionBarLocked(
+                abTitle = sectionName,
+                withAnimation = false,
+                searchEnabled = false)
         )
     }
 }

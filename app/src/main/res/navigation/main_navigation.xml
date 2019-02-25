@@ -83,8 +83,13 @@
             app:destination="@id/movieDetailsFragment" />
         <action
             android:id="@+id/action_searchFragment_to_personFragment"
-            app:destination="@id/personFragment" />
+            app:destination="@id/personFragment"
+            app:enterAnim="@anim/enter_slide_down"
+            app:exitAnim="@anim/exit_slide_down"
+            app:popEnterAnim="@anim/pop_enter_slide_up"
+            app:popExitAnim="@anim/pop_exit_slide_up"/>
     </fragment>
+    
     <fragment
         android:id="@+id/personFragment"
         android:name="com.jpp.moviespreview.screens.main.person.PersonFragment"

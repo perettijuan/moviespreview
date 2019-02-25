@@ -45,7 +45,6 @@ class PersonFragment : Fragment() {
                 when (viewState) {
                     is PersonViewState.Loading -> {
                         personImageView.loadImageUrlAsCircular(viewState.imageUrl)
-                        personNameTextView.text = viewState.name
                         renderLoading()
                     }
                     is PersonViewState.ErrorUnknown -> {
