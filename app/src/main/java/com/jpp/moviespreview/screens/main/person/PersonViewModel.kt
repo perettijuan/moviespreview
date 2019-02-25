@@ -22,12 +22,14 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private var currentPersonId: Double = INVALID_PERSON_ID
 
 
-    fun init(personId: Double) {
+    fun init(personId: Double,
+             personImageUrl: String,
+             personName: String) {
         if (currentPersonId == personId) {
             return
         }
 
-        viewStateLiveData.value = PersonViewState.Loading
+        viewStateLiveData.value = PersonViewState.Loading(imageUrl = personImageUrl, name = personName)
         launch {
             /*
              * This work is being executed in the default dispatcher, which indicates that is
@@ -35,7 +37,7 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
              * Since the default context in ViewModel is the main context (UI thread), once
              * that withContext returns is value, we're back in the main context.
              */
-            viewStateLiveData.value = withContext(dispatchers.default()) { fetchPerson(personId) }
+            viewStateLiveData.value = fetchPerson(personId)
         }
     }
 
@@ -55,24 +57,25 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * @return the [PersonViewState] that will be rendered as result of the
      * use case execution.
      */
-    private fun fetchPerson(personId: Double): PersonViewState =
-            getPersonUseCase
-                    .getPerson(personId)
-                    .also { currentPersonId = personId }
-                    .let { ucResult ->
-                        when (ucResult) {
-                            is GetPersonUseCaseResult.ErrorNoConnectivity -> PersonViewState.ErrorNoConnectivity
-                            is GetPersonUseCaseResult.ErrorUnknown -> PersonViewState.ErrorUnknown
-                            is GetPersonUseCaseResult.Success -> {
-                                PersonViewState.Loaded(
-                                        person = mapPersonToUiPerson(ucResult.person),
-                                        showBirthday = ucResult.person.birthday != null,
-                                        showDeathDay = ucResult.person.deathday != null,
-                                        showPlaceOfBirth = ucResult.person.place_of_birth != null
-                                )
-                            }
+    private suspend fun fetchPerson(personId: Double): PersonViewState = withContext(dispatchers.default()) {
+        getPersonUseCase
+                .getPerson(personId)
+                .also { currentPersonId = personId }
+                .let { ucResult ->
+                    when (ucResult) {
+                        is GetPersonUseCaseResult.ErrorNoConnectivity -> PersonViewState.ErrorNoConnectivity
+                        is GetPersonUseCaseResult.ErrorUnknown -> PersonViewState.ErrorUnknown
+                        is GetPersonUseCaseResult.Success -> {
+                            PersonViewState.Loaded(
+                                    person = mapPersonToUiPerson(ucResult.person),
+                                    showBirthday = ucResult.person.birthday != null,
+                                    showDeathDay = ucResult.person.deathday != null,
+                                    showPlaceOfBirth = ucResult.person.place_of_birth != null
+                            )
                         }
                     }
+                }
+    }
 
 
     /**

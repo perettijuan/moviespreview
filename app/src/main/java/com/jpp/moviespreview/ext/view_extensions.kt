@@ -33,6 +33,15 @@ fun View.setVisible() {
 }
 
 /**
+ * Extension function for the View class to make a View visible
+ */
+fun View.setVisibleWhen(condition: Boolean) {
+    if (condition) {
+        this.visibility = View.VISIBLE
+    }
+}
+
+/**
  * Extension function for the View class to make a View gone
  */
 fun View.setGone() {

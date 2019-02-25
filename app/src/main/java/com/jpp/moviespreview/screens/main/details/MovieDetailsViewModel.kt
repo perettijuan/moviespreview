@@ -41,12 +41,12 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
         viewStateLiveData.value = MovieDetailsViewState.Loading
         launch {
             /*
-             * This work is being executed in the default dispatcher, which indicates that is
+             * fetchMovieDetail() is being executed in the default dispatcher, which indicates that is
              * running in a different thread that the UI thread.
              * Since the default context in ViewModel is the main context (UI thread), once
-             * that withContext returns is value, we're back in the main context.
+             * that fetchMovieDetail returns its value, we're back in the main context.
              */
-            viewStateLiveData.value = withContext(dispatchers.default()) { fetchMovieDetail(movieId) }
+            viewStateLiveData.value = fetchMovieDetail(movieId)
         }
     }
 
@@ -67,17 +67,18 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
      * @return a [MovieDetailsViewState] that is posted in viewState in order
      * to update the UI.
      */
-    private fun fetchMovieDetail(movieId: Double): MovieDetailsViewState =
-            getMovieDetailsUseCase
-                    .getDetailsForMovie(movieId)
-                    .also { currentMovieId = movieId }
-                    .let { ucResult ->
-                        when (ucResult) {
-                            is GetMovieDetailsUseCaseResult.ErrorNoConnectivity -> MovieDetailsViewState.ErrorNoConnectivity
-                            is GetMovieDetailsUseCaseResult.ErrorUnknown -> MovieDetailsViewState.ErrorUnknown
-                            is GetMovieDetailsUseCaseResult.Success -> MovieDetailsViewState.ShowDetail(mapMovieDetails(ucResult.details))
-                        }
+    private suspend fun fetchMovieDetail(movieId: Double): MovieDetailsViewState = withContext(dispatchers.default()) {
+        getMovieDetailsUseCase
+                .getDetailsForMovie(movieId)
+                .also { currentMovieId = movieId }
+                .let { ucResult ->
+                    when (ucResult) {
+                        is GetMovieDetailsUseCaseResult.ErrorNoConnectivity -> MovieDetailsViewState.ErrorNoConnectivity
+                        is GetMovieDetailsUseCaseResult.ErrorUnknown -> MovieDetailsViewState.ErrorUnknown
+                        is GetMovieDetailsUseCaseResult.Success -> MovieDetailsViewState.ShowDetail(mapMovieDetails(ucResult.details))
                     }
+                }
+    }
 
 
     /**

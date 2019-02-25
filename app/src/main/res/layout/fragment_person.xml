@@ -16,7 +16,6 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <include layout="@layout/layout_person_header" />
-
     </com.google.android.material.appbar.AppBarLayout>
     <!-- End Person header-->
 
@@ -28,7 +27,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true">
 
             <com.jpp.moviespreview.views.MPTitleValueRow
                 android:id="@+id/personBirthdayRow"
@@ -78,11 +78,27 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/movie_details_vertical_spacing"
                 android:padding="10dp"
-                android:text="Lorem ipsum jaklk lkjaskljaskl  lkjalksjlkjas lkjklkajs klas"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/personBioTitleTextView"
                 tools:text="Lorem ipsum jaklk lkjaskljaskl  lkjalksjlkjas lkjklkajs klas" />
+
+            <ProgressBar
+                android:id="@+id/personLoadingView"
+                style="@style/MPProgressBar"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.jpp.moviespreview.views.MPErrorView
+                android:id="@+id/personErrorView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
     <!-- End Person Content-->

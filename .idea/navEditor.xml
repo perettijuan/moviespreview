@@ -90,6 +90,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_searchFragment_to_personFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                           </map>
                         </option>
                       </LayoutPositions>
