@@ -110,7 +110,7 @@ class PersonViewModelTest {
     }
 
     @Test
-    fun `Should fetch movie detail from repository and show unknown error`() {
+    fun `Should execute GetPersonUseCase and show unknown error`() {
         val viewStatePosted = mutableListOf<PersonViewState>()
 
         every { getPersonUseCase.getPerson(any()) } returns GetPersonUseCaseResult.ErrorUnknown
