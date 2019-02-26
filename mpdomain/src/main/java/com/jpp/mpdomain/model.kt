@@ -1,10 +1,12 @@
 package com.jpp.mpdomain
 
-/***************************************************************************************************
- ********* Contains all the model classes that the domain layer exposes to it's clients.  **********
- *********** The domain layer has its own mapping functions that allows to map one or  *************
- ****************** more domain model classes to one or more data model classes  *******************
- ***************************************************************************************************/
+/**
+ * Represents the connectivity of the application.
+ */
+sealed class Connectivity {
+    object Connected: Connectivity()
+    object Disconnected: Connectivity()
+}
 
 /**
  * Represents the general configuration of the application. Some elements of the API require some
