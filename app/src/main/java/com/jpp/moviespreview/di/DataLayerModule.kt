@@ -11,6 +11,7 @@ import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdata.repository.configuration.ConfigurationApi
 import com.jpp.mpdata.repository.configuration.ConfigurationDb
 import com.jpp.mpdata.repository.configuration.ConfigurationRepositoryImpl
+import com.jpp.mpdata.repository.connectivity.ConnectivityRepositoryImpl
 import com.jpp.mpdata.repository.movies.MoviesApi
 import com.jpp.mpdata.repository.movies.MoviesDb
 import com.jpp.mpdata.repository.movies.MoviesRepositoryImpl
@@ -19,10 +20,7 @@ import com.jpp.mpdata.repository.person.PersonDb
 import com.jpp.mpdata.repository.person.PersonRepositoryImpl
 import com.jpp.mpdata.repository.search.SearchApi
 import com.jpp.mpdata.repository.search.SearchRepositoryImpl
-import com.jpp.mpdomain.repository.MoviesRepository
-import com.jpp.mpdomain.repository.SearchRepository
-import com.jpp.mpdomain.repository.ConfigurationRepository
-import com.jpp.mpdomain.repository.PersonRepository
+import com.jpp.mpdomain.repository.*
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -55,6 +53,11 @@ class DataLayerModule {
     @Singleton
     @Provides
     fun providesCacheTimestampHelper() = CacheTimestampHelper()
+
+    @Singleton
+    @Provides
+    fun providesConnectivityRepository(context: Context)
+            : ConnectivityRepository = ConnectivityRepositoryImpl(context)
 
 
     /***********************************

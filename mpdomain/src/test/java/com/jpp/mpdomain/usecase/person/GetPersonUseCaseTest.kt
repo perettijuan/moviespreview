@@ -1,7 +1,8 @@
 package com.jpp.mpdomain.usecase.person
 
+import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.Person
-import com.jpp.mpdomain.handlers.ConnectivityHandler
+import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.PersonRepository
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -19,19 +20,19 @@ class GetPersonUseCaseTest {
     @RelaxedMockK
     private lateinit var personRepository: PersonRepository
     @RelaxedMockK
-    private lateinit var connectivityHandler: ConnectivityHandler
+    private lateinit var connectivityRepository: ConnectivityRepository
 
     private lateinit var subject: GetPersonUseCase
 
     @BeforeEach
     fun setUp() {
-        subject = GetPersonUseCase.Impl(personRepository, connectivityHandler)
+        subject = GetPersonUseCase.Impl(personRepository, connectivityRepository)
     }
 
 
     @Test
     fun `Should check connectivity before fetching person and return ErrorNoConnectivity`() {
-        every { connectivityHandler.isConnectedToNetwork() } returns false
+        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
         subject.getPerson(1.toDouble()).let { result ->
             verify(exactly = 0) { personRepository.getPerson(any()) }
@@ -41,7 +42,7 @@ class GetPersonUseCaseTest {
 
     @Test
     fun `Should return ErrorUnknown when connected to network and an error occurs`() {
-        every { connectivityHandler.isConnectedToNetwork() } returns true
+        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { personRepository.getPerson(any()) } returns null
 
         subject.getPerson(1.toDouble()).let { result ->
@@ -53,7 +54,7 @@ class GetPersonUseCaseTest {
     @Test
     fun `Should return Success when connected to network and an can get a person`() {
         val person = mockk<Person>()
-        every { connectivityHandler.isConnectedToNetwork() } returns true
+        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { personRepository.getPerson(any()) } returns person
 
         subject.getPerson(1.toDouble()).let { result ->

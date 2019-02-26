@@ -1,6 +1,7 @@
 package com.jpp.mpdomain.usecase.person
 
-import com.jpp.mpdomain.handlers.ConnectivityHandler
+import com.jpp.mpdomain.Connectivity
+import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.PersonRepository
 
 /**
@@ -21,12 +22,12 @@ interface GetPersonUseCase {
 
 
     class Impl(private val personRepository: PersonRepository,
-               private val connectivityHandler: ConnectivityHandler) : GetPersonUseCase {
+               private val connectivityRepository: ConnectivityRepository) : GetPersonUseCase {
 
         override fun getPerson(personId: Double): GetPersonUseCaseResult {
-            return when (connectivityHandler.isConnectedToNetwork()) {
-                false -> GetPersonUseCaseResult.ErrorNoConnectivity
-                true -> personRepository.getPerson(personId)?.let {
+            return when (connectivityRepository.getCurrentConnectivity()) {
+                Connectivity.Disconnected -> GetPersonUseCaseResult.ErrorNoConnectivity
+                Connectivity.Connected -> personRepository.getPerson(personId)?.let {
                     GetPersonUseCaseResult.Success(it)
                 } ?: run {
                     GetPersonUseCaseResult.ErrorUnknown

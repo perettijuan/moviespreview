@@ -1,6 +1,7 @@
 package com.jpp.mpdomain.usecase.details
 
-import com.jpp.mpdomain.handlers.ConnectivityHandler
+import com.jpp.mpdomain.Connectivity
+import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.MoviesRepository
 
 /**
@@ -21,12 +22,12 @@ interface GetMovieDetailsUseCase {
 
 
     class Impl(private val moviesRepository: MoviesRepository,
-               private val connectivityHandler: ConnectivityHandler) : GetMovieDetailsUseCase {
+               private val connectivityRepository: ConnectivityRepository) : GetMovieDetailsUseCase {
 
         override fun getDetailsForMovie(movieId: Double): GetMovieDetailsUseCaseResult {
-            return when(connectivityHandler.isConnectedToNetwork()) {
-                false -> GetMovieDetailsUseCaseResult.ErrorNoConnectivity
-                true -> moviesRepository.getMovieDetails(movieId)?.let {
+            return when(connectivityRepository.getCurrentConnectivity()) {
+                Connectivity.Disconnected -> GetMovieDetailsUseCaseResult.ErrorNoConnectivity
+                Connectivity.Connected -> moviesRepository.getMovieDetails(movieId)?.let {
                     GetMovieDetailsUseCaseResult.Success(it)
                 } ?: run {
                     GetMovieDetailsUseCaseResult.ErrorUnknown
