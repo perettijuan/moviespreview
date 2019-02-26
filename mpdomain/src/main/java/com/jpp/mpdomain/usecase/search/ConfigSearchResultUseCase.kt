@@ -1,8 +1,9 @@
 package com.jpp.mpdomain.usecase.search
 
+import com.jpp.mpdomain.ImagesConfiguration
 import com.jpp.mpdomain.SearchResult
-import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
 import com.jpp.mpdomain.repository.ConfigurationRepository
+import com.jpp.mpdomain.usecase.ConfigureImagePathUseCase
 
 /**
  * Defines a use case that configures the images path of a [SearchResult]. By default the [SearchResult.poster_path],
@@ -19,14 +20,35 @@ interface ConfigSearchResultUseCase {
     fun configure(targetImageSize: Int, searchResult: SearchResult): SearchResult
 
 
-    class Impl(private val configurationRepository: ConfigurationRepository,
-               private val configurationHandler: ConfigurationHandler) : ConfigSearchResultUseCase {
+    class Impl(private val configurationRepository: ConfigurationRepository) : ConfigSearchResultUseCase, ConfigureImagePathUseCase() {
 
         override fun configure(targetImageSize: Int, searchResult: SearchResult): SearchResult {
             return configurationRepository.getAppConfiguration()?.let {
-                configurationHandler.configureSearchResult(searchResult, it.images, targetImageSize)
+                configureSearchResult(searchResult, it.images, targetImageSize)
             } ?: run {
                 searchResult
+            }
+        }
+
+        /**
+         * Configures the [SearchResult.profile_path], [SearchResult.backdrop_path] and/or
+         * [SearchResult.poster_path] properties setting the
+         * proper URL based on the provided sizes. It looks for the best possible size based on the
+         * supplied ones in the [imagesConfig] to avoid downloading over-sized images.
+         * @return a new [SearchResult] object with the same properties as the provided [searchResult],
+         * but with the images paths configured.
+         */
+        private fun configureSearchResult(searchResult: SearchResult, imagesConfig: ImagesConfiguration, targetImageSize: Int): SearchResult {
+            return with(searchResult) {
+                when (isMovie()) {
+                    true -> {
+                        copy(
+                                poster_path = createUrlForPath(poster_path, imagesConfig.base_url, imagesConfig.poster_sizes, targetImageSize),
+                                backdrop_path = createUrlForPath(backdrop_path, imagesConfig.base_url, imagesConfig.backdrop_sizes, targetImageSize)
+                        )
+                    }
+                    false -> copy(profile_path = createUrlForPath(profile_path, imagesConfig.base_url, imagesConfig.profile_sizes, targetImageSize))
+                }
             }
         }
     }

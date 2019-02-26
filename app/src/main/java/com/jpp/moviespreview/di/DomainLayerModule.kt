@@ -1,7 +1,5 @@
 package com.jpp.moviespreview.di
 
-import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
-import com.jpp.mpdomain.handlers.configuration.ConfigurationHandlerImpl
 import com.jpp.mpdomain.repository.*
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
@@ -25,10 +23,6 @@ class DomainLayerModule {
 
     @Provides
     @Singleton
-    fun providesConfigurationHandler(): ConfigurationHandler = ConfigurationHandlerImpl()
-
-    @Provides
-    @Singleton
     fun providesNetworkExecutor(): Executor = NETWORK_IO
 
     @Provides
@@ -39,9 +33,8 @@ class DomainLayerModule {
 
     @Provides
     @Singleton
-    fun providesConfigSearchResultUseCase(configurationRepository: ConfigurationRepository,
-                                          configurationHandler: ConfigurationHandler)
-            : ConfigSearchResultUseCase = ConfigSearchResultUseCase.Impl(configurationRepository, configurationHandler)
+    fun providesConfigSearchResultUseCase(configurationRepository: ConfigurationRepository)
+            : ConfigSearchResultUseCase = ConfigSearchResultUseCase.Impl(configurationRepository)
 
     @Provides
     @Singleton
@@ -51,9 +44,8 @@ class DomainLayerModule {
 
     @Provides
     @Singleton
-    fun providesConfigMovieUseCase(configurationRepository: ConfigurationRepository,
-                                   configurationHandler: ConfigurationHandler)
-            : ConfigMovieUseCase = ConfigMovieUseCase.Impl(configurationRepository, configurationHandler)
+    fun providesConfigMovieUseCase(configurationRepository: ConfigurationRepository)
+            : ConfigMovieUseCase = ConfigMovieUseCase.Impl(configurationRepository)
 
     @Provides
     @Singleton
