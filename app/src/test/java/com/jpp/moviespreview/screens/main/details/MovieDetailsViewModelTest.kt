@@ -7,7 +7,7 @@ import com.jpp.moviespreview.screens.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
-import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCaseResult
+import com.jpp.mpdomain.usecase.details.GetMovieDetailsResult
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -65,7 +65,7 @@ class MovieDetailsViewModelTest {
                 )
         )
 
-        every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns GetMovieDetailsUseCaseResult.Success(domainDetail)
+        every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns GetMovieDetailsResult.Success(domainDetail)
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStatePosted.add(it)
@@ -84,7 +84,7 @@ class MovieDetailsViewModelTest {
         val viewStatePosted = mutableListOf<MovieDetailsViewState>()
         val movieDetailId = 121.toDouble()
 
-        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsUseCaseResult.ErrorNoConnectivity
+        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsResult.ErrorNoConnectivity
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStatePosted.add(it)
@@ -101,7 +101,7 @@ class MovieDetailsViewModelTest {
         val viewStatePosted = mutableListOf<MovieDetailsViewState>()
         val movieDetailId = 121.toDouble()
 
-        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsUseCaseResult.ErrorUnknown
+        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsResult.ErrorUnknown
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStatePosted.add(it)

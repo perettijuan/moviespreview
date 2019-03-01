@@ -39,7 +39,7 @@ class GetMoviesUseCaseTest {
 
         subject.getMoviePageForSection(1, movieSection).let { result ->
             verify(exactly = 0) { moviesRepository.getMoviePageForSection(any(), any()) }
-            assertEquals(GetMoviesUseCaseResult.ErrorNoConnectivity, result)
+            assertEquals(GetMoviesResult.ErrorNoConnectivity, result)
         }
     }
 
@@ -51,7 +51,7 @@ class GetMoviesUseCaseTest {
 
         subject.getMoviePageForSection(1, movieSection).let { result ->
             verify(exactly = 1) { moviesRepository.getMoviePageForSection(any(), any()) }
-            assertEquals(GetMoviesUseCaseResult.ErrorUnknown, result)
+            assertEquals(GetMoviesResult.ErrorUnknown, result)
         }
     }
 
@@ -64,8 +64,8 @@ class GetMoviesUseCaseTest {
 
         subject.getMoviePageForSection(1, movieSection).let { result ->
             verify(exactly = 1) { moviesRepository.getMoviePageForSection(any(), any()) }
-            assertTrue(result is GetMoviesUseCaseResult.Success)
-            assertEquals((result as GetMoviesUseCaseResult.Success).moviesPage, moviePage)
+            assertTrue(result is GetMoviesResult.Success)
+            assertEquals((result as GetMoviesResult.Success).moviesPage, moviePage)
         }
     }
 

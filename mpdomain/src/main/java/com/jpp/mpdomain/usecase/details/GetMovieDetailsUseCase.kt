@@ -14,23 +14,23 @@ interface GetMovieDetailsUseCase {
     /**
      * Retrieves the details of a particular movie identified with [movieId].
      * @return
-     *  - [GetMovieDetailsUseCaseResult.Success] when details are found for the particular movie.
-     *  - [GetMovieDetailsUseCaseResult.ErrorNoConnectivity] when the UC detects that the application has no internet connectivity.
-     *  - [GetMovieDetailsUseCaseResult.ErrorUnknown] when an error occur while fetching the details.
+     *  - [GetMovieDetailsResult.Success] when details are found for the particular movie.
+     *  - [GetMovieDetailsResult.ErrorNoConnectivity] when the UC detects that the application has no internet connectivity.
+     *  - [GetMovieDetailsResult.ErrorUnknown] when an error occur while fetching the details.
      */
-    fun getDetailsForMovie(movieId: Double) : GetMovieDetailsUseCaseResult
+    fun getDetailsForMovie(movieId: Double) : GetMovieDetailsResult
 
 
     class Impl(private val moviesRepository: MoviesRepository,
                private val connectivityRepository: ConnectivityRepository) : GetMovieDetailsUseCase {
 
-        override fun getDetailsForMovie(movieId: Double): GetMovieDetailsUseCaseResult {
+        override fun getDetailsForMovie(movieId: Double): GetMovieDetailsResult {
             return when(connectivityRepository.getCurrentConnectivity()) {
-                Connectivity.Disconnected -> GetMovieDetailsUseCaseResult.ErrorNoConnectivity
+                Connectivity.Disconnected -> GetMovieDetailsResult.ErrorNoConnectivity
                 Connectivity.Connected -> moviesRepository.getMovieDetails(movieId)?.let {
-                    GetMovieDetailsUseCaseResult.Success(it)
+                    GetMovieDetailsResult.Success(it)
                 } ?: run {
-                    GetMovieDetailsUseCaseResult.ErrorUnknown
+                    GetMovieDetailsResult.ErrorUnknown
                 }
             }
         }

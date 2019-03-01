@@ -36,7 +36,7 @@ class GetMovieDetailsUseCaseTest {
 
         subject.getDetailsForMovie(1.toDouble()).let { result ->
             verify(exactly = 0) { moviesRepository.getMovieDetails(any()) }
-            assertEquals(GetMovieDetailsUseCaseResult.ErrorNoConnectivity, result)
+            assertEquals(GetMovieDetailsResult.ErrorNoConnectivity, result)
         }
     }
 
@@ -47,7 +47,7 @@ class GetMovieDetailsUseCaseTest {
 
         subject.getDetailsForMovie(1.toDouble()).let { result ->
             verify(exactly = 1) { moviesRepository.getMovieDetails(any()) }
-            assertEquals(GetMovieDetailsUseCaseResult.ErrorUnknown, result)
+            assertEquals(GetMovieDetailsResult.ErrorUnknown, result)
         }
     }
 
@@ -59,8 +59,8 @@ class GetMovieDetailsUseCaseTest {
 
         subject.getDetailsForMovie(1.toDouble()).let { result ->
             verify(exactly = 1) { moviesRepository.getMovieDetails(any()) }
-            assertTrue(result is GetMovieDetailsUseCaseResult.Success)
-            assertEquals((result as GetMovieDetailsUseCaseResult.Success).details, details)
+            assertTrue(result is GetMovieDetailsResult.Success)
+            assertEquals((result as GetMovieDetailsResult.Success).details, details)
         }
     }
 }

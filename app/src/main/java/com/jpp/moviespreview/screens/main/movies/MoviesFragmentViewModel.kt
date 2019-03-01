@@ -9,10 +9,9 @@ import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
 import com.jpp.moviespreview.paging.MPPagingDataSourceFactory
 import com.jpp.moviespreview.screens.SingleLiveEvent
-import com.jpp.moviespreview.screens.main.search.SearchViewNavigationEvent
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
-import com.jpp.mpdomain.usecase.movies.GetMoviesUseCaseResult
+import com.jpp.mpdomain.usecase.movies.GetMoviesResult
 import java.util.concurrent.Executor
 
 /**
@@ -133,13 +132,13 @@ abstract class MoviesFragmentViewModel(private val getMoviesUseCase: GetMoviesUs
                 .getMoviePageForSection(page, movieSection)
                 .let { ucResult ->
                     when (ucResult) {
-                        is GetMoviesUseCaseResult.ErrorNoConnectivity -> {
+                        is GetMoviesResult.ErrorNoConnectivity -> {
                             viewState.postValue(if (page > 1) MoviesViewState.ErrorNoConnectivityWithItems else MoviesViewState.ErrorNoConnectivity)
                         }
-                        is GetMoviesUseCaseResult.ErrorUnknown -> {
+                        is GetMoviesResult.ErrorUnknown -> {
                             viewState.postValue(if (page > 1) MoviesViewState.ErrorUnknownWithItems else MoviesViewState.ErrorUnknown)
                         }
-                        is GetMoviesUseCaseResult.Success -> {
+                        is GetMoviesResult.Success -> {
                             callback(ucResult.moviesPage.results, page + 1)
                         }
                     }

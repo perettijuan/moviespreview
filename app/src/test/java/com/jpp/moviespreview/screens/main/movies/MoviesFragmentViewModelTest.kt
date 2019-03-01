@@ -8,7 +8,7 @@ import com.jpp.moviespreview.utiltest.successGetMoviesUCExecution
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
-import com.jpp.mpdomain.usecase.movies.GetMoviesUseCaseResult
+import com.jpp.mpdomain.usecase.movies.GetMoviesResult
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -91,7 +91,7 @@ class MoviesFragmentViewModelTest {
     fun `Should allow retrying when failed to load the first page`() {
         val viewStates = mutableListOf<MoviesViewState>()
 
-        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns GetMoviesUseCaseResult.ErrorUnknown
+        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns GetMoviesResult.ErrorUnknown
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStates.add(it)
@@ -121,7 +121,7 @@ class MoviesFragmentViewModelTest {
     fun `Should do nothing when failed and is already initialized`() {
         val viewStates = mutableListOf<MoviesViewState>()
 
-        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns GetMoviesUseCaseResult.ErrorUnknown
+        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns GetMoviesResult.ErrorUnknown
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStates.add(it)
@@ -142,7 +142,7 @@ class MoviesFragmentViewModelTest {
     fun `Should post ErrorNoConnectivity when not connected to network detected`() {
         var lastState: MoviesViewState = MoviesViewState.Loading
 
-        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns GetMoviesUseCaseResult.ErrorNoConnectivity
+        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns GetMoviesResult.ErrorNoConnectivity
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             lastState = it
@@ -157,7 +157,7 @@ class MoviesFragmentViewModelTest {
     fun `Should post ErrorUnknown when not connected to network detected`() {
         var lastState: MoviesViewState = MoviesViewState.Loading
 
-        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns GetMoviesUseCaseResult.ErrorUnknown
+        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns GetMoviesResult.ErrorUnknown
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             lastState = it

@@ -36,7 +36,7 @@ class GetPersonUseCaseTest {
 
         subject.getPerson(1.toDouble()).let { result ->
             verify(exactly = 0) { personRepository.getPerson(any()) }
-            Assertions.assertEquals(GetPersonUseCaseResult.ErrorNoConnectivity, result)
+            Assertions.assertEquals(GetPersonResult.ErrorNoConnectivity, result)
         }
     }
 
@@ -47,7 +47,7 @@ class GetPersonUseCaseTest {
 
         subject.getPerson(1.toDouble()).let { result ->
             verify(exactly = 1) { personRepository.getPerson(any()) }
-            Assertions.assertEquals(GetPersonUseCaseResult.ErrorUnknown, result)
+            Assertions.assertEquals(GetPersonResult.ErrorUnknown, result)
         }
     }
 
@@ -59,8 +59,8 @@ class GetPersonUseCaseTest {
 
         subject.getPerson(1.toDouble()).let { result ->
             verify(exactly = 1) { personRepository.getPerson(any()) }
-            Assertions.assertTrue(result is GetPersonUseCaseResult.Success)
-            Assertions.assertEquals((result as GetPersonUseCaseResult.Success).person, person)
+            Assertions.assertTrue(result is GetPersonResult.Success)
+            Assertions.assertEquals((result as GetPersonResult.Success).person, person)
         }
     }
 }

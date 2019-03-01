@@ -1,8 +1,5 @@
 package com.jpp.moviespreview.screens.main.details
 
-import android.app.KeyguardManager
-import android.content.Context
-import android.content.Context.KEYGUARD_SERVICE
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.test.espresso.Espresso.onView
@@ -20,7 +17,7 @@ import com.jpp.moviespreview.testutils.FragmentTestActivity
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
-import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCaseResult
+import com.jpp.mpdomain.usecase.details.GetMovieDetailsResult
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before
@@ -79,7 +76,7 @@ class MovieDetailsFragmentIntegrationTest {
 
     @Test
     fun shouldShowErrorUnknownView() {
-        every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns GetMovieDetailsUseCaseResult.ErrorUnknown
+        every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns GetMovieDetailsResult.ErrorUnknown
 
         launchAndInjectFragment()
 
@@ -92,7 +89,7 @@ class MovieDetailsFragmentIntegrationTest {
 
     @Test
     fun shouldShowConnectivityError() {
-        every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns GetMovieDetailsUseCaseResult.ErrorNoConnectivity
+        every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns GetMovieDetailsResult.ErrorNoConnectivity
 
         launchAndInjectFragment()
 
@@ -121,7 +118,7 @@ class MovieDetailsFragmentIntegrationTest {
                 popularity = 1.2F
         )
 
-        every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns GetMovieDetailsUseCaseResult.Success(domainMovieDetails)
+        every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns GetMovieDetailsResult.Success(domainMovieDetails)
 
         launchAndInjectFragment()
 

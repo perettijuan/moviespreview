@@ -15,23 +15,23 @@ interface GetMoviesUseCase {
     /**
      * Performs the fetch of the movies page identified by [page] for the provided [section].
      * @return
-     *  - [GetMoviesUseCaseResult.Success] when there is internet connectivity and the movie page is fetched.
-     *  - [GetMoviesUseCaseResult.ErrorNoConnectivity] when the UC detects that the application has no internet connectivity.
-     *  - [GetMoviesUseCaseResult.ErrorUnknown] when an error occur while fetching the page.
+     *  - [GetMoviesResult.Success] when there is internet connectivity and the movie page is fetched.
+     *  - [GetMoviesResult.ErrorNoConnectivity] when the UC detects that the application has no internet connectivity.
+     *  - [GetMoviesResult.ErrorUnknown] when an error occur while fetching the page.
      */
-    fun getMoviePageForSection(page: Int, section: MovieSection): GetMoviesUseCaseResult
+    fun getMoviePageForSection(page: Int, section: MovieSection): GetMoviesResult
 
 
     class Impl(private val moviesRepository: MoviesRepository,
                private val connectivityRepository: ConnectivityRepository) : GetMoviesUseCase {
 
-        override fun getMoviePageForSection(page: Int, section: MovieSection): GetMoviesUseCaseResult {
+        override fun getMoviePageForSection(page: Int, section: MovieSection): GetMoviesResult {
             return when (connectivityRepository.getCurrentConnectivity()) {
-                Connectivity.Disconnected -> GetMoviesUseCaseResult.ErrorNoConnectivity
+                Connectivity.Disconnected -> GetMoviesResult.ErrorNoConnectivity
                 Connectivity.Connected -> moviesRepository.getMoviePageForSection(page, section)?.let {
-                    GetMoviesUseCaseResult.Success(it)
+                    GetMoviesResult.Success(it)
                 } ?: run {
-                    GetMoviesUseCaseResult.ErrorUnknown
+                    GetMoviesResult.ErrorUnknown
                 }
             }
         }

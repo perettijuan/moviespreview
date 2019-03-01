@@ -14,23 +14,23 @@ interface GetPersonUseCase {
     /**
      * Retrieves the details of a particular person identified with [personId].
      * @return
-     *  - [GetPersonUseCaseResult.Success] when the person is found.
-     *  - [GetPersonUseCaseResult.ErrorNoConnectivity] when the UC detects that the application has no internet connectivity.
-     *  - [GetPersonUseCaseResult.ErrorUnknown] when an error occur while fetching the person.
+     *  - [GetPersonResult.Success] when the person is found.
+     *  - [GetPersonResult.ErrorNoConnectivity] when the UC detects that the application has no internet connectivity.
+     *  - [GetPersonResult.ErrorUnknown] when an error occur while fetching the person.
      */
-    fun getPerson(personId: Double): GetPersonUseCaseResult
+    fun getPerson(personId: Double): GetPersonResult
 
 
     class Impl(private val personRepository: PersonRepository,
                private val connectivityRepository: ConnectivityRepository) : GetPersonUseCase {
 
-        override fun getPerson(personId: Double): GetPersonUseCaseResult {
+        override fun getPerson(personId: Double): GetPersonResult {
             return when (connectivityRepository.getCurrentConnectivity()) {
-                Connectivity.Disconnected -> GetPersonUseCaseResult.ErrorNoConnectivity
+                Connectivity.Disconnected -> GetPersonResult.ErrorNoConnectivity
                 Connectivity.Connected -> personRepository.getPerson(personId)?.let {
-                    GetPersonUseCaseResult.Success(it)
+                    GetPersonResult.Success(it)
                 } ?: run {
-                    GetPersonUseCaseResult.ErrorUnknown
+                    GetPersonResult.ErrorUnknown
                 }
             }
         }

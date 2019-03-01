@@ -6,7 +6,7 @@ import com.jpp.moviespreview.screens.CoroutineDispatchers
 import com.jpp.moviespreview.screens.MPScopedViewModel
 import com.jpp.mpdomain.Person
 import com.jpp.mpdomain.usecase.person.GetPersonUseCase
-import com.jpp.mpdomain.usecase.person.GetPersonUseCaseResult
+import com.jpp.mpdomain.usecase.person.GetPersonResult
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -78,9 +78,9 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                 .getPerson(personId)
                 .let { ucResult ->
                     when (ucResult) {
-                        is GetPersonUseCaseResult.ErrorNoConnectivity -> PersonViewState.ErrorNoConnectivity
-                        is GetPersonUseCaseResult.ErrorUnknown -> PersonViewState.ErrorUnknown
-                        is GetPersonUseCaseResult.Success -> {
+                        is GetPersonResult.ErrorNoConnectivity -> PersonViewState.ErrorNoConnectivity
+                        is GetPersonResult.ErrorUnknown -> PersonViewState.ErrorUnknown
+                        is GetPersonResult.Success -> {
                             if (isPersonDataEmpty(ucResult.person)) {
                                 PersonViewState.LoadedEmpty
                             } else {
