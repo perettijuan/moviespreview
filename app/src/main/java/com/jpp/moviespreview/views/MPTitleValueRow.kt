@@ -8,8 +8,8 @@ import com.jpp.moviespreview.R
 import kotlinx.android.synthetic.main.layout_title_value_row.view.*
 
 /**
- * Custom [ConstraintLayout] that shows TextViews: one on the start margin and another one
- * at the end margin
+ * Custom [ConstraintLayout] that shows two TextViews: one on the start margin and another one
+ * at the end margin.
  */
 class MPTitleValueRow : ConstraintLayout {
     constructor(context: Context) : this(context, null)

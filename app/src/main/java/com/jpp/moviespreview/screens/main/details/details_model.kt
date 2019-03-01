@@ -15,6 +15,13 @@ sealed class MovieDetailsViewState {
 }
 
 /**
+ * Represents the navigation event that can be routed through the details section.
+ */
+sealed class MovieDetailsNavigationEvent {
+    data class ToCredits(val movieId: Double, val movieTitle: String) : MovieDetailsNavigationEvent()
+}
+
+/**
  * Represents the details of a movie in the UI layer.
  */
 data class UiMovieDetails(

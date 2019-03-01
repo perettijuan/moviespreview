@@ -41,6 +41,7 @@
     <string name="war_genre">War</string>
     <string name="western_genre">Western</string>
     <string name="generic_genre">Generic</string>
+    <string name="movie_credits_title">Credits</string>
     <!-- End Details Fragment -->
 
 

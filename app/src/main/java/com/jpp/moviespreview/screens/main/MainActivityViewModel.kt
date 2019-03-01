@@ -2,7 +2,6 @@ package com.jpp.moviespreview.screens.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations.map
 import androidx.lifecycle.ViewModel
 import javax.inject.Inject
 
@@ -43,6 +42,14 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
         viewState.postValue(MainActivityViewState.ActionBarLocked(
                 abTitle = sectionName,
                 withAnimation = false,
+                searchEnabled = false)
+        )
+    }
+
+    fun userNavigatesToCredits(sectionName: String) {
+        viewState.postValue(MainActivityViewState.ActionBarLocked(
+                abTitle = sectionName,
+                withAnimation = true,
                 searchEnabled = false)
         )
     }

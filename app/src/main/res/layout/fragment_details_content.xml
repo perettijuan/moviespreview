@@ -1,118 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:padding="20dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp">
 
-  <TextView
-    android:id="@+id/detailsOverviewTitleTxt"
-    style="@style/MPTextViewTitle"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:text="@string/overview_title"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/detailsOverviewTitleTxt"
+        style="@style/MPTextViewTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/overview_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-  <TextView
-    android:id="@+id/detailsOverviewContentTxt"
-    style="@style/MPTextViewSmall"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/detailsOverviewTitleTxt"
-    tools:text="Lorem ipsum jaklk lkjaskljaskl  lkjalksjlkjas lkjklkajs klas" />
+    <TextView
+        android:id="@+id/detailsOverviewContentTxt"
+        style="@style/MPTextViewSmall"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/detailsOverviewTitleTxt"
+        tools:text="Lorem ipsum jaklk lkjaskljaskl  lkjalksjlkjas lkjklkajs klas" />
 
-  <TextView
-    android:id="@+id/detailsGenresTitleTxt"
-    style="@style/MPTextViewTitle"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
-    android:text="@string/genres_title"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/detailsOverviewContentTxt" />
+    <TextView
+        android:id="@+id/detailsGenresTitleTxt"
+        style="@style/MPTextViewTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
+        android:text="@string/genres_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailsOverviewContentTxt" />
 
-  <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/detailsGenresRv"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:minHeight="60dp"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/detailsGenresTitleTxt"
-    tools:orientation="horizontal"
-    tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    tools:listitem="@layout/list_item_details_genre" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/detailsGenresRv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailsGenresTitleTxt"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/list_item_details_genre"
+        tools:orientation="horizontal" />
 
-  <TextView
-    android:id="@+id/detailsPopularityTitleTxt"
-    style="@style/MPTextViewTitle"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
-    android:text="@string/popularity_title"
-    app:layout_constraintEnd_toStartOf="@+id/detailsPopularityContentTxt"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/detailsGenresRv" />
+    <TextView
+        android:id="@+id/detailsPopularityTitleTxt"
+        style="@style/MPTextViewTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
+        android:text="@string/popularity_title"
+        app:layout_constraintEnd_toStartOf="@+id/detailsPopularityContentTxt"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailsGenresRv" />
 
-  <TextView
-    android:id="@+id/detailsPopularityContentTxt"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:gravity="end"
-    app:layout_constraintBottom_toBottomOf="@+id/detailsPopularityTitleTxt"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toEndOf="@+id/detailsPopularityTitleTxt"
-    app:layout_constraintTop_toTopOf="@+id/detailsPopularityTitleTxt"
-    tools:text="1200" />
+    <TextView
+        android:id="@+id/detailsPopularityContentTxt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        app:layout_constraintBottom_toBottomOf="@+id/detailsPopularityTitleTxt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/detailsPopularityTitleTxt"
+        app:layout_constraintTop_toTopOf="@+id/detailsPopularityTitleTxt"
+        tools:text="1200" />
 
-  <TextView
-    android:id="@+id/detailsVoteCountTitleTxt"
-    style="@style/MPTextViewTitle"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
-    android:text="@string/vote_count_title"
-    app:layout_constraintEnd_toStartOf="@+id/detailsVoteCountContentTxt"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/detailsPopularityTitleTxt" />
+    <TextView
+        android:id="@+id/detailsVoteCountTitleTxt"
+        style="@style/MPTextViewTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
+        android:text="@string/vote_count_title"
+        app:layout_constraintEnd_toStartOf="@+id/detailsVoteCountContentTxt"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailsPopularityTitleTxt" />
 
-  <TextView
-    android:id="@+id/detailsVoteCountContentTxt"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:gravity="end"
-    app:layout_constraintBottom_toBottomOf="@+id/detailsVoteCountTitleTxt"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toEndOf="@+id/detailsVoteCountTitleTxt"
-    app:layout_constraintTop_toTopOf="@+id/detailsVoteCountTitleTxt"
-    tools:text="2.1" />
+    <TextView
+        android:id="@+id/detailsVoteCountContentTxt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        app:layout_constraintBottom_toBottomOf="@+id/detailsVoteCountTitleTxt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/detailsVoteCountTitleTxt"
+        app:layout_constraintTop_toTopOf="@+id/detailsVoteCountTitleTxt"
+        tools:text="2.1" />
 
-  <TextView
-    android:id="@+id/detailsReleaseDateTitleTxt"
-    style="@style/MPTextViewTitle"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
-    android:text="@string/release_date_title"
-    app:layout_constraintEnd_toStartOf="@+id/detailsReleaseDateContentTxt"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/detailsVoteCountTitleTxt" />
+    <TextView
+        android:id="@+id/detailsReleaseDateTitleTxt"
+        style="@style/MPTextViewTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
+        android:text="@string/release_date_title"
+        app:layout_constraintEnd_toStartOf="@+id/detailsReleaseDateContentTxt"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailsVoteCountTitleTxt" />
 
-  <TextView
-    android:id="@+id/detailsReleaseDateContentTxt"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:gravity="end"
-    app:layout_constraintBottom_toBottomOf="@+id/detailsReleaseDateTitleTxt"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toEndOf="@+id/detailsReleaseDateTitleTxt"
-    app:layout_constraintTop_toTopOf="@+id/detailsReleaseDateTitleTxt"
-    tools:text="10/10/2019" />
+    <TextView
+        android:id="@+id/detailsReleaseDateContentTxt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        app:layout_constraintBottom_toBottomOf="@+id/detailsReleaseDateTitleTxt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/detailsReleaseDateTitleTxt"
+        app:layout_constraintTop_toTopOf="@+id/detailsReleaseDateTitleTxt"
+        tools:text="10/10/2019" />
+
+    <com.jpp.moviespreview.views.MPItemSelectionView
+        android:id="@+id/detailsCreditsSelectionView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailsReleaseDateContentTxt"
+        app:itemText="@string/movie_credits_title"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

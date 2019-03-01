@@ -19,6 +19,7 @@ class MainActivityViewModelTest {
             with(it as MainActivityViewState.ActionBarLocked) {
                 assertEquals("aSection", abTitle)
                 assertFalse(withAnimation)
+                assertTrue(searchEnabled)
             }
         })
         subject.userNavigatesToMovieListSection("aSection")
@@ -40,6 +41,7 @@ class MainActivityViewModelTest {
         with(viewStatesPosted[1] as MainActivityViewState.ActionBarLocked) {
             assertEquals("aSection", abTitle)
             assertTrue(withAnimation)
+            assertTrue(searchEnabled)
         }
     }
 
@@ -82,6 +84,35 @@ class MainActivityViewModelTest {
         with(viewStatesPosted[1] as MainActivityViewState.SearchEnabled) {
             assertTrue(withAnimation)
         }
+    }
+
+    @Test
+    fun `Should lock ActionBar without animation when user navigates to movies person`() {
+        val personName = "aPerson"
+        subject.viewState().observe(resumedLifecycleOwner(), Observer {
+            assertTrue(it is MainActivityViewState.ActionBarLocked)
+            with(it as MainActivityViewState.ActionBarLocked) {
+                assertEquals(personName, abTitle)
+                assertFalse(withAnimation)
+                assertFalse(searchEnabled)
+            }
+        })
+        subject.userNavigatesToPerson(personName)
+    }
+
+
+    @Test
+    fun `Should lock ActionBar with animation when user navigates to movies credits`() {
+        val creditsName = "credits"
+        subject.viewState().observe(resumedLifecycleOwner(), Observer {
+            assertTrue(it is MainActivityViewState.ActionBarLocked)
+            with(it as MainActivityViewState.ActionBarLocked) {
+                assertEquals(creditsName, abTitle)
+                assertTrue(withAnimation)
+                assertFalse(searchEnabled)
+            }
+        })
+        subject.userNavigatesToCredits(creditsName)
     }
 
 }

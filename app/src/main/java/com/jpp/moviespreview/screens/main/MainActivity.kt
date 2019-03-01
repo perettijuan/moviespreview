@@ -123,6 +123,10 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             return navigateUp(findNavController(this, R.id.mainNavHostFragment), mainDrawerLayout)
         }
 
+        if (findNavController(this, R.id.mainNavHostFragment).currentDestination?.id == R.id.creditsFragment) {
+            return navigateUp(findNavController(this, R.id.mainNavHostFragment), mainDrawerLayout)
+        }
+
         if (!mainDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             // this ensures that we support multiple top level fragments
             mainDrawerLayout.openDrawer(GravityCompat.START)
@@ -213,6 +217,11 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 R.id.personFragment -> withMainViewModel {
                     arguments?.let {
                         userNavigatesToPerson(it.getString("personName"))
+                    }
+                }
+                R.id.creditsFragment -> withMainViewModel {
+                    arguments?.let {
+                        userNavigatesToCredits(it.getString("movieTitle"))
                     }
                 }
             }

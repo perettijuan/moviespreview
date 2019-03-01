@@ -156,4 +156,21 @@ class MovieDetailsViewModelTest {
 
         verify(exactly = 1) { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) }
     }
+
+    @Test
+    fun `Should navigate to movies when a movie item is selected`() {
+        val reqMovieId = 12.toDouble()
+        val reqMovieTitle = "aMovie"
+
+
+        subject.navEvents().observe(resumedLifecycleOwner(), Observer {
+            assertTrue(it is MovieDetailsNavigationEvent.ToCredits)
+            with(it as MovieDetailsNavigationEvent.ToCredits) {
+                assertEquals(reqMovieId, movieId)
+                assertEquals(reqMovieTitle, movieTitle)
+            }
+        })
+
+        subject.onCreditsSelected(reqMovieId, reqMovieTitle)
+    }
 }
