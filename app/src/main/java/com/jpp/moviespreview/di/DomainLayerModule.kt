@@ -1,6 +1,8 @@
 package com.jpp.moviespreview.di
 
 import com.jpp.mpdomain.repository.*
+import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
+import com.jpp.mpdomain.usecase.credits.GetCreditsUseCase
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
@@ -26,7 +28,6 @@ class DomainLayerModule {
     fun providesNetworkExecutor(): Executor = NETWORK_IO
 
     @Provides
-    @Singleton
     fun providesSearchUseCase(searchRepository: SearchRepository,
                               connectivityRepository: ConnectivityRepository)
             : SearchUseCase = SearchUseCase.Impl(searchRepository, connectivityRepository)
@@ -37,25 +38,32 @@ class DomainLayerModule {
             : ConfigSearchResultUseCase = ConfigSearchResultUseCase.Impl(configurationRepository)
 
     @Provides
-    @Singleton
     fun providesGetMoviesUseCase(moviesRepository: MoviesRepository,
                                  connectivityRepository: ConnectivityRepository)
             : GetMoviesUseCase = GetMoviesUseCase.Impl(moviesRepository, connectivityRepository)
 
     @Provides
-    @Singleton
     fun providesConfigMovieUseCase(configurationRepository: ConfigurationRepository)
             : ConfigMovieUseCase = ConfigMovieUseCase.Impl(configurationRepository)
 
     @Provides
-    @Singleton
     fun providesGetMovieDetailsUseCase(moviesRepository: MoviesRepository,
                                        connectivityRepository: ConnectivityRepository)
             : GetMovieDetailsUseCase = GetMovieDetailsUseCase.Impl(moviesRepository, connectivityRepository)
 
-    @Singleton
     @Provides
     fun providesGetPersonUseCase(personRepository: PersonRepository,
                                  connectivityRepository: ConnectivityRepository)
             : GetPersonUseCase = GetPersonUseCase.Impl(personRepository, connectivityRepository)
+
+
+    @Provides
+    fun providesGetCreditsUseCase(creditsRepository: CreditsRepository,
+                                  connectivityRepository: ConnectivityRepository)
+            : GetCreditsUseCase = GetCreditsUseCase.Impl(creditsRepository, connectivityRepository)
+
+    @Provides
+    fun providesConfigCastCharacterUseCase(configurationRepository: ConfigurationRepository)
+            : ConfigCastCharacterUseCase = ConfigCastCharacterUseCase.Impl(configurationRepository)
+
 }

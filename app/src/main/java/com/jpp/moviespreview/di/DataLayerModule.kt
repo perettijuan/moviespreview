@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.jpp.mpdata.api.MPApi
 import com.jpp.mpdata.cache.CacheTimestampHelper
 import com.jpp.mpdata.cache.ConfigurationCache
+import com.jpp.mpdata.cache.CreditsCache
 import com.jpp.mpdata.cache.MoviesCache
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter
@@ -12,6 +13,9 @@ import com.jpp.mpdata.repository.configuration.ConfigurationApi
 import com.jpp.mpdata.repository.configuration.ConfigurationDb
 import com.jpp.mpdata.repository.configuration.ConfigurationRepositoryImpl
 import com.jpp.mpdata.repository.connectivity.ConnectivityRepositoryImpl
+import com.jpp.mpdata.repository.credits.CreditsApi
+import com.jpp.mpdata.repository.credits.CreditsDb
+import com.jpp.mpdata.repository.credits.CreditsRepositoryImpl
 import com.jpp.mpdata.repository.movies.MoviesApi
 import com.jpp.mpdata.repository.movies.MoviesDb
 import com.jpp.mpdata.repository.movies.MoviesRepositoryImpl
@@ -131,4 +135,26 @@ class DataLayerModule {
     fun providesPersonRepository(personApi: PersonApi,
                                  personDb: PersonDb)
             : PersonRepository = PersonRepositoryImpl(personApi, personDb)
+
+
+    /**********************************
+     ****** CREDITS DEPENDENCIES ******
+     **********************************/
+
+    @Singleton
+    @Provides
+    fun providesCreditsApi(mpApiInstance: MPApi): CreditsApi = mpApiInstance
+
+    @Singleton
+    @Provides
+    fun provideCreditsDb(roomDatabase: MPRoomDataBase,
+                         adapter: RoomModelAdapter,
+                         timestampHelper: CacheTimestampHelper)
+            : CreditsDb = CreditsCache(roomDatabase, adapter, timestampHelper)
+
+    @Singleton
+    @Provides
+    fun providesCreditsRepository(creditsApi: CreditsApi,
+                                  creditsDb: CreditsDb)
+            : CreditsRepository = CreditsRepositoryImpl(creditsApi, creditsDb)
 }
