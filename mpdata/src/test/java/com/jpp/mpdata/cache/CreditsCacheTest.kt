@@ -41,7 +41,7 @@ class CreditsCacheTest {
     @Test
     fun `Should return null when there is no cast stored in Database`() {
         every { creditsDao.getMovieCastCharacters(any(), any()) } returns null
-        every { creditsDao.getMovieCrew(any(), any()) } returns mockk()
+        every { creditsDao.getMovieCrew(any(), any()) } returns mockk(relaxed = true)
 
         val result = subject.getCreditsForMovie(12.toDouble())
 
@@ -50,7 +50,7 @@ class CreditsCacheTest {
 
     @Test
     fun `Should return null when there is no crew stored in Database`() {
-        every { creditsDao.getMovieCastCharacters(any(), any()) } returns mockk()
+        every { creditsDao.getMovieCastCharacters(any(), any()) } returns mockk(relaxed = true)
         every { creditsDao.getMovieCrew(any(), any()) } returns null
 
         val result = subject.getCreditsForMovie(12.toDouble())
@@ -74,8 +74,9 @@ class CreditsCacheTest {
         val dbCrew: List<DBCrewPerson> = mockk()
         val expectedCredits: Credits = mockk()
         val movieId = 12.toDouble()
-        val refreshTime = now + 1
 
+        every { dbCharacters.isEmpty() } returns false
+        every { dbCrew.isEmpty() } returns false
         every { timestampHelper.creditsRefreshTime() } returns 1
         every { creditsDao.getMovieCastCharacters(any(), any()) } returns dbCharacters
         every { creditsDao.getMovieCrew(any(), any()) } returns dbCrew
@@ -84,8 +85,8 @@ class CreditsCacheTest {
         val result = subject.getCreditsForMovie(movieId)
 
         assertEquals(expectedCredits, result)
-        verify { creditsDao.getMovieCastCharacters(movieId, refreshTime) }
-        verify { creditsDao.getMovieCrew(movieId, refreshTime) }
+        verify { creditsDao.getMovieCastCharacters(movieId, now) }
+        verify { creditsDao.getMovieCrew(movieId, now) }
         verify { roomModelAdapter.adaptDBCreditsToDomain(dbCharacters, dbCrew, movieId) }
     }
 

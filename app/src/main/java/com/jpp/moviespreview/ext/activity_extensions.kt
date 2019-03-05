@@ -3,6 +3,7 @@ package com.jpp.moviespreview.ext
 import android.app.Activity
 import android.content.Context
 import android.graphics.Point
+import android.util.TypedValue
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
@@ -19,6 +20,15 @@ fun Activity.getScreenSizeInPixels(): Point {
     val size = android.graphics.Point()
     display.getSize(size)
     return size
+}
+
+/**
+ * Retrieves the identifier of a given attribute defined in the Activity's theme.
+ */
+fun Activity.getResIdFromAttribute(attr: Int): Int {
+    val tp = TypedValue()
+    theme.resolveAttribute(attr, tp, true)
+    return tp.resourceId
 }
 
 /**

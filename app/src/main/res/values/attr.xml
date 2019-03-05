@@ -16,6 +16,7 @@
     <attr name="mpSearchItemChevronPadding" format="reference" />
     <attr name="mpSearchItemTypeImageSize" format="reference" />
     <attr name="mpSearchItemGeneralPadding" format="reference" />
+    <attr name="mpCreditItemImageSize" format="reference"/>
 
 
     <declare-styleable name="MPTitleValueRow">

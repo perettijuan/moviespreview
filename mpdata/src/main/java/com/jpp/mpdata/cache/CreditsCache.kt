@@ -16,9 +16,9 @@ class CreditsCache(private val roomDatabase: MPRoomDataBase,
 
     override fun getCreditsForMovie(movieId: Double): Credits? {
         return withCreditsDao {
-            val cast = getMovieCastCharacters(movieId, creditsRefreshTime())
-            val crew = getMovieCrew(movieId, creditsRefreshTime())
-            if (cast != null && crew != null) {
+            val cast = getMovieCastCharacters(movieId, now())
+            val crew = getMovieCrew(movieId, now())
+            if (cast != null && cast.isNotEmpty() && crew != null && crew.isNotEmpty()) {
                 transformWithAdapter { adaptDBCreditsToDomain(cast, crew, movieId) }
             } else {
                 null
@@ -28,8 +28,8 @@ class CreditsCache(private val roomDatabase: MPRoomDataBase,
 
     override fun storeCredits(credits: Credits) {
         withCreditsDao {
-            insertCastCharacters(transformWithAdapter { adaptDomainCastCharacterListToDB(credits.cast, credits.id, now()) })
-            insertCrew(transformWithAdapter { adaptDomainCrewMemberListToDB(credits.crew, credits.id, now()) })
+            insertCastCharacters(transformWithAdapter { adaptDomainCastCharacterListToDB(credits.cast, credits.id, creditsRefreshTime()) })
+            insertCrew(transformWithAdapter { adaptDomainCrewMemberListToDB(credits.crew, credits.id, creditsRefreshTime()) })
         }
     }
 
