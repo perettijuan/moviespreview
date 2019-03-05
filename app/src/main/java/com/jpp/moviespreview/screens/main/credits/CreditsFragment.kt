@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +24,10 @@ class CreditsFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val creditsSelectionListener: (CreditPerson) -> Unit = {
+        withViewModel { onCreditItemSelected(it) }
+    }
 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
@@ -57,15 +62,28 @@ class CreditsFragment : Fragment() {
                     is CreditsViewState.ShowCredits -> {
                         creditsRv.apply {
                             layoutManager = LinearLayoutManager(context)
-                            adapter = CreditsAdapter(viewState.credits)
+                            adapter = CreditsAdapter(viewState.credits, creditsSelectionListener)
                             addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
                         }
                         renderCredits()
                     }
                 }
             })
-        }
 
+            navEvents().observe(this@CreditsFragment.viewLifecycleOwner, Observer { navEvent ->
+                when (navEvent) {
+                    is CreditsNavigationEvent.ToPerson -> {
+                        findNavController().navigate(
+                                CreditsFragmentDirections.actionCreditsFragmentToPersonFragment(
+                                        navEvent.personId,
+                                        navEvent.personImageUrl,
+                                        navEvent.personName
+                                )
+                        )
+                    }
+                }
+            })
+        }
     }
 
     /**
@@ -97,22 +115,23 @@ class CreditsFragment : Fragment() {
     }
 
 
-    class CreditsAdapter(private val credits: List<CreditPerson>) : RecyclerView.Adapter<CreditsAdapter.ViewHolder>() {
+    class CreditsAdapter(private val credits: List<CreditPerson>, private val selectionListener: (CreditPerson) -> Unit) : RecyclerView.Adapter<CreditsAdapter.ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_credits, parent, false))
         override fun getItemCount() = credits.size
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bindData(credits[position])
+            holder.bindData(credits[position], selectionListener)
         }
 
 
         class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            fun bindData(credit: CreditPerson) {
+            fun bindData(credit: CreditPerson, selectionListener: (CreditPerson) -> Unit) {
                 with(itemView) {
                     creditsItemImageView.loadImageUrlAsCircular(credit.profilePath)
                     creditsItemTitle.text = credit.title
                     creditsItemSubTitle.text = credit.subTitle
+                    setOnClickListener { selectionListener(credit) }
                 }
             }
         }

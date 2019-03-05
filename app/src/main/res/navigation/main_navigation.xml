@@ -112,5 +112,8 @@
         <argument
             android:name="movieTitle"
             app:argType="string" />
+        <action
+            android:id="@+id/action_creditsFragment_to_personFragment"
+            app:destination="@id/personFragment" />
     </fragment>
 </navigation>

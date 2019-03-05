@@ -49,7 +49,7 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
     fun userNavigatesToCredits(sectionName: String) {
         viewState.postValue(MainActivityViewState.ActionBarLocked(
                 abTitle = sectionName,
-                withAnimation = true,
+                withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked,
                 searchEnabled = false)
         )
     }

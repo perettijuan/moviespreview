@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.jpp.moviespreview.common.extensions.addAllMapping
 import com.jpp.moviespreview.screens.CoroutineDispatchers
 import com.jpp.moviespreview.screens.MPScopedViewModel
+import com.jpp.moviespreview.screens.SingleLiveEvent
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.CrewMember
 import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
@@ -28,6 +29,7 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     : MPScopedViewModel(dispatchers) {
 
     private val viewStateLiveData by lazy { MutableLiveData<CreditsViewState>() }
+    private val navigationEvents by lazy { SingleLiveEvent<CreditsNavigationEvent>() }
     private lateinit var retryFunc: () -> Unit
 
     /**
@@ -45,6 +47,23 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Subscribe to this [LiveData] in order to get updates of the [CreditsViewState].
      */
     fun viewState(): LiveData<CreditsViewState> = viewStateLiveData
+
+    /**
+     * Exposes the events that are triggered when a navigation event is detected.
+     * We need a different LiveData here in order to avoid the problem of back navigation:
+     * - The default LiveData object posts the last value every time a new observer starts observing.
+     */
+    fun navEvents(): LiveData<CreditsNavigationEvent> = navigationEvents
+
+    /**
+     * Called when an item is selected in the list of credit persons.
+     * A new state is posted in navEvents() in order to handle the event.
+     */
+    fun onCreditItemSelected(personItem: CreditPerson) {
+        with (personItem) {
+            navigationEvents.value = CreditsNavigationEvent.ToPerson(personId = id.toString(), personImageUrl = profilePath, personName = subTitle)
+        }
+    }
 
     /**
      * Called in order to execute the last attempt to fetch the credits.
