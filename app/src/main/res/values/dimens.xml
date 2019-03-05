@@ -39,6 +39,7 @@
     <dimen name="person_image_view_size_end">64dp</dimen>
 
     <!-- Credits -->
-    <dimen name="credits_item_image_view_height">42dp</dimen>
+    <dimen name="credits_item_image_view_height">62dp</dimen>
+    <dimen name="credits_item_padding">10dp</dimen>
 
 </resources>

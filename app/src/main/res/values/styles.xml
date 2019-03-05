@@ -22,6 +22,7 @@
         <item name="mpSearchItemTypeImageSize">@dimen/search_result_type_image_size</item>
         <item name="mpSearchItemGeneralPadding">@dimen/search_result_padding</item>
         <item name="mpCreditItemImageSize">@dimen/credits_item_image_view_height</item>
+        <item name="mpCreditItemPadding">@dimen/credits_item_padding</item>
     </style>
 
     <!-- Used in the Drawer items-->

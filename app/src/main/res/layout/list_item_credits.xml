@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="?attr/mpCreditItemPadding">
 
     <ImageView
         android:id="@+id/creditsItemImageView"
@@ -25,6 +26,7 @@
         app:layout_constraintEnd_toStartOf="@+id/creditsItemChevronImage"
         app:layout_constraintStart_toEndOf="@+id/creditsItemImageView"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
         tools:text="Title 1" />
 
     <TextView
@@ -35,6 +37,7 @@
         app:layout_constraintEnd_toEndOf="@+id/creditsItemTitle"
         app:layout_constraintStart_toStartOf="@+id/creditsItemTitle"
         app:layout_constraintTop_toBottomOf="@+id/creditsItemTitle"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Title 2" />
 
     <ImageView
