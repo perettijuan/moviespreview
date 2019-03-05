@@ -158,6 +158,28 @@ class CreditsViewModelTest {
         verify(exactly = 1) { getCreditsUseCase.getCreditsForMovie(movieId) }
     }
 
+    @Test
+    fun `Should navigate to person details when an item is selected`() {
+        val creditPerson = CreditPerson(
+                id = 12.toDouble(),
+                profilePath = "aProfilePath",
+                title = "aTitle",
+                subTitle = "aSubTitle"
+        )
+
+
+        subject.navEvents().observe(resumedLifecycleOwner(), Observer {
+            assertTrue(it is CreditsNavigationEvent.ToPerson)
+            with(it as CreditsNavigationEvent.ToPerson) {
+                assertEquals(creditPerson.id.toString(), personId)
+                assertEquals(creditPerson.profilePath, personImageUrl)
+                assertEquals(creditPerson.subTitle, personName)
+            }
+        })
+
+        subject.onCreditItemSelected(creditPerson)
+    }
+
 
     private val cast by lazy {
         listOf(
