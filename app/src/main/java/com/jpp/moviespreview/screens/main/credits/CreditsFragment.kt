@@ -47,11 +47,11 @@ class CreditsFragment : Fragment() {
                 when (viewState) {
                     is CreditsViewState.Loading -> renderLoading()
                     is CreditsViewState.ErrorUnknown -> {
-                        creditsErrorView.asUnknownError { TODO() }
+                        creditsErrorView.asUnknownError { retry() }
                         renderError()
                     }
                     is CreditsViewState.ErrorNoConnectivity -> {
-                        creditsErrorView.asNoConnectivityError { TODO() }
+                        creditsErrorView.asNoConnectivityError { retry() }
                         renderError()
                     }
                     is CreditsViewState.ShowCredits -> {
