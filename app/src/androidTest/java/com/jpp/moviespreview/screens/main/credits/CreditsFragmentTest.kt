@@ -26,11 +26,10 @@ class CreditsFragmentTest {
     @get:Rule
     val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java, true, false) {}
 
-
     private fun launchAndInjectFragment() {
         val fragment = CreditsFragment().apply {
             arguments = Bundle().apply {
-                putString("movieId", 12.toString())
+                putString("movieId", "12")
                 putString("movieTitle", "aMovie")
             }
         }
