@@ -1,7 +1,6 @@
 package com.jpp.moviespreview.screens.main.details
 
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
@@ -16,8 +15,8 @@ import com.jpp.moviespreview.screens.EspressoTestCoroutineDispatchers
 import com.jpp.moviespreview.testutils.FragmentTestActivity
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
-import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsResult
+import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before
@@ -32,16 +31,7 @@ import org.junit.runner.RunWith
 class MovieDetailsFragmentIntegrationTest {
 
     @get:Rule
-    val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java, true, false) {
-
-        override fun afterActivityLaunched() {
-            runOnUiThread {
-                activity.window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or
-                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
-        }
-    }
+    val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java, true, false) {}
 
     private fun launchAndInjectFragment() {
         val fragment = MovieDetailsFragment().apply {
