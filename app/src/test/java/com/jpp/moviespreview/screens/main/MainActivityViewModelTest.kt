@@ -103,16 +103,22 @@ class MainActivityViewModelTest {
 
     @Test
     fun `Should lock ActionBar with animation when user navigates to movies credits`() {
+        val viewStatesPosted = mutableListOf<MainActivityViewState>()
+        // navigate to details to pre-set the ActionBar state as unlocked
+        subject.userNavigatesToMovieDetails(movieTitle = "aTitle", contentImageUrl = "aUrl")
+
         val creditsName = "credits"
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            assertTrue(it is MainActivityViewState.ActionBarLocked)
-            with(it as MainActivityViewState.ActionBarLocked) {
-                assertEquals(creditsName, abTitle)
-                assertTrue(withAnimation)
-                assertFalse(searchEnabled)
-            }
+            viewStatesPosted.add(it)
         })
         subject.userNavigatesToCredits(creditsName)
+
+        assertTrue(viewStatesPosted[1] is MainActivityViewState.ActionBarLocked)
+        with(viewStatesPosted[1] as MainActivityViewState.ActionBarLocked) {
+            assertEquals(creditsName, abTitle)
+            assertTrue(withAnimation)
+            assertFalse(searchEnabled)
+        }
     }
 
 }
