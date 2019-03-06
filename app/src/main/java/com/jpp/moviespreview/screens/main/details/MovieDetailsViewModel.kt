@@ -4,10 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jpp.moviespreview.screens.CoroutineDispatchers
 import com.jpp.moviespreview.screens.MPScopedViewModel
+import com.jpp.moviespreview.screens.SingleLiveEvent
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
-import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCaseResult
+import com.jpp.mpdomain.usecase.details.GetMovieDetailsResult
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -17,14 +18,18 @@ import javax.inject.Inject
  * ViewModel, which indicates that some work will be executed in a background context and synced
  * to the main context when over.
  *
- * It exposes a single output in a LiveData object that receives [MovieDetailsViewState] updates as soon
+ * It exposes an output as a LiveData object that receives [MovieDetailsViewState] updates as soon
  * as any new state is identified by the ViewModel.
+ *
+ * It exposes an output as a LiveData object that receives [MovieDetailsNavigationEvent] updates
+ * to route the view.
  */
 class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                                 private val getMovieDetailsUseCase: GetMovieDetailsUseCase)
     : MPScopedViewModel(dispatchers) {
 
     private val viewStateLiveData by lazy { MutableLiveData<MovieDetailsViewState>() }
+    private val navigationEvents by lazy { SingleLiveEvent<MovieDetailsNavigationEvent>() }
     private lateinit var retryFunc: () -> Unit
 
     /**
@@ -44,6 +49,13 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
     fun viewState(): LiveData<MovieDetailsViewState> = viewStateLiveData
 
     /**
+     * Exposes the events that are triggered when a navigation event is detected.
+     * We need a different LiveData here in order to avoid the problem of back navigation:
+     * - The default LiveData object posts the last value every time a new observer starts observing.
+     */
+    fun navEvents(): LiveData<MovieDetailsNavigationEvent> = navigationEvents
+
+    /**
      * Called in order to execute the last attempt to fetch a movie detail.
      */
     fun retry() {
@@ -51,6 +63,13 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
             is MovieDetailsViewState.ErrorUnknown -> retryFunc.invoke()
             is MovieDetailsViewState.ErrorNoConnectivity -> retryFunc.invoke()
         }
+    }
+
+    /**
+     * Called when the user selects the credits item in order to navigate to the movies credits.
+     */
+    fun onCreditsSelected(movieId: Double, movieTitle: String) {
+        navigationEvents.value = MovieDetailsNavigationEvent.ToCredits(movieId, movieTitle)
     }
 
     /**
@@ -80,9 +99,9 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
                 .getDetailsForMovie(movieId)
                 .let { ucResult ->
                     when (ucResult) {
-                        is GetMovieDetailsUseCaseResult.ErrorNoConnectivity -> MovieDetailsViewState.ErrorNoConnectivity
-                        is GetMovieDetailsUseCaseResult.ErrorUnknown -> MovieDetailsViewState.ErrorUnknown
-                        is GetMovieDetailsUseCaseResult.Success -> MovieDetailsViewState.ShowDetail(mapMovieDetails(ucResult.details))
+                        is GetMovieDetailsResult.ErrorNoConnectivity -> MovieDetailsViewState.ErrorNoConnectivity
+                        is GetMovieDetailsResult.ErrorUnknown -> MovieDetailsViewState.ErrorUnknown
+                        is GetMovieDetailsResult.Success -> MovieDetailsViewState.ShowDetail(mapMovieDetails(ucResult.details))
                     }
                 }
     }

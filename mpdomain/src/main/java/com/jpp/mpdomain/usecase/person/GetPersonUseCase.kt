@@ -1,6 +1,7 @@
 package com.jpp.mpdomain.usecase.person
 
-import com.jpp.mpdomain.handlers.ConnectivityHandler
+import com.jpp.mpdomain.Connectivity
+import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.PersonRepository
 
 /**
@@ -13,23 +14,23 @@ interface GetPersonUseCase {
     /**
      * Retrieves the details of a particular person identified with [personId].
      * @return
-     *  - [GetPersonUseCaseResult.Success] when the person is found.
-     *  - [GetPersonUseCaseResult.ErrorNoConnectivity] when the UC detects that the application has no internet connectivity.
-     *  - [GetPersonUseCaseResult.ErrorUnknown] when an error occur while fetching the person.
+     *  - [GetPersonResult.Success] when the person is found.
+     *  - [GetPersonResult.ErrorNoConnectivity] when the UC detects that the application has no internet connectivity.
+     *  - [GetPersonResult.ErrorUnknown] when an error occur while fetching the person.
      */
-    fun getPerson(personId: Double): GetPersonUseCaseResult
+    fun getPerson(personId: Double): GetPersonResult
 
 
     class Impl(private val personRepository: PersonRepository,
-               private val connectivityHandler: ConnectivityHandler) : GetPersonUseCase {
+               private val connectivityRepository: ConnectivityRepository) : GetPersonUseCase {
 
-        override fun getPerson(personId: Double): GetPersonUseCaseResult {
-            return when (connectivityHandler.isConnectedToNetwork()) {
-                false -> GetPersonUseCaseResult.ErrorNoConnectivity
-                true -> personRepository.getPerson(personId)?.let {
-                    GetPersonUseCaseResult.Success(it)
+        override fun getPerson(personId: Double): GetPersonResult {
+            return when (connectivityRepository.getCurrentConnectivity()) {
+                Connectivity.Disconnected -> GetPersonResult.ErrorNoConnectivity
+                Connectivity.Connected -> personRepository.getPerson(personId)?.let {
+                    GetPersonResult.Success(it)
                 } ?: run {
-                    GetPersonUseCaseResult.ErrorUnknown
+                    GetPersonResult.ErrorUnknown
                 }
             }
         }

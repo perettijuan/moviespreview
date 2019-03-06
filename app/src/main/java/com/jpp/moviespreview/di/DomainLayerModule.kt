@@ -1,13 +1,8 @@
 package com.jpp.moviespreview.di
 
-import android.content.Context
-import com.jpp.mpdomain.handlers.ConnectivityHandler
-import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
-import com.jpp.mpdomain.handlers.configuration.ConfigurationHandlerImpl
-import com.jpp.mpdomain.repository.MoviesRepository
-import com.jpp.mpdomain.repository.SearchRepository
-import com.jpp.mpdomain.repository.ConfigurationRepository
-import com.jpp.mpdomain.repository.PersonRepository
+import com.jpp.mpdomain.repository.*
+import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
+import com.jpp.mpdomain.usecase.credits.GetCreditsUseCase
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
@@ -30,49 +25,45 @@ class DomainLayerModule {
 
     @Provides
     @Singleton
-    fun providesConnectivityHandler(context: Context): ConnectivityHandler = ConnectivityHandler.ConnectivityHandlerImpl(context)
-
-    @Provides
-    @Singleton
-    fun providesConfigurationHandler(): ConfigurationHandler = ConfigurationHandlerImpl()
-
-    @Provides
-    @Singleton
     fun providesNetworkExecutor(): Executor = NETWORK_IO
 
     @Provides
-    @Singleton
     fun providesSearchUseCase(searchRepository: SearchRepository,
-                              connectivityHandler: ConnectivityHandler)
-            : SearchUseCase = SearchUseCase.Impl(searchRepository, connectivityHandler)
+                              connectivityRepository: ConnectivityRepository)
+            : SearchUseCase = SearchUseCase.Impl(searchRepository, connectivityRepository)
 
     @Provides
     @Singleton
-    fun providesConfigSearchResultUseCase(configurationRepository: ConfigurationRepository,
-                                          configurationHandler: ConfigurationHandler)
-            : ConfigSearchResultUseCase = ConfigSearchResultUseCase.Impl(configurationRepository, configurationHandler)
+    fun providesConfigSearchResultUseCase(configurationRepository: ConfigurationRepository)
+            : ConfigSearchResultUseCase = ConfigSearchResultUseCase.Impl(configurationRepository)
 
     @Provides
-    @Singleton
     fun providesGetMoviesUseCase(moviesRepository: MoviesRepository,
-                                 connectivityHandler: ConnectivityHandler)
-            : GetMoviesUseCase = GetMoviesUseCase.Impl(moviesRepository, connectivityHandler)
+                                 connectivityRepository: ConnectivityRepository)
+            : GetMoviesUseCase = GetMoviesUseCase.Impl(moviesRepository, connectivityRepository)
 
     @Provides
-    @Singleton
-    fun providesConfigMovieUseCase(configurationRepository: ConfigurationRepository,
-                                   configurationHandler: ConfigurationHandler)
-            : ConfigMovieUseCase = ConfigMovieUseCase.Impl(configurationRepository, configurationHandler)
+    fun providesConfigMovieUseCase(configurationRepository: ConfigurationRepository)
+            : ConfigMovieUseCase = ConfigMovieUseCase.Impl(configurationRepository)
 
     @Provides
-    @Singleton
     fun providesGetMovieDetailsUseCase(moviesRepository: MoviesRepository,
-                                       connectivityHandler: ConnectivityHandler)
-            : GetMovieDetailsUseCase = GetMovieDetailsUseCase.Impl(moviesRepository, connectivityHandler)
+                                       connectivityRepository: ConnectivityRepository)
+            : GetMovieDetailsUseCase = GetMovieDetailsUseCase.Impl(moviesRepository, connectivityRepository)
 
-    @Singleton
     @Provides
     fun providesGetPersonUseCase(personRepository: PersonRepository,
-                                 connectivityHandler: ConnectivityHandler)
-            : GetPersonUseCase = GetPersonUseCase.Impl(personRepository, connectivityHandler)
+                                 connectivityRepository: ConnectivityRepository)
+            : GetPersonUseCase = GetPersonUseCase.Impl(personRepository, connectivityRepository)
+
+
+    @Provides
+    fun providesGetCreditsUseCase(creditsRepository: CreditsRepository,
+                                  connectivityRepository: ConnectivityRepository)
+            : GetCreditsUseCase = GetCreditsUseCase.Impl(creditsRepository, connectivityRepository)
+
+    @Provides
+    fun providesConfigCastCharacterUseCase(configurationRepository: ConfigurationRepository)
+            : ConfigCastCharacterUseCase = ConfigCastCharacterUseCase.Impl(configurationRepository)
+
 }

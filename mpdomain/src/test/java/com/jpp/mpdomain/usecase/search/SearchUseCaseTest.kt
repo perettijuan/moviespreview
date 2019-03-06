@@ -1,8 +1,9 @@
 package com.jpp.mpdomain.usecase.search
 
+import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.SearchPage
 import com.jpp.mpdomain.SearchResult
-import com.jpp.mpdomain.handlers.ConnectivityHandler
+import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.SearchRepository
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -21,18 +22,18 @@ class SearchUseCaseTest {
     @RelaxedMockK
     private lateinit var searchRepository: SearchRepository
     @RelaxedMockK
-    private lateinit var connectivityHandler: ConnectivityHandler
+    private lateinit var connectivityRepository: ConnectivityRepository
 
     private lateinit var subject: SearchUseCase
 
     @BeforeEach
     fun setUp() {
-        subject = SearchUseCase.Impl(searchRepository, connectivityHandler)
+        subject = SearchUseCase.Impl(searchRepository, connectivityRepository)
     }
 
     @Test
     fun `Should check connectivity before searching and return ErrorNoConnectivity`() {
-        every { connectivityHandler.isConnectedToNetwork() } returns false
+        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
         subject.search("aSearch", 1).let { result ->
             verify(exactly = 0) { searchRepository.searchPage(any(), any()) }
@@ -42,7 +43,7 @@ class SearchUseCaseTest {
 
     @Test
     fun `Should return ErrorUnknown when connected to network and an error occurs`() {
-        every { connectivityHandler.isConnectedToNetwork() } returns true
+        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { searchRepository.searchPage(any(), any()) } returns null
 
         subject.search("aSearch", 1).let { result ->
@@ -67,7 +68,7 @@ class SearchUseCaseTest {
         every { movieResult.isMovie() } returns true
         every { personResult.isPerson() } returns true
         every { searchRepository.searchPage(any(), any()) } returns searchPage
-        every { connectivityHandler.isConnectedToNetwork() } returns true
+        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
 
         subject.search("aSearch", 1).let { result ->
             assertTrue(result is SearchUseCaseResult.Success)

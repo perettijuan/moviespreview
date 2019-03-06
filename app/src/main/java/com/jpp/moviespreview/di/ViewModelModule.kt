@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.moviespreview.screens.main.MainActivityViewModel
 import com.jpp.moviespreview.screens.main.SearchViewViewModel
+import com.jpp.moviespreview.screens.main.credits.CreditsViewModel
 import com.jpp.moviespreview.screens.main.details.MovieDetailsViewModel
 import com.jpp.moviespreview.screens.main.movies.fragments.PlayingMoviesFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.PopularMoviesFragment
@@ -68,4 +69,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(PersonViewModel::class)
     internal abstract fun postPersonViewModel(viewModel: PersonViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CreditsViewModel::class)
+    internal abstract fun postCreditsViewModel(viewModel: CreditsViewModel): ViewModel
 }

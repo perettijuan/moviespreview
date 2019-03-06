@@ -6,7 +6,7 @@ import com.jpp.moviespreview.resumedLifecycleOwner
 import com.jpp.moviespreview.screens.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.Person
 import com.jpp.mpdomain.usecase.person.GetPersonUseCase
-import com.jpp.mpdomain.usecase.person.GetPersonUseCaseResult
+import com.jpp.mpdomain.usecase.person.GetPersonResult
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -40,7 +40,7 @@ class PersonViewModelTest {
         val personImageUrl = "aUrl"
         val personName = "Han Solo"
 
-        every { getPersonUseCase.getPerson(personId) } returns GetPersonUseCaseResult.Success(input.domainPerson)
+        every { getPersonUseCase.getPerson(personId) } returns GetPersonResult.Success(input.domainPerson)
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStatePosted.add(it)
@@ -82,7 +82,7 @@ class PersonViewModelTest {
                 place_of_birth = null
         )
 
-        every { getPersonUseCase.getPerson(personId) } returns GetPersonUseCaseResult.Success(domainPerson)
+        every { getPersonUseCase.getPerson(personId) } returns GetPersonResult.Success(domainPerson)
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStatePosted.add(it)
@@ -97,7 +97,7 @@ class PersonViewModelTest {
     fun `Should execute GetPersonUseCase and show connectivity error`() {
         val viewStatePosted = mutableListOf<PersonViewState>()
 
-        every { getPersonUseCase.getPerson(any()) } returns GetPersonUseCaseResult.ErrorNoConnectivity
+        every { getPersonUseCase.getPerson(any()) } returns GetPersonResult.ErrorNoConnectivity
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStatePosted.add(it)
@@ -113,7 +113,7 @@ class PersonViewModelTest {
     fun `Should execute GetPersonUseCase and show unknown error`() {
         val viewStatePosted = mutableListOf<PersonViewState>()
 
-        every { getPersonUseCase.getPerson(any()) } returns GetPersonUseCaseResult.ErrorUnknown
+        every { getPersonUseCase.getPerson(any()) } returns GetPersonResult.ErrorUnknown
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStatePosted.add(it)

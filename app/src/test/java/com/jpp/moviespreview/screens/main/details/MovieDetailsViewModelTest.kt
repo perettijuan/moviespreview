@@ -7,7 +7,7 @@ import com.jpp.moviespreview.screens.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
-import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCaseResult
+import com.jpp.mpdomain.usecase.details.GetMovieDetailsResult
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -26,6 +26,8 @@ class MovieDetailsViewModelTest {
 
     private lateinit var subject: MovieDetailsViewModel
 
+    private val movieDetailId = 121.toDouble()
+
     @BeforeEach
     fun setUp() {
         subject = MovieDetailsViewModel(TestCoroutineDispatchers(), getMovieDetailsUseCase)
@@ -34,8 +36,6 @@ class MovieDetailsViewModelTest {
     @Test
     fun `Should execute GetMovieDetailsUseCase, adapt result to UI model and post value on init`() {
         val viewStatePosted = mutableListOf<MovieDetailsViewState>()
-
-        val movieDetailId = 121.toDouble()
 
         val domainDetail = MovieDetail(
                 id = movieDetailId,
@@ -65,7 +65,7 @@ class MovieDetailsViewModelTest {
                 )
         )
 
-        every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns GetMovieDetailsUseCaseResult.Success(domainDetail)
+        every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns GetMovieDetailsResult.Success(domainDetail)
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStatePosted.add(it)
@@ -82,9 +82,8 @@ class MovieDetailsViewModelTest {
     @Test
     fun `Should execute GetMovieDetailsUseCase and show connectivity error`() {
         val viewStatePosted = mutableListOf<MovieDetailsViewState>()
-        val movieDetailId = 121.toDouble()
 
-        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsUseCaseResult.ErrorNoConnectivity
+        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsResult.ErrorNoConnectivity
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStatePosted.add(it)
@@ -99,9 +98,8 @@ class MovieDetailsViewModelTest {
     @Test
     fun `Should fetch movie detail from repository and show unknown error`() {
         val viewStatePosted = mutableListOf<MovieDetailsViewState>()
-        val movieDetailId = 121.toDouble()
 
-        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsUseCaseResult.ErrorUnknown
+        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsResult.ErrorUnknown
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStatePosted.add(it)
@@ -111,5 +109,68 @@ class MovieDetailsViewModelTest {
 
         assertTrue(viewStatePosted[0] is MovieDetailsViewState.Loading)
         assertTrue(viewStatePosted[1] is MovieDetailsViewState.ErrorUnknown)
+    }
+
+
+    @Test
+    fun `Should retry if state is error unknown`() {
+        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsResult.ErrorUnknown
+
+        subject.init(movieDetailId)
+        subject.retry()
+
+        verify(exactly = 2) { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) }
+    }
+
+    @Test
+    fun `Should retry if state is error connectivity`() {
+        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsResult.ErrorNoConnectivity
+
+        subject.init(movieDetailId)
+        subject.retry()
+
+        verify(exactly = 2) { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) }
+    }
+
+    @Test
+    fun `Should not retry if state is success`() {
+        val domainDetail = MovieDetail(
+                id = movieDetailId,
+                title = "aTitle",
+                overview = "anOverview",
+                release_date = "aReleaseDate",
+                vote_count = 12.toDouble(),
+                vote_average = 15F,
+                popularity = 178F,
+                poster_path = null,
+                genres = listOf(
+                        MovieGenre(28, "Action"),
+                        MovieGenre(27, "Horror")
+                )
+        )
+
+        every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns GetMovieDetailsResult.Success(domainDetail)
+
+        subject.init(movieDetailId)
+        subject.retry()
+
+        verify(exactly = 1) { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) }
+    }
+
+    @Test
+    fun `Should navigate to movies when a movie item is selected`() {
+        val reqMovieId = 12.toDouble()
+        val reqMovieTitle = "aMovie"
+
+
+        subject.navEvents().observe(resumedLifecycleOwner(), Observer {
+            assertTrue(it is MovieDetailsNavigationEvent.ToCredits)
+            with(it as MovieDetailsNavigationEvent.ToCredits) {
+                assertEquals(reqMovieId, movieId)
+                assertEquals(reqMovieTitle, movieTitle)
+            }
+        })
+
+        subject.onCreditsSelected(reqMovieId, reqMovieTitle)
     }
 }

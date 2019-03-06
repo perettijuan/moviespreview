@@ -27,6 +27,15 @@ fun Fragment.getScreenSizeInPixels(): Point {
 }
 
 /**
+ * Retrieves the identifier of a given attribute defined in the Activity's theme.
+ */
+fun Fragment.getResIdFromAttribute(attr: Int): Int {
+    val tp = android.util.TypedValue()
+    activity?.theme?.resolveAttribute(attr, tp, true)
+    return tp.resourceId
+}
+
+/**
  * Creates and shows a [Snackbar] styled with the application resources.
  */
 fun Fragment.snackBar(contentView: View,

@@ -1,7 +1,8 @@
 package com.jpp.mpdomain.usecase.search
 
+import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.SearchPage
-import com.jpp.mpdomain.handlers.ConnectivityHandler
+import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.SearchRepository
 
 /**
@@ -22,12 +23,12 @@ interface SearchUseCase {
 
 
     class Impl(private val searchRepository: SearchRepository,
-               private val connectivityHandler: ConnectivityHandler) : SearchUseCase {
+               private val connectivityRepository: ConnectivityRepository) : SearchUseCase {
 
         override fun search(query: String, page: Int): SearchUseCaseResult {
-            return when (connectivityHandler.isConnectedToNetwork()) {
-                false -> SearchUseCaseResult.ErrorNoConnectivity
-                true -> searchRepository.searchPage(query, page)?.let {
+            return when (connectivityRepository.getCurrentConnectivity()) {
+                Connectivity.Disconnected -> SearchUseCaseResult.ErrorNoConnectivity
+                Connectivity.Connected -> searchRepository.searchPage(query, page)?.let {
                     SearchUseCaseResult.Success(sanitizeSearchPage(it))
                 } ?: run {
                     SearchUseCaseResult.ErrorUnknown

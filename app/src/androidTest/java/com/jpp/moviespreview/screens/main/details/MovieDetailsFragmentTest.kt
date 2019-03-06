@@ -1,10 +1,7 @@
 package com.jpp.moviespreview.screens.main.details
 
-import android.app.KeyguardManager
-import android.content.Context
-import android.content.Context.KEYGUARD_SERVICE
 import android.os.Bundle
-import android.view.WindowManager
+import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
@@ -15,12 +12,7 @@ import com.jpp.moviespreview.R
 import com.jpp.moviespreview.assertions.*
 import com.jpp.moviespreview.di.TestMPViewModelFactory
 import com.jpp.moviespreview.extras.launch
-import com.jpp.moviespreview.screens.EspressoTestCoroutineDispatchers
 import com.jpp.moviespreview.testutils.FragmentTestActivity
-import com.jpp.mpdomain.MovieDetail
-import com.jpp.mpdomain.MovieGenre
-import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
-import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCaseResult
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before
@@ -28,23 +20,11 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/**
- * Tests the interaction between the [MovieDetailsFragment] and the [MovieDetailsViewModel].
- */
 @RunWith(AndroidJUnit4::class)
-class MovieDetailsFragmentIntegrationTest {
+class MovieDetailsFragmentTest {
 
     @get:Rule
-    val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java, true, false) {
-
-        override fun afterActivityLaunched() {
-            runOnUiThread {
-                activity.window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or
-                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
-        }
-    }
+    val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java, true, false) {}
 
     private fun launchAndInjectFragment() {
         val fragment = MovieDetailsFragment().apply {
@@ -54,85 +34,90 @@ class MovieDetailsFragmentIntegrationTest {
                 putString("movieTitle", "aTitle")
             }
         }
-        activityTestRule.activity.startFragment(fragment, this@MovieDetailsFragmentIntegrationTest::inject)
+        activityTestRule.activity.startFragment(fragment, this@MovieDetailsFragmentTest::inject)
     }
 
     private fun inject(fragment: MovieDetailsFragment) {
+        val viewModel = mockk<MovieDetailsViewModel>(relaxed = true)
+        every { viewModel.viewState() } returns viewStateLiveData
         fragment.viewModelFactory = TestMPViewModelFactory().apply {
             addVm(viewModel)
         }
     }
 
-    private lateinit var viewModel: MovieDetailsViewModel
-    private lateinit var getMovieDetailsUseCase: GetMovieDetailsUseCase
+    private val viewStateLiveData = MutableLiveData<MovieDetailsViewState>()
 
     @Before
     fun setUp() {
-        getMovieDetailsUseCase = mockk()
-        viewModel = MovieDetailsViewModel(
-                dispatchers = EspressoTestCoroutineDispatchers(),
-                getMovieDetailsUseCase = getMovieDetailsUseCase
-        )
-
         activityTestRule.launch()
     }
 
     @Test
-    fun shouldShowErrorUnknownView() {
-        every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns GetMovieDetailsUseCaseResult.ErrorUnknown
-
+    fun shouldShowLoading() {
         launchAndInjectFragment()
+
+        viewStateLiveData.postValue(MovieDetailsViewState.Loading)
+
+        onDetailsContentView().assertNotDisplayed()
+        onDetailsErrorView().assertNotDisplayed()
+
+        onDetailsLoadingView().assertDisplayed()
+    }
+
+    @Test
+    fun shouldShowErrorUnknownView() {
+        launchAndInjectFragment()
+
+        viewStateLiveData.postValue(MovieDetailsViewState.ErrorUnknown)
 
         onDetailsContentView().assertNotDisplayed()
         onDetailsLoadingView().assertNotDisplayed()
 
         onDetailsErrorView().assertDisplayed()
-        onView(withId(R.id.errorTitleTextView)).assertWithText(R.string.error_unexpected_error_message)
+        onErrorViewText().assertWithText(R.string.error_unexpected_error_message)
     }
 
     @Test
     fun shouldShowConnectivityError() {
-        every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns GetMovieDetailsUseCaseResult.ErrorNoConnectivity
-
         launchAndInjectFragment()
+
+        viewStateLiveData.postValue(MovieDetailsViewState.ErrorNoConnectivity)
 
         onDetailsContentView().assertNotDisplayed()
         onDetailsLoadingView().assertNotDisplayed()
 
         onDetailsErrorView().assertDisplayed()
-        onView(withId(R.id.errorTitleTextView)).assertWithText(R.string.error_no_network_connection_message)
+        onErrorViewText().assertWithText(R.string.error_no_network_connection_message)
     }
 
     @Test
     fun shouldShowMovieDetails() {
         val genres = listOf(
-                MovieGenre(id = 28, name = "Action"),
-                MovieGenre(id = 80, name = "Crime")
+                MovieGenreItem.Action,
+                MovieGenreItem.Crime
         )
-        val domainMovieDetails = MovieDetail(
-                id = 11.toDouble(),
+        val movieDetails = UiMovieDetails(
                 title = "aMovie",
                 overview = "anOverview",
-                release_date = "aReleaseDate",
-                poster_path = "aPosterPath",
+                releaseDate = "aReleaseDate",
                 genres = genres,
-                vote_count = 200.toDouble(),
-                vote_average = 100F,
+                voteCount = 200.toDouble(),
+                voteAverage = 100F,
                 popularity = 1.2F
         )
 
-        every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns GetMovieDetailsUseCaseResult.Success(domainMovieDetails)
-
         launchAndInjectFragment()
+
+        viewStateLiveData.postValue(MovieDetailsViewState.ShowDetail(movieDetails))
 
         onDetailsErrorView().assertNotDisplayed()
         onDetailsLoadingView().assertNotDisplayed()
 
         onDetailsContentView().assertDisplayed()
-        onOverviewView().assertWithText(domainMovieDetails.overview)
-        onPopularityView().assertWithText(domainMovieDetails.popularity.toString())
-        onVoteCountView().assertWithText(domainMovieDetails.vote_count.toString())
-        onReleaseView().assertWithText(domainMovieDetails.release_date)
+        onOverviewView().assertWithText(movieDetails.overview)
+        onPopularityView().assertWithText(movieDetails.popularity.toString())
+        onVoteCountView().assertWithText(movieDetails.voteCount.toString())
+        onReleaseView().assertWithText(movieDetails.releaseDate)
         onGenresView().assertItemCount(genres.size)
 
         onView(withViewInRecyclerView(R.id.detailsGenresRv, 0, R.id.genreListItemTxt))

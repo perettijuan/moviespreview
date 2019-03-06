@@ -1,6 +1,5 @@
 package com.jpp.moviespreview.screens.main.movies
 
-import android.view.WindowManager
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
@@ -19,8 +18,8 @@ import com.jpp.moviespreview.utiltest.CurrentThreadExecutorService
 import com.jpp.moviespreview.utiltest.moviesPages
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
+import com.jpp.mpdomain.usecase.movies.GetMoviesResult
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
-import com.jpp.mpdomain.usecase.movies.GetMoviesUseCaseResult
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -42,13 +41,6 @@ class MoviesFragmentIntegrationTest {
 
     @get:Rule
     val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java, true, false) {
-        override fun afterActivityLaunched() {
-            runOnUiThread {
-                activity.window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or
-                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
-        }
     }
 
     private fun launchAndInjectFragment() {
@@ -85,7 +77,7 @@ class MoviesFragmentIntegrationTest {
     fun shouldFetchNewMoviesPageOnAttachedToActivity() {
         val pages = moviesPages(10)
 
-        every { getMoviesUseCase.getMoviePageForSection(any(), MovieSection.Playing) } answers { GetMoviesUseCaseResult.Success(pages[arg((0))]) }
+        every { getMoviesUseCase.getMoviePageForSection(any(), MovieSection.Playing) } answers { GetMoviesResult.Success(pages[arg((0))]) }
         every { configMovieUseCase.configure(any(), any(), any()) } answers { arg(2) }
 
         launchAndInjectFragment()
@@ -112,7 +104,7 @@ class MoviesFragmentIntegrationTest {
 
     @Test
     fun shouldShowUnknownError() {
-        every { getMoviesUseCase.getMoviePageForSection(any(), MovieSection.Playing) } answers { GetMoviesUseCaseResult.ErrorUnknown }
+        every { getMoviesUseCase.getMoviePageForSection(any(), MovieSection.Playing) } answers { GetMoviesResult.ErrorUnknown }
 
         launchAndInjectFragment()
 
@@ -127,7 +119,7 @@ class MoviesFragmentIntegrationTest {
 
     @Test
     fun shouldShowConnectivityError() {
-        every { getMoviesUseCase.getMoviePageForSection(any(), MovieSection.Playing) } answers { GetMoviesUseCaseResult.ErrorNoConnectivity }
+        every { getMoviesUseCase.getMoviePageForSection(any(), MovieSection.Playing) } answers { GetMoviesResult.ErrorNoConnectivity }
 
         launchAndInjectFragment()
 

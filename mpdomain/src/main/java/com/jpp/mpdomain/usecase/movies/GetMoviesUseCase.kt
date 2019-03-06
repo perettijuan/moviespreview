@@ -1,7 +1,8 @@
 package com.jpp.mpdomain.usecase.movies
 
+import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.MovieSection
-import com.jpp.mpdomain.handlers.ConnectivityHandler
+import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.MoviesRepository
 
 /**
@@ -14,23 +15,23 @@ interface GetMoviesUseCase {
     /**
      * Performs the fetch of the movies page identified by [page] for the provided [section].
      * @return
-     *  - [GetMoviesUseCaseResult.Success] when there is internet connectivity and the movie page is fetched.
-     *  - [GetMoviesUseCaseResult.ErrorNoConnectivity] when the UC detects that the application has no internet connectivity.
-     *  - [GetMoviesUseCaseResult.ErrorUnknown] when an error occur while fetching the page.
+     *  - [GetMoviesResult.Success] when there is internet connectivity and the movie page is fetched.
+     *  - [GetMoviesResult.ErrorNoConnectivity] when the UC detects that the application has no internet connectivity.
+     *  - [GetMoviesResult.ErrorUnknown] when an error occur while fetching the page.
      */
-    fun getMoviePageForSection(page: Int, section: MovieSection): GetMoviesUseCaseResult
+    fun getMoviePageForSection(page: Int, section: MovieSection): GetMoviesResult
 
 
     class Impl(private val moviesRepository: MoviesRepository,
-               private val connectivityHandler: ConnectivityHandler) : GetMoviesUseCase {
+               private val connectivityRepository: ConnectivityRepository) : GetMoviesUseCase {
 
-        override fun getMoviePageForSection(page: Int, section: MovieSection): GetMoviesUseCaseResult {
-            return when (connectivityHandler.isConnectedToNetwork()) {
-                false -> GetMoviesUseCaseResult.ErrorNoConnectivity
-                true -> moviesRepository.getMoviePageForSection(page, section)?.let {
-                    GetMoviesUseCaseResult.Success(it)
+        override fun getMoviePageForSection(page: Int, section: MovieSection): GetMoviesResult {
+            return when (connectivityRepository.getCurrentConnectivity()) {
+                Connectivity.Disconnected -> GetMoviesResult.ErrorNoConnectivity
+                Connectivity.Connected -> moviesRepository.getMoviePageForSection(page, section)?.let {
+                    GetMoviesResult.Success(it)
                 } ?: run {
-                    GetMoviesUseCaseResult.ErrorUnknown
+                    GetMoviesResult.ErrorUnknown
                 }
             }
         }

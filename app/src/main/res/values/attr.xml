@@ -16,11 +16,17 @@
     <attr name="mpSearchItemChevronPadding" format="reference" />
     <attr name="mpSearchItemTypeImageSize" format="reference" />
     <attr name="mpSearchItemGeneralPadding" format="reference" />
+    <attr name="mpCreditItemImageSize" format="reference"/>
+    <attr name="mpCreditItemPadding" format="reference"/>
 
 
     <declare-styleable name="MPTitleValueRow">
         <attr name="titleText" format="reference"/>
         <attr name="valueText" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="MPItemSelectionView">
+        <attr name="itemText" format="reference" />
     </declare-styleable>
 
 </resources>

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.moviespreview.R
@@ -41,9 +42,10 @@ class MovieDetailsFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val args = arguments ?: throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the content")
+        val args = arguments
+                ?: throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the content")
 
-        withViewModel<MovieDetailsViewModel>(viewModelFactory) {
+        withViewModel {
             init(fromBundle(args).movieId.toDouble())
 
             viewState().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { viewState ->
@@ -69,7 +71,35 @@ class MovieDetailsFragment : Fragment() {
                     }
                 }
             })
+
+            navEvents().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { navEvent ->
+                when (navEvent) {
+                    is MovieDetailsNavigationEvent.ToCredits -> {
+                        findNavController().navigate(
+                                MovieDetailsFragmentDirections.
+                                        actionMovieDetailsFragmentToCreditsFragment(
+                                                navEvent.movieId.toString(),
+                                                navEvent.movieTitle
+                                        )
+                        )
+                    }
+                }
+            })
         }
+
+        detailsCreditsSelectionView.setOnClickListener {
+            withViewModel {
+                onCreditsSelected(fromBundle(args).movieId.toDouble(), fromBundle(args).movieTitle)
+            }
+        }
+    }
+
+
+    /**
+     * Helper function to execute actions with the [MovieDetailsViewModel].
+     */
+    private fun withViewModel(action: MovieDetailsViewModel.() -> Unit) {
+        getViewModel<MovieDetailsViewModel>(viewModelFactory).action()
     }
 
     private fun renderLoading() {

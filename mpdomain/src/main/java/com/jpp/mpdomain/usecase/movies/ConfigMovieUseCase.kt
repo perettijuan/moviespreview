@@ -1,8 +1,9 @@
 package com.jpp.mpdomain.usecase.movies
 
+import com.jpp.mpdomain.ImagesConfiguration
 import com.jpp.mpdomain.Movie
-import com.jpp.mpdomain.handlers.configuration.ConfigurationHandler
 import com.jpp.mpdomain.repository.ConfigurationRepository
+import com.jpp.mpdomain.usecase.ConfigureImagePathUseCase
 
 /**
  * Defines a use case that configures the images path of a [Movie]. This use case produces a [Movie]
@@ -20,15 +21,29 @@ interface ConfigMovieUseCase {
     fun configure(posterSize: Int, backdropSize: Int, movie: Movie): Movie
 
 
-    class Impl(private val configurationRepository: ConfigurationRepository,
-               private val configurationHandler: ConfigurationHandler) : ConfigMovieUseCase {
+    class Impl(private val configurationRepository: ConfigurationRepository) : ConfigMovieUseCase, ConfigureImagePathUseCase() {
 
         override fun configure(posterSize: Int, backdropSize: Int, movie: Movie): Movie {
             return configurationRepository.getAppConfiguration()?.let {
-                configurationHandler.configureMovieImagesPath(movie, it.images, backdropSize, posterSize)
+                configureMovieImagesPath(movie, it.images, backdropSize, posterSize)
             } ?: run {
                 movie
             }
+        }
+
+        /**
+         * Configures the [Movie.poster_path] and [Movie.backdrop_path] properties setting the
+         * proper URL based on the provided sizes. It looks for the best possible size based on the
+         * supplied ones in the [imagesConfig] to avoid downloading over-sized images.
+         * @return a new [Movie] object with the same attributes as the original one, but with
+         * the images paths configured.
+         */
+        private fun configureMovieImagesPath(movie: Movie, imagesConfig: ImagesConfiguration,
+                                             targetBackdropSize: Int, targetPosterSize: Int): Movie {
+            return movie.copy(
+                    poster_path = createUrlForPath(movie.poster_path, imagesConfig.base_url, imagesConfig.poster_sizes, targetPosterSize),
+                    backdrop_path = createUrlForPath(movie.backdrop_path, imagesConfig.base_url, imagesConfig.backdrop_sizes, targetBackdropSize)
+            )
         }
     }
 }

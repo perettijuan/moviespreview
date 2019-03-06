@@ -20,7 +20,7 @@ import com.google.android.material.appbar.AppBarLayout
  *
  * Source: https://medium.com/google-developers/introduction-to-motionlayout-part-iii-47cd64d51a5
  */
-class CollapsibleToolbar : MotionLayout, AppBarLayout.OnOffsetChangedListener {
+class MPCollapsibleToolbar : MotionLayout, AppBarLayout.OnOffsetChangedListener {
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)

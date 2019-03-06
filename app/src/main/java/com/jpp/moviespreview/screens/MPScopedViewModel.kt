@@ -22,7 +22,7 @@ import kotlin.coroutines.CoroutineContext
  * Example:
  *          withContext(dispatchers.default()) { longTermOperation() }
  *
- * Every time that this ViewModel is stopped (onCleared() os called), the CoroutineContext is killed, which
+ * Every time that this ViewModel is stopped (onCleared() is called), the CoroutineContext is killed, which
  * causes that any code being executed in the scope of the CoroutineContext is killed automatically.
  *
  * In order to facilitate unit testing of any subclass, the MPScopedViewModel defines a constructor that
@@ -47,9 +47,9 @@ abstract class MPScopedViewModel(val dispatchers: CoroutineDispatchers) : ViewMo
     * is alive, any subclass of MPScopedViewModel can execute coroutines using the scope. When the scope
     * is killed, all work being executed in any ongoing coroutine is automatically cancelled.
     *
-    * It is constructed using [MPScopedViewModel.currentJob] Job and the UI coroutine-context:
+    * It is constructed using [MPScopedViewModel.currentJob] Job and the main dispatcher (UI dispatcher):
     *  - currentJob means that when the job is cancelled, the scope is killed.
-    *  - the UI coroutine-context means that any code that it is not specifically wrapped into another
+    *  - the main dispatcher (UI dispatcher) means that any code that it is not specifically wrapped into another
     *    context, will execute in the UI thread, forcing us to be explicit when we're writing
     *    code that might take too long to finish.
     *

@@ -171,6 +171,75 @@ class RoomModelAdapter {
         )
     }
 
+    /**
+     * Adapts a list of [CastCharacter] to a list of [DBCastCharacter].
+     */
+    fun adaptDomainCastCharacterListToDB(castCharacterList: List<CastCharacter>, movieId: Double, dueDate: Long): List<DBCastCharacter> =
+            castCharacterList.map {
+                DBCastCharacter(
+                        id = it.cast_id,
+                        character = it.character,
+                        creditId = it.credit_id,
+                        gender = it.gender,
+                        personId = it.id,
+                        name = it.name,
+                        order = it.order,
+                        profilePath = it.profile_path,
+                        movieId = movieId,
+                        dueDate = dueDate
+                )
+            }
+
+    /**
+     * Adapts a list of [CrewMember] to a list of [DBCrewPerson].
+     */
+    fun adaptDomainCrewMemberListToDB(crewMembers: List<CrewMember>, movieId: Double, dueDate: Long): List<DBCrewPerson> =
+            crewMembers.map {
+                DBCrewPerson(
+                        id = it.id,
+                        department = it.department,
+                        gender = it.gender,
+                        creditId = it.credit_id,
+                        job = it.job,
+                        name = it.name,
+                        profilePath = it.profile_path,
+                        movieId = movieId,
+                        dueDate = dueDate
+                )
+            }
+
+    /**
+     * Adapts the provided [castCharacters] and [crewMembers] to a [Credits] instance with the provided [creditId].
+     */
+    fun adaptDBCreditsToDomain(castCharacters: List<DBCastCharacter>, crewMembers: List<DBCrewPerson>, creditId: Double): Credits =
+            Credits(
+                    id = creditId,
+                    cast = castCharacters.map {
+                        CastCharacter(
+                                cast_id = it.id,
+                                character = it.character,
+                                credit_id = it.creditId,
+                                gender = it.gender,
+                                id = it.personId,
+                                name = it.name,
+                                order = it.order,
+                                profile_path = it.profilePath
+                        )
+                    },
+                    crew = crewMembers.map {
+                        CrewMember(
+                                credit_id = it.creditId,
+                                department = it.department,
+                                gender = it.gender,
+                                id = it.id,
+                                job = it.job,
+                                name = it.name,
+                                profile_path = it.profilePath
+                        )
+                    }
+            )
+
+
     private companion object {
         sealed class ImageTypes(val id: Int) {
             object PosterType : ImageTypes(11)

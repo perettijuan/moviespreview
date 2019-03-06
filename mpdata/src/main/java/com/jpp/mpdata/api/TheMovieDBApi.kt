@@ -107,4 +107,13 @@ interface TheMovieDBApi {
                   @Query("api_key") api_key: String,
                   @Query("language") language: String? = null): Call<Person>
 
+    /**
+     * Retrieves the credits of a given movie.
+     * [movieId] the identifier of the movie.
+     * [api_key] the api key provided by themoviedb.
+     */
+    @GET("movie/{movie_id}/credits")
+    fun getMovieCredits(@Path("movie_id") movieId: Double,
+                        @Query("api_key") api_key: String): Call<Credits>
+
 }
