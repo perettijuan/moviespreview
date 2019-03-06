@@ -8,5 +8,9 @@
     android:title="@string/main_activity_search_menu_title"
     app:showAsAction="always" />
 
+  <item
+      android:id="@+id/action_about"
+      android:title="@string/about_menu_item"
+      app:showAsAction="never" />
 
 </menu>

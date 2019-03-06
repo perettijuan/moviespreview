@@ -7,6 +7,7 @@
     <string name="main_menu_top_rated">Top Rated</string>
     <string name="main_menu_upcoming">Upcoming</string>
     <string name="main_activity_search_menu_title">Search</string>
+    <string name="about_menu_item">About</string>
     <!-- End Main Activity -->
 
     <!-- Errors -->
@@ -57,5 +58,9 @@
     <string name="person_bio_title">Biography</string>
     <string name="person_no_details">No details available at this time</string>
     <!-- End Person -->
+
+    <!-- About -->
+
+    <!-- End About -->
 
 </resources>
