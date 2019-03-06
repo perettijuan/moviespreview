@@ -2,7 +2,6 @@ package com.jpp.moviespreview.screens
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.android.Main
 
 /**
  * Provides the [CoroutineDispatcher] to run coroutines in.
