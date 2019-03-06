@@ -3,7 +3,7 @@ package com.jpp.moviespreview.screens
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.isActive
 import kotlin.coroutines.CoroutineContext
 
@@ -39,7 +39,7 @@ abstract class MPScopedViewModel(val dispatchers: CoroutineDispatchers) : ViewMo
      * context of the coroutine - the background - will be
      * automatically cancelled.
      */
-    private val currentJob = Job()
+    private val currentJob = SupervisorJob()
 
     /*
     * This is the scope in which the coroutines are executed. This indicates that, while the scope
