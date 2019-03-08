@@ -5,6 +5,13 @@ import androidx.annotation.StringRes
 import com.jpp.moviespreview.R
 
 /**
+ * Represents the view state of the about fragment.
+ */
+sealed class AboutViewState {
+    data class InitialContent(val appVersion: String, val aboutItems: List<AboutItem>) : AboutViewState()
+}
+
+/**
  * Represents a selectable action in the about section.
  */
 sealed class AboutItem(@StringRes val title: Int, @DrawableRes val icon: Int) {

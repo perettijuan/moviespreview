@@ -27,6 +27,7 @@
         <item name="mpAboutIconSize">@dimen/about_icon_size</item>
         <item name="mpAboutIconMarginTop">@dimen/about_icon_top_margin</item>
         <item name="mpAboutItemIconSize">@dimen/about_item_icon_size</item>
+        <item name="mpAboutItemVerticalSpacing">@dimen/about_item_vertical_spacing</item>
     </style>
 
     <!-- Used in the Drawer items-->

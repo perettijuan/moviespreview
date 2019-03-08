@@ -150,3 +150,10 @@ fun CollapsingToolbarLayout.enableTitle() {
 fun CollapsingToolbarLayout.disableTitle() {
     isTitleEnabled = false
 }
+
+/**
+ * Retrieves the [CharSequence] representation of [textRes]
+ */
+fun View.getText(@StringRes textRes: Int): CharSequence {
+    return resources.getText(textRes)
+}
