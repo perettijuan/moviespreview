@@ -124,4 +124,8 @@
             app:popEnterAnim="@anim/pop_enter_slide_left"
             app:popExitAnim="@anim/pop_exit_slide_left"/>
     </fragment>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.jpp.moviespreview.screens.main.about.AboutFragment"
+        tools:layout="@layout/fragment_about"/>
 </navigation>

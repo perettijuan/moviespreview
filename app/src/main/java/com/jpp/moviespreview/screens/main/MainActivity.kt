@@ -61,6 +61,13 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     private lateinit var mpToolbarManager: MPToolbarManager
 
+    private val topLevelDestinations = listOf(
+            R.id.playingMoviesFragment,
+            R.id.popularMoviesFragment,
+            R.id.upcomingMoviesFragment,
+            R.id.topRatedMoviesFragment
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
@@ -111,27 +118,14 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
          * If it is a home destination, it opens the drawer and asks the nav controller to manage the navigation
          * as usual.
          */
-        if (findNavController(this, R.id.mainNavHostFragment).currentDestination?.id == R.id.searchFragment) {
-            return navigateUp(findNavController(this, R.id.mainNavHostFragment), mainDrawerLayout)
+        if (topLevelDestinations.contains(findNavController(this, R.id.mainNavHostFragment).currentDestination?.id)) {
+            if (!mainDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                // this ensures that we support multiple top level fragments
+                mainDrawerLayout.openDrawer(GravityCompat.START)
+                return true
+            }
         }
 
-        if (findNavController(this, R.id.mainNavHostFragment).currentDestination?.id == R.id.movieDetailsFragment) {
-            return navigateUp(findNavController(this, R.id.mainNavHostFragment), mainDrawerLayout)
-        }
-
-        if (findNavController(this, R.id.mainNavHostFragment).currentDestination?.id == R.id.personFragment) {
-            return navigateUp(findNavController(this, R.id.mainNavHostFragment), mainDrawerLayout)
-        }
-
-        if (findNavController(this, R.id.mainNavHostFragment).currentDestination?.id == R.id.creditsFragment) {
-            return navigateUp(findNavController(this, R.id.mainNavHostFragment), mainDrawerLayout)
-        }
-
-        if (!mainDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            // this ensures that we support multiple top level fragments
-            mainDrawerLayout.openDrawer(GravityCompat.START)
-            return true
-        }
         // this ensures that the menu items in the Nav Drawer stay in sync with the navigation graph
         return navigateUp(findNavController(this, R.id.mainNavHostFragment), mainDrawerLayout)
     }
@@ -166,6 +160,10 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             R.id.search_menu -> {
                 // Probably the best idea here is to navigate to a new Activity
                 findNavController(this, R.id.mainNavHostFragment).navigate(R.id.searchFragment)
+                return true
+            }
+            R.id.about_menu -> {
+                findNavController(this, R.id.mainNavHostFragment).navigate(R.id.aboutFragment)
                 return true
             }
             else -> super.onOptionsItemSelected(item)

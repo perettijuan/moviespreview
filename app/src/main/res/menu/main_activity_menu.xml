@@ -9,7 +9,7 @@
     app:showAsAction="always" />
 
   <item
-      android:id="@+id/action_about"
+      android:id="@+id/about_menu"
       android:title="@string/about_menu_item"
       app:showAsAction="never" />
 
