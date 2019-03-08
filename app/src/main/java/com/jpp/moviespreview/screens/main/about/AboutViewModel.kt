@@ -65,7 +65,7 @@ class AboutViewModel @Inject constructor(private val appVersionUseCase: GetAppVe
             is AboutItem.TheMovieDbTermsOfUse -> AboutNavEvent.InnerNavigation(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.TheMovieDbTermsOfUse))
             is AboutItem.RateApp -> AboutNavEvent.OpenGooglePlay(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.GooglePlayApp))
             is AboutItem.ShareApp -> AboutNavEvent.OpenSharing(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.ShareApp))
-            is AboutItem.Licenses -> TODO()
+            is AboutItem.Licenses -> AboutNavEvent.GoToLicenses
         }
     }
 
