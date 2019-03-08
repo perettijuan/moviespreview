@@ -58,4 +58,12 @@
     <string name="person_bio_title">Biografia</string>
     <string name="person_no_details">No existe informacion acerca de esta persona</string>
     <!-- End Person -->
+
+    <!-- About -->
+    <string name="about_rate_app_action">Calificar app</string>
+    <string name="about_share_app_action">Compartir app</string>
+    <string name="about_brows_code_action">Navegar código fuente</string>
+    <string name="about_open_source_action">Licencias</string>
+    <string name="about_the_movie_db_terms_of_use">Términos de uso de The Movie DB</string>
+    <!-- End About -->
 </resources>
