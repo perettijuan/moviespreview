@@ -6,6 +6,8 @@ import com.jpp.mpdomain.repository.AboutNavigationRepository
 /**
  * Defines a UseCase that retrieves the URLs that are needed for navigate the content in the
  * about section of the application.
+ *
+ * Note: Untested for simplicity.
  */
 interface GetAboutNavigationUrlUseCase {
 

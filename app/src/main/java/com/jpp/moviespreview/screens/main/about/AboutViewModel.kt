@@ -4,17 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.jpp.moviespreview.screens.SingleLiveEvent
-import com.jpp.mpdomain.repository.AppVersionRepository
 import com.jpp.mpdomain.usecase.about.AboutNavigationType
 import com.jpp.mpdomain.usecase.about.GetAboutNavigationUrlUseCase
+import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase
 import javax.inject.Inject
 
 /**
  * Special type of [ViewModel] to support the about section.
  * This [ViewModel] does not supports background execution due to the nature of the about section (the
  * about section only supports navigation to other screens).
+ *
+ * Note: Untested for simplicity.
  */
-class AboutViewModel @Inject constructor(private val appVersionRepository: AppVersionRepository,
+class AboutViewModel @Inject constructor(private val appVersionUseCase: GetAppVersionUseCase,
                                          private val getAboutNavigationUrlUseCase: GetAboutNavigationUrlUseCase) : ViewModel() {
 
     private val viewStateLiveData by lazy { MutableLiveData<AboutViewState>() }
@@ -33,7 +35,7 @@ class AboutViewModel @Inject constructor(private val appVersionRepository: AppVe
      * Called on initialization of the AboutFragment.
      */
     fun init() {
-        appVersionRepository
+        appVersionUseCase
                 .getCurrentAppVersion()
                 .run {
                     viewStateLiveData.value = AboutViewState.InitialContent(

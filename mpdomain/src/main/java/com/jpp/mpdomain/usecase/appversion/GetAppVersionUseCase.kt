@@ -4,6 +4,8 @@ import com.jpp.mpdomain.repository.AppVersionRepository
 
 /**
  * Use case definition to fetch the current version of the application.
+ *
+ * Note: Untested for simplicity.
  */
 interface GetAppVersionUseCase {
     /**

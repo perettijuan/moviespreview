@@ -24,6 +24,9 @@ import kotlinx.android.synthetic.main.fragment_about.*
 import kotlinx.android.synthetic.main.list_item_about.view.*
 import javax.inject.Inject
 
+/**
+ * Shows the about section in the application. 
+ */
 class AboutFragment : Fragment() {
 
     @Inject
