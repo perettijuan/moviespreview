@@ -57,6 +57,8 @@ class AboutFragment : Fragment() {
             navEvents().observe(this@AboutFragment.viewLifecycleOwner, Observer { navEvent ->
                 when (navEvent) {
                     is AboutNavEvent.InnerNavigation -> navigateInnerBrowser(navEvent.url)
+                    is AboutNavEvent.RateApp -> goToRateAppScreen()
+                    is AboutNavEvent.ShareApp -> goToShareAppScreen()
                 }
             })
         }

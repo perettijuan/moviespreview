@@ -16,6 +16,8 @@ sealed class AboutViewState {
  */
 sealed class AboutNavEvent {
     data class InnerNavigation(val url: String) : AboutNavEvent()
+    object ShareApp : AboutNavEvent()
+    object RateApp : AboutNavEvent()
 }
 
 /**

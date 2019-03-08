@@ -61,6 +61,8 @@ class AboutViewModel @Inject constructor(private val appVersionRepository: AppVe
         when (aboutItem) {
             is AboutItem.BrowseAppCode -> navigationEvents.value = AboutNavEvent.InnerNavigation(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.AppCodeRepo))
             is AboutItem.TheMovieDbTermsOfUse -> navigationEvents.value = AboutNavEvent.InnerNavigation(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.TheMovieDbTermsOfUse))
+            is AboutItem.RateApp -> navigationEvents.value = AboutNavEvent.RateApp
+            is AboutItem.ShareApp -> navigationEvents.value = AboutNavEvent.ShareApp
         }
     }
 
