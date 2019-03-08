@@ -23,6 +23,9 @@ interface GetAboutNavigationUrlUseCase {
             return when (navigationType) {
                 is AboutNavigationType.TheMovieDbTermsOfUse -> repository.getTheMovieDbTermOfUseUrl()
                 is AboutNavigationType.AppCodeRepo -> repository.getCodeRepoUrl()
+                is AboutNavigationType.GooglePlayApp -> repository.getGPlayAppUrl()
+                is AboutNavigationType.GooglePlayWeb -> repository.getGPlayWebUrl()
+                is AboutNavigationType.ShareApp -> repository.getSharingUrl()
             }
         }
     }

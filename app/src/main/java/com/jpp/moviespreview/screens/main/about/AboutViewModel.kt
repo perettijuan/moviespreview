@@ -60,12 +60,20 @@ class AboutViewModel @Inject constructor(private val appVersionUseCase: GetAppVe
      * Called when the user has selected an item from the about items section.
      */
     fun onUserSelectedAboutItem(aboutItem: AboutItem) {
-        when (aboutItem) {
-            is AboutItem.BrowseAppCode -> navigationEvents.value = AboutNavEvent.InnerNavigation(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.AppCodeRepo))
-            is AboutItem.TheMovieDbTermsOfUse -> navigationEvents.value = AboutNavEvent.InnerNavigation(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.TheMovieDbTermsOfUse))
-            is AboutItem.RateApp -> navigationEvents.value = AboutNavEvent.RateApp
-            is AboutItem.ShareApp -> navigationEvents.value = AboutNavEvent.ShareApp
+        navigationEvents.value = when (aboutItem) {
+            is AboutItem.BrowseAppCode -> AboutNavEvent.InnerNavigation(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.AppCodeRepo))
+            is AboutItem.TheMovieDbTermsOfUse -> AboutNavEvent.InnerNavigation(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.TheMovieDbTermsOfUse))
+            is AboutItem.RateApp -> AboutNavEvent.OpenGooglePlay(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.GooglePlayApp))
+            is AboutItem.ShareApp -> AboutNavEvent.OpenSharing(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.ShareApp))
+            is AboutItem.Licenses -> TODO()
         }
+    }
+
+    /**
+     * Called when the app fails to open the Google Play app in the device.
+     */
+    fun onFailedToOpenPlayStore() {
+        navigationEvents.value = AboutNavEvent.InnerNavigation(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.GooglePlayWeb))
     }
 
 }

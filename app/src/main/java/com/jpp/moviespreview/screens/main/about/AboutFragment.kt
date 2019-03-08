@@ -4,7 +4,6 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,9 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.moviespreview.R
-import com.jpp.moviespreview.ext.getText
-import com.jpp.moviespreview.ext.getViewModel
-import com.jpp.moviespreview.ext.inflate
+import com.jpp.moviespreview.ext.*
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_about.*
 import kotlinx.android.synthetic.main.list_item_about.view.*
@@ -60,8 +57,8 @@ class AboutFragment : Fragment() {
             navEvents().observe(this@AboutFragment.viewLifecycleOwner, Observer { navEvent ->
                 when (navEvent) {
                     is AboutNavEvent.InnerNavigation -> navigateInnerBrowser(navEvent.url)
-                    is AboutNavEvent.RateApp -> goToRateAppScreen()
-                    is AboutNavEvent.ShareApp -> goToShareAppScreen()
+                    is AboutNavEvent.OpenGooglePlay -> goToRateAppScreen(navEvent.url)
+                    is AboutNavEvent.OpenSharing -> goToShareAppScreen(navEvent.url)
                 }
             })
         }
@@ -82,39 +79,16 @@ class AboutFragment : Fragment() {
         }
     }
 
-
-
-    private fun goToRateAppScreen() {
-        activity?.run {
-            try {
-                Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")).apply {
-                    var flags = Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
-                    flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        flags or Intent.FLAG_ACTIVITY_NEW_DOCUMENT
-                    } else {
-                        flags or Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
-                    }
-                    addFlags(flags)
-                }.run {
-                    startActivity(this)
-                }
-            } catch (e: ActivityNotFoundException) {
-                Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=$packageName"))
-                        .run { startActivity(this) }
-            }
+    private fun goToRateAppScreen(uriString: String) {
+        try {
+            startActivity(Intent().cleanView(uriString))
+        } catch (e: ActivityNotFoundException) {
+            withViewModel { onFailedToOpenPlayStore() }
         }
     }
 
-    private fun goToShareAppScreen() {
-        activity?.run {
-            Intent(Intent.ACTION_SEND).apply {
-                putExtra(Intent.EXTRA_TEXT,
-                        getString(R.string.share_app_text, Uri.parse(String.format("%s?personId=%s", APP_WEB_URL, packageName))))
-                type = "text/plain"
-            }.run {
-                startActivity(this)
-            }
-        }
+    private fun goToShareAppScreen(uriString: String) {
+        startActivity(Intent().send(getString(R.string.share_app_text, uriString)))
     }
 
     private fun navigateInnerBrowser(uriString: String) {
@@ -146,9 +120,4 @@ class AboutFragment : Fragment() {
             }
         }
     }
-
-    companion object {
-        const val APP_WEB_URL = "https://play.google.com/store/apps/details"
-    }
-
 }
