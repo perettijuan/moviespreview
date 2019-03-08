@@ -1,6 +1,7 @@
 package com.jpp.moviespreview.di
 
 import com.jpp.mpdomain.repository.*
+import com.jpp.mpdomain.usecase.about.GetAboutNavigationUrlUseCase
 import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase
 import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
 import com.jpp.mpdomain.usecase.credits.GetCreditsUseCase
@@ -70,5 +71,9 @@ class DomainLayerModule {
     @Provides
     fun providesGetAppVersionUseCase(appVersionRepository: AppVersionRepository)
             : GetAppVersionUseCase = GetAppVersionUseCase.Impl(appVersionRepository)
+
+    @Provides
+    fun providesGetAboutNavigationUrlUseCase(aboutNavigationRepository: AboutNavigationRepository)
+            : GetAboutNavigationUrlUseCase = GetAboutNavigationUrlUseCase.Impl(aboutNavigationRepository)
 
 }

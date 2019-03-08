@@ -12,6 +12,13 @@ sealed class AboutViewState {
 }
 
 /**
+ * Represents the navigation events that can be routed in the about section.
+ */
+sealed class AboutNavEvent {
+    data class InnerNavigation(val url: String) : AboutNavEvent()
+}
+
+/**
  * Represents a selectable action in the about section.
  */
 sealed class AboutItem(@StringRes val title: Int, @DrawableRes val icon: Int) {

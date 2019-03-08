@@ -67,5 +67,6 @@
     <string name="about_the_movie_db_terms_of_use">Términos de uso de The Movie DB</string>
     <string name="about_content">Movies Preview es una aplicación desarrollada para verificar algunas ideas de implementaciones y para tener una base de código de ejemplo de cómo desarrollar una aplicación en Android.\n
         Permite al usuario acceder a la información disponible en The Movie DB. </string>
+    <string name="share_app_text">Mira esta grandiosa app: %1$s </string>
     <!-- End About -->
 </resources>

@@ -9,6 +9,7 @@ import com.jpp.mpdata.cache.CreditsCache
 import com.jpp.mpdata.cache.MoviesCache
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter
+import com.jpp.mpdata.repository.about.AboutNavigationRepositoryImpl
 import com.jpp.mpdata.repository.appversion.AppVersionRepositoryImpl
 import com.jpp.mpdata.repository.configuration.ConfigurationApi
 import com.jpp.mpdata.repository.configuration.ConfigurationDb
@@ -166,4 +167,8 @@ class DataLayerModule {
     @Singleton
     @Provides
     fun providesAppVersionRepository() : AppVersionRepository = AppVersionRepositoryImpl()
+
+    @Singleton
+    @Provides
+    fun providesdAboutNavigationRepository(): AboutNavigationRepository = AboutNavigationRepositoryImpl()
 }
