@@ -24,6 +24,7 @@
 
     <!-- Details Screen -->
     <dimen name="movie_details_vertical_spacing">10dp</dimen>
+    <dimen name="movie_details_content_padding">20dp</dimen>
 
     <!-- Search -->
     <dimen name="search_body_icon_size">300dp</dimen>
@@ -41,5 +42,10 @@
     <!-- Credits -->
     <dimen name="credits_item_image_view_height">62dp</dimen>
     <dimen name="credits_item_padding">10dp</dimen>
+
+    <!-- About -->.
+    <dimen name="about_icon_size">84dp</dimen>
+    <dimen name="about_icon_top_margin">40dp</dimen>
+    <dimen name="about_item_icon_size">32dp</dimen>
 
 </resources>

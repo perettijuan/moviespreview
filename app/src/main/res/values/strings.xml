@@ -66,6 +66,8 @@
     <string name="about_brows_code_action">Browse app code</string>
     <string name="about_open_source_action">Open source licenses</string>
     <string name="about_the_movie_db_terms_of_use">The Movie DB Terms of Use</string>
+    <string name="about_content">Movies Preview is an application developed to verify some development ideas and to have an example of how some things can be done in the Android world.\n
+                              It provides to the user access to The Movie DB, browsing the information available in the database. </string>
     <!-- End About -->
 
 </resources>
