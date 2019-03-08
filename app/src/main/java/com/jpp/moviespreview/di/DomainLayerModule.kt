@@ -1,6 +1,7 @@
 package com.jpp.moviespreview.di
 
 import com.jpp.mpdomain.repository.*
+import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase
 import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
 import com.jpp.mpdomain.usecase.credits.GetCreditsUseCase
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
@@ -65,5 +66,9 @@ class DomainLayerModule {
     @Provides
     fun providesConfigCastCharacterUseCase(configurationRepository: ConfigurationRepository)
             : ConfigCastCharacterUseCase = ConfigCastCharacterUseCase.Impl(configurationRepository)
+
+    @Provides
+    fun providesGetAppVersionUseCase(appVersionRepository: AppVersionRepository)
+            : GetAppVersionUseCase = GetAppVersionUseCase.Impl(appVersionRepository)
 
 }

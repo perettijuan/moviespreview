@@ -9,6 +9,7 @@ import com.jpp.mpdata.cache.CreditsCache
 import com.jpp.mpdata.cache.MoviesCache
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter
+import com.jpp.mpdata.repository.appversion.AppVersionRepositoryImpl
 import com.jpp.mpdata.repository.configuration.ConfigurationApi
 import com.jpp.mpdata.repository.configuration.ConfigurationDb
 import com.jpp.mpdata.repository.configuration.ConfigurationRepositoryImpl
@@ -157,4 +158,12 @@ class DataLayerModule {
     fun providesCreditsRepository(creditsApi: CreditsApi,
                                   creditsDb: CreditsDb)
             : CreditsRepository = CreditsRepositoryImpl(creditsApi, creditsDb)
+
+    /**************************************
+     ****** APP VERSION DEPENDENCIES ******
+     **************************************/
+
+    @Singleton
+    @Provides
+    fun providesAppVersionRepository() : AppVersionRepository = AppVersionRepositoryImpl()
 }

@@ -1,6 +1,7 @@
 package com.jpp.moviespreview.di
 
 import com.jpp.moviespreview.screens.main.MainActivity
+import com.jpp.moviespreview.screens.main.about.AboutFragment
 import com.jpp.moviespreview.screens.main.credits.CreditsFragment
 import com.jpp.moviespreview.screens.main.details.MovieDetailsFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.PlayingMoviesFragment
@@ -40,4 +41,7 @@ abstract class BuildersModule {
 
     @ContributesAndroidInjector
     abstract fun bindCreditsFragment(): CreditsFragment
+
+    @ContributesAndroidInjector
+    abstract fun bindAboutFragment(): AboutFragment
 }
