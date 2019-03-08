@@ -19,7 +19,7 @@ class MainActivityViewModelTest {
             with(it as MainActivityViewState.ActionBarLocked) {
                 assertEquals("aSection", abTitle)
                 assertFalse(withAnimation)
-                assertTrue(searchEnabled)
+                assertTrue(menuEnabled)
             }
         })
         subject.userNavigatesToMovieListSection("aSection")
@@ -41,7 +41,7 @@ class MainActivityViewModelTest {
         with(viewStatesPosted[1] as MainActivityViewState.ActionBarLocked) {
             assertEquals("aSection", abTitle)
             assertTrue(withAnimation)
-            assertTrue(searchEnabled)
+            assertTrue(menuEnabled)
         }
     }
 
@@ -94,7 +94,7 @@ class MainActivityViewModelTest {
             with(it as MainActivityViewState.ActionBarLocked) {
                 assertEquals(personName, abTitle)
                 assertFalse(withAnimation)
-                assertFalse(searchEnabled)
+                assertFalse(menuEnabled)
             }
         })
         subject.userNavigatesToPerson(personName)
@@ -117,7 +117,7 @@ class MainActivityViewModelTest {
         with(viewStatesPosted[1] as MainActivityViewState.ActionBarLocked) {
             assertEquals(creditsName, abTitle)
             assertTrue(withAnimation)
-            assertFalse(searchEnabled)
+            assertFalse(menuEnabled)
         }
     }
 

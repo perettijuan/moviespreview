@@ -21,7 +21,7 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
         viewState.postValue(MainActivityViewState.ActionBarLocked(
                 abTitle = sectionName,
                 withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked,
-                searchEnabled = true)
+                menuEnabled = true)
         )
     }
 
@@ -42,7 +42,7 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
         viewState.postValue(MainActivityViewState.ActionBarLocked(
                 abTitle = sectionName,
                 withAnimation = false,
-                searchEnabled = false)
+                menuEnabled = false)
         )
     }
 
@@ -50,7 +50,15 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
         viewState.postValue(MainActivityViewState.ActionBarLocked(
                 abTitle = sectionName,
                 withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked,
-                searchEnabled = false)
+                menuEnabled = false)
+        )
+    }
+
+    fun userNavigatesToAbout(sectionName: String) {
+        viewState.postValue(MainActivityViewState.ActionBarLocked(
+                abTitle = sectionName,
+                withAnimation = false,
+                menuEnabled = false)
         )
     }
 }

@@ -60,6 +60,7 @@
     <!-- End Person -->
 
     <!-- About -->
+    <string name="about_top_bar_title" translatable="false">@string/about_menu_item</string>
     <string name="about_version" translatable="false">v %1$s</string>
     <string name="about_rate_app_action">Rate app</string>
     <string name="about_share_app_action">Share app</string>

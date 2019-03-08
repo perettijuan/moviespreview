@@ -222,6 +222,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                         userNavigatesToCredits(it.getString("movieTitle"))
                     }
                 }
+                R.id.aboutFragment -> withMainViewModel {  userNavigatesToAbout(getString(R.string.about_top_bar_title))}
             }
         }
 
