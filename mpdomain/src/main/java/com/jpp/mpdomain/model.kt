@@ -237,3 +237,19 @@ data class CrewMember(val credit_id: String,
                       val job: String,
                       val name: String,
                       val profile_path: String?)
+
+/**
+ * Represents a License description for the libraries used by the application.
+ * [id] - is the identifier of the license.
+ * [name] - the name to show of the license.
+ * [url] - the path to load the license documentation.
+ */
+data class License(val id: Int,
+                   val name: String,
+                   val url: String)
+
+/**
+ * Represents the list of all [License] used by the application.
+ * [licenses] - the list of all licenses used by the application.
+ */
+data class Licenses(val licenses: List<License>)
