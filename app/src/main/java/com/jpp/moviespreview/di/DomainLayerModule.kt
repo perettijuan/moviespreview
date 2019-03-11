@@ -6,6 +6,7 @@ import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase
 import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
 import com.jpp.mpdomain.usecase.credits.GetCreditsUseCase
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
+import com.jpp.mpdomain.usecase.licenses.GetAppLicensesUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
 import com.jpp.mpdomain.usecase.person.GetPersonUseCase
@@ -23,11 +24,9 @@ import javax.inject.Singleton
 @Module
 class DomainLayerModule {
 
-    private val NETWORK_IO = Executors.newFixedThreadPool(5)
-
     @Provides
     @Singleton
-    fun providesNetworkExecutor(): Executor = NETWORK_IO
+    fun providesNetworkExecutor(): Executor = Executors.newFixedThreadPool(5)
 
     @Provides
     fun providesSearchUseCase(searchRepository: SearchRepository,
@@ -75,5 +74,9 @@ class DomainLayerModule {
     @Provides
     fun providesGetAboutNavigationUrlUseCase(aboutNavigationRepository: AboutNavigationRepository)
             : GetAboutNavigationUrlUseCase = GetAboutNavigationUrlUseCase.Impl(aboutNavigationRepository)
+
+    @Provides
+    fun providesGetAppLicensesUseCase(licensesRepository: LicensesRepository)
+            : GetAppLicensesUseCase = GetAppLicensesUseCase.Impl(licensesRepository)
 
 }

@@ -18,6 +18,7 @@ import com.jpp.mpdata.repository.connectivity.ConnectivityRepositoryImpl
 import com.jpp.mpdata.repository.credits.CreditsApi
 import com.jpp.mpdata.repository.credits.CreditsDb
 import com.jpp.mpdata.repository.credits.CreditsRepositoryImpl
+import com.jpp.mpdata.repository.licenses.LicensesRepositoryImpl
 import com.jpp.mpdata.repository.movies.MoviesApi
 import com.jpp.mpdata.repository.movies.MoviesDb
 import com.jpp.mpdata.repository.movies.MoviesRepositoryImpl
@@ -172,4 +173,14 @@ class DataLayerModule {
     @Provides
     fun providesAboutNavigationRepository(context: Context)
             : AboutNavigationRepository = AboutNavigationRepositoryImpl(context)
+
+    /**********************************
+     ****** LICENSES DEPENDENCIES *****
+     **********************************/
+
+    @Singleton
+    @Provides
+    fun providesLicensesRepository(context: Context)
+            : LicensesRepository = LicensesRepositoryImpl(context)
+
 }
