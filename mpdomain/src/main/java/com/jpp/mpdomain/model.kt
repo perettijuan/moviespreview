@@ -250,6 +250,6 @@ data class License(val id: Int,
 
 /**
  * Represents the list of all [License] used by the application.
- * [licenses] - the list of all licenses used by the application.
+ * [licenses] - the list of all results used by the application.
  */
 data class Licenses(val licenses: List<License>)

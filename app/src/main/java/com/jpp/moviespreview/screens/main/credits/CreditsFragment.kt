@@ -25,10 +25,6 @@ class CreditsFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val creditsSelectionListener: (CreditPerson) -> Unit = {
-        withViewModel { onCreditItemSelected(it) }
-    }
-
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -62,7 +58,7 @@ class CreditsFragment : Fragment() {
                     is CreditsViewState.ShowCredits -> {
                         creditsRv.apply {
                             layoutManager = LinearLayoutManager(context)
-                            adapter = CreditsAdapter(viewState.credits, creditsSelectionListener)
+                            adapter = CreditsAdapter(viewState.credits) { onCreditItemSelected(it) }
                             addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
                         }
                         renderCredits()

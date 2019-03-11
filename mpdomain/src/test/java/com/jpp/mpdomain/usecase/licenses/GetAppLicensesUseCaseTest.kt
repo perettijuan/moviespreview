@@ -36,7 +36,7 @@ class GetAppLicensesUseCaseTest {
 
         verify { licensesRepository.loadLicences() }
         assertTrue(actual is GetLicensesResult.Success)
-        assertEquals(licenses, (actual as GetLicensesResult.Success).licenses)
+        assertEquals(licenses, (actual as GetLicensesResult.Success).results)
     }
 
 

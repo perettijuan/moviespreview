@@ -7,5 +7,5 @@ import com.jpp.mpdomain.Licenses
  */
 sealed class GetLicensesResult {
     object ErrorUnknown : GetLicensesResult()
-    data class Success(val licenses: Licenses) : GetLicensesResult()
+    data class Success(val results: Licenses) : GetLicensesResult()
 }

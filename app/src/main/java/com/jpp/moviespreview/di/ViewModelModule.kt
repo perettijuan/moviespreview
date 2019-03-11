@@ -7,6 +7,7 @@ import com.jpp.moviespreview.screens.main.SearchViewViewModel
 import com.jpp.moviespreview.screens.main.about.AboutViewModel
 import com.jpp.moviespreview.screens.main.credits.CreditsViewModel
 import com.jpp.moviespreview.screens.main.details.MovieDetailsViewModel
+import com.jpp.moviespreview.screens.main.licenses.LicensesViewModel
 import com.jpp.moviespreview.screens.main.movies.fragments.PlayingMoviesFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.PopularMoviesFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.TopRatedMoviesFragment
@@ -80,4 +81,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(AboutViewModel::class)
     internal abstract fun postAboutViewModel(viewModel: AboutViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(LicensesViewModel::class)
+    internal abstract fun postLicensesViewModel(viewmodel: LicensesViewModel): ViewModel
 }
