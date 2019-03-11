@@ -12,6 +12,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.moviespreview.R
@@ -59,6 +60,7 @@ class AboutFragment : Fragment() {
                     is AboutNavEvent.InnerNavigation -> navigateInnerBrowser(navEvent.url)
                     is AboutNavEvent.OpenGooglePlay -> goToRateAppScreen(navEvent.url)
                     is AboutNavEvent.OpenSharing -> goToShareAppScreen(navEvent.url)
+                    is AboutNavEvent.GoToLicenses -> goToLicensesScreen()
                 }
             })
         }
@@ -89,6 +91,10 @@ class AboutFragment : Fragment() {
 
     private fun goToShareAppScreen(uriString: String) {
         startActivity(Intent().send(getString(R.string.share_app_text, uriString)))
+    }
+
+    private fun goToLicensesScreen() {
+        findNavController().navigate(AboutFragmentDirections.actionAboutFragmentToLicensesFragment())
     }
 
     private fun navigateInnerBrowser(uriString: String) {
