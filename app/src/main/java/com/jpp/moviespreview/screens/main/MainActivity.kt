@@ -224,6 +224,11 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 }
                 R.id.aboutFragment -> withMainViewModel {  userNavigatesToAbout(getString(R.string.about_top_bar_title))}
                 R.id.licensesFragment -> withMainViewModel { userNavigatesToLicenses(getString(R.string.about_open_source_action)) }
+                R.id.licenseContentFragment -> withMainViewModel {
+                    arguments?.let {
+                        userNavigatesToLicenseContent(it.getString("licenseTitle"))
+                    }
+                }
             }
         }
 

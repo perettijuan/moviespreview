@@ -7,6 +7,7 @@ import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
 import com.jpp.mpdomain.usecase.credits.GetCreditsUseCase
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
 import com.jpp.mpdomain.usecase.licenses.GetAppLicensesUseCase
+import com.jpp.mpdomain.usecase.licenses.GetLicenseUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
 import com.jpp.mpdomain.usecase.person.GetPersonUseCase
@@ -78,5 +79,9 @@ class DomainLayerModule {
     @Provides
     fun providesGetAppLicensesUseCase(licensesRepository: LicensesRepository)
             : GetAppLicensesUseCase = GetAppLicensesUseCase.Impl(licensesRepository)
+
+    @Provides
+    fun providesGetLicenseUseCase(licensesRepository: LicensesRepository)
+            : GetLicenseUseCase = GetLicenseUseCase.Impl(licensesRepository)
 
 }

@@ -5,6 +5,7 @@ import com.jpp.moviespreview.screens.main.about.AboutFragment
 import com.jpp.moviespreview.screens.main.credits.CreditsFragment
 import com.jpp.moviespreview.screens.main.details.MovieDetailsFragment
 import com.jpp.moviespreview.screens.main.licenses.LicensesFragment
+import com.jpp.moviespreview.screens.main.licenses.content.LicenseContentFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.PlayingMoviesFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.PopularMoviesFragment
 import com.jpp.moviespreview.screens.main.movies.fragments.TopRatedMoviesFragment
@@ -48,4 +49,7 @@ abstract class BuildersModule {
 
     @ContributesAndroidInjector
     abstract fun bindLicensesFragment(): LicensesFragment
+
+    @ContributesAndroidInjector
+    abstract fun bindLicensesContentFragment(): LicenseContentFragment
 }

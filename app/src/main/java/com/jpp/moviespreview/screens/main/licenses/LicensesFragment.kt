@@ -64,8 +64,8 @@ class LicensesFragment : Fragment() {
                 when (navEvent) {
                     is LicensesNavEvent.ToLicenseContent -> {
                         findNavController().navigate(actionLicensesFragmentToLicenseContentFragment(
-                                navEvent.licenseName,
-                                navEvent.licenseId.toString()
+                                navEvent.licenseId.toString(),
+                                navEvent.licenseName
                         ))
                     }
                 }
