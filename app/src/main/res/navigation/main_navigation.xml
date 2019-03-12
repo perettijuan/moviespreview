@@ -139,5 +139,24 @@
     <fragment
         android:id="@+id/licensesFragment"
         android:name="com.jpp.moviespreview.screens.main.licenses.LicensesFragment"
-        tools:layout="@layout/fragment_licenses"/>
+        tools:layout="@layout/fragment_licenses">
+        <action
+            android:id="@+id/action_licensesFragment_to_licenseContentFragment"
+            app:destination="@id/licenseContentFragment"
+            app:enterAnim="@anim/enter_slide_right"
+            app:exitAnim="@anim/exit_slide_right"
+            app:popEnterAnim="@anim/pop_enter_slide_left"
+            app:popExitAnim="@anim/pop_exit_slide_left"/>
+    </fragment>
+    <fragment
+        android:id="@+id/licenseContentFragment"
+        android:name="com.jpp.moviespreview.screens.main.licenses.content.LicenseContentFragment"
+        tools:layout="@layout/fragment_license_content" >
+        <argument
+            android:name="licenseId"
+            app:argType="string" />
+        <argument
+            android:name="licenseTitle"
+            app:argType="string" />
+    </fragment>
 </navigation>

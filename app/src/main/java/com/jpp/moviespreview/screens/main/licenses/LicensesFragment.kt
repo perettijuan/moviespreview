@@ -9,12 +9,14 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.ext.*
+import com.jpp.moviespreview.screens.main.licenses.LicensesFragmentDirections.actionLicensesFragmentToLicenseContentFragment
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_licenses.*
 import javax.inject.Inject
@@ -49,10 +51,22 @@ class LicensesFragment : Fragment() {
                     is LicensesViewState.Loaded -> {
                         licensesRv.apply {
                             layoutManager = LinearLayoutManager(context)
-                            adapter = LicensesAdapter(viewState.licenses) { TODO() }
+                            adapter = LicensesAdapter(viewState.licenses) { onUserSelectedLicense(it) }
                             addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
                         }
                         renderLicenses()
+                    }
+                }
+            })
+
+
+            navEvents().observe(this@LicensesFragment.viewLifecycleOwner, Observer { navEvent ->
+                when (navEvent) {
+                    is LicensesNavEvent.ToLicenseContent -> {
+                        findNavController().navigate(actionLicensesFragmentToLicenseContentFragment(
+                                navEvent.licenseName,
+                                navEvent.licenseId.toString()
+                        ))
                     }
                 }
             })

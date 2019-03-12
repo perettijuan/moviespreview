@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jpp.moviespreview.screens.CoroutineDispatchers
 import com.jpp.moviespreview.screens.MPScopedViewModel
+import com.jpp.moviespreview.screens.SingleLiveEvent
 import com.jpp.mpdomain.License
 import com.jpp.mpdomain.usecase.licenses.GetAppLicensesUseCase
 import com.jpp.mpdomain.usecase.licenses.GetLicensesResult
@@ -24,6 +25,7 @@ class LicensesViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     : MPScopedViewModel(dispatchers) {
 
     private val viewStateLiveData by lazy { MutableLiveData<LicensesViewState>() }
+    private val navigationEvents by lazy { SingleLiveEvent<LicensesNavEvent>() }
     private lateinit var retryFunc: () -> Unit
 
     fun init() {
@@ -37,12 +39,27 @@ class LicensesViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     fun viewState(): LiveData<LicensesViewState> = viewStateLiveData
 
     /**
+     * Exposes the events that are triggered when a navigation event is detected.
+     * We need a different LiveData here in order to avoid the problem of back navigation:
+     * - The default LiveData object posts the last value every time a new observer starts observing.
+     */
+    fun navEvents(): LiveData<LicensesNavEvent> = navigationEvents
+
+    /**
      * Called in order to execute the last attempt to fetch the credits.
      */
     fun retry() {
         if (viewStateLiveData.value is LicensesViewState.ErrorUnknown) {
             retryFunc.invoke()
         }
+    }
+
+    /**
+     * Called when the user selects a license from the list of [LicenseItem].
+     * A new navigation event will be posted to navEvents().
+     */
+    fun onUserSelectedLicense(licenseItem: LicenseItem) {
+        navigationEvents.value = LicensesNavEvent.ToLicenseContent(licenseName = licenseItem.name, licenseId = licenseItem.id)
     }
 
     /**

@@ -9,6 +9,15 @@ sealed class LicensesViewState {
     data class Loaded(val licenses: List<LicenseItem>) : LicensesViewState()
 }
 
+
+/**
+ * Represents all navigation events that can be routed in licenses section.
+ */
+sealed class LicensesNavEvent {
+    data class ToLicenseContent(val licenseName: String, val licenseId: Int) : LicensesNavEvent()
+}
+
+
 /**
  * Represents an item in the list of results shown.
  */
