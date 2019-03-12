@@ -17,6 +17,9 @@ import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_license_content.*
 import javax.inject.Inject
 
+/**
+ * Shows the content of a particular license.
+ */
 class LicenseContentFragment : Fragment() {
 
     @Inject
@@ -42,9 +45,11 @@ class LicenseContentFragment : Fragment() {
 
             viewState().observe(this@LicenseContentFragment.viewLifecycleOwner, Observer { viewState ->
                 when (viewState) {
-                    is LicenseViewState.Loading -> { renderLoading() }
+                    is LicenseViewState.Loading -> {
+                        renderLoading()
+                    }
                     is LicenseViewState.ErrorUnknown -> {
-                        licenseContentErrorView.asUnknownError { TODO() }
+                        licenseContentErrorView.asUnknownError { retry() }
                         renderError()
                     }
                     is LicenseViewState.Loaded -> {

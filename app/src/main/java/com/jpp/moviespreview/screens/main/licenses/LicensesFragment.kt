@@ -21,6 +21,9 @@ import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_licenses.*
 import javax.inject.Inject
 
+/**
+ * Shows the list of Licenses that are used by the application.
+ */
 class LicensesFragment : Fragment() {
 
     @Inject

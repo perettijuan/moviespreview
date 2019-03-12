@@ -121,4 +121,46 @@ class MainActivityViewModelTest {
         }
     }
 
+    @Test
+    fun `Should lock ActionBar without animation when user navigates to movies about`() {
+        val sectionName = "aSection"
+        subject.viewState().observe(resumedLifecycleOwner(), Observer {
+            assertTrue(it is MainActivityViewState.ActionBarLocked)
+            with(it as MainActivityViewState.ActionBarLocked) {
+                assertEquals(sectionName, abTitle)
+                assertFalse(withAnimation)
+                assertFalse(menuEnabled)
+            }
+        })
+        subject.userNavigatesToAbout(sectionName)
+    }
+
+    @Test
+    fun `Should lock ActionBar without animation when user navigates to movies licenses`() {
+        val sectionName = "aSection"
+        subject.viewState().observe(resumedLifecycleOwner(), Observer {
+            assertTrue(it is MainActivityViewState.ActionBarLocked)
+            with(it as MainActivityViewState.ActionBarLocked) {
+                assertEquals(sectionName, abTitle)
+                assertFalse(withAnimation)
+                assertFalse(menuEnabled)
+            }
+        })
+        subject.userNavigatesToLicenses(sectionName)
+    }
+
+    @Test
+    fun `Should lock ActionBar without animation when user navigates to movies licenses content`() {
+        val sectionName = "aSection"
+        subject.viewState().observe(resumedLifecycleOwner(), Observer {
+            assertTrue(it is MainActivityViewState.ActionBarLocked)
+            with(it as MainActivityViewState.ActionBarLocked) {
+                assertEquals(sectionName, abTitle)
+                assertFalse(withAnimation)
+                assertFalse(menuEnabled)
+            }
+        })
+        subject.userNavigatesToLicenseContent(sectionName)
+    }
+
 }
