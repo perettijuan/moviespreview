@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.ext.*
 import dagger.android.support.AndroidSupportInjection
@@ -35,7 +36,6 @@ class LicensesFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         withViewModel {
             init()
 
@@ -58,6 +58,7 @@ class LicensesFragment : Fragment() {
             })
         }
     }
+
 
     /**
      * Helper function to execute actions with the [LicensesViewModel].

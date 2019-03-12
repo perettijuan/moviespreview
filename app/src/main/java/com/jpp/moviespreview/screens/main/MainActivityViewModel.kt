@@ -61,4 +61,12 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
                 menuEnabled = false)
         )
     }
+
+    fun userNavigatesToLicenses(sectionName: String) {
+        viewState.postValue(MainActivityViewState.ActionBarLocked(
+                abTitle = sectionName,
+                withAnimation = false,
+                menuEnabled = false)
+        )
+    }
 }
