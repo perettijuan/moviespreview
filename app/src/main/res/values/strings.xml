@@ -63,6 +63,7 @@
     <string name="about_top_bar_title" translatable="false">@string/about_menu_item</string>
     <string name="about_rate_app_action">Rate app</string>
     <string name="about_share_app_action">Share app</string>
+    <string name="about_privacy_policy_action">Privacy Policy</string>
     <string name="about_brows_code_action">Browse app code</string>
     <string name="about_open_source_action">Open source licenses</string>
     <string name="about_the_movie_db_terms_of_use">The Movie DB Terms of Use</string>

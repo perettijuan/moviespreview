@@ -43,7 +43,7 @@
 
     <!-- About -->.
     <dimen name="about_icon_size">84dp</dimen>
-    <dimen name="about_icon_top_margin">40dp</dimen>
+    <dimen name="about_icon_top_margin">10dp</dimen>
     <dimen name="about_item_icon_size">32dp</dimen>
     <dimen name="about_item_vertical_spacing">10dp</dimen>
 

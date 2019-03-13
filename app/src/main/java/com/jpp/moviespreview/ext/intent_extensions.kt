@@ -30,3 +30,12 @@ fun Intent.send(sharingText: String): Intent {
     type = "text/plain"
     return this
 }
+
+/**
+ * Formats the [Intent] to open the web browser at the provided [url].
+ */
+fun Intent.web(url: String) : Intent {
+    action = Intent.ACTION_VIEW
+    data = Uri.parse(url)
+    return this
+}
