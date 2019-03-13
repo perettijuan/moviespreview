@@ -1,0 +1,74 @@
+{
+  "licenses": [
+    {
+      "id": 0,
+      "name":"Android SDK",
+      "url": "file:///android_asset/licenses/android_sdk_license.html"
+    },
+    {
+      "id": 1,
+      "name":"Android Support Library",
+      "url": "file:///android_asset/licenses/android_support_license.html"
+    },
+    {
+      "id": 2,
+      "name":"Android ConstraintLayout Support Library",
+      "url": "file:///android_asset/licenses/android_support_license.html"
+    },
+    {
+      "id": 3,
+      "name":"Android RecyclerView Support Library",
+      "url": "file:///android_asset/licenses/android_support_license.html"
+    },
+    {
+      "id": 4,
+      "name":"Android Design Support Library",
+      "url": "file:///android_asset/licenses/android_support_license.html"
+    },
+    {
+      "id": 5,
+      "name":"Android Palette Support Library",
+      "url": "file:///android_asset/licenses/android_support_license.html"
+    },
+    {
+      "id": 6,
+      "name":"Android Custom Tabs Support Library",
+      "url": "file:///android_asset/licenses/android_support_license.html"
+    },
+    {
+      "id": 7,
+      "name":"Kotlin",
+      "url": "file:///android_asset/licenses/kotlin_license.html"
+    },
+    {
+      "id": 8,
+      "name":"Dagger",
+      "url": "file:///android_asset/licenses/dagger_license.html"
+    },
+    {
+      "id": 9,
+      "name":"Gson",
+      "url": "file:///android_asset/licenses/android_support_license.html"
+    },
+    {
+      "id": 10,
+      "name":"Retrofit",
+      "url": "file:///android_asset/licenses/retrofit_license.html"
+    },
+    {
+      "id": 11,
+      "name":"Android Room",
+      "url": "file:///android_asset/licenses/android_support_license.html"
+    },
+    {
+      "id": 12,
+      "name":"Espresso",
+      "url": "file:///android_asset/licenses/android_support_license.html"
+    },
+    {
+      "id": 13,
+      "name":"MockK",
+      "url": "file:///android_asset/licenses/android_support_license.html"
+    }
+  ]
+}

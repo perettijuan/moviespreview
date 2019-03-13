@@ -96,7 +96,7 @@ class MovieDetailsViewModelTest {
     }
 
     @Test
-    fun `Should fetch movie detail from repository and show unknown error`() {
+    fun `Should fetch movie detail and show unknown error`() {
         val viewStatePosted = mutableListOf<MovieDetailsViewState>()
 
         every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsResult.ErrorUnknown

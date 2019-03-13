@@ -3,13 +3,16 @@ package com.jpp.moviespreview.ext
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.graphics.drawable.BitmapDrawable
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.annotation.StyleRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import com.google.android.material.appbar.CollapsingToolbarLayout
@@ -149,4 +152,22 @@ fun CollapsingToolbarLayout.enableTitle() {
  */
 fun CollapsingToolbarLayout.disableTitle() {
     isTitleEnabled = false
+}
+
+/**
+ * Retrieves the [CharSequence] representation of [textRes]
+ */
+fun View.getText(@StringRes textRes: Int): CharSequence {
+    return resources.getText(textRes)
+}
+
+/**
+ * Sets the text appearance of the TextView based on the current API level.
+ */
+fun TextView.setTextAppearanceCompat(@StyleRes resId: Int) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        this.setTextAppearance(resId)
+    } else {
+        setTextAppearance(context, resId)
+    }
 }

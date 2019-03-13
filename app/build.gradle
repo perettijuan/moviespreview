@@ -85,6 +85,9 @@ dependencies {
     implementation deps.androidx.room.runtime
     kapt deps.androidx.room.compiler
 
+    // Custom tabs
+    implementation "androidx.browser:browser:1.0.0"
+
 
     implementation project(path: ':mpdomain')
     implementation project(path: ':mpdata')

@@ -9,6 +9,8 @@ import com.jpp.mpdata.cache.CreditsCache
 import com.jpp.mpdata.cache.MoviesCache
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter
+import com.jpp.mpdata.repository.about.AboutNavigationRepositoryImpl
+import com.jpp.mpdata.repository.appversion.AppVersionRepositoryImpl
 import com.jpp.mpdata.repository.configuration.ConfigurationApi
 import com.jpp.mpdata.repository.configuration.ConfigurationDb
 import com.jpp.mpdata.repository.configuration.ConfigurationRepositoryImpl
@@ -16,6 +18,7 @@ import com.jpp.mpdata.repository.connectivity.ConnectivityRepositoryImpl
 import com.jpp.mpdata.repository.credits.CreditsApi
 import com.jpp.mpdata.repository.credits.CreditsDb
 import com.jpp.mpdata.repository.credits.CreditsRepositoryImpl
+import com.jpp.mpdata.repository.licenses.LicensesRepositoryImpl
 import com.jpp.mpdata.repository.movies.MoviesApi
 import com.jpp.mpdata.repository.movies.MoviesDb
 import com.jpp.mpdata.repository.movies.MoviesRepositoryImpl
@@ -157,4 +160,27 @@ class DataLayerModule {
     fun providesCreditsRepository(creditsApi: CreditsApi,
                                   creditsDb: CreditsDb)
             : CreditsRepository = CreditsRepositoryImpl(creditsApi, creditsDb)
+
+    /**************************************
+     ****** APP VERSION DEPENDENCIES ******
+     **************************************/
+
+    @Singleton
+    @Provides
+    fun providesAppVersionRepository(): AppVersionRepository = AppVersionRepositoryImpl()
+
+    @Singleton
+    @Provides
+    fun providesAboutNavigationRepository(context: Context)
+            : AboutNavigationRepository = AboutNavigationRepositoryImpl(context)
+
+    /**********************************
+     ****** LICENSES DEPENDENCIES *****
+     **********************************/
+
+    @Singleton
+    @Provides
+    fun providesLicensesRepository(context: Context)
+            : LicensesRepository = LicensesRepositoryImpl(context)
+
 }
