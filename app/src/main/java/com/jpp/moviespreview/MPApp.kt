@@ -8,6 +8,10 @@ import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import javax.inject.Inject
+import com.crashlytics.android.Crashlytics
+import io.fabric.sdk.android.Fabric
+
+
 
 open class MPApp : Application(), HasActivityInjector {
 
@@ -21,6 +25,8 @@ open class MPApp : Application(), HasActivityInjector {
                 .appModule(AppModule(this))
                 .build()
                 .inject(this)
+
+        Fabric.with(this, Crashlytics())
     }
 
     override fun activityInjector(): AndroidInjector<Activity> = activityInjector
