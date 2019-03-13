@@ -8,6 +8,11 @@ import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import javax.inject.Inject
+import com.crashlytics.android.Crashlytics
+import com.squareup.leakcanary.LeakCanary
+import io.fabric.sdk.android.Fabric
+
+
 
 open class MPApp : Application(), HasActivityInjector {
 
@@ -21,6 +26,16 @@ open class MPApp : Application(), HasActivityInjector {
                 .appModule(AppModule(this))
                 .build()
                 .inject(this)
+
+        Fabric.with(this, Crashlytics())
+        launchCanary()
+    }
+
+    private fun launchCanary() {
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            return
+        }
+        LeakCanary.install(this)
     }
 
     override fun activityInjector(): AndroidInjector<Activity> = activityInjector

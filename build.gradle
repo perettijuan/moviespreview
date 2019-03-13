@@ -13,7 +13,8 @@ buildscript {
             'navigationLib' : '1.0.0-rc01',
             'dagger' : '2.16',
             'room' : '2.0.0',
-            'mockk' : '1.8.13.kotlin13'
+            'mockk' : '1.8.13.kotlin13',
+            'canary' : '1.6.3'
     ]
 
     ext.deps = [
@@ -59,6 +60,11 @@ buildscript {
                             'unit' : "io.mockk:mockk:${versions.mockk}",
                             'android' : "io.mockk:mockk-android:${versions.mockk}"
                     ]
+            ],
+            'canary' : [
+                    'debug': "com.squareup.leakcanary:leakcanary-android:${versions.canary}",
+                    'release' : "com.squareup.leakcanary:leakcanary-android-no-op:${versions.canary}",
+                    'fragments' : "com.squareup.leakcanary:leakcanary-support-fragment:${versions.canary}"
             ]
     ]
 
