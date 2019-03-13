@@ -109,9 +109,15 @@ dependencies {
     // Custom tabs
     implementation "androidx.browser:browser:1.0.0"
 
+    // Crashlytics
     compile('com.crashlytics.sdk.android:crashlytics:2.9.9@aar') {
         transitive = true
     }
+
+    // Canary
+    debugImplementation deps.canary.debug
+    debugImplementation deps.canary.fragments
+    releaseImplementation deps.canary.release
 
 
     implementation project(path: ':mpdomain')
