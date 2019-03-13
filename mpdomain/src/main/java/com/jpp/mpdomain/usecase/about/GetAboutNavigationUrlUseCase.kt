@@ -24,6 +24,7 @@ interface GetAboutNavigationUrlUseCase {
                 is AboutNavigationType.GooglePlayApp -> repository.getGPlayAppUrl()
                 is AboutNavigationType.GooglePlayWeb -> repository.getGPlayWebUrl()
                 is AboutNavigationType.ShareApp -> repository.getSharingUrl()
+                is AboutNavigationType.PrivacyPolicy -> repository.getPrivacyPolicyUrl()
             }
         }
     }

@@ -6,4 +6,5 @@ interface AboutNavigationRepository {
     fun getGPlayAppUrl(): String
     fun getGPlayWebUrl(): String
     fun getSharingUrl(): String
+    fun getPrivacyPolicyUrl() : String
 }

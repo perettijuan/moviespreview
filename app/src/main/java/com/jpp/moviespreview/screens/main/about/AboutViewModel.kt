@@ -25,6 +25,7 @@ class AboutViewModel @Inject constructor(private val appVersionUseCase: GetAppVe
         listOf(
                 AboutItem.RateApp,
                 AboutItem.ShareApp,
+                AboutItem.PrivacyPolicy,
                 AboutItem.BrowseAppCode,
                 AboutItem.Licenses,
                 AboutItem.TheMovieDbTermsOfUse
@@ -63,6 +64,7 @@ class AboutViewModel @Inject constructor(private val appVersionUseCase: GetAppVe
         navigationEvents.value = when (aboutItem) {
             is AboutItem.BrowseAppCode -> AboutNavEvent.InnerNavigation(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.AppCodeRepo))
             is AboutItem.TheMovieDbTermsOfUse -> AboutNavEvent.InnerNavigation(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.TheMovieDbTermsOfUse))
+            is AboutItem.PrivacyPolicy -> AboutNavEvent.OuterNavigation(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.PrivacyPolicy))
             is AboutItem.RateApp -> AboutNavEvent.OpenGooglePlay(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.GooglePlayApp))
             is AboutItem.ShareApp -> AboutNavEvent.OpenSharing(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.ShareApp))
             is AboutItem.Licenses -> AboutNavEvent.GoToLicenses

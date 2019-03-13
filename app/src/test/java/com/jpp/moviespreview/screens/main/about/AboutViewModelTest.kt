@@ -40,6 +40,7 @@ class AboutViewModelTest {
         val expectedAboutItems = listOf(
                 AboutItem.RateApp,
                 AboutItem.ShareApp,
+                AboutItem.PrivacyPolicy,
                 AboutItem.BrowseAppCode,
                 AboutItem.Licenses,
                 AboutItem.TheMovieDbTermsOfUse
@@ -96,6 +97,13 @@ class AboutViewModelTest {
                         verification = { navEvent, useCase ->
                             assertTrue(navEvent is AboutNavEvent.InnerNavigation)
                             verify { useCase.getUrlFor(AboutNavigationType.TheMovieDbTermsOfUse) }
+                        }
+                ),
+                AboutViewModelTestParam(
+                        selected = AboutItem.PrivacyPolicy,
+                        verification = { navEvent, useCase ->
+                            assertTrue(navEvent is AboutNavEvent.OuterNavigation)
+                            verify { useCase.getUrlFor(AboutNavigationType.PrivacyPolicy) }
                         }
                 ),
                 AboutViewModelTestParam(

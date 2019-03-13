@@ -61,6 +61,7 @@ class AboutFragment : Fragment() {
                     is AboutNavEvent.OpenGooglePlay -> goToRateAppScreen(navEvent.url)
                     is AboutNavEvent.OpenSharing -> goToShareAppScreen(navEvent.url)
                     is AboutNavEvent.GoToLicenses -> goToLicensesScreen()
+                    is AboutNavEvent.OuterNavigation -> goToWebBrowser(navEvent.url)
                 }
             })
         }
@@ -95,6 +96,10 @@ class AboutFragment : Fragment() {
 
     private fun goToLicensesScreen() {
         findNavController().navigate(AboutFragmentDirections.actionAboutFragmentToLicensesFragment())
+    }
+
+    private fun goToWebBrowser(url: String) {
+        startActivity(Intent().web(url))
     }
 
     private fun navigateInnerBrowser(uriString: String) {
