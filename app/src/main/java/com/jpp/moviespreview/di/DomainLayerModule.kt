@@ -13,6 +13,7 @@ import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
 import com.jpp.mpdomain.usecase.person.GetPersonUseCase
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
+import com.jpp.mpdomain.usecase.support.RefreshDataUseCase
 import dagger.Module
 import dagger.Provides
 import java.util.concurrent.Executor
@@ -84,5 +85,9 @@ class DomainLayerModule {
     @Provides
     fun providesGetLicenseUseCase(licensesRepository: LicensesRepository)
             : GetLicenseUseCase = GetLicenseUseCase.Impl(licensesRepository)
+
+    @Provides
+    fun providesRefreshDataUseCase(languageRepository: LanguageRepository)
+            : RefreshDataUseCase = RefreshDataUseCase.Impl(languageRepository)
 
 }
