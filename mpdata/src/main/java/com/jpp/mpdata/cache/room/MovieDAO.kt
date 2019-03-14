@@ -10,8 +10,8 @@ interface MovieDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMoviePage(dbMoviePage: DBMoviePage): Long
 
-    @Query("select * from movie_pages where page = :page and section = :section and duedate >= :nowDate")
-    fun getMoviePage(page: Int, section: String, nowDate: Long): DBMoviePage?
+    @Query("select * from movie_pages where page = :page and section = :section and duedate >= :nowDate and language = :lang")
+    fun getMoviePage(page: Int, section: String, nowDate: Long, lang: String): DBMoviePage?
 
     @Insert(onConflict =  OnConflictStrategy.REPLACE)
     fun insertMovies(dbMovies: List<DBMovie>)

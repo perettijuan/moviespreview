@@ -1,9 +1,6 @@
 package com.jpp.mpdata.cache.room
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 
 /**
@@ -27,12 +24,14 @@ data class DBImageSize(@ColumnInfo(name = "base_url") var baseUrl: String,
  * Represents a Movie Page in the database.
  * [page] - is the page number and it is used as the primary key.
  */
-@Entity(tableName = "movie_pages")
+@Entity(tableName = "movie_pages",
+        indices = [Index(value = ["page", "section"], unique = true)])
 data class DBMoviePage(@ColumnInfo(name = "page") var page: Int,
                        @ColumnInfo(name = "totalPages") var totalPages: Int,
                        @ColumnInfo(name = "totalResults") var totalResults: Int,
                        @ColumnInfo(name = "section") var section: String,
-                       @ColumnInfo(name = "duedate") var dueDate: Long /* represents the date until the data is valid */) {
+                       @ColumnInfo(name = "duedate") var dueDate: Long /* represents the date until the data is valid */,
+                       @ColumnInfo(name = "language") var language: String) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
     var id: Int = 0

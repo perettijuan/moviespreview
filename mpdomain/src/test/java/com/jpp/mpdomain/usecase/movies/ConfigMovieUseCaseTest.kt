@@ -36,7 +36,7 @@ class ConfigMovieUseCaseTest {
 
         val actualResult = subject.configure(10, 5, expectedResult)
 
-        assertEquals(expectedResult, actualResult)
+        assertEquals(expectedResult, actualResult.movie)
     }
 
     @ParameterizedTest
@@ -49,8 +49,8 @@ class ConfigMovieUseCaseTest {
 
         val result = subject.configure(param.targetPosterSize, param.targetBackdropSize, param.movie)
 
-        assertEquals(param.expectedPosterPath, result.poster_path, param.case)
-        assertEquals(param.expectedBackdropPath, result.backdrop_path, param.case)
+        assertEquals(param.expectedPosterPath, result.movie.poster_path, param.case)
+        assertEquals(param.expectedBackdropPath, result.movie.backdrop_path, param.case)
     }
 
     data class ExecuteTestParameter(

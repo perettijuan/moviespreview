@@ -13,21 +13,26 @@ import com.jpp.mpdomain.usecase.ConfigureImagePathUseCase
 interface ConfigMovieUseCase {
 
     /**
+     * Represents the result of the movie configuration use case.
+     */
+    data class ConfigMovieResult(val movie: Movie)
+
+    /**
      * Configures the provided [movie] adjusting the images path with the provided [posterSize] and
      * [backdropSize].
      * @return a [Movie] with the exact same properties as the provided one, but with the images path
      * pointing to the correct resource.
      */
-    fun configure(posterSize: Int, backdropSize: Int, movie: Movie): Movie
+    fun configure(posterSize: Int, backdropSize: Int, movie: Movie): ConfigMovieResult
 
 
     class Impl(private val configurationRepository: ConfigurationRepository) : ConfigMovieUseCase, ConfigureImagePathUseCase() {
 
-        override fun configure(posterSize: Int, backdropSize: Int, movie: Movie): Movie {
+        override fun configure(posterSize: Int, backdropSize: Int, movie: Movie): ConfigMovieResult {
             return configurationRepository.getAppConfiguration()?.let {
-                configureMovieImagesPath(movie, it.images, backdropSize, posterSize)
+                ConfigMovieResult(configureMovieImagesPath(movie, it.images, backdropSize, posterSize))
             } ?: run {
-                movie
+                ConfigMovieResult(movie)
             }
         }
 

@@ -2,9 +2,9 @@ package com.jpp.moviespreview.utiltest
 
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
-import com.jpp.mpdomain.usecase.movies.GetMoviesResult
+import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase.GetMoviesResult.*
 
-fun successGetMoviesUCExecution(moviesInPageCount: Int) = GetMoviesResult.Success(createMoviesPage(1, moviesInPageCount))
+fun successGetMoviesUCExecution(moviesInPageCount: Int) = Success(createMoviesPage(1, moviesInPageCount))
 
 fun createMoviesPage(page: Int, totalResults: Int) = MoviePage(
         page = page,

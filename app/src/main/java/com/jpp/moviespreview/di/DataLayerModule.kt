@@ -27,6 +27,7 @@ import com.jpp.mpdata.repository.person.PersonDb
 import com.jpp.mpdata.repository.person.PersonRepositoryImpl
 import com.jpp.mpdata.repository.search.SearchApi
 import com.jpp.mpdata.repository.search.SearchRepositoryImpl
+import com.jpp.mpdata.repository.support.LanguageRepositoryImpl
 import com.jpp.mpdomain.repository.*
 import dagger.Module
 import dagger.Provides
@@ -182,5 +183,13 @@ class DataLayerModule {
     @Provides
     fun providesLicensesRepository(context: Context)
             : LicensesRepository = LicensesRepositoryImpl(context)
+
+
+    /**********************************
+     ****** SUPPORT DEPENDENCIES ******
+     **********************************/
+    @Singleton
+    @Provides
+    fun providesLanguageRepository(): LanguageRepository = LanguageRepositoryImpl()
 
 }

@@ -3,8 +3,11 @@ package com.jpp.mpdomain.usecase.movies
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
+import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.MoviesRepository
+import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase.GetMoviesResult.*
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
@@ -24,12 +27,17 @@ class GetMoviesUseCaseTest {
     private lateinit var moviesRepository: MoviesRepository
     @RelaxedMockK
     private lateinit var connectivityRepository: ConnectivityRepository
+    @RelaxedMockK
+    private lateinit var languageRepository: LanguageRepository
+
+    private val language = SupportedLanguage.English
 
     private lateinit var subject: GetMoviesUseCase
 
     @BeforeEach
     fun setUp() {
-        subject = GetMoviesUseCase.Impl(moviesRepository, connectivityRepository)
+        subject = GetMoviesUseCase.Impl(moviesRepository, connectivityRepository, languageRepository)
+        every { languageRepository.getCurrentAppLanguage() } returns language
     }
 
     @ParameterizedTest
@@ -38,8 +46,8 @@ class GetMoviesUseCaseTest {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
         subject.getMoviePageForSection(1, movieSection).let { result ->
-            verify(exactly = 0) { moviesRepository.getMoviePageForSection(any(), any()) }
-            assertEquals(GetMoviesResult.ErrorNoConnectivity, result)
+            verify(exactly = 0) { moviesRepository.getMoviePageForSection(any(), any(), language) }
+            assertEquals(ErrorNoConnectivity, result)
         }
     }
 
@@ -47,11 +55,11 @@ class GetMoviesUseCaseTest {
     @MethodSource("allMovieSections")
     fun `Should return ErrorUnknown when connected to network and an error occurs`(movieSection: MovieSection) {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { moviesRepository.getMoviePageForSection(any(), any()) } returns null
+        every { moviesRepository.getMoviePageForSection(any(), any(), any()) } returns null
 
         subject.getMoviePageForSection(1, movieSection).let { result ->
-            verify(exactly = 1) { moviesRepository.getMoviePageForSection(any(), any()) }
-            assertEquals(GetMoviesResult.ErrorUnknown, result)
+            verify(exactly = 1) { moviesRepository.getMoviePageForSection(any(), any(), language) }
+            assertEquals(ErrorUnknown, result)
         }
     }
 
@@ -60,12 +68,12 @@ class GetMoviesUseCaseTest {
     fun `Should return Success when connected to network and an can fetch movie page`(movieSection: MovieSection) {
         val moviePage = mockk<MoviePage>()
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { moviesRepository.getMoviePageForSection(any(), any()) } returns moviePage
+        every { moviesRepository.getMoviePageForSection(any(), any(), any()) } returns moviePage
 
         subject.getMoviePageForSection(1, movieSection).let { result ->
-            verify(exactly = 1) { moviesRepository.getMoviePageForSection(any(), any()) }
-            assertTrue(result is GetMoviesResult.Success)
-            assertEquals((result as GetMoviesResult.Success).moviesPage, moviePage)
+            verify(exactly = 1) { moviesRepository.getMoviePageForSection(any(), any(), language) }
+            assertTrue(result is Success)
+            assertEquals((result as Success).moviesPage, moviePage)
         }
     }
 

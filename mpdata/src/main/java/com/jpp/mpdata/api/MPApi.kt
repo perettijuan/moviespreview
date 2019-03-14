@@ -28,20 +28,20 @@ open class MPApi
         return tryCatchOrReturnNull { API.getAppConfiguration(API_KEY) }
     }
 
-    override fun getNowPlayingMoviePage(page: Int): MoviePage? {
-        return tryCatchOrReturnNull { API.getNowPlaying(page, API_KEY) }
+    override fun getNowPlayingMoviePage(page: Int, language: SupportedLanguage): MoviePage? {
+        return tryCatchOrReturnNull { API.getNowPlaying(page, API_KEY, language.id) }
     }
 
-    override fun getPopularMoviePage(page: Int): MoviePage? {
-        return tryCatchOrReturnNull { API.getPopular(page, API_KEY) }
+    override fun getPopularMoviePage(page: Int, language: SupportedLanguage): MoviePage? {
+        return tryCatchOrReturnNull { API.getPopular(page, API_KEY, language.id) }
     }
 
-    override fun getTopRatedMoviePage(page: Int): MoviePage? {
-        return tryCatchOrReturnNull { API.getTopRated(page, API_KEY) }
+    override fun getTopRatedMoviePage(page: Int, language: SupportedLanguage): MoviePage? {
+        return tryCatchOrReturnNull { API.getTopRated(page, API_KEY, language.id) }
     }
 
-    override fun getUpcomingMoviePage(page: Int): MoviePage? {
-        return tryCatchOrReturnNull { API.getUpcoming(page, API_KEY) }
+    override fun getUpcomingMoviePage(page: Int, language: SupportedLanguage): MoviePage? {
+        return tryCatchOrReturnNull { API.getUpcoming(page, API_KEY, language.id) }
     }
 
     override fun getMovieDetails(movieId: Double): MovieDetail? {

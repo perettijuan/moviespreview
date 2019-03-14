@@ -41,8 +41,9 @@ class DomainLayerModule {
 
     @Provides
     fun providesGetMoviesUseCase(moviesRepository: MoviesRepository,
-                                 connectivityRepository: ConnectivityRepository)
-            : GetMoviesUseCase = GetMoviesUseCase.Impl(moviesRepository, connectivityRepository)
+                                 connectivityRepository: ConnectivityRepository,
+                                 languageRepository: LanguageRepository)
+            : GetMoviesUseCase = GetMoviesUseCase.Impl(moviesRepository, connectivityRepository, languageRepository)
 
     @Provides
     fun providesConfigMovieUseCase(configurationRepository: ConfigurationRepository)

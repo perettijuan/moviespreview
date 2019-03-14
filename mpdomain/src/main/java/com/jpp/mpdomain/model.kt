@@ -253,3 +253,11 @@ data class License(val id: Int,
  * [licenses] - the list of all results used by the application.
  */
 data class Licenses(val licenses: List<License>)
+
+/**
+ * Represents all the languages supported by the application.
+ */
+sealed class SupportedLanguage(val id: String) {
+    object English : SupportedLanguage("en")
+    object Spanish : SupportedLanguage("es")
+}
