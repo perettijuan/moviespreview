@@ -87,6 +87,10 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             })
         }
 
+        withRefreshAppViewModel {
+            init()
+        }
+
         setSupportActionBar(mainToolbar)
         setupNavigation()
 
@@ -222,7 +226,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                         userNavigatesToCredits(it.getString("movieTitle"))
                     }
                 }
-                R.id.aboutFragment -> withMainViewModel {  userNavigatesToAbout(getString(R.string.about_top_bar_title))}
+                R.id.aboutFragment -> withMainViewModel { userNavigatesToAbout(getString(R.string.about_top_bar_title)) }
                 R.id.licensesFragment -> withMainViewModel { userNavigatesToLicenses(getString(R.string.about_open_source_action)) }
                 R.id.licenseContentFragment -> withMainViewModel {
                     arguments?.let {
@@ -238,6 +242,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     private fun withMainViewModel(action: MainActivityViewModel.() -> Unit) = withViewModel<MainActivityViewModel>(viewModelFactory) { action() }
     private fun withSearchViewViewModel(action: SearchViewViewModel.() -> Unit) = withViewModel<SearchViewViewModel>(viewModelFactory) { action() }
+    private fun withRefreshAppViewModel(action: RefreshAppViewModel.() -> Unit) = withViewModel<RefreshAppViewModel>(viewModelFactory) { action() }
 
     private fun renderViewState(viewState: MainActivityViewState) {
         when (viewState) {

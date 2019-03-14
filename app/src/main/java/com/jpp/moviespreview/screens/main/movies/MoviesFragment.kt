@@ -2,6 +2,7 @@ package com.jpp.moviespreview.screens.main.movies
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.ext.*
+import com.jpp.moviespreview.screens.main.RefreshAppViewModel
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movies.*
 import kotlinx.android.synthetic.main.list_item_movies.view.*
@@ -94,6 +96,12 @@ abstract class MoviesFragment : Fragment() {
             init(moviePosterSize = getScreenSizeInPixels().x,
                     movieBackdropSize = getScreenSizeInPixels().x)
         }
+
+        withRefreshAppViewModel {
+            refreshState().observe(this@MoviesFragment.viewLifecycleOwner, Observer {
+                Log.d("REFRESH", "Should refresh -> $it")
+            })
+        }
     }
 
     /**
@@ -139,6 +147,8 @@ abstract class MoviesFragment : Fragment() {
     private fun withViewModel(action: MoviesFragmentViewModel.() -> Unit) {
         getViewModelInstance(viewModelFactory).action()
     }
+
+    private fun withRefreshAppViewModel(action: RefreshAppViewModel.() -> Unit) = withViewModel<RefreshAppViewModel>(viewModelFactory) { action() }
 
     /**
      * Helper function to execute functions that are part of the [MoviesAdapter].
