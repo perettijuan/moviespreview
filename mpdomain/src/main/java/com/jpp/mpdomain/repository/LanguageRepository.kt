@@ -4,8 +4,17 @@ import com.jpp.mpdomain.SupportedLanguage
 
 interface LanguageRepository {
     /**
-     * @return the current [SupportedLanguage] that the application has (equivalent to the
-     * language that the device has configured currently).
+     * @return the [SupportedLanguage] that the device is currently using.
      */
-    fun getCurrentAppLanguage() : SupportedLanguage
+    fun getCurrentDeviceLanguage() : SupportedLanguage
+
+    /**
+     * @return the [SupportedLanguage] that the application is currently configured with.
+     */
+    fun getCurrentAppLanguage() : SupportedLanguage?
+
+    /**
+     * Updates the [SupportedLanguage] that the application is configured with.
+     */
+    fun updateAppLanguage(language: SupportedLanguage)
 }

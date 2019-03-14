@@ -9,6 +9,7 @@ import com.jpp.mpdata.cache.CreditsCache
 import com.jpp.mpdata.cache.MoviesCache
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter
+import com.jpp.mpdata.preferences.LanguageDbImpl
 import com.jpp.mpdata.repository.about.AboutNavigationRepositoryImpl
 import com.jpp.mpdata.repository.appversion.AppVersionRepositoryImpl
 import com.jpp.mpdata.repository.configuration.ConfigurationApi
@@ -27,12 +28,12 @@ import com.jpp.mpdata.repository.person.PersonDb
 import com.jpp.mpdata.repository.person.PersonRepositoryImpl
 import com.jpp.mpdata.repository.search.SearchApi
 import com.jpp.mpdata.repository.search.SearchRepositoryImpl
+import com.jpp.mpdata.repository.support.LanguageDb
 import com.jpp.mpdata.repository.support.LanguageRepositoryImpl
 import com.jpp.mpdomain.repository.*
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
-
 /**
  * Provides all dependencies for the data layer.
  */
@@ -188,8 +189,15 @@ class DataLayerModule {
     /**********************************
      ****** SUPPORT DEPENDENCIES ******
      **********************************/
+
     @Singleton
     @Provides
-    fun providesLanguageRepository(): LanguageRepository = LanguageRepositoryImpl()
+    fun providesLanguageDb(context: Context) : LanguageDb = LanguageDbImpl(context)
+
+    @Singleton
+    @Provides
+    fun providesLanguageRepository(languageDb: LanguageDb): LanguageRepository = LanguageRepositoryImpl(languageDb)
+
 
 }
+
