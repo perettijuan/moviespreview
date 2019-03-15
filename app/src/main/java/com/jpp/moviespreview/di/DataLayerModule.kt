@@ -204,7 +204,7 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesSupportRepository(supportDb: SupportDb): SupportRepository = SupportRepositoryImpl(supportDb)
+    fun providesSupportRepository(supportDb: SupportDb, personDb: PersonDb): SupportRepository = SupportRepositoryImpl(supportDb, personDb)
 
 }
 

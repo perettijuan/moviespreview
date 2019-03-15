@@ -5,6 +5,7 @@ import com.jpp.mpdomain.Person
 interface PersonDb {
     fun getPerson(personId: Double): Person?
     fun savePerson(person: Person)
+    fun clearAllData()
 
 
     /**
@@ -15,6 +16,9 @@ interface PersonDb {
         override fun getPerson(personId: Double): Person? = persons[personId]
         override fun savePerson(person: Person) {
             persons[person.id] = person
+        }
+        override fun clearAllData() {
+            persons.clear()
         }
     }
 }

@@ -88,9 +88,9 @@ class MovieDetailsFragment : Fragment() {
         }
 
         /*
-       * Get notified if the app being shown to the user needs to be refreshed for some reason
-       * and do it.
-       */
+         * Get notified if the app being shown to the user needs to be refreshed for some reason
+         * and do it.
+         */
         withRefreshAppViewModel {
             refreshState().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer {
                 if (it) {
