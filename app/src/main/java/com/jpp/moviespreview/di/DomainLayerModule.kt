@@ -59,8 +59,9 @@ class DomainLayerModule {
 
     @Provides
     fun providesGetPersonUseCase(personRepository: PersonRepository,
-                                 connectivityRepository: ConnectivityRepository)
-            : GetPersonUseCase = GetPersonUseCase.Impl(personRepository, connectivityRepository)
+                                 connectivityRepository: ConnectivityRepository,
+                                 languageRepository: LanguageRepository)
+            : GetPersonUseCase = GetPersonUseCase.Impl(personRepository, connectivityRepository, languageRepository)
 
     @Provides
     fun providesGetCreditsUseCase(creditsRepository: CreditsRepository,

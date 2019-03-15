@@ -52,8 +52,8 @@ open class MPApi
         return tryCatchOrReturnNull { API.search(query, page, API_KEY, language.id) }
     }
 
-    override fun getPerson(personId: Double): Person? {
-        return tryCatchOrReturnNull { API.getPerson(personId, API_KEY) }
+    override fun getPerson(personId: Double, language: SupportedLanguage): Person? {
+        return tryCatchOrReturnNull { API.getPerson(personId, API_KEY, language.id) }
     }
 
     override fun getCreditsForMovie(movieId: Double): Credits? {
