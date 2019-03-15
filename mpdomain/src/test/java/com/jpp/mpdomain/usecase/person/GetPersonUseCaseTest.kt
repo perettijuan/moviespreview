@@ -2,7 +2,9 @@ package com.jpp.mpdomain.usecase.person
 
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.Person
+import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.PersonRepository
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -21,12 +23,17 @@ class GetPersonUseCaseTest {
     private lateinit var personRepository: PersonRepository
     @RelaxedMockK
     private lateinit var connectivityRepository: ConnectivityRepository
+    @RelaxedMockK
+    private lateinit var languageRepository: LanguageRepository
+
+    private val language = SupportedLanguage.English
 
     private lateinit var subject: GetPersonUseCase
 
     @BeforeEach
     fun setUp() {
-        subject = GetPersonUseCase.Impl(personRepository, connectivityRepository)
+        subject = GetPersonUseCase.Impl(personRepository, connectivityRepository, languageRepository)
+        every { languageRepository.getCurrentDeviceLanguage() } returns language
     }
 
 
@@ -35,7 +42,7 @@ class GetPersonUseCaseTest {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
         subject.getPerson(1.toDouble()).let { result ->
-            verify(exactly = 0) { personRepository.getPerson(any()) }
+            verify(exactly = 0) { personRepository.getPerson(any(), any()) }
             Assertions.assertEquals(GetPersonResult.ErrorNoConnectivity, result)
         }
     }
@@ -43,10 +50,10 @@ class GetPersonUseCaseTest {
     @Test
     fun `Should return ErrorUnknown when connected to network and an error occurs`() {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { personRepository.getPerson(any()) } returns null
+        every { personRepository.getPerson(any(), any()) } returns null
 
         subject.getPerson(1.toDouble()).let { result ->
-            verify(exactly = 1) { personRepository.getPerson(any()) }
+            verify(exactly = 1) { personRepository.getPerson(any(), language) }
             Assertions.assertEquals(GetPersonResult.ErrorUnknown, result)
         }
     }
@@ -55,10 +62,10 @@ class GetPersonUseCaseTest {
     fun `Should return Success when connected to network and an can get a person`() {
         val person = mockk<Person>()
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { personRepository.getPerson(any()) } returns person
+        every { personRepository.getPerson(any(), any()) } returns person
 
         subject.getPerson(1.toDouble()).let { result ->
-            verify(exactly = 1) { personRepository.getPerson(any()) }
+            verify(exactly = 1) { personRepository.getPerson(any(), any()) }
             Assertions.assertTrue(result is GetPersonResult.Success)
             Assertions.assertEquals((result as GetPersonResult.Success).person, person)
         }
