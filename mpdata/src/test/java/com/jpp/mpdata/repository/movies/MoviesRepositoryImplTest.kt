@@ -97,33 +97,33 @@ class MoviesRepositoryImplTest {
         val movieDetail = mockk<MovieDetail>()
         every { moviesDb.getMovieDetails(any()) } returns movieDetail
 
-        val result = subject.getMovieDetails(10.toDouble())
+        val result = subject.getMovieDetails(10.toDouble(), SupportedLanguage.English)
 
         assertEquals(movieDetail, result)
         verify { moviesDb.getMovieDetails(10.toDouble()) }
-        verify(exactly = 0) { moviesApi.getMovieDetails(any()) }
+        verify(exactly = 0) { moviesApi.getMovieDetails(any(), SupportedLanguage.English) }
     }
 
     @Test
     fun `Should get data from API and update the DB when details is not in DB`() {
         val movieDetail = mockk<MovieDetail>()
         every { moviesDb.getMovieDetails(any()) } returns null
-        every { moviesApi.getMovieDetails(any()) } returns movieDetail
+        every { moviesApi.getMovieDetails(any(), any()) } returns movieDetail
 
-        val result = subject.getMovieDetails(10.toDouble())
+        val result = subject.getMovieDetails(10.toDouble(), SupportedLanguage.English)
 
         assertEquals(result, result)
         verify { moviesDb.getMovieDetails(10.toDouble()) }
-        verify { moviesApi.getMovieDetails(10.toDouble()) }
+        verify { moviesApi.getMovieDetails(10.toDouble(), SupportedLanguage.English) }
         verify { moviesDb.saveMovieDetails(movieDetail) }
     }
 
     @Test
     fun `Should not attempt to store null responses from API when fetching movie details`() {
         every { moviesDb.getMovieDetails(any()) } returns null
-        every { moviesApi.getMovieDetails(any()) } returns null
+        every { moviesApi.getMovieDetails(any(), any()) } returns null
 
-        val result = subject.getMovieDetails(10.toDouble())
+        val result = subject.getMovieDetails(10.toDouble(), SupportedLanguage.English)
 
         assertNull(result)
         verify(exactly = 0) { moviesDb.saveMovieDetails(any()) }
