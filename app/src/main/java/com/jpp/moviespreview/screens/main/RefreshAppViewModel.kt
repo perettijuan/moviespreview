@@ -1,6 +1,7 @@
 package com.jpp.moviespreview.screens.main
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.jpp.moviespreview.screens.CoroutineDispatchers
 import com.jpp.moviespreview.screens.MPScopedViewModel
 import com.jpp.moviespreview.screens.SingleLiveEvent
@@ -20,7 +21,7 @@ class RefreshAppViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                               private val useCase: RefreshDataUseCase)
     : MPScopedViewModel(dispatchers) {
 
-    private val refreshLiveData by lazy { SingleLiveEvent<Boolean>() }
+    private val refreshLiveData by lazy { MutableLiveData<Boolean>() }
 
     fun init() {
         launch {

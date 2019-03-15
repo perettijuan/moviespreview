@@ -2,7 +2,6 @@ package com.jpp.moviespreview.screens.main.movies
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -99,7 +98,10 @@ abstract class MoviesFragment : Fragment() {
 
         withRefreshAppViewModel {
             refreshState().observe(this@MoviesFragment.viewLifecycleOwner, Observer {
-                Log.d("REFRESH", "Should refresh -> $it")
+               if (it) {
+                   withViewModel { refresh(moviePosterSize = getScreenSizeInPixels().x,
+                           movieBackdropSize = getScreenSizeInPixels().x) }
+               }
             })
         }
     }
@@ -112,6 +114,10 @@ abstract class MoviesFragment : Fragment() {
     private fun renderViewState(viewState: MoviesViewState) {
         when (viewState) {
             is MoviesViewState.Loading -> {
+                renderLoading()
+            }
+            is MoviesViewState.Refreshing -> {
+                withRecyclerViewAdapter { clear() }
                 renderLoading()
             }
             is MoviesViewState.ErrorUnknown -> {
@@ -202,6 +208,12 @@ abstract class MoviesFragment : Fragment() {
                 holder.bindMovie(it, movieSelectionListener)
             }
         }
+
+        fun clear() {
+            //Submitting a null paged list causes the adapter to remove all items in the RecyclerView
+            submitList(null)
+        }
+
 
         class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 

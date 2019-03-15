@@ -43,17 +43,12 @@ abstract class MoviesFragmentViewModel(private val getMoviesUseCase: GetMoviesUs
 
 
         viewState.value = MoviesViewState.Loading
-        createMoviesPagedList(moviePosterSize, movieBackdropSize).let {
-            viewState.addSource(it) { pagedList ->
-                if (pagedList.size > 0) {
-                    viewState.value = MoviesViewState.InitialPageLoaded(pagedList)
-                } else {
-                    retryFunc = {
-                        init(moviePosterSize, movieBackdropSize)
-                    }
-                }
-            }
-        }
+        fetchFreshMoviePage(moviePosterSize, movieBackdropSize)
+    }
+
+    fun refresh(moviePosterSize: Int, movieBackdropSize: Int) {
+        viewState.value = MoviesViewState.Refreshing
+        fetchFreshMoviePage(moviePosterSize, movieBackdropSize)
     }
 
     /**
@@ -88,6 +83,20 @@ abstract class MoviesFragmentViewModel(private val getMoviesUseCase: GetMoviesUs
      */
     fun retryMoviesFetch() {
         retryFunc.invoke()
+    }
+
+    private fun fetchFreshMoviePage(moviePosterSize: Int, movieBackdropSize: Int) {
+        createMoviesPagedList(moviePosterSize, movieBackdropSize).let {
+            viewState.addSource(it) { pagedList ->
+                if (pagedList.size > 0) {
+                    viewState.value = MoviesViewState.InitialPageLoaded(pagedList)
+                } else {
+                    retryFunc = {
+                        init(moviePosterSize, movieBackdropSize)
+                    }
+                }
+            }
+        }
     }
 
     /**

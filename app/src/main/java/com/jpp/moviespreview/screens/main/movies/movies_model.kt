@@ -11,6 +11,7 @@ import androidx.paging.PagedList
  */
 sealed class MoviesViewState {
     object Loading : MoviesViewState()
+    object Refreshing : MoviesViewState()
     object ErrorNoConnectivity : MoviesViewState()
     object ErrorNoConnectivityWithItems : MoviesViewState()
     object ErrorUnknown : MoviesViewState()
