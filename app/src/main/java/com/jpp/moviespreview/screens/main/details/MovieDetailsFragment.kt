@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.ext.*
+import com.jpp.moviespreview.screens.main.RefreshAppViewModel
 import com.jpp.moviespreview.screens.main.details.MovieDetailsFragmentArgs.fromBundle
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.list_item_details_genre.view.*
@@ -76,12 +77,25 @@ class MovieDetailsFragment : Fragment() {
                 when (navEvent) {
                     is MovieDetailsNavigationEvent.ToCredits -> {
                         findNavController().navigate(
-                                MovieDetailsFragmentDirections.
-                                        actionMovieDetailsFragmentToCreditsFragment(
-                                                navEvent.movieId.toString(),
-                                                navEvent.movieTitle
-                                        )
+                                MovieDetailsFragmentDirections.actionMovieDetailsFragmentToCreditsFragment(
+                                        navEvent.movieId.toString(),
+                                        navEvent.movieTitle
+                                )
                         )
+                    }
+                }
+            })
+        }
+
+        /*
+       * Get notified if the app being shown to the user needs to be refreshed for some reason
+       * and do it.
+       */
+        withRefreshAppViewModel {
+            refreshState().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer {
+                if (it) {
+                    withViewModel {
+                        refresh(fromBundle(args).movieId.toDouble())
                     }
                 }
             })
@@ -98,9 +112,12 @@ class MovieDetailsFragment : Fragment() {
     /**
      * Helper function to execute actions with the [MovieDetailsViewModel].
      */
-    private fun withViewModel(action: MovieDetailsViewModel.() -> Unit) {
-        getViewModel<MovieDetailsViewModel>(viewModelFactory).action()
-    }
+    private fun withViewModel(action: MovieDetailsViewModel.() -> Unit) = withViewModel<MovieDetailsViewModel>(viewModelFactory) { action() }
+
+    /**
+     * Helper function to execute actions with [RefreshAppViewModel] backed by the MainActivity.
+     */
+    private fun withRefreshAppViewModel(action: RefreshAppViewModel.() -> Unit) = withViewModel<RefreshAppViewModel>(viewModelFactory) { action() }
 
     private fun renderLoading() {
         detailsErrorView.setInvisible()

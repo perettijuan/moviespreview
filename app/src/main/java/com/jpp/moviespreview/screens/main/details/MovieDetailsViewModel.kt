@@ -39,6 +39,17 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
      * The updates will be posted to the [LiveData] object provided by [viewState()].
      */
     fun init(movieId: Double) {
+        initImpl(movieId)
+    }
+
+    /**
+     * Called when the data being shown to the user needs to be refreshed.
+     */
+    fun refresh(movieId: Double) {
+        initImpl(movieId)
+    }
+
+    private fun initImpl(movieId: Double) {
         retryFunc = { pushLoadingAndFetchMovieDetails(movieId) }
         pushLoadingAndFetchMovieDetails(movieId)
     }
