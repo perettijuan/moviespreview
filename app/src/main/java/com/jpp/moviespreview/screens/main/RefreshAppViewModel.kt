@@ -28,6 +28,8 @@ class RefreshAppViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         }
     }
 
-
+    /**
+     * Subscribe to updates from this [LiveData] if you're interested in data refresh.
+     */
     fun refreshState(): LiveData<Boolean> = refreshLiveData
 }

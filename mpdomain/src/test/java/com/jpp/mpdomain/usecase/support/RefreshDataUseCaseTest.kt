@@ -2,6 +2,7 @@ package com.jpp.mpdomain.usecase.support
 
 import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.repository.LanguageRepository
+import com.jpp.mpdomain.repository.SupportRepository
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
@@ -17,12 +18,14 @@ class RefreshDataUseCaseTest {
 
     @RelaxedMockK
     private lateinit var languageRepository: LanguageRepository
+    @RelaxedMockK
+    private lateinit var supportRepository: SupportRepository
 
     private lateinit var subject: RefreshDataUseCase
 
     @BeforeEach
     fun setUp() {
-        subject = RefreshDataUseCase.Impl(languageRepository)
+        subject = RefreshDataUseCase.Impl(languageRepository, supportRepository)
     }
 
     @Test
@@ -33,6 +36,8 @@ class RefreshDataUseCaseTest {
         val refresh = subject.shouldRefreshDataInApp()
 
         assertFalse(refresh)
+        verify(exactly = 0) { languageRepository.updateAppLanguage(any()) }
+        verify(exactly = 0) { supportRepository.clearAllData() }
     }
 
     @Test
@@ -43,6 +48,9 @@ class RefreshDataUseCaseTest {
         val refresh = subject.shouldRefreshDataInApp()
 
         assertTrue(refresh)
+
+        verify { languageRepository.updateAppLanguage(any()) }
+        verify { supportRepository.clearAllData() }
     }
 
     @Test
@@ -54,5 +62,6 @@ class RefreshDataUseCaseTest {
 
         assertFalse(refresh)
         verify { languageRepository.updateAppLanguage(SupportedLanguage.English) }
+        verify(exactly = 0) { supportRepository.clearAllData() }
     }
 }

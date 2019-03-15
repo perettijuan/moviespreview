@@ -50,7 +50,7 @@ class MoviesFragmentViewModelTest {
         val moviesInPageCount = 10
 
         every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns successGetMoviesUCExecution(moviesInPageCount)
-        every { configMovieUseCase.configure(any(), any(), any()) } answers { arg(2) }
+        every { configMovieUseCase.configure(any(), any(), any()) } answers { ConfigMovieUseCase.ConfigMovieResult(arg(2)) }
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStates.add(it)
@@ -73,7 +73,7 @@ class MoviesFragmentViewModelTest {
         val moviesInPageCount = 10
 
         every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns successGetMoviesUCExecution(moviesInPageCount)
-        every { configMovieUseCase.configure(any(), any(), any()) } answers { arg(2) }
+        every { configMovieUseCase.configure(any(), any(), any()) } answers { ConfigMovieUseCase.ConfigMovieResult(arg(2)) }
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStates.add(it)
@@ -108,34 +108,6 @@ class MoviesFragmentViewModelTest {
         assertTrue(viewStates[3] is MoviesViewState.ErrorUnknown)
 
         verify(exactly = 2) { getMoviesUseCase.getMoviePageForSection(1, movieSection) }
-    }
-
-    /*
-     * This scenario verifies:
-     * 1 - VM init.
-     * 2 - UC failed.
-     * 3 - Never retried.
-     * 4 - Rotate device -> VM.init again should do nothing
-     */
-    @Test
-    fun `Should do nothing when failed and is already initialized`() {
-        val viewStates = mutableListOf<MoviesViewState>()
-
-        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns ErrorUnknown
-
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStates.add(it)
-        })
-
-        subject.init(moviePosterSize = 5, movieBackdropSize = 10)
-
-        assertTrue(viewStates[0] is MoviesViewState.Loading)
-        assertTrue(viewStates[1] is MoviesViewState.ErrorUnknown)
-
-        subject.init(moviePosterSize = 5, movieBackdropSize = 10)
-
-        assertEquals(2, viewStates.size)
-        verify(exactly = 1) { getMoviesUseCase.getMoviePageForSection(1, movieSection) }
     }
 
     @Test

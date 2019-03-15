@@ -96,12 +96,18 @@ abstract class MoviesFragment : Fragment() {
                     movieBackdropSize = getScreenSizeInPixels().x)
         }
 
+        /*
+         * Get notified if the app being shown to the user needs to be refreshed for some reason
+         * and do it.
+         */
         withRefreshAppViewModel {
             refreshState().observe(this@MoviesFragment.viewLifecycleOwner, Observer {
-               if (it) {
-                   withViewModel { refresh(moviePosterSize = getScreenSizeInPixels().x,
-                           movieBackdropSize = getScreenSizeInPixels().x) }
-               }
+                if (it) {
+                    withViewModel {
+                        refresh(moviePosterSize = getScreenSizeInPixels().x,
+                                movieBackdropSize = getScreenSizeInPixels().x)
+                    }
+                }
             })
         }
     }
@@ -154,6 +160,9 @@ abstract class MoviesFragment : Fragment() {
         getViewModelInstance(viewModelFactory).action()
     }
 
+    /**
+     * Helper function to execute actions with [RefreshAppViewModel] backed by the MainActivity.
+     */
     private fun withRefreshAppViewModel(action: RefreshAppViewModel.() -> Unit) = withViewModel<RefreshAppViewModel>(viewModelFactory) { action() }
 
     /**

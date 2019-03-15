@@ -3,6 +3,10 @@ package com.jpp.mpdata.preferences
 import android.content.Context
 import com.jpp.mpdata.repository.support.LanguageDb
 
+/**
+ * [LanguageDb] implementation.
+ * This DB is backed by SharedPreferences since it needs to store only key-value data.
+ */
 class LanguageDbImpl(private val context: Context) : LanguageDb {
 
     private val preferences by lazy { context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE) }

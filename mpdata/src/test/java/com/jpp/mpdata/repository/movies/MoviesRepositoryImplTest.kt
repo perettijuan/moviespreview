@@ -40,11 +40,11 @@ class MoviesRepositoryImplTest {
     fun `Should not retrieve from API when valid movie page in DB`(section: MovieSection) {
         val expected = mockk<MoviePage>()
 
-        every { moviesDb.getMoviePageForSection(any(), any(), any()) } returns expected
+        every { moviesDb.getMoviePageForSection(any(), any()) } returns expected
 
         val actual = subject.getMoviePageForSection(1, section, SupportedLanguage.English)
 
-        verify { moviesDb.getMoviePageForSection(1, section, SupportedLanguage.English) }
+        verify { moviesDb.getMoviePageForSection(1, section) }
         assertEquals(expected, actual)
     }
 
@@ -53,7 +53,7 @@ class MoviesRepositoryImplTest {
     fun `Should retrieve from API and update DB when movie page not in DB`(section: MovieSection, countInput: MoviesRepositoryTestInput) {
         val expected = mockk<MoviePage>()
 
-        every { moviesDb.getMoviePageForSection(any(), any(), any()) } returns null
+        every { moviesDb.getMoviePageForSection(any(), any()) } returns null
         every { moviesApi.getNowPlayingMoviePage(any(), any()) } returns expected
         every { moviesApi.getPopularMoviePage(any(), any()) } returns expected
         every { moviesApi.getTopRatedMoviePage(any(), any()) } returns expected
@@ -66,7 +66,7 @@ class MoviesRepositoryImplTest {
         verify(exactly = countInput.callsToTopRated) { moviesApi.getTopRatedMoviePage(1, SupportedLanguage.English) }
         verify(exactly = countInput.callsToUpcoming) { moviesApi.getUpcomingMoviePage(1, SupportedLanguage.English) }
 
-        verify { moviesDb.saveMoviePageForSection(expected, section, SupportedLanguage.English) }
+        verify { moviesDb.saveMoviePageForSection(expected, section) }
 
         assertEquals(expected, actual)
     }
@@ -74,7 +74,7 @@ class MoviesRepositoryImplTest {
     @ParameterizedTest
     @MethodSource("movieSectionsAndCount")
     fun `Should not attempt to store null responses from API when fetching movie page`(section: MovieSection, countInput: MoviesRepositoryTestInput) {
-        every { moviesDb.getMoviePageForSection(any(), any(), any()) } returns null
+        every { moviesDb.getMoviePageForSection(any(), any()) } returns null
         every { moviesApi.getNowPlayingMoviePage(any(), any()) } returns null
         every { moviesApi.getPopularMoviePage(any(), any()) } returns null
         every { moviesApi.getTopRatedMoviePage(any(), any()) } returns null
@@ -87,7 +87,7 @@ class MoviesRepositoryImplTest {
         verify(exactly = countInput.callsToTopRated) { moviesApi.getTopRatedMoviePage(1, SupportedLanguage.English) }
         verify(exactly = countInput.callsToUpcoming) { moviesApi.getUpcomingMoviePage(1, SupportedLanguage.English) }
 
-        verify(exactly = 0) { moviesDb.saveMoviePageForSection(any(), any(), any()) }
+        verify(exactly = 0) { moviesDb.saveMoviePageForSection(any(), any()) }
 
         assertNull(actual)
     }

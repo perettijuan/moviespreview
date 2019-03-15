@@ -5,7 +5,8 @@ import com.jpp.mpdomain.repository.SupportRepository
 
 /**
  * Defines a UseCase that verifies the inner state of the application in order to know if the
- * current general state being shown to the user needs to be refreshed or not.
+ * current general state being shown to the user needs to be refreshed or not. If the state
+ * needs to be refreshed, this UC takes care of clearing out any stored inner state.
  */
 interface RefreshDataUseCase {
 

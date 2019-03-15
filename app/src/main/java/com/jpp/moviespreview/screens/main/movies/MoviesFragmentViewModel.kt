@@ -46,6 +46,11 @@ abstract class MoviesFragmentViewModel(private val getMoviesUseCase: GetMoviesUs
         fetchFreshMoviePage(moviePosterSize, movieBackdropSize)
     }
 
+    /**
+     * Called if the data being shown to the  user needs to be refreshed.
+     * It will push a [MoviesViewState.Refreshing] state into viewState() and
+     * will fetch new data.
+     */
     fun refresh(moviePosterSize: Int, movieBackdropSize: Int) {
         viewState.value = MoviesViewState.Refreshing
         fetchFreshMoviePage(moviePosterSize, movieBackdropSize)
@@ -85,6 +90,11 @@ abstract class MoviesFragmentViewModel(private val getMoviesUseCase: GetMoviesUs
         retryFunc.invoke()
     }
 
+    /**
+     * Starts the process to create the the PagedList that will back the list of movies shown to the
+     * user.
+     * When the data retrieved from [createMoviesPagedList] is obtained, a new state is pushed to viewState().
+     */
     private fun fetchFreshMoviePage(moviePosterSize: Int, movieBackdropSize: Int) {
         createMoviesPagedList(moviePosterSize, movieBackdropSize).let {
             viewState.addSource(it) { pagedList ->
