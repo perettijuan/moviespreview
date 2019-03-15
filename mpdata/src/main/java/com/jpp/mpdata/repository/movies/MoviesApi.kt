@@ -32,5 +32,5 @@ interface MoviesApi {
      * @return a [MovieDetail] for the provided [movieId] if any is found, null
      * any other case.
      */
-    fun getMovieDetails(movieId: Double): MovieDetail?
+    fun getMovieDetails(movieId: Double, language: SupportedLanguage): MovieDetail?
 }

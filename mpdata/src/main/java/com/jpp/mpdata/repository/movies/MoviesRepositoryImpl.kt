@@ -17,9 +17,9 @@ class MoviesRepositoryImpl(private val moviesApi: MoviesApi,
         }
     }
 
-    override fun getMovieDetails(movieId: Double): MovieDetail? {
+    override fun getMovieDetails(movieId: Double, language: SupportedLanguage): MovieDetail? {
         return moviesDb.getMovieDetails(movieId) ?: run {
-            moviesApi.getMovieDetails(movieId)?.also {
+            moviesApi.getMovieDetails(movieId, language)?.also {
                 moviesDb.saveMovieDetails(it)
             }
         }

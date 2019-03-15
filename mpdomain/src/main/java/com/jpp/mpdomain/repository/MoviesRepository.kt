@@ -22,5 +22,5 @@ interface MoviesRepository {
      * @return a [MovieDetail] instance if a detail can be found for the provided [movieId],
      * null in any other case.
      */
-    fun getMovieDetails(movieId: Double): MovieDetail?
+    fun getMovieDetails(movieId: Double, language: SupportedLanguage): MovieDetail?
 }
