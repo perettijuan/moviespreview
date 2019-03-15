@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.moviespreview.R
 import com.jpp.moviespreview.ext.*
+import com.jpp.moviespreview.screens.main.RefreshAppViewModel
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movies.*
 import kotlinx.android.synthetic.main.list_item_movies.view.*
@@ -94,6 +95,21 @@ abstract class MoviesFragment : Fragment() {
             init(moviePosterSize = getScreenSizeInPixels().x,
                     movieBackdropSize = getScreenSizeInPixels().x)
         }
+
+        /*
+         * Get notified if the app being shown to the user needs to be refreshed for some reason
+         * and do it.
+         */
+        withRefreshAppViewModel {
+            refreshState().observe(this@MoviesFragment.viewLifecycleOwner, Observer {
+                if (it) {
+                    withViewModel {
+                        refresh(moviePosterSize = getScreenSizeInPixels().x,
+                                movieBackdropSize = getScreenSizeInPixels().x)
+                    }
+                }
+            })
+        }
     }
 
     /**
@@ -104,6 +120,10 @@ abstract class MoviesFragment : Fragment() {
     private fun renderViewState(viewState: MoviesViewState) {
         when (viewState) {
             is MoviesViewState.Loading -> {
+                renderLoading()
+            }
+            is MoviesViewState.Refreshing -> {
+                withRecyclerViewAdapter { clear() }
                 renderLoading()
             }
             is MoviesViewState.ErrorUnknown -> {
@@ -139,6 +159,11 @@ abstract class MoviesFragment : Fragment() {
     private fun withViewModel(action: MoviesFragmentViewModel.() -> Unit) {
         getViewModelInstance(viewModelFactory).action()
     }
+
+    /**
+     * Helper function to execute actions with [RefreshAppViewModel] backed by the MainActivity.
+     */
+    private fun withRefreshAppViewModel(action: RefreshAppViewModel.() -> Unit) = withViewModel<RefreshAppViewModel>(viewModelFactory) { action() }
 
     /**
      * Helper function to execute functions that are part of the [MoviesAdapter].
@@ -192,6 +217,12 @@ abstract class MoviesFragment : Fragment() {
                 holder.bindMovie(it, movieSelectionListener)
             }
         }
+
+        fun clear() {
+            //Submitting a null paged list causes the adapter to remove all items in the RecyclerView
+            submitList(null)
+        }
+
 
         class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 

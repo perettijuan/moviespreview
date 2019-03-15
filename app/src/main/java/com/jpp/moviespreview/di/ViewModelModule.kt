@@ -3,6 +3,7 @@ package com.jpp.moviespreview.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.moviespreview.screens.main.MainActivityViewModel
+import com.jpp.moviespreview.screens.main.RefreshAppViewModel
 import com.jpp.moviespreview.screens.main.SearchViewViewModel
 import com.jpp.moviespreview.screens.main.about.AboutViewModel
 import com.jpp.moviespreview.screens.main.credits.CreditsViewModel
@@ -92,4 +93,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(LicenseContentViewModel::class)
     internal abstract fun postLicenseContentViewModel(viewModel: LicenseContentViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(RefreshAppViewModel::class)
+    internal abstract fun postRefreshAppViewModel(viewModel: RefreshAppViewModel): ViewModel
 }

@@ -2,7 +2,9 @@ package com.jpp.mpdomain.usecase.details
 
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.MovieDetail
+import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.MoviesRepository
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase.GetMovieDetailsResult.*
 
 @ExtendWith(MockKExtension::class)
 class GetMovieDetailsUseCaseTest {
@@ -22,12 +25,17 @@ class GetMovieDetailsUseCaseTest {
     private lateinit var moviesRepository: MoviesRepository
     @RelaxedMockK
     private lateinit var connectivityRepository: ConnectivityRepository
+    @RelaxedMockK
+    private lateinit var languageRepository: LanguageRepository
+
+    private val language = SupportedLanguage.English
 
     private lateinit var subject: GetMovieDetailsUseCase
 
     @BeforeEach
     fun setUp() {
-        subject = GetMovieDetailsUseCase.Impl(moviesRepository, connectivityRepository)
+        subject = GetMovieDetailsUseCase.Impl(moviesRepository, connectivityRepository, languageRepository)
+        every { languageRepository.getCurrentDeviceLanguage() } returns language
     }
 
     @Test
@@ -35,19 +43,19 @@ class GetMovieDetailsUseCaseTest {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
         subject.getDetailsForMovie(1.toDouble()).let { result ->
-            verify(exactly = 0) { moviesRepository.getMovieDetails(any()) }
-            assertEquals(GetMovieDetailsResult.ErrorNoConnectivity, result)
+            verify(exactly = 0) { moviesRepository.getMovieDetails(any(), language) }
+            assertEquals(ErrorNoConnectivity, result)
         }
     }
 
     @Test
     fun `Should return ErrorUnknown when connected to network and an error occurs`() {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { moviesRepository.getMovieDetails(any()) } returns null
+        every { moviesRepository.getMovieDetails(any(), any()) } returns null
 
         subject.getDetailsForMovie(1.toDouble()).let { result ->
-            verify(exactly = 1) { moviesRepository.getMovieDetails(any()) }
-            assertEquals(GetMovieDetailsResult.ErrorUnknown, result)
+            verify(exactly = 1) { moviesRepository.getMovieDetails(any(), language) }
+            assertEquals(ErrorUnknown, result)
         }
     }
 
@@ -55,12 +63,12 @@ class GetMovieDetailsUseCaseTest {
     fun `Should return Success when connected to network and an can get details`() {
         val details = mockk<MovieDetail>()
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { moviesRepository.getMovieDetails(any()) } returns details
+        every { moviesRepository.getMovieDetails(any(), any()) } returns details
 
         subject.getDetailsForMovie(1.toDouble()).let { result ->
-            verify(exactly = 1) { moviesRepository.getMovieDetails(any()) }
-            assertTrue(result is GetMovieDetailsResult.Success)
-            assertEquals((result as GetMovieDetailsResult.Success).details, details)
+            verify(exactly = 1) { moviesRepository.getMovieDetails(any(), language) }
+            assertTrue(result is Success)
+            assertEquals((result as Success).details, details)
         }
     }
 }

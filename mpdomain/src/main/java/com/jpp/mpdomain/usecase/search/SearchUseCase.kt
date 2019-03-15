@@ -3,6 +3,7 @@ package com.jpp.mpdomain.usecase.search
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.SearchPage
 import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.SearchRepository
 
 /**
@@ -23,12 +24,13 @@ interface SearchUseCase {
 
 
     class Impl(private val searchRepository: SearchRepository,
-               private val connectivityRepository: ConnectivityRepository) : SearchUseCase {
+               private val connectivityRepository: ConnectivityRepository,
+               private val languageRepository: LanguageRepository) : SearchUseCase {
 
         override fun search(query: String, page: Int): SearchUseCaseResult {
             return when (connectivityRepository.getCurrentConnectivity()) {
                 Connectivity.Disconnected -> SearchUseCaseResult.ErrorNoConnectivity
-                Connectivity.Connected -> searchRepository.searchPage(query, page)?.let {
+                Connectivity.Connected -> searchRepository.searchPage(query, page, languageRepository.getCurrentDeviceLanguage())?.let {
                     SearchUseCaseResult.Success(sanitizeSearchPage(it))
                 } ?: run {
                     SearchUseCaseResult.ErrorUnknown

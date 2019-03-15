@@ -18,7 +18,6 @@ import com.jpp.moviespreview.utiltest.CurrentThreadExecutorService
 import com.jpp.moviespreview.utiltest.moviesPages
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
-import com.jpp.mpdomain.usecase.movies.GetMoviesResult
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
 import io.mockk.every
 import io.mockk.mockk
@@ -27,6 +26,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase.GetMoviesResult.*
 
 /**
  * Tests the interaction between the [MoviesFragment] and the [MoviesFragmentViewModel].
@@ -77,7 +77,7 @@ class MoviesFragmentIntegrationTest {
     fun shouldFetchNewMoviesPageOnAttachedToActivity() {
         val pages = moviesPages(10)
 
-        every { getMoviesUseCase.getMoviePageForSection(any(), MovieSection.Playing) } answers { GetMoviesResult.Success(pages[arg((0))]) }
+        every { getMoviesUseCase.getMoviePageForSection(any(), MovieSection.Playing) } answers { Success(pages[arg((0))]) }
         every { configMovieUseCase.configure(any(), any(), any()) } answers { arg(2) }
 
         launchAndInjectFragment()
@@ -104,7 +104,7 @@ class MoviesFragmentIntegrationTest {
 
     @Test
     fun shouldShowUnknownError() {
-        every { getMoviesUseCase.getMoviePageForSection(any(), MovieSection.Playing) } answers { GetMoviesResult.ErrorUnknown }
+        every { getMoviesUseCase.getMoviePageForSection(any(), MovieSection.Playing) } answers { ErrorUnknown }
 
         launchAndInjectFragment()
 
@@ -119,7 +119,7 @@ class MoviesFragmentIntegrationTest {
 
     @Test
     fun shouldShowConnectivityError() {
-        every { getMoviesUseCase.getMoviePageForSection(any(), MovieSection.Playing) } answers { GetMoviesResult.ErrorNoConnectivity }
+        every { getMoviesUseCase.getMoviePageForSection(any(), MovieSection.Playing) } answers { ErrorNoConnectivity }
 
         launchAndInjectFragment()
 

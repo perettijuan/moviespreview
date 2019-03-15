@@ -1,8 +1,11 @@
 package com.jpp.mpdomain.usecase.details
 
 import com.jpp.mpdomain.Connectivity
+import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.MoviesRepository
+import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase.GetMovieDetailsResult.*
 
 /**
  * Defines a UseCase that retrieves the details of a particular movie.
@@ -11,6 +14,16 @@ import com.jpp.mpdomain.repository.MoviesRepository
  * If not connected, return an error that indicates such state.
  */
 interface GetMovieDetailsUseCase {
+
+    /**
+     * Represents the result of fetching details for a given movie.
+     */
+    sealed class GetMovieDetailsResult {
+        object ErrorNoConnectivity : GetMovieDetailsResult()
+        object ErrorUnknown : GetMovieDetailsResult()
+        data class Success(val details: MovieDetail) : GetMovieDetailsResult()
+    }
+
     /**
      * Retrieves the details of a particular movie identified with [movieId].
      * @return
@@ -22,15 +35,16 @@ interface GetMovieDetailsUseCase {
 
 
     class Impl(private val moviesRepository: MoviesRepository,
-               private val connectivityRepository: ConnectivityRepository) : GetMovieDetailsUseCase {
+               private val connectivityRepository: ConnectivityRepository,
+               private val languageRepository: LanguageRepository) : GetMovieDetailsUseCase {
 
         override fun getDetailsForMovie(movieId: Double): GetMovieDetailsResult {
             return when(connectivityRepository.getCurrentConnectivity()) {
-                Connectivity.Disconnected -> GetMovieDetailsResult.ErrorNoConnectivity
-                Connectivity.Connected -> moviesRepository.getMovieDetails(movieId)?.let {
-                    GetMovieDetailsResult.Success(it)
+                Connectivity.Disconnected -> ErrorNoConnectivity
+                Connectivity.Connected -> moviesRepository.getMovieDetails(movieId, languageRepository.getCurrentDeviceLanguage())?.let {
+                    Success(it)
                 } ?: run {
-                    GetMovieDetailsResult.ErrorUnknown
+                    ErrorUnknown
                 }
             }
         }

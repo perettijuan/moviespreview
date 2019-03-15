@@ -13,6 +13,7 @@ import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
 import com.jpp.mpdomain.usecase.person.GetPersonUseCase
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
+import com.jpp.mpdomain.usecase.support.RefreshDataUseCase
 import dagger.Module
 import dagger.Provides
 import java.util.concurrent.Executor
@@ -31,8 +32,9 @@ class DomainLayerModule {
 
     @Provides
     fun providesSearchUseCase(searchRepository: SearchRepository,
-                              connectivityRepository: ConnectivityRepository)
-            : SearchUseCase = SearchUseCase.Impl(searchRepository, connectivityRepository)
+                              connectivityRepository: ConnectivityRepository,
+                              languageRepository: LanguageRepository)
+            : SearchUseCase = SearchUseCase.Impl(searchRepository, connectivityRepository, languageRepository)
 
     @Provides
     @Singleton
@@ -41,8 +43,9 @@ class DomainLayerModule {
 
     @Provides
     fun providesGetMoviesUseCase(moviesRepository: MoviesRepository,
-                                 connectivityRepository: ConnectivityRepository)
-            : GetMoviesUseCase = GetMoviesUseCase.Impl(moviesRepository, connectivityRepository)
+                                 connectivityRepository: ConnectivityRepository,
+                                 languageRepository: LanguageRepository)
+            : GetMoviesUseCase = GetMoviesUseCase.Impl(moviesRepository, connectivityRepository, languageRepository)
 
     @Provides
     fun providesConfigMovieUseCase(configurationRepository: ConfigurationRepository)
@@ -50,14 +53,15 @@ class DomainLayerModule {
 
     @Provides
     fun providesGetMovieDetailsUseCase(moviesRepository: MoviesRepository,
-                                       connectivityRepository: ConnectivityRepository)
-            : GetMovieDetailsUseCase = GetMovieDetailsUseCase.Impl(moviesRepository, connectivityRepository)
+                                       connectivityRepository: ConnectivityRepository,
+                                       languageRepository: LanguageRepository)
+            : GetMovieDetailsUseCase = GetMovieDetailsUseCase.Impl(moviesRepository, connectivityRepository, languageRepository)
 
     @Provides
     fun providesGetPersonUseCase(personRepository: PersonRepository,
-                                 connectivityRepository: ConnectivityRepository)
-            : GetPersonUseCase = GetPersonUseCase.Impl(personRepository, connectivityRepository)
-
+                                 connectivityRepository: ConnectivityRepository,
+                                 languageRepository: LanguageRepository)
+            : GetPersonUseCase = GetPersonUseCase.Impl(personRepository, connectivityRepository, languageRepository)
 
     @Provides
     fun providesGetCreditsUseCase(creditsRepository: CreditsRepository,
@@ -83,5 +87,10 @@ class DomainLayerModule {
     @Provides
     fun providesGetLicenseUseCase(licensesRepository: LicensesRepository)
             : GetLicenseUseCase = GetLicenseUseCase.Impl(licensesRepository)
+
+    @Provides
+    fun providesRefreshDataUseCase(languageRepository: LanguageRepository,
+                                   supportRepository: SupportRepository)
+            : RefreshDataUseCase = RefreshDataUseCase.Impl(languageRepository, supportRepository)
 
 }

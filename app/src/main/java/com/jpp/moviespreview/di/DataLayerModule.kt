@@ -3,12 +3,10 @@ package com.jpp.moviespreview.di
 import android.content.Context
 import androidx.room.Room
 import com.jpp.mpdata.api.MPApi
-import com.jpp.mpdata.cache.CacheTimestampHelper
-import com.jpp.mpdata.cache.ConfigurationCache
-import com.jpp.mpdata.cache.CreditsCache
-import com.jpp.mpdata.cache.MoviesCache
+import com.jpp.mpdata.cache.*
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter
+import com.jpp.mpdata.preferences.LanguageDbImpl
 import com.jpp.mpdata.repository.about.AboutNavigationRepositoryImpl
 import com.jpp.mpdata.repository.appversion.AppVersionRepositoryImpl
 import com.jpp.mpdata.repository.configuration.ConfigurationApi
@@ -27,6 +25,10 @@ import com.jpp.mpdata.repository.person.PersonDb
 import com.jpp.mpdata.repository.person.PersonRepositoryImpl
 import com.jpp.mpdata.repository.search.SearchApi
 import com.jpp.mpdata.repository.search.SearchRepositoryImpl
+import com.jpp.mpdata.repository.support.LanguageDb
+import com.jpp.mpdata.repository.support.LanguageRepositoryImpl
+import com.jpp.mpdata.repository.support.SupportDb
+import com.jpp.mpdata.repository.support.SupportRepositoryImpl
 import com.jpp.mpdomain.repository.*
 import dagger.Module
 import dagger.Provides
@@ -183,4 +185,26 @@ class DataLayerModule {
     fun providesLicensesRepository(context: Context)
             : LicensesRepository = LicensesRepositoryImpl(context)
 
+
+    /**********************************
+     ****** SUPPORT DEPENDENCIES ******
+     **********************************/
+
+    @Singleton
+    @Provides
+    fun providesLanguageDb(context: Context): LanguageDb = LanguageDbImpl(context)
+
+    @Singleton
+    @Provides
+    fun providesLanguageRepository(languageDb: LanguageDb): LanguageRepository = LanguageRepositoryImpl(languageDb)
+
+    @Singleton
+    @Provides
+    fun providesSupportDb(roomDatabase: MPRoomDataBase): SupportDb = SupportCache(roomDatabase)
+
+    @Singleton
+    @Provides
+    fun providesSupportRepository(supportDb: SupportDb, personDb: PersonDb): SupportRepository = SupportRepositoryImpl(supportDb, personDb)
+
 }
+

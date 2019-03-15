@@ -33,10 +33,20 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * The updates will be posted to the [LiveData] object provided by [viewState()].
      */
     fun init(personId: Double, personImageUrl: String, personName: String) {
+       initImpl(personId, personImageUrl, personName)
+    }
+
+    /**
+     * Called when the data being shown to the user needs to be refreshed.
+     */
+    fun refresh(personId: Double, personImageUrl: String, personName: String) {
+        initImpl(personId, personImageUrl, personName)
+    }
+
+    private fun initImpl(personId: Double, personImageUrl: String, personName: String) {
         retryFunc = { pushLoadingAndFetchPersonInfo(personId, personImageUrl, personName) }
         pushLoadingAndFetchPersonInfo(personId, personImageUrl, personName)
     }
-
     /**
      * Subscribe to this [LiveData] in order to get updates of the [PersonViewState].
      */

@@ -7,7 +7,7 @@ import com.jpp.moviespreview.screens.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
-import com.jpp.mpdomain.usecase.details.GetMovieDetailsResult
+import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase.GetMovieDetailsResult.*
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -65,7 +65,7 @@ class MovieDetailsViewModelTest {
                 )
         )
 
-        every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns GetMovieDetailsResult.Success(domainDetail)
+        every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns Success(domainDetail)
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStatePosted.add(it)
@@ -83,7 +83,7 @@ class MovieDetailsViewModelTest {
     fun `Should execute GetMovieDetailsUseCase and show connectivity error`() {
         val viewStatePosted = mutableListOf<MovieDetailsViewState>()
 
-        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsResult.ErrorNoConnectivity
+        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns ErrorNoConnectivity
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStatePosted.add(it)
@@ -99,7 +99,7 @@ class MovieDetailsViewModelTest {
     fun `Should fetch movie detail and show unknown error`() {
         val viewStatePosted = mutableListOf<MovieDetailsViewState>()
 
-        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsResult.ErrorUnknown
+        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns ErrorUnknown
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStatePosted.add(it)
@@ -114,7 +114,7 @@ class MovieDetailsViewModelTest {
 
     @Test
     fun `Should retry if state is error unknown`() {
-        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsResult.ErrorUnknown
+        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns ErrorUnknown
 
         subject.init(movieDetailId)
         subject.retry()
@@ -124,7 +124,7 @@ class MovieDetailsViewModelTest {
 
     @Test
     fun `Should retry if state is error connectivity`() {
-        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns GetMovieDetailsResult.ErrorNoConnectivity
+        every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns ErrorNoConnectivity
 
         subject.init(movieDetailId)
         subject.retry()
@@ -149,7 +149,7 @@ class MovieDetailsViewModelTest {
                 )
         )
 
-        every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns GetMovieDetailsResult.Success(domainDetail)
+        every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns Success(domainDetail)
 
         subject.init(movieDetailId)
         subject.retry()

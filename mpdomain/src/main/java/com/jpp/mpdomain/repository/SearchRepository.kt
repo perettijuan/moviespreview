@@ -1,6 +1,7 @@
 package com.jpp.mpdomain.repository
 
 import com.jpp.mpdomain.SearchPage
+import com.jpp.mpdomain.SupportedLanguage
 
 /**
  * Repository definition to perform a search.
@@ -14,5 +15,5 @@ interface SearchRepository {
      * @return the [SearchPage] that corresponds to the [query] and the [page]. Null if
      * no one can be found.
      */
-    fun searchPage(query: String, page: Int): SearchPage?
+    fun searchPage(query: String, page: Int, language: SupportedLanguage): SearchPage?
 }

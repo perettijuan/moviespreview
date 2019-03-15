@@ -1,6 +1,7 @@
 package com.jpp.mpdomain.repository
 
 import com.jpp.mpdomain.Person
+import com.jpp.mpdomain.SupportedLanguage
 
 /**
  * Repository definition to retrieve a [Person] whenever is possible.
@@ -9,5 +10,5 @@ interface PersonRepository {
     /**
      * Retrieves the person that is identified by [personId].
      */
-    fun getPerson(personId: Double) : Person?
+    fun getPerson(personId: Double, language: SupportedLanguage) : Person?
 }

@@ -28,32 +28,32 @@ open class MPApi
         return tryCatchOrReturnNull { API.getAppConfiguration(API_KEY) }
     }
 
-    override fun getNowPlayingMoviePage(page: Int): MoviePage? {
-        return tryCatchOrReturnNull { API.getNowPlaying(page, API_KEY) }
+    override fun getNowPlayingMoviePage(page: Int, language: SupportedLanguage): MoviePage? {
+        return tryCatchOrReturnNull { API.getNowPlaying(page, API_KEY, language.id) }
     }
 
-    override fun getPopularMoviePage(page: Int): MoviePage? {
-        return tryCatchOrReturnNull { API.getPopular(page, API_KEY) }
+    override fun getPopularMoviePage(page: Int, language: SupportedLanguage): MoviePage? {
+        return tryCatchOrReturnNull { API.getPopular(page, API_KEY, language.id) }
     }
 
-    override fun getTopRatedMoviePage(page: Int): MoviePage? {
-        return tryCatchOrReturnNull { API.getTopRated(page, API_KEY) }
+    override fun getTopRatedMoviePage(page: Int, language: SupportedLanguage): MoviePage? {
+        return tryCatchOrReturnNull { API.getTopRated(page, API_KEY, language.id) }
     }
 
-    override fun getUpcomingMoviePage(page: Int): MoviePage? {
-        return tryCatchOrReturnNull { API.getUpcoming(page, API_KEY) }
+    override fun getUpcomingMoviePage(page: Int, language: SupportedLanguage): MoviePage? {
+        return tryCatchOrReturnNull { API.getUpcoming(page, API_KEY, language.id) }
     }
 
-    override fun getMovieDetails(movieId: Double): MovieDetail? {
-        return tryCatchOrReturnNull { API.getMovieDetails(movieId, API_KEY) }
+    override fun getMovieDetails(movieId: Double, language: SupportedLanguage): MovieDetail? {
+        return tryCatchOrReturnNull { API.getMovieDetails(movieId, API_KEY, language.id) }
     }
 
-    override fun performSearch(query: String, page: Int): SearchPage? {
-        return tryCatchOrReturnNull { API.search(query, page, API_KEY) }
+    override fun performSearch(query: String, page: Int, language: SupportedLanguage): SearchPage? {
+        return tryCatchOrReturnNull { API.search(query, page, API_KEY, language.id) }
     }
 
-    override fun getPerson(personId: Double): Person? {
-        return tryCatchOrReturnNull { API.getPerson(personId, API_KEY) }
+    override fun getPerson(personId: Double, language: SupportedLanguage): Person? {
+        return tryCatchOrReturnNull { API.getPerson(personId, API_KEY, language.id) }
     }
 
     override fun getCreditsForMovie(movieId: Double): Credits? {

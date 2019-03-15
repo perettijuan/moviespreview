@@ -1,8 +1,10 @@
 package com.jpp.mpdomain.usecase.movies
 
 import com.jpp.mpdomain.Connectivity
+import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.MoviesRepository
 
 /**
@@ -12,6 +14,16 @@ import com.jpp.mpdomain.repository.MoviesRepository
  * If not connected, return an error that indicates such state.
  */
 interface GetMoviesUseCase {
+
+    /**
+     * Represents the result of a a movies fetching execution.
+     */
+    sealed class GetMoviesResult {
+        object ErrorNoConnectivity : GetMoviesResult()
+        object ErrorUnknown : GetMoviesResult()
+        data class Success(val moviesPage: MoviePage) : GetMoviesResult()
+    }
+
     /**
      * Performs the fetch of the movies page identified by [page] for the provided [section].
      * @return
@@ -23,12 +35,13 @@ interface GetMoviesUseCase {
 
 
     class Impl(private val moviesRepository: MoviesRepository,
-               private val connectivityRepository: ConnectivityRepository) : GetMoviesUseCase {
+               private val connectivityRepository: ConnectivityRepository,
+               private val languageRepository: LanguageRepository) : GetMoviesUseCase {
 
         override fun getMoviePageForSection(page: Int, section: MovieSection): GetMoviesResult {
             return when (connectivityRepository.getCurrentConnectivity()) {
                 Connectivity.Disconnected -> GetMoviesResult.ErrorNoConnectivity
-                Connectivity.Connected -> moviesRepository.getMoviePageForSection(page, section)?.let {
+                Connectivity.Connected -> moviesRepository.getMoviePageForSection(page, section, languageRepository.getCurrentDeviceLanguage())?.let {
                     GetMoviesResult.Success(it)
                 } ?: run {
                     GetMoviesResult.ErrorUnknown

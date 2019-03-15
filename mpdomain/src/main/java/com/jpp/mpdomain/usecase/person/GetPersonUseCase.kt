@@ -2,6 +2,7 @@ package com.jpp.mpdomain.usecase.person
 
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.PersonRepository
 
 /**
@@ -22,12 +23,13 @@ interface GetPersonUseCase {
 
 
     class Impl(private val personRepository: PersonRepository,
-               private val connectivityRepository: ConnectivityRepository) : GetPersonUseCase {
+               private val connectivityRepository: ConnectivityRepository,
+               private val languageRepository: LanguageRepository) : GetPersonUseCase {
 
         override fun getPerson(personId: Double): GetPersonResult {
             return when (connectivityRepository.getCurrentConnectivity()) {
                 Connectivity.Disconnected -> GetPersonResult.ErrorNoConnectivity
-                Connectivity.Connected -> personRepository.getPerson(personId)?.let {
+                Connectivity.Connected -> personRepository.getPerson(personId, languageRepository.getCurrentDeviceLanguage())?.let {
                     GetPersonResult.Success(it)
                 } ?: run {
                     GetPersonResult.ErrorUnknown

@@ -1,6 +1,7 @@
 package com.jpp.mpdata.repository.person
 
 import com.jpp.mpdomain.Person
+import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.repository.PersonRepository
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -32,10 +33,10 @@ class PersonRepositoryTest {
     fun `Should never get from API when data is in cache`() {
         every { personDb.getPerson(any()) } returns mockk()
 
-        subject.getPerson(personId)
+        subject.getPerson(personId, SupportedLanguage.English)
 
         verify { personDb.getPerson(personId) }
-        verify(exactly = 0) { personApi.getPerson(any()) }
+        verify(exactly = 0) { personApi.getPerson(any(), SupportedLanguage.English) }
         verify(exactly = 0) { personDb.savePerson(any()) }
     }
 
@@ -43,22 +44,22 @@ class PersonRepositoryTest {
     fun `Should update cache when data retrieved from API`() {
         val person = mockk<Person>()
         every { personDb.getPerson(any()) } returns null
-        every { personApi.getPerson(any()) } returns person
+        every { personApi.getPerson(any(), any()) } returns person
 
-        subject.getPerson(personId)
+        subject.getPerson(personId, SupportedLanguage.English)
 
-        verify { personApi.getPerson(personId) }
+        verify { personApi.getPerson(personId, SupportedLanguage.English) }
         verify { personDb.savePerson(person) }
     }
 
     @Test
     fun `Should return null when it fails`() {
         every { personDb.getPerson(any()) } returns null
-        every { personApi.getPerson(any()) } returns null
+        every { personApi.getPerson(any(),any()) } returns null
 
-        val result = subject.getPerson(personId)
+        val result = subject.getPerson(personId, SupportedLanguage.English)
 
-        verify { personApi.getPerson(personId) }
+        verify { personApi.getPerson(personId, SupportedLanguage.English) }
         verify { personDb.getPerson(personId) }
         assertNull(result)
     }

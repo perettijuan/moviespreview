@@ -3,7 +3,9 @@ package com.jpp.mpdomain.usecase.search
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.SearchPage
 import com.jpp.mpdomain.SearchResult
+import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.SearchRepository
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -23,12 +25,18 @@ class SearchUseCaseTest {
     private lateinit var searchRepository: SearchRepository
     @RelaxedMockK
     private lateinit var connectivityRepository: ConnectivityRepository
+    @RelaxedMockK
+    private lateinit var languageRepository: LanguageRepository
+
+    private val language = SupportedLanguage.English
+
 
     private lateinit var subject: SearchUseCase
 
     @BeforeEach
     fun setUp() {
-        subject = SearchUseCase.Impl(searchRepository, connectivityRepository)
+        subject = SearchUseCase.Impl(searchRepository, connectivityRepository, languageRepository)
+        every { languageRepository.getCurrentDeviceLanguage() } returns language
     }
 
     @Test
@@ -36,7 +44,7 @@ class SearchUseCaseTest {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
         subject.search("aSearch", 1).let { result ->
-            verify(exactly = 0) { searchRepository.searchPage(any(), any()) }
+            verify(exactly = 0) { searchRepository.searchPage(any(), any(), any()) }
             assertEquals(SearchUseCaseResult.ErrorNoConnectivity, result)
         }
     }
@@ -44,10 +52,10 @@ class SearchUseCaseTest {
     @Test
     fun `Should return ErrorUnknown when connected to network and an error occurs`() {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { searchRepository.searchPage(any(), any()) } returns null
+        every { searchRepository.searchPage(any(), any(), any()) } returns null
 
         subject.search("aSearch", 1).let { result ->
-            verify(exactly = 1) { searchRepository.searchPage("aSearch", 1) }
+            verify(exactly = 1) { searchRepository.searchPage("aSearch", 1, language) }
             assertEquals(SearchUseCaseResult.ErrorUnknown, result)
         }
     }
@@ -67,7 +75,7 @@ class SearchUseCaseTest {
 
         every { movieResult.isMovie() } returns true
         every { personResult.isPerson() } returns true
-        every { searchRepository.searchPage(any(), any()) } returns searchPage
+        every { searchRepository.searchPage(any(), any(), any()) } returns searchPage
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
 
         subject.search("aSearch", 1).let { result ->

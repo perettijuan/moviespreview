@@ -8,7 +8,6 @@ import com.jpp.moviespreview.utiltest.successGetMoviesUCExecution
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
-import com.jpp.mpdomain.usecase.movies.GetMoviesResult
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -19,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.util.concurrent.Executor
+import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase.GetMoviesResult.*
 
 @ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
 class MoviesFragmentViewModelTest {
@@ -50,7 +50,7 @@ class MoviesFragmentViewModelTest {
         val moviesInPageCount = 10
 
         every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns successGetMoviesUCExecution(moviesInPageCount)
-        every { configMovieUseCase.configure(any(), any(), any()) } answers { arg(2) }
+        every { configMovieUseCase.configure(any(), any(), any()) } answers { ConfigMovieUseCase.ConfigMovieResult(arg(2)) }
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStates.add(it)
@@ -73,7 +73,7 @@ class MoviesFragmentViewModelTest {
         val moviesInPageCount = 10
 
         every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns successGetMoviesUCExecution(moviesInPageCount)
-        every { configMovieUseCase.configure(any(), any(), any()) } answers { arg(2) }
+        every { configMovieUseCase.configure(any(), any(), any()) } answers { ConfigMovieUseCase.ConfigMovieResult(arg(2)) }
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStates.add(it)
@@ -91,7 +91,7 @@ class MoviesFragmentViewModelTest {
     fun `Should allow retrying when failed to load the first page`() {
         val viewStates = mutableListOf<MoviesViewState>()
 
-        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns GetMoviesResult.ErrorUnknown
+        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns ErrorUnknown
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             viewStates.add(it)
@@ -110,39 +110,11 @@ class MoviesFragmentViewModelTest {
         verify(exactly = 2) { getMoviesUseCase.getMoviePageForSection(1, movieSection) }
     }
 
-    /*
-     * This scenario verifies:
-     * 1 - VM init.
-     * 2 - UC failed.
-     * 3 - Never retried.
-     * 4 - Rotate device -> VM.init again should do nothing
-     */
-    @Test
-    fun `Should do nothing when failed and is already initialized`() {
-        val viewStates = mutableListOf<MoviesViewState>()
-
-        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns GetMoviesResult.ErrorUnknown
-
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStates.add(it)
-        })
-
-        subject.init(moviePosterSize = 5, movieBackdropSize = 10)
-
-        assertTrue(viewStates[0] is MoviesViewState.Loading)
-        assertTrue(viewStates[1] is MoviesViewState.ErrorUnknown)
-
-        subject.init(moviePosterSize = 5, movieBackdropSize = 10)
-
-        assertEquals(2, viewStates.size)
-        verify(exactly = 1) { getMoviesUseCase.getMoviePageForSection(1, movieSection) }
-    }
-
     @Test
     fun `Should post ErrorNoConnectivity when not connected to network detected`() {
         var lastState: MoviesViewState = MoviesViewState.Loading
 
-        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns GetMoviesResult.ErrorNoConnectivity
+        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns ErrorNoConnectivity
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             lastState = it
@@ -157,7 +129,7 @@ class MoviesFragmentViewModelTest {
     fun `Should post ErrorUnknown when not connected to network detected`() {
         var lastState: MoviesViewState = MoviesViewState.Loading
 
-        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns GetMoviesResult.ErrorUnknown
+        every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns ErrorUnknown
 
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
             lastState = it
