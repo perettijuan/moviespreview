@@ -86,7 +86,8 @@ class DomainLayerModule {
             : GetLicenseUseCase = GetLicenseUseCase.Impl(licensesRepository)
 
     @Provides
-    fun providesRefreshDataUseCase(languageRepository: LanguageRepository)
-            : RefreshDataUseCase = RefreshDataUseCase.Impl(languageRepository)
+    fun providesRefreshDataUseCase(languageRepository: LanguageRepository,
+                                   supportRepository: SupportRepository)
+            : RefreshDataUseCase = RefreshDataUseCase.Impl(languageRepository, supportRepository)
 
 }

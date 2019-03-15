@@ -85,14 +85,13 @@ class RoomModelAdapter {
     /**
      * Adapts the provided [MoviePage] to a [DBMoviePage] with the same data.
      */
-    fun adaptDataMoviePageToDBMoviePage(dataMoviePage: MoviePage, sectionName: String, dueDate: Long, language: String): DBMoviePage = with(dataMoviePage) {
+    fun adaptDataMoviePageToDBMoviePage(dataMoviePage: MoviePage, sectionName: String, dueDate: Long): DBMoviePage = with(dataMoviePage) {
         DBMoviePage(
                 page = page,
                 totalPages = total_pages,
                 totalResults = total_results,
                 section = sectionName,
-                dueDate = dueDate,
-                language = language
+                dueDate = dueDate
         )
     }
 

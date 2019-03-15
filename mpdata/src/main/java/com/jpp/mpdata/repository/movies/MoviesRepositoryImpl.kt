@@ -10,9 +10,9 @@ class MoviesRepositoryImpl(private val moviesApi: MoviesApi,
                            private val moviesDb: MoviesDb) : MoviesRepository {
 
     override fun getMoviePageForSection(page: Int, section: MovieSection, language: SupportedLanguage): MoviePage? {
-        return moviesDb.getMoviePageForSection(page, section, language) ?: run {
+        return moviesDb.getMoviePageForSection(page, section) ?: run {
             getFromApi(page, section, language)?.also {
-                moviesDb.saveMoviePageForSection(it, section, language)
+                moviesDb.saveMoviePageForSection(it, section)
             }
         }
     }

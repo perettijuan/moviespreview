@@ -1,6 +1,7 @@
 package com.jpp.mpdomain.usecase.support
 
 import com.jpp.mpdomain.repository.LanguageRepository
+import com.jpp.mpdomain.repository.SupportRepository
 
 /**
  * Defines a UseCase that verifies the inner state of the application in order to know if the
@@ -15,11 +16,18 @@ interface RefreshDataUseCase {
     fun shouldRefreshDataInApp(): Boolean
 
 
-    class Impl(private val languageRepository: LanguageRepository) : RefreshDataUseCase {
+    class Impl(private val languageRepository: LanguageRepository,
+               private val supportRepository: SupportRepository) : RefreshDataUseCase {
         override fun shouldRefreshDataInApp(): Boolean {
             return languageRepository.getCurrentAppLanguage()?.let {
-                languageRepository.updateAppLanguage(languageRepository.getCurrentDeviceLanguage()) // always update
-                return languageRepository.getCurrentDeviceLanguage() != it
+                val refresh = languageRepository.getCurrentDeviceLanguage() != it
+
+                if (refresh) {
+                    supportRepository.clearAllData()
+                    languageRepository.updateAppLanguage(languageRepository.getCurrentDeviceLanguage()) // always update
+                }
+
+                return refresh
             } ?: run {
                 // no app language stored, update
                 languageRepository.updateAppLanguage(languageRepository.getCurrentDeviceLanguage())

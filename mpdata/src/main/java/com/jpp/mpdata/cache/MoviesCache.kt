@@ -8,7 +8,6 @@ import com.jpp.mpdata.repository.movies.MoviesDb
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
-import com.jpp.mpdomain.SupportedLanguage
 
 /**
  * [MoviesDb] implementation with a cache mechanism to verify that the data stored in the application
@@ -19,9 +18,9 @@ class MoviesCache(private val roomDatabase: MPRoomDataBase,
                   private val timestampHelper: CacheTimestampHelper) : MoviesDb {
 
 
-    override fun getMoviePageForSection(page: Int, section: MovieSection, language: SupportedLanguage): MoviePage? {
+    override fun getMoviePageForSection(page: Int, section: MovieSection): MoviePage? {
         return withMovieDao {
-            getMoviePage(page, section.name, now(), language.id)?.let { dbMoviePage ->
+            getMoviePage(page, section.name, now())?.let { dbMoviePage ->
                 getMoviesFromPage(dbMoviePage.id)?.let { movieList ->
                     transformWithAdapter { adaptDBMoviePageToDataMoviePage(dbMoviePage, movieList) }
                 }
@@ -29,10 +28,10 @@ class MoviesCache(private val roomDatabase: MPRoomDataBase,
         }
     }
 
-    override fun saveMoviePageForSection(moviePage: MoviePage, section: MovieSection, language: SupportedLanguage) {
+    override fun saveMoviePageForSection(moviePage: MoviePage, section: MovieSection) {
         withMovieDao {
             insertMoviePage(transformWithAdapter {
-                adaptDataMoviePageToDBMoviePage(moviePage, section.name, moviePagesRefreshTime(), language.id)
+                adaptDataMoviePageToDBMoviePage(moviePage, section.name, moviePagesRefreshTime())
             })
         }.let {
             moviePage.results.map { movie -> transformWithAdapter { adaptDataMovieToDBMovie(movie, it) } }

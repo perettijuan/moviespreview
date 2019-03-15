@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jpp.moviespreview.screens.CoroutineDispatchers
 import com.jpp.moviespreview.screens.MPScopedViewModel
-import com.jpp.moviespreview.screens.SingleLiveEvent
 import com.jpp.mpdomain.usecase.support.RefreshDataUseCase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
