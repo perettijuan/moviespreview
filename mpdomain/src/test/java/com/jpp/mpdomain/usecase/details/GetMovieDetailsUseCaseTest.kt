@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase.GetMovieDetailsResult.*
 
 @ExtendWith(MockKExtension::class)
 class GetMovieDetailsUseCaseTest {
@@ -36,7 +37,7 @@ class GetMovieDetailsUseCaseTest {
 
         subject.getDetailsForMovie(1.toDouble()).let { result ->
             verify(exactly = 0) { moviesRepository.getMovieDetails(any()) }
-            assertEquals(GetMovieDetailsResult.ErrorNoConnectivity, result)
+            assertEquals(ErrorNoConnectivity, result)
         }
     }
 
@@ -47,7 +48,7 @@ class GetMovieDetailsUseCaseTest {
 
         subject.getDetailsForMovie(1.toDouble()).let { result ->
             verify(exactly = 1) { moviesRepository.getMovieDetails(any()) }
-            assertEquals(GetMovieDetailsResult.ErrorUnknown, result)
+            assertEquals(ErrorUnknown, result)
         }
     }
 
@@ -59,8 +60,8 @@ class GetMovieDetailsUseCaseTest {
 
         subject.getDetailsForMovie(1.toDouble()).let { result ->
             verify(exactly = 1) { moviesRepository.getMovieDetails(any()) }
-            assertTrue(result is GetMovieDetailsResult.Success)
-            assertEquals((result as GetMovieDetailsResult.Success).details, details)
+            assertTrue(result is Success)
+            assertEquals((result as Success).details, details)
         }
     }
 }

@@ -8,7 +8,7 @@ import com.jpp.moviespreview.screens.SingleLiveEvent
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
-import com.jpp.mpdomain.usecase.details.GetMovieDetailsResult
+import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase.GetMovieDetailsResult.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -99,9 +99,9 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
                 .getDetailsForMovie(movieId)
                 .let { ucResult ->
                     when (ucResult) {
-                        is GetMovieDetailsResult.ErrorNoConnectivity -> MovieDetailsViewState.ErrorNoConnectivity
-                        is GetMovieDetailsResult.ErrorUnknown -> MovieDetailsViewState.ErrorUnknown
-                        is GetMovieDetailsResult.Success -> MovieDetailsViewState.ShowDetail(mapMovieDetails(ucResult.details))
+                        is ErrorNoConnectivity -> MovieDetailsViewState.ErrorNoConnectivity
+                        is ErrorUnknown -> MovieDetailsViewState.ErrorUnknown
+                        is Success -> MovieDetailsViewState.ShowDetail(mapMovieDetails(ucResult.details))
                     }
                 }
     }
