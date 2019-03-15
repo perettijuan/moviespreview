@@ -1,6 +1,7 @@
 package com.jpp.mpdata.repository.search
 
 import com.jpp.mpdomain.SearchPage
+import com.jpp.mpdomain.SupportedLanguage
 
 /**
  * API definition to perform a searchPage.
@@ -12,5 +13,5 @@ interface SearchApi {
      * executed for the given parameters.
      * Null if no data is available.
      */
-    fun performSearch(query: String, page: Int): SearchPage?
+    fun performSearch(query: String, page: Int, language: SupportedLanguage): SearchPage?
 }

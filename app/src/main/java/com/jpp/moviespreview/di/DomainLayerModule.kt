@@ -32,8 +32,9 @@ class DomainLayerModule {
 
     @Provides
     fun providesSearchUseCase(searchRepository: SearchRepository,
-                              connectivityRepository: ConnectivityRepository)
-            : SearchUseCase = SearchUseCase.Impl(searchRepository, connectivityRepository)
+                              connectivityRepository: ConnectivityRepository,
+                              languageRepository: LanguageRepository)
+            : SearchUseCase = SearchUseCase.Impl(searchRepository, connectivityRepository, languageRepository)
 
     @Provides
     @Singleton
