@@ -194,9 +194,8 @@ class SearchFragment : Fragment() {
         searchErrorView.setInvisible()
         searchLoadingView.setInvisible()
         searchResultRv.setInvisible()
-
+        
         searchPlaceHolderIv.setVisible()
-        searchPlaceHolderIv.alpha = 0.3F
     }
 
     private fun renderSearching() {
@@ -224,6 +223,7 @@ class SearchFragment : Fragment() {
         searchLoadingView.setInvisible()
 
         searchResultRv.setVisible()
+        searchResultRv.scheduleLayoutAnimation()
     }
 
     private fun renderEmptySearch() {
