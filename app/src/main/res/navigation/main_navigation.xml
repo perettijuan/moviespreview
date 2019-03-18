@@ -12,10 +12,10 @@
         <action
             android:id="@+id/action_playingMoviesFragment_to_movieDetailsFragment"
             app:destination="@id/movieDetailsFragment"
-            app:enterAnim="@anim/enter_slide_down"
-            app:exitAnim="@anim/exit_slide_down"
-            app:popEnterAnim="@anim/pop_enter_slide_up"
-            app:popExitAnim="@anim/pop_exit_slide_up" />
+            app:enterAnim="@anim/fragment_enter_slide_down"
+            app:exitAnim="@anim/fragment_exit_slide_down"
+            app:popEnterAnim="@anim/fragment_enter_slide_up"
+            app:popExitAnim="@anim/fragment_exit_slide_up" />
     </fragment>
     <fragment
         android:id="@+id/popularMoviesFragment"
@@ -25,10 +25,10 @@
         <action
             android:id="@+id/action_popularMoviesFragment_to_movieDetailsFragment"
             app:destination="@id/movieDetailsFragment"
-            app:enterAnim="@anim/enter_slide_down"
-            app:exitAnim="@anim/exit_slide_down"
-            app:popEnterAnim="@anim/pop_enter_slide_up"
-            app:popExitAnim="@anim/pop_exit_slide_up" />
+            app:enterAnim="@anim/fragment_enter_slide_down"
+            app:exitAnim="@anim/fragment_exit_slide_down"
+            app:popEnterAnim="@anim/fragment_enter_slide_up"
+            app:popExitAnim="@anim/fragment_exit_slide_up" />
     </fragment>
     <fragment
         android:id="@+id/upcomingMoviesFragment"
@@ -38,10 +38,10 @@
         <action
             android:id="@+id/action_upcomingMoviesFragment_to_movieDetailsFragment"
             app:destination="@id/movieDetailsFragment"
-            app:enterAnim="@anim/enter_slide_down"
-            app:exitAnim="@anim/exit_slide_down"
-            app:popEnterAnim="@anim/pop_enter_slide_up"
-            app:popExitAnim="@anim/pop_exit_slide_up" />
+            app:enterAnim="@anim/fragment_enter_slide_down"
+            app:exitAnim="@anim/fragment_exit_slide_down"
+            app:popEnterAnim="@anim/fragment_enter_slide_up"
+            app:popExitAnim="@anim/fragment_exit_slide_up" />
     </fragment>
     <fragment
         android:id="@+id/topRatedMoviesFragment"
@@ -51,10 +51,10 @@
         <action
             android:id="@+id/action_topRatedMoviesFragment_to_movieDetailsFragment"
             app:destination="@id/movieDetailsFragment"
-            app:enterAnim="@anim/enter_slide_down"
-            app:exitAnim="@anim/exit_slide_down"
-            app:popEnterAnim="@anim/pop_enter_slide_up"
-            app:popExitAnim="@anim/pop_exit_slide_up" />
+            app:enterAnim="@anim/fragment_enter_slide_down"
+            app:exitAnim="@anim/fragment_exit_slide_down"
+            app:popEnterAnim="@anim/fragment_enter_slide_up"
+            app:popExitAnim="@anim/fragment_exit_slide_up" />
     </fragment>
     <fragment
         android:id="@+id/movieDetailsFragment"
@@ -72,10 +72,10 @@
         <action
             android:id="@+id/action_movieDetailsFragment_to_creditsFragment"
             app:destination="@id/creditsFragment"
-            app:enterAnim="@anim/enter_slide_right"
-            app:exitAnim="@anim/exit_slide_right"
-            app:popEnterAnim="@anim/pop_enter_slide_up"
-            app:popExitAnim="@anim/pop_exit_slide_up"/>
+            app:enterAnim="@anim/fragment_enter_slide_right"
+            app:exitAnim="@anim/fragment_exit_slide_right"
+            app:popEnterAnim="@anim/fragment_enter_slide_up"
+            app:popExitAnim="@anim/fragment_exit_slide_up"/>
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
@@ -87,10 +87,10 @@
         <action
             android:id="@+id/action_searchFragment_to_personFragment"
             app:destination="@id/personFragment"
-            app:enterAnim="@anim/enter_slide_down"
-            app:exitAnim="@anim/exit_slide_down"
-            app:popEnterAnim="@anim/pop_enter_slide_up"
-            app:popExitAnim="@anim/pop_exit_slide_up" />
+            app:enterAnim="@anim/fragment_enter_slide_down"
+            app:exitAnim="@anim/fragment_exit_slide_down"
+            app:popEnterAnim="@anim/fragment_enter_slide_up"
+            app:popExitAnim="@anim/fragment_exit_slide_up" />
     </fragment>
     <fragment
         android:id="@+id/personFragment"
@@ -119,10 +119,10 @@
         <action
             android:id="@+id/action_creditsFragment_to_personFragment"
             app:destination="@id/personFragment"
-            app:enterAnim="@anim/enter_slide_right"
-            app:exitAnim="@anim/exit_slide_right"
-            app:popEnterAnim="@anim/pop_enter_slide_left"
-            app:popExitAnim="@anim/pop_exit_slide_left"/>
+            app:enterAnim="@anim/fragment_enter_slide_right"
+            app:exitAnim="@anim/fragment_exit_slide_right"
+            app:popEnterAnim="@anim/fragment_enter_slide_left"
+            app:popExitAnim="@anim/fragment_exit_slide_left"/>
     </fragment>
     <fragment
         android:id="@+id/aboutFragment"
@@ -131,10 +131,10 @@
         <action
             android:id="@+id/action_aboutFragment_to_licensesFragment"
             app:destination="@id/licensesFragment"
-            app:enterAnim="@anim/enter_slide_right"
-            app:exitAnim="@anim/exit_slide_right"
-            app:popEnterAnim="@anim/pop_enter_slide_left"
-            app:popExitAnim="@anim/pop_exit_slide_left"/>
+            app:enterAnim="@anim/fragment_enter_slide_right"
+            app:exitAnim="@anim/fragment_exit_slide_right"
+            app:popEnterAnim="@anim/fragment_enter_slide_left"
+            app:popExitAnim="@anim/fragment_exit_slide_left"/>
     </fragment>
     <fragment
         android:id="@+id/licensesFragment"
@@ -143,10 +143,10 @@
         <action
             android:id="@+id/action_licensesFragment_to_licenseContentFragment"
             app:destination="@id/licenseContentFragment"
-            app:enterAnim="@anim/enter_slide_right"
-            app:exitAnim="@anim/exit_slide_right"
-            app:popEnterAnim="@anim/pop_enter_slide_left"
-            app:popExitAnim="@anim/pop_exit_slide_left"/>
+            app:enterAnim="@anim/fragment_enter_slide_right"
+            app:exitAnim="@anim/fragment_exit_slide_right"
+            app:popEnterAnim="@anim/fragment_enter_slide_left"
+            app:popExitAnim="@anim/fragment_exit_slide_left"/>
     </fragment>
     <fragment
         android:id="@+id/licenseContentFragment"

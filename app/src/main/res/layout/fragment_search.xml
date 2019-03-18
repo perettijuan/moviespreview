@@ -1,63 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/fragmentSearchRoot"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:animateLayoutChanges="true">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragmentSearchRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
 
-  <ImageView
-    android:id="@+id/searchPlaceHolderIv"
-    android:layout_width="?attr/mpSearchImageSize"
-    android:layout_height="?attr/mpSearchImageSize"
-    android:alpha="0.3"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:srcCompat="@drawable/ic_app_icon_black" />
+    <ImageView
+        android:id="@+id/searchPlaceHolderIv"
+        android:layout_width="?attr/mpSearchImageSize"
+        android:layout_height="?attr/mpSearchImageSize"
+        android:alpha="0.3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_app_icon_black" />
 
-  <TextView
-    android:id="@+id/emptySearch"
-    style="@style/MPTextViewTitle"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    android:visibility="invisible"
-    app:layout_constraintTop_toBottomOf="@+id/searchPlaceHolderIv"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    tools:text="No result for your search" />
+    <TextView
+        android:id="@+id/emptySearch"
+        style="@style/MPTextViewTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchPlaceHolderIv"
+        tools:text="No result for your search" />
 
-  <com.jpp.moviespreview.views.MPErrorView
-    android:id="@+id/searchErrorView"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    android:visibility="invisible"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    <com.jpp.moviespreview.views.MPErrorView
+        android:id="@+id/searchErrorView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-  <ProgressBar
-    android:id="@+id/searchLoadingView"
-    style="@style/MPProgressBar"
-    android:visibility="invisible"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    <ProgressBar
+        android:id="@+id/searchLoadingView"
+        style="@style/MPProgressBar"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-  <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/searchResultRv"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    android:visibility="invisible"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    tools:listitem="@layout/list_item_search" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/searchResultRv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layoutAnimation="@anim/list_fall_down"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/list_item_search" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
