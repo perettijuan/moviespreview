@@ -1,6 +1,6 @@
 package com.jpp.mpdata.cache.room
 
-import com.jpp.moviespreview.common.extensions.addAllMapping
+import com.jpp.mp.common.extensions.addAllMapping
 import com.jpp.mpdomain.*
 
 class RoomModelAdapter {

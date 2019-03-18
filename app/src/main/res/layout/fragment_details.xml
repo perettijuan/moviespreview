@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:animateLayoutChanges="true">
 
-        <com.jpp.moviespreview.views.MPErrorView
+        <com.jpp.mp.views.MPErrorView
             android:id="@+id/detailsErrorView"
             android:layout_width="0dp"
             android:layout_height="0dp"

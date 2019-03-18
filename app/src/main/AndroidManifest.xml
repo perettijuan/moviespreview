@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.jpp.moviespreview">
+  package="com.jpp.mp">
 
   <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -10,10 +10,10 @@
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/AppTheme"
-    android:name=".MPApp"
+    android:name="com.jpp.mp.MPApp"
     android:usesCleartextTraffic="true">
 
-    <activity android:name=".screens.main.MainActivity">
+    <activity android:name="com.jpp.mp.screens.main.MainActivity">
       <intent-filter>
         <category android:name="android.intent.category.LAUNCHER"/>
         <action android:name="android.intent.action.MAIN"/>

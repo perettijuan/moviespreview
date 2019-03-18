@@ -1,6 +1,6 @@
 package com.jpp.mpdomain.usecase
 
-import com.jpp.moviespreview.common.extensions.transformToInt
+import com.jpp.mp.common.extensions.transformToInt
 
 abstract class ConfigureImagePathUseCase {
 
