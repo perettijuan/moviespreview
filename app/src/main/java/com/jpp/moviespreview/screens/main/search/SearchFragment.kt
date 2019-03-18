@@ -194,7 +194,7 @@ class SearchFragment : Fragment() {
         searchErrorView.setInvisible()
         searchLoadingView.setInvisible()
         searchResultRv.setInvisible()
-        
+
         searchPlaceHolderIv.setVisible()
     }
 
