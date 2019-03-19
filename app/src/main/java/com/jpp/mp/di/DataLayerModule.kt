@@ -8,6 +8,7 @@ import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdata.preferences.LanguageDbImpl
 import com.jpp.mpdata.repository.about.AboutNavigationRepositoryImpl
+import com.jpp.mpdata.repository.account.SessionRepositoryImpl
 import com.jpp.mpdata.repository.appversion.AppVersionRepositoryImpl
 import com.jpp.mpdata.repository.configuration.ConfigurationApi
 import com.jpp.mpdata.repository.configuration.ConfigurationDb
@@ -205,6 +206,15 @@ class DataLayerModule {
     @Singleton
     @Provides
     fun providesSupportRepository(supportDb: SupportDb, personDb: PersonDb): SupportRepository = SupportRepositoryImpl(supportDb, personDb)
+
+
+    /**********************************
+     ****** ACCOUNT DEPENDENCIES ******
+     **********************************/
+
+    @Singleton
+    @Provides
+    fun providesSessionRepository() : SessionRepository = SessionRepositoryImpl()
 
 }
 
