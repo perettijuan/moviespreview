@@ -52,3 +52,8 @@
 [![About gif](https://github.com/perettijuan/moviespreview/blob/master/art/about.gif)](https://github.com/perettijuan/moviespreview/blob/master/art/about.gif)
 
 </details>
+
+## High Level Architecture
+
+[![HLArch](https://github.com/perettijuan/moviespreview/blob/master/art/MoviesPreview-HighLevelArchitecture.png)](https://github.com/perettijuan/moviespreview/blob/master/art/MoviesPreview-HighLevelArchitecture.png)
+
