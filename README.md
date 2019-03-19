@@ -6,6 +6,6 @@
 <details>
     <summary>Movie list</summary>
 
-[![movieList gif](https://github.com/perettijuan/moviespreview/blob/master/art/moviesList.gif)](https://github.com/perettijuan/moviespreview/blob/master/art/moviesList.gif)
+[![Home gif](https://github.com/perettijuan/moviespreview/blob/master/art/home.gif)](https://github.com/perettijuan/moviespreview/blob/master/art/home.gif)
 
 </details>
