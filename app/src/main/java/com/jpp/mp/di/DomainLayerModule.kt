@@ -2,6 +2,7 @@ package com.jpp.mp.di
 
 import com.jpp.mpdomain.repository.*
 import com.jpp.mpdomain.usecase.about.GetAboutNavigationUrlUseCase
+import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
 import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase
 import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
 import com.jpp.mpdomain.usecase.credits.GetCreditsUseCase
@@ -92,5 +93,9 @@ class DomainLayerModule {
     fun providesRefreshDataUseCase(languageRepository: LanguageRepository,
                                    supportRepository: SupportRepository)
             : RefreshDataUseCase = RefreshDataUseCase.Impl(languageRepository, supportRepository)
+
+    @Provides
+    fun providesGetAccountInfoUseCase(sessionRepository: SessionRepository)
+            : GetAccountInfoUseCase = GetAccountInfoUseCase.Impl(sessionRepository)
 
 }
