@@ -70,4 +70,8 @@
         Permite al usuario acceder a la información disponible en The Movie DB. </string>
     <string name="share_app_text">Mira esta grandiosa app: %1$s </string>
     <!-- End About -->
+
+    <!-- Nav Header -->
+    <string name="nav_header_login">Iniciar Sesión</string>
+    <!-- End Nav Header -->
 </resources>

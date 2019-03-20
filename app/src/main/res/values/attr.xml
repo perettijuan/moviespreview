@@ -23,6 +23,8 @@
     <attr name="mpAboutIconMarginTop" format="reference"/>
     <attr name="mpAboutItemIconSize" format="reference"/>
     <attr name="mpAboutItemVerticalSpacing" format="reference"/>
+    <attr name="mpNavHeaderIconSize" format="reference"/>
+    <attr name="mpNavHeaderPadding" format="reference"/>
 
 
     <declare-styleable name="MPTitleValueRow">
