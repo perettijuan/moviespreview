@@ -13,6 +13,8 @@
     <dimen name="movie_item_header_image_view_height">@dimen/movie_item_header_image_view_size</dimen>
     <dimen name="movie_item_header_image_view_width">@dimen/movie_item_header_image_view_size</dimen>
     <dimen name="movie_item_bottom_bar_icon_size">18dp</dimen>
+    <dimen name="transparent_bg_line_width">2dp</dimen>
+    <dimen name="transparent_bg_radius">12dp</dimen>
 
 
     <!-- MPLoadingView -->
@@ -41,10 +43,15 @@
     <dimen name="credits_item_image_view_height">62dp</dimen>
     <dimen name="credits_item_padding">10dp</dimen>
 
-    <!-- About -->.
+    <!-- About -->
     <dimen name="about_icon_size">84dp</dimen>
     <dimen name="about_icon_top_margin">10dp</dimen>
     <dimen name="about_item_icon_size">32dp</dimen>
     <dimen name="about_item_vertical_spacing">10dp</dimen>
+
+    <!-- Nav Header -->
+    <dimen name="nav_header_icon_size">46dp</dimen>
+    <dimen name="nav_header_padding">12dp</dimen>
+    <dimen name="login_button_padding">6dp</dimen>
 
 </resources>

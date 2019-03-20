@@ -28,6 +28,8 @@
         <item name="mpAboutIconMarginTop">@dimen/about_icon_top_margin</item>
         <item name="mpAboutItemIconSize">@dimen/about_item_icon_size</item>
         <item name="mpAboutItemVerticalSpacing">@dimen/about_item_vertical_spacing</item>
+        <item name="mpNavHeaderIconSize">@dimen/nav_header_icon_size</item>
+        <item name="mpNavHeaderPadding">@dimen/nav_header_padding</item>
     </style>
 
     <!-- Used in the Drawer items-->
