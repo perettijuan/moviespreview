@@ -21,7 +21,8 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
         viewState.postValue(MainActivityViewState.ActionBarLocked(
                 abTitle = sectionName,
                 withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked,
-                menuEnabled = true)
+                menuEnabled = true,
+                isSearch = false)
         )
     }
 
@@ -33,8 +34,11 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
     }
 
     fun userNavigatesToSearch() {
-        viewState.postValue(MainActivityViewState.SearchEnabled(
-                withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked)
+        viewState.postValue(MainActivityViewState.ActionBarLocked(
+                abTitle = "",
+                withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked,
+                menuEnabled = false,
+                isSearch = true)
         )
     }
 
@@ -42,7 +46,8 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
         viewState.postValue(MainActivityViewState.ActionBarLocked(
                 abTitle = sectionName,
                 withAnimation = false,
-                menuEnabled = false)
+                menuEnabled = false,
+                isSearch = false)
         )
     }
 
@@ -50,7 +55,8 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
         viewState.postValue(MainActivityViewState.ActionBarLocked(
                 abTitle = sectionName,
                 withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked,
-                menuEnabled = false)
+                menuEnabled = false,
+                isSearch = false)
         )
     }
 
@@ -58,7 +64,8 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
         viewState.postValue(MainActivityViewState.ActionBarLocked(
                 abTitle = sectionName,
                 withAnimation = false,
-                menuEnabled = false)
+                menuEnabled = false,
+                isSearch = false)
         )
     }
 
@@ -66,7 +73,8 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
         viewState.postValue(MainActivityViewState.ActionBarLocked(
                 abTitle = sectionName,
                 withAnimation = false,
-                menuEnabled = false)
+                menuEnabled = false,
+                isSearch = false)
         )
     }
 
@@ -74,7 +82,8 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
         viewState.postValue(MainActivityViewState.ActionBarLocked(
                 abTitle = sectionName,
                 withAnimation = false,
-                menuEnabled = false)
+                menuEnabled = false,
+                isSearch = false)
         )
     }
 
@@ -82,7 +91,8 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
         viewState.postValue(MainActivityViewState.ActionBarLocked(
                 abTitle = sectionName,
                 withAnimation = false,
-                menuEnabled = false)
+                menuEnabled = false,
+                isSearch = false)
         )
     }
 }
