@@ -110,7 +110,7 @@ dependencies {
     implementation "androidx.browser:browser:1.0.0"
 
     // Crashlytics
-    compile('com.crashlytics.sdk.android:crashlytics:2.9.9@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.9@aar') {
         transitive = true
     }
 

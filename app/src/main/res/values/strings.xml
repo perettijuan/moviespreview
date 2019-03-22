@@ -76,4 +76,9 @@
     <string name="nav_header_login">Login</string>
     <!-- End Nav Header -->
 
+    <!-- Account -->
+    <string name="account_title">Account</string>
+    <!-- End Account -->
+
+
 </resources>

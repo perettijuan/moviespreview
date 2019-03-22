@@ -77,4 +77,12 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
                 menuEnabled = false)
         )
     }
+
+    fun userNavigatesToAccountDetails(sectionName: String) {
+        viewState.postValue(MainActivityViewState.ActionBarLocked(
+                abTitle = sectionName,
+                withAnimation = false,
+                menuEnabled = false)
+        )
+    }
 }

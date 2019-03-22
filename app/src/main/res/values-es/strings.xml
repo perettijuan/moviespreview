@@ -74,4 +74,8 @@
     <!-- Nav Header -->
     <string name="nav_header_login">Iniciar Sesión</string>
     <!-- End Nav Header -->
+
+    <!-- Account -->
+    <string name="account_title">Cuenta</string>
+    <!-- End Account -->
 </resources>

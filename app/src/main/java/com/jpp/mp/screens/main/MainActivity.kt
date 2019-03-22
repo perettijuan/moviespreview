@@ -233,6 +233,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                         userNavigatesToLicenseContent(it.getString("licenseTitle"))
                     }
                 }
+                R.id.accountFragment -> withMainViewModel { userNavigatesToAccountDetails(getString(R.string.account_title)) }
             }
         }
 
@@ -283,6 +284,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
          * menu options
          */
         invalidateOptionsMenu()
+        mainDrawerLayout.closeDrawerIfOpen()
     }
 
     private fun onSearchEvent(event: SearchEvent) {
