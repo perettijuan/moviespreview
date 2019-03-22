@@ -20,6 +20,7 @@ class MainActivityViewModelTest {
                 assertEquals("aSection", abTitle)
                 assertFalse(withAnimation)
                 assertTrue(menuEnabled)
+                assertFalse(searchEnabled)
             }
         })
         subject.userNavigatesToMovieListSection("aSection")
@@ -42,6 +43,7 @@ class MainActivityViewModelTest {
             assertEquals("aSection", abTitle)
             assertTrue(withAnimation)
             assertTrue(menuEnabled)
+            assertFalse(searchEnabled)
         }
     }
 
@@ -52,6 +54,7 @@ class MainActivityViewModelTest {
             with(it as MainActivityViewState.ActionBarUnlocked) {
                 assertEquals("aTitle", abTitle)
                 assertEquals("aUrl", contentImageUrl)
+                assertFalse(searchEnabled)
             }
         })
         subject.userNavigatesToMovieDetails(movieTitle = "aTitle", contentImageUrl = "aUrl")
@@ -60,9 +63,10 @@ class MainActivityViewModelTest {
     @Test
     fun `Should navigate to search section without ActionBar animation when user opens search`() {
         subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            assertTrue(it is MainActivityViewState.SearchEnabled)
-            with(it as MainActivityViewState.SearchEnabled) {
+            assertTrue(it is MainActivityViewState.ActionBarLocked)
+            with(it as MainActivityViewState.ActionBarLocked) {
                 assertFalse(withAnimation)
+                assertTrue(searchEnabled)
             }
         })
         subject.userNavigatesToSearch()
@@ -80,9 +84,10 @@ class MainActivityViewModelTest {
 
         subject.userNavigatesToSearch()
 
-        assertTrue(viewStatesPosted[1] is MainActivityViewState.SearchEnabled)
-        with(viewStatesPosted[1] as MainActivityViewState.SearchEnabled) {
+        assertTrue(viewStatesPosted[1] is MainActivityViewState.ActionBarLocked)
+        with(viewStatesPosted[1] as MainActivityViewState.ActionBarLocked) {
             assertTrue(withAnimation)
+            assertTrue(searchEnabled)
         }
     }
 
@@ -95,6 +100,7 @@ class MainActivityViewModelTest {
                 assertEquals(personName, abTitle)
                 assertFalse(withAnimation)
                 assertFalse(menuEnabled)
+                assertFalse(searchEnabled)
             }
         })
         subject.userNavigatesToPerson(personName)
@@ -118,6 +124,7 @@ class MainActivityViewModelTest {
             assertEquals(creditsName, abTitle)
             assertTrue(withAnimation)
             assertFalse(menuEnabled)
+            assertFalse(searchEnabled)
         }
     }
 
@@ -130,6 +137,7 @@ class MainActivityViewModelTest {
                 assertEquals(sectionName, abTitle)
                 assertFalse(withAnimation)
                 assertFalse(menuEnabled)
+                assertFalse(searchEnabled)
             }
         })
         subject.userNavigatesToAbout(sectionName)
@@ -144,6 +152,7 @@ class MainActivityViewModelTest {
                 assertEquals(sectionName, abTitle)
                 assertFalse(withAnimation)
                 assertFalse(menuEnabled)
+                assertFalse(searchEnabled)
             }
         })
         subject.userNavigatesToLicenses(sectionName)
@@ -158,6 +167,7 @@ class MainActivityViewModelTest {
                 assertEquals(sectionName, abTitle)
                 assertFalse(withAnimation)
                 assertFalse(menuEnabled)
+                assertFalse(searchEnabled)
             }
         })
         subject.userNavigatesToLicenseContent(sectionName)
