@@ -261,3 +261,14 @@ sealed class SupportedLanguage(val id: String) {
     object English : SupportedLanguage("en")
     object Spanish : SupportedLanguage("es")
 }
+
+/**
+ * Represents an access token that is used to authenticate the user when needed.
+ * [expires_at] represents the date in which the access token will be expired.
+ * [request_token] represents the actual value of the access token. This is the value
+ * that needs to be used to authenticate the user.
+ */
+data class AccessToken(
+        val success: Boolean,
+        val expires_at: String,
+        val request_token: String)
