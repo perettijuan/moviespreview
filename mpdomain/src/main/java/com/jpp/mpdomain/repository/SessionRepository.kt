@@ -12,4 +12,7 @@ interface SessionRepository {
      * Retrieves an [AccessToken] that can be used to authenticate the user.
      */
     fun getAccessToken(): AccessToken?
+
+    fun getAuthenticationUrl(accessToken: String): String
+    fun getAuthenticationRedirection(): String
 }

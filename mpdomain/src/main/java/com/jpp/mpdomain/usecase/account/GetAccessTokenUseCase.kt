@@ -19,7 +19,7 @@ interface GetAccessTokenUseCase {
     sealed class AccessTokenResult {
         object ErrorNoConnectivity : AccessTokenResult()
         object ErrorUnknown : AccessTokenResult()
-        data class Success(val accessToken: AccessToken) : AccessTokenResult()
+        data class Success(val authenticationURL: String, val redirectionUrl: String) : AccessTokenResult()
     }
 
     /**
@@ -33,12 +33,13 @@ interface GetAccessTokenUseCase {
 
     class Impl(private val sessionRepository: SessionRepository,
                private val connectivityRepository: ConnectivityRepository) : GetAccessTokenUseCase {
+
         override fun getAccessToken(): AccessTokenResult {
             return when (connectivityRepository.getCurrentConnectivity()) {
                 Disconnected -> AccessTokenResult.ErrorNoConnectivity
                 Connected -> sessionRepository.getAccessToken()?.let { at ->
                     when (at.success) {
-                        true -> AccessTokenResult.Success(at)
+                        true -> AccessTokenResult.Success(sessionRepository.getAuthenticationUrl(at.request_token), sessionRepository.getAuthenticationRedirection())
                         else -> AccessTokenResult.ErrorUnknown
                     }
                 } ?: run {
