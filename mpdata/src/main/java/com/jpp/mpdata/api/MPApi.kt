@@ -63,7 +63,7 @@ open class MPApi
     }
 
     override fun getAccessToken(): AccessToken? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return tryCatchOrReturnNull { API.getAccessToken(API_KEY) }
     }
 
     /**

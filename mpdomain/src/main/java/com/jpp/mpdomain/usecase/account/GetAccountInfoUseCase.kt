@@ -8,7 +8,7 @@ import com.jpp.mpdomain.repository.SessionRepository
 interface GetAccountInfoUseCase {
 
     sealed class AccountInfoResult {
-        object NoAccountInfoAvailable : AccountInfoResult()
+        object UserNotLoggedIn : AccountInfoResult()
         object AccountInfoAvailable : AccountInfoResult() // TODO add data to this object
     }
 
@@ -19,7 +19,7 @@ interface GetAccountInfoUseCase {
             return sessionRepository.getSessionId()?.let {
                 AccountInfoResult.AccountInfoAvailable
             } ?: run {
-                AccountInfoResult.NoAccountInfoAvailable
+                AccountInfoResult.UserNotLoggedIn
             }
         }
     }
