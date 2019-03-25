@@ -8,6 +8,7 @@ import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdata.preferences.LanguageDbImpl
 import com.jpp.mpdata.repository.about.AboutNavigationRepositoryImpl
+import com.jpp.mpdata.repository.account.SessionApi
 import com.jpp.mpdata.repository.account.SessionRepositoryImpl
 import com.jpp.mpdata.repository.appversion.AppVersionRepositoryImpl
 import com.jpp.mpdata.repository.configuration.ConfigurationApi
@@ -214,7 +215,11 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesSessionRepository() : SessionRepository = SessionRepositoryImpl()
+    fun providesSessionApi(mpApiInstance: MPApi): SessionApi = mpApiInstance
+
+    @Singleton
+    @Provides
+    fun providesSessionRepository(sessionApi: SessionApi) : SessionRepository = SessionRepositoryImpl(sessionApi)
 
 }
 

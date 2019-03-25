@@ -116,4 +116,10 @@ interface TheMovieDBApi {
     fun getMovieCredits(@Path("movie_id") movieId: Double,
                         @Query("api_key") api_key: String): Call<Credits>
 
+    /**
+     * Retrieves an [AccessToken] to be used in a login process.
+     * [api_key] the api key provided by themoviedb.
+     */
+    @GET("authentication/token/new")
+    fun getAccessToken( @Query("api_key") api_key: String): Call<AccessToken>
 }

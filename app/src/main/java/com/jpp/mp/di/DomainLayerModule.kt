@@ -2,6 +2,7 @@ package com.jpp.mp.di
 
 import com.jpp.mpdomain.repository.*
 import com.jpp.mpdomain.usecase.about.GetAboutNavigationUrlUseCase
+import com.jpp.mpdomain.usecase.account.GetAccessTokenUseCase
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
 import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase
 import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
@@ -98,4 +99,8 @@ class DomainLayerModule {
     fun providesGetAccountInfoUseCase(sessionRepository: SessionRepository)
             : GetAccountInfoUseCase = GetAccountInfoUseCase.Impl(sessionRepository)
 
+    @Provides
+    fun providesGetAccessTokenUseCase(sessionRepository: SessionRepository,
+                                      connectivityRepository: ConnectivityRepository)
+            : GetAccessTokenUseCase = GetAccessTokenUseCase.Impl(sessionRepository, connectivityRepository)
 }
