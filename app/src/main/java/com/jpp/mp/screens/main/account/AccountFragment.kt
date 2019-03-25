@@ -1,10 +1,15 @@
 package com.jpp.mp.screens.main.account
 
+import android.annotation.TargetApi
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -16,6 +21,8 @@ import com.jpp.mp.ext.setVisible
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_account.*
 import javax.inject.Inject
+import android.annotation.SuppressLint
+
 
 class AccountFragment : Fragment() {
 
@@ -34,6 +41,19 @@ class AccountFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        accountWebView.apply {
+            isHorizontalScrollBarEnabled = false
+            isVerticalScrollBarEnabled = false
+            isFocusable = true
+            isFocusableInTouchMode = true
+            setOnTouchListener { v, _ ->
+                if (!v.hasFocus()) {
+                    v.requestFocus()
+                }
+                false
+            }
+        }
+
         withViewModel {
             init()
 
@@ -48,7 +68,19 @@ class AccountFragment : Fragment() {
                         accountErrorView.asNoConnectivityError { TODO() }
                         renderError()
                     }
-                    is AccountViewState.RenderlURL -> Toast.makeText(activity!!, viewState.url, Toast.LENGTH_LONG).show()
+                    is AccountViewState.RenderlURL -> {
+                        accountWebView.apply {
+                            settings.apply {
+                                @SuppressLint("SetJavaScriptEnabled")
+                                javaScriptEnabled = true
+                                webViewClient = LoginWebViewClient(viewState.interceptUrl) { loggedIn ->
+                                    Toast.makeText(activity!!, "Done with  $loggedIn", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                            loadUrl(viewState.url)
+                        }
+                        renderWebView()
+                    }
                 }
             })
         }
@@ -61,11 +93,44 @@ class AccountFragment : Fragment() {
 
     private fun renderLoading() {
         accountErrorView.setInvisible()
+        accountWebView.setInvisible()
         accountLoadingView.setVisible()
     }
 
     private fun renderError() {
         accountLoadingView.setInvisible()
+        accountWebView.setInvisible()
         accountErrorView.setVisible()
+    }
+
+    private fun renderWebView() {
+        accountLoadingView.setInvisible()
+        accountErrorView.setInvisible()
+        accountWebView.setVisible()
+    }
+
+
+    private class LoginWebViewClient(private val redirectUrl: String,
+                                     private val callback: (Boolean) -> Unit) : WebViewClient() {
+
+        @SuppressWarnings("deprecation")
+        override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+            return handleUrl(url)
+        }
+
+        @TargetApi(Build.VERSION_CODES.N)
+        override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest): Boolean {
+            return handleUrl(request.url.toString())
+        }
+
+        private fun handleUrl(url: String): Boolean {
+            if (url.startsWith(redirectUrl)) {
+                callback(true)
+                return true
+            } else if (url.contains("error")) {
+                callback(false)
+            }
+            return false
+        }
     }
 }
