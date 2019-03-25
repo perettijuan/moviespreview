@@ -2,6 +2,7 @@ package com.jpp.mp.di
 
 import com.jpp.mp.screens.main.MainActivity
 import com.jpp.mp.screens.main.about.AboutFragment
+import com.jpp.mp.screens.main.account.AccountFragment
 import com.jpp.mp.screens.main.credits.CreditsFragment
 import com.jpp.mp.screens.main.details.MovieDetailsFragment
 import com.jpp.mp.screens.main.header.NavigationHeaderFragment
@@ -57,4 +58,6 @@ abstract class BuildersModule {
     @ContributesAndroidInjector
     abstract fun bindNavigationHeaderFragment(): NavigationHeaderFragment
 
+    @ContributesAndroidInjector
+    abstract fun bindAccountFragment() : AccountFragment
 }
