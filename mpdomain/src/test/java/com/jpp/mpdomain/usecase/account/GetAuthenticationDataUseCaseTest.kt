@@ -4,7 +4,7 @@ import com.jpp.mpdomain.AccessToken
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.SessionRepository
-import com.jpp.mpdomain.usecase.account.GetAccessTokenUseCase.AccessTokenResult.*
+import com.jpp.mpdomain.usecase.account.GetAuthenticationDataUseCase.AuthenticationDataResult.*
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
-class GetAccessTokenUseCaseTest {
+class GetAuthenticationDataUseCaseTest {
 
     @RelaxedMockK
     private lateinit var sessionRepository: SessionRepository
@@ -25,18 +25,18 @@ class GetAccessTokenUseCaseTest {
     @RelaxedMockK
     private lateinit var connectivityRepository: ConnectivityRepository
 
-    lateinit var subject: GetAccessTokenUseCase
+    lateinit var subject: GetAuthenticationDataUseCase
 
     @BeforeEach
     fun setUp() {
-        subject = GetAccessTokenUseCase.Impl(sessionRepository, connectivityRepository)
+        subject = GetAuthenticationDataUseCase.Impl(sessionRepository, connectivityRepository)
     }
 
     @Test
     fun `Should check connectivity before fetching AT and return ErrorNoConnectivity`() {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
-        subject.getAccessToken().let { result ->
+        subject.getAuthenticationData().let { result ->
             verify(exactly = 0) { sessionRepository.getAccessToken() }
             assertEquals(ErrorNoConnectivity, result)
         }
@@ -47,7 +47,7 @@ class GetAccessTokenUseCaseTest {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getAccessToken() } returns null
 
-        subject.getAccessToken().let { result ->
+        subject.getAuthenticationData().let { result ->
             verify(exactly = 1) { sessionRepository.getAccessToken() }
             assertEquals(ErrorUnknown, result)
         }
@@ -67,7 +67,7 @@ class GetAccessTokenUseCaseTest {
         every { sessionRepository.getAuthenticationUrl(any()) } returns authUrl
         every { sessionRepository.getAuthenticationRedirection() } returns authRedirect
 
-        subject.getAccessToken().let { result ->
+        subject.getAuthenticationData().let { result ->
             verify(exactly = 1) { sessionRepository.getAccessToken() }
             verify(exactly = 1) { sessionRepository.getAuthenticationUrl(aToken.request_token) }
             assertTrue(result is Success)
@@ -83,7 +83,7 @@ class GetAccessTokenUseCaseTest {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getAccessToken() } returns aToken
 
-        subject.getAccessToken().let { result ->
+        subject.getAuthenticationData().let { result ->
             verify(exactly = 1) { sessionRepository.getAccessToken() }
             assertEquals(ErrorUnknown, result)
         }
