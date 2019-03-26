@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.screens.CoroutineDispatchers
 import com.jpp.mp.screens.MPScopedViewModel
-import com.jpp.mpdomain.usecase.account.GetAccessTokenUseCase
+import com.jpp.mpdomain.usecase.account.GetAuthenticationDataUseCase
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase.AccountInfoResult.*
-import com.jpp.mpdomain.usecase.account.GetAccessTokenUseCase.AccessTokenResult.*
+import com.jpp.mpdomain.usecase.account.GetAuthenticationDataUseCase.AuthenticationDataResult.*
 import kotlinx.coroutines.launch
 
 /**
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
  */
 class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                            private val getAccountInfoUseCase: GetAccountInfoUseCase,
-                                           private val getAccessTokenUseCase: GetAccessTokenUseCase)
+                                           private val getAuthenticationDataUseCase: GetAuthenticationDataUseCase)
     : MPScopedViewModel(dispatchers) {
 
     private val viewStateLiveData by lazy { MutableLiveData<AccountViewState>() }
@@ -46,8 +46,8 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     }
 
     private suspend fun getLoginUrl(): AccountViewState = withContext(dispatchers.default()) {
-        getAccessTokenUseCase
-                .getAccessToken()
+        getAuthenticationDataUseCase
+                .getAuthenticationData()
                 .let { ucResult ->
                     when (ucResult) {
                         is ErrorNoConnectivity -> AccountViewState.ErrorNoConnectivity
