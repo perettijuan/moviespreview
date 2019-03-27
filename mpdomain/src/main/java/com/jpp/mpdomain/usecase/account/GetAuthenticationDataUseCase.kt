@@ -42,7 +42,7 @@ interface GetAuthenticationDataUseCase {
                 Connected -> sessionRepository.getAccessToken()?.let { at ->
                     when (at.success) {
                         true -> AuthenticationDataResult.Success(
-                                authenticationURL = sessionRepository.getAuthenticationUrl(at.request_token),
+                                authenticationURL = sessionRepository.getAuthenticationUrl(at),
                                 redirectionUrl = sessionRepository.getAuthenticationRedirection(),
                                 accessToken = at)
                         else -> AuthenticationDataResult.ErrorUnknown

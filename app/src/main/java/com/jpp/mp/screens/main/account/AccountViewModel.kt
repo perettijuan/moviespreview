@@ -11,6 +11,7 @@ import javax.inject.Inject
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase.AccountInfoResult.*
 import com.jpp.mpdomain.usecase.account.GetAuthenticationDataUseCase.AuthenticationDataResult.*
 import kotlinx.coroutines.launch
+import java.lang.IllegalStateException
 
 /**
  * TODO JPP -> the first thing this VM needs to do is to verify if the user is logged in.
@@ -33,6 +34,25 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Subscribe to this [LiveData] in order to get updates of the [AccountViewState].
      */
     fun viewState(): LiveData<AccountViewState> = viewStateLiveData
+
+    /**
+     * Called when the user has been authenticated successfully.
+     */
+    fun onUserAuthenticated() {
+        when (viewStateLiveData.value) {
+            is AccountViewState.RenderlURL -> {
+             //TODO JPP execute create session UC
+            }
+            else -> throw IllegalStateException("Can not be authenticated if state was ${viewStateLiveData.value}")
+        }
+    }
+
+    /**
+     * Called when an error was detected while authenticating the user.
+     */
+    fun onUserFailedToAuthenticate() {
+
+    }
 
     private suspend fun getAccountInfo(): AccountViewState = withContext(dispatchers.default()) {
         getAccountInfoUseCase

@@ -1,9 +1,11 @@
 package com.jpp.mpdata.repository.account
 
 import com.jpp.mpdomain.AccessToken
+import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.repository.SessionRepository
 
 class SessionRepositoryImpl(private val sessionApi: SessionApi) : SessionRepository {
+
 
     override fun getSessionId(): String? {
         return null
@@ -13,12 +15,16 @@ class SessionRepositoryImpl(private val sessionApi: SessionApi) : SessionReposit
         return sessionApi.getAccessToken()
     }
 
-    override fun getAuthenticationUrl(accessToken: String): String {
-        return "$authUrl/$accessToken?redirect_to=$redirectUrl"
+    override fun getAuthenticationUrl(accessToken: AccessToken): String {
+        return "$authUrl/${accessToken.request_token}?redirect_to=$redirectUrl"
     }
 
     override fun getAuthenticationRedirection(): String {
        return redirectUrl
+    }
+
+    override fun getSession(accessToken: AccessToken): Session? {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     private companion object {

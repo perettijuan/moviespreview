@@ -69,7 +69,7 @@ class GetAuthenticationDataUseCaseTest {
 
         subject.getAuthenticationData().let { result ->
             verify(exactly = 1) { sessionRepository.getAccessToken() }
-            verify(exactly = 1) { sessionRepository.getAuthenticationUrl(aToken.request_token) }
+            verify(exactly = 1) { sessionRepository.getAuthenticationUrl(aToken) }
             assertTrue(result is Success)
             assertEquals((result as Success).authenticationURL, authUrl)
             assertEquals((result).redirectionUrl, authRedirect)
@@ -77,7 +77,7 @@ class GetAuthenticationDataUseCaseTest {
     }
 
     @Test
-    fun `Should return Success when connected to network and an can get AT with error`() {
+    fun `Should return ErrorUnknown when connected to network and an can get AT with error`() {
         val aToken = mockk<AccessToken>()
         every { aToken.success } returns false
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected

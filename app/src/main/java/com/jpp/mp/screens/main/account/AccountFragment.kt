@@ -74,7 +74,7 @@ class AccountFragment : Fragment() {
                                 @SuppressLint("SetJavaScriptEnabled")
                                 javaScriptEnabled = true
                                 webViewClient = LoginWebViewClient(viewState.interceptUrl) { loggedIn ->
-                                    Toast.makeText(activity!!, "Done with  $loggedIn", Toast.LENGTH_LONG).show()
+                                    if (loggedIn) onUserAuthenticated() else onUserFailedToAuthenticate()
                                 }
                             }
                             loadUrl(viewState.url)
