@@ -1,6 +1,7 @@
 package com.jpp.mpdomain.repository
 
 import com.jpp.mpdomain.AccessToken
+import com.jpp.mpdomain.Session
 
 /**
  * Repository that handles all session related information.
@@ -8,11 +9,8 @@ import com.jpp.mpdomain.AccessToken
 interface SessionRepository {
     fun getSessionId(): String?
 
-    /**
-     * Retrieves an [AccessToken] that can be used to authenticate the user.
-     */
     fun getAccessToken(): AccessToken?
-
-    fun getAuthenticationUrl(accessToken: String): String
+    fun getAuthenticationUrl(accessToken: AccessToken): String
     fun getAuthenticationRedirection(): String
+    fun getSession(accessToken: AccessToken): Session?
 }

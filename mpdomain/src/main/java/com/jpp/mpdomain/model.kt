@@ -4,8 +4,8 @@ package com.jpp.mpdomain
  * Represents the connectivity of the application.
  */
 sealed class Connectivity {
-    object Connected: Connectivity()
-    object Disconnected: Connectivity()
+    object Connected : Connectivity()
+    object Disconnected : Connectivity()
 }
 
 /**
@@ -272,3 +272,13 @@ data class AccessToken(
         val success: Boolean,
         val expires_at: String,
         val request_token: String)
+
+/**
+ * Represents a session related to the user that is using the application.
+ * [success] represents the state of the session creation.
+ * [session_id] represents the identifier of the session (the actual session).
+ */
+data class Session(
+        val success: Boolean,
+        val session_id: String
+)
