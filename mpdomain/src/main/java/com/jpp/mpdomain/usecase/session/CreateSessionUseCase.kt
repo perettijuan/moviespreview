@@ -1,4 +1,4 @@
-package com.jpp.mpdomain.usecase.account
+package com.jpp.mpdomain.usecase.session
 
 import com.jpp.mpdomain.AccessToken
 import com.jpp.mpdomain.repository.ConnectivityRepository

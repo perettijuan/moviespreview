@@ -5,13 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.screens.CoroutineDispatchers
 import com.jpp.mp.screens.MPScopedViewModel
 import com.jpp.mpdomain.AccessToken
-import com.jpp.mpdomain.usecase.account.CreateSessionUseCase
-import com.jpp.mpdomain.usecase.account.CreateSessionUseCase.CreateSessionResult
+import com.jpp.mpdomain.usecase.session.CreateSessionUseCase
+import com.jpp.mpdomain.usecase.session.CreateSessionUseCase.CreateSessionResult
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase.AccountInfoResult.AccountInfo
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase.AccountInfoResult.UserNotLoggedIn
-import com.jpp.mpdomain.usecase.account.GetAuthenticationDataUseCase
-import com.jpp.mpdomain.usecase.account.GetAuthenticationDataUseCase.AuthenticationDataResult.*
+import com.jpp.mpdomain.usecase.session.GetAuthenticationDataUseCase
+import com.jpp.mpdomain.usecase.session.GetAuthenticationDataUseCase.AuthenticationDataResult.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

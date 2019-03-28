@@ -2,8 +2,8 @@ package com.jpp.mp.di
 
 import com.jpp.mpdomain.repository.*
 import com.jpp.mpdomain.usecase.about.GetAboutNavigationUrlUseCase
-import com.jpp.mpdomain.usecase.account.CreateSessionUseCase
-import com.jpp.mpdomain.usecase.account.GetAuthenticationDataUseCase
+import com.jpp.mpdomain.usecase.session.CreateSessionUseCase
+import com.jpp.mpdomain.usecase.session.GetAuthenticationDataUseCase
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
 import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase
 import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
