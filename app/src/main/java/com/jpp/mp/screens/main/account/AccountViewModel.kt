@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.screens.CoroutineDispatchers
 import com.jpp.mp.screens.MPScopedViewModel
+import com.jpp.mpdomain.usecase.account.CreateSessionUseCase
 import com.jpp.mpdomain.usecase.account.GetAuthenticationDataUseCase
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
 import kotlinx.coroutines.withContext
@@ -18,7 +19,8 @@ import java.lang.IllegalStateException
  */
 class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                            private val getAccountInfoUseCase: GetAccountInfoUseCase,
-                                           private val getAuthenticationDataUseCase: GetAuthenticationDataUseCase)
+                                           private val getAuthenticationDataUseCase: GetAuthenticationDataUseCase,
+                                           private val createSessionUseCase: CreateSessionUseCase)
     : MPScopedViewModel(dispatchers) {
 
     private val viewStateLiveData by lazy { MutableLiveData<AccountViewState>() }
