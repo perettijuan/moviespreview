@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/nav_header_background"
@@ -14,6 +15,41 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_person_black" />
 
+    <ProgressBar
+        android:id="@+id/navHeaderLoadingView"
+        style="@style/MPProgressBar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/navHeaderUserNameTv"
+        style="@style/MPTextViewTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        app:layout_constraintBottom_toTopOf="@+id/navHeaderAccountNameTv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/navHeaderIv"
+        app:layout_constraintTop_toTopOf="@+id/navHeaderIv"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="User Name" />
+
+    <TextView
+        android:id="@+id/navHeaderAccountNameTv"
+        style="@style/MPTextViewSmall"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:includeFontPadding="false"
+        app:layout_constraintBottom_toBottomOf="@+id/navHeaderIv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/navHeaderUserNameTv"
+        app:layout_constraintTop_toBottomOf="@+id/navHeaderUserNameTv"
+        tools:text="User Account" />
 
     <Button
         android:id="@+id/navHeaderLoginButton"
@@ -25,6 +61,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/navHeaderIv"
         app:layout_constraintTop_toBottomOf="@+id/navHeaderIv" />
+
+    <TextView
+        android:id="@+id/navHeaderAccountDetailsTv"
+        style="@style/MPTextViewSmall"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/nav_header_to_account"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/navHeaderAccountNameTv" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

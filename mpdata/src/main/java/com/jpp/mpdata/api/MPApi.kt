@@ -73,7 +73,7 @@ open class MPApi
     }
 
     override fun getUserAccountInfo(session: Session): UserAccount? {
-        return tryCatchOrReturnNull { API.getUserAccount(API_KEY, session.session_id) }
+        return tryCatchOrReturnNull { API.getUserAccount(session.session_id, API_KEY) }
     }
 
     /**
