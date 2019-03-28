@@ -1,6 +1,7 @@
 package com.jpp.mpdata.api
 
 import com.jpp.mpdata.BuildConfig
+import com.jpp.mpdata.repository.account.AccountApi
 import com.jpp.mpdata.repository.session.SessionApi
 import com.jpp.mpdata.repository.configuration.ConfigurationApi
 import com.jpp.mpdata.repository.credits.CreditsApi
@@ -24,7 +25,8 @@ open class MPApi
         SearchApi,
         PersonApi,
         CreditsApi,
-        SessionApi {
+        SessionApi,
+        AccountApi {
 
     override fun getAppConfiguration(): AppConfiguration? {
         return tryCatchOrReturnNull { API.getAppConfiguration(API_KEY) }
@@ -68,6 +70,10 @@ open class MPApi
 
     override fun createSession(accessToken: AccessToken): Session? {
         return tryCatchOrReturnNull { API.createSession(API_KEY, RequestToken(accessToken.request_token)) }
+    }
+
+    override fun getUserAccountInfo(session: Session): UserAccount? {
+        return tryCatchOrReturnNull { API.getUserAccount(API_KEY, session.session_id) }
     }
 
     /**

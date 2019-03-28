@@ -97,8 +97,10 @@ class DomainLayerModule {
             : RefreshDataUseCase = RefreshDataUseCase.Impl(languageRepository, supportRepository)
 
     @Provides
-    fun providesGetAccountInfoUseCase(sessionRepository: SessionRepository)
-            : GetAccountInfoUseCase = GetAccountInfoUseCase.Impl(sessionRepository)
+    fun providesGetAccountInfoUseCase(sessionRepository: SessionRepository,
+                                      accountRepository: AccountRepository,
+                                      connectivityRepository: ConnectivityRepository)
+            : GetAccountInfoUseCase = GetAccountInfoUseCase.Impl(sessionRepository, accountRepository, connectivityRepository)
 
     @Provides
     fun providesGetAccessTokenUseCase(sessionRepository: SessionRepository,

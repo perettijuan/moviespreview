@@ -9,6 +9,8 @@ import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdata.preferences.LanguageDbImpl
 import com.jpp.mpdata.preferences.SessionDbImpl
 import com.jpp.mpdata.repository.about.AboutNavigationRepositoryImpl
+import com.jpp.mpdata.repository.account.AccountApi
+import com.jpp.mpdata.repository.account.AccountRepositoryImpl
 import com.jpp.mpdata.repository.session.SessionApi
 import com.jpp.mpdata.repository.session.SessionDb
 import com.jpp.mpdata.repository.session.SessionRepositoryImpl
@@ -217,7 +219,7 @@ class DataLayerModule {
 
 
     /**********************************
-     ****** ACCOUNT DEPENDENCIES ******
+     ****** SESSION DEPENDENCIES ******
      **********************************/
 
     @Singleton
@@ -232,6 +234,18 @@ class DataLayerModule {
     @Provides
     fun providesSessionRepository(sessionApi: SessionApi, sessionDb: SessionDb)
             : SessionRepository = SessionRepositoryImpl(sessionApi, sessionDb)
+
+    /**********************************
+     ****** ACCOUNT DEPENDENCIES ******
+     **********************************/
+
+    @Singleton
+    @Provides
+    fun providesAccountApi(mpApiInstance: MPApi): AccountApi = mpApiInstance
+
+    @Singleton
+    @Provides
+    fun providesAccountRepository(accountApi: AccountApi): AccountRepository = AccountRepositoryImpl(accountApi)
 
 }
 
