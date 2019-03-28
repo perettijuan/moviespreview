@@ -129,4 +129,12 @@ interface TheMovieDBApi {
      */
     @POST("authentication/session/new")
     fun createSession(@Query("api_key") api_key: String, @Body requestToken: RequestToken): Call<Session>
+
+    /**
+     * Retrieves the user account data.
+     * [session_id] the session identifier for the current user.
+     * [api_key] the api key provided by themoviedb.
+     */
+    @GET("account")
+    fun getUserAccount(@Query("session_id") session_id: String, @Query("api_key") api_key: String): Call<UserAccount>
 }
