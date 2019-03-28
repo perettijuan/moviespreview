@@ -10,16 +10,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation.findNavController
 import com.jpp.mp.R
-import com.jpp.mp.ext.getViewModel
-import com.jpp.mp.ext.setGone
-import com.jpp.mp.ext.setInvisible
-import com.jpp.mp.ext.setVisible
+import com.jpp.mp.ext.*
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_nav_header.*
 import javax.inject.Inject
 
 /**
- * Fragment that manages the header view shown in the Navigation Drawer in the MainActivity.
+ * Shows the header view in the DrawerLayout shown in the MainActivity.
  */
 class NavigationHeaderFragment : Fragment() {
 
@@ -39,9 +36,11 @@ class NavigationHeaderFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         navHeaderLoginButton.setOnClickListener {
-            activity?.let {
-                findNavController(it, R.id.mainNavHostFragment).navigate(R.id.accountFragment)
-            }
+            withViewModel { onUserNavigatesToLogin() }
+        }
+
+        navHeaderAccountDetailsTv.setOnClickListener {
+            withViewModel { onUserNavigatesToAccountDetails() }
         }
 
         withViewModel {
@@ -52,9 +51,16 @@ class NavigationHeaderFragment : Fragment() {
                     is HeaderViewState.WithInfo -> {
                         navHeaderUserNameTv.text = viewState.accountInfo.userName
                         navHeaderAccountNameTv.text = viewState.accountInfo.accountName
-                        //TODO render avatar
+                        navHeaderIv.loadImageUrlAsCircular(viewState.accountInfo.avatarUrl)
                         renderAccountInfo()
                     }
+                }
+            })
+
+            navEvents().observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { navEvent ->
+                when (navEvent) {
+                    is HeaderNavigationEvent.ToUserAccount -> navigateToLogin()
+                    is HeaderNavigationEvent.ToLogin -> navigateToLogin()
                 }
             })
 
@@ -67,6 +73,12 @@ class NavigationHeaderFragment : Fragment() {
      * Helper function to execute actions with the [NavigationHeaderViewModel].
      */
     private fun withViewModel(action: NavigationHeaderViewModel.() -> Unit) = getViewModel<NavigationHeaderViewModel>(viewModelFactory).action()
+
+    private fun navigateToLogin() {
+        activity?.let {
+            findNavController(it, R.id.mainNavHostFragment).navigate(R.id.accountFragment)
+        }
+    }
 
     private fun renderLoading() {
         navHeaderUserNameTv.setInvisible()

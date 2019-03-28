@@ -50,7 +50,7 @@
     <dimen name="about_item_vertical_spacing">10dp</dimen>
 
     <!-- Nav Header -->
-    <dimen name="nav_header_icon_size">46dp</dimen>
+    <dimen name="nav_header_icon_size">56dp</dimen>
     <dimen name="nav_header_padding">12dp</dimen>
     <dimen name="login_button_padding">6dp</dimen>
 

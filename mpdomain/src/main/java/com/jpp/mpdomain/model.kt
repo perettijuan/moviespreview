@@ -287,7 +287,11 @@ data class Session(
  * Represents the avatar of the user in the Gravatar system.
  * [hash] is the hash value that can be used to fetch the image from Gravatar.
  */
-data class Gravatar(val hash: String)
+data class Gravatar(val hash: String) {
+    companion object {
+        const val BASE_URL = "https://gravatar.com/avatar/"
+    }
+}
 
 /**
  * Represents all possible avatars that the user has. For now, only Gravatar is
