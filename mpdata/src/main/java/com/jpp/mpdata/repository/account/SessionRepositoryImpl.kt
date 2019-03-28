@@ -24,7 +24,7 @@ class SessionRepositoryImpl(private val sessionApi: SessionApi) : SessionReposit
     }
 
     override fun getSession(accessToken: AccessToken): Session? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return sessionApi.createSession(accessToken)
     }
 
     private companion object {

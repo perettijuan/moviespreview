@@ -66,6 +66,10 @@ open class MPApi
         return tryCatchOrReturnNull { API.getAccessToken(API_KEY) }
     }
 
+    override fun createSession(accessToken: AccessToken): Session? {
+        return tryCatchOrReturnNull { API.createSession(API_KEY, RequestToken(accessToken.request_token)) }
+    }
+
     /**
      * Executes the provided [block] in a try-catch block and returns the result.
      * If the [block] fails with an exception, null is returned.
