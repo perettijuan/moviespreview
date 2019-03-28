@@ -2,6 +2,7 @@ package com.jpp.mpdomain.usecase.account
 
 import com.jpp.mpdomain.Connectivity.Connected
 import com.jpp.mpdomain.Connectivity.Disconnected
+import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.repository.AccountRepository
 import com.jpp.mpdomain.repository.ConnectivityRepository
@@ -46,7 +47,7 @@ interface GetAccountInfoUseCase {
                 Disconnected -> AccountInfoResult.ErrorNoConnectivity
                 Connected -> sessionRepository.getCurrentSession()?.let { session ->
                     accountRepository.getUserAccount(session)?.let {
-                        AccountInfoResult.AccountInfo(it)
+                        AccountInfoResult.AccountInfo(mapAvatarUrl(it))
                     } ?: run {
                         AccountInfoResult.ErrorUnknown
                     }
@@ -54,6 +55,10 @@ interface GetAccountInfoUseCase {
                     AccountInfoResult.UserNotLoggedIn
                 }
             }
+        }
+
+        private fun mapAvatarUrl(userAccount: UserAccount): UserAccount {
+            return userAccount.copy(avatar = userAccount.avatar.copy(gravatar = userAccount.avatar.gravatar.copy(hash = Gravatar.BASE_URL + userAccount.avatar.gravatar.hash)))
         }
     }
 }

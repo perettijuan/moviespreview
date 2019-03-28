@@ -23,12 +23,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <TextView
         android:id="@+id/navHeaderUserNameTv"
         style="@style/MPTextViewTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
         android:ellipsize="end"
         android:includeFontPadding="false"
         android:maxLines="1"
@@ -67,6 +67,7 @@
         style="@style/MPTextViewSmall"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:text="@string/nav_header_to_account"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/navHeaderAccountNameTv" />
