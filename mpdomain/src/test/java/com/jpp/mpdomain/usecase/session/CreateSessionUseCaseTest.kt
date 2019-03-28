@@ -1,11 +1,11 @@
-package com.jpp.mpdomain.usecase.account
+package com.jpp.mpdomain.usecase.session
 
 import com.jpp.mpdomain.AccessToken
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.SessionRepository
-import com.jpp.mpdomain.usecase.account.CreateSessionUseCase.CreateSessionResult.*
+import com.jpp.mpdomain.usecase.session.CreateSessionUseCase.CreateSessionResult.*
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
