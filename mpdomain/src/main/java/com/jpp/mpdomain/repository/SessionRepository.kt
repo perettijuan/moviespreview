@@ -7,8 +7,7 @@ import com.jpp.mpdomain.Session
  * Repository that handles all session related information.
  */
 interface SessionRepository {
-    fun getSessionId(): String?
-
+    fun getCurrentSession(): Session?
     fun getAccessToken(): AccessToken?
     fun getAuthenticationUrl(accessToken: AccessToken): String
     fun getAuthenticationRedirection(): String

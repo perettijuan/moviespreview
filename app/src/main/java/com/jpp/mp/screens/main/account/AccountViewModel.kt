@@ -8,7 +8,7 @@ import com.jpp.mpdomain.AccessToken
 import com.jpp.mpdomain.usecase.account.CreateSessionUseCase
 import com.jpp.mpdomain.usecase.account.CreateSessionUseCase.CreateSessionResult
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
-import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase.AccountInfoResult.AccountInfoAvailable
+import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase.AccountInfoResult.AccountInfo
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase.AccountInfoResult.UserNotLoggedIn
 import com.jpp.mpdomain.usecase.account.GetAuthenticationDataUseCase
 import com.jpp.mpdomain.usecase.account.GetAuthenticationDataUseCase.AuthenticationDataResult.*
@@ -62,7 +62,7 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                 .let { ucResult ->
                     when (ucResult) {
                         is UserNotLoggedIn -> getLoginUrl()
-                        is AccountInfoAvailable -> TODO()
+                        is AccountInfo -> TODO()
                     }
                 }
     }

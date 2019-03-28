@@ -282,3 +282,31 @@ data class Session(
         val success: Boolean,
         val session_id: String
 )
+
+/**
+ * Represents the avatar of the user in the Gravatar system.
+ * [hash] is the hash value that can be used to fetch the image from Gravatar.
+ */
+data class Gravatar(val hash: String)
+
+/**
+ * Represents all possible avatars that the user has. For now, only Gravatar is
+ * supported.
+ * Check this for more details: https://www.themoviedb.org/talk/59f23ec292514148be02d73a
+ * [gravatar] represents the Gravatar of the user.
+ */
+data class UserAvatar(val gravatar: Gravatar)
+
+/**
+ * Represents the details of the user's account.
+ * [avatar] contains the avatar info of the account.
+ * [id] the identifier in the system for the user's account.
+ * [name] the user's account name.
+ * [userName] the username of the user's account.
+ */
+data class UserAccount(
+        val avatar: UserAvatar,
+        val id: Double,
+        val name: String,
+        val userName: String
+)

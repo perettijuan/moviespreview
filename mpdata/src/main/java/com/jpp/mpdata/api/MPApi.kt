@@ -1,7 +1,7 @@
 package com.jpp.mpdata.api
 
 import com.jpp.mpdata.BuildConfig
-import com.jpp.mpdata.repository.account.SessionApi
+import com.jpp.mpdata.repository.session.SessionApi
 import com.jpp.mpdata.repository.configuration.ConfigurationApi
 import com.jpp.mpdata.repository.credits.CreditsApi
 import com.jpp.mpdata.repository.movies.MoviesApi

@@ -35,7 +35,7 @@ class NavigationHeaderViewModel @Inject constructor(dispatchers: CoroutineDispat
                 .let { ucResult ->
                     when (ucResult) {
                         is UserNotLoggedIn -> HeaderViewState.NotLogged
-                        is AccountInfoAvailable -> TODO()
+                        is AccountInfo -> TODO()
                     }
                 }
     }
