@@ -1,14 +1,15 @@
-package com.jpp.mpdata.repository.account
+package com.jpp.mpdata.repository.session
 
 import com.jpp.mpdomain.AccessToken
 import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.repository.SessionRepository
 
-class SessionRepositoryImpl(private val sessionApi: SessionApi) : SessionRepository {
+class SessionRepositoryImpl(private val sessionApi: SessionApi,
+                            private val sessionDb: SessionDb) : SessionRepository {
 
 
-    override fun getSessionId(): String? {
-        return null
+    override fun getCurrentSession(): Session? {
+        return sessionDb.getSession()
     }
 
     override fun getAccessToken(): AccessToken? {
@@ -20,11 +21,13 @@ class SessionRepositoryImpl(private val sessionApi: SessionApi) : SessionReposit
     }
 
     override fun getAuthenticationRedirection(): String {
-       return redirectUrl
+        return redirectUrl
     }
 
     override fun getSession(accessToken: AccessToken): Session? {
-        return sessionApi.createSession(accessToken)
+        return sessionApi.createSession(accessToken)?.also {
+            sessionDb.updateSession(it)
+        }
     }
 
     private companion object {

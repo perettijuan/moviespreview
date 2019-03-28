@@ -49,5 +49,4 @@ interface CreateSessionUseCase {
             }
         }
     }
-
 }
