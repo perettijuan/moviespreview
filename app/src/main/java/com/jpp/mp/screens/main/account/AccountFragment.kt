@@ -68,13 +68,14 @@ class AccountFragment : Fragment() {
                         accountErrorView.asNoConnectivityError { TODO() }
                         renderError()
                     }
+                    is AccountViewState.SessionCreated -> Toast.makeText(activity!!, "Created session", Toast.LENGTH_LONG).show()
                     is AccountViewState.RenderlURL -> {
                         accountWebView.apply {
                             settings.apply {
                                 @SuppressLint("SetJavaScriptEnabled")
                                 javaScriptEnabled = true
                                 webViewClient = LoginWebViewClient(viewState.interceptUrl) { loggedIn ->
-                                    if (loggedIn) onUserAuthenticated() else onUserFailedToAuthenticate()
+                                    if (loggedIn) onUserAuthenticated(viewState.accessToken) else onUserFailedToAuthenticate()
                                 }
                             }
                             loadUrl(viewState.url)

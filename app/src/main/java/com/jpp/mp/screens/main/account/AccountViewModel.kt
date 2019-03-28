@@ -4,15 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.screens.CoroutineDispatchers
 import com.jpp.mp.screens.MPScopedViewModel
+import com.jpp.mpdomain.AccessToken
 import com.jpp.mpdomain.usecase.account.CreateSessionUseCase
-import com.jpp.mpdomain.usecase.account.GetAuthenticationDataUseCase
+import com.jpp.mpdomain.usecase.account.CreateSessionUseCase.CreateSessionResult
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
-import kotlinx.coroutines.withContext
-import javax.inject.Inject
-import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase.AccountInfoResult.*
+import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase.AccountInfoResult.AccountInfoAvailable
+import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase.AccountInfoResult.UserNotLoggedIn
+import com.jpp.mpdomain.usecase.account.GetAuthenticationDataUseCase
 import com.jpp.mpdomain.usecase.account.GetAuthenticationDataUseCase.AuthenticationDataResult.*
 import kotlinx.coroutines.launch
-import java.lang.IllegalStateException
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * TODO JPP -> the first thing this VM needs to do is to verify if the user is logged in.
@@ -40,12 +42,10 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     /**
      * Called when the user has been authenticated successfully.
      */
-    fun onUserAuthenticated() {
-        when (viewStateLiveData.value) {
-            is AccountViewState.RenderlURL -> {
-             //TODO JPP execute create session UC
-            }
-            else -> throw IllegalStateException("Can not be authenticated if state was ${viewStateLiveData.value}")
+    fun onUserAuthenticated(accessToken: AccessToken) {
+        viewStateLiveData.value = AccountViewState.Loading
+        launch {
+            viewStateLiveData.value = createSession(accessToken)
         }
     }
 
@@ -74,7 +74,22 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                     when (ucResult) {
                         is ErrorNoConnectivity -> AccountViewState.ErrorNoConnectivity
                         is ErrorUnknown -> AccountViewState.ErrorUnknown
-                        is Success -> AccountViewState.RenderlURL(url = ucResult.authenticationURL, interceptUrl = ucResult.redirectionUrl)
+                        is Success -> AccountViewState.RenderlURL(url = ucResult.authenticationURL, interceptUrl = ucResult.redirectionUrl, accessToken = ucResult.accessToken)
+                    }
+                }
+    }
+
+    /**
+     * TODO JPP chain this call with the UC that retrieves the user data.
+     */
+    private suspend fun createSession(accessToken: AccessToken): AccountViewState = withContext(dispatchers.default()) {
+        createSessionUseCase
+                .createSessionWith(accessToken)
+                .let { ucResult ->
+                    when (ucResult) {
+                        is CreateSessionResult.ErrorNoConnectivity -> AccountViewState.ErrorNoConnectivity
+                        is CreateSessionResult.ErrorUnknown -> AccountViewState.ErrorUnknown
+                        is CreateSessionResult.Success -> AccountViewState.SessionCreated
                     }
                 }
     }
