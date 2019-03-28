@@ -302,11 +302,11 @@ data class UserAvatar(val gravatar: Gravatar)
  * [avatar] contains the avatar info of the account.
  * [id] the identifier in the system for the user's account.
  * [name] the user's account name.
- * [userName] the username of the user's account.
+ * [username] the username of the user's account.
  */
 data class UserAccount(
         val avatar: UserAvatar,
         val id: Double,
         val name: String,
-        val userName: String
+        val username: String
 )

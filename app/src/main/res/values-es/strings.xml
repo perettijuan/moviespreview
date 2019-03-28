@@ -73,6 +73,7 @@
 
     <!-- Nav Header -->
     <string name="nav_header_login">Iniciar Sesión</string>
+    <string name="nav_header_to_account">Cuenta >></string>
     <!-- End Nav Header -->
 
     <!-- Account -->

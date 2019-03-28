@@ -6,9 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation.findNavController
 import com.jpp.mp.R
+import com.jpp.mp.ext.getViewModel
+import com.jpp.mp.ext.setGone
+import com.jpp.mp.ext.setInvisible
+import com.jpp.mp.ext.setVisible
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_nav_header.*
 import javax.inject.Inject
@@ -30,13 +35,63 @@ class NavigationHeaderFragment : Fragment() {
         return layoutInflater.inflate(R.layout.fragment_nav_header, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         navHeaderLoginButton.setOnClickListener {
             activity?.let {
                 findNavController(it, R.id.mainNavHostFragment).navigate(R.id.accountFragment)
             }
         }
+
+        withViewModel {
+            viewState().observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { viewState ->
+                when (viewState) {
+                    is HeaderViewState.Loading -> renderLoading()
+                    is HeaderViewState.Login -> renderLogin()
+                    is HeaderViewState.WithInfo -> {
+                        navHeaderUserNameTv.text = viewState.accountInfo.userName
+                        navHeaderAccountNameTv.text = viewState.accountInfo.accountName
+                        //TODO render avatar
+                        renderAccountInfo()
+                    }
+                }
+            })
+
+            init()
+        }
+    }
+
+
+    /**
+     * Helper function to execute actions with the [NavigationHeaderViewModel].
+     */
+    private fun withViewModel(action: NavigationHeaderViewModel.() -> Unit) = getViewModel<NavigationHeaderViewModel>(viewModelFactory).action()
+
+    private fun renderLoading() {
+        navHeaderUserNameTv.setInvisible()
+        navHeaderAccountNameTv.setInvisible()
+        navHeaderAccountDetailsTv.setInvisible()
+        navHeaderLoginButton.setInvisible()
+
+        navHeaderLoadingView.setVisible()
+    }
+
+    private fun renderLogin() {
+        navHeaderUserNameTv.setInvisible()
+        navHeaderAccountNameTv.setInvisible()
+        navHeaderAccountDetailsTv.setInvisible()
+        navHeaderLoadingView.setInvisible()
+
+        navHeaderLoginButton.setVisible()
+    }
+
+    private fun renderAccountInfo() {
+        navHeaderLoadingView.setInvisible()
+        navHeaderLoginButton.setGone()
+
+        navHeaderUserNameTv.setVisible()
+        navHeaderAccountNameTv.setVisible()
+        navHeaderAccountDetailsTv.setVisible()
     }
 }

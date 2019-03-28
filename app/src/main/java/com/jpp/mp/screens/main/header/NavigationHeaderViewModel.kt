@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.screens.CoroutineDispatchers
 import com.jpp.mp.screens.MPScopedViewModel
+import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -34,10 +35,17 @@ class NavigationHeaderViewModel @Inject constructor(dispatchers: CoroutineDispat
                 .getAccountInfo()
                 .let { ucResult ->
                     when (ucResult) {
-                        is UserNotLoggedIn -> HeaderViewState.NotLogged
-                        is AccountInfo -> TODO()
+                        is AccountInfo -> HeaderViewState.WithInfo(accountInfo = mapAccountInfo(ucResult.userAccount))
+                        else -> HeaderViewState.Login
                     }
                 }
     }
 
+    private fun mapAccountInfo(userAccount: UserAccount) = with(userAccount) {
+        HeaderAccountInfo(
+                avatarUrl = avatar.gravatar.hash,
+                userName = if (name.isEmpty()) username else name,
+                accountName = username
+        )
+    }
 }
