@@ -79,6 +79,7 @@
 
     <!-- Account -->
     <string name="account_title">Account</string>
+    <string name="account_approve_reminder">Please approve Movies Preview to use your data.</string>
     <!-- End Account -->
 
 
