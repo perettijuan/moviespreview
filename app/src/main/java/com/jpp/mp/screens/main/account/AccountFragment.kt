@@ -68,8 +68,7 @@ class AccountFragment : Fragment() {
                         accountErrorView.asNoConnectivityError { TODO() }
                         renderError()
                     }
-                    is AccountViewState.SessionCreated -> Toast.makeText(activity!!, "Created session", Toast.LENGTH_LONG).show()
-                    is AccountViewState.RenderlURL -> {
+                    is AccountViewState.Oauth -> {
                         accountWebView.apply {
                             settings.apply {
                                 @SuppressLint("SetJavaScriptEnabled")
@@ -82,6 +81,11 @@ class AccountFragment : Fragment() {
                         }
                         renderWebView()
                     }
+                    is AccountViewState.AccountInfo -> {
+                        accountUserNameTv.text = viewState.accountItem.userName
+                        accountNameTv.text = viewState.accountItem.accountName
+                        renderAccountInfo()
+                    }
                 }
             })
         }
@@ -93,21 +97,42 @@ class AccountFragment : Fragment() {
     private fun withViewModel(action: AccountViewModel.() -> Unit) = getViewModel<AccountViewModel>(viewModelFactory).action()
 
     private fun renderLoading() {
+        accountUserNameTv.setInvisible()
+        accountNameTv.setInvisible()
+
         accountErrorView.setInvisible()
         accountWebView.setInvisible()
+
         accountLoadingView.setVisible()
     }
 
     private fun renderError() {
+        accountUserNameTv.setInvisible()
+        accountNameTv.setInvisible()
+
         accountLoadingView.setInvisible()
         accountWebView.setInvisible()
+
         accountErrorView.setVisible()
     }
 
     private fun renderWebView() {
+        accountUserNameTv.setInvisible()
+        accountNameTv.setInvisible()
+
         accountLoadingView.setInvisible()
         accountErrorView.setInvisible()
+
         accountWebView.setVisible()
+    }
+
+    private fun renderAccountInfo() {
+        accountLoadingView.setInvisible()
+        accountErrorView.setInvisible()
+        accountWebView.setInvisible()
+
+        accountUserNameTv.setVisible()
+        accountNameTv.setVisible()
     }
 
 

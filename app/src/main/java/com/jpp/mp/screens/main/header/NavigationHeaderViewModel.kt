@@ -75,7 +75,7 @@ class NavigationHeaderViewModel @Inject constructor(dispatchers: CoroutineDispat
                 .getAccountInfo()
                 .let { ucResult ->
                     when (ucResult) {
-                        is AccountInfo -> HeaderViewState.WithInfo(accountInfo = mapAccountInfo(ucResult.userAccount))
+                        is AccountInfo -> mapAccountInfo(ucResult.userAccount).let { HeaderViewState.WithInfo(accountInfo = it) }
                         else -> HeaderViewState.Login
                     }
                 }

@@ -9,6 +9,15 @@ sealed class AccountViewState {
     object Loading : AccountViewState()
     object ErrorUnknown : AccountViewState()
     object ErrorNoConnectivity : AccountViewState()
-    object SessionCreated : AccountViewState()// TODO JPP this should be another class that represents the user account data
-    data class RenderlURL(val url: String, val interceptUrl: String, val accessToken: AccessToken) : AccountViewState()
+    data class Oauth(val url: String, val interceptUrl: String, val accessToken: AccessToken) : AccountViewState()
+    data class AccountInfo(val accountItem: AccountItem) : AccountViewState()
 }
+
+/**
+ * Represents the data rendered in the account item.
+ */
+data class AccountItem(
+        val avatarUrl: String,
+        val userName: String,
+        val accountName: String
+)
