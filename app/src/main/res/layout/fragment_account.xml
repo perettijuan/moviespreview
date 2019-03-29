@@ -25,6 +25,18 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Web view section -->
+    <ProgressBar
+        android:id="@+id/accountWebPg"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="5dp"
+        android:visibility="invisible"
+        android:progressDrawable="@drawable/pg_web_view_drawable"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <WebView
         android:id="@+id/accountWebView"
         android:layout_width="match_parent"
@@ -33,7 +45,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/accountWebPg" />
+
+    <!-- End Web view section -->
 
     <TextView
         android:id="@+id/accountUserNameTv"
