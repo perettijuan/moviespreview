@@ -10,6 +10,7 @@ import com.jpp.mpdata.preferences.LanguageDbImpl
 import com.jpp.mpdata.preferences.SessionDbImpl
 import com.jpp.mpdata.repository.about.AboutNavigationRepositoryImpl
 import com.jpp.mpdata.repository.account.AccountApi
+import com.jpp.mpdata.repository.account.AccountDb
 import com.jpp.mpdata.repository.account.AccountRepositoryImpl
 import com.jpp.mpdata.repository.session.SessionApi
 import com.jpp.mpdata.repository.session.SessionDb
@@ -245,7 +246,11 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesAccountRepository(accountApi: AccountApi): AccountRepository = AccountRepositoryImpl(accountApi)
+    fun providesAccountDb(): AccountDb = AccountDb.Impl()
+
+    @Singleton
+    @Provides
+    fun providesAccountRepository(accountApi: AccountApi, accountDb: AccountDb): AccountRepository = AccountRepositoryImpl(accountApi, accountDb)
 
 }
 
