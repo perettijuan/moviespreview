@@ -173,4 +173,19 @@ class MainActivityViewModelTest {
         subject.userNavigatesToLicenseContent(sectionName)
     }
 
+    @Test
+    fun `Should lock ActionBar without animation when user navigates to account details`() {
+        val sectionName = "aSection"
+        subject.viewState().observe(resumedLifecycleOwner(), Observer {
+            assertTrue(it is MainActivityViewState.ActionBarLocked)
+            with(it as MainActivityViewState.ActionBarLocked) {
+                assertEquals(sectionName, abTitle)
+                assertFalse(withAnimation)
+                assertFalse(menuEnabled)
+                assertFalse(searchEnabled)
+            }
+        })
+        subject.userNavigatesToAccountDetails(sectionName)
+    }
+
 }

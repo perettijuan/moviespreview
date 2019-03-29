@@ -1,8 +1,6 @@
 package com.jpp.mpdomain.usecase.account
 
-import com.jpp.mpdomain.Connectivity
-import com.jpp.mpdomain.Session
-import com.jpp.mpdomain.UserAccount
+import com.jpp.mpdomain.*
 import com.jpp.mpdomain.repository.AccountRepository
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.SessionRepository
@@ -77,7 +75,7 @@ class GetAccountInfoUseCaseTest {
     @Test
     fun `Should return AccountInfo when connected to network and the user is logged`() {
         val session = mockk<Session>()
-        val account = mockk<UserAccount>()
+        val account = mockk<UserAccount>(relaxed = true)
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getCurrentSession() } returns session
         every { accountRepository.getUserAccount(any()) } returns account
@@ -86,8 +84,23 @@ class GetAccountInfoUseCaseTest {
             verify(exactly = 1) { sessionRepository.getCurrentSession() }
             verify(exactly = 1) { accountRepository.getUserAccount(session) }
             assertTrue(result is AccountInfo)
+        }
+    }
+
+    @Test
+    fun `Should map avatar info in UserAccount`() {
+        val hash = "hashString"
+        val gravatar = Gravatar(hash)
+        val userAvatar = UserAvatar(gravatar)
+        val account = UserAccount(avatar = userAvatar, name = "", username = "", id = 12.toDouble())
+
+        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        every { sessionRepository.getCurrentSession() } returns mockk()
+        every { accountRepository.getUserAccount(any()) } returns account
+
+        subject.getAccountInfo().let { result ->
             result as AccountInfo
-            assertEquals(account, result.userAccount)
+            assertEquals(Gravatar.BASE_URL + hash, result.userAccount.avatar.gravatar.hash)
         }
     }
 }

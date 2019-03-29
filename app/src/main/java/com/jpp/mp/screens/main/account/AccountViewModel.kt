@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * TODO JPP -> the first thing this VM needs to do is to verify if the user is logged in.
+ * TODO JPP -> add tests for this VM
  */
 class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                            private val getAccountInfoUseCase: GetAccountInfoUseCase,
@@ -82,9 +82,6 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                 }
     }
 
-    /**
-     * TODO JPP chain this call with the UC that retrieves the user data.
-     */
     private suspend fun createSession(accessToken: AccessToken): AccountViewState = withContext(dispatchers.default()) {
         createSessionUseCase
                 .createSessionWith(accessToken)
