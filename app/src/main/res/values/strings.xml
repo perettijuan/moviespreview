@@ -72,4 +72,14 @@
     <string name="share_app_text">Hey check out this app: %1$s </string>
     <!-- End About -->
 
+    <!-- Nav Header -->
+    <string name="nav_header_login">Login</string>
+    <string name="nav_header_to_account">Account >></string>
+    <!-- End Nav Header -->
+
+    <!-- Account -->
+    <string name="account_title">Account</string>
+    <!-- End Account -->
+
+
 </resources>

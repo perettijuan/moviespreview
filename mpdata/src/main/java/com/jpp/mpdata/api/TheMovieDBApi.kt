@@ -2,9 +2,7 @@ package com.jpp.mpdata.api
 
 import com.jpp.mpdomain.*
 import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 /**
  * API instance for Retrofit
@@ -116,4 +114,27 @@ interface TheMovieDBApi {
     fun getMovieCredits(@Path("movie_id") movieId: Double,
                         @Query("api_key") api_key: String): Call<Credits>
 
+    /**
+     * Retrieves an [AccessToken] to be used in a login process.
+     * [api_key] the api key provided by themoviedb.
+     */
+    @GET("authentication/token/new")
+    fun getAccessToken(@Query("api_key") api_key: String): Call<AccessToken>
+
+    /**
+     * Creates a new [Session] for the provided [requestToken].
+     * [api_key] the api key provided by themoviedb.
+     * [requestToken] the token to use in the session creation.
+     * @return a [Session] if one can be created, null any other case.
+     */
+    @POST("authentication/session/new")
+    fun createSession(@Query("api_key") api_key: String, @Body requestToken: RequestToken): Call<Session>
+
+    /**
+     * Retrieves the user account data.
+     * [session_id] the session identifier for the current user.
+     * [api_key] the api key provided by themoviedb.
+     */
+    @GET("account")
+    fun getUserAccount(@Query("session_id") session_id: String, @Query("api_key") api_key: String): Call<UserAccount>
 }

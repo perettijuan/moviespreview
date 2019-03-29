@@ -15,6 +15,8 @@ import androidx.annotation.StringRes
 import androidx.annotation.StyleRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.jpp.mp.R
 import com.squareup.picasso.Callback
@@ -169,5 +171,14 @@ fun TextView.setTextAppearanceCompat(@StyleRes resId: Int) {
         this.setTextAppearance(resId)
     } else {
         setTextAppearance(context, resId)
+    }
+}
+
+/**
+ * Closes the drawer if it is open (using the START margin to determinate if is open).
+ */
+fun DrawerLayout.closeDrawerIfOpen() {
+    if (isDrawerOpen(GravityCompat.START)) {
+        closeDrawer(GravityCompat.START)
     }
 }
