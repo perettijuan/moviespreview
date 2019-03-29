@@ -9,7 +9,7 @@ sealed class AccountViewState {
     object Loading : AccountViewState()
     object ErrorUnknown : AccountViewState()
     object ErrorNoConnectivity : AccountViewState()
-    data class Oauth(val url: String, val interceptUrl: String, val accessToken: AccessToken) : AccountViewState()
+    data class Oauth(val url: String, val interceptUrl: String, val accessToken: AccessToken, val reminder: Boolean = false) : AccountViewState()
     data class AccountInfo(val accountItem: AccountItem) : AccountViewState()
 }
 

@@ -20,6 +20,7 @@ import com.jpp.mp.R
 import com.jpp.mp.ext.getViewModel
 import com.jpp.mp.ext.setInvisible
 import com.jpp.mp.ext.setVisible
+import com.jpp.mp.ext.snackBar
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_account.*
 import javax.inject.Inject
@@ -70,17 +71,7 @@ class AccountFragment : Fragment() {
                         renderError()
                     }
                     is AccountViewState.Oauth -> {
-                        accountWebView.apply {
-                            settings.apply {
-                                @SuppressLint("SetJavaScriptEnabled")
-                                javaScriptEnabled = true
-                                webViewClient = LoginWebViewClient(viewState.interceptUrl) { loggedIn ->
-                                    if (loggedIn) onUserAuthenticated(viewState.accessToken) else onUserFailedToAuthenticate()
-                                }
-                            }
-                            webChromeClient = LoginWebChromeClient(accountWebPg)
-                            loadUrl(viewState.url)
-                        }
+                        renderOauthState(viewState)
                         renderWebView()
                     }
                     is AccountViewState.AccountInfo -> {
@@ -97,6 +88,25 @@ class AccountFragment : Fragment() {
      * Helper function to execute actions with the [AccountViewModel].
      */
     private fun withViewModel(action: AccountViewModel.() -> Unit) = getViewModel<AccountViewModel>(viewModelFactory).action()
+
+
+    private fun renderOauthState(oauthState: AccountViewState.Oauth) {
+        accountWebView.apply {
+            settings.apply {
+                @SuppressLint("SetJavaScriptEnabled")
+                javaScriptEnabled = true
+                webViewClient = LoginWebViewClient(oauthState.interceptUrl) { redirectedUrl -> withViewModel { onUserRedirectedToUrl(redirectedUrl, oauthState) } }
+            }
+            webChromeClient = LoginWebChromeClient(accountWebPg)
+            loadUrl(oauthState.url)
+        }
+
+        if (oauthState.reminder) {
+            snackBar(accountContent, R.string.account_approve_reminder, R.string.error_retry) {
+                withViewModel { retry() }
+            }
+        }
+    }
 
     private fun renderLoading() {
         accountUserNameTv.setInvisible()
@@ -147,7 +157,7 @@ class AccountFragment : Fragment() {
      * being used to load the login page used in the Oauth flow.
      */
     private class LoginWebViewClient(private val redirectUrl: String,
-                                     private val callback: (Boolean) -> Unit) : WebViewClient() {
+                                     private val callback: (String) -> Unit) : WebViewClient() {
 
         @SuppressWarnings("deprecation")
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
@@ -161,10 +171,8 @@ class AccountFragment : Fragment() {
 
         private fun handleUrl(url: String): Boolean {
             if (url.startsWith(redirectUrl)) {
-                callback(true)
+                callback(url)
                 return true
-            } else if (url.contains("error")) {
-                callback(false)
             }
             return false
         }

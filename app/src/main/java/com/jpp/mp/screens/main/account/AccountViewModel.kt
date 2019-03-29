@@ -43,20 +43,19 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     fun viewState(): LiveData<AccountViewState> = viewStateLiveData
 
     /**
-     * Called when the user has been authenticated successfully.
+     * Called when the user is redirected in the Oauth flow.
+     * [redirectUrl] represents the redirection URl.
+     * [oauthState] represents the last Oauth view state rendered.
      */
-    fun onUserAuthenticated(accessToken: AccessToken) {
-        viewStateLiveData.value = AccountViewState.Loading
-        launch {
-            viewStateLiveData.value = createSession(accessToken)
+    fun onUserRedirectedToUrl(redirectUrl: String, oauthState: AccountViewState.Oauth) {
+        when {
+            redirectUrl.contains("approved=true") -> {
+                viewStateLiveData.value = AccountViewState.Loading
+                launch { viewStateLiveData.value = createSession(oauthState.accessToken) }
+            }
+            redirectUrl.contains("denied=true") -> viewStateLiveData.value = oauthState.copy(reminder = true)
+            else -> viewStateLiveData.value = AccountViewState.ErrorUnknown
         }
-    }
-
-    /**
-     * Called when an error was detected while authenticating the user.
-     */
-    fun onUserFailedToAuthenticate() {
-        //TODO JPP Complete this
     }
 
     /**
