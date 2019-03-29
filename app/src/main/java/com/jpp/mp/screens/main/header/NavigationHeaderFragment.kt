@@ -51,7 +51,7 @@ class NavigationHeaderFragment : Fragment() {
                     is HeaderViewState.WithInfo -> {
                         navHeaderUserNameTv.text = viewState.accountInfo.userName
                         navHeaderAccountNameTv.text = viewState.accountInfo.accountName
-                        navHeaderIv.loadImageUrlAsCircular(viewState.accountInfo.avatarUrl)
+                        navHeaderIv.loadImageUrlAsCircular(viewState.accountInfo.avatarUrl)//TODO JPP -> we need to detect default image in Gravatar ==> https://es.gravatar.com/site/implement/images/
                         renderAccountInfo()
                     }
                 }

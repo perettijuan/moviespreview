@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.screens.CoroutineDispatchers
 import com.jpp.mp.screens.MPScopedViewModel
 import com.jpp.mpdomain.AccessToken
+import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase.AccountInfoResult.AccountInfo
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase.AccountInfoResult.UserNotLoggedIn
@@ -62,9 +63,9 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                 .let { ucResult ->
                     when (ucResult) {
                         is UserNotLoggedIn -> getLoginUrl()
-                        is AccountInfo -> TODO()
-                        is GetAccountInfoUseCase.AccountInfoResult.ErrorNoConnectivity -> TODO()
-                        is GetAccountInfoUseCase.AccountInfoResult.ErrorUnknown -> TODO()
+                        is AccountInfo -> mapAccountInfo(ucResult.userAccount).let { AccountViewState.AccountInfo(accountItem = it) }
+                        is GetAccountInfoUseCase.AccountInfoResult.ErrorNoConnectivity -> AccountViewState.ErrorNoConnectivity
+                        is GetAccountInfoUseCase.AccountInfoResult.ErrorUnknown -> AccountViewState.ErrorUnknown
                     }
                 }
     }
@@ -76,7 +77,7 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                     when (ucResult) {
                         is ErrorNoConnectivity -> AccountViewState.ErrorNoConnectivity
                         is ErrorUnknown -> AccountViewState.ErrorUnknown
-                        is Success -> AccountViewState.RenderlURL(url = ucResult.authenticationURL, interceptUrl = ucResult.redirectionUrl, accessToken = ucResult.accessToken)
+                        is Success -> AccountViewState.Oauth(url = ucResult.authenticationURL, interceptUrl = ucResult.redirectionUrl, accessToken = ucResult.accessToken)
                     }
                 }
     }
@@ -91,8 +92,17 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                     when (ucResult) {
                         is CreateSessionResult.ErrorNoConnectivity -> AccountViewState.ErrorNoConnectivity
                         is CreateSessionResult.ErrorUnknown -> AccountViewState.ErrorUnknown
-                        is CreateSessionResult.Success -> AccountViewState.SessionCreated
+                        is CreateSessionResult.Success -> getAccountInfo()
                     }
                 }
+    }
+
+
+    private fun mapAccountInfo(userAccount: UserAccount) = with(userAccount) {
+        AccountItem(
+                avatarUrl = avatar.gravatar.hash,
+                userName = if (name.isEmpty()) username else name,
+                accountName = username
+        )
     }
 }
