@@ -28,11 +28,13 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
     private val viewStateLiveData by lazy { MutableLiveData<AccountViewState>() }
 
+    /**
+     * Called when the fragment is initialized and the view is ready to render states.
+     * Call to this method will trigger the execution of the use case to get the user
+     * account information.
+     */
     fun init() {
-        viewStateLiveData.value = AccountViewState.Loading
-        launch {
-            viewStateLiveData.value = getAccountInfo()
-        }
+        pushLoadingAndFetchAccountInfo()
     }
 
     /**
@@ -54,9 +56,31 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Called when an error was detected while authenticating the user.
      */
     fun onUserFailedToAuthenticate() {
-
+        //TODO JPP Complete this
     }
 
+    /**
+     * Called when an error is detected to attempt to execute the latest request.
+     */
+    fun retry() {
+        pushLoadingAndFetchAccountInfo()
+    }
+
+
+    /**
+     * Pushes the loading state into the view and starts the process to fetch the user account data.
+     */
+    private fun pushLoadingAndFetchAccountInfo() {
+        viewStateLiveData.value = AccountViewState.Loading
+        launch {
+            viewStateLiveData.value = getAccountInfo()
+        }
+    }
+
+    /**
+     * Retrieves the information of the user's account. If the user is not logged, the output of [getLoginUrl]
+     * will be rendered in order to start the Oauth process.
+     */
     private suspend fun getAccountInfo(): AccountViewState = withContext(dispatchers.default()) {
         getAccountInfoUseCase
                 .getAccountInfo()
@@ -70,6 +94,10 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                 }
     }
 
+    /**
+     * Called when the VM detects that the user is not logged. This triggers the execution of the UC
+     * that retrieves an access token and creates the URL to execute the Oauth flow in the UI.
+     */
     private suspend fun getLoginUrl(): AccountViewState = withContext(dispatchers.default()) {
         getAuthenticationDataUseCase
                 .getAuthenticationData()
@@ -82,6 +110,11 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                 }
     }
 
+    /**
+     * Last step of the Oauth flow: called when the user has granted permissions to the application
+     * to access the data of the account. This will fetch a session identifier and, if successful,
+     * will execute [getAccountInfo] to fetch the user's account data with the session identifier created.
+     */
     private suspend fun createSession(accessToken: AccessToken): AccountViewState = withContext(dispatchers.default()) {
         createSessionUseCase
                 .createSessionWith(accessToken)

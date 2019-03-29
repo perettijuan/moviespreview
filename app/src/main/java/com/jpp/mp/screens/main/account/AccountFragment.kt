@@ -1,5 +1,6 @@
 package com.jpp.mp.screens.main.account
 
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
@@ -7,10 +8,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Toast
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,7 +23,6 @@ import com.jpp.mp.ext.setVisible
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_account.*
 import javax.inject.Inject
-import android.annotation.SuppressLint
 
 
 class AccountFragment : Fragment() {
@@ -61,11 +62,11 @@ class AccountFragment : Fragment() {
                 when (viewState) {
                     is AccountViewState.Loading -> renderLoading()
                     is AccountViewState.ErrorUnknown -> {
-                        accountErrorView.asUnknownError { TODO() }
+                        accountErrorView.asUnknownError { withViewModel { retry() } }
                         renderError()
                     }
                     is AccountViewState.ErrorNoConnectivity -> {
-                        accountErrorView.asNoConnectivityError { TODO() }
+                        accountErrorView.asNoConnectivityError { withViewModel { retry() } }
                         renderError()
                     }
                     is AccountViewState.Oauth -> {
@@ -77,6 +78,7 @@ class AccountFragment : Fragment() {
                                     if (loggedIn) onUserAuthenticated(viewState.accessToken) else onUserFailedToAuthenticate()
                                 }
                             }
+                            webChromeClient = LoginWebChromeClient(accountWebPg)
                             loadUrl(viewState.url)
                         }
                         renderWebView()
@@ -102,6 +104,7 @@ class AccountFragment : Fragment() {
 
         accountErrorView.setInvisible()
         accountWebView.setInvisible()
+        accountWebPg.setInvisible()
 
         accountLoadingView.setVisible()
     }
@@ -112,6 +115,7 @@ class AccountFragment : Fragment() {
 
         accountLoadingView.setInvisible()
         accountWebView.setInvisible()
+        accountWebPg.setInvisible()
 
         accountErrorView.setVisible()
     }
@@ -123,6 +127,7 @@ class AccountFragment : Fragment() {
         accountLoadingView.setInvisible()
         accountErrorView.setInvisible()
 
+        accountWebPg.setVisible()
         accountWebView.setVisible()
     }
 
@@ -130,12 +135,17 @@ class AccountFragment : Fragment() {
         accountLoadingView.setInvisible()
         accountErrorView.setInvisible()
         accountWebView.setInvisible()
+        accountWebPg.setInvisible()
 
         accountUserNameTv.setVisible()
         accountNameTv.setVisible()
     }
 
 
+    /**
+     * A [WebViewClient] used to listen for changes in the WebView
+     * being used to load the login page used in the Oauth flow.
+     */
     private class LoginWebViewClient(private val redirectUrl: String,
                                      private val callback: (Boolean) -> Unit) : WebViewClient() {
 
@@ -157,6 +167,19 @@ class AccountFragment : Fragment() {
                 callback(false)
             }
             return false
+        }
+    }
+
+    /**
+     * A [WebChromeClient] implementation used to listen for process
+     * updates when the WebView is loading a URL.
+     */
+    private class LoginWebChromeClient(private val pgBar: ProgressBar) : WebChromeClient() {
+        override fun onProgressChanged(view: WebView?, newProgress: Int) {
+            when (newProgress) {
+                100 -> pgBar.setInvisible()
+                else -> pgBar.progress = newProgress;
+            }
         }
     }
 }
