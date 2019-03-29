@@ -86,7 +86,7 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                 .let { ucResult ->
                     when (ucResult) {
                         is UserNotLoggedIn -> getLoginUrl()
-                        is AccountInfo -> mapAccountInfo(ucResult.userAccount).let { AccountViewState.AccountInfo(accountItem = it) }
+                        is AccountInfo -> mapAccountInfo(ucResult.userAccount).let { AccountViewState.AccountInfo(headerItem = it) }
                         is GetAccountInfoUseCase.AccountInfoResult.ErrorNoConnectivity -> AccountViewState.ErrorNoConnectivity
                         is GetAccountInfoUseCase.AccountInfoResult.ErrorUnknown -> AccountViewState.ErrorUnknown
                     }
@@ -128,7 +128,7 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
 
     private fun mapAccountInfo(userAccount: UserAccount) = with(userAccount) {
-        AccountItem(
+        AccountHeaderItem(
                 avatarUrl = avatar.gravatar.hash,
                 userName = if (name.isEmpty()) username else name,
                 accountName = username

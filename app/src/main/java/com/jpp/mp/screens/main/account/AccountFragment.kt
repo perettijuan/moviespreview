@@ -17,12 +17,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.R
-import com.jpp.mp.ext.getViewModel
-import com.jpp.mp.ext.setInvisible
-import com.jpp.mp.ext.setVisible
-import com.jpp.mp.ext.snackBar
+import com.jpp.mp.ext.*
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_account.*
+import kotlinx.android.synthetic.main.layout_account_header.*
 import javax.inject.Inject
 
 
@@ -75,8 +73,7 @@ class AccountFragment : Fragment() {
                         renderWebView()
                     }
                     is AccountViewState.AccountInfo -> {
-                        accountUserNameTv.text = viewState.accountItem.userName
-                        accountNameTv.text = viewState.accountItem.accountName
+                        updateAccountInfo(viewState)
                         renderAccountInfo()
                     }
                 }
@@ -108,10 +105,16 @@ class AccountFragment : Fragment() {
         }
     }
 
-    private fun renderLoading() {
-        accountUserNameTv.setInvisible()
-        accountNameTv.setInvisible()
+    private fun updateAccountInfo(newInfo: AccountViewState.AccountInfo) {
+        with(newInfo.headerItem) {
+            accountHeaderIv.loadImageUrlAsCircular(avatarUrl)
+            accountHeaderUserNameTv.text = userName
+            accountHeaderAccountNameTv.text = accountName
+        }
+    }
 
+    private fun renderLoading() {
+        accountContentView.setInvisible()
         accountErrorView.setInvisible()
         accountWebView.setInvisible()
         accountWebPg.setInvisible()
@@ -120,9 +123,7 @@ class AccountFragment : Fragment() {
     }
 
     private fun renderError() {
-        accountUserNameTv.setInvisible()
-        accountNameTv.setInvisible()
-
+        accountContentView.setInvisible()
         accountLoadingView.setInvisible()
         accountWebView.setInvisible()
         accountWebPg.setInvisible()
@@ -131,9 +132,7 @@ class AccountFragment : Fragment() {
     }
 
     private fun renderWebView() {
-        accountUserNameTv.setInvisible()
-        accountNameTv.setInvisible()
-
+        accountContentView.setInvisible()
         accountLoadingView.setInvisible()
         accountErrorView.setInvisible()
 
@@ -147,8 +146,7 @@ class AccountFragment : Fragment() {
         accountWebView.setInvisible()
         accountWebPg.setInvisible()
 
-        accountUserNameTv.setVisible()
-        accountNameTv.setVisible()
+        accountContentView.setVisible()
     }
 
 
