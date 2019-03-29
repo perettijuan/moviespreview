@@ -10,13 +10,13 @@ sealed class AccountViewState {
     object ErrorUnknown : AccountViewState()
     object ErrorNoConnectivity : AccountViewState()
     data class Oauth(val url: String, val interceptUrl: String, val accessToken: AccessToken, val reminder: Boolean = false) : AccountViewState()
-    data class AccountInfo(val accountItem: AccountItem) : AccountViewState()
+    data class AccountInfo(val headerItem: AccountHeaderItem) : AccountViewState()
 }
 
 /**
- * Represents the data rendered in the account item.
+ * Represents the data rendered in the header view of the account fragment.
  */
-data class AccountItem(
+data class AccountHeaderItem(
         val avatarUrl: String,
         val userName: String,
         val accountName: String

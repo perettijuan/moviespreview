@@ -54,4 +54,7 @@
     <dimen name="nav_header_padding">12dp</dimen>
     <dimen name="login_button_padding">6dp</dimen>
 
+    <!-- Account -->
+    <dimen name="account_avatar_size">96dp</dimen>
+
 </resources>

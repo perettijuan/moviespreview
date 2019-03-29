@@ -30,6 +30,7 @@
         <item name="mpAboutItemVerticalSpacing">@dimen/about_item_vertical_spacing</item>
         <item name="mpNavHeaderIconSize">@dimen/nav_header_icon_size</item>
         <item name="mpNavHeaderPadding">@dimen/nav_header_padding</item>
+        <item name="mpAccountAvatarSize">@dimen/account_avatar_size</item>
     </style>
 
     <!-- Used in the Drawer items-->
