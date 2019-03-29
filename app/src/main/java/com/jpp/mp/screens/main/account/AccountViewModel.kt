@@ -18,7 +18,16 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * TODO JPP -> add tests for this VM
+ * [MPScopedViewModel] to handle the general state of the AccountFragment. It is a coroutine-scoped
+ * ViewModel, which indicates that some work will be executed in a background context and synced
+ * to the main context when over.
+ *
+ * It handler the general state of the AccountFragment in the sense that knows if the user is logged
+ * in or not, manages the Oauth flow to log in a user and manages the logout. The rest of the content
+ * rendered in the AccountFragment is managed for different ViewModels.
+ *
+ * It exposes a single output in a LiveData object that receives [AccountViewState] updates as soon
+ * as any new state is identified by the ViewModel.
  */
 class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                            private val getAccountInfoUseCase: GetAccountInfoUseCase,
@@ -86,7 +95,7 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                 .let { ucResult ->
                     when (ucResult) {
                         is UserNotLoggedIn -> getLoginUrl()
-                        is AccountInfo -> mapAccountInfo(ucResult.userAccount).let { AccountViewState.AccountInfo(headerItem = it) }
+                        is AccountInfo -> mapAccountInfo(ucResult.userAccount).let { AccountViewState.AccountContent(headerItem = it) }
                         is GetAccountInfoUseCase.AccountInfoResult.ErrorNoConnectivity -> AccountViewState.ErrorNoConnectivity
                         is GetAccountInfoUseCase.AccountInfoResult.ErrorUnknown -> AccountViewState.ErrorUnknown
                     }

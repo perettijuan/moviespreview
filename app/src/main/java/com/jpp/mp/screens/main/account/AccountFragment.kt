@@ -72,7 +72,7 @@ class AccountFragment : Fragment() {
                         renderOauthState(viewState)
                         renderWebView()
                     }
-                    is AccountViewState.AccountInfo -> {
+                    is AccountViewState.AccountContent -> {
                         updateAccountInfo(viewState)
                         renderAccountInfo()
                     }
@@ -105,8 +105,8 @@ class AccountFragment : Fragment() {
         }
     }
 
-    private fun updateAccountInfo(newInfo: AccountViewState.AccountInfo) {
-        with(newInfo.headerItem) {
+    private fun updateAccountInfo(newContent: AccountViewState.AccountContent) {
+        with(newContent.headerItem) {
             accountHeaderIv.loadImageUrlAsCircular(avatarUrl)
             accountHeaderUserNameTv.text = userName
             accountHeaderAccountNameTv.text = accountName
