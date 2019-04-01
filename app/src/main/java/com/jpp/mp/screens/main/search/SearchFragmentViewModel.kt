@@ -159,7 +159,11 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
                         }
                         is SearchUseCaseResult.Success -> {
                             with(ucResult.searchPage.results) {
-                                if (size > 0) callback(this, page + 1) else viewState.postValue(SearchViewState.EmptySearch(queryString))
+                                when (page) {
+                                    // Post empty value only when it is the first page
+                                    1 -> if (size > 0) callback(this, page + 1) else viewState.postValue(SearchViewState.EmptySearch(queryString))
+                                    else -> callback(this, page + 1)
+                                }
                             }
                         }
                     }
