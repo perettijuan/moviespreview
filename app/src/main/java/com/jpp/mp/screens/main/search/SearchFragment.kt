@@ -136,6 +136,7 @@ class SearchFragment : Fragment() {
                 renderDoneSearching()
             }
             is SearchViewState.EmptySearch -> {
+                emptySearch.text = String.format(getString(R.string.empty_search), viewState.searchText)
                 renderEmptySearch()
             }
             is SearchViewState.DoneSearching -> {
