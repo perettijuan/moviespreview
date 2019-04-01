@@ -15,6 +15,7 @@
     <dimen name="movie_item_bottom_bar_icon_size">18dp</dimen>
     <dimen name="transparent_bg_line_width">2dp</dimen>
     <dimen name="transparent_bg_radius">12dp</dimen>
+    <dimen name="single_character_size">52sp</dimen>
 
 
     <!-- MPLoadingView -->

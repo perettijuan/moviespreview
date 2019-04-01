@@ -117,7 +117,8 @@ fun ImageView.loadImageUrl(imageUrl: String,
  */
 fun ImageView.loadImageUrlAsCircular(imageUrl: String,
                                      @DrawableRes placeholderRes: Int = R.drawable.ic_app_icon_black,
-                                     @DrawableRes errorImageRes: Int = R.drawable.ic_error_black) {
+                                     @DrawableRes errorImageRes: Int = R.drawable.ic_error_black,
+                                     onErrorAction: (() -> Unit)? = null) {
     Picasso
             .with(context)
             .load(imageUrl)
@@ -135,7 +136,7 @@ fun ImageView.loadImageUrlAsCircular(imageUrl: String,
                 }
 
                 override fun onError() {
-                    //no-op
+                    onErrorAction?.invoke()
                 }
             })
 

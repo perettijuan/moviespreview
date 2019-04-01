@@ -19,5 +19,6 @@ sealed class AccountViewState {
 data class AccountHeaderItem(
         val avatarUrl: String,
         val userName: String,
-        val accountName: String
+        val accountName: String,
+        val defaultLetter: Char
 )

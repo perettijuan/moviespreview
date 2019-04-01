@@ -58,7 +58,7 @@ interface GetAccountInfoUseCase {
         }
 
         private fun mapAvatarUrl(userAccount: UserAccount): UserAccount {
-            return userAccount.copy(avatar = userAccount.avatar.copy(gravatar = userAccount.avatar.gravatar.copy(hash = Gravatar.BASE_URL + userAccount.avatar.gravatar.hash)))
+            return userAccount.copy(avatar = userAccount.avatar.copy(gravatar = userAccount.avatar.gravatar.copy(hash = Gravatar.BASE_URL + userAccount.avatar.gravatar.hash  + Gravatar.REDIRECT)))
         }
     }
 }
