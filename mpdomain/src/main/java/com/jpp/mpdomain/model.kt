@@ -315,3 +315,17 @@ data class UserAccount(
         val name: String,
         val username: String
 )
+
+/**
+ * Represents the state of a movie from the user's account perspective.
+ * [id] represents the identifier of the movie.
+ * [favorite] whether the movie has been favorited by the user or not.
+ * [rated] whether the user has rated the movie or not.
+ * [watchlist] whether the user has added the movie to his watchlist or not.
+ */
+data class MovieAccountState(
+        val id: Double,
+        val favorite: Boolean,
+        val rated: Boolean,
+        val watchlist: Boolean
+)
