@@ -1,6 +1,8 @@
 package com.jpp.mpdata.api
 
 import com.jpp.mpdata.BuildConfig
+import com.jpp.mpdata.repository.account.AccountApi
+import com.jpp.mpdata.repository.session.SessionApi
 import com.jpp.mpdata.repository.configuration.ConfigurationApi
 import com.jpp.mpdata.repository.credits.CreditsApi
 import com.jpp.mpdata.repository.movies.MoviesApi
@@ -22,7 +24,9 @@ open class MPApi
         MoviesApi,
         SearchApi,
         PersonApi,
-        CreditsApi {
+        CreditsApi,
+        SessionApi,
+        AccountApi {
 
     override fun getAppConfiguration(): AppConfiguration? {
         return tryCatchOrReturnNull { API.getAppConfiguration(API_KEY) }
@@ -58,6 +62,18 @@ open class MPApi
 
     override fun getCreditsForMovie(movieId: Double): Credits? {
         return tryCatchOrReturnNull { API.getMovieCredits(movieId, API_KEY) }
+    }
+
+    override fun getAccessToken(): AccessToken? {
+        return tryCatchOrReturnNull { API.getAccessToken(API_KEY) }
+    }
+
+    override fun createSession(accessToken: AccessToken): Session? {
+        return tryCatchOrReturnNull { API.createSession(API_KEY, RequestToken(accessToken.request_token)) }
+    }
+
+    override fun getUserAccountInfo(session: Session): UserAccount? {
+        return tryCatchOrReturnNull { API.getUserAccount(session.session_id, API_KEY) }
     }
 
     /**

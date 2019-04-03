@@ -2,6 +2,9 @@ package com.jpp.mp.di
 
 import com.jpp.mpdomain.repository.*
 import com.jpp.mpdomain.usecase.about.GetAboutNavigationUrlUseCase
+import com.jpp.mpdomain.usecase.session.CreateSessionUseCase
+import com.jpp.mpdomain.usecase.session.GetAuthenticationDataUseCase
+import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
 import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase
 import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
 import com.jpp.mpdomain.usecase.credits.GetCreditsUseCase
@@ -93,4 +96,19 @@ class DomainLayerModule {
                                    supportRepository: SupportRepository)
             : RefreshDataUseCase = RefreshDataUseCase.Impl(languageRepository, supportRepository)
 
+    @Provides
+    fun providesGetAccountInfoUseCase(sessionRepository: SessionRepository,
+                                      accountRepository: AccountRepository,
+                                      connectivityRepository: ConnectivityRepository)
+            : GetAccountInfoUseCase = GetAccountInfoUseCase.Impl(sessionRepository, accountRepository, connectivityRepository)
+
+    @Provides
+    fun providesGetAccessTokenUseCase(sessionRepository: SessionRepository,
+                                      connectivityRepository: ConnectivityRepository)
+            : GetAuthenticationDataUseCase = GetAuthenticationDataUseCase.Impl(sessionRepository, connectivityRepository)
+
+    @Provides
+    fun providesCreateSessionUseCase(sessionRepository: SessionRepository,
+                                     connectivityRepository: ConnectivityRepository)
+            : CreateSessionUseCase = CreateSessionUseCase.Impl(sessionRepository, connectivityRepository)
 }

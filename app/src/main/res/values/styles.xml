@@ -28,6 +28,9 @@
         <item name="mpAboutIconMarginTop">@dimen/about_icon_top_margin</item>
         <item name="mpAboutItemIconSize">@dimen/about_item_icon_size</item>
         <item name="mpAboutItemVerticalSpacing">@dimen/about_item_vertical_spacing</item>
+        <item name="mpNavHeaderIconSize">@dimen/nav_header_icon_size</item>
+        <item name="mpNavHeaderPadding">@dimen/nav_header_padding</item>
+        <item name="mpAccountAvatarSize">@dimen/account_avatar_size</item>
     </style>
 
     <!-- Used in the Drawer items-->
@@ -67,6 +70,11 @@
 
     <style name="MPTextViewSmall" parent="@android:style/TextAppearance.Small">
         <item name="android:textColor">@android:color/black</item>
+    </style>
+    
+    <style name="MPSingleCharacter" parent="@android:style/TextAppearance">
+        <item name="android:textSize">@dimen/single_character_size</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
 </resources>
