@@ -20,10 +20,10 @@
         style="@style/MPTextViewTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:ellipsize="end"
         android:gravity="center_horizontal"
         android:maxLines="1"
-        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/accountHeaderIv"
@@ -40,5 +40,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/accountHeaderUserNameTv"
         tools:text="User Account" />
+
+    <TextView
+        android:id="@+id/accountNameInitialTv"
+        style="@style/MPSingleCharacter"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_account_initial"
+        android:gravity="center"
+        android:textSize="62sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/accountHeaderIv"
+        app:layout_constraintEnd_toEndOf="@+id/accountHeaderIv"
+        app:layout_constraintStart_toStartOf="@+id/accountHeaderIv"
+        app:layout_constraintTop_toTopOf="@+id/accountHeaderIv"
+        tools:text="J" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

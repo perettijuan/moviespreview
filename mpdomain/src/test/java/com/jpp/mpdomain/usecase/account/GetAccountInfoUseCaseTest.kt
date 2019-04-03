@@ -100,7 +100,7 @@ class GetAccountInfoUseCaseTest {
 
         subject.getAccountInfo().let { result ->
             result as AccountInfo
-            assertEquals(Gravatar.BASE_URL + hash, result.userAccount.avatar.gravatar.hash)
+            assertEquals(Gravatar.BASE_URL + hash + Gravatar.REDIRECT, result.userAccount.avatar.gravatar.hash)
         }
     }
 }

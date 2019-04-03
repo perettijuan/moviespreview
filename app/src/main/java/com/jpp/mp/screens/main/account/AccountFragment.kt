@@ -107,9 +107,13 @@ class AccountFragment : Fragment() {
 
     private fun updateAccountInfo(newContent: AccountViewState.AccountContent) {
         with(newContent.headerItem) {
-            accountHeaderIv.loadImageUrlAsCircular(avatarUrl)
+            accountHeaderIv.loadImageUrlAsCircular(avatarUrl) {
+                accountNameInitialTv.setVisible()
+                accountHeaderIv.setInvisible()
+            }
             accountHeaderUserNameTv.text = userName
             accountHeaderAccountNameTv.text = accountName
+            accountNameInitialTv.text = defaultLetter.toString()
         }
     }
 
@@ -145,8 +149,10 @@ class AccountFragment : Fragment() {
         accountErrorView.setInvisible()
         accountWebView.setInvisible()
         accountWebPg.setInvisible()
+        accountNameInitialTv.setInvisible()
 
         accountContentView.setVisible()
+        accountHeaderIv.setVisible()
     }
 
 

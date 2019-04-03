@@ -140,7 +140,8 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         AccountHeaderItem(
                 avatarUrl = avatar.gravatar.hash,
                 userName = if (name.isEmpty()) username else name,
-                accountName = username
+                accountName = username,
+                defaultLetter = if (name.isEmpty()) username.first() else name.first()
         )
     }
 }

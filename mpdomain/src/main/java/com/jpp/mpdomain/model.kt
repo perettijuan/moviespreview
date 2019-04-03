@@ -290,6 +290,7 @@ data class Session(
 data class Gravatar(val hash: String) {
     companion object {
         const val BASE_URL = "https://gravatar.com/avatar/"
+        const val REDIRECT = "?default=https://redirectMP"
     }
 }
 
