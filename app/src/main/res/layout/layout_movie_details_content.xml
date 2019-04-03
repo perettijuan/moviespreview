@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     android:padding="?attr/mpDetailsContentPadding">
 
+    <include
+        android:id="@+id/detailsActions"
+        layout="@layout/layout_movie_details_actions"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/detailsOverviewTitleTxt"
         style="@style/MPTextViewTitle"
@@ -14,7 +23,7 @@
         android:text="@string/overview_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/detailsActions" />
 
     <TextView
         android:id="@+id/detailsOverviewContentTxt"
@@ -120,9 +129,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
-        app:layout_constraintStart_toStartOf="parent"
+        app:itemText="@string/movie_credits_title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/detailsReleaseDateContentTxt"
-        app:itemText="@string/movie_credits_title"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailsReleaseDateContentTxt" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

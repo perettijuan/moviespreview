@@ -33,7 +33,7 @@
 
         <include
             android:id="@+id/fragmentDetailsContent"
-            layout="@layout/fragment_details_content"
+            layout="@layout/layout_movie_details_content"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:visibility="invisible"

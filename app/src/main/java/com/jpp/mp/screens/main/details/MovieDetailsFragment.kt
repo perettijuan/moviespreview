@@ -18,7 +18,7 @@ import com.jpp.mp.screens.main.details.MovieDetailsFragmentArgs.fromBundle
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.list_item_details_genre.view.*
 import kotlinx.android.synthetic.main.fragment_details.*
-import kotlinx.android.synthetic.main.fragment_details_content.*
+import kotlinx.android.synthetic.main.layout_movie_details_content.*
 import javax.inject.Inject
 
 /**

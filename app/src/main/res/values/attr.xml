@@ -26,6 +26,7 @@
     <attr name="mpNavHeaderIconSize" format="reference"/>
     <attr name="mpNavHeaderPadding" format="reference"/>
     <attr name="mpAccountAvatarSize" format="reference"/>
+    <attr name="mpActionButtonSize" format="reference"/>
 
 
     <declare-styleable name="MPTitleValueRow">

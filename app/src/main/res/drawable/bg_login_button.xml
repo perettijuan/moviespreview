@@ -2,6 +2,6 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:bottom="@dimen/login_button_padding"
-        android:drawable="@drawable/transparent_bg"
+        android:drawable="@drawable/sel_login_button"
         android:top="@dimen/login_button_padding" />
 </layer-list>

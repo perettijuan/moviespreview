@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/nav_header_background"
+    android:background="@drawable/bg_nav_header"
     android:padding="?attr/mpNavHeaderPadding">
 
     <ImageView
@@ -56,7 +56,7 @@
         style="@style/MPTextViewNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/login_button_bg"
+        android:background="@drawable/bg_login_button"
         android:text="@string/nav_header_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/navHeaderIv"
