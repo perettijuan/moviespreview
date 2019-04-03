@@ -15,6 +15,14 @@ sealed class MovieDetailsViewState {
 }
 
 /**
+ * Represents the state that the movie actions section can assume at any given time.
+ */
+sealed class MovieActionsState {
+    object Hidden : MovieActionsState()
+    data class Shown(val isFavorite: Boolean) : MovieActionsState()
+}
+
+/**
  * Represents the navigation event that can be routed through the details section.
  */
 sealed class MovieDetailsNavigationEvent {

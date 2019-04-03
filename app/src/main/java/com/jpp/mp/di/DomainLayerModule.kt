@@ -8,6 +8,7 @@ import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
 import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase
 import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
 import com.jpp.mpdomain.usecase.credits.GetCreditsUseCase
+import com.jpp.mpdomain.usecase.details.GetMovieAccountStateUseCase
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
 import com.jpp.mpdomain.usecase.licenses.GetAppLicensesUseCase
 import com.jpp.mpdomain.usecase.licenses.GetLicenseUseCase
@@ -59,6 +60,12 @@ class DomainLayerModule {
                                        connectivityRepository: ConnectivityRepository,
                                        languageRepository: LanguageRepository)
             : GetMovieDetailsUseCase = GetMovieDetailsUseCase.Impl(moviesRepository, connectivityRepository, languageRepository)
+
+    @Provides
+    fun providesGetMovieAccountStateUseCase(sessionRepository: SessionRepository,
+                                            moviesRepository: MoviesRepository,
+                                            connectivityRepository: ConnectivityRepository)
+            : GetMovieAccountStateUseCase = GetMovieAccountStateUseCase.Impl(sessionRepository, moviesRepository, connectivityRepository)
 
     @Provides
     fun providesGetPersonUseCase(personRepository: PersonRepository,

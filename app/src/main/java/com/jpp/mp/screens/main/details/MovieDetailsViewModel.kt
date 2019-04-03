@@ -7,6 +7,7 @@ import com.jpp.mp.screens.MPScopedViewModel
 import com.jpp.mp.screens.SingleLiveEvent
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
+import com.jpp.mpdomain.usecase.details.GetMovieAccountStateUseCase
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase.GetMovieDetailsResult.*
 import kotlinx.coroutines.launch
@@ -25,10 +26,12 @@ import javax.inject.Inject
  * to route the view.
  */
 class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                                private val getMovieDetailsUseCase: GetMovieDetailsUseCase)
+                                                private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
+                                                private val getMovieAccountStateUseCase: GetMovieAccountStateUseCase)
     : MPScopedViewModel(dispatchers) {
 
     private val viewStateLiveData by lazy { MutableLiveData<MovieDetailsViewState>() }
+    private val actionsStateLiveData by lazy { MutableLiveData<MovieActionsState>() }
     private val navigationEvents by lazy { SingleLiveEvent<MovieDetailsNavigationEvent>() }
     private lateinit var retryFunc: () -> Unit
 
@@ -60,6 +63,11 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
     fun viewState(): LiveData<MovieDetailsViewState> = viewStateLiveData
 
     /**
+     * Subscribe to this [LiveData] in order to get updates of the [MovieActionsState].
+     */
+    fun actionsState(): LiveData<MovieActionsState> = actionsStateLiveData
+
+    /**
      * Exposes the events that are triggered when a navigation event is detected.
      * We need a different LiveData here in order to avoid the problem of back navigation:
      * - The default LiveData object posts the last value every time a new observer starts observing.
@@ -89,15 +97,9 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
      */
     private fun pushLoadingAndFetchMovieDetails(movieId: Double) {
         viewStateLiveData.value = MovieDetailsViewState.Loading
-        launch {
-            /*
-             * fetchMovieDetail() is being executed in the default dispatcher, which indicates that is
-             * running in a different thread that the UI thread.
-             * Since the default context in ViewModel is the main context (UI thread), once
-             * that fetchMovieDetail returns its value, we're back in the main context.
-             */
-            viewStateLiveData.value = fetchMovieDetail(movieId)
-        }
+        actionsStateLiveData.value = MovieActionsState.Hidden
+        launch { viewStateLiveData.value = fetchMovieDetail(movieId) }
+        launch { actionsStateLiveData.value = fetchMovieAccountState(movieId) }
     }
 
     /**
@@ -113,6 +115,25 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
                         is ErrorNoConnectivity -> MovieDetailsViewState.ErrorNoConnectivity
                         is ErrorUnknown -> MovieDetailsViewState.ErrorUnknown
                         is Success -> MovieDetailsViewState.ShowDetail(mapMovieDetails(ucResult.details))
+                    }
+                }
+    }
+
+    /**
+     * Fetches the account state for the current movie being shown.
+     * @return a [MovieActionsState] that is posted in actionsState in order to update the UI.
+     */
+    private suspend fun fetchMovieAccountState(movieId: Double): MovieActionsState = withContext(dispatchers.default()) {
+        getMovieAccountStateUseCase
+                .getMovieAccountState(movieId)
+                .let { ucResult ->
+                    when (ucResult) {
+                        is GetMovieAccountStateUseCase.MovieAccountStateResult.ErrorUnknown -> MovieActionsState.Hidden
+                        is GetMovieAccountStateUseCase.MovieAccountStateResult.UserNotLogged ->   MovieActionsState.Shown(isFavorite = false)
+                        is GetMovieAccountStateUseCase.MovieAccountStateResult.ErrorNoConnectivity -> MovieActionsState.Hidden
+                        is GetMovieAccountStateUseCase.MovieAccountStateResult.Success -> with(ucResult.movieState) {
+                            MovieActionsState.Shown(isFavorite = favorite)
+                        }
                     }
                 }
     }
