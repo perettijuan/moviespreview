@@ -52,6 +52,10 @@ open class MPApi
         return tryCatchOrReturnNull { API.getMovieDetails(movieId, API_KEY, language.id) }
     }
 
+    override fun getMovieAccountState(movieId: Double, session: Session): MovieAccountState? {
+        return tryCatchOrReturnNull { API.getMovieAccountState(movieId, session.session_id, API_KEY) }
+    }
+
     override fun performSearch(query: String, page: Int, language: SupportedLanguage): SearchPage? {
         return tryCatchOrReturnNull { API.search(query, page, API_KEY, language.id) }
     }

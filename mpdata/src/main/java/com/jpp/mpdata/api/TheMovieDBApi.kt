@@ -137,4 +137,15 @@ interface TheMovieDBApi {
      */
     @GET("account")
     fun getUserAccount(@Query("session_id") session_id: String, @Query("api_key") api_key: String): Call<UserAccount>
+
+    /**
+     * Retrieves the movie state from the user's account perspective.
+     * [movieId] the identifier of the movie.
+     * [sessionId] the session identifier for the current user.
+     * [api_key] the api key provided by themoviedb.
+     */
+    @GET("movie/{movie_id}/account_states")
+    fun getMovieAccountState(@Path("movie_id") movieId: Double,
+                             @Query("session_id") sessionId: String,
+                             @Query("api_key") api_key: String): Call<MovieAccountState>
 }
