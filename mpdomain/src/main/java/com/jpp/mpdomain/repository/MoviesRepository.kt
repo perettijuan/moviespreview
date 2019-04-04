@@ -21,9 +21,14 @@ interface MoviesRepository {
      */
     fun getMovieDetails(movieId: Double, language: SupportedLanguage): MovieDetail?
 
-
     /**
      * @return the [MovieAccountState] of a particular movie identified by [movieId].
      */
     fun getMovieAccountState(movieId: Double, session: Session): MovieAccountState?
+
+    /**
+     * Updates the favorite state of the provided [movie] for the current user.
+     * @return true if the favorite state can be updated, false any other case.
+     */
+    fun updateMovieFavoriteState(movie: Movie, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean
 }
