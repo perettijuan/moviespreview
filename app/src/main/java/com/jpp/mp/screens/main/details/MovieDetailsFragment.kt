@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -137,9 +138,19 @@ class MovieDetailsFragment : Fragment() {
         when (actionState) {
             is MovieActionsState.Hidden -> favActionButton.setInvisible()
             is MovieActionsState.Shown -> {
-                favActionButton.setImageResource(if (actionState.isFavorite) R.drawable.ic_favorite_black else R.drawable.ic_favorite_border)
-                favActionButton.setVisible()
+                favActionButton.apply {
+                    setImageResource(if (actionState.isFavorite) R.drawable.ic_favorite_black else R.drawable.ic_favorite_border)
+                    setVisible()
+                }
             }
+            is MovieActionsState.Updating -> {
+                when {
+                    actionState.favorite -> {
+                        favActionButton.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.action_button_animation))
+                    }
+                }
+            }
+            is MovieActionsState.UserNotLoggedIn -> TODO()
         }
 
     }
