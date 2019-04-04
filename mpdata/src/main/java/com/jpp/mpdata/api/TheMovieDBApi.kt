@@ -128,7 +128,7 @@ interface TheMovieDBApi {
      * @return a [Session] if one can be created, null any other case.
      */
     @POST("authentication/session/new")
-    fun createSession(@Query("api_key") api_key: String, @Body requestToken: RequestToken): Call<Session>
+    fun createSession(@Query("api_key") api_key: String, @Body requestToken: RequestTokenBody): Call<Session>
 
     /**
      * Retrieves the user account data.
@@ -148,4 +148,17 @@ interface TheMovieDBApi {
     fun getMovieAccountState(@Path("movie_id") movieId: Double,
                              @Query("session_id") sessionId: String,
                              @Query("api_key") api_key: String): Call<MovieAccountState>
+
+
+    /**
+     * Updates the favorite state of a media resource (movie or tv).
+     * [accountId] the identifier of users account.
+     * [sessionId] the session identifier for the current user.
+     * [api_key] the api key provided by themoviedb.
+     */
+    @POST("account/{account_id}/favorite")
+    fun markMediaAsFavorite(@Path("account_id") accountId: Double,
+                            @Query("session_id") sessionId: String,
+                            @Query("api_key") api_key: String,
+                            @Body body: FavoriteMediaBody): Call<FavoriteMediaResponse>
 }

@@ -52,6 +52,25 @@ open class MPApi
         return tryCatchOrReturnNull { API.getMovieDetails(movieId, API_KEY, language.id) }
     }
 
+    override fun updateMovieFavoriteState(movie: Movie, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean? {
+        return API.markMediaAsFavorite(
+                accountId = userAccount.id,
+                sessionId = session.session_id,
+                api_key = API_KEY,
+                body = FavoriteMediaBody(
+                        media_type = "movie",
+                        favorite = asFavorite,
+                        media_id = movie.id)
+        ).let {
+            it.execute().body()?.let { response ->
+                when (response.status_code) {
+                    FAVORITE_MEDIA_RESPONSE_CODE_OK -> true
+                    else -> false
+                }
+            }
+        }
+    }
+
     override fun getMovieAccountState(movieId: Double, session: Session): MovieAccountState? {
         return tryCatchOrReturnNull { API.getMovieAccountState(movieId, session.session_id, API_KEY) }
     }
@@ -73,7 +92,7 @@ open class MPApi
     }
 
     override fun createSession(accessToken: AccessToken): Session? {
-        return tryCatchOrReturnNull { API.createSession(API_KEY, RequestToken(accessToken.request_token)) }
+        return tryCatchOrReturnNull { API.createSession(API_KEY, RequestTokenBody(accessToken.request_token)) }
     }
 
     override fun getUserAccountInfo(session: Session): UserAccount? {
@@ -92,7 +111,7 @@ open class MPApi
         }
     }
 
-    companion object {
+    private companion object {
         const val API_KEY = BuildConfig.API_KEY
         val API: TheMovieDBApi by lazy {
             Retrofit.Builder()
@@ -106,6 +125,7 @@ open class MPApi
                     .build()
                     .create(TheMovieDBApi::class.java)
         }
+        const val FAVORITE_MEDIA_RESPONSE_CODE_OK = 12.toDouble()
     }
 
 }

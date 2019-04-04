@@ -6,7 +6,6 @@ import com.jpp.mpdomain.repository.MoviesRepository
 class MoviesRepositoryImpl(private val moviesApi: MoviesApi,
                            private val moviesDb: MoviesDb) : MoviesRepository {
 
-
     override fun getMoviePageForSection(page: Int, section: MovieSection, language: SupportedLanguage): MoviePage? {
         return moviesDb.getMoviePageForSection(page, section) ?: run {
             getFromApi(page, section, language)?.also {
@@ -32,12 +31,16 @@ class MoviesRepositoryImpl(private val moviesApi: MoviesApi,
         return moviesApi.getMovieAccountState(movieId, session)
     }
 
+    override fun updateMovieFavoriteState(movie: Movie, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean {
+        return moviesApi.updateMovieFavoriteState(movie, asFavorite, userAccount, session) ?: false
+    }
+
     private fun getFromApi(page: Int, section: MovieSection, language: SupportedLanguage): MoviePage? = with(moviesApi) {
         when (section) {
             MovieSection.Playing -> getNowPlayingMoviePage(page, language)
             MovieSection.TopRated -> getTopRatedMoviePage(page, language)
             MovieSection.Popular -> getPopularMoviePage(page, language)
-            MovieSection.Upcoming -> getUpcomingMoviePage(page ,language)
+            MovieSection.Upcoming -> getUpcomingMoviePage(page, language)
         }
     }
 }
