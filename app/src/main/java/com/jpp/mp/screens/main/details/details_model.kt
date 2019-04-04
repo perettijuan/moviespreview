@@ -19,7 +19,9 @@ sealed class MovieDetailsViewState {
  */
 sealed class MovieActionsState {
     object Hidden : MovieActionsState()
+    object UserNotLoggedIn : MovieActionsState()
     data class Shown(val isFavorite: Boolean) : MovieActionsState()
+    data class Updating(val favorite: Boolean) : MovieActionsState()
 }
 
 /**

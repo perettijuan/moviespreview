@@ -24,26 +24,26 @@ interface MarkMovieAsFavoriteUseCase {
     }
 
     /**
-     * Marks the provided [movie] as favorite (or not) depending on the value of [asFavorite].
+     * Marks the provided [movieId] as favorite (or not) depending on the value of [asFavorite].
      * @return
-     *  - [FavoriteMovieResult.Success] when there is internet connectivity the movie can be updated as favorite.
+     *  - [FavoriteMovieResult.Success] when there is internet connectivity the movieId can be updated as favorite.
      *  - [FavoriteMovieResult.ErrorNoConnectivity] when the UC detects that the application has no internet connectivity.
      *  - [FavoriteMovieResult.ErrorUnknown] when an error occur while fetching the page.
      *  - [FavoriteMovieResult.UserNotLogged] when the user is not logged in the system.
      */
-    fun favoriteMovie(movie: Movie, asFavorite: Boolean): FavoriteMovieResult
+    fun favoriteMovie(movieId: Double, asFavorite: Boolean): FavoriteMovieResult
 
     class Impl(private val sessionRepository: SessionRepository,
                private val accountRepository: AccountRepository,
                private val moviesRepository: MoviesRepository,
                private val connectivityRepository: ConnectivityRepository) : MarkMovieAsFavoriteUseCase {
 
-        override fun favoriteMovie(movie: Movie, asFavorite: Boolean): FavoriteMovieResult {
+        override fun favoriteMovie(movieId: Double, asFavorite: Boolean): FavoriteMovieResult {
             return when (connectivityRepository.getCurrentConnectivity()) {
                 Disconnected -> FavoriteMovieResult.ErrorNoConnectivity
                 Connected -> sessionRepository.getCurrentSession()?.let { session ->
                     accountRepository.getUserAccount(session)?.let { userAccount ->
-                        when (moviesRepository.updateMovieFavoriteState(movie, asFavorite, userAccount, session)) {
+                        when (moviesRepository.updateMovieFavoriteState(movieId, asFavorite, userAccount, session)) {
                             true -> FavoriteMovieResult.Success
                             false -> FavoriteMovieResult.ErrorUnknown
                         }

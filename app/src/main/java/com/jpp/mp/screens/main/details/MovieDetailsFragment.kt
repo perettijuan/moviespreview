@@ -77,6 +77,8 @@ class MovieDetailsFragment : Fragment() {
                 onCreditsSelected(fromBundle(args).movieId.toDouble(), fromBundle(args).movieTitle)
             }
         }
+
+        favActionButton.setOnClickListener { withActionsViewModel { updateMovieFavoriteState(fromBundle(args).movieId.toDouble()) } }
     }
 
 

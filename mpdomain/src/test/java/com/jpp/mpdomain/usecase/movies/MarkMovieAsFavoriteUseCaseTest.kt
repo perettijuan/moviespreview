@@ -1,7 +1,6 @@
 package com.jpp.mpdomain.usecase.movies
 
 import com.jpp.mpdomain.Connectivity
-import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.repository.AccountRepository
@@ -50,7 +49,7 @@ class MarkMovieAsFavoriteUseCaseTest {
     fun `Should check connectivity before attempting to fetch user account and return ErrorNoConnectivity`() {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
-        subject.favoriteMovie(movie, true).let { result ->
+        subject.favoriteMovie(movieId, true).let { result ->
             verify(exactly = 0) { sessionRepository.getCurrentSession() }
             verify(exactly = 0) { accountRepository.getUserAccount(any()) }
             verify(exactly = 0) { moviesRepository.updateMovieFavoriteState(any(), any(), any(), any()) }
@@ -63,7 +62,7 @@ class MarkMovieAsFavoriteUseCaseTest {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getCurrentSession() } returns null
 
-        subject.favoriteMovie(movie, true).let { result ->
+        subject.favoriteMovie(movieId, true).let { result ->
             verify(exactly = 1) { sessionRepository.getCurrentSession() }
             verify(exactly = 0) { accountRepository.getUserAccount(any()) }
             verify(exactly = 0) { moviesRepository.updateMovieFavoriteState(any(), any(), any(), any()) }
@@ -78,7 +77,7 @@ class MarkMovieAsFavoriteUseCaseTest {
         every { sessionRepository.getCurrentSession() } returns session
         every { accountRepository.getUserAccount(any()) } returns null
 
-        subject.favoriteMovie(movie, true).let { result ->
+        subject.favoriteMovie(movieId, true).let { result ->
             verify(exactly = 1) { sessionRepository.getCurrentSession() }
             verify(exactly = 1) { accountRepository.getUserAccount(session) }
             verify(exactly = 0) { moviesRepository.updateMovieFavoriteState(any(), any(), any(), any()) }
@@ -95,10 +94,10 @@ class MarkMovieAsFavoriteUseCaseTest {
         every { accountRepository.getUserAccount(any()) } returns userAccount
         every { moviesRepository.updateMovieFavoriteState(any(), any(), any(), any()) } returns false
 
-        subject.favoriteMovie(movie, true).let { result ->
+        subject.favoriteMovie(movieId, true).let { result ->
             verify(exactly = 1) { sessionRepository.getCurrentSession() }
             verify(exactly = 1) { accountRepository.getUserAccount(session) }
-            verify(exactly = 1) { moviesRepository.updateMovieFavoriteState(movie, true, userAccount, session) }
+            verify(exactly = 1) { moviesRepository.updateMovieFavoriteState(movieId, true, userAccount, session) }
             assertEquals(ErrorUnknown, result)
         }
     }
@@ -112,16 +111,16 @@ class MarkMovieAsFavoriteUseCaseTest {
         every { accountRepository.getUserAccount(any()) } returns userAccount
         every { moviesRepository.updateMovieFavoriteState(any(), any(), any(), any()) } returns true
 
-        subject.favoriteMovie(movie, true).let { result ->
+        subject.favoriteMovie(movieId, true).let { result ->
             verify(exactly = 1) { sessionRepository.getCurrentSession() }
             verify(exactly = 1) { accountRepository.getUserAccount(session) }
-            verify(exactly = 1) { moviesRepository.updateMovieFavoriteState(movie, true, userAccount, session) }
+            verify(exactly = 1) { moviesRepository.updateMovieFavoriteState(movieId, true, userAccount, session) }
             assertEquals(Success, result)
         }
     }
 
 
     private companion object {
-        val movie = mockk<Movie>()
+        const val movieId = 18.toDouble()
     }
 }

@@ -52,7 +52,7 @@ open class MPApi
         return tryCatchOrReturnNull { API.getMovieDetails(movieId, API_KEY, language.id) }
     }
 
-    override fun updateMovieFavoriteState(movie: Movie, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean? {
+    override fun updateMovieFavoriteState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean? {
         return API.markMediaAsFavorite(
                 accountId = userAccount.id,
                 sessionId = session.session_id,
@@ -60,14 +60,9 @@ open class MPApi
                 body = FavoriteMediaBody(
                         media_type = "movie",
                         favorite = asFavorite,
-                        media_id = movie.id)
+                        media_id = movieId)
         ).let {
-            it.execute().body()?.let { response ->
-                when (response.status_code) {
-                    FAVORITE_MEDIA_RESPONSE_CODE_OK -> true
-                    else -> false
-                }
-            }
+            it.execute().body()?.let { true }
         }
     }
 
@@ -125,7 +120,6 @@ open class MPApi
                     .build()
                     .create(TheMovieDBApi::class.java)
         }
-        const val FAVORITE_MEDIA_RESPONSE_CODE_OK = 12.toDouble()
     }
 
 }

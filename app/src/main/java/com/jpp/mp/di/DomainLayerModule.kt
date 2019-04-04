@@ -14,6 +14,7 @@ import com.jpp.mpdomain.usecase.licenses.GetAppLicensesUseCase
 import com.jpp.mpdomain.usecase.licenses.GetLicenseUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
+import com.jpp.mpdomain.usecase.movies.MarkMovieAsFavoriteUseCase
 import com.jpp.mpdomain.usecase.person.GetPersonUseCase
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
@@ -66,6 +67,13 @@ class DomainLayerModule {
                                             moviesRepository: MoviesRepository,
                                             connectivityRepository: ConnectivityRepository)
             : GetMovieAccountStateUseCase = GetMovieAccountStateUseCase.Impl(sessionRepository, moviesRepository, connectivityRepository)
+
+    @Provides
+    fun providesMarkMovieAsFavoriteUseCase(sessionRepository: SessionRepository,
+                                           accountRepository: AccountRepository,
+                                           moviesRepository: MoviesRepository,
+                                           connectivityRepository: ConnectivityRepository)
+            : MarkMovieAsFavoriteUseCase = MarkMovieAsFavoriteUseCase.Impl(sessionRepository, accountRepository, moviesRepository, connectivityRepository)
 
     @Provides
     fun providesGetPersonUseCase(personRepository: PersonRepository,

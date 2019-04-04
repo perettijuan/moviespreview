@@ -31,8 +31,8 @@ class MoviesRepositoryImpl(private val moviesApi: MoviesApi,
         return moviesApi.getMovieAccountState(movieId, session)
     }
 
-    override fun updateMovieFavoriteState(movie: Movie, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean {
-        return moviesApi.updateMovieFavoriteState(movie, asFavorite, userAccount, session) ?: false
+    override fun updateMovieFavoriteState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean {
+        return moviesApi.updateMovieFavoriteState(movieId, asFavorite, userAccount, session) ?: false
     }
 
     private fun getFromApi(page: Int, section: MovieSection, language: SupportedLanguage): MoviePage? = with(moviesApi) {

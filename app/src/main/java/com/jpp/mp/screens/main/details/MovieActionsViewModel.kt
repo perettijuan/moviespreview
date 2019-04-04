@@ -5,10 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.screens.CoroutineDispatchers
 import com.jpp.mp.screens.MPScopedViewModel
 import com.jpp.mpdomain.usecase.details.GetMovieAccountStateUseCase
+import com.jpp.mpdomain.usecase.details.GetMovieAccountStateUseCase.MovieAccountStateResult.*
+import com.jpp.mpdomain.usecase.movies.MarkMovieAsFavoriteUseCase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import com.jpp.mpdomain.usecase.details.GetMovieAccountStateUseCase.MovieAccountStateResult.*
 
 /**
  * [MPScopedViewModel] to handle the state of the action views in MovieDetailsFragment.
@@ -19,7 +20,8 @@ import com.jpp.mpdomain.usecase.details.GetMovieAccountStateUseCase.MovieAccount
  * as any new state is identified by the ViewModel.
  */
 class MovieActionsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                                private val getMovieAccountStateUseCase: GetMovieAccountStateUseCase)
+                                                private val getMovieAccountStateUseCase: GetMovieAccountStateUseCase,
+                                                private val favoriteMovieUseCase: MarkMovieAsFavoriteUseCase)
     : MPScopedViewModel(dispatchers) {
 
 
@@ -32,7 +34,8 @@ class MovieActionsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
      * The updates will be posted to the [LiveData] object provided by [viewState()].
      */
     fun init(movieId: Double) {
-        pushHiddenAndFetchMovieState(movieId)
+        actionsStateLiveData.value = MovieActionsState.Hidden
+        launch { actionsStateLiveData.value = fetchMovieAccountState(movieId) }
     }
 
     /**
@@ -41,12 +44,12 @@ class MovieActionsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
     fun actionsState(): LiveData<MovieActionsState> = actionsStateLiveData
 
     /**
-     * Pushes the loading state into the view and starts the process to fetch the details
-     * of the movie.
+     * Called when the user favorites the movie being shown.
      */
-    private fun pushHiddenAndFetchMovieState(movieId: Double) {
-        actionsStateLiveData.value = MovieActionsState.Hidden
-        launch { actionsStateLiveData.value = fetchMovieAccountState(movieId) }
+    fun updateMovieFavoriteState(movieId: Double) {
+        val favoriteState = getFavoriteStateToUpdate()
+        actionsStateLiveData.value = MovieActionsState.Updating(favorite = true)
+        launch { actionsStateLiveData.value = updateFavoriteValueForMovie(movieId, favoriteState) }
     }
 
     /**
@@ -67,4 +70,33 @@ class MovieActionsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
                     }
                 }
     }
+
+    /**
+     * Executes the use case to update the favorite state of the movie identified by [movieId].
+     * @return a [MovieActionsState] that is posted in actionsState in order to update the UI.
+     */
+    private suspend fun updateFavoriteValueForMovie(movieId: Double, favorite: Boolean): MovieActionsState = withContext(dispatchers.default()) {
+        favoriteMovieUseCase
+                .favoriteMovie(movieId, favorite)
+                .let { ucResult ->
+                    when (ucResult) {
+                        is MarkMovieAsFavoriteUseCase.FavoriteMovieResult.ErrorNoConnectivity -> MovieActionsState.Shown(isFavorite = !favorite)
+                        is MarkMovieAsFavoriteUseCase.FavoriteMovieResult.ErrorUnknown -> MovieActionsState.Shown(isFavorite = !favorite)
+                        is MarkMovieAsFavoriteUseCase.FavoriteMovieResult.UserNotLogged -> MovieActionsState.UserNotLoggedIn
+                        is MarkMovieAsFavoriteUseCase.FavoriteMovieResult.Success -> MovieActionsState.Shown(isFavorite = favorite)
+                    }
+                }
+    }
+
+    private fun getFavoriteStateToUpdate(): Boolean {
+        return actionsStateLiveData.value?.let { currentState ->
+            when (currentState) {
+                is MovieActionsState.Shown -> !currentState.isFavorite
+                else -> throw IllegalStateException("Invalid view state $currentState")
+            }
+        } ?: run {
+            throw IllegalStateException("Invalid view state NULL")
+        }
+    }
+
 }

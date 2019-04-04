@@ -27,8 +27,8 @@ interface MoviesRepository {
     fun getMovieAccountState(movieId: Double, session: Session): MovieAccountState?
 
     /**
-     * Updates the favorite state of the provided [movie] for the current user.
+     * Updates the favorite state of the provided [movieId] for the current user.
      * @return true if the favorite state can be updated, false any other case.
      */
-    fun updateMovieFavoriteState(movie: Movie, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean
+    fun updateMovieFavoriteState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean
 }
