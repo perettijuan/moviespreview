@@ -80,6 +80,7 @@
     <!-- Account -->
     <string name="account_title">Account</string>
     <string name="account_approve_reminder">Please approve Movies Preview to use your data.</string>
+    <string name="account_need_to_login">You need to be logged in to execute this action.</string>
     <!-- End Account -->
 
 

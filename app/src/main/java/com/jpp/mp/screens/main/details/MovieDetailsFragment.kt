@@ -15,6 +15,8 @@ import com.jpp.mp.R
 import com.jpp.mp.ext.*
 import com.jpp.mp.screens.main.RefreshAppViewModel
 import com.jpp.mp.screens.main.details.MovieDetailsFragmentArgs.fromBundle
+import com.jpp.mp.screens.main.details.MovieDetailsFragmentDirections.actionMovieDetailsFragmentToAccountFragment
+import com.jpp.mp.screens.main.details.MovieDetailsFragmentDirections.actionMovieDetailsFragmentToCreditsFragment
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_details.*
 import kotlinx.android.synthetic.main.layout_movie_details_actions.*
@@ -125,12 +127,12 @@ class MovieDetailsFragment : Fragment() {
     private fun navigateWith(navEvent: MovieDetailsNavigationEvent) {
         when (navEvent) {
             is MovieDetailsNavigationEvent.ToCredits -> {
-                findNavController().navigate(
-                        MovieDetailsFragmentDirections.actionMovieDetailsFragmentToCreditsFragment(
-                                navEvent.movieId.toString(),
-                                navEvent.movieTitle
-                        )
-                )
+                findNavController()
+                        .navigate(actionMovieDetailsFragmentToCreditsFragment(navEvent.movieId.toString(), navEvent.movieTitle))
+            }
+            is MovieDetailsNavigationEvent.ToLogin -> {
+                findNavController()
+                        .navigate(actionMovieDetailsFragmentToAccountFragment())
             }
         }
     }
@@ -155,9 +157,10 @@ class MovieDetailsFragment : Fragment() {
                     }
                 }
             }
-            is MovieActionsState.UserNotLoggedIn -> TODO()
+            is MovieActionsState.UserNotLoggedIn -> snackBar(detailsContent, R.string.account_need_to_login, R.string.nav_header_login) {
+                withViewModel { userAttemptedActionWhenNotLoggedIn() }
+            }
         }
-
     }
 
     private fun renderLoading() {

@@ -34,8 +34,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-554" />
-                            <option name="y" value="-925" />
+                            <option name="x" value="-556" />
+                            <option name="y" value="-923" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -52,6 +52,11 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_creditsFragment_to_accountFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_creditsFragment_to_personFragment">
                               <value>
                                 <LayoutPositions />
