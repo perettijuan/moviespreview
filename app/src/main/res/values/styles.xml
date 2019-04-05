@@ -54,13 +54,6 @@
         <item name="android:layout_width">@dimen/error_image_view_default_height</item>
     </style>
 
-    <!-- Movie details actions -->
-    <style name="MPActionButton">
-        <item name="android:layout_width">?attr/mpActionButtonSize</item>
-        <item name="android:layout_height">?attr/mpActionButtonSize</item>
-        <item name="android:background">@drawable/sel_movie_action_button</item>
-    </style>
-
     <!-- TextView styles -->
 
     <style name="MPTextViewNormal" parent="@android:style/TextAppearance" />

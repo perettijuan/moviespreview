@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,10 +16,10 @@ import com.jpp.mp.ext.*
 import com.jpp.mp.screens.main.RefreshAppViewModel
 import com.jpp.mp.screens.main.details.MovieDetailsFragmentArgs.fromBundle
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.list_item_details_genre.view.*
 import kotlinx.android.synthetic.main.fragment_details.*
 import kotlinx.android.synthetic.main.layout_movie_details_actions.*
 import kotlinx.android.synthetic.main.layout_movie_details_content.*
+import kotlinx.android.synthetic.main.list_item_details_genre.view.*
 import javax.inject.Inject
 
 /**
@@ -51,11 +50,11 @@ class MovieDetailsFragment : Fragment() {
         withViewModel {
             init(fromBundle(args).movieId.toDouble())
             viewState().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { viewState -> renderViewState(viewState) })
-            navEvents().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { navEvent -> navigateWith(navEvent)})
+            navEvents().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { navEvent -> navigateWith(navEvent) })
         }
 
         withActionsViewModel {
-            actionsState().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { actionState -> renderActionState(actionState)})
+            actionsState().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { actionState -> renderActionState(actionState) })
             init(fromBundle(args).movieId.toDouble())
         }
 
@@ -66,9 +65,7 @@ class MovieDetailsFragment : Fragment() {
         withRefreshAppViewModel {
             refreshState().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer {
                 if (it) {
-                    withViewModel {
-                        refresh(fromBundle(args).movieId.toDouble())
-                    }
+                    withViewModel { refresh(fromBundle(args).movieId.toDouble()) }
                 }
             })
         }
@@ -79,7 +76,9 @@ class MovieDetailsFragment : Fragment() {
             }
         }
 
-        favActionButton.setOnClickListener { withActionsViewModel { updateMovieFavoriteState(fromBundle(args).movieId.toDouble()) } }
+        favActionButton.setOnClickListener {
+            withActionsViewModel { updateMovieFavoriteState(fromBundle(args).movieId.toDouble()) }
+        }
     }
 
 
@@ -87,10 +86,12 @@ class MovieDetailsFragment : Fragment() {
      * Helper function to execute actions with the [MovieDetailsViewModel].
      */
     private fun withViewModel(action: MovieDetailsViewModel.() -> Unit) = withViewModel<MovieDetailsViewModel>(viewModelFactory) { action() }
+
     /**
      * Helper function to execute actions with the [MovieActionsViewModel].
      */
     private fun withActionsViewModel(action: MovieActionsViewModel.() -> Unit) = withViewModel<MovieActionsViewModel>(viewModelFactory) { action() }
+
     /**
      * Helper function to execute actions with [RefreshAppViewModel] backed by the MainActivity.
      */
@@ -139,14 +140,18 @@ class MovieDetailsFragment : Fragment() {
             is MovieActionsState.Hidden -> favActionButton.setInvisible()
             is MovieActionsState.Shown -> {
                 favActionButton.apply {
-                    setImageResource(if (actionState.isFavorite) R.drawable.ic_favorite_black else R.drawable.ic_favorite_border)
+                    if (actionState.isFavorite) asFilled() else asEmpty()
                     setVisible()
+                    asClickable()
                 }
             }
             is MovieActionsState.Updating -> {
                 when {
                     actionState.favorite -> {
-                        favActionButton.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.action_button_animation))
+                        favActionButton.apply {
+                            doAnimation()
+                            asNonClickable()
+                        }
                     }
                 }
             }

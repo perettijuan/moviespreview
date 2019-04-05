@@ -38,4 +38,9 @@
         <attr name="itemText" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="MPActionButton">
+        <attr name="fillIcon" format="reference"/>
+        <attr name="emptyIcon" format="reference"/>
+    </declare-styleable>
+
 </resources>
