@@ -1,8 +1,6 @@
 package com.jpp.mpdata.repository.movies
 
-import com.jpp.mpdomain.MovieDetail
-import com.jpp.mpdomain.MoviePage
-import com.jpp.mpdomain.SupportedLanguage
+import com.jpp.mpdomain.*
 
 /**
  * API definition to retrieve all movies related data from the server.
@@ -33,4 +31,14 @@ interface MoviesApi {
      * any other case.
      */
     fun getMovieDetails(movieId: Double, language: SupportedLanguage): MovieDetail?
+    /**
+     * @return the [MovieAccountState] for the provided [movieId] and the [session]. If
+     * an error is detected, returns null.
+     */
+    fun getMovieAccountState(movieId: Double, session: Session): MovieAccountState?
+    /**
+     * Updates the favorite state of the provided [movieId] for the current user.
+     * @return true if the favorite state can be updated, false any other case.
+     */
+    fun updateMovieFavoriteState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean?
 }

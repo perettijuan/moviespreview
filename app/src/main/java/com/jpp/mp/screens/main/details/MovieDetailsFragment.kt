@@ -16,9 +16,10 @@ import com.jpp.mp.ext.*
 import com.jpp.mp.screens.main.RefreshAppViewModel
 import com.jpp.mp.screens.main.details.MovieDetailsFragmentArgs.fromBundle
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.list_item_details_genre.view.*
 import kotlinx.android.synthetic.main.fragment_details.*
-import kotlinx.android.synthetic.main.fragment_details_content.*
+import kotlinx.android.synthetic.main.layout_movie_details_actions.*
+import kotlinx.android.synthetic.main.layout_movie_details_content.*
+import kotlinx.android.synthetic.main.list_item_details_genre.view.*
 import javax.inject.Inject
 
 /**
@@ -48,43 +49,13 @@ class MovieDetailsFragment : Fragment() {
 
         withViewModel {
             init(fromBundle(args).movieId.toDouble())
+            viewState().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { viewState -> renderViewState(viewState) })
+            navEvents().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { navEvent -> navigateWith(navEvent) })
+        }
 
-            viewState().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { viewState ->
-                when (viewState) {
-                    is MovieDetailsViewState.Loading -> renderLoading()
-                    MovieDetailsViewState.ErrorUnknown -> {
-                        detailsErrorView.asUnknownError { retry() }
-                        renderError()
-                    }
-                    is MovieDetailsViewState.ErrorNoConnectivity -> {
-                        detailsErrorView.asNoConnectivityError { retry() }
-                        renderError()
-                    }
-                    is MovieDetailsViewState.ShowDetail -> {
-                        with(viewState.detail) {
-                            detailsOverviewContentTxt.text = overview
-                            detailsPopularityContentTxt.text = popularity.toString()
-                            detailsVoteCountContentTxt.text = voteCount.toString()
-                            detailsReleaseDateContentTxt.text = releaseDate
-                            renderMovieGenres(genres)
-                        }
-                        renderContent()
-                    }
-                }
-            })
-
-            navEvents().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { navEvent ->
-                when (navEvent) {
-                    is MovieDetailsNavigationEvent.ToCredits -> {
-                        findNavController().navigate(
-                                MovieDetailsFragmentDirections.actionMovieDetailsFragmentToCreditsFragment(
-                                        navEvent.movieId.toString(),
-                                        navEvent.movieTitle
-                                )
-                        )
-                    }
-                }
-            })
+        withActionsViewModel {
+            actionsState().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { actionState -> renderActionState(actionState) })
+            init(fromBundle(args).movieId.toDouble())
         }
 
         /*
@@ -94,9 +65,7 @@ class MovieDetailsFragment : Fragment() {
         withRefreshAppViewModel {
             refreshState().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer {
                 if (it) {
-                    withViewModel {
-                        refresh(fromBundle(args).movieId.toDouble())
-                    }
+                    withViewModel { refresh(fromBundle(args).movieId.toDouble()) }
                 }
             })
         }
@@ -105,6 +74,10 @@ class MovieDetailsFragment : Fragment() {
             withViewModel {
                 onCreditsSelected(fromBundle(args).movieId.toDouble(), fromBundle(args).movieTitle)
             }
+        }
+
+        favActionButton.setOnClickListener {
+            withActionsViewModel { updateMovieFavoriteState(fromBundle(args).movieId.toDouble()) }
         }
     }
 
@@ -115,9 +88,77 @@ class MovieDetailsFragment : Fragment() {
     private fun withViewModel(action: MovieDetailsViewModel.() -> Unit) = withViewModel<MovieDetailsViewModel>(viewModelFactory) { action() }
 
     /**
+     * Helper function to execute actions with the [MovieActionsViewModel].
+     */
+    private fun withActionsViewModel(action: MovieActionsViewModel.() -> Unit) = withViewModel<MovieActionsViewModel>(viewModelFactory) { action() }
+
+    /**
      * Helper function to execute actions with [RefreshAppViewModel] backed by the MainActivity.
      */
     private fun withRefreshAppViewModel(action: RefreshAppViewModel.() -> Unit) = withViewModel<RefreshAppViewModel>(viewModelFactory) { action() }
+
+
+    private fun renderViewState(viewState: MovieDetailsViewState) {
+        when (viewState) {
+            is MovieDetailsViewState.Loading -> renderLoading()
+            MovieDetailsViewState.ErrorUnknown -> {
+                detailsErrorView.asUnknownError { withViewModel { retry() } }
+                renderError()
+            }
+            is MovieDetailsViewState.ErrorNoConnectivity -> {
+                detailsErrorView.asNoConnectivityError { withViewModel { retry() } }
+                renderError()
+            }
+            is MovieDetailsViewState.ShowDetail -> {
+                with(viewState.detail) {
+                    detailsOverviewContentTxt.text = overview
+                    detailsPopularityContentTxt.text = popularity.toString()
+                    detailsVoteCountContentTxt.text = voteCount.toString()
+                    detailsReleaseDateContentTxt.text = releaseDate
+                    renderMovieGenres(genres)
+                }
+                renderContent()
+            }
+        }
+    }
+
+    private fun navigateWith(navEvent: MovieDetailsNavigationEvent) {
+        when (navEvent) {
+            is MovieDetailsNavigationEvent.ToCredits -> {
+                findNavController().navigate(
+                        MovieDetailsFragmentDirections.actionMovieDetailsFragmentToCreditsFragment(
+                                navEvent.movieId.toString(),
+                                navEvent.movieTitle
+                        )
+                )
+            }
+        }
+    }
+
+    private fun renderActionState(actionState: MovieActionsState) {
+        when (actionState) {
+            is MovieActionsState.Hidden -> favActionButton.setInvisible()
+            is MovieActionsState.Shown -> {
+                favActionButton.apply {
+                    if (actionState.isFavorite) asFilled() else asEmpty()
+                    setVisible()
+                    asClickable()
+                }
+            }
+            is MovieActionsState.Updating -> {
+                when {
+                    actionState.favorite -> {
+                        favActionButton.apply {
+                            doAnimation()
+                            asNonClickable()
+                        }
+                    }
+                }
+            }
+            is MovieActionsState.UserNotLoggedIn -> TODO()
+        }
+
+    }
 
     private fun renderLoading() {
         detailsErrorView.setInvisible()

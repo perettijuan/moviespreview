@@ -6,10 +6,12 @@ import com.jpp.mp.resumedLifecycleOwner
 import com.jpp.mp.screens.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
+import com.jpp.mpdomain.usecase.details.GetMovieAccountStateUseCase
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase.GetMovieDetailsResult.*
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -24,13 +26,16 @@ class MovieDetailsViewModelTest {
     @MockK
     private lateinit var getMovieDetailsUseCase: GetMovieDetailsUseCase
 
+    @RelaxedMockK
+    private lateinit var getMovieAccountStateUseCase: GetMovieAccountStateUseCase
+
     private lateinit var subject: MovieDetailsViewModel
 
     private val movieDetailId = 121.toDouble()
 
     @BeforeEach
     fun setUp() {
-        subject = MovieDetailsViewModel(TestCoroutineDispatchers(), getMovieDetailsUseCase)
+        subject = MovieDetailsViewModel(TestCoroutineDispatchers(), getMovieDetailsUseCase, getMovieAccountStateUseCase)
     }
 
     @Test

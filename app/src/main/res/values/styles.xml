@@ -31,6 +31,7 @@
         <item name="mpNavHeaderIconSize">@dimen/nav_header_icon_size</item>
         <item name="mpNavHeaderPadding">@dimen/nav_header_padding</item>
         <item name="mpAccountAvatarSize">@dimen/account_avatar_size</item>
+        <item name="mpActionButtonSize">@dimen/action_button_size</item>
     </style>
 
     <!-- Used in the Drawer items-->
@@ -39,18 +40,12 @@
     <!-- Application TopBar -->
     <style name="MPAppToolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <!-- MPLoadingView -->
-    <style name="MPLoadingViewNormal">
-        <item name="android:layout_height">@dimen/mp_loading_view_default_height</item>
-        <item name="android:layout_width">@dimen/mp_loading_view_default_width</item>
-    </style>
-
 
     <!-- MPLoadingView -->
     <style name="MPProgressBar">
         <item name="android:layout_height">@dimen/mp_loading_view_default_height</item>
         <item name="android:layout_width">@dimen/mp_loading_view_default_width</item>
-        <item name="android:indeterminateDrawable">@drawable/mp_progress_bar</item>
+        <item name="android:indeterminateDrawable">@drawable/pg_mp_progress_bar</item>
     </style>
 
     <!-- MPLoadingErrorView -->

@@ -7,6 +7,7 @@ import com.jpp.mp.screens.MPScopedViewModel
 import com.jpp.mp.screens.SingleLiveEvent
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
+import com.jpp.mpdomain.usecase.details.GetMovieAccountStateUseCase
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase.GetMovieDetailsResult.*
 import kotlinx.coroutines.launch
@@ -25,7 +26,8 @@ import javax.inject.Inject
  * to route the view.
  */
 class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                                private val getMovieDetailsUseCase: GetMovieDetailsUseCase)
+                                                private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
+                                                private val getMovieAccountStateUseCase: GetMovieAccountStateUseCase)
     : MPScopedViewModel(dispatchers) {
 
     private val viewStateLiveData by lazy { MutableLiveData<MovieDetailsViewState>() }
@@ -116,7 +118,6 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
                     }
                 }
     }
-
 
     /**
      * Maps a domain [MovieDetail] into a UI [UiMovieDetails].
