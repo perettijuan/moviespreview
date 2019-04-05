@@ -28,6 +28,7 @@ sealed class MovieActionsState {
  * Represents the navigation event that can be routed through the details section.
  */
 sealed class MovieDetailsNavigationEvent {
+    object ToLogin : MovieDetailsNavigationEvent()
     data class ToCredits(val movieId: Double, val movieTitle: String) : MovieDetailsNavigationEvent()
 }
 
