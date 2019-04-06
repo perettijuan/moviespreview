@@ -1,12 +1,10 @@
-package com.jpp.mpdomain.usecase.movies
+package com.jpp.mpdomain.usecase.account
 
-import com.jpp.mpdomain.Movie
-import com.jpp.mpdomain.repository.AccountRepository
-import com.jpp.mpdomain.repository.ConnectivityRepository
-import com.jpp.mpdomain.repository.MoviesRepository
-import com.jpp.mpdomain.repository.SessionRepository
 import com.jpp.mpdomain.Connectivity.Connected
 import com.jpp.mpdomain.Connectivity.Disconnected
+import com.jpp.mpdomain.repository.AccountRepository
+import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.SessionRepository
 
 /**
  * Defines a UseCase that marks a movie as favorite or not favorite.
@@ -35,7 +33,6 @@ interface MarkMovieAsFavoriteUseCase {
 
     class Impl(private val sessionRepository: SessionRepository,
                private val accountRepository: AccountRepository,
-               private val moviesRepository: MoviesRepository,
                private val connectivityRepository: ConnectivityRepository) : MarkMovieAsFavoriteUseCase {
 
         override fun favoriteMovie(movieId: Double, asFavorite: Boolean): FavoriteMovieResult {
@@ -43,7 +40,7 @@ interface MarkMovieAsFavoriteUseCase {
                 Disconnected -> FavoriteMovieResult.ErrorNoConnectivity
                 Connected -> sessionRepository.getCurrentSession()?.let { session ->
                     accountRepository.getUserAccount(session)?.let { userAccount ->
-                        when (moviesRepository.updateMovieFavoriteState(movieId, asFavorite, userAccount, session)) {
+                        when (accountRepository.updateMovieFavoriteState(movieId, asFavorite, userAccount, session)) {
                             true -> FavoriteMovieResult.Success
                             false -> FavoriteMovieResult.ErrorUnknown
                         }

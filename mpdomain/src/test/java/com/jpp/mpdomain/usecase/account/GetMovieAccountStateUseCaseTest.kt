@@ -1,12 +1,12 @@
-package com.jpp.mpdomain.usecase.details
+package com.jpp.mpdomain.usecase.account
 
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.MovieAccountState
 import com.jpp.mpdomain.Session
+import com.jpp.mpdomain.repository.AccountRepository
 import com.jpp.mpdomain.repository.ConnectivityRepository
-import com.jpp.mpdomain.repository.MoviesRepository
 import com.jpp.mpdomain.repository.SessionRepository
-import com.jpp.mpdomain.usecase.details.GetMovieAccountStateUseCase.MovieAccountStateResult.*
+import com.jpp.mpdomain.usecase.account.GetMovieAccountStateUseCase.MovieAccountStateResult.*
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
@@ -22,7 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 class GetMovieAccountStateUseCaseTest {
 
     @RelaxedMockK
-    private lateinit var moviesRepository: MoviesRepository
+    private lateinit var accountRepository: AccountRepository
     @RelaxedMockK
     private lateinit var connectivityRepository: ConnectivityRepository
     @RelaxedMockK
@@ -32,7 +32,7 @@ class GetMovieAccountStateUseCaseTest {
 
     @BeforeEach
     fun setUp() {
-        subject = GetMovieAccountStateUseCase.Impl(sessionRepository, moviesRepository, connectivityRepository)
+        subject = GetMovieAccountStateUseCase.Impl(sessionRepository, accountRepository, connectivityRepository)
     }
 
     @Test
@@ -41,7 +41,7 @@ class GetMovieAccountStateUseCaseTest {
 
         subject.getMovieAccountState(1.toDouble()).let { result ->
             verify(exactly = 0) { sessionRepository.getCurrentSession() }
-            verify(exactly = 0) { moviesRepository.getMovieAccountState(any(), any()) }
+            verify(exactly = 0) { accountRepository.getMovieAccountState(any(), any()) }
             assertEquals(ErrorNoConnectivity, result)
         }
     }
@@ -53,7 +53,7 @@ class GetMovieAccountStateUseCaseTest {
 
         subject.getMovieAccountState(1.toDouble()).let { result ->
             verify(exactly = 1) { sessionRepository.getCurrentSession() }
-            verify(exactly = 0) { moviesRepository.getMovieAccountState(any(), any()) }
+            verify(exactly = 0) { accountRepository.getMovieAccountState(any(), any()) }
             assertEquals(UserNotLogged, result)
         }
     }
@@ -64,11 +64,11 @@ class GetMovieAccountStateUseCaseTest {
         val movieId = 1.toDouble()
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getCurrentSession() } returns session
-        every { moviesRepository.getMovieAccountState(any(), any()) } returns null
+        every { accountRepository.getMovieAccountState(any(), any()) } returns null
 
         subject.getMovieAccountState(movieId).let { result ->
             verify(exactly = 1) { sessionRepository.getCurrentSession() }
-            verify(exactly = 1) { moviesRepository.getMovieAccountState(movieId, session) }
+            verify(exactly = 1) { accountRepository.getMovieAccountState(movieId, session) }
             assertEquals(ErrorUnknown, result)
         }
     }
@@ -80,11 +80,11 @@ class GetMovieAccountStateUseCaseTest {
         val accountState = mockk<MovieAccountState>()
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getCurrentSession() } returns session
-        every { moviesRepository.getMovieAccountState(any(), any()) } returns accountState
+        every { accountRepository.getMovieAccountState(any(), any()) } returns accountState
 
         subject.getMovieAccountState(movieId).let { result ->
             verify(exactly = 1) { sessionRepository.getCurrentSession() }
-            verify(exactly = 1) { moviesRepository.getMovieAccountState(movieId, session) }
+            verify(exactly = 1) { accountRepository.getMovieAccountState(movieId, session) }
             assertTrue(result is Success)
             assertEquals(accountState, (result as Success).movieState)
         }

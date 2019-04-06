@@ -8,13 +8,13 @@ import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
 import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase
 import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
 import com.jpp.mpdomain.usecase.credits.GetCreditsUseCase
-import com.jpp.mpdomain.usecase.details.GetMovieAccountStateUseCase
+import com.jpp.mpdomain.usecase.account.GetMovieAccountStateUseCase
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
 import com.jpp.mpdomain.usecase.licenses.GetAppLicensesUseCase
 import com.jpp.mpdomain.usecase.licenses.GetLicenseUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
-import com.jpp.mpdomain.usecase.movies.MarkMovieAsFavoriteUseCase
+import com.jpp.mpdomain.usecase.account.MarkMovieAsFavoriteUseCase
 import com.jpp.mpdomain.usecase.person.GetPersonUseCase
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
@@ -64,16 +64,15 @@ class DomainLayerModule {
 
     @Provides
     fun providesGetMovieAccountStateUseCase(sessionRepository: SessionRepository,
-                                            moviesRepository: MoviesRepository,
+                                            accountRepository: AccountRepository,
                                             connectivityRepository: ConnectivityRepository)
-            : GetMovieAccountStateUseCase = GetMovieAccountStateUseCase.Impl(sessionRepository, moviesRepository, connectivityRepository)
+            : GetMovieAccountStateUseCase = GetMovieAccountStateUseCase.Impl(sessionRepository, accountRepository, connectivityRepository)
 
     @Provides
     fun providesMarkMovieAsFavoriteUseCase(sessionRepository: SessionRepository,
                                            accountRepository: AccountRepository,
-                                           moviesRepository: MoviesRepository,
                                            connectivityRepository: ConnectivityRepository)
-            : MarkMovieAsFavoriteUseCase = MarkMovieAsFavoriteUseCase.Impl(sessionRepository, accountRepository, moviesRepository, connectivityRepository)
+            : MarkMovieAsFavoriteUseCase = MarkMovieAsFavoriteUseCase.Impl(sessionRepository, accountRepository, connectivityRepository)
 
     @Provides
     fun providesGetPersonUseCase(personRepository: PersonRepository,
