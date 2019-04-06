@@ -76,6 +76,13 @@
             app:exitAnim="@anim/fragment_exit_slide_right"
             app:popEnterAnim="@anim/fragment_enter_slide_up"
             app:popExitAnim="@anim/fragment_exit_slide_up"/>
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_accountFragment"
+            app:destination="@id/accountFragment"
+            app:enterAnim="@anim/fragment_enter_slide_right"
+            app:exitAnim="@anim/fragment_exit_slide_right"
+            app:popEnterAnim="@anim/fragment_enter_slide_left"
+            app:popExitAnim="@anim/fragment_exit_slide_left"/>
     </fragment>
     <fragment
         android:id="@+id/searchFragment"

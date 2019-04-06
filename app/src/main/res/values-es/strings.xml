@@ -79,5 +79,6 @@
     <!-- Account -->
     <string name="account_title">Cuenta</string>
     <string name="account_approve_reminder">Por favor, perite a Movies Preview usar tu cuenta.</string>
+    <string name="account_need_to_login">Debes estar registrado para ejecutar esta acción.</string>
     <!-- End Account -->
 </resources>
