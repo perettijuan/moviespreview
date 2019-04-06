@@ -1,13 +1,10 @@
 package com.jpp.mpdata.repository.account
 
-import com.jpp.mpdomain.MovieAccountState
-import com.jpp.mpdomain.Session
-import com.jpp.mpdomain.UserAccount
+import com.jpp.mpdomain.*
 import com.jpp.mpdomain.repository.AccountRepository
 
 class AccountRepositoryImpl(private val accountApi: AccountApi,
                             private val accountDb: AccountDb) : AccountRepository {
-
 
     override fun getUserAccount(session: Session): UserAccount? {
         return accountDb.getUserAccountInfo() ?: run {
@@ -27,6 +24,15 @@ class AccountRepositoryImpl(private val accountApi: AccountApi,
     }
 
     override fun updateMovieFavoriteState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean {
-        return accountApi.updateMovieFavoriteState(movieId, asFavorite, userAccount, session) ?: false
+        return accountApi.updateMovieFavoriteState(movieId, asFavorite, userAccount, session)
+                ?: false
+    }
+
+    override fun getFavoriteMovies(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
+        return accountDb.getFavoriteMovies(page) ?: run {
+            accountApi.getFavoriteMovies(page, userAccount, session, language)?.also {
+                accountDb.storeFavoriteMoviesPage(page, it)
+            }
+        }
     }
 }

@@ -1,8 +1,6 @@
 package com.jpp.mpdomain.repository
 
-import com.jpp.mpdomain.MovieAccountState
-import com.jpp.mpdomain.Session
-import com.jpp.mpdomain.UserAccount
+import com.jpp.mpdomain.*
 
 /**
  * Repository definition to support all information related to user accounts.
@@ -20,4 +18,9 @@ interface AccountRepository {
      * @return true if the favorite state can be updated, false any other case.
      */
     fun updateMovieFavoriteState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean
+
+    /**
+     * @return the [MoviePage] that contains the favorite movies of the user.
+     */
+    fun getFavoriteMovies(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
 }
