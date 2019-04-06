@@ -23,7 +23,9 @@ import kotlinx.android.synthetic.main.fragment_account.*
 import kotlinx.android.synthetic.main.layout_account_header.*
 import javax.inject.Inject
 
-
+/**
+ * TODO JPP -> this fragment should be aware of language changes
+ */
 class AccountFragment : Fragment() {
 
     @Inject
