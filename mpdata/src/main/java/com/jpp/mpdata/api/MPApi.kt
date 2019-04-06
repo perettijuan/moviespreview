@@ -52,24 +52,6 @@ open class MPApi
         return tryCatchOrReturnNull { API.getMovieDetails(movieId, API_KEY, language.id) }
     }
 
-    override fun updateMovieFavoriteState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean? {
-        return API.markMediaAsFavorite(
-                accountId = userAccount.id,
-                sessionId = session.session_id,
-                api_key = API_KEY,
-                body = FavoriteMediaBody(
-                        media_type = "movie",
-                        favorite = asFavorite,
-                        media_id = movieId)
-        ).let {
-            it.execute().body()?.let { true }
-        }
-    }
-
-    override fun getMovieAccountState(movieId: Double, session: Session): MovieAccountState? {
-        return tryCatchOrReturnNull { API.getMovieAccountState(movieId, session.session_id, API_KEY) }
-    }
-
     override fun performSearch(query: String, page: Int, language: SupportedLanguage): SearchPage? {
         return tryCatchOrReturnNull { API.search(query, page, API_KEY, language.id) }
     }
@@ -92,6 +74,28 @@ open class MPApi
 
     override fun getUserAccountInfo(session: Session): UserAccount? {
         return tryCatchOrReturnNull { API.getUserAccount(session.session_id, API_KEY) }
+    }
+
+    override fun updateMovieFavoriteState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean? {
+        return API.markMediaAsFavorite(
+                accountId = userAccount.id,
+                sessionId = session.session_id,
+                api_key = API_KEY,
+                body = FavoriteMediaBody(
+                        media_type = "movie",
+                        favorite = asFavorite,
+                        media_id = movieId)
+        ).let {
+            it.execute().body()?.let { true }
+        }
+    }
+
+    override fun getMovieAccountState(movieId: Double, session: Session): MovieAccountState? {
+        return tryCatchOrReturnNull { API.getMovieAccountState(movieId, session.session_id, API_KEY) }
+    }
+
+    override fun getFavoriteMovies(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
+        return tryCatchOrReturnNull { API.getFavoriteMoviesPage(userAccount.id, page, session.session_id, language.id) }
     }
 
     /**

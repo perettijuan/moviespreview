@@ -1,8 +1,6 @@
 package com.jpp.mpdata.repository.account
 
-import com.jpp.mpdomain.MovieAccountState
-import com.jpp.mpdomain.Session
-import com.jpp.mpdomain.UserAccount
+import com.jpp.mpdomain.*
 
 interface AccountApi {
     fun getUserAccountInfo(session: Session): UserAccount?
@@ -16,4 +14,9 @@ interface AccountApi {
      * @return true if the favorite state can be updated, false any other case.
      */
     fun updateMovieFavoriteState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean?
+
+    /**
+     * @return the [MoviePage] that contains the favorite movies of the user.
+     */
+    fun getFavoriteMovies(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
 }
