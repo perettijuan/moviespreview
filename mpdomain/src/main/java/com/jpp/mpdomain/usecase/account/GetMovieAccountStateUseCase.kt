@@ -1,11 +1,11 @@
-package com.jpp.mpdomain.usecase.details
+package com.jpp.mpdomain.usecase.account
 
-import com.jpp.mpdomain.MovieAccountState
-import com.jpp.mpdomain.repository.ConnectivityRepository
-import com.jpp.mpdomain.repository.MoviesRepository
-import com.jpp.mpdomain.repository.SessionRepository
 import com.jpp.mpdomain.Connectivity.Connected
 import com.jpp.mpdomain.Connectivity.Disconnected
+import com.jpp.mpdomain.MovieAccountState
+import com.jpp.mpdomain.repository.AccountRepository
+import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.SessionRepository
 
 /**
  * Defines a UseCase that retrieves the state of a particular movie from the user's account perspective.
@@ -37,14 +37,14 @@ interface GetMovieAccountStateUseCase {
 
 
     class Impl(private val sessionRepository: SessionRepository,
-               private val moviesRepository: MoviesRepository,
+               private val accountRepository: AccountRepository,
                private val connectivityRepository: ConnectivityRepository) : GetMovieAccountStateUseCase {
 
         override fun getMovieAccountState(movieId: Double): MovieAccountStateResult {
             return when (connectivityRepository.getCurrentConnectivity()) {
                 Disconnected -> MovieAccountStateResult.ErrorNoConnectivity
                 Connected -> sessionRepository.getCurrentSession()?.let {
-                    moviesRepository.getMovieAccountState(movieId, it)?.let { movieAccountState ->
+                    accountRepository.getMovieAccountState(movieId, it)?.let { movieAccountState ->
                         MovieAccountStateResult.Success(movieAccountState)
                     } ?: run {
                         MovieAccountStateResult.ErrorUnknown

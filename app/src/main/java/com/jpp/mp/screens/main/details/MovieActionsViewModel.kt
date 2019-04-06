@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.screens.CoroutineDispatchers
 import com.jpp.mp.screens.MPScopedViewModel
-import com.jpp.mpdomain.usecase.details.GetMovieAccountStateUseCase
-import com.jpp.mpdomain.usecase.details.GetMovieAccountStateUseCase.MovieAccountStateResult.*
-import com.jpp.mpdomain.usecase.movies.MarkMovieAsFavoriteUseCase
+import com.jpp.mpdomain.usecase.account.GetMovieAccountStateUseCase
+import com.jpp.mpdomain.usecase.account.GetMovieAccountStateUseCase.MovieAccountStateResult.*
+import com.jpp.mpdomain.usecase.account.MarkMovieAsFavoriteUseCase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

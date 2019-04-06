@@ -22,19 +22,6 @@ class MoviesRepositoryImpl(private val moviesApi: MoviesApi,
         }
     }
 
-    override fun getMovieAccountState(movieId: Double, session: Session): MovieAccountState? {
-        /*
-         * TODO JPP for the moment, we don't store this state in the local storage
-         * BUT it is a great candidate to store it and try to use the WorkManager
-         * to sync the state with the API
-         */
-        return moviesApi.getMovieAccountState(movieId, session)
-    }
-
-    override fun updateMovieFavoriteState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean {
-        return moviesApi.updateMovieFavoriteState(movieId, asFavorite, userAccount, session) ?: false
-    }
-
     private fun getFromApi(page: Int, section: MovieSection, language: SupportedLanguage): MoviePage? = with(moviesApi) {
         when (section) {
             MovieSection.Playing -> getNowPlayingMoviePage(page, language)
