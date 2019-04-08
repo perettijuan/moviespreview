@@ -24,6 +24,11 @@
     <dimen name="mp_loading_view_default_height">@dimen/mp_loading_view_default_size</dimen>
     <dimen name="mp_loading_view_default_width">@dimen/mp_loading_view_default_size</dimen>
 
+    <!-- MPLoadingViewSmall -->
+    <dimen name="mp_loading_view_default_size_small">30dp</dimen>
+    <dimen name="mp_loading_view_default_height_small">@dimen/mp_loading_view_default_size_small</dimen>
+    <dimen name="mp_loading_view_default_width_small">@dimen/mp_loading_view_default_size_small</dimen>
+
     <!-- Details Screen -->
     <dimen name="movie_details_vertical_spacing">10dp</dimen>
     <dimen name="movie_details_content_padding">20dp</dimen>
@@ -58,5 +63,8 @@
 
     <!-- Account -->
     <dimen name="account_avatar_size">96dp</dimen>
+    <dimen name="account_movie_list_item_width">100dp</dimen>
+    <dimen name="account_movie_list_item_height">150dp</dimen>
+    <dimen name="account_movie_list_height">@dimen/account_movie_list_item_height</dimen>
 
 </resources>

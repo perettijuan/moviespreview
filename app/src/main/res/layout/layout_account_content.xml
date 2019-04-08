@@ -14,6 +14,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <com.jpp.mp.views.MPAccountMoviesView
+            android:id="@+id/accountFavoriteMovies"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
 </ScrollView>

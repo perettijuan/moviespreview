@@ -27,6 +27,9 @@
     <attr name="mpNavHeaderPadding" format="reference"/>
     <attr name="mpAccountAvatarSize" format="reference"/>
     <attr name="mpActionButtonSize" format="reference"/>
+    <attr name="mpAccountMovieItemWidth" format="reference"/>
+    <attr name="mpAccountMovieItemHeight" format="reference"/>
+    <attr name="mpAccountMovieListHeight" format="reference"/>
 
 
     <declare-styleable name="MPTitleValueRow">
