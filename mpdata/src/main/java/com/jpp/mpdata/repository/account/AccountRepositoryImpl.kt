@@ -24,7 +24,7 @@ class AccountRepositoryImpl(private val accountApi: AccountApi,
     }
 
     override fun updateMovieFavoriteState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean {
-        return accountApi.updateMovieFavoriteState(movieId, asFavorite, userAccount, session)
+        return accountApi.updateMovieFavoriteState(movieId, asFavorite, userAccount, session)?.also { accountDb.flushData() }
                 ?: false
     }
 

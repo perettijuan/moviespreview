@@ -10,8 +10,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -67,6 +66,18 @@ class AccountRepositoryTest {
         val result = subject.updateMovieFavoriteState(12.toDouble(), false, mockk(), mockk())
 
         assertFalse(result)
+    }
+
+
+    @Test
+    fun `Should flush data in DB if successfully update favorites`() {
+        every { accountApi.updateMovieFavoriteState(any(), any(), any(), any()) } returns true
+
+        val result = subject.updateMovieFavoriteState(12.toDouble(), false, mockk(), mockk())
+
+
+        verify { accountDb.flushData() }
+        assertTrue(result)
     }
 
     @Test
