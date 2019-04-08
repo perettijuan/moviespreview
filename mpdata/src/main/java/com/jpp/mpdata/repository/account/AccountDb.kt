@@ -4,6 +4,9 @@ import android.util.SparseArray
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.UserAccount
 
+/**
+ * TODO JPP -> flush the content of favorites when the user favorites a new movie
+ */
 interface AccountDb {
     fun storeUserAccountInfo(userAccount: UserAccount)
     fun getUserAccountInfo(): UserAccount?

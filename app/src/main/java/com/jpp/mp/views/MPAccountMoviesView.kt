@@ -33,10 +33,22 @@ class MPAccountMoviesView : ConstraintLayout {
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         init()
+
+        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.MPAccountMoviesView)
+        try {
+            setTitle(typedArray.getText(R.styleable.MPAccountMoviesView_accountMoviesTitleText))
+        } finally {
+            typedArray.recycle()
+        }
+
     }
 
     private fun init() {
         inflate(context, R.layout.layout_account_movies, this)
+    }
+
+    fun setTitle(title: CharSequence) {
+        accountMoviesTitle.text = title
     }
 
     fun showLoading() {
@@ -65,13 +77,23 @@ class MPAccountMoviesView : ConstraintLayout {
         }
     }
 
-    fun showError(@StringRes errorStringRes: String, retryAction: () -> Unit) {
+    fun showNoContent(@StringRes noContentText: Int) {
+        accountMoviesList.setInvisible()
+        accountMoviesLoadingView.setInvisible()
+        accountMoviesMoreIv.setInvisible()
+        accountMoviesErrorActionButton.setInvisible()
+
+        accountMoviesError.setVisible()
+        accountMoviesError.setText(noContentText)
+    }
+
+    fun showError(@StringRes errorStringRes: Int, retryAction: () -> Unit) {
         accountMoviesList.setInvisible()
         accountMoviesLoadingView.setInvisible()
         accountMoviesMoreIv.setInvisible()
 
         accountMoviesError.setVisible()
-        accountMoviesError.text = errorStringRes
+        accountMoviesError.setText(errorStringRes)
         accountMoviesErrorActionButton.setVisible()
         accountMoviesErrorActionButton.setOnClickListener { retryAction.invoke() }
     }

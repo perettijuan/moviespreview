@@ -36,7 +36,7 @@ class AccountFavoriteMoviesViewModel @Inject constructor(dispatchers: CoroutineD
 
     private suspend fun fetchFavoriteMovies(imageTargetSize: Int): FavoriteMoviesViewState = withContext(dispatchers.default()) {
         favoritesMoviesUseCase
-                .getUserFavoriteMovies(0)
+                .getUserFavoriteMovies(1)
                 .let { ucResult ->
                     when (ucResult) {
                         is ErrorNoConnectivity -> UnableToLoad
@@ -49,7 +49,7 @@ class AccountFavoriteMoviesViewModel @Inject constructor(dispatchers: CoroutineD
                                         configMovieUseCase.configure(imageTargetSize, imageTargetSize, it).movie
                                     }
                                     .map {
-                                        FavoriteMovie(title = it.title, posterPath = it.poster_path ?: "emptyPath")
+                                        FavoriteMovie(posterPath = it.poster_path ?: "emptyPath")
                                     }
                                     .let {
                                         FavoriteMovies(it)

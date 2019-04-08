@@ -1,5 +1,6 @@
 package com.jpp.mp.screens.main.account
 
+import com.jpp.mp.views.MPAccountMoviesView
 import com.jpp.mpdomain.AccessToken
 
 /**
@@ -19,7 +20,7 @@ sealed class AccountViewState {
 sealed class FavoriteMoviesViewState {
     object Loading : FavoriteMoviesViewState()
     object NoFavoriteMovies : FavoriteMoviesViewState()
-    object UnableToLoad: FavoriteMoviesViewState()
+    object UnableToLoad : FavoriteMoviesViewState()
     data class FavoriteMovies(val movies: List<FavoriteMovie>) : FavoriteMoviesViewState()
 }
 
@@ -33,5 +34,6 @@ data class AccountHeaderItem(
         val defaultLetter: Char
 )
 
-data class FavoriteMovie(val title: String,
-                         val posterPath: String)
+data class FavoriteMovie(val posterPath: String) : MPAccountMoviesView.AccountMovieItem {
+    override fun getImageUrl() = posterPath
+}
