@@ -14,6 +14,16 @@ sealed class AccountViewState {
 }
 
 /**
+ * Represents all the view states that the favorite section can assume in the AccountFragment.
+ */
+sealed class FavoriteMoviesViewState {
+    object Loading : FavoriteMoviesViewState()
+    object NoFavoriteMovies : FavoriteMoviesViewState()
+    object UnableToLoad: FavoriteMoviesViewState()
+    data class FavoriteMovies(val movies: List<FavoriteMovie>) : FavoriteMoviesViewState()
+}
+
+/**
  * Represents the data rendered in the header view of the account fragment.
  */
 data class AccountHeaderItem(
@@ -22,3 +32,6 @@ data class AccountHeaderItem(
         val accountName: String,
         val defaultLetter: Char
 )
+
+data class FavoriteMovie(val title: String,
+                         val posterPath: String)
