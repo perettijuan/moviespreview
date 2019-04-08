@@ -4,4 +4,5 @@
     android:id="@+id/accountMoviesItemIv"
     android:layout_width="?attr/mpAccountMovieItemWidth"
     android:layout_height="?attr/mpAccountMovieItemHeight"
-    app:srcCompat="@drawable/ic_app_icon_black"/>
+    app:srcCompat="@drawable/ic_app_icon_black"
+    android:padding="4dp"/>

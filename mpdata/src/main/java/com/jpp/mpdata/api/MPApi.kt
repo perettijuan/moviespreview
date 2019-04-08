@@ -95,7 +95,7 @@ open class MPApi
     }
 
     override fun getFavoriteMovies(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
-        return tryCatchOrReturnNull { API.getFavoriteMoviesPage(userAccount.id, page, session.session_id, language.id) }
+        return tryCatchOrReturnNull { API.getFavoriteMoviesPage(userAccount.id, page, session.session_id, API_KEY, language.id) }
     }
 
     /**
