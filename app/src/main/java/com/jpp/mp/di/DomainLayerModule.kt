@@ -5,6 +5,7 @@ import com.jpp.mpdomain.usecase.about.GetAboutNavigationUrlUseCase
 import com.jpp.mpdomain.usecase.session.CreateSessionUseCase
 import com.jpp.mpdomain.usecase.session.GetAuthenticationDataUseCase
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
+import com.jpp.mpdomain.usecase.account.GetFavoriteMoviesUseCase
 import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase
 import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
 import com.jpp.mpdomain.usecase.credits.GetCreditsUseCase
@@ -125,4 +126,11 @@ class DomainLayerModule {
     fun providesCreateSessionUseCase(sessionRepository: SessionRepository,
                                      connectivityRepository: ConnectivityRepository)
             : CreateSessionUseCase = CreateSessionUseCase.Impl(sessionRepository, connectivityRepository)
+
+    @Provides
+    fun providesGetFavoriteMoviesUseCase(sessionRepository: SessionRepository,
+                                         accountRepository: AccountRepository,
+                                         languageRepository: LanguageRepository,
+                                         connectivityRepository: ConnectivityRepository)
+            : GetFavoriteMoviesUseCase = GetFavoriteMoviesUseCase.Impl(sessionRepository, accountRepository, languageRepository, connectivityRepository)
 }
