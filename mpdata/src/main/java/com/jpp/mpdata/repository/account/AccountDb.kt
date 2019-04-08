@@ -4,14 +4,12 @@ import android.util.SparseArray
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.UserAccount
 
-/**
- * TODO JPP -> flush the content of favorites when the user favorites a new movie
- */
 interface AccountDb {
     fun storeUserAccountInfo(userAccount: UserAccount)
     fun getUserAccountInfo(): UserAccount?
     fun getFavoriteMovies(page: Int): MoviePage?
     fun storeFavoriteMoviesPage(page: Int, moviePage: MoviePage)
+    fun flushData()
 
     /**
      * Only in-memory caching since the info of the user should be refreshed every time
@@ -19,8 +17,8 @@ interface AccountDb {
      */
     class Impl : AccountDb {
         private var userAccountInfo: UserAccount? = null
-        private val favoriteMovies = SparseArray<MoviePage>()
 
+        private val favoriteMovies = SparseArray<MoviePage>()
         override fun storeUserAccountInfo(userAccount: UserAccount) {
             userAccountInfo = userAccount
         }
@@ -32,5 +30,9 @@ interface AccountDb {
         }
 
         override fun getFavoriteMovies(page: Int): MoviePage? = favoriteMovies.get(page, null)
+
+        override fun flushData() {
+            favoriteMovies.clear()
+        }
     }
 }
