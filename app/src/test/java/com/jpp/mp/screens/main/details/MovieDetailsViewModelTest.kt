@@ -26,16 +26,13 @@ class MovieDetailsViewModelTest {
     @MockK
     private lateinit var getMovieDetailsUseCase: GetMovieDetailsUseCase
 
-    @RelaxedMockK
-    private lateinit var getMovieAccountStateUseCase: GetMovieAccountStateUseCase
-
     private lateinit var subject: MovieDetailsViewModel
 
     private val movieDetailId = 121.toDouble()
 
     @BeforeEach
     fun setUp() {
-        subject = MovieDetailsViewModel(TestCoroutineDispatchers(), getMovieDetailsUseCase, getMovieAccountStateUseCase)
+        subject = MovieDetailsViewModel(TestCoroutineDispatchers(), getMovieDetailsUseCase)
     }
 
     @Test
