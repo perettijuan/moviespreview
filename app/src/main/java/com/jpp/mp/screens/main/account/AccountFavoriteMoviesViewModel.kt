@@ -13,7 +13,12 @@ import com.jpp.mpdomain.usecase.account.GetFavoriteMoviesUseCase.FavoriteMoviesR
 import com.jpp.mp.screens.main.account.FavoriteMoviesViewState.*
 
 /**
- * TODO JPP add description here
+ * [MPScopedViewModel] to handle the state of the favorites section in AccountFragment. It is a coroutine-scoped
+ * ViewModel, which indicates that some work will be executed in a background context and synced
+ * to the main context when over.
+ *
+ * It exposes an output as a LiveData object that receives [FavoriteMoviesViewState] updates as soon
+ * as any new state is identified by the ViewModel.
  */
 class AccountFavoriteMoviesViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                                          private val favoritesMoviesUseCase: GetFavoriteMoviesUseCase,
@@ -21,12 +26,11 @@ class AccountFavoriteMoviesViewModel @Inject constructor(dispatchers: CoroutineD
     : MPScopedViewModel(dispatchers) {
 
     private val viewStateLiveData by lazy { MutableLiveData<FavoriteMoviesViewState>() }
+    private lateinit var retryFunc: () -> Unit
 
     fun init(imageTargetSize: Int) {
-        viewStateLiveData.value = FavoriteMoviesViewState.Loading
-        launch {
-            viewStateLiveData.value = fetchFavoriteMovies(imageTargetSize)
-        }
+        retryFunc = { pushLoadingAndFetchFavorites(imageTargetSize) }
+        pushLoadingAndFetchFavorites(imageTargetSize)
     }
 
     /**
@@ -34,6 +38,33 @@ class AccountFavoriteMoviesViewModel @Inject constructor(dispatchers: CoroutineD
      */
     fun viewState(): LiveData<FavoriteMoviesViewState> = viewStateLiveData
 
+
+    /**
+     * Called in order to execute the last attempt to fetch a movie detail.
+     */
+    fun retry() {
+        when (viewStateLiveData.value) {
+            is FavoriteMoviesViewState.UnableToLoad -> retryFunc.invoke()
+        }
+    }
+
+    /**
+     * Pushes the loading state into the UI and fetches the favorite movies of
+     * the user.
+     */
+    private fun pushLoadingAndFetchFavorites(imageTargetSize: Int) {
+        viewStateLiveData.value = FavoriteMoviesViewState.Loading
+        launch {
+            viewStateLiveData.value = fetchFavoriteMovies(imageTargetSize)
+        }
+    }
+
+    /**
+     * Fetches the favorite movies of the user - if it has - and prepares it to be
+     * shown in the UI.
+     * @return a [FavoriteMoviesViewState] that is posted in viewState in order
+     * to update the UI.
+     */
     private suspend fun fetchFavoriteMovies(imageTargetSize: Int): FavoriteMoviesViewState = withContext(dispatchers.default()) {
         favoritesMoviesUseCase
                 .getUserFavoriteMovies(1)

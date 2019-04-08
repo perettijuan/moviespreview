@@ -25,7 +25,8 @@ import kotlinx.android.synthetic.main.layout_account_header.*
 import javax.inject.Inject
 
 /**
- * TODO JPP -> this fragment should be aware of language changes
+ * Fragment that shows the account data of the user, the favorite movies that a user has,
+ * the watchlist, etc.
  */
 class AccountFragment : Fragment() {
 
@@ -115,7 +116,7 @@ class AccountFragment : Fragment() {
         when (viewState) {
             is FavoriteMoviesViewState.Loading -> accountFavoriteMovies.showLoading()
             is FavoriteMoviesViewState.NoFavoriteMovies -> accountFavoriteMovies.showNoContent(R.string.account_no_favorite_movies)
-            is FavoriteMoviesViewState.UnableToLoad -> accountFavoriteMovies.showError(R.string.account_favorite_movies_error) { TODO() }
+            is FavoriteMoviesViewState.UnableToLoad -> accountFavoriteMovies.showError(R.string.account_favorite_movies_error) { withFavoriteMoviesViewModel { retry() } }
             is FavoriteMoviesViewState.FavoriteMovies -> accountFavoriteMovies.showMovies(viewState.movies) { TODO() }
         }
     }
