@@ -84,4 +84,9 @@
     <string name="account_no_favorite_movies">Aún no tienes películas como favoritas.</string>
     <string name="account_favorite_movies_error">Error al cargar tus favoritas.</string>
     <!-- End Account -->
+
+    <!-- Favorites -->
+    <string name="favorite_movies_title">Películas Favoritas</string>
+    <!-- End Favorites -->
+
 </resources>

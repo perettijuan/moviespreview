@@ -218,6 +218,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 R.id.licensesFragment -> withMainViewModel { userNavigatesToLicenses(getString(R.string.about_open_source_action)) }
                 R.id.licenseContentFragment -> withMainViewModel { userNavigatesToLicenseContent(arguments.getStringOrDefault("licenseTitle", destination.label.toString())) }
                 R.id.accountFragment -> withMainViewModel { userNavigatesToAccountDetails(getString(R.string.account_title)) }
+                R.id.favoriteMoviesFragment -> withMainViewModel { userNavigatesToFavoriteMovies(getString(R.string.favorite_movies_title)) }
             }
         }
 
