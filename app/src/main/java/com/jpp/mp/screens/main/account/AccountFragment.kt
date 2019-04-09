@@ -20,10 +20,14 @@ import com.jpp.mp.R
 import com.jpp.mp.ext.*
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_account.*
+import kotlinx.android.synthetic.main.layout_account_content.*
 import kotlinx.android.synthetic.main.layout_account_header.*
 import javax.inject.Inject
 
-
+/**
+ * Fragment that shows the account data of the user, the favorite movies that a user has,
+ * the watchlist, etc.
+ */
 class AccountFragment : Fragment() {
 
     @Inject
@@ -73,18 +77,21 @@ class AccountFragment : Fragment() {
                         renderWebView()
                     }
                     is AccountViewState.AccountContent -> {
+                        withFavoriteMoviesViewModel { init(getScreenSizeInPixels().x) }
                         updateAccountInfo(viewState)
                         renderAccountInfo()
                     }
                 }
             })
         }
+
+        withFavoriteMoviesViewModel {
+            viewState().observe(this@AccountFragment.viewLifecycleOwner, Observer { favViewState -> renderFavoriteMoviesViewState(favViewState) })
+        }
     }
 
-    /**
-     * Helper function to execute actions with the [AccountViewModel].
-     */
     private fun withViewModel(action: AccountViewModel.() -> Unit) = getViewModel<AccountViewModel>(viewModelFactory).action()
+    private fun withFavoriteMoviesViewModel(action: AccountFavoriteMoviesViewModel.() -> Unit) = getViewModel<AccountFavoriteMoviesViewModel>(viewModelFactory).action()
 
 
     private fun renderOauthState(oauthState: AccountViewState.Oauth) {
@@ -102,6 +109,15 @@ class AccountFragment : Fragment() {
             snackBar(accountContent, R.string.account_approve_reminder, R.string.error_retry) {
                 withViewModel { retry() }
             }
+        }
+    }
+
+    private fun renderFavoriteMoviesViewState(viewState: FavoriteMoviesViewState) {
+        when (viewState) {
+            is FavoriteMoviesViewState.Loading -> accountFavoriteMovies.showLoading()
+            is FavoriteMoviesViewState.NoFavoriteMovies -> accountFavoriteMovies.showNoContent(R.string.account_no_favorite_movies)
+            is FavoriteMoviesViewState.UnableToLoad -> accountFavoriteMovies.showError(R.string.account_favorite_movies_error) { withFavoriteMoviesViewModel { retry() } }
+            is FavoriteMoviesViewState.FavoriteMovies -> accountFavoriteMovies.showMovies(viewState.movies) { TODO() }
         }
     }
 

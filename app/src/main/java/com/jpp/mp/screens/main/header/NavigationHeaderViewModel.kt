@@ -19,6 +19,8 @@ import kotlinx.coroutines.launch
  *
  * It exposes a single output in a LiveData object that receives [HeaderViewState] updates as soon
  * as any new state is identified by the ViewModel.
+ *
+ * TODO JPP -> need to update this when the user logs in from another screen.
  */
 class NavigationHeaderViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                                     private val getAccountInfoUseCase: GetAccountInfoUseCase)

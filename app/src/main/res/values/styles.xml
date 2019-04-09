@@ -32,6 +32,9 @@
         <item name="mpNavHeaderPadding">@dimen/nav_header_padding</item>
         <item name="mpAccountAvatarSize">@dimen/account_avatar_size</item>
         <item name="mpActionButtonSize">@dimen/action_button_size</item>
+        <item name="mpAccountMovieItemWidth">@dimen/account_movie_list_item_width</item>
+        <item name="mpAccountMovieItemHeight">@dimen/account_movie_list_item_height</item>
+        <item name="mpAccountMovieListHeight">@dimen/account_movie_list_height</item>
     </style>
 
     <!-- Used in the Drawer items-->
@@ -46,6 +49,12 @@
         <item name="android:layout_height">@dimen/mp_loading_view_default_height</item>
         <item name="android:layout_width">@dimen/mp_loading_view_default_width</item>
         <item name="android:indeterminateDrawable">@drawable/pg_mp_progress_bar</item>
+    </style>
+
+    <!-- MPLoadingView -->
+    <style name="MPProgressBarSmall" parent="MPProgressBar">
+        <item name="android:layout_height">@dimen/mp_loading_view_default_size_small</item>
+        <item name="android:layout_width">@dimen/mp_loading_view_default_size_small</item>
     </style>
 
     <!-- MPLoadingErrorView -->

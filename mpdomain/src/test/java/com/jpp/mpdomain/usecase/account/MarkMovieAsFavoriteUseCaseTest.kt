@@ -1,13 +1,12 @@
-package com.jpp.mpdomain.usecase.movies
+package com.jpp.mpdomain.usecase.account
 
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.repository.AccountRepository
 import com.jpp.mpdomain.repository.ConnectivityRepository
-import com.jpp.mpdomain.repository.MoviesRepository
 import com.jpp.mpdomain.repository.SessionRepository
-import com.jpp.mpdomain.usecase.movies.MarkMovieAsFavoriteUseCase.FavoriteMovieResult.*
+import com.jpp.mpdomain.usecase.account.MarkMovieAsFavoriteUseCase.FavoriteMovieResult.*
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
@@ -28,9 +27,6 @@ class MarkMovieAsFavoriteUseCaseTest {
     private lateinit var accountRepository: AccountRepository
 
     @RelaxedMockK
-    private lateinit var moviesRepository: MoviesRepository
-
-    @RelaxedMockK
     private lateinit var connectivityRepository: ConnectivityRepository
 
     private lateinit var subject: MarkMovieAsFavoriteUseCase
@@ -40,7 +36,6 @@ class MarkMovieAsFavoriteUseCaseTest {
         subject = MarkMovieAsFavoriteUseCase.Impl(
                 sessionRepository,
                 accountRepository,
-                moviesRepository,
                 connectivityRepository
         )
     }
@@ -52,7 +47,7 @@ class MarkMovieAsFavoriteUseCaseTest {
         subject.favoriteMovie(movieId, true).let { result ->
             verify(exactly = 0) { sessionRepository.getCurrentSession() }
             verify(exactly = 0) { accountRepository.getUserAccount(any()) }
-            verify(exactly = 0) { moviesRepository.updateMovieFavoriteState(any(), any(), any(), any()) }
+            verify(exactly = 0) { accountRepository.updateMovieFavoriteState(any(), any(), any(), any()) }
             assertEquals(ErrorNoConnectivity, result)
         }
     }
@@ -65,7 +60,7 @@ class MarkMovieAsFavoriteUseCaseTest {
         subject.favoriteMovie(movieId, true).let { result ->
             verify(exactly = 1) { sessionRepository.getCurrentSession() }
             verify(exactly = 0) { accountRepository.getUserAccount(any()) }
-            verify(exactly = 0) { moviesRepository.updateMovieFavoriteState(any(), any(), any(), any()) }
+            verify(exactly = 0) { accountRepository.updateMovieFavoriteState(any(), any(), any(), any()) }
             assertEquals(UserNotLogged, result)
         }
     }
@@ -80,7 +75,7 @@ class MarkMovieAsFavoriteUseCaseTest {
         subject.favoriteMovie(movieId, true).let { result ->
             verify(exactly = 1) { sessionRepository.getCurrentSession() }
             verify(exactly = 1) { accountRepository.getUserAccount(session) }
-            verify(exactly = 0) { moviesRepository.updateMovieFavoriteState(any(), any(), any(), any()) }
+            verify(exactly = 0) { accountRepository.updateMovieFavoriteState(any(), any(), any(), any()) }
             assertEquals(UserNotLogged, result)
         }
     }
@@ -92,12 +87,12 @@ class MarkMovieAsFavoriteUseCaseTest {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getCurrentSession() } returns session
         every { accountRepository.getUserAccount(any()) } returns userAccount
-        every { moviesRepository.updateMovieFavoriteState(any(), any(), any(), any()) } returns false
+        every { accountRepository.updateMovieFavoriteState(any(), any(), any(), any()) } returns false
 
         subject.favoriteMovie(movieId, true).let { result ->
             verify(exactly = 1) { sessionRepository.getCurrentSession() }
             verify(exactly = 1) { accountRepository.getUserAccount(session) }
-            verify(exactly = 1) { moviesRepository.updateMovieFavoriteState(movieId, true, userAccount, session) }
+            verify(exactly = 1) { accountRepository.updateMovieFavoriteState(movieId, true, userAccount, session) }
             assertEquals(ErrorUnknown, result)
         }
     }
@@ -109,12 +104,12 @@ class MarkMovieAsFavoriteUseCaseTest {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getCurrentSession() } returns session
         every { accountRepository.getUserAccount(any()) } returns userAccount
-        every { moviesRepository.updateMovieFavoriteState(any(), any(), any(), any()) } returns true
+        every { accountRepository.updateMovieFavoriteState(any(), any(), any(), any()) } returns true
 
         subject.favoriteMovie(movieId, true).let { result ->
             verify(exactly = 1) { sessionRepository.getCurrentSession() }
             verify(exactly = 1) { accountRepository.getUserAccount(session) }
-            verify(exactly = 1) { moviesRepository.updateMovieFavoriteState(movieId, true, userAccount, session) }
+            verify(exactly = 1) { accountRepository.updateMovieFavoriteState(movieId, true, userAccount, session) }
             assertEquals(Success, result)
         }
     }

@@ -6,7 +6,7 @@ import com.jpp.mp.resumedLifecycleOwner
 import com.jpp.mp.screens.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
-import com.jpp.mpdomain.usecase.details.GetMovieAccountStateUseCase
+import com.jpp.mpdomain.usecase.account.GetMovieAccountStateUseCase
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase.GetMovieDetailsResult.*
 import io.mockk.every
@@ -26,16 +26,13 @@ class MovieDetailsViewModelTest {
     @MockK
     private lateinit var getMovieDetailsUseCase: GetMovieDetailsUseCase
 
-    @RelaxedMockK
-    private lateinit var getMovieAccountStateUseCase: GetMovieAccountStateUseCase
-
     private lateinit var subject: MovieDetailsViewModel
 
     private val movieDetailId = 121.toDouble()
 
     @BeforeEach
     fun setUp() {
-        subject = MovieDetailsViewModel(TestCoroutineDispatchers(), getMovieDetailsUseCase, getMovieAccountStateUseCase)
+        subject = MovieDetailsViewModel(TestCoroutineDispatchers(), getMovieDetailsUseCase)
     }
 
     @Test

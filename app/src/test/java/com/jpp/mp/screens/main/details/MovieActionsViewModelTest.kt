@@ -5,8 +5,8 @@ import com.jpp.mp.InstantTaskExecutorExtension
 import com.jpp.mp.resumedLifecycleOwner
 import com.jpp.mp.screens.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.MovieAccountState
-import com.jpp.mpdomain.usecase.details.GetMovieAccountStateUseCase
-import com.jpp.mpdomain.usecase.movies.MarkMovieAsFavoriteUseCase
+import com.jpp.mpdomain.usecase.account.GetMovieAccountStateUseCase
+import com.jpp.mpdomain.usecase.account.MarkMovieAsFavoriteUseCase
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
