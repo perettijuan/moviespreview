@@ -81,10 +81,14 @@
     <string name="account_title">Account</string>
     <string name="account_approve_reminder">Please approve Movies Preview to use your data.</string>
     <string name="account_need_to_login">You need to be logged in to execute this action.</string>
-    <string name="account_favorite_title">Favorite movies</string>
+    <string name="account_favorite_title">Favorite Movies</string>
     <string name="account_no_favorite_movies">No favorite movies yet.</string>
     <string name="account_favorite_movies_error">Unable to load favorites.</string>
     <!-- End Account -->
+
+    <!-- Favorites -->
+    <string name="favorite_movies_title">Favorite Movies</string>
+    <!-- End Favorites -->
 
 
 </resources>

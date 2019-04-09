@@ -15,6 +15,13 @@ sealed class AccountViewState {
 }
 
 /**
+ * Represents the navigation events that can be routed from the account fragment.
+ */
+sealed class AccountNavigationEvent {
+    object ToFavoriteMovies : AccountNavigationEvent()
+}
+
+/**
  * Represents all the view states that the favorite section can assume in the AccountFragment.
  */
 sealed class FavoriteMoviesViewState {

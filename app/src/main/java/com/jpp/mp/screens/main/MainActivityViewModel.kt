@@ -42,15 +42,6 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
         )
     }
 
-    fun userNavigatesToPerson(sectionName: String) {
-        viewState.postValue(MainActivityViewState.ActionBarLocked(
-                abTitle = sectionName,
-                withAnimation = false,
-                menuEnabled = false,
-                isSearch = false)
-        )
-    }
-
     fun userNavigatesToCredits(sectionName: String) {
         viewState.postValue(MainActivityViewState.ActionBarLocked(
                 abTitle = sectionName,
@@ -60,34 +51,31 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
         )
     }
 
+    fun userNavigatesToPerson(sectionName: String) {
+        navigateToSimpleDestination(sectionName)
+    }
+
     fun userNavigatesToAbout(sectionName: String) {
-        viewState.postValue(MainActivityViewState.ActionBarLocked(
-                abTitle = sectionName,
-                withAnimation = false,
-                menuEnabled = false,
-                isSearch = false)
-        )
+        navigateToSimpleDestination(sectionName)
     }
 
     fun userNavigatesToLicenses(sectionName: String) {
-        viewState.postValue(MainActivityViewState.ActionBarLocked(
-                abTitle = sectionName,
-                withAnimation = false,
-                menuEnabled = false,
-                isSearch = false)
-        )
+        navigateToSimpleDestination(sectionName)
     }
 
     fun userNavigatesToLicenseContent(sectionName: String) {
-        viewState.postValue(MainActivityViewState.ActionBarLocked(
-                abTitle = sectionName,
-                withAnimation = false,
-                menuEnabled = false,
-                isSearch = false)
-        )
+        navigateToSimpleDestination(sectionName)
     }
 
     fun userNavigatesToAccountDetails(sectionName: String) {
+        navigateToSimpleDestination(sectionName)
+    }
+
+    fun userNavigatesToFavoriteMovies(sectionName: String) {
+        navigateToSimpleDestination(sectionName)
+    }
+
+    private fun navigateToSimpleDestination(sectionName: String) {
         viewState.postValue(MainActivityViewState.ActionBarLocked(
                 abTitle = sectionName,
                 withAnimation = false,

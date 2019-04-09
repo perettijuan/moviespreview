@@ -169,5 +169,17 @@
     <fragment
         android:id="@+id/accountFragment"
         android:name="com.jpp.mp.screens.main.account.AccountFragment"
-        tools:layout="@layout/fragment_account"  />
+        tools:layout="@layout/fragment_account"  >
+        <action
+            android:id="@+id/toFavoriteMoviesFragment"
+            app:destination="@id/favoriteMoviesFragment"
+            app:enterAnim="@anim/fragment_enter_slide_right"
+            app:exitAnim="@anim/fragment_exit_slide_right"
+            app:popEnterAnim="@anim/fragment_enter_slide_left"
+            app:popExitAnim="@anim/fragment_exit_slide_left"/>
+    </fragment>
+    <fragment
+        android:id="@+id/favoriteMoviesFragment"
+        android:name="com.jpp.mp.screens.main.favorites.FavoriteMoviesFragment"
+        tools:layout="@layout/fragment_favorite_movies" />
 </navigation>
