@@ -11,7 +11,7 @@ import com.jpp.mp.screens.main.account.AccountViewModel
 import com.jpp.mp.screens.main.credits.CreditsViewModel
 import com.jpp.mp.screens.main.details.MovieActionsViewModel
 import com.jpp.mp.screens.main.details.MovieDetailsViewModel
-import com.jpp.mp.screens.main.favorites.FavoriteMoviesViewModel
+import com.jpp.mp.screens.main.favorites.UserMoviesViewModel
 import com.jpp.mp.screens.main.header.NavigationHeaderViewModel
 import com.jpp.mp.screens.main.licenses.LicensesViewModel
 import com.jpp.mp.screens.main.licenses.content.LicenseContentViewModel
@@ -126,6 +126,6 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(FavoriteMoviesViewModel::class)
-    internal abstract fun getFavoriteMoviesViewModel(viewModel: FavoriteMoviesViewModel): ViewModel
+    @ViewModelKey(UserMoviesViewModel::class)
+    internal abstract fun getFavoriteMoviesViewModel(viewModel: UserMoviesViewModel): ViewModel
 }

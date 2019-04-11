@@ -12,29 +12,29 @@ import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import java.util.concurrent.Executor
 import com.jpp.mpdomain.usecase.account.GetFavoriteMoviesUseCase.FavoriteMoviesResult.*
 
-//TODO JPP wire up with FavoriteMoviesFragment
-class FavoriteMoviesViewModel(private val favoritesMoviesUseCase: GetFavoriteMoviesUseCase,
-                              private val configMovieUseCase: ConfigMovieUseCase,
-                              private val networkExecutor: Executor)
+//TODO JPP wire up with UserMoviesFragment
+class UserMoviesViewModel(private val favoritesMoviesUseCase: GetFavoriteMoviesUseCase,
+                          private val configMovieUseCase: ConfigMovieUseCase,
+                          private val networkExecutor: Executor)
     : ViewModel() {
 
 
-    private val viewState = MediatorLiveData<FavoriteMoviesViewState>()
+    private val viewState = MediatorLiveData<UserMoviesViewState>()
     private lateinit var retryFunc: (() -> Unit)
 
     /**
-     * Called on initialization of the FavoriteMoviesFragment.
+     * Called on initialization of the UserMoviesFragment.
      * Each time this method is called, a new movie list will be fetched from the use case
      * and posted to the viewState, unless a previous list has been fetched.
      */
     fun init(moviePosterSize: Int, movieBackdropSize: Int) {
-        if (viewState.value is FavoriteMoviesViewState.Loading
-                || viewState.value is FavoriteMoviesViewState.InitialPageLoaded) {
+        if (viewState.value is UserMoviesViewState.Loading
+                || viewState.value is UserMoviesViewState.InitialPageLoaded) {
             return
         }
 
 
-        viewState.value = FavoriteMoviesViewState.Loading
+        viewState.value = UserMoviesViewState.Loading
         fetchFreshPage(moviePosterSize, movieBackdropSize)
     }
 
@@ -48,7 +48,7 @@ class FavoriteMoviesViewModel(private val favoritesMoviesUseCase: GetFavoriteMov
         createPagedList(moviePosterSize, movieBackdropSize).let {
             viewState.addSource(it) { pagedList ->
                 if (pagedList.size > 0) {
-                    viewState.value = FavoriteMoviesViewState.InitialPageLoaded(pagedList)
+                    viewState.value = UserMoviesViewState.InitialPageLoaded(pagedList)
                 } else {
                     retryFunc = {
                         init(moviePosterSize, movieBackdropSize)
@@ -61,7 +61,7 @@ class FavoriteMoviesViewModel(private val favoritesMoviesUseCase: GetFavoriteMov
     /**
      * This is the method that creates the actual [PagedList] that will be used to provide
      * infinite scrolling. It uses a [MPPagingDataSourceFactory] that is mapped to have the
-     * desired model ([FavoriteMovieItem]) in order to create the [PagedList].
+     * desired model ([UserMovieItem]) in order to create the [PagedList].
      *
      * The steps to create the proper instance of [PagedList] are:
      * 1 - Create a [MPPagingDataSourceFactory] instance of type [Movie].
@@ -72,7 +72,7 @@ class FavoriteMoviesViewModel(private val favoritesMoviesUseCase: GetFavoriteMov
      *     [Movie] to a [MovieItem].
      */
     private fun createPagedList(moviePosterSize: Int,
-                                movieBackdropSize: Int): LiveData<PagedList<FavoriteMovieItem>> {
+                                movieBackdropSize: Int): LiveData<PagedList<UserMovieItem>> {
         return MPPagingDataSourceFactory<Movie> { page, callback -> fetchPage(page, callback) }
                 .apply { retryFunc = { networkExecutor.execute { retryLast() } } }
                 .map { configMovieUseCase.configure(moviePosterSize, movieBackdropSize, it) }
@@ -88,7 +88,7 @@ class FavoriteMoviesViewModel(private val favoritesMoviesUseCase: GetFavoriteMov
     }
 
     /**
-     * Fetches a favorite movies; page indicated by [page] and invokes the provided [callback] when done.
+     * Fetches the movies's page indicated by [page] and invokes the provided [callback] when done.
      * - [page] indicates the current page number to retrieve.
      * - [callback] is a callback executed when the movie fetching us successful. The callback
      *   receives the list of [Movie]s retrieved and the index of the next movies page to fetch.
@@ -100,20 +100,20 @@ class FavoriteMoviesViewModel(private val favoritesMoviesUseCase: GetFavoriteMov
                 .let { ucResult ->
                     when (ucResult) {
                         is ErrorNoConnectivity -> {
-                            viewState.postValue(if (page > 1) FavoriteMoviesViewState.ErrorNoConnectivityWithItems else FavoriteMoviesViewState.ErrorNoConnectivity)
+                            viewState.postValue(if (page > 1) UserMoviesViewState.ErrorNoConnectivityWithItems else UserMoviesViewState.ErrorNoConnectivity)
                         }
                         is ErrorUnknown -> {
-                            viewState.postValue(if (page > 1) FavoriteMoviesViewState.ErrorUnknownWithItems else FavoriteMoviesViewState.ErrorUnknown)
+                            viewState.postValue(if (page > 1) UserMoviesViewState.ErrorUnknownWithItems else UserMoviesViewState.ErrorUnknown)
                         }
-                        is UserNotLogged -> viewState.postValue(FavoriteMoviesViewState.UserNotLogged)
-                        is NoFavorites -> viewState.postValue(FavoriteMoviesViewState.NoFavorites)
+                        is UserNotLogged -> viewState.postValue(UserMoviesViewState.UserNotLogged)
+                        is NoFavorites -> viewState.postValue(UserMoviesViewState.NoMovies)
                         is Success -> callback(ucResult.moviesPage.results, page + 1)
                     }
                 }
     }
 
     private fun mapDomainMovie(domainMovie: Movie) = with(domainMovie) {
-        FavoriteMovieItem(
+        UserMovieItem(
                 movieId = id,
                 headerImageUrl = backdrop_path ?: "emptyPath",
                 title = title,

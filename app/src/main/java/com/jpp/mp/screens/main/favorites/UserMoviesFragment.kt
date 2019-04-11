@@ -12,12 +12,12 @@ import com.jpp.mp.R
  * TODO JPP -> error handling with content
  * TODO JPP -> Handle RefreshAppViewModel
  */
-class FavoriteMoviesFragment : Fragment() {
+class UserMoviesFragment : Fragment() {
 
 
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_favorite_movies, container, false)
+        return inflater.inflate(R.layout.fragment_user_movies, container, false)
     }
 }

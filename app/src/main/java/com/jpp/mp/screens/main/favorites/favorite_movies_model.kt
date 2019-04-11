@@ -3,22 +3,22 @@ package com.jpp.mp.screens.main.favorites
 import androidx.paging.PagedList
 
 /**
- * Represents the view state of the movies view (FavoriteMoviesFragment).
+ * Represents the view state of the movies view (UserMoviesFragment).
  * Each subclass of this sealed class represents a particular state that the fragment
  * can assume.
  */
-sealed class FavoriteMoviesViewState {
-    object Loading : FavoriteMoviesViewState()
-    object ErrorNoConnectivity : FavoriteMoviesViewState()
-    object ErrorNoConnectivityWithItems : FavoriteMoviesViewState()
-    object ErrorUnknown : FavoriteMoviesViewState()
-    object ErrorUnknownWithItems: FavoriteMoviesViewState()
-    object UserNotLogged : FavoriteMoviesViewState()
-    object NoFavorites : FavoriteMoviesViewState()
-    data class InitialPageLoaded(val pagedList: PagedList<FavoriteMovieItem>) : FavoriteMoviesViewState()
+sealed class UserMoviesViewState {
+    object Loading : UserMoviesViewState()
+    object ErrorNoConnectivity : UserMoviesViewState()
+    object ErrorNoConnectivityWithItems : UserMoviesViewState()
+    object ErrorUnknown : UserMoviesViewState()
+    object ErrorUnknownWithItems: UserMoviesViewState()
+    object UserNotLogged : UserMoviesViewState()
+    object NoMovies : UserMoviesViewState()
+    data class InitialPageLoaded(val pagedList: PagedList<UserMovieItem>) : UserMoviesViewState()
 }
 
-data class FavoriteMovieItem(
+data class UserMovieItem(
         val movieId: Double,
         val headerImageUrl: String,
         val title: String,
