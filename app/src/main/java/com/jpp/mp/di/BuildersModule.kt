@@ -5,6 +5,7 @@ import com.jpp.mp.screens.main.about.AboutFragment
 import com.jpp.mp.screens.main.account.AccountFragment
 import com.jpp.mp.screens.main.credits.CreditsFragment
 import com.jpp.mp.screens.main.details.MovieDetailsFragment
+import com.jpp.mp.screens.main.favorites.FavoriteMoviesFragment
 import com.jpp.mp.screens.main.header.NavigationHeaderFragment
 import com.jpp.mp.screens.main.licenses.LicensesFragment
 import com.jpp.mp.screens.main.licenses.content.LicenseContentFragment
@@ -60,4 +61,7 @@ abstract class BuildersModule {
 
     @ContributesAndroidInjector
     abstract fun bindAccountFragment() : AccountFragment
+
+    @ContributesAndroidInjector
+    abstract fun bindFavoriteMoviesFragment(): FavoriteMoviesFragment
 }

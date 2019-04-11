@@ -140,7 +140,7 @@ abstract class MoviesFragmentViewModel(private val getMoviesUseCase: GetMoviesUs
     }
 
     /**
-     * Fetches a movies page indicated by [page] and invokes the provided [callback] when done.
+     * Fetches a movie's page indicated by [page] and invokes the provided [callback] when done.
      * - [page] indicates the current page number to retrieve.
      * - [callback] is a callback executed when the movie fetching us successful. The callback
      *   receives the list of [Movie]s retrieved and the index of the next movies page to fetch.
