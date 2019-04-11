@@ -2,13 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/favoritesFragmentContent"
+    android:id="@+id/userMoviesFragmentContent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/favoriteMoviesList"
+        android:id="@+id/userMoviesList"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layoutAnimation="@anim/list_fall_down"
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.jpp.mp.views.MPErrorView
-        android:id="@+id/favoriteMoviesErrorView"
+        android:id="@+id/userMoviesErrorView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="invisible"
@@ -30,7 +30,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
-        android:id="@+id/favoriteMoviesLoadingView"
+        android:id="@+id/userMoviesLoadingView"
         style="@style/MPProgressBar"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -180,6 +180,6 @@
     </fragment>
     <fragment
         android:id="@+id/favoriteMoviesFragment"
-        android:name="com.jpp.mp.screens.main.favorites.FavoriteMoviesFragment"
-        tools:layout="@layout/fragment_favorite_movies" />
+        android:name="com.jpp.mp.screens.main.favorites.UserMoviesFragment"
+        tools:layout="@layout/fragment_user_movies" />
 </navigation>
