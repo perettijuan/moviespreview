@@ -11,11 +11,12 @@ import com.jpp.mpdomain.usecase.account.GetFavoriteMoviesUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import java.util.concurrent.Executor
 import com.jpp.mpdomain.usecase.account.GetFavoriteMoviesUseCase.FavoriteMoviesResult.*
+import javax.inject.Inject
 
 //TODO JPP wire up with UserMoviesFragment
-class UserMoviesViewModel(private val favoritesMoviesUseCase: GetFavoriteMoviesUseCase,
-                          private val configMovieUseCase: ConfigMovieUseCase,
-                          private val networkExecutor: Executor)
+class UserMoviesViewModel @Inject constructor(private val favoritesMoviesUseCase: GetFavoriteMoviesUseCase,
+                                              private val configMovieUseCase: ConfigMovieUseCase,
+                                              private val networkExecutor: Executor)
     : ViewModel() {
 
 
@@ -37,6 +38,12 @@ class UserMoviesViewModel(private val favoritesMoviesUseCase: GetFavoriteMoviesU
         viewState.value = UserMoviesViewState.Loading
         fetchFreshPage(moviePosterSize, movieBackdropSize)
     }
+
+    /**
+     * Exposes a stream that is updated with a new [UserMoviesViewState]
+     * each time that a new state is identified.
+     */
+    fun viewState(): LiveData<UserMoviesViewState> = viewState
 
     /**
      * Starts the process to create the the PagedList that will back the list of movies shown to the
@@ -106,7 +113,7 @@ class UserMoviesViewModel(private val favoritesMoviesUseCase: GetFavoriteMoviesU
                             viewState.postValue(if (page > 1) UserMoviesViewState.ErrorUnknownWithItems else UserMoviesViewState.ErrorUnknown)
                         }
                         is UserNotLogged -> viewState.postValue(UserMoviesViewState.UserNotLogged)
-                        is NoFavorites -> viewState.postValue(UserMoviesViewState.NoMovies)
+                        is NoFavorites -> if (page == 1) viewState.postValue(UserMoviesViewState.NoMovies)
                         is Success -> callback(ucResult.moviesPage.results, page + 1)
                     }
                 }
