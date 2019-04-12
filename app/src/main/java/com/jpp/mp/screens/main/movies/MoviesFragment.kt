@@ -131,9 +131,7 @@ abstract class MoviesFragment : Fragment() {
                 moviesErrorView.asUnknownError { withViewModel { retryMoviesFetch() } }
             }
             is MoviesViewState.ErrorUnknownWithItems -> {
-                snackBar(moviesFragmentContent, R.string.error_unexpected_error_message, R.string.error_retry) {
-                    withViewModel { retryMoviesFetch() }
-                }
+                snackBarErrorUnknown(moviesFragmentContent) { withViewModel { retryMoviesFetch() } }
                 renderInitialPageLoaded()
             }
             is MoviesViewState.ErrorNoConnectivity -> {
@@ -141,9 +139,7 @@ abstract class MoviesFragment : Fragment() {
                 moviesErrorView.asNoConnectivityError { withViewModel { retryMoviesFetch() } }
             }
             is MoviesViewState.ErrorNoConnectivityWithItems -> {
-                snackBar(moviesFragmentContent, R.string.error_no_network_connection_message, R.string.error_retry) {
-                    withViewModel { retryMoviesFetch() }
-                }
+                snackBarErrorNoConnectivity(moviesFragmentContent) { withViewModel { retryMoviesFetch() } }
                 renderInitialPageLoaded()
             }
             is MoviesViewState.InitialPageLoaded -> {

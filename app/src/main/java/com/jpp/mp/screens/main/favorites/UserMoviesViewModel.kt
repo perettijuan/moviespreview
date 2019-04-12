@@ -46,6 +46,14 @@ class UserMoviesViewModel @Inject constructor(private val favoritesMoviesUseCase
     fun viewState(): LiveData<UserMoviesViewState> = viewState
 
     /**
+     * Attempts to execute the last movie fetching step that was executed. Typically called after an error
+     * is detected.
+     */
+    fun retry() {
+        retryFunc.invoke()
+    }
+
+    /**
      * Starts the process to create the the PagedList that will back the list of movies shown to the
      * user.
      * When the data retrieved from [createPagedList] is obtained, a new state is pushed to viewState().
