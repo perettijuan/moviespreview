@@ -60,7 +60,7 @@ abstract class MoviesFragment : Fragment() {
 
         /* Set up the MovieList */
         moviesList.apply {
-            layoutManager = LinearLayoutManager(activity)
+            layoutManager = LinearLayoutManager(requireActivity())
             adapter = MoviesAdapter(movieSelectionListener)
         }
     }
