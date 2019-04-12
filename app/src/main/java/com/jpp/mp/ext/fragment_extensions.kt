@@ -57,6 +57,22 @@ fun Fragment.snackBar(contentView: View,
 }
 
 /**
+ * Creates and shows a [Snackbar] with the standard unknown error styled with the application resources.
+ */
+fun Fragment.snackBarErrorUnknown(contentView: View,
+                                  action: () -> Unit) {
+    snackBar(contentView, R.string.error_unexpected_error_message, R.string.error_retry, action)
+}
+
+/**
+ * Creates and shows a [Snackbar] with the standard no connectivity error styled with the application resources.
+ */
+fun Fragment.snackBarErrorNoConnectivity(contentView: View,
+                                         action: () -> Unit) {
+    snackBar(contentView, R.string.error_no_network_connection_message, R.string.error_retry, action)
+}
+
+/**
  * Finds the View identified with the provided [id].
  */
 inline fun <reified T : View> Fragment.findViewById(@IdRes id: Int): T {

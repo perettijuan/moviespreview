@@ -77,16 +77,20 @@ class UserMoviesFragment : Fragment() {
                 TODO()
             }
             is UserMoviesViewState.ErrorNoConnectivity -> {
-                TODO()
+                userMoviesErrorView.asNoConnectivityError { withViewModel { retry() } }
+                renderError()
             }
             is UserMoviesViewState.ErrorNoConnectivityWithItems -> {
-                TODO()
+                snackBarErrorNoConnectivity(userMoviesFragmentContent) { withViewModel { retry() } }
+                renderContent()
             }
             is UserMoviesViewState.ErrorUnknown -> {
-                TODO()
+                userMoviesErrorView.asUnknownError { withViewModel { retry() } }
+                renderError()
             }
             is UserMoviesViewState.ErrorUnknownWithItems -> {
-                TODO()
+                snackBarErrorUnknown(userMoviesFragmentContent) { withViewModel { retry() } }
+                renderContent()
             }
             is UserMoviesViewState.InitialPageLoaded -> {
                 withRecyclerViewAdapter { submitList(viewState.pagedList) }
@@ -101,6 +105,13 @@ class UserMoviesFragment : Fragment() {
         userMoviesErrorView.setInvisible()
 
         userMoviesLoadingView.setVisible()
+    }
+
+    private fun renderError() {
+        userMoviesList.setInvisible()
+        userMoviesLoadingView.setInvisible()
+
+        userMoviesErrorView.setVisible()
     }
 
     private fun renderContent() {
