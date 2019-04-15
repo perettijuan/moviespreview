@@ -56,7 +56,7 @@ class UserMoviesFragment : Fragment() {
         withViewModel {
             viewState().observe(this@UserMoviesFragment.viewLifecycleOwner, Observer { viewState -> renderViewState(viewState) })
             navEvents().observe(this@UserMoviesFragment.viewLifecycleOwner, Observer { navEvent -> navigateWith(navEvent) })
-            init(moviePosterSize = getScreenSizeInPixels().x,
+            fetchData(moviePosterSize = getScreenSizeInPixels().x,
                     movieBackdropSize = getScreenSizeInPixels().x)
         }
     }
@@ -67,6 +67,13 @@ class UserMoviesFragment : Fragment() {
 
     private fun renderViewState(viewState: UserMoviesViewState) {
         when (viewState) {
+            is UserMoviesViewState.Refreshing -> {
+                renderLoading()
+                withViewModel {
+                    fetchData(moviePosterSize = getScreenSizeInPixels().x,
+                            movieBackdropSize = getScreenSizeInPixels().x)
+                }
+            }
             is UserMoviesViewState.Loading -> {
                 renderLoading()
             }

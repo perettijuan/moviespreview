@@ -12,6 +12,7 @@ import com.jpp.mpdomain.usecase.account.GetFavoriteMoviesUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import java.util.concurrent.Executor
 import com.jpp.mpdomain.usecase.account.GetFavoriteMoviesUseCase.FavoriteMoviesResult.*
+import com.jpp.mpdomain.usecase.support.RefreshAppDataUseCase
 import javax.inject.Inject
 
 /**
@@ -24,6 +25,7 @@ import javax.inject.Inject
  */
 class UserMoviesViewModel @Inject constructor(private val favoritesMoviesUseCase: GetFavoriteMoviesUseCase,
                                               private val configMovieUseCase: ConfigMovieUseCase,
+                                              refreshAppDataUseCase: RefreshAppDataUseCase,
                                               private val networkExecutor: Executor)
     : ViewModel() {
 
@@ -32,12 +34,21 @@ class UserMoviesViewModel @Inject constructor(private val favoritesMoviesUseCase
     private val navigationEvents by lazy { SingleLiveEvent<UserMoviesViewNavigationEvent>() }
     private lateinit var retryFunc: (() -> Unit)
 
+
+    init {
+        viewState.addSource(refreshAppDataUseCase.appDataUpdates()) { dataRefresh ->
+            if (dataRefresh is RefreshAppDataUseCase.AppDataRefresh.UserAccountMovies) {
+                viewState.postValue(UserMoviesViewState.Refreshing)
+            }
+        }
+    }
+
     /**
      * Called on initialization of the UserMoviesFragment.
      * Each time this method is called, a new movie list will be fetched from the use case
      * and posted to the viewState, unless a previous list has been fetched.
      */
-    fun init(moviePosterSize: Int, movieBackdropSize: Int) {
+    fun fetchData(moviePosterSize: Int, movieBackdropSize: Int) {
         if (viewState.value is UserMoviesViewState.Loading
                 || viewState.value is UserMoviesViewState.InitialPageLoaded) {
             return
@@ -95,7 +106,7 @@ class UserMoviesViewModel @Inject constructor(private val favoritesMoviesUseCase
                     viewState.value = UserMoviesViewState.InitialPageLoaded(pagedList)
                 } else {
                     retryFunc = {
-                        init(moviePosterSize, movieBackdropSize)
+                        fetchData(moviePosterSize, movieBackdropSize)
                     }
                 }
             }

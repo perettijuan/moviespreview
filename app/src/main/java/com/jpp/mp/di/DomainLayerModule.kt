@@ -19,6 +19,7 @@ import com.jpp.mpdomain.usecase.account.MarkMovieAsFavoriteUseCase
 import com.jpp.mpdomain.usecase.person.GetPersonUseCase
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
+import com.jpp.mpdomain.usecase.support.RefreshAppDataUseCase
 import com.jpp.mpdomain.usecase.support.RefreshLanguageDataUseCase
 import dagger.Module
 import dagger.Provides
@@ -133,4 +134,9 @@ class DomainLayerModule {
                                          languageRepository: LanguageRepository,
                                          connectivityRepository: ConnectivityRepository)
             : GetFavoriteMoviesUseCase = GetFavoriteMoviesUseCase.Impl(sessionRepository, accountRepository, languageRepository, connectivityRepository)
+
+    @Provides
+    fun providesRefreshAppDataUseCase(accountRepository: AccountRepository)
+            : RefreshAppDataUseCase = RefreshAppDataUseCase.Impl(accountRepository)
+
 }
