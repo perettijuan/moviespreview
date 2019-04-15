@@ -2,7 +2,7 @@ package com.jpp.mp.screens.main
 
 import androidx.lifecycle.Observer
 import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.resumedLifecycleOwner
+import com.jpp.mp.utiltest.resumedLifecycleOwner
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

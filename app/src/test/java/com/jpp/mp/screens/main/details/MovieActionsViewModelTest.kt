@@ -2,7 +2,7 @@ package com.jpp.mp.screens.main.details
 
 import androidx.lifecycle.Observer
 import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.resumedLifecycleOwner
+import com.jpp.mp.utiltest.resumedLifecycleOwner
 import com.jpp.mp.screens.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.MovieAccountState
 import com.jpp.mpdomain.usecase.account.GetMovieAccountStateUseCase

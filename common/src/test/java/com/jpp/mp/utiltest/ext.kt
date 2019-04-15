@@ -1,4 +1,4 @@
-package com.jpp.mp
+package com.jpp.mp.utiltest
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
