@@ -1,5 +1,8 @@
 package com.jpp.mpdata.repository.account
 
+import androidx.lifecycle.Observer
+import com.jpp.mp.utiltest.InstantTaskExecutorExtension
+import com.jpp.mp.utiltest.resumedLifecycleOwner
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.SupportedLanguage
@@ -15,7 +18,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(MockKExtension::class)
+@ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
 class AccountRepositoryTest {
 
     @RelaxedMockK
@@ -75,10 +78,22 @@ class AccountRepositoryTest {
 
         val result = subject.updateMovieFavoriteState(12.toDouble(), false, mockk(), mockk())
 
-
         verify { accountDb.flushData() }
         assertTrue(result)
     }
+
+    @Test
+    fun `Should notify data update when successfully update favorites`() {
+        var stateUpdatePosted: AccountRepository.AccountDataUpdate? = null
+
+        subject.updates().observe(resumedLifecycleOwner(), Observer {
+            stateUpdatePosted = it
+        })
+
+        subject.updateMovieFavoriteState(12.toDouble(), false, mockk(), mockk())
+        assertEquals(AccountRepository.AccountDataUpdate.FavoritesMovies, stateUpdatePosted)
+    }
+
 
     @Test
     fun `Should not fetch favorites movie page if data in DB`() {

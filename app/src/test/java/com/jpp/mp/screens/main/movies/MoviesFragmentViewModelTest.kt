@@ -3,7 +3,7 @@ package com.jpp.mp.screens.main.movies
 import androidx.lifecycle.Observer
 import com.jpp.mp.utiltest.CurrentThreadExecutorService
 import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.resumedLifecycleOwner
+import com.jpp.mp.utiltest.resumedLifecycleOwner
 import com.jpp.mp.utiltest.successGetMoviesUCExecution
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase

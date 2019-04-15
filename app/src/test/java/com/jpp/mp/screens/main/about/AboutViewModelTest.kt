@@ -2,7 +2,7 @@ package com.jpp.mp.screens.main.about
 
 import androidx.lifecycle.Observer
 import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.resumedLifecycleOwner
+import com.jpp.mp.utiltest.resumedLifecycleOwner
 import com.jpp.mpdomain.usecase.about.AboutNavigationType
 import com.jpp.mpdomain.usecase.about.GetAboutNavigationUrlUseCase
 import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase
