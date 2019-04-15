@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mp.paging.MPPagingDataSourceFactory
+import com.jpp.mp.screens.SingleLiveEvent
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.usecase.account.GetFavoriteMoviesUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
@@ -13,7 +14,14 @@ import java.util.concurrent.Executor
 import com.jpp.mpdomain.usecase.account.GetFavoriteMoviesUseCase.FavoriteMoviesResult.*
 import javax.inject.Inject
 
-//TODO JPP wire up with UserMoviesFragment
+/**
+ * [ViewModel] to support the different user movies sections in the account user flow.
+ *
+ * - Exposes an output in a LiveData object that receives [UserMoviesViewState] updates as soon
+ * as any new state is identified by the ViewModel.
+ * - Exposes a second output in a LiveData object that receives [UserMoviesViewNavigationEvent] updates
+ * as soon as a new navigation event is detected from the UI.
+ */
 class UserMoviesViewModel @Inject constructor(private val favoritesMoviesUseCase: GetFavoriteMoviesUseCase,
                                               private val configMovieUseCase: ConfigMovieUseCase,
                                               private val networkExecutor: Executor)
@@ -21,6 +29,7 @@ class UserMoviesViewModel @Inject constructor(private val favoritesMoviesUseCase
 
 
     private val viewState = MediatorLiveData<UserMoviesViewState>()
+    private val navigationEvents by lazy { SingleLiveEvent<UserMoviesViewNavigationEvent>() }
     private lateinit var retryFunc: (() -> Unit)
 
     /**
@@ -46,11 +55,31 @@ class UserMoviesViewModel @Inject constructor(private val favoritesMoviesUseCase
     fun viewState(): LiveData<UserMoviesViewState> = viewState
 
     /**
+     * Exposes the events that are triggered when a navigation event is detected.
+     * We need a different LiveData here in order to avoid the problem of back navigation:
+     * - The default LiveData object posts the last value every time a new observer starts observing.
+     */
+    fun navEvents(): LiveData<UserMoviesViewNavigationEvent> = navigationEvents
+
+    /**
      * Attempts to execute the last movie fetching step that was executed. Typically called after an error
      * is detected.
      */
     fun retry() {
         retryFunc.invoke()
+    }
+
+    /**
+     * Called when the user selects an item from the list being shown.
+     */
+    fun onItemSelected(item: UserMovieItem) {
+        with(item) {
+            navigationEvents.value = UserMoviesViewNavigationEvent.ToMovieDetails(
+                    movieId = movieId.toString(),
+                    movieImageUrl = contentImageUrl,
+                    movieTitle = title
+            )
+        }
     }
 
     /**

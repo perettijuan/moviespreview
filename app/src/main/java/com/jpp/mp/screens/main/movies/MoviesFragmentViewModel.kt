@@ -17,8 +17,10 @@ import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase.GetMoviesResult.*
 /**
  * [ViewModel] to support the movies list section in the application.
  *
- * It exposes a single output in a LiveData object that receives [MoviesViewState] updates as soon
+ * - Exposes an output in a LiveData object that receives [MoviesViewState] updates as soon
  * as any new state is identified by the ViewModel.
+ * - Exposes a second output in a LiveData object that receives [MoviesViewNavigationEvent] updates
+ * as soon as a new navigation event is detected from the UI.
  */
 abstract class MoviesFragmentViewModel(private val getMoviesUseCase: GetMoviesUseCase,
                                        private val configMovieUseCase: ConfigMovieUseCase,
