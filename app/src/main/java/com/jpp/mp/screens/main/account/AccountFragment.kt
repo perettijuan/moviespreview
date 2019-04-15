@@ -16,8 +16,10 @@ import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.jpp.mp.R
 import com.jpp.mp.ext.*
+import com.jpp.mp.screens.main.account.AccountFragmentDirections.toFavoriteMoviesFragment
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_account.*
 import kotlinx.android.synthetic.main.layout_account_content.*
@@ -83,6 +85,12 @@ class AccountFragment : Fragment() {
                     }
                 }
             })
+
+            navEvents().observe(this@AccountFragment.viewLifecycleOwner, Observer { navEvent ->
+                when (navEvent) {
+                    is AccountNavigationEvent.ToFavoriteMovies -> navigateToFavorites()
+                }
+            })
         }
 
         withFavoriteMoviesViewModel {
@@ -117,8 +125,12 @@ class AccountFragment : Fragment() {
             is FavoriteMoviesViewState.Loading -> accountFavoriteMovies.showLoading()
             is FavoriteMoviesViewState.NoFavoriteMovies -> accountFavoriteMovies.showNoContent(R.string.account_no_favorite_movies)
             is FavoriteMoviesViewState.UnableToLoad -> accountFavoriteMovies.showError(R.string.account_favorite_movies_error) { withFavoriteMoviesViewModel { retry() } }
-            is FavoriteMoviesViewState.FavoriteMovies -> accountFavoriteMovies.showMovies(viewState.movies) { TODO() }
+            is FavoriteMoviesViewState.FavoriteMovies -> accountFavoriteMovies.showMovies(viewState.movies) { withViewModel { onUserSelectedFavorites() } }
         }
+    }
+
+    private fun navigateToFavorites() {
+        findNavController().navigate(toFavoriteMoviesFragment())
     }
 
     private fun updateAccountInfo(newContent: AccountViewState.AccountContent) {

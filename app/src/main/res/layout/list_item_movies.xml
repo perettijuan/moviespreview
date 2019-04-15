@@ -4,7 +4,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:maxHeight="@dimen/movie_item_max_height">
+  android:maxHeight="?attr/mpMovieItemMaxSize">
 
   <ImageView
     android:id="@+id/movieListItemHeaderIcon"
@@ -41,7 +41,6 @@
     android:layout_width="?attr/mpMovieItemBottomIconSize"
     android:layout_height="?attr/mpMovieItemBottomIconSize"
     android:layout_marginStart="8dp"
-    android:layout_marginLeft="8dp"
     app:layout_constraintBottom_toBottomOf="@+id/movieListItemPopularityText"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="@+id/movieListItemPopularityText"
@@ -53,7 +52,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="4dp"
-    android:layout_marginLeft="4dp"
     app:layout_constraintStart_toEndOf="@+id/movieListItemPopularityIcon"
     app:layout_constraintTop_toBottomOf="@+id/movieListItemImage"
     tools:text="2019" />
@@ -63,7 +61,6 @@
     android:layout_width="?attr/mpMovieItemBottomIconSize"
     android:layout_height="?attr/mpMovieItemBottomIconSize"
     android:layout_marginEnd="4dp"
-    android:layout_marginRight="4dp"
     app:layout_constraintBottom_toBottomOf="@+id/movieListItemVoteCountText"
     app:layout_constraintEnd_toStartOf="@+id/movieListItemVoteCountText"
     app:layout_constraintTop_toTopOf="@+id/movieListItemVoteCountText"
@@ -75,7 +72,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginEnd="8dp"
-    android:layout_marginRight="8dp"
     android:layout_marginBottom="8dp"
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/movieListItemImage"

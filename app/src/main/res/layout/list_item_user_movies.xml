@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:maxHeight="?attr/mpUserMovieItemMaxSize">
+
+    <ImageView
+        android:id="@+id/userMovieListItemHeaderIcon"
+        android:layout_width="?attr/mpUserMovieItemHeaderImageWidth"
+        android:layout_height="?attr/mpUserMovieItemHeaderImageHeight"
+        android:layout_margin="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_app_icon_black" />
+
+    <TextView
+        android:id="@+id/userMovieListItemTitle"
+        style="@style/MPTextViewTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/userMovieListItemHeaderIcon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/userMovieListItemHeaderIcon"
+        app:layout_constraintTop_toTopOf="@+id/userMovieListItemHeaderIcon"
+        tools:text="Title 1" />
+
+    <ImageView
+        android:id="@+id/userMovieListItemImage"
+        android:layout_width="0dp"
+        android:layout_height="?attr/mpUserMovieItemImageHeight"
+        android:layout_marginTop="6dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userMovieListItemHeaderIcon" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

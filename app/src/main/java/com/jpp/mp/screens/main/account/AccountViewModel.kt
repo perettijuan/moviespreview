@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.screens.CoroutineDispatchers
 import com.jpp.mp.screens.MPScopedViewModel
+import com.jpp.mp.screens.SingleLiveEvent
 import com.jpp.mpdomain.AccessToken
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
@@ -36,6 +37,7 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     : MPScopedViewModel(dispatchers) {
 
     private val viewStateLiveData by lazy { MutableLiveData<AccountViewState>() }
+    private val navigationEvents by lazy { SingleLiveEvent<AccountNavigationEvent>() }
 
     /**
      * Called when the fragment is initialized and the view is ready to render states.
@@ -50,6 +52,13 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Subscribe to this [LiveData] in order to get updates of the [AccountViewState].
      */
     fun viewState(): LiveData<AccountViewState> = viewStateLiveData
+
+    /**
+     * Exposes the events that are triggered when a navigation event is detected.
+     * We need a different LiveData here in order to avoid the problem of back navigation:
+     * - The default LiveData object posts the last value every time a new observer starts observing.
+     */
+    fun navEvents(): LiveData<AccountNavigationEvent> = navigationEvents
 
     /**
      * Called when the user is redirected in the Oauth flow.
@@ -72,6 +81,13 @@ class AccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun retry() {
         pushLoadingAndFetchAccountInfo()
+    }
+
+    /**
+     * Called when the user has selected the favorites section to navigate to.
+     */
+    fun onUserSelectedFavorites() {
+        navigationEvents.value = AccountNavigationEvent.ToFavoriteMovies
     }
 
 
