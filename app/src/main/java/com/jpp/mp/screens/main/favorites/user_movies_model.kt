@@ -18,6 +18,13 @@ sealed class UserMoviesViewState {
     data class InitialPageLoaded(val pagedList: PagedList<UserMovieItem>) : UserMoviesViewState()
 }
 
+/**
+ * Represents the navigation events that can be routed through the search section.
+ */
+sealed class UserMoviesViewNavigationEvent {
+    data class ToMovieDetails(val movieId: String, val movieImageUrl: String, val movieTitle: String) : UserMoviesViewNavigationEvent()
+}
+
 data class UserMovieItem(
         val movieId: Double,
         val headerImageUrl: String,
