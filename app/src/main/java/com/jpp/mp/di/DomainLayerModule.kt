@@ -19,7 +19,7 @@ import com.jpp.mpdomain.usecase.account.MarkMovieAsFavoriteUseCase
 import com.jpp.mpdomain.usecase.person.GetPersonUseCase
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
-import com.jpp.mpdomain.usecase.support.RefreshDataUseCase
+import com.jpp.mpdomain.usecase.support.RefreshLanguageDataUseCase
 import dagger.Module
 import dagger.Provides
 import java.util.concurrent.Executor
@@ -109,7 +109,7 @@ class DomainLayerModule {
     @Provides
     fun providesRefreshDataUseCase(languageRepository: LanguageRepository,
                                    supportRepository: SupportRepository)
-            : RefreshDataUseCase = RefreshDataUseCase.Impl(languageRepository, supportRepository)
+            : RefreshLanguageDataUseCase = RefreshLanguageDataUseCase.Impl(languageRepository, supportRepository)
 
     @Provides
     fun providesGetAccountInfoUseCase(sessionRepository: SessionRepository,
