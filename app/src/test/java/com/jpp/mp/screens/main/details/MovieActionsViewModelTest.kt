@@ -83,7 +83,7 @@ class MovieActionsViewModelTest {
 
         subject.updateMovieFavoriteState(movieDetailId)
 
-        assertEquals(MovieActionsState.Updating(favorite = true), viewStatePosted[1]) // one b/c the first posted is the result of init call
+        assertEquals(MovieActionsState.Updating(favorite = true), viewStatePosted[1]) // one b/c the first posted is the result of fetchData call
         assertEquals(expectedFinalState, viewStatePosted[2])
         verify { favoriteMovieUseCase.favoriteMovie(movieDetailId, favUcCaseStateCall) }
     }

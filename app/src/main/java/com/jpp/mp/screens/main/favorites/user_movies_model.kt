@@ -8,6 +8,7 @@ import androidx.paging.PagedList
  * can assume.
  */
 sealed class UserMoviesViewState {
+    object Refreshing : UserMoviesViewState()
     object Loading : UserMoviesViewState()
     object ErrorNoConnectivity : UserMoviesViewState()
     object ErrorNoConnectivityWithItems : UserMoviesViewState()
