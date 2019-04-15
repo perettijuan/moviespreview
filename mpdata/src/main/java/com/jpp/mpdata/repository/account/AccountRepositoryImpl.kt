@@ -1,10 +1,16 @@
 package com.jpp.mpdata.repository.account
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.jpp.mpdomain.*
 import com.jpp.mpdomain.repository.AccountRepository
 
 class AccountRepositoryImpl(private val accountApi: AccountApi,
                             private val accountDb: AccountDb) : AccountRepository {
+
+    private val dataUpdates by lazy { MutableLiveData<AccountRepository.AccountDataUpdate>() }
+
+    override fun updates(): LiveData<AccountRepository.AccountDataUpdate> = dataUpdates
 
     override fun getUserAccount(session: Session): UserAccount? {
         return accountDb.getUserAccountInfo() ?: run {
@@ -24,8 +30,11 @@ class AccountRepositoryImpl(private val accountApi: AccountApi,
     }
 
     override fun updateMovieFavoriteState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean {
-        return accountApi.updateMovieFavoriteState(movieId, asFavorite, userAccount, session)?.also { accountDb.flushData() }
-                ?: false
+        return accountApi
+                .updateMovieFavoriteState(movieId, asFavorite, userAccount, session)?.also {
+                    accountDb.flushData()
+                    dataUpdates.postValue(AccountRepository.AccountDataUpdate.FavoritesMovies)
+                } ?: false
     }
 
     override fun getFavoriteMovies(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {

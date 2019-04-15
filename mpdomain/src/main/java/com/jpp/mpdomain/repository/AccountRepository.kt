@@ -1,11 +1,31 @@
 package com.jpp.mpdomain.repository
 
+import androidx.lifecycle.LiveData
 import com.jpp.mpdomain.*
 
 /**
  * Repository definition to support all information related to user accounts.
+ *
+ * This is a 'reactive' repository in the sense that it provides a mechanism to notify
+ * the interested clients whenever the data that is being stored under neath is updated.
+ * That way, the clients can react and refresh the data.
  */
 interface AccountRepository {
+
+    /**
+     * Indicates all updates that the repository can trigger when the data managed by it
+     * is updated/refreshed.
+     */
+    sealed class AccountDataUpdate {
+        object FavoritesMovies : AccountDataUpdate()
+    }
+
+    /**
+     * Subscribe to the [LiveData] whenever you need to update the state based on the data
+     * that is being handled by this repository.
+     */
+    fun updates(): LiveData<AccountDataUpdate>
+
     fun getUserAccount(session: Session): UserAccount?
 
     /**
