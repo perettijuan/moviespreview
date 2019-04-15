@@ -8,7 +8,7 @@ import com.jpp.mpdomain.repository.SupportRepository
  * current general state being shown to the user needs to be refreshed or not. If the state
  * needs to be refreshed, this UC takes care of clearing out any stored inner state.
  */
-interface RefreshDataUseCase {
+interface RefreshLanguageDataUseCase {
 
     /**
      * Verifies if the state being shown to the user needs to be refreshed.
@@ -18,7 +18,7 @@ interface RefreshDataUseCase {
 
 
     class Impl(private val languageRepository: LanguageRepository,
-               private val supportRepository: SupportRepository) : RefreshDataUseCase {
+               private val supportRepository: SupportRepository) : RefreshLanguageDataUseCase {
         override fun shouldRefreshDataInApp(): Boolean {
             return languageRepository.getCurrentAppLanguage()?.let {
                 val refresh = languageRepository.getCurrentDeviceLanguage() != it
