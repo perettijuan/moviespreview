@@ -82,7 +82,7 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_favoriteMoviesFragment_to_movieDetailsFragment">
+                            <entry key="toMovieDetails">
                               <value>
                                 <LayoutPositions />
                               </value>
