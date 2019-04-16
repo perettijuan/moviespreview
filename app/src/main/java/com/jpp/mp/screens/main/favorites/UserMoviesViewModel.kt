@@ -34,7 +34,6 @@ class UserMoviesViewModel @Inject constructor(private val favoritesMoviesUseCase
     private val navigationEvents by lazy { SingleLiveEvent<UserMoviesViewNavigationEvent>() }
     private lateinit var retryFunc: (() -> Unit)
 
-
     init {
         viewState.addSource(refreshAppDataUseCase.appDataUpdates()) { dataRefresh ->
             if (dataRefresh is RefreshAppDataUseCase.AppDataRefresh.UserAccountMovies) {
