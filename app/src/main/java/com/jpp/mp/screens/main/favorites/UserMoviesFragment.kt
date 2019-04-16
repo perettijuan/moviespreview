@@ -78,10 +78,10 @@ class UserMoviesFragment : Fragment() {
                 renderLoading()
             }
             is UserMoviesViewState.NoMovies -> {
-                TODO()
+                findNavController().popBackStack()
             }
             is UserMoviesViewState.UserNotLogged -> {
-                TODO()
+                findNavController().popBackStack()
             }
             is UserMoviesViewState.ErrorNoConnectivity -> {
                 userMoviesErrorView.asNoConnectivityError { withViewModel { retry() } }
