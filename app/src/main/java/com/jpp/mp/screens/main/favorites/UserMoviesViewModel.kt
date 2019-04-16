@@ -25,22 +25,13 @@ import javax.inject.Inject
  */
 class UserMoviesViewModel @Inject constructor(private val favoritesMoviesUseCase: GetFavoriteMoviesUseCase,
                                               private val configMovieUseCase: ConfigMovieUseCase,
-                                              refreshAppDataUseCase: RefreshAppDataUseCase,
+                                              private val refreshAppDataUseCase: RefreshAppDataUseCase,
                                               private val networkExecutor: Executor)
     : ViewModel() {
-
 
     private val viewState = MediatorLiveData<UserMoviesViewState>()
     private val navigationEvents by lazy { SingleLiveEvent<UserMoviesViewNavigationEvent>() }
     private lateinit var retryFunc: (() -> Unit)
-
-    init {
-        viewState.addSource(refreshAppDataUseCase.appDataUpdates()) { dataRefresh ->
-            if (dataRefresh is RefreshAppDataUseCase.AppDataRefresh.UserAccountMovies) {
-                viewState.postValue(UserMoviesViewState.Refreshing)
-            }
-        }
-    }
 
     /**
      * Called on initialization of the UserMoviesFragment.
@@ -56,6 +47,7 @@ class UserMoviesViewModel @Inject constructor(private val favoritesMoviesUseCase
 
         viewState.value = UserMoviesViewState.Loading
         fetchFreshPage(moviePosterSize, movieBackdropSize)
+        observeDataRefresh { fetchFreshPage(moviePosterSize, movieBackdropSize) }
     }
 
     /**
@@ -164,6 +156,21 @@ class UserMoviesViewModel @Inject constructor(private val favoritesMoviesUseCase
                         is Success -> callback(ucResult.moviesPage.results, page + 1)
                     }
                 }
+    }
+
+    /**
+     * The data shown in the section supported by this VM needs to be refreshed if the backing data
+     * changes for some reason.
+     * The VM starts observing the data refresh UC and if the user movies are updated, triggers doOnRefresh.
+     */
+    private fun observeDataRefresh(doOnRefresh: () -> Unit) {
+        viewState.removeSource(refreshAppDataUseCase.appDataUpdates())
+        viewState.addSource(refreshAppDataUseCase.appDataUpdates()) { dataRefresh ->
+            if (dataRefresh is RefreshAppDataUseCase.AppDataRefresh.UserAccountMovies) {
+                viewState.postValue(UserMoviesViewState.Refreshing)
+                doOnRefresh()
+            }
+        }
     }
 
     private fun mapDomainMovie(domainMovie: Movie) = with(domainMovie) {

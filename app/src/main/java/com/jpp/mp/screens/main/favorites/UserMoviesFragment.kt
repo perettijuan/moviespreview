@@ -69,10 +69,6 @@ class UserMoviesFragment : Fragment() {
         when (viewState) {
             is UserMoviesViewState.Refreshing -> {
                 renderLoading()
-                withViewModel {
-                    fetchData(moviePosterSize = getScreenSizeInPixels().x,
-                            movieBackdropSize = getScreenSizeInPixels().x)
-                }
             }
             is UserMoviesViewState.Loading -> {
                 renderLoading()
