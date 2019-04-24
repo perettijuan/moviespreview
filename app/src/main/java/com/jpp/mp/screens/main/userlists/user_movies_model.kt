@@ -1,4 +1,4 @@
-package com.jpp.mp.screens.main.favorites
+package com.jpp.mp.screens.main.userlists
 
 import androidx.paging.PagedList
 

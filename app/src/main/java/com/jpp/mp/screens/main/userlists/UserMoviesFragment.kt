@@ -1,4 +1,4 @@
-package com.jpp.mp.screens.main.favorites
+package com.jpp.mp.screens.main.userlists
 
 import android.content.Context
 import android.os.Bundle
@@ -15,14 +15,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
 import com.jpp.mp.ext.*
-import com.jpp.mp.screens.main.favorites.UserMoviesFragmentDirections.toMovieDetails
+import com.jpp.mp.screens.main.userlists.UserMoviesFragmentDirections.toMovieDetails
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_user_movies.*
 import kotlinx.android.synthetic.main.list_item_user_movies.view.*
 import javax.inject.Inject
 
 /**
- * TODO JPP -> Handle RefreshAppViewModel
+ * Fragment used to show the list of user movies.
+ * It can be configured to show:
+ *  - Favorites.
+ *  - Rated.
+ *  - Watchlist.
  */
 class UserMoviesFragment : Fragment() {
 
