@@ -44,4 +44,8 @@ class AccountRepositoryImpl(private val accountApi: AccountApi,
             }
         }
     }
+
+    override fun clearAllData() {
+        accountDb.flushData()
+    }
 }

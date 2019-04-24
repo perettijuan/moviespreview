@@ -43,4 +43,9 @@ interface AccountRepository {
      * @return the [MoviePage] that contains the favorite movies of the user.
      */
     fun getFavoriteMovies(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
+
+    /**
+     * Called when all data stored underneath this repository should be cleared.
+     */
+    fun clearAllData()
 }
