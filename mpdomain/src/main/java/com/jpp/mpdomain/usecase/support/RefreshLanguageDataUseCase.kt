@@ -10,6 +10,8 @@ import com.jpp.mpdomain.repository.SupportRepository
  */
 interface RefreshLanguageDataUseCase {
 
+    //TODO JPP replace this for RefreshAppDataUseCase
+
     /**
      * Verifies if the state being shown to the user needs to be refreshed.
      * @return true if the state needs to be refreshed, false any other case.
