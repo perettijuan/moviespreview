@@ -43,12 +43,7 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
     }
 
     fun userNavigatesToCredits(sectionName: String) {
-        viewState.postValue(MainActivityViewState.ActionBarLocked(
-                abTitle = sectionName,
-                withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked,
-                menuEnabled = false,
-                isSearch = false)
-        )
+        navigateToSimpleDestinationWithAnimation(sectionName)
     }
 
     fun userNavigatesToPerson(sectionName: String) {
@@ -72,13 +67,30 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
     }
 
     fun userNavigatesToFavoriteMovies(sectionName: String) {
-        navigateToSimpleDestination(sectionName)
+        navigateToSimpleDestinationWithAnimation(sectionName)
     }
 
+    /**
+     * Update view state when it is navigating to a destination without animation
+     * and without menu enabled.
+     */
     private fun navigateToSimpleDestination(sectionName: String) {
         viewState.postValue(MainActivityViewState.ActionBarLocked(
                 abTitle = sectionName,
                 withAnimation = false,
+                menuEnabled = false,
+                isSearch = false)
+        )
+    }
+
+    /**
+     * Update view state when it is navigating to a destination with animation
+     * and without menu enabled.
+     */
+    private fun navigateToSimpleDestinationWithAnimation(sectionName: String) {
+        viewState.postValue(MainActivityViewState.ActionBarLocked(
+                abTitle = sectionName,
+                withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked,
                 menuEnabled = false,
                 isSearch = false)
         )
