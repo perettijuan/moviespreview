@@ -67,4 +67,7 @@
     <dimen name="account_movie_list_item_height">150dp</dimen>
     <dimen name="account_movie_list_height">@dimen/account_movie_list_item_height</dimen>
 
+    <!-- User lists -->
+    <dimen name="user_item_max_height">420dp</dimen>
+
 </resources>

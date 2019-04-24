@@ -36,7 +36,7 @@
         <item name="mpAccountMovieItemWidth">@dimen/account_movie_list_item_width</item>
         <item name="mpAccountMovieItemHeight">@dimen/account_movie_list_item_height</item>
         <item name="mpAccountMovieListHeight">@dimen/account_movie_list_height</item>
-        <item name="mpUserMovieItemMaxSize">@dimen/movie_item_max_height</item>
+        <item name="mpUserMovieItemMaxSize">@dimen/user_item_max_height</item>
         <item name="mpUserMovieItemHeaderImageWidth">@dimen/movie_item_header_image_view_width</item>
         <item name="mpUserMovieItemHeaderImageHeight">@dimen/movie_item_header_image_view_height</item>
         <item name="mpUserMovieItemImageHeight">@dimen/movie_item_image_height</item>
