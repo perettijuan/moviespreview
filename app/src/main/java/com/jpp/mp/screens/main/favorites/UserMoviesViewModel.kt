@@ -166,9 +166,15 @@ class UserMoviesViewModel @Inject constructor(private val favoritesMoviesUseCase
     private fun observeDataRefresh(doOnRefresh: () -> Unit) {
         viewState.removeSource(refreshAppDataUseCase.appDataUpdates())
         viewState.addSource(refreshAppDataUseCase.appDataUpdates()) { dataRefresh ->
-            if (dataRefresh is RefreshAppDataUseCase.AppDataRefresh.UserAccountMovies) {
-                viewState.postValue(UserMoviesViewState.Refreshing)
-                doOnRefresh()
+            when (dataRefresh) {
+                is RefreshAppDataUseCase.AppDataRefresh.UserAccountMovies -> {
+                    viewState.postValue(UserMoviesViewState.Refreshing)
+                    doOnRefresh()
+                }
+                is RefreshAppDataUseCase.AppDataRefresh.LanguageChanged -> {
+                    viewState.postValue(UserMoviesViewState.Refreshing)
+                    doOnRefresh()
+                }
             }
         }
     }

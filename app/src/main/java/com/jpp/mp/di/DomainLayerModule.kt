@@ -136,7 +136,7 @@ class DomainLayerModule {
             : GetFavoriteMoviesUseCase = GetFavoriteMoviesUseCase.Impl(sessionRepository, accountRepository, languageRepository, connectivityRepository)
 
     @Provides
-    fun providesRefreshAppDataUseCase(accountRepository: AccountRepository)
-            : RefreshAppDataUseCase = RefreshAppDataUseCase.Impl(accountRepository)
+    fun providesRefreshAppDataUseCase(accountRepository: AccountRepository, languageRepository: LanguageRepository)
+            : RefreshAppDataUseCase = RefreshAppDataUseCase.Impl(accountRepository, languageRepository)
 
 }

@@ -3,6 +3,9 @@ package com.jpp.mpdomain.usecase.support
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.jpp.mpdomain.repository.AccountRepository
+import com.jpp.mpdomain.repository.AccountRepository.AccountDataUpdate.FavoritesMovies
+import com.jpp.mpdomain.repository.LanguageRepository
+import com.jpp.mpdomain.repository.LanguageRepository.LanguageEvent.LanguageChangeEvent
 
 /**
  * Use case definition to update the data being handled by the application when needed.
@@ -19,6 +22,7 @@ interface RefreshAppDataUseCase {
      */
     sealed class AppDataRefresh {
         object UserAccountMovies : AppDataRefresh()
+        object LanguageChanged : AppDataRefresh()
     }
 
     /**
@@ -27,14 +31,23 @@ interface RefreshAppDataUseCase {
      */
     fun appDataUpdates(): LiveData<AppDataRefresh>
 
-    class Impl(accountRepository: AccountRepository) : RefreshAppDataUseCase {
+    class Impl(private val accountRepository: AccountRepository,
+               languageRepository: LanguageRepository) : RefreshAppDataUseCase {
 
         private val dataRefreshUpdates = MediatorLiveData<AppDataRefresh>()
 
         init {
             dataRefreshUpdates.addSource(accountRepository.updates()) { accountDataUpdate ->
-                when(accountDataUpdate) {
-                    is AccountRepository.AccountDataUpdate.FavoritesMovies -> dataRefreshUpdates.postValue(AppDataRefresh.UserAccountMovies)
+                when (accountDataUpdate) {
+                    is FavoritesMovies -> dataRefreshUpdates.postValue(AppDataRefresh.UserAccountMovies)
+                }
+            }
+            dataRefreshUpdates.addSource(languageRepository.updates()) { languageRepositoryEvent ->
+                when (languageRepositoryEvent) {
+                    is LanguageChangeEvent -> {
+                        accountRepository.clearAllData()
+                        dataRefreshUpdates.postValue(AppDataRefresh.LanguageChanged)
+                    }
                 }
             }
         }
