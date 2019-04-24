@@ -47,5 +47,5 @@ interface AccountRepository {
     /**
      * Called when all data stored underneath this repository should be cleared.
      */
-    fun clearAllData()
+    fun refresh()
 }

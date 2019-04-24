@@ -45,7 +45,7 @@ interface RefreshAppDataUseCase {
             dataRefreshUpdates.addSource(languageRepository.updates()) { languageRepositoryEvent ->
                 when (languageRepositoryEvent) {
                     is LanguageChangeEvent -> {
-                        accountRepository.clearAllData()
+                        accountRepository.refresh()
                         dataRefreshUpdates.postValue(AppDataRefresh.LanguageChanged)
                     }
                 }
