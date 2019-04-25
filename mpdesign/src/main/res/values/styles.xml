@@ -81,7 +81,7 @@
     <style name="MPTextViewSmall" parent="@android:style/TextAppearance.Small">
         <item name="android:textColor">@android:color/black</item>
     </style>
-    
+
     <style name="MPSingleCharacter" parent="@android:style/TextAppearance">
         <item name="android:textSize">@dimen/single_character_size</item>
         <item name="android:textColor">@android:color/white</item>
