@@ -38,15 +38,6 @@
                             <option name="y" value="948" />
                           </Point>
                         </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="toFavoriteMoviesFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
@@ -62,27 +53,6 @@
                         <option name="myPositions">
                           <map>
                             <entry key="action_creditsFragment_to_personFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="favoriteMoviesFragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="-183" />
-                            <option name="y" value="948" />
-                          </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="toMovieDetails">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -136,11 +106,6 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_movieDetailsFragment_to_accountFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
                             <entry key="action_movieDetailsFragment_to_creditsFragment">
                               <value>
                                 <LayoutPositions />
