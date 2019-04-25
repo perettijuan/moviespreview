@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
-    <com.jpp.mp.views.MPErrorView
+    <com.jpp.mpdesign.views.MPErrorView
         android:id="@+id/accountErrorView"
         android:layout_width="0dp"
         android:layout_height="0dp"

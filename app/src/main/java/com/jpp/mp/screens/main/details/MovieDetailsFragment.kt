@@ -17,6 +17,7 @@ import com.jpp.mp.screens.main.RefreshAppViewModel
 import com.jpp.mp.screens.main.details.MovieDetailsFragmentArgs.fromBundle
 import com.jpp.mp.screens.main.details.MovieDetailsFragmentDirections.actionMovieDetailsFragmentToAccountFragment
 import com.jpp.mp.screens.main.details.MovieDetailsFragmentDirections.actionMovieDetailsFragmentToCreditsFragment
+import com.jpp.mpdesign.ext.getStringFromResources
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_details.*
 import kotlinx.android.synthetic.main.layout_movie_details_actions.*

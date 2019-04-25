@@ -10,12 +10,6 @@
     <string name="about_menu_item">Acerca de</string>
     <!-- End Main Activity -->
 
-    <!-- Errors -->
-    <string name="error_no_network_connection_message">Verifique su conexion a Internet e intente nuevamente.</string>
-    <string name="error_unexpected_error_message">Un error inesperado ha ocurrido. Por favor, intent enuevamente luego.</string>
-    <string name="error_retry">Reintentar</string>
-    <!-- End Errors -->
-
 
     <!-- Details Fragment -->
     <string name="overview_title">Sinopsis</string>

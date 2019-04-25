@@ -30,7 +30,7 @@
         app:layout_constraintTop_toBottomOf="@+id/searchPlaceHolderIv"
         tools:text="No result for your search" />
 
-    <com.jpp.mp.views.MPErrorView
+    <com.jpp.mpdesign.views.MPErrorView
         android:id="@+id/searchErrorView"
         android:layout_width="0dp"
         android:layout_height="0dp"

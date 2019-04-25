@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Errors -->
+    <string name="error_no_network_connection_message">Verify your network connection and try again</string>
+    <string name="error_unexpected_error_message">An unexpected error has occurred. Please, try again later.</string>
+    <string name="error_retry">Retry</string>
+    <!-- End Errors -->
+</resources>

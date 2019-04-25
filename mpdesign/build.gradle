@@ -1,4 +1,7 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 28
@@ -27,12 +30,15 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    // Kotlin standard libs
+    implementation deps.kotlin.stdlib
+
     /*
      * ConstraintLayout:
      *  - alpha version in order to use MotionLayout. Should be updated once it is stable.
      *  - api because we want to leak the dependency on purpose to all modules that uses mpdesign.
      */
-    def constraintLayoutVersion = '2.0.0-alpha4'
+    def constraintLayoutVersion = '2.0.0-alpha3'
     api "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
     api "androidx.constraintlayout:constraintlayout-solver:$constraintLayoutVersion"
 }

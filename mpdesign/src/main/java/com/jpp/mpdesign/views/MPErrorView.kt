@@ -1,14 +1,13 @@
-package com.jpp.mp.views
+package com.jpp.mpdesign.views
 
 import android.content.Context
 import android.util.AttributeSet
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.jpp.mp.R
-import com.jpp.mp.ext.getStringFromResources
+import com.jpp.mpdesign.R
+import com.jpp.mpdesign.ext.getStringFromResources
 import kotlinx.android.synthetic.main.layout_mp_error_view.view.*
-
 
 /**
  * Custom [ConstraintLayout] implementation to wrap the error views that are shown in the application

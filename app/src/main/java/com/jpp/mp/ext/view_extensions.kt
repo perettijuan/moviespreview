@@ -65,11 +65,6 @@ fun View.setInvisible() {
 fun View.getColor(@ColorRes colorRes: Int) = ContextCompat.getColor(context, colorRes)
 
 /**
- * Extension function to retrieve a String from the appModule resources.
- */
-fun View.getStringFromResources(@StringRes stringResId: Int): CharSequence = resources.getString(stringResId)
-
-/**
  * Animates the from the current alpha property value to alpha [toAlpha].
  */
 fun View.animateToAlpha(toAlpha: Float,

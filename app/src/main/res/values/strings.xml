@@ -10,12 +10,6 @@
     <string name="about_menu_item">About</string>
     <!-- End Main Activity -->
 
-    <!-- Errors -->
-    <string name="error_no_network_connection_message">Verify your network connection and try again</string>
-    <string name="error_unexpected_error_message">An unexpected error has occurred. Please, try again later.</string>
-    <string name="error_retry">Retry</string>
-    <!-- End Errors -->
-
 
     <!-- Details Fragment -->
     <string name="overview_title">Overview</string>
