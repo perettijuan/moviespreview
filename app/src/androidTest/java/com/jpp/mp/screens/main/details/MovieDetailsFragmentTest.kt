@@ -40,16 +40,12 @@ class MovieDetailsFragmentTest {
     private fun inject(fragment: MovieDetailsFragment) {
         val viewModel = mockk<MovieDetailsViewModel>(relaxed = true)
         every { viewModel.viewState() } returns viewStateLiveData
-        every { actionsViewModel.actionsState() } returns actionsStateLiveData
         fragment.viewModelFactory = TestMPViewModelFactory().apply {
             addVm(viewModel)
-            addVm(actionsViewModel)
         }
     }
 
     private val viewStateLiveData = MutableLiveData<MovieDetailsViewState>()
-    private val actionsViewModel = mockk<MovieActionsViewModel>(relaxed = true)
-    private val actionsStateLiveData = MutableLiveData<MovieActionsState>()
 
     @Before
     fun setUp() {
@@ -131,15 +127,6 @@ class MovieDetailsFragmentTest {
                 .check(ViewAssertions.matches(ViewMatchers.withText(genres[1].name)))
     }
 
-    @Test
-    fun shouldHideActionsButton() {
-        launchAndInjectFragment()
-
-        actionsStateLiveData.postValue(MovieActionsState.Hidden)
-
-        onFavoritesButton().assertNotDisplayed()
-    }
-
 
     private fun onDetailsLoadingView() = onView(withId(R.id.detailsLoadingView))
     private fun onDetailsErrorView() = onView(withId(R.id.detailsErrorView))
@@ -149,6 +136,5 @@ class MovieDetailsFragmentTest {
     private fun onVoteCountView() = onView(withId(R.id.detailsVoteCountContentTxt))
     private fun onReleaseView() = onView(withId(R.id.detailsReleaseDateContentTxt))
     private fun onGenresView() = onView(withId(R.id.detailsGenresRv))
-    private fun onFavoritesButton() = onView(withId(R.id.favActionButton))
 
 }

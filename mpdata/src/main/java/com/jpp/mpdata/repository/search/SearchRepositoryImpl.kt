@@ -9,5 +9,7 @@ import com.jpp.mpdomain.repository.SearchRepository
  * is only accessing the data in the API.
  */
 class SearchRepositoryImpl(private val searchApi: SearchApi) : SearchRepository {
-    override fun searchPage(query: String, page: Int, language: SupportedLanguage): SearchPage? = searchApi.performSearch(query, page, language)
+    override fun searchPage(query: String, page: Int, language: SupportedLanguage): SearchPage? {
+        return searchApi.performSearch(query, page, language)
+    }
 }

@@ -210,15 +210,29 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 R.id.popularMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
                 R.id.upcomingMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
                 R.id.topRatedMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
-                R.id.movieDetailsFragment -> { withMainViewModel { userNavigatesToMovieDetails(arguments.getStringOrDefault("movieTitle", destination.label.toString()), arguments.getStringOrDefault("movieImageUrl")) } }
+                R.id.movieDetailsFragment -> {
+                    arguments?.let {
+                        withMainViewModel { userNavigatesToMovieDetails(it.getString("movieTitle"), it.getString("movieImageUrl")) }
+                    }
+                }
                 R.id.searchFragment -> withMainViewModel { userNavigatesToSearch() }
-                R.id.personFragment -> withMainViewModel { userNavigatesToPerson(arguments.getStringOrDefault("personName", destination.label.toString())) }
-                R.id.creditsFragment -> withMainViewModel {userNavigatesToCredits(arguments.getStringOrDefault("movieTitle", destination.label.toString())) }
+                R.id.personFragment -> withMainViewModel {
+                    arguments?.let {
+                        userNavigatesToPerson(it.getString("personName"))
+                    }
+                }
+                R.id.creditsFragment -> withMainViewModel {
+                    arguments?.let {
+                        userNavigatesToCredits(it.getString("movieTitle"))
+                    }
+                }
                 R.id.aboutFragment -> withMainViewModel { userNavigatesToAbout(getString(R.string.about_top_bar_title)) }
                 R.id.licensesFragment -> withMainViewModel { userNavigatesToLicenses(getString(R.string.about_open_source_action)) }
-                R.id.licenseContentFragment -> withMainViewModel { userNavigatesToLicenseContent(arguments.getStringOrDefault("licenseTitle", destination.label.toString())) }
-                R.id.accountFragment -> withMainViewModel { userNavigatesToAccountDetails(getString(R.string.account_title)) }
-                R.id.favoriteMoviesFragment -> withMainViewModel { userNavigatesToFavoriteMovies(getString(R.string.favorite_movies_title)) }
+                R.id.licenseContentFragment -> withMainViewModel {
+                    arguments?.let {
+                        userNavigatesToLicenseContent(it.getString("licenseTitle"))
+                    }
+                }
             }
         }
 
@@ -234,8 +248,8 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         when (viewState) {
             is MainActivityViewState.ActionBarLocked -> {
                 if (viewState.withAnimation) lockActionBarWithAnimation() else lockActionBar()
-                if (viewState.searchEnabled) showSearchView() else mainSearchView.setGone()
                 setActionBarTitle(viewState.sectionTitle)
+                mainSearchView.setGone()
             }
             is MainActivityViewState.ActionBarUnlocked -> {
                 mainImageView.clearImage()
@@ -247,6 +261,20 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 }
                 mpToolbarManager.clearInsetStartWithNavigation(mainToolbar)
             }
+            is MainActivityViewState.SearchEnabled -> {
+                if (viewState.withAnimation) lockActionBarWithAnimation() else lockActionBar()
+                setActionBarTitle(viewState.sectionTitle)
+                with(mainSearchView) {
+                    isIconified = false
+                    setIconifiedByDefault(false)
+                    setOnQueryTextListener(QuerySubmitter { withSearchViewViewModel { search(it) } })
+                    setVisible()
+                    findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener {
+                        withSearchViewViewModel { clearSearch() }
+                    }
+                }
+                mpToolbarManager.setInsetStartWithNavigation(0, mainToolbar)
+            }
         }
 
         /*
@@ -255,7 +283,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
          * menu options
          */
         invalidateOptionsMenu()
-        mainDrawerLayout.closeDrawerIfOpen()
     }
 
     private fun onSearchEvent(event: SearchEvent) {
@@ -377,19 +404,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                     })
                 }
                 .run { start() }
-    }
-
-    private fun showSearchView() {
-        with(mainSearchView) {
-            isIconified = false
-            setIconifiedByDefault(false)
-            setOnQueryTextListener(QuerySubmitter { withSearchViewViewModel { search(it) } })
-            setVisible()
-            findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener {
-                withSearchViewViewModel { clearSearch() }
-            }
-        }
-        mpToolbarManager.setInsetStartWithNavigation(0, mainToolbar)
     }
 
 

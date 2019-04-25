@@ -1,36 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Used in the Drawer items-->
-    <style name="MPNavigationViewItemStyle" parent="@android:style/TextAppearance.Medium">
-        <item name="android:fontFamily">@font/poppins</item>
-    </style>
+  <!-- Used in the Drawer items-->
+  <style name="MPNavigationViewItemStyle" parent="@android:style/TextAppearance.Medium">
+    <item name="android:fontFamily">@font/poppins</item>
+  </style>
 
-    <!-- Application TopBar -->
-    <style name="MPAppToolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:fontFamily">@font/poppins</item>
-    </style>
+  <!-- Application TopBar -->
+  <style name="MPAppToolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+    <item name="android:fontFamily">@font/poppins</item>
+  </style>
 
-    <!-- TextView styles -->
-    <style name="MPTextViewNormal" parent="@android:style/TextAppearance">
-        <item name="android:fontFamily">@font/poppins</item>
-    </style>
+  <!-- TextView styles -->
+  <style name="MPTextViewNormal" parent="@android:style/TextAppearance" >
+    <item name="android:fontFamily">@font/poppins</item>
+  </style>
 
-    <style name="MPTextViewTitle" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@android:color/black</item>
-        <item name="android:textSize">@dimen/title_text_size</item>
-        <item name="android:fontFamily">@font/poppins_bold</item>
-    </style>
+  <style name="MPTextViewTitle" parent="@android:style/TextAppearance.Medium">
+    <item name="android:textColor">@android:color/black</item>
+    <item name="android:textSize">@dimen/title_text_size</item>
+    <item name="android:fontFamily">@font/poppins_bold</item>
+  </style>
 
-    <style name="MPTextViewSmall" parent="@android:style/TextAppearance.Small">
-        <item name="android:textColor">@android:color/black</item>
-        <item name="android:fontFamily">@font/poppins</item>
-    </style>
-
-    <style name="MPSingleCharacter" parent="@android:style/TextAppearance">
-        <item name="android:fontFamily">@font/poppins</item>
-        <item name="android:textSize">@dimen/single_character_size</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:includeFontPadding">false</item>
-    </style>
+  <style name="MPTextViewSmall" parent="@android:style/TextAppearance.Small">
+    <item name="android:textColor">@android:color/black</item>
+    <item name="android:fontFamily">@font/poppins</item>
+  </style>
 
 </resources>

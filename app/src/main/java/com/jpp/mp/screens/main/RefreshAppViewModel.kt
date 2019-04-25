@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.screens.CoroutineDispatchers
 import com.jpp.mp.screens.MPScopedViewModel
-import com.jpp.mpdomain.usecase.support.RefreshLanguageDataUseCase
+import com.jpp.mpdomain.usecase.support.RefreshDataUseCase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -17,14 +17,14 @@ import javax.inject.Inject
  * LiveData and execute some logic when the UC detects that the data needs to be refreshed.
  */
 class RefreshAppViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                              private val useCaseLanguage: RefreshLanguageDataUseCase)
+                                              private val useCase: RefreshDataUseCase)
     : MPScopedViewModel(dispatchers) {
 
     private val refreshLiveData by lazy { MutableLiveData<Boolean>() }
 
     fun init() {
         launch {
-            refreshLiveData.value = withContext(dispatchers.default()) { useCaseLanguage.shouldRefreshDataInApp() }
+            refreshLiveData.value = withContext(dispatchers.default()) { useCase.shouldRefreshDataInApp() }
         }
     }
 

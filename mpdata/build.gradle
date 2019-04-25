@@ -24,20 +24,6 @@ android {
     kotlinOptions{
         jvmTarget = '1.8'
     }
-
-    sourceSets {
-        /*
-         * Include test sources that are located in the common project
-         */
-        test {
-            java.srcDirs += getCommonTestResources()
-            java.srcDirs += getCommonJunit5TestResources()
-        }
-
-        androidTest {
-            java.srcDirs += getCommonTestResources()
-        }
-    }
 }
 
 dependencies {
@@ -55,10 +41,6 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
-
-    // ViewModel and LiveData
-    implementation deps.androidx.lifecycle.extensions
-    kapt deps.androidx.lifecycle.compiler
 
     // Room persistence
     implementation deps.androidx.room.runtime

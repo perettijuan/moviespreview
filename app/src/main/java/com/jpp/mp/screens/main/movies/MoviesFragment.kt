@@ -60,7 +60,7 @@ abstract class MoviesFragment : Fragment() {
 
         /* Set up the MovieList */
         moviesList.apply {
-            layoutManager = LinearLayoutManager(requireActivity())
+            layoutManager = LinearLayoutManager(activity)
             adapter = MoviesAdapter(movieSelectionListener)
         }
     }
@@ -131,7 +131,9 @@ abstract class MoviesFragment : Fragment() {
                 moviesErrorView.asUnknownError { withViewModel { retryMoviesFetch() } }
             }
             is MoviesViewState.ErrorUnknownWithItems -> {
-                snackBarErrorUnknown(moviesFragmentContent) { withViewModel { retryMoviesFetch() } }
+                snackBar(moviesFragmentContent, R.string.error_unexpected_error_message, R.string.error_retry) {
+                    withViewModel { retryMoviesFetch() }
+                }
                 renderInitialPageLoaded()
             }
             is MoviesViewState.ErrorNoConnectivity -> {
@@ -139,7 +141,9 @@ abstract class MoviesFragment : Fragment() {
                 moviesErrorView.asNoConnectivityError { withViewModel { retryMoviesFetch() } }
             }
             is MoviesViewState.ErrorNoConnectivityWithItems -> {
-                snackBarErrorNoConnectivity(moviesFragmentContent) { withViewModel { retryMoviesFetch() } }
+                snackBar(moviesFragmentContent, R.string.error_no_network_connection_message, R.string.error_retry) {
+                    withViewModel { retryMoviesFetch() }
+                }
                 renderInitialPageLoaded()
             }
             is MoviesViewState.InitialPageLoaded -> {

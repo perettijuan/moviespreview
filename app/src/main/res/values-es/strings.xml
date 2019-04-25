@@ -70,23 +70,4 @@
         Permite al usuario acceder a la información disponible en The Movie DB. </string>
     <string name="share_app_text">Mira esta grandiosa app: %1$s </string>
     <!-- End About -->
-
-    <!-- Nav Header -->
-    <string name="nav_header_login">Iniciar Sesión</string>
-    <string name="nav_header_to_account">Cuenta >></string>
-    <!-- End Nav Header -->
-
-    <!-- Account -->
-    <string name="account_title">Cuenta</string>
-    <string name="account_approve_reminder">Por favor, perite a Movies Preview usar tu cuenta.</string>
-    <string name="account_need_to_login">Debes estar registrado para ejecutar esta acción.</string>
-    <string name="account_favorite_title">Películas favoritas</string>
-    <string name="account_no_favorite_movies">Aún no tienes películas como favoritas.</string>
-    <string name="account_favorite_movies_error">Error al cargar tus favoritas.</string>
-    <!-- End Account -->
-
-    <!-- Favorites -->
-    <string name="favorite_movies_title">Películas Favoritas</string>
-    <!-- End Favorites -->
-
 </resources>

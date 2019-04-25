@@ -2,8 +2,8 @@ package com.jpp.mp.screens.main.search
 
 import androidx.lifecycle.Observer
 import com.jpp.mp.utiltest.CurrentThreadExecutorService
-import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.utiltest.resumedLifecycleOwner
+import com.jpp.mp.InstantTaskExecutorExtension
+import com.jpp.mp.resumedLifecycleOwner
 import com.jpp.mpdomain.SearchPage
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase

@@ -1,6 +1,9 @@
 package com.jpp.mpdata.repository.movies
 
-import com.jpp.mpdomain.*
+import com.jpp.mpdomain.MovieDetail
+import com.jpp.mpdomain.MoviePage
+import com.jpp.mpdomain.MovieSection
+import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.repository.MoviesRepository
 
 class MoviesRepositoryImpl(private val moviesApi: MoviesApi,
@@ -27,7 +30,7 @@ class MoviesRepositoryImpl(private val moviesApi: MoviesApi,
             MovieSection.Playing -> getNowPlayingMoviePage(page, language)
             MovieSection.TopRated -> getTopRatedMoviePage(page, language)
             MovieSection.Popular -> getPopularMoviePage(page, language)
-            MovieSection.Upcoming -> getUpcomingMoviePage(page, language)
+            MovieSection.Upcoming -> getUpcomingMoviePage(page ,language)
         }
     }
 }

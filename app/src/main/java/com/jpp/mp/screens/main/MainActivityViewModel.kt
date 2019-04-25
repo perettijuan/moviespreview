@@ -21,8 +21,7 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
         viewState.postValue(MainActivityViewState.ActionBarLocked(
                 abTitle = sectionName,
                 withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked,
-                menuEnabled = true,
-                isSearch = false)
+                menuEnabled = true)
         )
     }
 
@@ -34,65 +33,48 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
     }
 
     fun userNavigatesToSearch() {
+        viewState.postValue(MainActivityViewState.SearchEnabled(
+                withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked)
+        )
+    }
+
+    fun userNavigatesToPerson(sectionName: String) {
         viewState.postValue(MainActivityViewState.ActionBarLocked(
-                abTitle = "",
-                withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked,
-                menuEnabled = false,
-                isSearch = true)
+                abTitle = sectionName,
+                withAnimation = false,
+                menuEnabled = false)
         )
     }
 
     fun userNavigatesToCredits(sectionName: String) {
-        navigateToSimpleDestinationWithAnimation(sectionName)
-    }
-
-    fun userNavigatesToPerson(sectionName: String) {
-        navigateToSimpleDestination(sectionName)
-    }
-
-    fun userNavigatesToAbout(sectionName: String) {
-        navigateToSimpleDestination(sectionName)
-    }
-
-    fun userNavigatesToLicenses(sectionName: String) {
-        navigateToSimpleDestination(sectionName)
-    }
-
-    fun userNavigatesToLicenseContent(sectionName: String) {
-        navigateToSimpleDestination(sectionName)
-    }
-
-    fun userNavigatesToAccountDetails(sectionName: String) {
-        navigateToSimpleDestination(sectionName)
-    }
-
-    fun userNavigatesToFavoriteMovies(sectionName: String) {
-        navigateToSimpleDestinationWithAnimation(sectionName)
-    }
-
-    /**
-     * Update view state when it is navigating to a destination without animation
-     * and without menu enabled.
-     */
-    private fun navigateToSimpleDestination(sectionName: String) {
-        viewState.postValue(MainActivityViewState.ActionBarLocked(
-                abTitle = sectionName,
-                withAnimation = false,
-                menuEnabled = false,
-                isSearch = false)
-        )
-    }
-
-    /**
-     * Update view state when it is navigating to a destination with animation
-     * and without menu enabled.
-     */
-    private fun navigateToSimpleDestinationWithAnimation(sectionName: String) {
         viewState.postValue(MainActivityViewState.ActionBarLocked(
                 abTitle = sectionName,
                 withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked,
-                menuEnabled = false,
-                isSearch = false)
+                menuEnabled = false)
+        )
+    }
+
+    fun userNavigatesToAbout(sectionName: String) {
+        viewState.postValue(MainActivityViewState.ActionBarLocked(
+                abTitle = sectionName,
+                withAnimation = false,
+                menuEnabled = false)
+        )
+    }
+
+    fun userNavigatesToLicenses(sectionName: String) {
+        viewState.postValue(MainActivityViewState.ActionBarLocked(
+                abTitle = sectionName,
+                withAnimation = false,
+                menuEnabled = false)
+        )
+    }
+
+    fun userNavigatesToLicenseContent(sectionName: String) {
+        viewState.postValue(MainActivityViewState.ActionBarLocked(
+                abTitle = sectionName,
+                withAnimation = false,
+                menuEnabled = false)
         )
     }
 }

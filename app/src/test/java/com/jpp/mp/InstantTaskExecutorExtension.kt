@@ -1,4 +1,4 @@
-package com.jpp.mp.utiltest
+package com.jpp.mp
 
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor

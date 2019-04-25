@@ -13,21 +13,12 @@
     <dimen name="movie_item_header_image_view_height">@dimen/movie_item_header_image_view_size</dimen>
     <dimen name="movie_item_header_image_view_width">@dimen/movie_item_header_image_view_size</dimen>
     <dimen name="movie_item_bottom_bar_icon_size">18dp</dimen>
-    <dimen name="transparent_bg_line_width">2dp</dimen>
-    <dimen name="transparent_bg_radius">12dp</dimen>
-    <dimen name="single_character_size">52sp</dimen>
-    <dimen name="action_button_size">40dp</dimen>
 
 
     <!-- MPLoadingView -->
     <dimen name="mp_loading_view_default_size">60dp</dimen>
     <dimen name="mp_loading_view_default_height">@dimen/mp_loading_view_default_size</dimen>
     <dimen name="mp_loading_view_default_width">@dimen/mp_loading_view_default_size</dimen>
-
-    <!-- MPLoadingViewSmall -->
-    <dimen name="mp_loading_view_default_size_small">30dp</dimen>
-    <dimen name="mp_loading_view_default_height_small">@dimen/mp_loading_view_default_size_small</dimen>
-    <dimen name="mp_loading_view_default_width_small">@dimen/mp_loading_view_default_size_small</dimen>
 
     <!-- Details Screen -->
     <dimen name="movie_details_vertical_spacing">10dp</dimen>
@@ -50,24 +41,10 @@
     <dimen name="credits_item_image_view_height">62dp</dimen>
     <dimen name="credits_item_padding">10dp</dimen>
 
-    <!-- About -->
+    <!-- About -->.
     <dimen name="about_icon_size">84dp</dimen>
     <dimen name="about_icon_top_margin">10dp</dimen>
     <dimen name="about_item_icon_size">32dp</dimen>
     <dimen name="about_item_vertical_spacing">10dp</dimen>
-
-    <!-- Nav Header -->
-    <dimen name="nav_header_icon_size">56dp</dimen>
-    <dimen name="nav_header_padding">12dp</dimen>
-    <dimen name="login_button_padding">6dp</dimen>
-
-    <!-- Account -->
-    <dimen name="account_avatar_size">96dp</dimen>
-    <dimen name="account_movie_list_item_width">100dp</dimen>
-    <dimen name="account_movie_list_item_height">150dp</dimen>
-    <dimen name="account_movie_list_height">@dimen/account_movie_list_item_height</dimen>
-
-    <!-- User lists -->
-    <dimen name="user_item_max_height">420dp</dimen>
 
 </resources>

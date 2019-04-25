@@ -2,7 +2,9 @@ package com.jpp.mpdata.api
 
 import com.jpp.mpdomain.*
 import retrofit2.Call
-import retrofit2.http.*
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 /**
  * API instance for Retrofit
@@ -113,68 +115,5 @@ interface TheMovieDBApi {
     @GET("movie/{movie_id}/credits")
     fun getMovieCredits(@Path("movie_id") movieId: Double,
                         @Query("api_key") api_key: String): Call<Credits>
-
-    /**
-     * Retrieves an [AccessToken] to be used in a login process.
-     * [api_key] the api key provided by themoviedb.
-     */
-    @GET("authentication/token/new")
-    fun getAccessToken(@Query("api_key") api_key: String): Call<AccessToken>
-
-    /**
-     * Creates a new [Session] for the provided [requestToken].
-     * [api_key] the api key provided by themoviedb.
-     * [requestToken] the token to use in the session creation.
-     * @return a [Session] if one can be created, null any other case.
-     */
-    @POST("authentication/session/new")
-    fun createSession(@Query("api_key") api_key: String, @Body requestToken: RequestTokenBody): Call<Session>
-
-    /**
-     * Retrieves the user account data.
-     * [session_id] the session identifier for the current user.
-     * [api_key] the api key provided by themoviedb.
-     */
-    @GET("account")
-    fun getUserAccount(@Query("session_id") session_id: String, @Query("api_key") api_key: String): Call<UserAccount>
-
-    /**
-     * Retrieves the movie state from the user's account perspective.
-     * [movieId] the identifier of the movie.
-     * [sessionId] the session identifier for the current user.
-     * [api_key] the api key provided by themoviedb.
-     */
-    @GET("movie/{movie_id}/account_states")
-    fun getMovieAccountState(@Path("movie_id") movieId: Double,
-                             @Query("session_id") sessionId: String,
-                             @Query("api_key") api_key: String): Call<MovieAccountState>
-
-
-    /**
-     * Updates the favorite state of a media resource (movie or tv).
-     * [accountId] the identifier of users account.
-     * [sessionId] the session identifier for the current user.
-     * [api_key] the api key provided by themoviedb.
-     */
-    @POST("account/{account_id}/favorite")
-    fun markMediaAsFavorite(@Path("account_id") accountId: Double,
-                            @Query("session_id") sessionId: String,
-                            @Query("api_key") api_key: String,
-                            @Body body: FavoriteMediaBody): Call<FavoriteMediaResponse>
-
-    /**
-     * Retrieves the list of favorite movies of the user.
-     * [accountId] the identifier of users account.
-     * [page] the current page to retrieve.
-     * [sessionId] the session identifier for the current user.
-     * [api_key] the api key provided by themoviedb.
-     * [language] Pass a ISO 639-1 value to display translated data for the fields that support it. - Optional.
-     */
-    @GET("account/{account_id}/favorite/movies")
-    fun getFavoriteMoviesPage(@Path("account_id") accountId: Double,
-                              @Query("page") page: Int,
-                              @Query("session_id") sessionId: String,
-                              @Query("api_key") api_key: String,
-                              @Query("language") language: String? = null): Call<MoviePage>
 
 }

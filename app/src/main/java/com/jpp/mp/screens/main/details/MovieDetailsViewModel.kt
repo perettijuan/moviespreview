@@ -84,14 +84,6 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
     }
 
     /**
-     * Called when the user has attempted to execute an action when is not logged
-     * in the application.
-     */
-    fun userAttemptedActionWhenNotLoggedIn() {
-        navigationEvents.value = MovieDetailsNavigationEvent.ToLogin
-    }
-
-    /**
      * Pushes the loading state into the view and starts the process to fetch the details
      * of the movie.
      */
@@ -124,6 +116,7 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
                     }
                 }
     }
+
 
     /**
      * Maps a domain [MovieDetail] into a UI [UiMovieDetails].

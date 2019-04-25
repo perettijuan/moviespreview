@@ -1,8 +1,8 @@
 package com.jpp.mp.screens.main.licenses
 
 import androidx.lifecycle.Observer
-import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.utiltest.resumedLifecycleOwner
+import com.jpp.mp.InstantTaskExecutorExtension
+import com.jpp.mp.resumedLifecycleOwner
 import com.jpp.mp.screens.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.License
 import com.jpp.mpdomain.Licenses

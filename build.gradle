@@ -14,8 +14,7 @@ buildscript {
             'dagger' : '2.16',
             'room' : '2.0.0',
             'mockk' : '1.8.13.kotlin13',
-            'canary' : '1.6.3',
-            'lifecycle': '2.0.0'
+            'canary' : '1.6.3'
     ]
 
     ext.deps = [
@@ -34,10 +33,6 @@ buildscript {
                     'room': [
                             'runtime' : "androidx.room:room-runtime:${versions.room}",
                             'compiler' : "androidx.room:room-compiler:${versions.room}"
-                    ],
-                    'lifecycle': [
-                            'extensions': "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}",
-                            'compiler' : "androidx.lifecycle:lifecycle-compiler:${versions.lifecycle}"
                     ]
             ],
             'kotlin'  : [
