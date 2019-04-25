@@ -27,8 +27,12 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    /*
+     * ConstraintLayout:
+     *  - alpha version in order to use MotionLayout. Should be updated once it is stable.
+     *  - api because we want to leak the dependency on purpose to all modules that uses mpdesign.
+     */
+    def constraintLayoutVersion = '2.0.0-alpha4'
+    api "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+    api "androidx.constraintlayout:constraintlayout-solver:$constraintLayoutVersion"
 }
