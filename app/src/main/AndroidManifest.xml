@@ -9,7 +9,7 @@
     android:allowBackup="false"
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
-    android:theme="@style/AppTheme"
+    android:theme="@style/MPTheme"
     android:name="com.jpp.mp.MPApp"
     android:usesCleartextTraffic="true">
 
