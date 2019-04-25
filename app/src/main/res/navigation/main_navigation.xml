@@ -76,6 +76,13 @@
             app:exitAnim="@anim/fragment_exit_slide_right"
             app:popEnterAnim="@anim/fragment_enter_slide_up"
             app:popExitAnim="@anim/fragment_exit_slide_up"/>
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_accountFragment"
+            app:destination="@id/accountFragment"
+            app:enterAnim="@anim/fragment_enter_slide_right"
+            app:exitAnim="@anim/fragment_exit_slide_right"
+            app:popEnterAnim="@anim/fragment_enter_slide_left"
+            app:popExitAnim="@anim/fragment_exit_slide_left"/>
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
@@ -158,5 +165,25 @@
         <argument
             android:name="licenseTitle"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="com.jpp.mp.screens.main.account.AccountFragment"
+        tools:layout="@layout/fragment_account"  >
+        <action
+            android:id="@+id/toFavoriteMoviesFragment"
+            app:destination="@id/favoriteMoviesFragment"
+            app:enterAnim="@anim/fragment_enter_slide_right"
+            app:exitAnim="@anim/fragment_exit_slide_right"
+            app:popEnterAnim="@anim/fragment_enter_slide_left"
+            app:popExitAnim="@anim/fragment_exit_slide_left"/>
+    </fragment>
+    <fragment
+        android:id="@+id/favoriteMoviesFragment"
+        android:name="com.jpp.mp.screens.main.userlists.UserMoviesFragment"
+        tools:layout="@layout/fragment_user_movies" >
+        <action
+            android:id="@+id/toMovieDetails"
+            app:destination="@id/movieDetailsFragment" />
     </fragment>
 </navigation>

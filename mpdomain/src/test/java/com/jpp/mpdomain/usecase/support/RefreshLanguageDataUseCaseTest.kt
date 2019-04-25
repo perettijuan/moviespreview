@@ -14,18 +14,18 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
-class RefreshDataUseCaseTest {
+class RefreshLanguageDataUseCaseTest {
 
     @RelaxedMockK
     private lateinit var languageRepository: LanguageRepository
     @RelaxedMockK
     private lateinit var supportRepository: SupportRepository
 
-    private lateinit var subject: RefreshDataUseCase
+    private lateinit var subject: RefreshLanguageDataUseCase
 
     @BeforeEach
     fun setUp() {
-        subject = RefreshDataUseCase.Impl(languageRepository, supportRepository)
+        subject = RefreshLanguageDataUseCase.Impl(languageRepository, supportRepository)
     }
 
     @Test

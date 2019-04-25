@@ -7,7 +7,14 @@ import com.jpp.mpdata.cache.*
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdata.preferences.LanguageDbImpl
+import com.jpp.mpdata.preferences.SessionDbImpl
 import com.jpp.mpdata.repository.about.AboutNavigationRepositoryImpl
+import com.jpp.mpdata.repository.account.AccountApi
+import com.jpp.mpdata.repository.account.AccountDb
+import com.jpp.mpdata.repository.account.AccountRepositoryImpl
+import com.jpp.mpdata.repository.session.SessionApi
+import com.jpp.mpdata.repository.session.SessionDb
+import com.jpp.mpdata.repository.session.SessionRepositoryImpl
 import com.jpp.mpdata.repository.appversion.AppVersionRepositoryImpl
 import com.jpp.mpdata.repository.configuration.ConfigurationApi
 import com.jpp.mpdata.repository.configuration.ConfigurationDb
@@ -169,7 +176,8 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesAppVersionRepository(): AppVersionRepository = AppVersionRepositoryImpl()
+    fun providesAppVersionRepository()
+            : AppVersionRepository = AppVersionRepositoryImpl()
 
     @Singleton
     @Provides
@@ -192,19 +200,57 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesLanguageDb(context: Context): LanguageDb = LanguageDbImpl(context)
+    fun providesLanguageDb(context: Context)
+            : LanguageDb = LanguageDbImpl(context)
 
     @Singleton
     @Provides
-    fun providesLanguageRepository(languageDb: LanguageDb): LanguageRepository = LanguageRepositoryImpl(languageDb)
+    fun providesLanguageRepository(languageDb: LanguageDb, context: Context)
+            : LanguageRepository = LanguageRepositoryImpl(languageDb, context)
 
     @Singleton
     @Provides
-    fun providesSupportDb(roomDatabase: MPRoomDataBase): SupportDb = SupportCache(roomDatabase)
+    fun providesSupportDb(roomDatabase: MPRoomDataBase)
+            : SupportDb = SupportCache(roomDatabase)
 
     @Singleton
     @Provides
-    fun providesSupportRepository(supportDb: SupportDb, personDb: PersonDb): SupportRepository = SupportRepositoryImpl(supportDb, personDb)
+    fun providesSupportRepository(supportDb: SupportDb, personDb: PersonDb)
+            : SupportRepository = SupportRepositoryImpl(supportDb, personDb)
+
+
+    /**********************************
+     ****** SESSION DEPENDENCIES ******
+     **********************************/
+
+    @Singleton
+    @Provides
+    fun providesSessionApi(mpApiInstance: MPApi): SessionApi = mpApiInstance
+
+    @Singleton
+    @Provides
+    fun providesSessionDb(context: Context): SessionDb = SessionDbImpl(context)
+
+    @Singleton
+    @Provides
+    fun providesSessionRepository(sessionApi: SessionApi, sessionDb: SessionDb)
+            : SessionRepository = SessionRepositoryImpl(sessionApi, sessionDb)
+
+    /**********************************
+     ****** ACCOUNT DEPENDENCIES ******
+     **********************************/
+
+    @Singleton
+    @Provides
+    fun providesAccountApi(mpApiInstance: MPApi): AccountApi = mpApiInstance
+
+    @Singleton
+    @Provides
+    fun providesAccountDb(): AccountDb = AccountDb.Impl()
+
+    @Singleton
+    @Provides
+    fun providesAccountRepository(accountApi: AccountApi, accountDb: AccountDb): AccountRepository = AccountRepositoryImpl(accountApi, accountDb)
 
 }
 

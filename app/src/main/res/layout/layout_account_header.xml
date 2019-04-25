@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="12dp">
+
+    <ImageView
+        android:id="@+id/accountHeaderIv"
+        android:layout_width="?attr/mpAccountAvatarSize"
+        android:layout_height="?attr/mpAccountAvatarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_person_black" />
+
+    <TextView
+        android:id="@+id/accountHeaderUserNameTv"
+        style="@style/MPTextViewTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:maxLines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/accountHeaderIv"
+        tools:text="User Name" />
+
+    <TextView
+        android:id="@+id/accountHeaderAccountNameTv"
+        style="@style/MPTextViewSmall"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/accountHeaderUserNameTv"
+        tools:text="User Account" />
+
+    <TextView
+        android:id="@+id/accountNameInitialTv"
+        style="@style/MPSingleCharacter"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_account_initial"
+        android:gravity="center"
+        android:textSize="62sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/accountHeaderIv"
+        app:layout_constraintEnd_toEndOf="@+id/accountHeaderIv"
+        app:layout_constraintStart_toStartOf="@+id/accountHeaderIv"
+        app:layout_constraintTop_toTopOf="@+id/accountHeaderIv"
+        tools:text="J" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,8 +4,8 @@ package com.jpp.mpdomain
  * Represents the connectivity of the application.
  */
 sealed class Connectivity {
-    object Connected: Connectivity()
-    object Disconnected: Connectivity()
+    object Connected : Connectivity()
+    object Disconnected : Connectivity()
 }
 
 /**
@@ -261,3 +261,71 @@ sealed class SupportedLanguage(val id: String) {
     object English : SupportedLanguage("en")
     object Spanish : SupportedLanguage("es")
 }
+
+/**
+ * Represents an access token that is used to authenticate the user when needed.
+ * [expires_at] represents the date in which the access token will be expired.
+ * [request_token] represents the actual value of the access token. This is the value
+ * that needs to be used to authenticate the user.
+ */
+data class AccessToken(
+        val success: Boolean,
+        val expires_at: String,
+        val request_token: String)
+
+/**
+ * Represents a session related to the user that is using the application.
+ * [success] represents the state of the session creation.
+ * [session_id] represents the identifier of the session (the actual session).
+ */
+data class Session(
+        val success: Boolean,
+        val session_id: String
+)
+
+/**
+ * Represents the avatar of the user in the Gravatar system.
+ * [hash] is the hash value that can be used to fetch the image from Gravatar.
+ */
+data class Gravatar(val hash: String) {
+    companion object {
+        const val BASE_URL = "https://gravatar.com/avatar/"
+        const val REDIRECT = "?default=https://redirectMP"
+    }
+}
+
+/**
+ * Represents all possible avatars that the user has. For now, only Gravatar is
+ * supported.
+ * Check this for more details: https://www.themoviedb.org/talk/59f23ec292514148be02d73a
+ * [gravatar] represents the Gravatar of the user.
+ */
+data class UserAvatar(val gravatar: Gravatar)
+
+/**
+ * Represents the details of the user's account.
+ * [avatar] contains the avatar info of the account.
+ * [id] the identifier in the system for the user's account.
+ * [name] the user's account name.
+ * [username] the username of the user's account.
+ */
+data class UserAccount(
+        val avatar: UserAvatar,
+        val id: Double,
+        val name: String,
+        val username: String
+)
+
+/**
+ * Represents the state of a movie from the user's account perspective.
+ * [id] represents the identifier of the movie.
+ * [favorite] whether the movie has been favorited by the user or not.
+ * [rated] whether the user has rated the movie or not.
+ * [watchlist] whether the user has added the movie to his watchlist or not.
+ */
+data class MovieAccountState(
+        val id: Double,
+        val favorite: Boolean,
+        val rated: Boolean,
+        val watchlist: Boolean
+)

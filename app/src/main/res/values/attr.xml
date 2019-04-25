@@ -9,6 +9,7 @@
     <attr name="mpMovieItemHeaderImageHeight" format="reference" />
     <attr name="mpMovieItemImageHeight" format="reference" />
     <attr name="mpMovieItemBottomIconSize" format="reference" />
+    <attr name="mpMovieItemMaxSize" format="reference" />
     <attr name="mpDetailsVerticalSpacing" format="reference" />
     <attr name="mpDetailsContentPadding" format="reference" />
     <attr name="mpSearchImageSize" format="reference" />
@@ -23,6 +24,17 @@
     <attr name="mpAboutIconMarginTop" format="reference"/>
     <attr name="mpAboutItemIconSize" format="reference"/>
     <attr name="mpAboutItemVerticalSpacing" format="reference"/>
+    <attr name="mpNavHeaderIconSize" format="reference"/>
+    <attr name="mpNavHeaderPadding" format="reference"/>
+    <attr name="mpAccountAvatarSize" format="reference"/>
+    <attr name="mpActionButtonSize" format="reference"/>
+    <attr name="mpAccountMovieItemWidth" format="reference"/>
+    <attr name="mpAccountMovieItemHeight" format="reference"/>
+    <attr name="mpAccountMovieListHeight" format="reference"/>
+    <attr name="mpUserMovieItemMaxSize" format="reference" />
+    <attr name="mpUserMovieItemHeaderImageWidth" format="reference" />
+    <attr name="mpUserMovieItemHeaderImageHeight" format="reference" />
+    <attr name="mpUserMovieItemImageHeight" format="reference" />
 
 
     <declare-styleable name="MPTitleValueRow">
@@ -32,6 +44,15 @@
 
     <declare-styleable name="MPItemSelectionView">
         <attr name="itemText" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="MPActionButton">
+        <attr name="fillIcon" format="reference"/>
+        <attr name="emptyIcon" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="MPAccountMoviesView">
+        <attr name="accountMoviesTitleText" format="reference"/>
     </declare-styleable>
 
 </resources>
