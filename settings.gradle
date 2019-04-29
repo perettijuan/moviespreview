@@ -1,1 +1,1 @@
-include ':app', ':common', ':mpdomain', ':mpdata', ':mpdesign'
+include ':app', ':common', ':mpdomain', ':mpdata', ':mpdesign', ':mpaccount'

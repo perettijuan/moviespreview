@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/moviespreview.iml" filepath="$PROJECT_DIR$/moviespreview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mpaccount/mpaccount.iml" filepath="$PROJECT_DIR$/mpaccount/mpaccount.iml" />
       <module fileurl="file://$PROJECT_DIR$/mpdata/mpdata.iml" filepath="$PROJECT_DIR$/mpdata/mpdata.iml" />
       <module fileurl="file://$PROJECT_DIR$/mpdesign/mpdesign.iml" filepath="$PROJECT_DIR$/mpdesign/mpdesign.iml" />
       <module fileurl="file://$PROJECT_DIR$/mpdomain/mpdomain.iml" filepath="$PROJECT_DIR$/mpdomain/mpdomain.iml" />
