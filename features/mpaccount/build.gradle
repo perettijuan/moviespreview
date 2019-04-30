@@ -8,12 +8,8 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        vectorDrawables.useSupportLibrary = true
         versionCode 1
         versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -32,13 +28,7 @@ dependencies {
     implementation deps.kotlin.stdlib
     // appCompat libraries
     implementation deps.androidx.appcompat
-
-    /*
-     * ConstraintLayout:
-     *  - alpha version in order to use MotionLayout. Should be updated once it is stable.
-     *  - api because we want to leak the dependency on purpose to all modules that uses mpdesign.
-     */
-    def constraintLayoutVersion = '2.0.0-alpha3'
-    api "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
-    api "androidx.constraintlayout:constraintlayout-solver:$constraintLayoutVersion"
+    // ViewModel and LiveData
+    implementation deps.androidx.lifecycle.extensions
+    kapt deps.androidx.lifecycle.compiler
 }

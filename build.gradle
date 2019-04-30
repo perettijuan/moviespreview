@@ -15,7 +15,8 @@ buildscript {
             'room' : '2.0.0',
             'mockk' : '1.8.13.kotlin13',
             'canary' : '1.6.3',
-            'lifecycle': '2.0.0'
+            'lifecycle': '2.0.0',
+            'appCompat': '1.0.2'
     ]
 
     ext.deps = [
@@ -38,7 +39,8 @@ buildscript {
                     'lifecycle': [
                             'extensions': "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}",
                             'compiler' : "androidx.lifecycle:lifecycle-compiler:${versions.lifecycle}"
-                    ]
+                    ],
+                    'appcompat' : "androidx.appcompat:appcompat:${versions.appCompat}"
             ],
             'kotlin'  : [
                     'plugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",

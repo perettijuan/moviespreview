@@ -67,15 +67,13 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     // Kotlin standard libs
     implementation deps.kotlin.stdlib
+    // appCompat libraries
+    implementation deps.androidx.appcompat
 
     // Kotlin coroutines
     def kotlinCoroutines = '1.1.1'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
-
-    // appCompat libraries
-    def appCompatVersion = "1.0.2"
-    implementation "androidx.appcompat:appcompat:$appCompatVersion"
 
     // Navigation Components
     implementation deps.android.arch.navigation.fragment
@@ -115,10 +113,10 @@ dependencies {
     releaseImplementation deps.canary.release
 
 
+    implementation project(path: ':mpdesign')
     implementation project(path: ':mpdomain')
     implementation project(path: ':mpdata')
     implementation project(path: ':common')
-    implementation project(path: ':mpdesign')
 
     testImplementation deps.test.junit5.jupiter.api         // <-- allows running JUnit5 tests
     testImplementation deps.test.junit5.jupiter.params      // <-- allows running JUnit5 parameterized tests

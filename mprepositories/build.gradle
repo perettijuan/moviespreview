@@ -23,4 +23,12 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Kotlin standard libs
+    implementation deps.kotlin.stdlib
+    // appCompat libraries
+    implementation deps.androidx.appcompat
+    // ViewModel and LiveData
+    implementation deps.androidx.lifecycle.extensions
+    kapt deps.androidx.lifecycle.compiler
 }
