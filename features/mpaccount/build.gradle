@@ -19,10 +19,21 @@ android {
         }
     }
 
+    sourceSets {
+        /*
+         * Include test sources that are located in the common project
+         */
+        test {
+            java.srcDirs += getCommonTestResources()
+            java.srcDirs += getCommonJunit5TestResources()
+        }
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(path: ':mpdomain')
 
     // Kotlin standard libs
     implementation deps.kotlin.stdlib
@@ -31,4 +42,12 @@ dependencies {
     // ViewModel and LiveData
     implementation deps.androidx.lifecycle.extensions
     kapt deps.androidx.lifecycle.compiler
+
+    // Junit 5
+    testImplementation deps.test.junit5.jupiter.api
+    testImplementation deps.test.junit5.jupiter.params
+    testRuntimeOnly deps.test.junit5.jupiter.engine
+
+    // MockK
+    testImplementation deps.test.mockk.unit
 }

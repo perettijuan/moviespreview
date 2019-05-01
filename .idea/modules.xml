@@ -10,7 +10,6 @@
       <module fileurl="file://$PROJECT_DIR$/mpdata/mpdata.iml" filepath="$PROJECT_DIR$/mpdata/mpdata.iml" />
       <module fileurl="file://$PROJECT_DIR$/mpdesign/mpdesign.iml" filepath="$PROJECT_DIR$/mpdesign/mpdesign.iml" />
       <module fileurl="file://$PROJECT_DIR$/mpdomain/mpdomain.iml" filepath="$PROJECT_DIR$/mpdomain/mpdomain.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mprepositories/mprepositories.iml" filepath="$PROJECT_DIR$/mprepositories/mprepositories.iml" />
     </modules>
   </component>
 </project>
