@@ -2,6 +2,7 @@ package com.jpp.mpdata.api
 
 import com.jpp.mpdata.BuildConfig
 import com.jpp.mpdata.datasources.account.AccountApi
+import com.jpp.mpdata.datasources.tokens.AccessTokenApi
 import com.jpp.mpdata.repository.session.SessionApi
 import com.jpp.mpdata.repository.configuration.ConfigurationApi
 import com.jpp.mpdata.repository.credits.CreditsApi
@@ -26,7 +27,8 @@ open class MPApi
         PersonApi,
         CreditsApi,
         SessionApi,
-        AccountApi {
+        AccountApi,
+        AccessTokenApi {
 
     override fun getAppConfiguration(): AppConfiguration? {
         return tryCatchOrReturnNull { API.getAppConfiguration(API_KEY) }
