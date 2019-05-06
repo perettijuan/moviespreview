@@ -21,7 +21,7 @@ class MPConnectivityRepositoryImpl(monitor: ConnectivityMonitor,
         monitor.addListener { getCurrentConnectivity().let { updates.postValue(it) } }
     }
 
-    override fun connectivityUpdates(): LiveData<Connectivity> = updates
+    override fun data(): LiveData<Connectivity> = updates
 
     private fun getCurrentConnectivity(): Connectivity {
         return when (isConnectedToNetwork()) {

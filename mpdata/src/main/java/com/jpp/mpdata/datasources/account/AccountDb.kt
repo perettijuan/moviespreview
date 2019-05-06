@@ -1,4 +1,4 @@
-package com.jpp.mpdata.repository.account
+package com.jpp.mpdata.datasources.account
 
 import android.util.SparseArray
 import com.jpp.mpdomain.MoviePage

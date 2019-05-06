@@ -10,7 +10,8 @@ import com.jpp.mpdomain.Connectivity
  */
 interface MPConnectivityRepository {
     /**
-     * Subscribe to this LiveData object in order to get notifications about [Connectivity] changes.
+     * Subscribe to this LiveData object in order to get
+     * notifications about [Connectivity] changes.
      */
-    fun connectivityUpdates(): LiveData<Connectivity>
+    fun data(): LiveData<Connectivity>
 }

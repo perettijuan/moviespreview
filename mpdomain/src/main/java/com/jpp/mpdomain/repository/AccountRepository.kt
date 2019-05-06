@@ -10,6 +10,12 @@ import com.jpp.mpdomain.*
  * the interested clients whenever the data that is being stored under neath is updated.
  * That way, the clients can react and refresh the data.
  */
+/*
+ TODO JPP how to refactor this repository?:
+ 1 - UserAccountRepository on one hand.
+ 2 - FavoriteMovieRepository on the other hand. -> MoviePage should be replaced by another entity called FavoriteMoviePage.
+ 3 - MovieAccountStateRepository (I don't like the name MovieAccountState).
+ */
 interface AccountRepository {
 
     /**
