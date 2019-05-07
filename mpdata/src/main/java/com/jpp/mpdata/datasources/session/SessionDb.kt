@@ -1,4 +1,4 @@
-package com.jpp.mpdata.repository.session
+package com.jpp.mpdata.datasources.session
 
 import com.jpp.mpdomain.Session
 

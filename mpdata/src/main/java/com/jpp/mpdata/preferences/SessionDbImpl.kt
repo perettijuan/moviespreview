@@ -1,7 +1,7 @@
 package com.jpp.mpdata.preferences
 
 import android.content.Context
-import com.jpp.mpdata.repository.session.SessionDb
+import com.jpp.mpdata.datasources.session.SessionDb
 import com.jpp.mpdomain.Session
 
 /**

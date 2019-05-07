@@ -15,7 +15,7 @@ import com.jpp.mpdomain.repository.MPConnectivityRepository
 class MPConnectivityRepositoryImpl(monitor: ConnectivityMonitor,
                                    private val context: Context) : MPConnectivityRepository {
 
-    private val updates = MutableLiveData<Connectivity>()
+    private val updates by lazy { MutableLiveData<Connectivity>() }
 
     init {
         monitor.addListener { getCurrentConnectivity().let { updates.postValue(it) } }

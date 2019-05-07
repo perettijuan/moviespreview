@@ -12,8 +12,8 @@ import com.jpp.mpdata.repository.about.AboutNavigationRepositoryImpl
 import com.jpp.mpdata.datasources.account.AccountApi
 import com.jpp.mpdata.datasources.account.AccountDb
 import com.jpp.mpdata.repository.account.AccountRepositoryImpl
-import com.jpp.mpdata.repository.session.SessionApi
-import com.jpp.mpdata.repository.session.SessionDb
+import com.jpp.mpdata.datasources.session.SessionApi
+import com.jpp.mpdata.datasources.session.SessionDb
 import com.jpp.mpdata.repository.session.SessionRepositoryImpl
 import com.jpp.mpdata.repository.appversion.AppVersionRepositoryImpl
 import com.jpp.mpdata.repository.configuration.ConfigurationApi

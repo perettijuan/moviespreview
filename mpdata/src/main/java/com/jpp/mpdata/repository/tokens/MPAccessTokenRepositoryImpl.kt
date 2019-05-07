@@ -10,6 +10,7 @@ import com.jpp.mpdomain.repository.MPAccessTokenRepository.AccessTokenData
  * [MPAccessTokenRepository] implementation to retrieve data related to [AccessToken]s.
  */
 class MPAccessTokenRepositoryImpl(private val accessTokenApi: AccessTokenApi) : MPAccessTokenRepository {
+
     private val dataUpdates by lazy { MutableLiveData<AccessTokenData>() }
 
     override fun data(): LiveData<AccessTokenData> = dataUpdates
