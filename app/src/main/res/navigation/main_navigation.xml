@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
     app:startDestination="@id/playingMoviesFragment">
+
+    <include app:graph="@navigation/user_account_nav"/>
+
     <fragment
         android:id="@+id/playingMoviesFragment"
         android:name="com.jpp.mp.screens.main.movies.fragments.PlayingMoviesFragment"

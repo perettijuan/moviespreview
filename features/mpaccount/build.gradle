@@ -34,6 +34,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(path: ':mpdomain')
+    implementation project(path: ':mpdesign')
 
     // Kotlin standard libs
     implementation deps.kotlin.stdlib
@@ -42,6 +43,9 @@ dependencies {
     // ViewModel and LiveData
     implementation deps.androidx.lifecycle.extensions
     kapt deps.androidx.lifecycle.compiler
+    // Navigation Components
+    implementation deps.android.arch.navigation.fragment
+    implementation deps.android.arch.navigation.ui
 
     // Junit 5
     testImplementation deps.test.junit5.jupiter.api
