@@ -1,7 +1,8 @@
-package com.jpp.mp.screens
+package com.jpp.mp.common.coroutines
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.isActive

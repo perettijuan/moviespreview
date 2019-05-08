@@ -16,7 +16,8 @@ buildscript {
             'mockk' : '1.8.13.kotlin13',
             'canary' : '1.6.3',
             'lifecycle': '2.0.0',
-            'appCompat': '1.0.2'
+            'appCompat': '1.0.2',
+            'coroutines' : '1.1.1'
     ]
 
     ext.deps = [
@@ -51,6 +52,10 @@ buildscript {
                     'android' : "com.google.dagger:dagger-android-support:${versions.dagger}",
                     'compiler' : "com.google.dagger:dagger-compiler:${versions.dagger}",
                     'processor' : "com.google.dagger:dagger-android-processor:${versions.dagger}"
+            ],
+            'coroutines': [
+                    'core' : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}",
+                    'android' : "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
             ],
             'test'    : [
                     'junit5'  : [

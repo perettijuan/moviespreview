@@ -1,4 +1,4 @@
-package com.jpp.mp.screens
+package com.jpp.mp.common.coroutines
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

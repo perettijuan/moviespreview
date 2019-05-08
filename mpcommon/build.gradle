@@ -26,6 +26,10 @@ dependencies {
     implementation deps.kotlin.stdlib
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    // Kotlin coroutines
+    implementation deps.coroutines.core
+    implementation deps.coroutines.android
+
     // appCompat libraries
     implementation deps.androidx.appcompat
 
