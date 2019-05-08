@@ -35,7 +35,7 @@ dependencies {
 
     implementation project(path: ':mpdomain')
     implementation project(path: ':mpdesign')
-    implementation project(path: ':common')
+    implementation project(path: ':mpcommon')
 
     // Dagger
     implementation deps.dagger.dagger

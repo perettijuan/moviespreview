@@ -100,7 +100,7 @@ project.ext {
  * modules of the application to execute test code.
  */
 def getCommonTestResources() {
-    return fileFromProjectRoot(':common', 'src', 'test', 'java').absolutePath
+    return fileFromProjectRoot(':mpcommon', 'src', 'test', 'java').absolutePath
 }
 
 /**
@@ -108,7 +108,7 @@ def getCommonTestResources() {
  * modules of the application to execute test code.
  */
 def getCommonJunit5TestResources() {
-    return fileFromProjectRoot(':common', 'src', 'test', 'junit5').absolutePath
+    return fileFromProjectRoot(':mpcommon', 'src', 'test', 'junit5').absolutePath
 }
 
 /**

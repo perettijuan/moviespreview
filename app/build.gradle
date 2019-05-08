@@ -116,7 +116,7 @@ dependencies {
     implementation project(path: ':mpdesign')
     implementation project(path: ':mpdomain')
     implementation project(path: ':mpdata')
-    implementation project(path: ':common')
+    implementation project(path: ':mpcommon')
 
     // features
     implementation project(path: ':features:mpaccount')

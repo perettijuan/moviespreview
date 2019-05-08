@@ -38,7 +38,7 @@ class MPConnectivityRepositoryTest {
     }
 
     @ParameterizedTest
-    @MethodSource("data")
+    @MethodSource("connectivityUpdates")
     fun `Should notify connectivity event with proper connectivity state`(connected: Boolean, expected: Connectivity) {
         val slot = slot<() -> Unit>()
         val networkInfo = mockk<NetworkInfo>()

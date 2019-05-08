@@ -37,8 +37,7 @@ android {
 dependencies {
     implementation deps.kotlin.stdlib
 
-    // Common module -> DO NOT leak dependency
-    implementation project(path: ':common')
+    implementation project(path: ':mpcommon')
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
