@@ -33,6 +33,7 @@ fun ViewGroup.inflate(layoutRes: Int): View {
 /**
  * Extension function for the View class to make a View visible
  */
+@Deprecated("use common instead")
 fun View.setVisible() {
     this.visibility = View.VISIBLE
 }
@@ -41,6 +42,7 @@ fun View.setVisible() {
  * Extension function for the View class to make a View visible when [condition] is true.
  * If [condition] is false, the [defVisibility] is applied.
  */
+@Deprecated("use common instead")
 fun View.setVisibleWhen(condition: Boolean, defVisibility: Int = View.GONE) {
     this.visibility = if (condition) View.VISIBLE else defVisibility
 }
@@ -48,6 +50,7 @@ fun View.setVisibleWhen(condition: Boolean, defVisibility: Int = View.GONE) {
 /**
  * Extension function for the View class to make a View gone
  */
+@Deprecated("use common instead")
 fun View.setGone() {
     this.visibility = View.GONE
 }
@@ -55,6 +58,7 @@ fun View.setGone() {
 /**
  * Extension function for the View class to make a View invisible
  */
+@Deprecated("use common instead")
 fun View.setInvisible() {
     this.visibility = View.INVISIBLE
 }

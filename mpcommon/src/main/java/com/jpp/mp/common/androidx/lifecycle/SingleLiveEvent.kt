@@ -1,4 +1,4 @@
-package com.jpp.mp.screens
+package com.jpp.mp.common.androidx.lifecycle
 
 import android.util.Log
 

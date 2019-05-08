@@ -14,6 +14,7 @@ import com.jpp.mpdata.datasources.account.AccountDb
 import com.jpp.mpdata.repository.account.AccountRepositoryImpl
 import com.jpp.mpdata.datasources.session.SessionApi
 import com.jpp.mpdata.datasources.session.SessionDb
+import com.jpp.mpdata.datasources.tokens.AccessTokenApi
 import com.jpp.mpdata.repository.session.SessionRepositoryImpl
 import com.jpp.mpdata.repository.appversion.AppVersionRepositoryImpl
 import com.jpp.mpdata.repository.configuration.ConfigurationApi
@@ -32,10 +33,12 @@ import com.jpp.mpdata.repository.person.PersonDb
 import com.jpp.mpdata.repository.person.PersonRepositoryImpl
 import com.jpp.mpdata.repository.search.SearchApi
 import com.jpp.mpdata.repository.search.SearchRepositoryImpl
+import com.jpp.mpdata.repository.session.MPSessionRepositoryImpl
 import com.jpp.mpdata.repository.support.LanguageDb
 import com.jpp.mpdata.repository.support.LanguageRepositoryImpl
 import com.jpp.mpdata.repository.support.SupportDb
 import com.jpp.mpdata.repository.support.SupportRepositoryImpl
+import com.jpp.mpdata.repository.tokens.MPAccessTokenRepositoryImpl
 import com.jpp.mpdomain.repository.*
 import dagger.Module
 import dagger.Provides
@@ -236,6 +239,11 @@ class DataLayerModule {
     fun providesSessionRepository(sessionApi: SessionApi, sessionDb: SessionDb)
             : SessionRepository = SessionRepositoryImpl(sessionApi, sessionDb)
 
+    @Singleton
+    @Provides
+    fun providesMPSessionRepository(sessionApi: SessionApi, sessionDb: SessionDb)
+            : MPSessionRepository = MPSessionRepositoryImpl(sessionApi, sessionDb)
+
     /**********************************
      ****** ACCOUNT DEPENDENCIES ******
      **********************************/
@@ -252,5 +260,18 @@ class DataLayerModule {
     @Provides
     fun providesAccountRepository(accountApi: AccountApi, accountDb: AccountDb): AccountRepository = AccountRepositoryImpl(accountApi, accountDb)
 
+    /***************************************
+     ****** ACCESS TOKEN DEPENDENCIES ******
+     ***************************************/
+
+    @Singleton
+    @Provides
+    fun providesAccessTokenApi(mpApiInstance: MPApi): AccessTokenApi = mpApiInstance
+
+
+    @Singleton
+    @Provides
+    fun providesMPAccessTokenRepository(accessTokenApi: AccessTokenApi)
+            : MPAccessTokenRepository = MPAccessTokenRepositoryImpl(accessTokenApi)
 }
 

@@ -45,6 +45,10 @@ dependencies {
 
     // Kotlin standard libs
     implementation deps.kotlin.stdlib
+    // Kotlin coroutines
+    implementation deps.coroutines.core
+    implementation deps.coroutines.android
+
     // appCompat libraries
     implementation deps.androidx.appcompat
     // ViewModel and LiveData

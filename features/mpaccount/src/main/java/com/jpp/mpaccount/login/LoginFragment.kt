@@ -6,10 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.common.extensions.getViewModel
+import com.jpp.mp.common.extensions.setVisible
 import com.jpp.mpaccount.R
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.fragment_login.*
 import javax.inject.Inject
 
 class LoginFragment : Fragment() {
@@ -29,9 +32,17 @@ class LoginFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         withViewModel {
-            init()
+            viewStates.observe(this@LoginFragment.viewLifecycleOwner, Observer { viewState -> renderViewState(viewState) })
+            initialize()
         }
     }
 
     private fun withViewModel(action: LoginViewModel.() -> Unit) = getViewModel<LoginViewModel>(viewModelFactory).action()
+
+    private fun renderViewState(viewState: LoginViewState) {
+        when (viewState) {
+            is LoginViewState.Loading -> loginLoadingView.setVisible()
+            is LoginViewState.UnableToLogin -> TODO()
+        }
+    }
 }

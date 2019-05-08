@@ -8,7 +8,7 @@ import androidx.paging.PagedList
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mp.paging.MPPagingDataSourceFactory
-import com.jpp.mp.screens.SingleLiveEvent
+import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
 import java.util.concurrent.Executor
