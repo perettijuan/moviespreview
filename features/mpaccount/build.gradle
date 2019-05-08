@@ -35,6 +35,13 @@ dependencies {
 
     implementation project(path: ':mpdomain')
     implementation project(path: ':mpdesign')
+    implementation project(path: ':common')
+
+    // Dagger
+    implementation deps.dagger.dagger
+    implementation deps.dagger.android
+    kapt deps.dagger.compiler
+    kapt deps.dagger.processor
 
     // Kotlin standard libs
     implementation deps.kotlin.stdlib

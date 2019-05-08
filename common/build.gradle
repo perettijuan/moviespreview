@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 
 android {
@@ -24,6 +25,13 @@ dependencies {
     // Kotlin standard libs
     implementation deps.kotlin.stdlib
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // appCompat libraries
+    implementation deps.androidx.appcompat
+
+    // ViewModel and LiveData
+    implementation deps.androidx.lifecycle.extensions
+    kapt deps.androidx.lifecycle.compiler
 
     def androidTestLibVersion = '1.1.0'
     testImplementation "androidx.test:core:$androidTestLibVersion"
