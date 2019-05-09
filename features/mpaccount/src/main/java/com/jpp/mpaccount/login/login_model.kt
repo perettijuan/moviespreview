@@ -1,5 +1,7 @@
 package com.jpp.mpaccount.login
 
+import com.jpp.mpdomain.AccessToken
+
 /*
  * Contains the definitions for the entire model used in the login feature.
  */
@@ -17,6 +19,12 @@ sealed class LoginViewState {
      * Shows a message indicating that it is impossible to login at this moment.
      */
     object UnableToLogin : LoginViewState()
+
+    /*
+     * Starts the oauth2 process to show the login UI to the user.
+     * TODO JPP reminder - check AccountViewState.Oauth
+     */
+    data class ShowOauth(val url: String, val interceptUrl: String, val accessToken: AccessToken) : LoginViewState()
 }
 
 /**
