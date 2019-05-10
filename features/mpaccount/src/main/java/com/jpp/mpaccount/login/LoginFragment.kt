@@ -5,7 +5,6 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,11 +16,11 @@ import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.jpp.mp.common.extensions.getViewModel
+import com.jpp.mpdesign.ext.getViewModel
 import com.jpp.mp.common.extensions.log
-import com.jpp.mp.common.extensions.setInvisible
-import com.jpp.mp.common.extensions.setVisible
 import com.jpp.mpaccount.R
+import com.jpp.mpdesign.ext.setInvisible
+import com.jpp.mpdesign.ext.setVisible
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_login.*
 import javax.inject.Inject

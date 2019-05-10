@@ -32,6 +32,9 @@ dependencies {
     implementation deps.kotlin.stdlib
     // appCompat libraries
     implementation deps.androidx.appcompat
+    // ViewModel and LiveData
+    implementation deps.androidx.lifecycle.extensions
+    kapt deps.androidx.lifecycle.compiler
 
     /*
      * ConstraintLayout:

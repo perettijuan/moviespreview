@@ -30,9 +30,6 @@ dependencies {
     implementation deps.coroutines.core
     implementation deps.coroutines.android
 
-    // appCompat libraries
-    implementation deps.androidx.appcompat
-
     // ViewModel and LiveData
     implementation deps.androidx.lifecycle.extensions
     kapt deps.androidx.lifecycle.compiler

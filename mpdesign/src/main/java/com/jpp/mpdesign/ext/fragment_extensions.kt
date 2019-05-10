@@ -1,4 +1,4 @@
-package com.jpp.mp.common.extensions
+package com.jpp.mpdesign.ext
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
