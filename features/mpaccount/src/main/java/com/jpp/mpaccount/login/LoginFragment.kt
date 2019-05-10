@@ -5,6 +5,7 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.common.extensions.getViewModel
+import com.jpp.mp.common.extensions.log
 import com.jpp.mp.common.extensions.setInvisible
 import com.jpp.mp.common.extensions.setVisible
 import com.jpp.mpaccount.R
@@ -51,7 +53,10 @@ class LoginFragment : Fragment() {
 
     private fun renderViewState(viewState: LoginViewState) {
         when (viewState) {
-            is LoginViewState.Loading -> loginLoadingView.setVisible()
+            is LoginViewState.Loading -> {
+                log("RenderLoading")
+                loginLoadingView.setVisible()
+            }
             is LoginViewState.UnableToLogin -> TODO()
             is LoginViewState.ShowOauth -> {
                 renderOauthState(viewState)

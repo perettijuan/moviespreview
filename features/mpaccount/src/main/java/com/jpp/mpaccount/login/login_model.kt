@@ -22,9 +22,8 @@ sealed class LoginViewState {
 
     /*
      * Starts the oauth2 process to show the login UI to the user.
-     * TODO JPP reminder - check AccountViewState.Oauth
      */
-    data class ShowOauth(val url: String, val interceptUrl: String, val accessToken: AccessToken) : LoginViewState()
+    data class ShowOauth(val url: String, val interceptUrl: String, val accessToken: AccessToken, val reminder: Boolean = false) : LoginViewState()
 }
 
 /**

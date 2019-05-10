@@ -30,24 +30,15 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         _viewStates.addSource(sessionRepository.data()) { sessionData ->
             when (sessionData) {
                 is CurrentSession -> { _navEvents.value = LoginNavigationEvent.BackToPrevious }
-                is NoCurrentSessionAvailable -> {
-                    _viewStates.value = of(LoginViewState.Loading)
-                    launch { getAccessToken() }
-                }
+                is NoCurrentSessionAvailable -> { _viewStates.value = of(executeAccessTokenStep()) }
                 is SessionCreated -> { _navEvents.value = LoginNavigationEvent.BackToPrevious }
-                is UnableToCreateSession -> { TODO() }
+                is UnableToCreateSession -> { _viewStates.value = of(LoginViewState.UnableToLogin) }
             }
         }
 
         _viewStates.addSource(accessTokenRepository.data()) { atData ->
             when (atData) {
-                is Success -> {
-                    _viewStates.value = of(LoginViewState.ShowOauth(
-                            url = "$authUrl/${atData.data.request_token}?redirect_to=$redirectUrl",
-                            interceptUrl = redirectUrl,
-                            accessToken = atData.data
-                    ))
-                }
+                is Success -> { _viewStates.value = of(createOauthViewState(atData.data, false)) }
                 is NoAccessTokenAvailable -> { _viewStates.value = of(LoginViewState.UnableToLogin) }
             }
         }
@@ -59,11 +50,9 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
     fun onUserRedirectedToUrl(redirectUrl: String, accessToken: AccessToken) {
         when {
-            redirectUrl.contains("approved=true") -> {
-                _viewStates.value = of(LoginViewState.Loading)
-                launch { loginUser(accessToken) }
-            }
-            //TODO JPP manage retries
+            redirectUrl.contains("approved=true") -> { _viewStates.value = of(executeCreateSessionStep(accessToken)) }
+            redirectUrl.contains("denied=true") -> _viewStates.value = of(createOauthViewState(accessToken, true))
+            else -> _viewStates.value = of(LoginViewState.UnableToLogin)
         }
     }
 
@@ -72,7 +61,24 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
     private suspend fun verifyUserLoggedIn() = withContext(dispatchers.default()) { sessionRepository.getCurrentSession() }
     private suspend fun getAccessToken() = withContext(dispatchers.default()) { accessTokenRepository.getAccessToken() }
-    private suspend fun loginUser(accessToken: AccessToken) = withContext(dispatchers.default()) { sessionRepository.createAndStoreSession(accessToken) }
+    private suspend fun createSession(accessToken: AccessToken) = withContext(dispatchers.default()) { sessionRepository.createAndStoreSession(accessToken) }
+
+    private fun createOauthViewState(accessToken: AccessToken, asReminder: Boolean) = LoginViewState.ShowOauth(
+            url = "$authUrl/${accessToken.request_token}?redirect_to=$redirectUrl",
+            interceptUrl = redirectUrl,
+            accessToken = accessToken,
+            reminder = asReminder
+    )
+
+    private fun executeAccessTokenStep() : LoginViewState  {
+        launch { getAccessToken() }
+        return LoginViewState.Loading
+    }
+
+    private fun executeCreateSessionStep(accessToken: AccessToken) :LoginViewState {
+        launch { createSession(accessToken) }
+        return LoginViewState.Loading
+    }
 
     private companion object {
         const val authUrl = "https://www.themoviedb.org/authenticate/"
