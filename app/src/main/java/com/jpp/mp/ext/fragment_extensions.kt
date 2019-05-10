@@ -38,6 +38,7 @@ fun Fragment.getResIdFromAttribute(attr: Int): Int {
 /**
  * Creates and shows a [Snackbar] styled with the application resources.
  */
+@Deprecated("use common instead")
 fun Fragment.snackBar(contentView: View,
                       @StringRes message: Int,
                       @StringRes actionMessage: Int,

@@ -16,11 +16,12 @@ import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.jpp.mpdesign.ext.getViewModel
-import com.jpp.mp.common.extensions.log
+import androidx.navigation.fragment.findNavController
 import com.jpp.mpaccount.R
+import com.jpp.mpdesign.ext.getViewModel
 import com.jpp.mpdesign.ext.setInvisible
 import com.jpp.mpdesign.ext.setVisible
+import com.jpp.mpdesign.ext.snackBar
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_login.*
 import javax.inject.Inject
@@ -43,8 +44,8 @@ class LoginFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         withViewModel {
             viewStates.observe(this@LoginFragment.viewLifecycleOwner, Observer { viewState -> viewState.actionIfNotHandled { renderViewState(it) } })
-            navEvents.observe(this@LoginFragment.viewLifecycleOwner, Observer {  })
-            initialize()
+            navEvents.observe(this@LoginFragment.viewLifecycleOwner, Observer { navEvent ->  reactToNavEvent(navEvent)})
+            onInit()
         }
     }
 
@@ -52,18 +53,11 @@ class LoginFragment : Fragment() {
 
     private fun renderViewState(viewState: LoginViewState) {
         when (viewState) {
-            is LoginViewState.Loading -> {
-                log("RenderLoading")
-                loginLoadingView.setVisible()
-            }
-            is LoginViewState.UnableToLogin -> TODO()
-            is LoginViewState.ShowOauth -> {
-                renderOauthState(viewState)
-                renderWebContent()
-            }
+            is LoginViewState.Loading -> { renderLoading() }
+            is LoginViewState.UnableToLogin -> TODO() //TODO JPP
+            is LoginViewState.ShowOauth -> { renderOauthState(viewState) }
         }
     }
-
 
     private fun renderOauthState(oauthState: LoginViewState.ShowOauth) {
         accountWebView.apply {
@@ -76,20 +70,28 @@ class LoginFragment : Fragment() {
             loadUrl(oauthState.url)
         }
 
-        //TODO JPP
-//        if (oauthState.reminder) {
-//            snackBar(accountContent, R.string.account_approve_reminder, R.string.error_retry) {
-//                withViewModel { retry() }
-//            }
-//        }
-    }
+        if (oauthState.reminder) {
+            snackBar(loginContent, R.string.account_approve_reminder, R.string.error_retry) {
+                withViewModel { onUserRetry() }
+            }
+        }
 
-
-    private fun renderWebContent() {
         loginLoadingView.setInvisible()
-
         accountWebPg.setVisible()
         accountWebView.setVisible()
+    }
+
+    private fun renderLoading() {
+        accountWebPg.setInvisible()
+        accountWebView.setInvisible()
+
+        loginLoadingView.setVisible()
+    }
+
+    private fun reactToNavEvent(navEvent: LoginNavigationEvent) {
+        when (navEvent) {
+            is LoginNavigationEvent.BackToPrevious -> findNavController().popBackStack()
+        }
     }
 
 

@@ -35,6 +35,14 @@ dependencies {
     // ViewModel and LiveData
     implementation deps.androidx.lifecycle.extensions
     kapt deps.androidx.lifecycle.compiler
+    /*
+     * Navigation Components -
+     * Even thought is not used by this module, Snackbar seems to be
+     * included in the design library and the navigation library seems to
+     * be leaking the design library.
+     * This way, we make sure to access the Snackbar without cycling dependencies.
+     */
+    implementation deps.android.arch.navigation.ui
 
     /*
      * ConstraintLayout:

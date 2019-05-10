@@ -44,7 +44,7 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         }
     }
 
-    fun initialize() {
+    fun onInit() {
         launch { verifyUserLoggedIn() }
     }
 
@@ -54,6 +54,10 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             redirectUrl.contains("denied=true") -> _viewStates.value = of(createOauthViewState(accessToken, true))
             else -> _viewStates.value = of(LoginViewState.UnableToLogin)
         }
+    }
+
+    fun onUserRetry() {
+        _viewStates.value = of(executeAccessTokenStep())
     }
 
     val viewStates: LiveData<HandledViewState<LoginViewState>> get() = _viewStates
