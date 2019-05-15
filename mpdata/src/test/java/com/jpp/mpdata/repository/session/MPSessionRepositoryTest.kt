@@ -1,13 +1,13 @@
 package com.jpp.mpdata.repository.session
 
-import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.utiltest.observeWith
 import com.jpp.mpdata.datasources.session.SessionApi
 import com.jpp.mpdata.datasources.session.SessionDb
 import com.jpp.mpdomain.AccessToken
 import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.repository.MPSessionRepository
 import com.jpp.mpdomain.repository.MPSessionRepository.SessionData
+import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK

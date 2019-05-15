@@ -1,11 +1,12 @@
 package com.jpp.mpdata.repository.tokens
 
-import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.utiltest.observeWith
+
 import com.jpp.mpdata.datasources.tokens.AccessTokenApi
 import com.jpp.mpdomain.AccessToken
 import com.jpp.mpdomain.repository.MPAccessTokenRepository
 import com.jpp.mpdomain.repository.MPAccessTokenRepository.AccessTokenData
+import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension

@@ -3,10 +3,10 @@ package com.jpp.mpdata.repository.connectivity
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
-import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.utiltest.observeWith
 import com.jpp.mpdata.datasources.connectivity.ConnectivityMonitor
 import com.jpp.mpdomain.Connectivity
+import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK

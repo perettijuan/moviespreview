@@ -23,20 +23,6 @@ android {
     kotlinOptions{
         jvmTarget = '1.8'
     }
-
-    sourceSets {
-        /*
-         * Include test sources that are located in the common project
-         */
-        test {
-            java.srcDirs += getCommonTestResources()
-            java.srcDirs += getCommonJunit5TestResources()
-        }
-
-        androidTest {
-            java.srcDirs += getCommonTestResources()
-        }
-    }
 }
 
 dependencies {
@@ -70,6 +56,9 @@ dependencies {
     testRuntimeOnly deps.test.junit5.jupiter.engine         // <-- allows running JUnit5 tests
     testImplementation 'org.hamcrest:hamcrest-library:1.3'
     testImplementation deps.test.mockk.unit
+
+    // Include testing utils
+    testImplementation project(path: ':mptestutils')
 }
 
 

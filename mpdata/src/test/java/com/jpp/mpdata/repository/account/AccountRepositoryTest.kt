@@ -1,8 +1,5 @@
 package com.jpp.mpdata.repository.account
 
-import androidx.lifecycle.Observer
-import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.utiltest.resumedLifecycleOwner
 import com.jpp.mpdata.datasources.account.AccountApi
 import com.jpp.mpdata.datasources.account.AccountDb
 import com.jpp.mpdomain.MoviePage
@@ -10,6 +7,8 @@ import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.repository.AccountRepository
+import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
@@ -88,9 +87,7 @@ class AccountRepositoryTest {
     fun `Should notify data update when successfully update favorites`() {
         var stateUpdatePosted: AccountRepository.AccountDataUpdate? = null
 
-        subject.updates().observe(resumedLifecycleOwner(), Observer {
-            stateUpdatePosted = it
-        })
+        subject.updates().observeWith { stateUpdatePosted = it }
 
         subject.updateMovieFavoriteState(12.toDouble(), false, mockk(), mockk())
         assertEquals(AccountRepository.AccountDataUpdate.FavoritesMovies, stateUpdatePosted)
