@@ -11,6 +11,10 @@ import com.jpp.mpdomain.AccessToken
  */
 sealed class LoginViewState {
     /*
+     * Shows the not connected to network state
+     */
+    object NotConnected : LoginViewState()
+    /*
      * Shown when the VM indicates that a work is in progress.
      */
     object Loading : LoginViewState()

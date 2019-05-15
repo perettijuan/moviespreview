@@ -12,8 +12,6 @@ import androidx.annotation.RequiresApi
 /**
  * Monitors connectivity changes - when requested to monitor - and notifies to the interested
  * client when an event is triggered.
- *
- * TODO JPP -> startMonitoring and stopMonitoring MUST be called at some point in order to start listening updates.
  */
 interface ConnectivityMonitor {
     /**

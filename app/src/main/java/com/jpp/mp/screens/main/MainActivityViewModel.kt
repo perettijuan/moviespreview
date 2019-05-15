@@ -3,17 +3,38 @@ package com.jpp.mp.screens.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.jpp.mpdata.datasources.connectivity.ConnectivityMonitor
 import javax.inject.Inject
 
 /**
- * This is the ViewModel that backs the behavior supported by the MainActivity.
- * It is a shared ViewModel: all Fragments that needs to update the MainActivity
- * UI can access this ViewModel (since all Fragments are hosted by the MainActivity and this
- * ViewModel updates the MainActivity UI) and do the things that they require.
+ * ViewModel used by [MainActivity].
+ *
+ * Core responsibilities:
+ *
+ * 1 - Some features implemented in the application requires monitoring some particular APIs of the platform.
+ * Since the application's architecture has only one Activity implemented ([MainActivity]), the ViewModel
+ * that supports that Activity is the perfect place to start/stop the monitoring of platform dependent
+ * APIs. That's a responsibility of the ViewModel.
+ *
+ * 2 - The application is using the navigation architecture components, with the caveat that needs to
+ * show dynamic titles in the Action Bar. This VM takes care of verifying the navigation events
+ * and asks the Activity to update the Action Bar's title.
+ *
  */
-class MainActivityViewModel @Inject constructor() : ViewModel() {
+class MainActivityViewModel @Inject constructor(private val connectivityMonitor: ConnectivityMonitor) : ViewModel() {
 
     private val viewState by lazy { MutableLiveData<MainActivityViewState>() }
+
+    /**
+     * When called, all platform dependent monitoring will start the monitoring process.
+     */
+    fun onInit() {
+        connectivityMonitor.startMonitoring()
+    }
+
+    override fun onCleared() {
+        connectivityMonitor.stopMonitoring()
+    }
 
     fun viewState(): LiveData<MainActivityViewState> = viewState
 

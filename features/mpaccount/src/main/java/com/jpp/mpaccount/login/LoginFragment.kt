@@ -26,6 +26,13 @@ import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_login.*
 import javax.inject.Inject
 
+/**
+ * Fragment used to provide the user a login experience.
+ * The login model supported by the application is based on Oauth2 (because the API supports that model).
+ * Following that model, this Fragment provides a WebView that renders the web content needed to perform
+ * the login and captures any redirection performed by the web site, delegating the responsibility
+ * of performing the actual login to a ViewModel that supports this Fragment.
+ */
 class LoginFragment : Fragment() {
 
     @Inject
@@ -49,12 +56,19 @@ class LoginFragment : Fragment() {
         }
     }
 
+    /**
+     * Helper function to execute methods over the [LoginViewModel].
+     */
     private fun withViewModel(action: LoginViewModel.() -> Unit) = getViewModel<LoginViewModel>(viewModelFactory).action()
 
+    /**
+     * Performs the branching to render the proper views given then [viewState].
+     */
     private fun renderViewState(viewState: LoginViewState) {
         when (viewState) {
+            is LoginViewState.NotConnected -> { renderNotConnectedToNetwork() }
             is LoginViewState.Loading -> { renderLoading() }
-            is LoginViewState.UnableToLogin -> TODO() //TODO JPP
+            is LoginViewState.UnableToLogin -> { renderUnableToLogin() }
             is LoginViewState.ShowOauth -> { renderOauthState(viewState) }
         }
     }
@@ -76,12 +90,32 @@ class LoginFragment : Fragment() {
             }
         }
 
+        loginErrorView.setInvisible()
         loginLoadingView.setInvisible()
         accountWebPg.setVisible()
         accountWebView.setVisible()
     }
 
+    private fun renderNotConnectedToNetwork() {
+        accountWebPg.setInvisible()
+        accountWebView.setInvisible()
+        loginLoadingView.setInvisible()
+
+        loginErrorView.asNoConnectivityError { withViewModel { onUserRetry() } }
+        loginErrorView.setVisible()
+    }
+
+    private fun renderUnableToLogin() {
+        accountWebPg.setInvisible()
+        accountWebView.setInvisible()
+        loginLoadingView.setInvisible()
+
+        loginErrorView.asUnknownError { withViewModel { onUserRetry() } }
+        loginErrorView.setVisible()
+    }
+
     private fun renderLoading() {
+        loginErrorView.setInvisible()
         accountWebPg.setInvisible()
         accountWebView.setInvisible()
 

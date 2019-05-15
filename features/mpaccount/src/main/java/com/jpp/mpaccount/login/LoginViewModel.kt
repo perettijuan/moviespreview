@@ -8,17 +8,22 @@ import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.viewstate.HandledViewState
 import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
 import com.jpp.mpdomain.AccessToken
+import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.repository.MPAccessTokenRepository
 import com.jpp.mpdomain.repository.MPAccessTokenRepository.AccessTokenData.NoAccessTokenAvailable
 import com.jpp.mpdomain.repository.MPAccessTokenRepository.AccessTokenData.Success
+import com.jpp.mpdomain.repository.MPConnectivityRepository
 import com.jpp.mpdomain.repository.MPSessionRepository
 import com.jpp.mpdomain.repository.MPSessionRepository.SessionData.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-//TODO JPP connectivity!
+/**
+ * ViewModel used to support the login process.
+ */
 class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
+                                         connectivityRepository: MPConnectivityRepository,
                                          private val sessionRepository: MPSessionRepository,
                                          private val accessTokenRepository: MPAccessTokenRepository)
     : MPScopedViewModel(dispatchers) {
@@ -40,6 +45,13 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             when (atData) {
                 is Success -> { _viewStates.value = of(createOauthViewState(atData.data, false)) }
                 is NoAccessTokenAvailable -> { _viewStates.value = of(LoginViewState.UnableToLogin) }
+            }
+        }
+
+        _viewStates.addSource(connectivityRepository.data()) {connectivity ->
+            when (connectivity) {
+                is Connectivity.Disconnected -> { _viewStates.value = of(LoginViewState.NotConnected) }
+                is Connectivity.Connected -> { launch { verifyUserLoggedIn() } }
             }
         }
     }

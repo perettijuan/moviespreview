@@ -11,6 +11,7 @@ import com.jpp.mpdomain.SupportedLanguage.*
 import com.jpp.mpdomain.repository.LanguageRepository
 import java.util.*
 
+//TODO JPP this should change to be similar to MPConnectivityRepositoryImpl
 class LanguageRepositoryImpl(private val languageDb: LanguageDb,
                              private val context: Context) : LanguageRepository {
 

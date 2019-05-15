@@ -76,6 +76,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         mpToolbarManager = MPToolbarManager()
 
         withMainViewModel {
+            onInit()
             viewState().observe(this@MainActivity, Observer { viewState ->
                 renderViewState(viewState)
             })
