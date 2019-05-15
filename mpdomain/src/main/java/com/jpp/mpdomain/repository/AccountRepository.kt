@@ -11,7 +11,7 @@ import com.jpp.mpdomain.*
  * That way, the clients can react and refresh the data.
  */
 /*
- TODO JPP how to refactor this repository?:
+ TODO JPP how to refactor this repository?: -> I think is READY TO BE DELETED
  1 - UserAccountRepository on one hand.
  2 - FavoriteMovieRepository on the other hand. -> MoviePage should be replaced by another entity called FavoriteMoviePage.
  3 - MovieAccountStateRepository (I don't like the name MovieAccountState).
