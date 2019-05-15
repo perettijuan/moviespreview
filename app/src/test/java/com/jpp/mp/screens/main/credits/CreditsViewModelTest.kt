@@ -1,8 +1,5 @@
 package com.jpp.mp.screens.main.credits
 
-import androidx.lifecycle.Observer
-import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.utiltest.resumedLifecycleOwner
 import com.jpp.mp.screens.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
@@ -10,6 +7,8 @@ import com.jpp.mpdomain.CrewMember
 import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
 import com.jpp.mpdomain.usecase.credits.GetCreditsResult
 import com.jpp.mpdomain.usecase.credits.GetCreditsUseCase
+import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -54,9 +53,7 @@ class CreditsViewModelTest {
         every { getCreditsUseCase.getCreditsForMovie(any()) } returns GetCreditsResult.Success(credits)
         every { configCastCharacterUseCase.configure(any(), any()) } answers { arg(1) }
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init(movieId, targetImageSize)
 
@@ -95,9 +92,7 @@ class CreditsViewModelTest {
 
         every { getCreditsUseCase.getCreditsForMovie(any()) } returns GetCreditsResult.ErrorNoConnectivity
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init(movieId, targetImageSize)
 
@@ -111,9 +106,7 @@ class CreditsViewModelTest {
 
         every { getCreditsUseCase.getCreditsForMovie(any()) } returns GetCreditsResult.ErrorUnknown
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init(movieId, targetImageSize)
 
@@ -168,14 +161,14 @@ class CreditsViewModelTest {
         )
 
 
-        subject.navEvents().observe(resumedLifecycleOwner(), Observer {
+        subject.navEvents().observeWith {
             assertTrue(it is CreditsNavigationEvent.ToPerson)
             with(it as CreditsNavigationEvent.ToPerson) {
                 assertEquals(creditPerson.id.toString(), personId)
                 assertEquals(creditPerson.profilePath, personImageUrl)
                 assertEquals(creditPerson.subTitle, personName)
             }
-        })
+        }
 
         subject.onCreditItemSelected(creditPerson)
     }

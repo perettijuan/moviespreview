@@ -15,12 +15,12 @@ import com.jpp.mp.di.TestMPViewModelFactory
 import com.jpp.mp.extras.launch
 import com.jpp.mp.screens.main.SearchViewViewModel
 import com.jpp.mp.testutils.FragmentTestActivity
-import com.jpp.mp.utiltest.CurrentThreadExecutorService
 import com.jpp.mpdomain.SearchPage
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCaseResult
+import com.jpp.mptestutils.CurrentThreadExecutorService
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

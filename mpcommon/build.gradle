@@ -41,4 +41,10 @@ dependencies {
     testImplementation deps.test.junit5.jupiter.api
     testImplementation deps.test.junit5.jupiter.params
     testRuntimeOnly deps.test.junit5.jupiter.engine
+
+    // MockK
+    testImplementation deps.test.mockk.unit
+
+    // Include testing utils
+    testImplementation project(path: ':mptestutils')
 }

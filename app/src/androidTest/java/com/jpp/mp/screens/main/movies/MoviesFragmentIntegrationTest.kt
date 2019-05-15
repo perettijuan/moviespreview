@@ -12,10 +12,9 @@ import com.jpp.mp.R
 import com.jpp.mp.assertions.*
 import com.jpp.mp.di.TestMPViewModelFactory
 import com.jpp.mp.extras.launch
+import com.jpp.mp.extras.moviesPages
 import com.jpp.mp.screens.main.movies.fragments.PlayingMoviesFragment
 import com.jpp.mp.testutils.FragmentTestActivity
-import com.jpp.mp.utiltest.CurrentThreadExecutorService
-import com.jpp.mp.utiltest.moviesPages
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
@@ -27,6 +26,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase.GetMoviesResult.*
+import com.jpp.mptestutils.CurrentThreadExecutorService
 
 /**
  * Tests the interaction between the [MoviesFragment] and the [MoviesFragmentViewModel].

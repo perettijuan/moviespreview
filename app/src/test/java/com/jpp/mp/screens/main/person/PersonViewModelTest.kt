@@ -1,12 +1,11 @@
 package com.jpp.mp.screens.main.person
 
-import androidx.lifecycle.Observer
-import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.utiltest.resumedLifecycleOwner
 import com.jpp.mp.screens.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.Person
-import com.jpp.mpdomain.usecase.person.GetPersonUseCase
 import com.jpp.mpdomain.usecase.person.GetPersonResult
+import com.jpp.mpdomain.usecase.person.GetPersonUseCase
+import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -42,9 +41,7 @@ class PersonViewModelTest {
 
         every { getPersonUseCase.getPerson(personId) } returns GetPersonResult.Success(input.domainPerson)
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init(personId, personImageUrl, personName)
 
@@ -84,9 +81,7 @@ class PersonViewModelTest {
 
         every { getPersonUseCase.getPerson(personId) } returns GetPersonResult.Success(domainPerson)
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init(personId, personImageUrl, personName)
 
@@ -99,9 +94,7 @@ class PersonViewModelTest {
 
         every { getPersonUseCase.getPerson(any()) } returns GetPersonResult.ErrorNoConnectivity
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init(121.toDouble(), "", "")
 
@@ -115,9 +108,7 @@ class PersonViewModelTest {
 
         every { getPersonUseCase.getPerson(any()) } returns GetPersonResult.ErrorUnknown
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init(121.toDouble(), "", "")
 

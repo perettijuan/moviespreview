@@ -1,10 +1,8 @@
 package com.jpp.mp.screens.main.movies
 
-import androidx.lifecycle.Observer
-import com.jpp.mp.utiltest.CurrentThreadExecutorService
-import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.utiltest.resumedLifecycleOwner
-import com.jpp.mp.utiltest.successGetMoviesUCExecution
+import com.jpp.mp.screens.main.successGetMoviesUCExecution
+import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.observeWith
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
@@ -19,6 +17,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.util.concurrent.Executor
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase.GetMoviesResult.*
+import com.jpp.mptestutils.CurrentThreadExecutorService
 
 @ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
 class MoviesFragmentViewModelTest {
@@ -52,9 +51,7 @@ class MoviesFragmentViewModelTest {
         every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns successGetMoviesUCExecution(moviesInPageCount)
         every { configMovieUseCase.configure(any(), any(), any()) } answers { ConfigMovieUseCase.ConfigMovieResult(arg(2)) }
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStates.add(it)
-        })
+        subject.viewState().observeWith { viewStates.add(it) }
 
         subject.init(moviePosterSize = 5, movieBackdropSize = 10)
 
@@ -75,9 +72,7 @@ class MoviesFragmentViewModelTest {
         every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns successGetMoviesUCExecution(moviesInPageCount)
         every { configMovieUseCase.configure(any(), any(), any()) } answers { ConfigMovieUseCase.ConfigMovieResult(arg(2)) }
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStates.add(it)
-        })
+        subject.viewState().observeWith { viewStates.add(it) }
 
         subject.init(moviePosterSize = 5, movieBackdropSize = 10)
         // at this point, it should be initialized
@@ -93,9 +88,7 @@ class MoviesFragmentViewModelTest {
 
         every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns ErrorUnknown
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStates.add(it)
-        })
+        subject.viewState().observeWith { viewStates.add(it) }
 
         subject.init(moviePosterSize = 5, movieBackdropSize = 10)
 
@@ -116,9 +109,7 @@ class MoviesFragmentViewModelTest {
 
         every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns ErrorNoConnectivity
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            lastState = it
-        })
+        subject.viewState().observeWith { lastState = it }
 
         subject.init(moviePosterSize = 5, movieBackdropSize = 10)
 
@@ -131,9 +122,7 @@ class MoviesFragmentViewModelTest {
 
         every { getMoviesUseCase.getMoviePageForSection(any(), any()) } returns ErrorUnknown
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            lastState = it
-        })
+        subject.viewState().observeWith { lastState = it }
 
         subject.init(moviePosterSize = 5, movieBackdropSize = 10)
 

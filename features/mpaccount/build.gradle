@@ -63,3 +63,9 @@ dependencies {
     // Include testing utils
     testImplementation project(path: ':mptestutils')
 }
+
+afterEvaluate {
+    project.tasks.withType(Test).forEach { t ->
+        t.useJUnitPlatform()    // <-- specify to gradle that we want to run tests on JUnit5 platform
+    }
+}

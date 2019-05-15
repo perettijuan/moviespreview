@@ -1,13 +1,12 @@
 package com.jpp.mp.screens.main.details
 
-import androidx.lifecycle.Observer
-import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.utiltest.resumedLifecycleOwner
 import com.jpp.mp.screens.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase.GetMovieDetailsResult.*
+import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -67,9 +66,7 @@ class MovieDetailsViewModelTest {
 
         every { getMovieDetailsUseCase.getDetailsForMovie(any()) } returns Success(domainDetail)
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init(movieDetailId)
 
@@ -85,9 +82,7 @@ class MovieDetailsViewModelTest {
 
         every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns ErrorNoConnectivity
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init(movieDetailId)
 
@@ -101,9 +96,7 @@ class MovieDetailsViewModelTest {
 
         every { getMovieDetailsUseCase.getDetailsForMovie(movieDetailId) } returns ErrorUnknown
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init(movieDetailId)
 
@@ -163,13 +156,13 @@ class MovieDetailsViewModelTest {
         val reqMovieTitle = "aMovie"
 
 
-        subject.navEvents().observe(resumedLifecycleOwner(), Observer {
+        subject.navEvents().observeWith {
             assertTrue(it is MovieDetailsNavigationEvent.ToCredits)
             with(it as MovieDetailsNavigationEvent.ToCredits) {
                 assertEquals(reqMovieId, movieId)
                 assertEquals(reqMovieTitle, movieTitle)
             }
-        })
+        }
 
         subject.onCreditsSelected(reqMovieId, reqMovieTitle)
     }

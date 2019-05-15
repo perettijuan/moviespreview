@@ -1,4 +1,4 @@
-package com.jpp.mp.utiltest
+package com.jpp.mp.screens.main
 
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
@@ -12,14 +12,6 @@ fun createMoviesPage(page: Int, totalResults: Int) = MoviePage(
         total_pages = 10,
         total_results = 1000
 )
-
-fun moviesPages(totalPages: Int): List<MoviePage> {
-    return mutableListOf<MoviePage>().apply {
-        for (i in 1..totalPages) {
-            add(createMoviesPage(i, 10))
-        }
-    }
-}
 
 private fun createMoviesForPage(page: Int, totalResults: Int = 10): List<Movie> {
     return mutableListOf<Movie>().apply {
