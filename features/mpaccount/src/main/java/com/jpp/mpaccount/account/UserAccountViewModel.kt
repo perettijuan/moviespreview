@@ -22,6 +22,9 @@ import com.jpp.mpdomain.repository.MPUserAccountRepository.UserAccountData.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * ViewModel that supports the user account functionality.
+ */
 class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                                private val connectivityRepository: MPConnectivityRepository,
                                                private val sessionRepository: MPSessionRepository,

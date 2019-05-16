@@ -5,23 +5,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.jpp.mpaccount.R
-import com.jpp.mpdesign.ext.getViewModel
-import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_user_account.*
-import javax.inject.Inject
-import com.jpp.mpaccount.account.UserAccountNavigationEvent.*
+import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToLogin
 import com.jpp.mpaccount.account.UserAccountViewState.*
+import com.jpp.mpdesign.ext.getViewModel
 import com.jpp.mpdesign.ext.loadImageUrlAsCircular
 import com.jpp.mpdesign.ext.setInvisible
 import com.jpp.mpdesign.ext.setVisible
+import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.fragment_user_account.*
 import kotlinx.android.synthetic.main.layout_user_account_header.*
+import javax.inject.Inject
 
+/**
+ * Fragment used to show the details of the user's account.
+ */
 class UserAccountFragment : Fragment() {
 
     @Inject
@@ -61,7 +63,7 @@ class UserAccountFragment : Fragment() {
                 updateHeader(viewState)
                 renderAccountData()
             }
-            is ShowError -> Toast.makeText(requireContext(), "Error", Toast.LENGTH_LONG).show()
+            is ShowError -> rendeUnknownError()
         }
     }
 
@@ -93,6 +95,14 @@ class UserAccountFragment : Fragment() {
         userAccountContentView.setInvisible()
 
         userAccountErrorView.asNoConnectivityError { withViewModel { onUserRetry() } }
+        userAccountErrorView.setVisible()
+    }
+
+    private fun rendeUnknownError() {
+        userAccountLoadingView.setInvisible()
+        userAccountContentView.setInvisible()
+
+        userAccountErrorView.asUnknownError { withViewModel { onUserRetry() } }
         userAccountErrorView.setVisible()
     }
 
