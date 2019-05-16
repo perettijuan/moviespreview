@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                               connectivityRepository: MPConnectivityRepository,
+                                               private val connectivityRepository: MPConnectivityRepository,
                                                private val sessionRepository: MPSessionRepository,
                                                private val userAccountRepository: MPUserAccountRepository)
 
@@ -47,20 +47,15 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
             }
         }
 
-        _viewStates.addSource(connectivityRepository.data()) { connectivity ->
-            when (connectivity) {
-                is Connectivity.Disconnected -> _viewStates.value = of(NotConnected)
-                is Connectivity.Connected ->  _viewStates.value = of(executeVerifyUserLoggedInStep())
-            }
-        }
+        _viewStates.addSource(connectivityRepository.data()) { connectivity -> withCurrentConnectivity(connectivity)}
     }
 
     fun onInit() {
-        _viewStates.value = of(executeVerifyUserLoggedInStep())
+        executeInit()
     }
 
     fun onUserRetry() {
-        _viewStates.value = of(executeVerifyUserLoggedInStep())
+        executeInit()
     }
 
     val viewStates: LiveData<HandledViewState<UserAccountViewState>> get() = _viewStates
@@ -68,6 +63,17 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
 
     private suspend fun verifyUserLoggedIn() = withContext(dispatchers.default()) { sessionRepository.getCurrentSession() }
     private suspend fun getUserAccount(session: Session) = withContext(dispatchers.default()) { userAccountRepository.getUserAccount(session) }
+
+    private fun withCurrentConnectivity(connectivity: Connectivity) {
+        when (connectivity) {
+            is Connectivity.Disconnected -> _viewStates.value = of(NotConnected)
+            is Connectivity.Connected ->  _viewStates.value = of(executeVerifyUserLoggedInStep())
+        }
+    }
+
+    private fun executeInit() {
+        connectivityRepository.getCurrentConnectivity { connectivity -> withCurrentConnectivity(connectivity)}
+    }
 
     private fun executeVerifyUserLoggedInStep(): UserAccountViewState {
         launch { verifyUserLoggedIn() }

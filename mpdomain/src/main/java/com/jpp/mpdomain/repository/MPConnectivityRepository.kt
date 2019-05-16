@@ -14,4 +14,10 @@ interface MPConnectivityRepository {
      * notifications about [Connectivity] changes.
      */
     fun data(): LiveData<Connectivity>
+
+    /**
+     * Retrieves the current connectivity state instantaneously. Will invoke
+     * [receptor] with the current [Connectivity].
+     */
+    fun getCurrentConnectivity(receptor: (Connectivity) -> Unit)
 }

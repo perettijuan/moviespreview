@@ -14,7 +14,6 @@ import com.jpp.mpdomain.repository.MPConnectivityRepository
  */
 class MPConnectivityRepositoryImpl(monitor: ConnectivityMonitor,
                                    private val context: Context) : MPConnectivityRepository {
-
     private val updates by lazy { MutableLiveData<Connectivity>() }
 
     init {
@@ -22,6 +21,10 @@ class MPConnectivityRepositoryImpl(monitor: ConnectivityMonitor,
     }
 
     override fun data(): LiveData<Connectivity> = updates
+
+    override fun getCurrentConnectivity(receptor: (Connectivity) -> Unit) {
+        receptor(getCurrentConnectivity())
+    }
 
     private fun getCurrentConnectivity(): Connectivity {
         return when (isConnectedToNetwork()) {

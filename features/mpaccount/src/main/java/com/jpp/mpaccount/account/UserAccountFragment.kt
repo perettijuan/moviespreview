@@ -92,7 +92,7 @@ class UserAccountFragment : Fragment() {
         userAccountLoadingView.setInvisible()
         userAccountContentView.setInvisible()
 
-        userAccountErrorView.asNoConnectivityError()
+        userAccountErrorView.asNoConnectivityError { withViewModel { onUserRetry() } }
         userAccountErrorView.setVisible()
     }
 

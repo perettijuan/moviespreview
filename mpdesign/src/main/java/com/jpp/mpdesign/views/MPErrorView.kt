@@ -7,8 +7,6 @@ import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.jpp.mpdesign.R
 import com.jpp.mpdesign.ext.getStringFromResources
-import com.jpp.mpdesign.ext.setInvisible
-import com.jpp.mpdesign.ext.setVisible
 import kotlinx.android.synthetic.main.layout_mp_error_view.view.*
 
 /**
@@ -49,33 +47,16 @@ class MPErrorView : ConstraintLayout {
                 retryAction)
     }
 
-    /**
-     * Prepare the view to be shown as an error detected because of a lack of
-     * internet connectivity.
-     */
-    fun asNoConnectivityError() {
-        setupWith(R.drawable.ic_cloud_off,
-                R.string.error_no_network_connection_message,
-                R.string.error_retry,
-                null)
-    }
 
     private fun setupWith(@DrawableRes errorImageIcon: Int,
                           @StringRes errorTitle: Int,
                           @StringRes errorButton: Int,
-                          retryAction: (() -> Unit)?) {
+                          retryAction: () -> Unit) {
         errorImageView.setImageResource(errorImageIcon)
         errorTitleTextView.apply { text = getStringFromResources(errorTitle) }
-        when (retryAction) {
-            null -> { errorActionButton.setInvisible() }
-            else -> {
-                errorActionButton.apply {
-                    text = getStringFromResources(errorButton)
-                    setOnClickListener { retryAction() }
-                }
-                errorActionButton.setVisible()
-            }
+        errorActionButton.apply {
+            text = getStringFromResources(errorButton)
+            setOnClickListener { retryAction.invoke() }
         }
-
     }
 }
