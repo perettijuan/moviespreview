@@ -59,6 +59,10 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
         _viewStates.value = of(executeVerifyUserLoggedInStep())
     }
 
+    fun onUserRetry() {
+        _viewStates.value = of(executeVerifyUserLoggedInStep())
+    }
+
     val viewStates: LiveData<HandledViewState<UserAccountViewState>> get() = _viewStates
     val navEvents: LiveData<UserAccountNavigationEvent> get() = _navEvents
 

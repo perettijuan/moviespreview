@@ -56,7 +56,7 @@ class UserAccountFragment : Fragment() {
     private fun renderViewState(viewState: UserAccountViewState) {
         when (viewState) {
             is Loading -> renderLoading()
-            is NotConnected -> TODO()
+            is NotConnected -> renderNotConnectedToNetwork()
             is ShowUserAccountData -> {
                 updateHeader(viewState)
                 renderAccountData()
@@ -86,6 +86,14 @@ class UserAccountFragment : Fragment() {
         userAccountLoadingView.setInvisible()
 
         userAccountContentView.setVisible()
+    }
+
+    private fun renderNotConnectedToNetwork() {
+        userAccountLoadingView.setInvisible()
+        userAccountContentView.setInvisible()
+
+        userAccountErrorView.asNoConnectivityError()
+        userAccountErrorView.setVisible()
     }
 
     private fun updateHeader(newContent: ShowUserAccountData) {
