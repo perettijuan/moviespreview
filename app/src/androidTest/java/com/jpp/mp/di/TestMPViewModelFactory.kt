@@ -8,7 +8,7 @@ import io.mockk.mockk
 
 @Suppress("UNCHECKED_CAST")
 class TestMPViewModelFactory(private val viewModels: MutableMap<Class<out ViewModel>, ViewModel> = mutableMapOf(),
-                             mainViewModel: MainActivityViewModel = MainActivityViewModel(),
+                             mainViewModel: MainActivityViewModel = MainActivityViewModel(mockk(relaxed = true)),
                              refreshAppViewModel: RefreshAppViewModel = mockk(relaxed = true))
     : ViewModelProvider.Factory {
 

@@ -1,12 +1,11 @@
 package com.jpp.mp.screens.main.details
 
-import androidx.lifecycle.Observer
-import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.utiltest.resumedLifecycleOwner
 import com.jpp.mp.screens.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.MovieAccountState
 import com.jpp.mpdomain.usecase.account.GetMovieAccountStateUseCase
 import com.jpp.mpdomain.usecase.account.MarkMovieAsFavoriteUseCase
+import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -48,9 +47,7 @@ class MovieActionsViewModelTest {
 
         every { getMovieAccountStateUseCase.getMovieAccountState(any()) } returns ucResponse
 
-        subject.actionsState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.actionsState().observeWith { viewStatePosted.add(it) }
 
         subject.init(movieDetailId)
 
@@ -77,9 +74,7 @@ class MovieActionsViewModelTest {
 
         val viewStatePosted = mutableListOf<MovieActionsState>()
 
-        subject.actionsState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.actionsState().observeWith { viewStatePosted.add(it) }
 
         subject.updateMovieFavoriteState(movieDetailId)
 

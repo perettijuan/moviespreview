@@ -1,8 +1,5 @@
 package com.jpp.mp.screens.main.account
 
-import androidx.lifecycle.Observer
-import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.utiltest.resumedLifecycleOwner
 import com.jpp.mp.screens.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.AccessToken
 import com.jpp.mpdomain.Gravatar
@@ -11,6 +8,8 @@ import com.jpp.mpdomain.UserAvatar
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
 import com.jpp.mpdomain.usecase.session.CreateSessionUseCase
 import com.jpp.mpdomain.usecase.session.GetAuthenticationDataUseCase
+import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -53,9 +52,7 @@ class AccountViewModelTest {
         every { getAccountInfoUseCase.getAccountInfo() } returns GetAccountInfoUseCase.AccountInfoResult.UserNotLoggedIn
         every { getAuthenticationDataUseCase.getAuthenticationData() } returns GetAuthenticationDataUseCase.AuthenticationDataResult.Success(expectedUrl, expectedRedirect, expectedToken)
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init()
 
@@ -63,7 +60,7 @@ class AccountViewModelTest {
         assertTrue(viewStatePosted[0] is AccountViewState.Loading)
         assertTrue(viewStatePosted[1] is AccountViewState.Oauth)
 
-        with (viewStatePosted[1] as AccountViewState.Oauth) {
+        with(viewStatePosted[1] as AccountViewState.Oauth) {
             assertEquals(expectedUrl, url)
             assertEquals(expectedRedirect, interceptUrl)
             assertEquals(expectedToken, accessToken)
@@ -81,9 +78,7 @@ class AccountViewModelTest {
         every { getAccountInfoUseCase.getAccountInfo() } returns GetAccountInfoUseCase.AccountInfoResult.UserNotLoggedIn
         every { getAuthenticationDataUseCase.getAuthenticationData() } returns GetAuthenticationDataUseCase.AuthenticationDataResult.ErrorNoConnectivity
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init()
 
@@ -102,9 +97,7 @@ class AccountViewModelTest {
         every { getAccountInfoUseCase.getAccountInfo() } returns GetAccountInfoUseCase.AccountInfoResult.UserNotLoggedIn
         every { getAuthenticationDataUseCase.getAuthenticationData() } returns GetAuthenticationDataUseCase.AuthenticationDataResult.ErrorUnknown
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init()
 
@@ -128,9 +121,7 @@ class AccountViewModelTest {
 
         every { getAccountInfoUseCase.getAccountInfo() } returns GetAccountInfoUseCase.AccountInfoResult.AccountInfo(account)
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init()
 
@@ -138,7 +129,7 @@ class AccountViewModelTest {
         assertTrue(viewStatePosted[0] is AccountViewState.Loading)
         assertTrue(viewStatePosted[1] is AccountViewState.AccountContent)
 
-        with ((viewStatePosted[1] as AccountViewState.AccountContent).headerItem) {
+        with((viewStatePosted[1] as AccountViewState.AccountContent).headerItem) {
             assertEquals(hash, avatarUrl)
             assertEquals(expectedUserName, userName)
             assertEquals(expectedAccountName, accountName)
@@ -154,9 +145,7 @@ class AccountViewModelTest {
 
         every { getAccountInfoUseCase.getAccountInfo() } returns GetAccountInfoUseCase.AccountInfoResult.ErrorNoConnectivity
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init()
 
@@ -171,9 +160,7 @@ class AccountViewModelTest {
 
         every { getAccountInfoUseCase.getAccountInfo() } returns GetAccountInfoUseCase.AccountInfoResult.ErrorUnknown
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init()
 

@@ -1,12 +1,10 @@
 package com.jpp.mpdomain.usecase.support
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.utiltest.observeWith
-import com.jpp.mp.utiltest.resumedLifecycleOwner
 import com.jpp.mpdomain.repository.AccountRepository
 import com.jpp.mpdomain.repository.LanguageRepository
+import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK

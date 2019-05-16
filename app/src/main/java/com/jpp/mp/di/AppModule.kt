@@ -2,8 +2,8 @@ package com.jpp.mp.di
 
 import android.content.Context
 import com.jpp.mp.MPApp
-import com.jpp.mp.screens.CoroutineDispatchers
-import com.jpp.mp.screens.CoroutineDispatchersImpl
+import com.jpp.mp.common.coroutines.CoroutineDispatchers
+import com.jpp.mp.common.coroutines.CoroutineDispatchersImpl
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

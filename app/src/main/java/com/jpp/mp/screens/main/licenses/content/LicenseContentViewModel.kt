@@ -2,8 +2,8 @@ package com.jpp.mp.screens.main.licenses.content
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.screens.CoroutineDispatchers
-import com.jpp.mp.screens.MPScopedViewModel
+import com.jpp.mp.common.coroutines.CoroutineDispatchers
+import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mpdomain.usecase.licenses.GetLicenceResult
 import com.jpp.mpdomain.usecase.licenses.GetLicenseUseCase
 import kotlinx.coroutines.launch

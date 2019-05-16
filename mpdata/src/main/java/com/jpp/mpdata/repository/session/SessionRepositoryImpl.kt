@@ -1,5 +1,7 @@
 package com.jpp.mpdata.repository.session
 
+import com.jpp.mpdata.datasources.session.SessionApi
+import com.jpp.mpdata.datasources.session.SessionDb
 import com.jpp.mpdomain.AccessToken
 import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.repository.SessionRepository

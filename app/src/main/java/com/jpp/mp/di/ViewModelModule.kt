@@ -21,6 +21,7 @@ import com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
 import com.jpp.mp.screens.main.person.PersonViewModel
 import com.jpp.mp.screens.main.search.SearchFragmentViewModel
+import com.jpp.mpaccount.login.LoginViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -128,4 +129,13 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(UserMoviesViewModel::class)
     internal abstract fun getFavoriteMoviesViewModel(viewModel: UserMoviesViewModel): ViewModel
+
+
+    /*
+     * User account feature injections
+     */
+    @Binds
+    @IntoMap
+    @ViewModelKey(LoginViewModel::class)
+    internal abstract fun getLoginViewModel(viewModel: LoginViewModel): ViewModel
 }

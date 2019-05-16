@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mp.paging.MPPagingDataSourceFactory
-import com.jpp.mp.screens.SingleLiveEvent
+import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.usecase.account.GetFavoriteMoviesUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase

@@ -1,0 +1,50 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    // Kotlin standard libs
+    implementation deps.kotlin.stdlib
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Kotlin coroutines
+    implementation deps.coroutines.core
+    implementation deps.coroutines.android
+
+    // ViewModel and LiveData
+    implementation deps.androidx.lifecycle.extensions
+    kapt deps.androidx.lifecycle.compiler
+
+    def androidTestLibVersion = '1.1.0'
+    testImplementation "androidx.test:core:$androidTestLibVersion"
+
+    // Junit 5
+    testImplementation deps.test.junit5.jupiter.api
+    testImplementation deps.test.junit5.jupiter.params
+    testRuntimeOnly deps.test.junit5.jupiter.engine
+
+    // MockK
+    testImplementation deps.test.mockk.unit
+
+    // Include testing utils
+    testImplementation project(path: ':mptestutils')
+}

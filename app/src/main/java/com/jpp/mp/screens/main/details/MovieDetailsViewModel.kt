@@ -2,9 +2,9 @@ package com.jpp.mp.screens.main.details
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.screens.CoroutineDispatchers
-import com.jpp.mp.screens.MPScopedViewModel
-import com.jpp.mp.screens.SingleLiveEvent
+import com.jpp.mp.common.coroutines.CoroutineDispatchers
+import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase

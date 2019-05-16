@@ -1,13 +1,12 @@
 package com.jpp.mp.screens.main.header
 
-import androidx.lifecycle.Observer
-import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.utiltest.resumedLifecycleOwner
 import com.jpp.mp.screens.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.UserAvatar
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
+import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -45,9 +44,7 @@ class NavigationHeaderViewModelTest {
 
         every { getAccountInfoUseCase.getAccountInfo() } returns GetAccountInfoUseCase.AccountInfoResult.AccountInfo(userAccount)
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init()
 
@@ -70,9 +67,7 @@ class NavigationHeaderViewModelTest {
 
         every { getAccountInfoUseCase.getAccountInfo() } returns GetAccountInfoUseCase.AccountInfoResult.ErrorNoConnectivity
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init()
 
@@ -88,9 +83,7 @@ class NavigationHeaderViewModelTest {
 
         every { getAccountInfoUseCase.getAccountInfo() } returns GetAccountInfoUseCase.AccountInfoResult.ErrorUnknown
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init()
 
@@ -105,9 +98,7 @@ class NavigationHeaderViewModelTest {
 
         every { getAccountInfoUseCase.getAccountInfo() } returns GetAccountInfoUseCase.AccountInfoResult.UserNotLoggedIn
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init()
 

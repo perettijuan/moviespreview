@@ -3,11 +3,10 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 28
-
+    compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 28
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
     }
@@ -19,27 +18,15 @@ android {
         }
     }
 
-
     kotlinOptions {
         jvmTarget = '1.8'
-    }
-
-    sourceSets {
-        /*
-         * Include test sources that are located in the common project
-         */
-        test {
-            java.srcDirs += getCommonTestResources()
-            java.srcDirs += getCommonJunit5TestResources()
-        }
     }
 }
 
 dependencies {
     implementation deps.kotlin.stdlib
 
-    // Common module -> DO NOT leak dependency
-    implementation project(path: ':common')
+    implementation project(path: ':mpcommon')
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -51,6 +38,9 @@ dependencies {
     testImplementation deps.test.junit5.jupiter.params      // <-- allows running JUnit5 parameterized tests
     testRuntimeOnly deps.test.junit5.jupiter.engine         // <-- allows running JUnit5 tests
     testImplementation deps.test.mockk.unit
+
+    // Include testing utils
+    testImplementation project(path: ':mptestutils')
 }
 
 afterEvaluate {

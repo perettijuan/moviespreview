@@ -1,13 +1,12 @@
 package com.jpp.mp.screens.main.licenses
 
-import androidx.lifecycle.Observer
-import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.utiltest.resumedLifecycleOwner
 import com.jpp.mp.screens.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.License
 import com.jpp.mpdomain.Licenses
 import com.jpp.mpdomain.usecase.licenses.GetAppLicensesUseCase
 import com.jpp.mpdomain.usecase.licenses.GetLicensesResult
+import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -63,9 +62,7 @@ class LicensesViewModelTest {
 
         every { getAppLicensesUseCase.getAppLicences() } returns GetLicensesResult.Success(Licenses(availableLicenses))
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init()
 
@@ -81,9 +78,7 @@ class LicensesViewModelTest {
 
         every { getAppLicensesUseCase.getAppLicences() } returns GetLicensesResult.ErrorUnknown
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatePosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatePosted.add(it) }
 
         subject.init()
 
@@ -119,13 +114,13 @@ class LicensesViewModelTest {
         val reqLicenseId = 12
 
 
-        subject.navEvents().observe(resumedLifecycleOwner(), Observer {
+        subject.navEvents().observeWith {
             assertTrue(it is LicensesNavEvent.ToLicenseContent)
             with(it as LicensesNavEvent.ToLicenseContent) {
                 assertEquals(reqLicenceName, licenseName)
                 assertEquals(reqLicenseId, licenseId)
             }
-        })
+        }
 
         subject.onUserSelectedLicense(LicenseItem(id = reqLicenseId, name = reqLicenceName))
     }

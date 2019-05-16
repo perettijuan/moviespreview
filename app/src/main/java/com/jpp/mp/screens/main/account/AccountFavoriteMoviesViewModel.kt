@@ -2,8 +2,8 @@ package com.jpp.mp.screens.main.account
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.screens.CoroutineDispatchers
-import com.jpp.mp.screens.MPScopedViewModel
+import com.jpp.mp.common.coroutines.CoroutineDispatchers
+import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mpdomain.usecase.account.GetFavoriteMoviesUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import kotlinx.coroutines.launch

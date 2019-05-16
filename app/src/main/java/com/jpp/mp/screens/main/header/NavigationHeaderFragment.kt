@@ -76,7 +76,7 @@ class NavigationHeaderFragment : Fragment() {
 
     private fun navigateToLogin() {
         activity?.let {
-            findNavController(it, R.id.mainNavHostFragment).navigate(R.id.accountFragment)
+            findNavController(it, R.id.mainNavHostFragment).navigate(R.id.user_account_nav)
         }
     }
 

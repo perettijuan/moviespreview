@@ -1,20 +1,31 @@
 package com.jpp.mp.screens.main
 
-import androidx.lifecycle.Observer
-import com.jpp.mp.utiltest.InstantTaskExecutorExtension
-import com.jpp.mp.utiltest.resumedLifecycleOwner
+import com.jpp.mpdata.datasources.connectivity.ConnectivityMonitor
+import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.observeWith
+import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(InstantTaskExecutorExtension::class)
+@ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
 class MainActivityViewModelTest {
 
-    private val subject = MainActivityViewModel()
+    @RelaxedMockK
+    private lateinit var connectivityMonitor: ConnectivityMonitor
+
+    private lateinit var subject: MainActivityViewModel
+
+    @BeforeEach
+    fun setUp() {
+        subject = MainActivityViewModel(connectivityMonitor)
+    }
 
     @Test
     fun `Should lock ActionBar without animation when user navigates to movies list`() {
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
+        subject.viewState().observeWith {
             assertTrue(it is MainActivityViewState.ActionBarLocked)
             with(it as MainActivityViewState.ActionBarLocked) {
                 assertEquals("aSection", abTitle)
@@ -22,7 +33,7 @@ class MainActivityViewModelTest {
                 assertTrue(menuEnabled)
                 assertFalse(searchEnabled)
             }
-        })
+        }
         subject.userNavigatesToMovieListSection("aSection")
     }
 
@@ -32,9 +43,7 @@ class MainActivityViewModelTest {
         // navigate to details to pre-set the ActionBar state as unlocked
         subject.userNavigatesToMovieDetails(movieTitle = "aTitle", contentImageUrl = "aUrl")
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatesPosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatesPosted.add(it) }
 
         subject.userNavigatesToMovieListSection("aSection")
 
@@ -49,26 +58,26 @@ class MainActivityViewModelTest {
 
     @Test
     fun `Should unlock ActionBar when user navigates to details`() {
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
+        subject.viewState().observeWith {
             assertTrue(it is MainActivityViewState.ActionBarUnlocked)
             with(it as MainActivityViewState.ActionBarUnlocked) {
                 assertEquals("aTitle", abTitle)
                 assertEquals("aUrl", contentImageUrl)
                 assertFalse(searchEnabled)
             }
-        })
+        }
         subject.userNavigatesToMovieDetails(movieTitle = "aTitle", contentImageUrl = "aUrl")
     }
 
     @Test
     fun `Should navigate to search section without ActionBar animation when user opens search`() {
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
+        subject.viewState().observeWith {
             assertTrue(it is MainActivityViewState.ActionBarLocked)
             with(it as MainActivityViewState.ActionBarLocked) {
                 assertFalse(withAnimation)
                 assertTrue(searchEnabled)
             }
-        })
+        }
         subject.userNavigatesToSearch()
     }
 
@@ -78,9 +87,7 @@ class MainActivityViewModelTest {
         // navigate to details to pre-set the ActionBar state as unlocked
         subject.userNavigatesToMovieDetails(movieTitle = "aTitle", contentImageUrl = "aUrl")
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatesPosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatesPosted.add(it) }
 
         subject.userNavigatesToSearch()
 
@@ -94,7 +101,7 @@ class MainActivityViewModelTest {
     @Test
     fun `Should lock ActionBar without animation when user navigates to movies person`() {
         val personName = "aPerson"
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
+        subject.viewState().observeWith {
             assertTrue(it is MainActivityViewState.ActionBarLocked)
             with(it as MainActivityViewState.ActionBarLocked) {
                 assertEquals(personName, abTitle)
@@ -102,7 +109,7 @@ class MainActivityViewModelTest {
                 assertFalse(menuEnabled)
                 assertFalse(searchEnabled)
             }
-        })
+        }
         subject.userNavigatesToPerson(personName)
     }
 
@@ -114,9 +121,7 @@ class MainActivityViewModelTest {
         subject.userNavigatesToMovieDetails(movieTitle = "aTitle", contentImageUrl = "aUrl")
 
         val creditsName = "credits"
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            viewStatesPosted.add(it)
-        })
+        subject.viewState().observeWith { viewStatesPosted.add(it) }
         subject.userNavigatesToCredits(creditsName)
 
         assertTrue(viewStatesPosted[1] is MainActivityViewState.ActionBarLocked)
@@ -131,7 +136,7 @@ class MainActivityViewModelTest {
     @Test
     fun `Should lock ActionBar without animation when user navigates to movies about`() {
         val sectionName = "aSection"
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
+        subject.viewState().observeWith {
             assertTrue(it is MainActivityViewState.ActionBarLocked)
             with(it as MainActivityViewState.ActionBarLocked) {
                 assertEquals(sectionName, abTitle)
@@ -139,14 +144,14 @@ class MainActivityViewModelTest {
                 assertFalse(menuEnabled)
                 assertFalse(searchEnabled)
             }
-        })
+        }
         subject.userNavigatesToAbout(sectionName)
     }
 
     @Test
     fun `Should lock ActionBar without animation when user navigates to movies licenses`() {
         val sectionName = "aSection"
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
+        subject.viewState().observeWith {
             assertTrue(it is MainActivityViewState.ActionBarLocked)
             with(it as MainActivityViewState.ActionBarLocked) {
                 assertEquals(sectionName, abTitle)
@@ -154,14 +159,14 @@ class MainActivityViewModelTest {
                 assertFalse(menuEnabled)
                 assertFalse(searchEnabled)
             }
-        })
+        }
         subject.userNavigatesToLicenses(sectionName)
     }
 
     @Test
     fun `Should lock ActionBar without animation when user navigates to movies licenses content`() {
         val sectionName = "aSection"
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
+        subject.viewState().observeWith {
             assertTrue(it is MainActivityViewState.ActionBarLocked)
             with(it as MainActivityViewState.ActionBarLocked) {
                 assertEquals(sectionName, abTitle)
@@ -169,14 +174,14 @@ class MainActivityViewModelTest {
                 assertFalse(menuEnabled)
                 assertFalse(searchEnabled)
             }
-        })
+        }
         subject.userNavigatesToLicenseContent(sectionName)
     }
 
     @Test
     fun `Should lock ActionBar without animation when user navigates to account details`() {
         val sectionName = "aSection"
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
+        subject.viewState().observeWith {
             assertTrue(it is MainActivityViewState.ActionBarLocked)
             with(it as MainActivityViewState.ActionBarLocked) {
                 assertEquals(sectionName, abTitle)
@@ -184,7 +189,7 @@ class MainActivityViewModelTest {
                 assertFalse(menuEnabled)
                 assertFalse(searchEnabled)
             }
-        })
+        }
         subject.userNavigatesToAccountDetails(sectionName)
     }
 
