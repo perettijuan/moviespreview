@@ -23,9 +23,9 @@ sealed class UserAccountViewState {
     object ShowError : UserAccountViewState()
 
     /*
-     * Shows the header data of the user's account.
+     * Shows the user account data.
      */
-    data class ShowHeader(
+    data class ShowUserAccountData(
             val avatarUrl: String,
             val userName: String,
             val accountName: String,

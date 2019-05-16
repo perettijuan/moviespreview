@@ -114,6 +114,7 @@ fun ImageView.loadImageUrl(imageUrl: String,
  * Loads an image retrieved from the provided [imageUrl]
  * into the ImageView as a circular image.
  */
+@Deprecated("use common instead")
 fun ImageView.loadImageUrlAsCircular(imageUrl: String,
                                      @DrawableRes placeholderRes: Int = R.drawable.ic_app_icon_black,
                                      @DrawableRes errorImageRes: Int = R.drawable.ic_error_black,

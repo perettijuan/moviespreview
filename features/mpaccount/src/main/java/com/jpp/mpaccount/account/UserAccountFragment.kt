@@ -17,8 +17,10 @@ import kotlinx.android.synthetic.main.fragment_user_account.*
 import javax.inject.Inject
 import com.jpp.mpaccount.account.UserAccountNavigationEvent.*
 import com.jpp.mpaccount.account.UserAccountViewState.*
+import com.jpp.mpdesign.ext.loadImageUrlAsCircular
 import com.jpp.mpdesign.ext.setInvisible
 import com.jpp.mpdesign.ext.setVisible
+import kotlinx.android.synthetic.main.layout_user_account_header.*
 
 class UserAccountFragment : Fragment() {
 
@@ -55,7 +57,10 @@ class UserAccountFragment : Fragment() {
         when (viewState) {
             is Loading -> renderLoading()
             is NotConnected -> TODO()
-            is ShowHeader -> Toast.makeText(requireContext(), "yayyyy", Toast.LENGTH_LONG).show()
+            is ShowUserAccountData -> {
+                updateHeader(viewState)
+                renderAccountData()
+            }
             is ShowError -> Toast.makeText(requireContext(), "Error", Toast.LENGTH_LONG).show()
         }
     }
@@ -71,7 +76,27 @@ class UserAccountFragment : Fragment() {
 
     private fun renderLoading() {
         userAccountErrorView.setInvisible()
+        userAccountContentView.setInvisible()
 
         userAccountLoadingView.setVisible()
+    }
+
+    private fun renderAccountData() {
+        userAccountErrorView.setInvisible()
+        userAccountLoadingView.setInvisible()
+
+        userAccountContentView.setVisible()
+    }
+
+    private fun updateHeader(newContent: ShowUserAccountData) {
+        with(newContent) {
+            userAccountHeaderIv.loadImageUrlAsCircular(avatarUrl) {
+                userAccountNameInitialTv.setVisible()
+                userAccountHeaderIv.setInvisible()
+            }
+            userAccountHeaderUserNameTv.text = userName
+            userAccountHeaderAccountNameTv.text = accountName
+            userAccountNameInitialTv.text = defaultLetter.toString()
+        }
     }
 }

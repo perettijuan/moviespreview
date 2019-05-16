@@ -14,6 +14,7 @@ import javax.inject.Inject
 import com.jpp.mpdomain.repository.MPSessionRepository.SessionData.*
 import com.jpp.mpaccount.account.UserAccountNavigationEvent.*
 import com.jpp.mpaccount.account.UserAccountViewState.*
+import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.repository.MPUserAccountRepository
@@ -75,8 +76,8 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
     }
 
     private fun mapAccountInfo(userAccount: UserAccount) = with(userAccount) {
-        ShowHeader(
-                avatarUrl = avatar.gravatar.hash,
+        ShowUserAccountData(
+                avatarUrl = Gravatar.BASE_URL + userAccount.avatar.gravatar.hash  + Gravatar.REDIRECT,
                 userName = if (name.isEmpty()) username else name,
                 accountName = username,
                 defaultLetter = if (name.isEmpty()) username.first() else name.first()

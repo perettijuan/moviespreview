@@ -1,7 +1,14 @@
 package com.jpp.mpdesign.ext
 
+import android.graphics.drawable.BitmapDrawable
 import android.view.View
+import android.widget.ImageView
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import com.jpp.mpdesign.R
+import com.squareup.picasso.Callback
+import com.squareup.picasso.Picasso
 
 /**
  * Extension function to retrieve a String from the appModule resources.
@@ -35,4 +42,36 @@ fun View.setGone() {
  */
 fun View.setInvisible() {
     this.visibility = View.INVISIBLE
+}
+
+
+/**
+ * Loads an image retrieved from the provided [imageUrl]
+ * into the ImageView as a circular image.
+ */
+fun ImageView.loadImageUrlAsCircular(imageUrl: String,
+                                     @DrawableRes placeholderRes: Int = R.drawable.ic_app_icon_black,
+                                     @DrawableRes errorImageRes: Int = R.drawable.ic_error_black,
+                                     onErrorAction: (() -> Unit)? = null) {
+    Picasso
+            .with(context)
+            .load(imageUrl)
+            .fit()
+            .centerCrop()
+            .placeholder(placeholderRes)
+            .error(errorImageRes)
+            .into(this, object : Callback {
+                override fun onSuccess() {
+                    val imageAsBitmap = (drawable as BitmapDrawable).bitmap
+                    val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(resources, imageAsBitmap)
+                    roundedBitmapDrawable.isCircular = true
+                    roundedBitmapDrawable.cornerRadius = Math.max(imageAsBitmap.width.toDouble(), imageAsBitmap.height / 2.0).toFloat()
+                    setImageDrawable(roundedBitmapDrawable)
+                }
+
+                override fun onError() {
+                    onErrorAction?.invoke()
+                }
+            })
+
 }
