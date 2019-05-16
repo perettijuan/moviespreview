@@ -15,6 +15,7 @@ import com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
 import com.jpp.mp.screens.main.person.PersonFragment
 import com.jpp.mp.screens.main.search.SearchFragment
+import com.jpp.mpaccount.account.UserAccountFragment
 import com.jpp.mpaccount.login.LoginFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -60,12 +61,17 @@ abstract class BuildersModule {
     @ContributesAndroidInjector
     abstract fun bindNavigationHeaderFragment(): NavigationHeaderFragment
 
+    //TODO JPP remove this
     @ContributesAndroidInjector
     abstract fun bindAccountFragment(): AccountFragment
 
+    //TODO JPP remove this
     @ContributesAndroidInjector
     abstract fun bindFavoriteMoviesFragment(): UserMoviesFragment
 
     @ContributesAndroidInjector
     abstract fun bindLoginFragment(): LoginFragment
+
+    @ContributesAndroidInjector
+    abstract fun bindUserAccountFragment(): UserAccountFragment
 }

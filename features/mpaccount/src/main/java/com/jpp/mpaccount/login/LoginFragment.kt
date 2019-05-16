@@ -73,6 +73,15 @@ class LoginFragment : Fragment() {
         }
     }
 
+    /**
+     * Reacts to the navigation event provided.
+     */
+    private fun reactToNavEvent(navEvent: LoginNavigationEvent) {
+        when (navEvent) {
+            is LoginNavigationEvent.BackToPrevious -> findNavController().popBackStack()
+        }
+    }
+
     private fun renderOauthState(oauthState: LoginViewState.ShowOauth) {
         accountWebView.apply {
             settings.apply {
@@ -120,12 +129,6 @@ class LoginFragment : Fragment() {
         accountWebView.setInvisible()
 
         loginLoadingView.setVisible()
-    }
-
-    private fun reactToNavEvent(navEvent: LoginNavigationEvent) {
-        when (navEvent) {
-            is LoginNavigationEvent.BackToPrevious -> findNavController().popBackStack()
-        }
     }
 
 

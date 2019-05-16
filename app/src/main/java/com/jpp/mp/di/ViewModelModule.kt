@@ -21,6 +21,7 @@ import com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
 import com.jpp.mp.screens.main.person.PersonViewModel
 import com.jpp.mp.screens.main.search.SearchFragmentViewModel
+import com.jpp.mpaccount.account.UserAccountViewModel
 import com.jpp.mpaccount.login.LoginViewModel
 import dagger.Binds
 import dagger.Module
@@ -115,16 +116,19 @@ abstract class ViewModelModule {
     @ViewModelKey(NavigationHeaderViewModel::class)
     internal abstract fun postNavigationHeaderViewModel(viewModel: NavigationHeaderViewModel): ViewModel
 
+    //TODO JPP remove this
     @Binds
     @IntoMap
     @ViewModelKey(AccountViewModel::class)
     internal abstract fun getAccountViewModel(viewModel: AccountViewModel): ViewModel
 
+    //TODO JPP remove this
     @Binds
     @IntoMap
     @ViewModelKey(AccountFavoriteMoviesViewModel::class)
     internal abstract fun getAccountFavoriteMoviesViewModel(viewModel: AccountFavoriteMoviesViewModel): ViewModel
 
+    //TODO JPP remove this
     @Binds
     @IntoMap
     @ViewModelKey(UserMoviesViewModel::class)
@@ -138,4 +142,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(LoginViewModel::class)
     internal abstract fun getLoginViewModel(viewModel: LoginViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(UserAccountViewModel::class)
+    internal abstract fun getUserAccountViewModel(viewModel: UserAccountViewModel): ViewModel
 }

@@ -86,12 +86,12 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             reminder = asReminder
     )
 
-    private fun executeAccessTokenStep() : LoginViewState  {
+    private fun executeAccessTokenStep(): LoginViewState {
         launch { getAccessToken() }
         return LoginViewState.Loading
     }
 
-    private fun executeCreateSessionStep(accessToken: AccessToken) :LoginViewState {
+    private fun executeCreateSessionStep(accessToken: AccessToken): LoginViewState {
         launch { createSession(accessToken) }
         return LoginViewState.Loading
     }
