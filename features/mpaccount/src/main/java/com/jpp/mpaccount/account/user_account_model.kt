@@ -13,9 +13,24 @@ sealed class UserAccountViewState {
      */
     object NotConnected : UserAccountViewState()
     /*
-     * Shown when the VM indicates that a work is in progress.
+     * Shows when the VM indicates that a work is in progress.
      */
     object Loading : UserAccountViewState()
+
+    /*
+     * Shows the generic error screen.
+     */
+    object ShowError : UserAccountViewState()
+
+    /*
+     * Shows the header data of the user's account.
+     */
+    data class ShowHeader(
+            val avatarUrl: String,
+            val userName: String,
+            val accountName: String,
+            val defaultLetter: Char
+    ) : UserAccountViewState()
 }
 
 /**

@@ -17,6 +17,7 @@ import com.jpp.mpdata.repository.account.AccountRepositoryImpl
 import com.jpp.mpdata.datasources.session.SessionApi
 import com.jpp.mpdata.datasources.session.SessionDb
 import com.jpp.mpdata.datasources.tokens.AccessTokenApi
+import com.jpp.mpdata.repository.account.MPUserAccountRepositoryImpl
 import com.jpp.mpdata.repository.session.SessionRepositoryImpl
 import com.jpp.mpdata.repository.appversion.AppVersionRepositoryImpl
 import com.jpp.mpdata.repository.configuration.ConfigurationApi
@@ -277,6 +278,11 @@ class DataLayerModule {
     @Singleton
     @Provides
     fun providesAccountRepository(accountApi: AccountApi, accountDb: AccountDb): AccountRepository = AccountRepositoryImpl(accountApi, accountDb)
+
+    @Singleton
+    @Provides
+    fun providesUserAccountRepository(accountApi: AccountApi, accountDb: AccountDb)
+            : MPUserAccountRepository = MPUserAccountRepositoryImpl(accountApi, accountDb)
 
     /***************************************
      ****** ACCESS TOKEN DEPENDENCIES ******

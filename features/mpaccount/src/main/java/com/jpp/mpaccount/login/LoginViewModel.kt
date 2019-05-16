@@ -50,8 +50,8 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
         _viewStates.addSource(connectivityRepository.data()) {connectivity ->
             when (connectivity) {
-                is Connectivity.Disconnected -> { _viewStates.value = of(LoginViewState.NotConnected) }
-                is Connectivity.Connected -> { launch { verifyUserLoggedIn() } }
+                is Connectivity.Disconnected -> _viewStates.value = of(LoginViewState.NotConnected)
+                is Connectivity.Connected ->  launch { verifyUserLoggedIn() }
             }
         }
     }

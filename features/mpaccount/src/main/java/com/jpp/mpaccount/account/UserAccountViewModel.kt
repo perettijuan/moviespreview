@@ -14,12 +14,17 @@ import javax.inject.Inject
 import com.jpp.mpdomain.repository.MPSessionRepository.SessionData.*
 import com.jpp.mpaccount.account.UserAccountNavigationEvent.*
 import com.jpp.mpaccount.account.UserAccountViewState.*
+import com.jpp.mpdomain.Session
+import com.jpp.mpdomain.UserAccount
+import com.jpp.mpdomain.repository.MPUserAccountRepository
+import com.jpp.mpdomain.repository.MPUserAccountRepository.UserAccountData.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                                connectivityRepository: MPConnectivityRepository,
-                                               private val sessionRepository: MPSessionRepository)
+                                               private val sessionRepository: MPSessionRepository,
+                                               private val userAccountRepository: MPUserAccountRepository)
 
     : MPScopedViewModel(dispatchers) {
 
@@ -30,13 +35,21 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
         _viewStates.addSource(sessionRepository.data()) { sessionData ->
             when (sessionData) {
                 is NoCurrentSessionAvailable -> _navEvents.value = GoToLogin
+                is CurrentSession -> _viewStates.value = of(executeGetUserAccountStep(sessionData.data))
+            }
+        }
+
+        _viewStates.addSource(userAccountRepository.data()) { accountData ->
+            when (accountData) {
+                is Success -> _viewStates.value = of(mapAccountInfo(accountData.data))
+                is NoUserAccountData -> _viewStates.value = of(ShowError)
             }
         }
 
         _viewStates.addSource(connectivityRepository.data()) { connectivity ->
             when (connectivity) {
-                is Connectivity.Disconnected -> { _viewStates.value = of(NotConnected) }
-                is Connectivity.Connected -> { TODO() }
+                is Connectivity.Disconnected -> _viewStates.value = of(NotConnected)
+                is Connectivity.Connected ->  _viewStates.value = of(executeVerifyUserLoggedInStep())
             }
         }
     }
@@ -49,9 +62,24 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
     val navEvents: LiveData<UserAccountNavigationEvent> get() = _navEvents
 
     private suspend fun verifyUserLoggedIn() = withContext(dispatchers.default()) { sessionRepository.getCurrentSession() }
+    private suspend fun getUserAccount(session: Session) = withContext(dispatchers.default()) { userAccountRepository.getUserAccount(session) }
 
     private fun executeVerifyUserLoggedInStep(): UserAccountViewState {
         launch { verifyUserLoggedIn() }
         return Loading
+    }
+
+    private fun executeGetUserAccountStep(session: Session): UserAccountViewState {
+        launch { getUserAccount(session) }
+        return Loading
+    }
+
+    private fun mapAccountInfo(userAccount: UserAccount) = with(userAccount) {
+        ShowHeader(
+                avatarUrl = avatar.gravatar.hash,
+                userName = if (name.isEmpty()) username else name,
+                accountName = username,
+                defaultLetter = if (name.isEmpty()) username.first() else name.first()
+        )
     }
 }
