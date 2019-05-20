@@ -52,4 +52,7 @@ dependencies {
     def constraintLayoutVersion = '2.0.0-alpha3'
     api "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
     api "androidx.constraintlayout:constraintlayout-solver:$constraintLayoutVersion"
+
+    // image loading library Picasso
+    implementation "com.squareup.picasso:picasso:2.5.2"
 }
