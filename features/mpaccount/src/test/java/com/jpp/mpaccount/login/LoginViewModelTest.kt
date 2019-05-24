@@ -3,10 +3,6 @@ package com.jpp.mpaccount.login
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mpaccount.TestAccountCoroutineDispatchers
 import com.jpp.mpdomain.AccessToken
-import com.jpp.mpdomain.Connectivity
-import com.jpp.mpdomain.repository.AccessTokenRepository
-import com.jpp.mpdomain.repository.MPConnectivityRepository
-import com.jpp.mpdomain.repository.MPSessionRepository
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
@@ -23,32 +19,23 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
 class LoginViewModelTest {
 
-    @MockK
-    private lateinit var connectivityRepository: MPConnectivityRepository
     @RelaxedMockK
-    private lateinit var sessionRepository: MPSessionRepository
-    @RelaxedMockK
-    private lateinit var accessTokenRepository: AccessTokenRepository
+    private lateinit var loginInteractor: LoginInteractor
 
-
-    private val lvSession = MutableLiveData<MPSessionRepository.SessionData>()
-    private val lvAccessToken = MutableLiveData<AccessTokenRepository.AccessTokenData>()
-    private val lvConnectivity = MutableLiveData<Connectivity>()
+    private val lvLoginEvent = MutableLiveData<LoginInteractor.LoginEvent>()
+    private val lvOauthEvent = MutableLiveData<LoginInteractor.OauthEvent>()
 
     private lateinit var subject: LoginViewModel
 
 
     @BeforeEach
     fun setUp() {
-        every { connectivityRepository.data() } returns lvConnectivity
-        every { sessionRepository.data() } returns lvSession
-        every { accessTokenRepository.data() } returns lvAccessToken
+        every { loginInteractor.loginEvents } returns lvLoginEvent
+        every { loginInteractor.oauthEvents } returns lvOauthEvent
 
         subject = LoginViewModel(
                 TestAccountCoroutineDispatchers(),
-                connectivityRepository,
-                sessionRepository,
-                accessTokenRepository
+                loginInteractor
         )
 
         /*
@@ -60,170 +47,188 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `Should navigate to previews when a session is available`() {
-        var eventPosted: LoginNavigationEvent? = null
-
-        subject.navEvents.observeWith { eventPosted = it }
-
-        lvSession.postValue(MPSessionRepository.SessionData.CurrentSession(mockk()))
-
-        assertEquals(LoginNavigationEvent.RemoveLogin, eventPosted)
-    }
-
-    @Test
-    fun `Should navigate to previews when a session is created`() {
-        var eventPosted: LoginNavigationEvent? = null
-
-        subject.navEvents.observeWith { eventPosted = it }
-
-        lvSession.postValue(MPSessionRepository.SessionData.SessionCreated(mockk()))
-
-        assertEquals(LoginNavigationEvent.RemoveLogin, eventPosted)
-    }
-
-    @Test
-    fun `Should push loading view state and retrieve access token when there's no session available`() {
+    fun `Should show not connected when disconnection detected during login`() {
         var viewStatePosted: LoginViewState? = null
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
-        lvSession.postValue(MPSessionRepository.SessionData.NoCurrentSessionAvailable)
-
-        assertEquals(LoginViewState.ShowLoading, viewStatePosted)
-        verify { accessTokenRepository.getAccessToken() }
-    }
-
-    @Test
-    fun `Should push unable to login when an error occurs while creating session`() {
-        var viewStatePosted: LoginViewState? = null
-
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
-
-        lvSession.postValue(MPSessionRepository.SessionData.UnableToCreateSession)
-
-        assertEquals(LoginViewState.ShowLoginError, viewStatePosted)
-    }
-
-    @Test
-    fun `Should push Oauth first step when an access token can be retrieved`() {
-        val expectedUrl = "https://www.themoviedb.org/authenticate//aRequestToken?redirect_to=http://www.mp.com/approved"
-        val expectedRedirectionUrl = "http://www.mp.com/approved"
-        val accessTokenCreated = AccessToken(
-                success = true,
-                request_token = "aRequestToken",
-                expires_at = "expirationDate"
-        )
-        var viewStatePosted: LoginViewState? = null
-
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
-
-        lvAccessToken.postValue(AccessTokenRepository.AccessTokenData.Success(accessTokenCreated))
-
-        assertTrue(viewStatePosted is LoginViewState.ShowOauth)
-        with (viewStatePosted as LoginViewState.ShowOauth) {
-            assertEquals(expectedUrl, url)
-            assertEquals(expectedRedirectionUrl, interceptUrl)
-            assertEquals(accessTokenCreated, accessToken)
-            assertFalse(reminder)
-        }
-    }
-
-    @Test
-    fun `Should push unable to login when an error occurs while fetching an access token`() {
-        var viewStatePosted: LoginViewState? = null
-
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
-
-        lvAccessToken.postValue(AccessTokenRepository.AccessTokenData.NoAccessTokenAvailable)
-
-        assertEquals(LoginViewState.ShowLoginError, viewStatePosted)
-    }
-
-    @Test
-    fun `Should push not connected when a disconnection event is detected`() {
-        var viewStatePosted: LoginViewState? = null
-
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
-
-        lvConnectivity.postValue(Connectivity.Disconnected)
+        lvLoginEvent.postValue(LoginInteractor.LoginEvent.NotConnectedToNetwork)
 
         assertEquals(LoginViewState.ShowNotConnected, viewStatePosted)
     }
 
     @Test
-    fun `Should verify if user logged in when re-connection event is detected`() {
-        lvConnectivity.postValue(Connectivity.Connected)
+    fun `Should navigate to previews screen when login is successful`() {
+        var eventPosted: LoginNavigationEvent? = null
 
-        verify { sessionRepository.getCurrentSession() }
+        subject.navEvents.observeWith { eventPosted = it }
+
+        lvLoginEvent.postValue(LoginInteractor.LoginEvent.LoginSuccessful)
+
+        assertEquals(LoginNavigationEvent.RemoveLogin, eventPosted)
     }
 
     @Test
-    fun `Should verify if user logged in on init`() {
-        subject.onInit()
-
-        verify { sessionRepository.getCurrentSession() }
-    }
-
-    @Test
-    fun `Should post loading and create session when user redirected with approval`() {
-        val redirectUrl = "https://somewrb.com?approved=true"
-        val accessToken = AccessToken(
-                success = true,
-                request_token = "aRequestToken",
-                expires_at = "expirationDate"
-        )
-
+    fun `Should show login error when error detected during login`() {
         var viewStatePosted: LoginViewState? = null
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
-        subject.onUserRedirectedToUrl(redirectUrl, accessToken)
-
-        assertEquals(LoginViewState.ShowLoading, viewStatePosted)
-        verify { sessionRepository.createAndStoreSession(accessToken) }
-    }
-
-    @Test
-    fun `Should push Oauth first step with reminder when user has rejected access`() {
-        val redirectUrl = "https://somewrb.com?denied=true"
-        val expectedUrl = "https://www.themoviedb.org/authenticate//aRequestToken?redirect_to=http://www.mp.com/approved"
-        val expectedRedirectionUrl = "http://www.mp.com/approved"
-        val accessToken = AccessToken(
-                success = true,
-                request_token = "aRequestToken",
-                expires_at = "expirationDate"
-        )
-        var viewStatePosted: LoginViewState? = null
-
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
-
-        subject.onUserRedirectedToUrl(redirectUrl, accessToken)
-
-        assertTrue(viewStatePosted is LoginViewState.ShowOauth)
-        with (viewStatePosted as LoginViewState.ShowOauth) {
-            assertEquals(expectedUrl, url)
-            assertEquals(expectedRedirectionUrl, interceptUrl)
-            assertEquals(accessToken, accessToken)
-            assertTrue(reminder)
-        }
-    }
-
-    @Test
-    fun `Should post error when an unknown redirection is detected`() {
-        val redirectUrl = "https://somewrb.com?unknown"
-        val accessToken = AccessToken(
-                success = true,
-                request_token = "aRequestToken",
-                expires_at = "expirationDate"
-        )
-
-        var viewStatePosted: LoginViewState? = null
-
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
-
-        subject.onUserRedirectedToUrl(redirectUrl, accessToken)
+        lvLoginEvent.postValue(LoginInteractor.LoginEvent.LoginError)
 
         assertEquals(LoginViewState.ShowLoginError, viewStatePosted)
     }
 
+
+    @Test
+    fun `Should show not connected when disconnection detected during oauth`() {
+        var viewStatePosted: LoginViewState? = null
+
+        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+
+        lvOauthEvent.postValue(LoginInteractor.OauthEvent.NotConnectedToNetwork)
+
+        assertEquals(LoginViewState.ShowNotConnected, viewStatePosted)
+    }
+
+    @Test
+    fun `Should show oauth state when oauth data becomes available`() {
+        var viewStatePosted: LoginViewState? = null
+
+        val oauthEvent = LoginInteractor.OauthEvent.OauthSuccessful(
+                url = "aUrl",
+                interceptUrl = "anInterceptUrl",
+                accessToken = mockk()
+        )
+
+        val expected = LoginViewState.ShowOauth(
+                url = "aUrl",
+                interceptUrl = "anInterceptUrl",
+                reminder = false
+        )
+
+        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+
+        lvOauthEvent.postValue(oauthEvent)
+
+        assertEquals(expected, viewStatePosted)
+    }
+
+    @Test
+    fun `Should show oauth state as reminder when new oauth data becomes available`() {
+        var viewStatePosted = mutableListOf<LoginViewState>()
+
+        val firstOauthEvent = LoginInteractor.OauthEvent.OauthSuccessful(
+                url = "aFirstUrl",
+                interceptUrl = "aFirstInterceptUrl",
+                accessToken = mockk()
+        )
+
+        val secondOauthEvent = LoginInteractor.OauthEvent.OauthSuccessful(
+                url = "aSecondUrl",
+                interceptUrl = "aSecondInterceptUrl",
+                accessToken = mockk()
+        )
+
+        val expectedFirst = LoginViewState.ShowOauth(
+                url = "aFirstUrl",
+                interceptUrl = "aFirstInterceptUrl",
+                reminder = false
+        )
+
+        val expectedSecond = LoginViewState.ShowOauth(
+                url = "aSecondUrl",
+                interceptUrl = "aSecondInterceptUrl",
+                reminder = true
+        )
+
+
+        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted.add(viewState) } }
+
+        lvOauthEvent.postValue(firstOauthEvent)
+        lvOauthEvent.postValue(secondOauthEvent)
+
+        assertEquals(2, viewStatePosted.size)
+        assertEquals(viewStatePosted[0], expectedFirst)
+        assertEquals(viewStatePosted[1], expectedSecond)
+    }
+
+    @Test
+    fun `Should show login error when error detected during oauth`() {
+        var viewStatePosted: LoginViewState? = null
+
+        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+
+        lvOauthEvent.postValue(LoginInteractor.OauthEvent.OauthError)
+
+        assertEquals(LoginViewState.ShowLoginError, viewStatePosted)
+    }
+
+    @Test
+    fun `Should ask interactor to fetch oauth data and push loading state in onInit`() {
+        var viewStatePosted: LoginViewState? = null
+
+        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+
+        subject.onInit()
+
+        assertEquals(LoginViewState.ShowLoading, viewStatePosted)
+        verify { loginInteractor.fetchOauthData() }
+    }
+
+    @Test
+    fun `Should ask interactor to perform login and push loading state when user approved redirected URL`() {
+        var viewStatePosted: LoginViewState? = null
+
+        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+
+        // pre-condition: a oauth state needs to be pushed first
+        val accessToken = mockk<AccessToken>()
+        val oauthEvent = LoginInteractor.OauthEvent.OauthSuccessful(
+                url = "aUrl",
+                interceptUrl = "anInterceptUrl",
+                accessToken = accessToken
+        )
+
+        lvOauthEvent.postValue(oauthEvent)
+
+        subject.onUserRedirectedToUrl("http://someUrl?approved=true")
+
+        assertEquals(LoginViewState.ShowLoading, viewStatePosted)
+        verify { loginInteractor.loginUser(accessToken) }
+    }
+
+    @Test
+    fun `Should push error state when user approved redirected URL without access token`() {
+        var viewStatePosted: LoginViewState? = null
+
+        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+
+        subject.onUserRedirectedToUrl("http://someUrl?approved=true")
+
+        assertEquals(LoginViewState.ShowLoginError, viewStatePosted)
+    }
+
+    @Test
+    fun `Should fetch new Oauth data when user rejected access token `() {
+        var viewStatePosted: LoginViewState? = null
+
+        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+
+        subject.onUserRedirectedToUrl("http://someUrl?denied=true")
+
+        assertEquals(LoginViewState.ShowLoading, viewStatePosted)
+        verify { loginInteractor.fetchOauthData() }
+    }
+
+    @Test
+    fun `Should push error state when user redirected to invalid URL`() {
+        var viewStatePosted: LoginViewState? = null
+
+        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+
+        subject.onUserRedirectedToUrl("http://someUrlInvalid")
+
+        assertEquals(LoginViewState.ShowLoginError, viewStatePosted)
+    }
 }

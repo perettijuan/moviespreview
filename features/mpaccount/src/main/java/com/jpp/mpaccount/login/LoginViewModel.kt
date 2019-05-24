@@ -7,15 +7,13 @@ import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.viewstate.HandledViewState
 import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
+import com.jpp.mpaccount.login.LoginInteractor.LoginEvent
+import com.jpp.mpaccount.login.LoginInteractor.OauthEvent
+import com.jpp.mpaccount.login.LoginViewState.*
 import com.jpp.mpdomain.AccessToken
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import com.jpp.mpaccount.login.LoginInteractor.LoginEvent
-import com.jpp.mpaccount.login.LoginInteractor.OauthEvent
 import javax.inject.Inject
-import com.jpp.mpaccount.login.LoginViewState.ShowNotConnected
-import com.jpp.mpaccount.login.LoginViewState.ShowLoginError
-import com.jpp.mpaccount.login.LoginViewState.ShowLoading
 
 /**
  * ViewModel used to support the login process.
@@ -34,7 +32,7 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Map the business logic coming from the interactor into view layer logic.
      */
     init {
-        _viewStates.addSource(loginInteractor.loginEvents()) { loginEvent ->
+        _viewStates.addSource(loginInteractor.loginEvents) { loginEvent ->
             when (loginEvent) {
                 is LoginEvent.NotConnectedToNetwork -> { _viewStates.value = of(ShowNotConnected) }
                 is LoginEvent.LoginSuccessful -> { _navEvents.value = LoginNavigationEvent.RemoveLogin }
@@ -42,11 +40,11 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             }
         }
 
-        _viewStates.addSource(loginInteractor.oauthEvents()) { oauthEvent ->
+        _viewStates.addSource(loginInteractor.oauthEvents) { oauthEvent ->
             when (oauthEvent) {
-                is OauthEvent.OauthError -> { _viewStates.value = of(ShowLoginError) }
                 is OauthEvent.NotConnectedToNetwork -> { _viewStates.value = of(ShowNotConnected) }
                 is OauthEvent.OauthSuccessful -> { _viewStates.value = of(createOauthViewState(oauthEvent))}
+                is OauthEvent.OauthError -> { _viewStates.value = of(ShowLoginError) }
             }
         }
     }

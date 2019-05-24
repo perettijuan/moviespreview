@@ -38,24 +38,24 @@ class LoginInteractor @Inject constructor(private val connectivityRepository: Co
     }
 
 
-    private val loginEvents by lazy { MutableLiveData<LoginEvent>() }
-    private val oauthEvents by lazy { MutableLiveData<OauthEvent>() }
+    private val _loginEvents by lazy { MutableLiveData<LoginEvent>() }
+    private val _oauthEvents by lazy { MutableLiveData<OauthEvent>() }
 
     /**
      * @return a [LiveData] of [LoginEvent]. Subscribe to this [LiveData]
      * in order to be notified about login related events.
      */
-    fun loginEvents(): LiveData<LoginEvent> = loginEvents
+    val loginEvents: LiveData<LoginEvent> get() = _loginEvents
 
     /**
      * @return a [LiveData] of [OauthEvent]. Subscribe to this [LiveData]
      * in order to be notified about Oauth process related event.
      */
-    fun oauthEvents(): LiveData<OauthEvent> = oauthEvents
+    val oauthEvents: LiveData<OauthEvent> get() = _oauthEvents
 
     /**
      * Fetches the data needed to perform the Oauth step of the login process.
-     * New events will be pushed to [oauthEvents] to provide output to this
+     * New events will be pushed to [_oauthEvents] to provide output to this
      * step.
      */
     fun fetchOauthData() {
@@ -71,13 +71,13 @@ class LoginInteractor @Inject constructor(private val connectivityRepository: Co
                 } ?: OauthEvent.OauthError
             }
         }.let {
-            oauthEvents.postValue(it)
+            _oauthEvents.postValue(it)
         }
     }
 
     /**
      * Executes the login step once an [AccessToken] is approved by the user.
-     * Events will be pushed to [loginEvents] in order to provide output for this
+     * Events will be pushed to [_loginEvents] in order to provide output for this
      * step.
      */
     fun loginUser(accessToken: AccessToken) {
@@ -89,12 +89,12 @@ class LoginInteractor @Inject constructor(private val connectivityRepository: Co
                 } ?: LoginEvent.LoginError
             }
         }.let {
-            loginEvents.postValue(it)
+            _loginEvents.postValue(it)
         }
     }
 
     private companion object {
-        const val authUrl = "https://www.themoviedb.org/authenticate/"
+        const val authUrl = "https://www.themoviedb.org/authenticate"
         const val redirectUrl = "http://www.mp.com/approved"
     }
 }
