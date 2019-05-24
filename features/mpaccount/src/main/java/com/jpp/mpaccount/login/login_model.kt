@@ -13,21 +13,23 @@ sealed class LoginViewState {
     /*
      * Shows the not connected to network state
      */
-    object NotConnected : LoginViewState()
+    object ShowNotConnected : LoginViewState()
     /*
      * Shown when the VM indicates that a work is in progress.
      */
-    object Loading : LoginViewState()
+    object ShowLoading : LoginViewState()
 
     /*
      * Shows a message indicating that it is impossible to login at this moment.
      */
-    object UnableToLogin : LoginViewState()
+    object ShowLoginError : LoginViewState()
 
     /*
      * Starts the oauth2 process to show the login UI to the user.
      */
-    data class ShowOauth(val url: String, val interceptUrl: String, val accessToken: AccessToken, val reminder: Boolean = false) : LoginViewState()
+    data class ShowOauth(val url: String,
+                         val interceptUrl: String,
+                         val reminder: Boolean = false) : LoginViewState()
 }
 
 /**
@@ -38,5 +40,5 @@ sealed class LoginNavigationEvent {
      * Used when the user is logged in to dismiss the login view and go back
      * to the previous step.
      */
-    object BackToPrevious : LoginNavigationEvent()
+    object RemoveLogin : LoginNavigationEvent()
 }

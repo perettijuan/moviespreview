@@ -66,9 +66,9 @@ class LoginFragment : Fragment() {
      */
     private fun renderViewState(viewState: LoginViewState) {
         when (viewState) {
-            is LoginViewState.NotConnected -> { renderNotConnectedToNetwork() }
-            is LoginViewState.Loading -> { renderLoading() }
-            is LoginViewState.UnableToLogin -> { renderUnableToLogin() }
+            is LoginViewState.ShowNotConnected -> { renderNotConnectedToNetwork() }
+            is LoginViewState.ShowLoading -> { renderLoading() }
+            is LoginViewState.ShowLoginError -> { renderUnableToLogin() }
             is LoginViewState.ShowOauth -> { renderOauthState(viewState) }
         }
     }
@@ -78,7 +78,7 @@ class LoginFragment : Fragment() {
      */
     private fun reactToNavEvent(navEvent: LoginNavigationEvent) {
         when (navEvent) {
-            is LoginNavigationEvent.BackToPrevious -> findNavController().popBackStack()
+            is LoginNavigationEvent.RemoveLogin -> findNavController().popBackStack()
         }
     }
 
@@ -87,7 +87,7 @@ class LoginFragment : Fragment() {
             settings.apply {
                 @SuppressLint("SetJavaScriptEnabled")
                 javaScriptEnabled = true
-                webViewClient = LoginWebViewClient(oauthState.interceptUrl) { redirectedUrl -> withViewModel { onUserRedirectedToUrl(redirectedUrl, oauthState.accessToken) } }
+                webViewClient = LoginWebViewClient(oauthState.interceptUrl) { redirectedUrl -> withViewModel { onUserRedirectedToUrl(redirectedUrl) } }
             }
             webChromeClient = LoginWebChromeClient(accountWebPg)
             loadUrl(oauthState.url)

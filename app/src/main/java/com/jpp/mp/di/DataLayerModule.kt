@@ -42,7 +42,7 @@ import com.jpp.mpdata.repository.support.LanguageDb
 import com.jpp.mpdata.repository.support.LanguageRepositoryImpl
 import com.jpp.mpdata.repository.support.SupportDb
 import com.jpp.mpdata.repository.support.SupportRepositoryImpl
-import com.jpp.mpdata.repository.tokens.MPAccessTokenRepositoryImpl
+import com.jpp.mpdata.repository.tokens.AccessTokenRepositoryImpl
 import com.jpp.mpdomain.repository.*
 import dagger.Module
 import dagger.Provides
@@ -296,6 +296,6 @@ class DataLayerModule {
     @Singleton
     @Provides
     fun providesMPAccessTokenRepository(accessTokenApi: AccessTokenApi)
-            : MPAccessTokenRepository = MPAccessTokenRepositoryImpl(accessTokenApi)
+            : AccessTokenRepository = AccessTokenRepositoryImpl(accessTokenApi)
 }
 

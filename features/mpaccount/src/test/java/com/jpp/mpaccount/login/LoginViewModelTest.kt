@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.jpp.mpaccount.TestAccountCoroutineDispatchers
 import com.jpp.mpdomain.AccessToken
 import com.jpp.mpdomain.Connectivity
-import com.jpp.mpdomain.repository.MPAccessTokenRepository
+import com.jpp.mpdomain.repository.AccessTokenRepository
 import com.jpp.mpdomain.repository.MPConnectivityRepository
 import com.jpp.mpdomain.repository.MPSessionRepository
 import com.jpp.mptestutils.InstantTaskExecutorExtension
@@ -28,11 +28,11 @@ class LoginViewModelTest {
     @RelaxedMockK
     private lateinit var sessionRepository: MPSessionRepository
     @RelaxedMockK
-    private lateinit var accessTokenRepository: MPAccessTokenRepository
+    private lateinit var accessTokenRepository: AccessTokenRepository
 
 
     private val lvSession = MutableLiveData<MPSessionRepository.SessionData>()
-    private val lvAccessToken = MutableLiveData<MPAccessTokenRepository.AccessTokenData>()
+    private val lvAccessToken = MutableLiveData<AccessTokenRepository.AccessTokenData>()
     private val lvConnectivity = MutableLiveData<Connectivity>()
 
     private lateinit var subject: LoginViewModel
@@ -67,7 +67,7 @@ class LoginViewModelTest {
 
         lvSession.postValue(MPSessionRepository.SessionData.CurrentSession(mockk()))
 
-        assertEquals(LoginNavigationEvent.BackToPrevious, eventPosted)
+        assertEquals(LoginNavigationEvent.RemoveLogin, eventPosted)
     }
 
     @Test
@@ -78,7 +78,7 @@ class LoginViewModelTest {
 
         lvSession.postValue(MPSessionRepository.SessionData.SessionCreated(mockk()))
 
-        assertEquals(LoginNavigationEvent.BackToPrevious, eventPosted)
+        assertEquals(LoginNavigationEvent.RemoveLogin, eventPosted)
     }
 
     @Test
@@ -89,7 +89,7 @@ class LoginViewModelTest {
 
         lvSession.postValue(MPSessionRepository.SessionData.NoCurrentSessionAvailable)
 
-        assertEquals(LoginViewState.Loading, viewStatePosted)
+        assertEquals(LoginViewState.ShowLoading, viewStatePosted)
         verify { accessTokenRepository.getAccessToken() }
     }
 
@@ -101,7 +101,7 @@ class LoginViewModelTest {
 
         lvSession.postValue(MPSessionRepository.SessionData.UnableToCreateSession)
 
-        assertEquals(LoginViewState.UnableToLogin, viewStatePosted)
+        assertEquals(LoginViewState.ShowLoginError, viewStatePosted)
     }
 
     @Test
@@ -117,7 +117,7 @@ class LoginViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
-        lvAccessToken.postValue(MPAccessTokenRepository.AccessTokenData.Success(accessTokenCreated))
+        lvAccessToken.postValue(AccessTokenRepository.AccessTokenData.Success(accessTokenCreated))
 
         assertTrue(viewStatePosted is LoginViewState.ShowOauth)
         with (viewStatePosted as LoginViewState.ShowOauth) {
@@ -134,9 +134,9 @@ class LoginViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
-        lvAccessToken.postValue(MPAccessTokenRepository.AccessTokenData.NoAccessTokenAvailable)
+        lvAccessToken.postValue(AccessTokenRepository.AccessTokenData.NoAccessTokenAvailable)
 
-        assertEquals(LoginViewState.UnableToLogin, viewStatePosted)
+        assertEquals(LoginViewState.ShowLoginError, viewStatePosted)
     }
 
     @Test
@@ -147,7 +147,7 @@ class LoginViewModelTest {
 
         lvConnectivity.postValue(Connectivity.Disconnected)
 
-        assertEquals(LoginViewState.NotConnected, viewStatePosted)
+        assertEquals(LoginViewState.ShowNotConnected, viewStatePosted)
     }
 
     @Test
@@ -179,7 +179,7 @@ class LoginViewModelTest {
 
         subject.onUserRedirectedToUrl(redirectUrl, accessToken)
 
-        assertEquals(LoginViewState.Loading, viewStatePosted)
+        assertEquals(LoginViewState.ShowLoading, viewStatePosted)
         verify { sessionRepository.createAndStoreSession(accessToken) }
     }
 
@@ -223,7 +223,7 @@ class LoginViewModelTest {
 
         subject.onUserRedirectedToUrl(redirectUrl, accessToken)
 
-        assertEquals(LoginViewState.UnableToLogin, viewStatePosted)
+        assertEquals(LoginViewState.ShowLoginError, viewStatePosted)
     }
 
 }

@@ -7,6 +7,7 @@ import com.jpp.mpdomain.Session
 /**
  * Repository definition used to handle all [Session] data.
  */
+//TODO JPP delete ME
 interface MPSessionRepository {
     /**
      * Encapsulates all possible data that this repository can handle.

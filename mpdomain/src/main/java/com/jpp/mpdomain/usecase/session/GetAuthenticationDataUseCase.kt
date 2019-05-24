@@ -37,20 +37,21 @@ interface GetAuthenticationDataUseCase {
                private val connectivityRepository: ConnectivityRepository) : GetAuthenticationDataUseCase {
 
         override fun getAuthenticationData(): AuthenticationDataResult {
-            return when (connectivityRepository.getCurrentConnectivity()) {
-                Disconnected -> AuthenticationDataResult.ErrorNoConnectivity
-                Connected -> sessionRepository.getAccessToken()?.let { at ->
-                    when (at.success) {
-                        true -> AuthenticationDataResult.Success(
-                                authenticationURL = sessionRepository.getAuthenticationUrl(at),
-                                redirectionUrl = sessionRepository.getAuthenticationRedirection(),
-                                accessToken = at)
-                        else -> AuthenticationDataResult.ErrorUnknown
-                    }
-                } ?: run {
-                    AuthenticationDataResult.ErrorUnknown
-                }
-            }
+//            return when (connectivityRepository.getCurrentConnectivity()) {
+//                Disconnected -> AuthenticationDataResult.ErrorNoConnectivity
+//                Connected -> sessionRepository.getAccessToken()?.let { at ->
+//                    when (at.success) {
+//                        true -> AuthenticationDataResult.Success(
+//                                authenticationURL = sessionRepository.getAuthenticationUrl(at),
+//                                redirectionUrl = sessionRepository.getAuthenticationRedirection(),
+//                                accessToken = at)
+//                        else -> AuthenticationDataResult.ErrorUnknown
+//                    }
+//                } ?: run {
+//                    AuthenticationDataResult.ErrorUnknown
+//                }
+//            }
+            return AuthenticationDataResult.ErrorUnknown
         }
     }
 }
