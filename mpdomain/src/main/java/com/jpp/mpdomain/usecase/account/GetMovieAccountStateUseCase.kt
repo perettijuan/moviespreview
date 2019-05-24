@@ -13,6 +13,7 @@ import com.jpp.mpdomain.repository.SessionRepository
  * not connected). If connected and the user is logged in, retrieve the state of the movie.
  * If not connected, return an error that indicates such state.
  */
+//TODO JPP we need to do something with this
 interface GetMovieAccountStateUseCase {
 
     /**
@@ -41,18 +42,19 @@ interface GetMovieAccountStateUseCase {
                private val connectivityRepository: ConnectivityRepository) : GetMovieAccountStateUseCase {
 
         override fun getMovieAccountState(movieId: Double): MovieAccountStateResult {
-            return when (connectivityRepository.getCurrentConnectivity()) {
-                Disconnected -> MovieAccountStateResult.ErrorNoConnectivity
-                Connected -> sessionRepository.getCurrentSession()?.let {
-                    accountRepository.getMovieAccountState(movieId, it)?.let { movieAccountState ->
-                        MovieAccountStateResult.Success(movieAccountState)
-                    } ?: run {
-                        MovieAccountStateResult.ErrorUnknown
-                    }
-                } ?: run {
-                    MovieAccountStateResult.UserNotLogged
-                }
-            }
+//            return when (connectivityRepository.getCurrentConnectivity()) {
+//                Disconnected -> MovieAccountStateResult.ErrorNoConnectivity
+//                Connected -> sessionRepository.getCurrentSession()?.let {
+//                    accountRepository.getMovieAccountState(movieId, it)?.let { movieAccountState ->
+//                        MovieAccountStateResult.Success(movieAccountState)
+//                    } ?: run {
+//                        MovieAccountStateResult.ErrorUnknown
+//                    }
+//                } ?: run {
+//                    MovieAccountStateResult.UserNotLogged
+//                }
+//            }
+            return MovieAccountStateResult.UserNotLogged
         }
     }
 

@@ -7,90 +7,75 @@ import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.viewstate.HandledViewState
 import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
-import com.jpp.mpdomain.Connectivity
-import com.jpp.mpdomain.repository.MPConnectivityRepository
-import com.jpp.mpdomain.repository.MPSessionRepository
-import javax.inject.Inject
-import com.jpp.mpdomain.repository.MPSessionRepository.SessionData.*
-import com.jpp.mpaccount.account.UserAccountNavigationEvent.*
+import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent
+import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToLogin
 import com.jpp.mpaccount.account.UserAccountViewState.*
 import com.jpp.mpdomain.Gravatar
-import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.UserAccount
-import com.jpp.mpdomain.repository.MPUserAccountRepository
-import com.jpp.mpdomain.repository.MPUserAccountRepository.UserAccountData.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * ViewModel that supports the user account functionality.
  */
 class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                               private val connectivityRepository: MPConnectivityRepository,
-                                               private val sessionRepository: MPSessionRepository,
-                                               private val userAccountRepository: MPUserAccountRepository)
+                                               private val accountInteractor: UserAccountInteractor)
 
     : MPScopedViewModel(dispatchers) {
 
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<UserAccountViewState>>() }
     private val _navEvents by lazy { SingleLiveEvent<UserAccountNavigationEvent>() }
 
+    /*
+     * Map the business logic coming from the interactor into view layer logic.
+     */
     init {
-        _viewStates.addSource(sessionRepository.data()) { sessionData ->
-            when (sessionData) {
-                is NoCurrentSessionAvailable -> _navEvents.value = GoToLogin
-                is CurrentSession -> _viewStates.value = of(executeGetUserAccountStep(sessionData.data))
+        _viewStates.addSource(accountInteractor.userAccountEvents) { event ->
+            when (event) {
+                is UserAccountEvent.NotConnectedToNetwork -> _viewStates.value = of(ShowNotConnected)
+                is UserAccountEvent.UnknownError -> _viewStates.value = of(ShowError)
+                is UserAccountEvent.UserNotLogged -> _navEvents.value = GoToLogin
+                is UserAccountEvent.Success -> _viewStates.value = of(mapAccountInfo(event.data))
             }
         }
-
-        _viewStates.addSource(userAccountRepository.data()) { accountData ->
-            when (accountData) {
-                is Success -> _viewStates.value = of(mapAccountInfo(accountData.data))
-                is NoUserAccountData -> _viewStates.value = of(ShowError)
-            }
-        }
-
-        _viewStates.addSource(connectivityRepository.data()) { connectivity -> withCurrentConnectivity(connectivity)}
     }
 
+    /**
+     * Called when the view is initialized.
+     */
     fun onInit() {
-        executeInit()
+        _viewStates.postValue(of(executeGetUserAccountStep()))
     }
 
+    /**
+     * Called when the user retries after an error.
+     */
     fun onUserRetry() {
-        executeInit()
+        _viewStates.postValue(of(executeGetUserAccountStep()))
     }
 
+    /**
+     * Subscribe to this [LiveData] in order to get notified about the different states that
+     * the view should render.
+     */
     val viewStates: LiveData<HandledViewState<UserAccountViewState>> get() = _viewStates
+
+    /**
+     * Subscribe to this [LiveData] in order to get notified about navigation steps that
+     * should be performed by the view.
+     */
     val navEvents: LiveData<UserAccountNavigationEvent> get() = _navEvents
 
-    private suspend fun verifyUserLoggedIn() = withContext(dispatchers.default()) { sessionRepository.getCurrentSession() }
-    private suspend fun getUserAccount(session: Session) = withContext(dispatchers.default()) { userAccountRepository.getUserAccount(session) }
 
-    private fun withCurrentConnectivity(connectivity: Connectivity) {
-        when (connectivity) {
-            is Connectivity.Disconnected -> _viewStates.value = of(NotConnected)
-            is Connectivity.Connected ->  _viewStates.value = of(executeVerifyUserLoggedInStep())
-        }
-    }
-
-    private fun executeInit() {
-        connectivityRepository.getCurrentConnectivity { connectivity -> withCurrentConnectivity(connectivity)}
-    }
-
-    private fun executeVerifyUserLoggedInStep(): UserAccountViewState {
-        launch { verifyUserLoggedIn() }
-        return Loading
-    }
-
-    private fun executeGetUserAccountStep(session: Session): UserAccountViewState {
-        launch { getUserAccount(session) }
+    private fun executeGetUserAccountStep(): UserAccountViewState {
+        launch { withContext(dispatchers.default()) { accountInteractor.fetchUserAccountData() } }
         return Loading
     }
 
     private fun mapAccountInfo(userAccount: UserAccount) = with(userAccount) {
         ShowUserAccountData(
-                avatarUrl = Gravatar.BASE_URL + userAccount.avatar.gravatar.hash  + Gravatar.REDIRECT,
+                avatarUrl = Gravatar.BASE_URL + userAccount.avatar.gravatar.hash + Gravatar.REDIRECT,
                 userName = if (name.isEmpty()) username else name,
                 accountName = username,
                 defaultLetter = if (name.isEmpty()) username.first() else name.first()
