@@ -12,6 +12,7 @@ import com.jpp.mpdomain.repository.SessionRepository
  * not connected). If connected and the user is logged in, update the movie favorite state.
  * If not connected, return an error that indicates such state.
  */
+//TODO JPP we need to do something with this
 interface MarkMovieAsFavoriteUseCase {
 
     sealed class FavoriteMovieResult {
@@ -36,19 +37,20 @@ interface MarkMovieAsFavoriteUseCase {
                private val connectivityRepository: ConnectivityRepository) : MarkMovieAsFavoriteUseCase {
 
         override fun favoriteMovie(movieId: Double, asFavorite: Boolean): FavoriteMovieResult {
-            return when (connectivityRepository.getCurrentConnectivity()) {
-                Disconnected -> FavoriteMovieResult.ErrorNoConnectivity
-                Connected -> sessionRepository.getCurrentSession()?.let { session ->
-                    accountRepository.getUserAccount(session)?.let { userAccount ->
-                        when (accountRepository.updateMovieFavoriteState(movieId, asFavorite, userAccount, session)) {
-                            true -> FavoriteMovieResult.Success
-                            false -> FavoriteMovieResult.ErrorUnknown
-                        }
-                    }
-                } ?: run {
-                    FavoriteMovieResult.UserNotLogged
-                }
-            }
+//            return when (connectivityRepository.getCurrentConnectivity()) {
+//                Disconnected -> FavoriteMovieResult.ErrorNoConnectivity
+//                Connected -> sessionRepository.getCurrentSession()?.let { session ->
+//                    accountRepository.getUserAccount(session)?.let { userAccount ->
+//                        when (accountRepository.updateMovieFavoriteState(movieId, asFavorite, userAccount, session)) {
+//                            true -> FavoriteMovieResult.Success
+//                            false -> FavoriteMovieResult.ErrorUnknown
+//                        }
+//                    }
+//                } ?: run {
+//                    FavoriteMovieResult.UserNotLogged
+//                }
+//            }
+            return  FavoriteMovieResult.UserNotLogged
         }
     }
 

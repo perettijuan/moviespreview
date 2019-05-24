@@ -15,6 +15,7 @@ import com.jpp.mpdomain.repository.SessionRepository
  * If not connected, return an error that indicates such state.
  * If the user has no favorite movies, returns a state that represents the situation.
  */
+//TODO JPP we need to do something with this
 interface GetFavoriteMoviesUseCase {
 
     /**
@@ -45,23 +46,24 @@ interface GetFavoriteMoviesUseCase {
                private val connectivityRepository: ConnectivityRepository) : GetFavoriteMoviesUseCase {
 
         override fun getUserFavoriteMovies(page: Int): FavoriteMoviesResult {
-            return when (connectivityRepository.getCurrentConnectivity()) {
-                Disconnected -> FavoriteMoviesResult.ErrorNoConnectivity
-                Connected -> sessionRepository.getCurrentSession()?.let { session ->
-                    accountRepository.getUserAccount(session)?.let { userAccount ->
-                        accountRepository.getFavoriteMovies(page, userAccount, session, languageRepository.getCurrentDeviceLanguage())?.let { page ->
-                            when (page.results.size) {
-                                0 -> FavoriteMoviesResult.NoFavorites
-                                else -> FavoriteMoviesResult.Success(page)
-                            }
-                        } ?: run {
-                            FavoriteMoviesResult.ErrorUnknown
-                        }
-                    }
-                } ?: run {
-                    FavoriteMoviesResult.UserNotLogged
-                }
-            }
+//            return when (connectivityRepository.getCurrentConnectivity()) {
+//                Disconnected -> FavoriteMoviesResult.ErrorNoConnectivity
+//                Connected -> sessionRepository.getCurrentSession()?.let { session ->
+//                    accountRepository.getUserAccount(session)?.let { userAccount ->
+//                        accountRepository.getFavoriteMovies(page, userAccount, session, languageRepository.getCurrentDeviceLanguage())?.let { page ->
+//                            when (page.results.size) {
+//                                0 -> FavoriteMoviesResult.NoFavorites
+//                                else -> FavoriteMoviesResult.Success(page)
+//                            }
+//                        } ?: run {
+//                            FavoriteMoviesResult.ErrorUnknown
+//                        }
+//                    }
+//                } ?: run {
+//                    FavoriteMoviesResult.UserNotLogged
+//                }
+//            }
+            return  FavoriteMoviesResult.UserNotLogged
         }
     }
 

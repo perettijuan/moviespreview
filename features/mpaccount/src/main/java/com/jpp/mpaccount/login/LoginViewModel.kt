@@ -34,17 +34,17 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     init {
         _viewStates.addSource(loginInteractor.loginEvents) { loginEvent ->
             when (loginEvent) {
-                is LoginEvent.NotConnectedToNetwork -> { _viewStates.value = of(ShowNotConnected) }
-                is LoginEvent.LoginSuccessful -> { _navEvents.value = LoginNavigationEvent.RemoveLogin }
-                is LoginEvent.LoginError -> { _viewStates.value = of(ShowLoginError)}
+                is LoginEvent.NotConnectedToNetwork -> _viewStates.value = of(ShowNotConnected)
+                is LoginEvent.LoginSuccessful -> _navEvents.value = LoginNavigationEvent.RemoveLogin
+                is LoginEvent.LoginError -> _viewStates.value = of(ShowLoginError)
             }
         }
 
         _viewStates.addSource(loginInteractor.oauthEvents) { oauthEvent ->
             when (oauthEvent) {
-                is OauthEvent.NotConnectedToNetwork -> { _viewStates.value = of(ShowNotConnected) }
-                is OauthEvent.OauthSuccessful -> { _viewStates.value = of(createOauthViewState(oauthEvent))}
-                is OauthEvent.OauthError -> { _viewStates.value = of(ShowLoginError) }
+                is OauthEvent.NotConnectedToNetwork -> _viewStates.value = of(ShowNotConnected)
+                is OauthEvent.OauthSuccessful -> _viewStates.value = of(createOauthViewState(oauthEvent))
+                is OauthEvent.OauthError -> _viewStates.value = of(ShowLoginError)
             }
         }
     }
@@ -98,7 +98,7 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         } ?: ShowLoginError
     }
 
-    private fun createOauthViewState(oauthEvent: OauthEvent.OauthSuccessful) : LoginViewState {
+    private fun createOauthViewState(oauthEvent: OauthEvent.OauthSuccessful): LoginViewState {
         val asReminder = loginAccessToken != null
         loginAccessToken = oauthEvent.accessToken
         return LoginViewState.ShowOauth(

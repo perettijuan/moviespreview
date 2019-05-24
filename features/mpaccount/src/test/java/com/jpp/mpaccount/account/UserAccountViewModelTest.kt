@@ -148,7 +148,7 @@ class UserAccountViewModelTest {
 
         lvConnectivity.postValue(Connectivity.Disconnected)
 
-        assertEquals(UserAccountViewState.NotConnected, viewStatePosted)
+        assertEquals(UserAccountViewState.ShowNotConnected, viewStatePosted)
     }
 
     @Test
@@ -162,7 +162,7 @@ class UserAccountViewModelTest {
 
         verify(exactly = 1) { sessionRepository.getCurrentSession() }
         assertEquals(2, viewStatesPosted.size)
-        assertEquals(UserAccountViewState.NotConnected, viewStatesPosted[0])
+        assertEquals(UserAccountViewState.ShowNotConnected, viewStatesPosted[0])
         assertEquals(UserAccountViewState.Loading, viewStatesPosted[1])
     }
 }

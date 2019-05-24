@@ -11,7 +11,7 @@ sealed class UserAccountViewState {
     /*
      * Shows the not connected to network state
      */
-    object NotConnected : UserAccountViewState()
+    object ShowNotConnected : UserAccountViewState()
     /*
      * Shows when the VM indicates that a work is in progress.
      */
