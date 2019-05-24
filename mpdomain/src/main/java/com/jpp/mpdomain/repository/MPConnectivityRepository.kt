@@ -8,6 +8,7 @@ import com.jpp.mpdomain.Connectivity
  * Notifies to any subscribed client when a connectivity event is detected providing the new
  * [Connectivity] state.
  */
+//TODO JPP delete ME
 interface MPConnectivityRepository {
     /**
      * Subscribe to this LiveData object in order to get

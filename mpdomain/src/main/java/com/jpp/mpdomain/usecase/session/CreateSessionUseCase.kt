@@ -38,7 +38,7 @@ interface CreateSessionUseCase {
         override fun createSessionWith(accessToken: AccessToken): CreateSessionResult {
             return when (connectivityRepository.getCurrentConnectivity()) {
                 Disconnected -> CreateSessionResult.ErrorNoConnectivity
-                Connected -> sessionRepository.getSession(accessToken)?.let { session ->
+                Connected -> sessionRepository.createSession(accessToken)?.let { session ->
                     when (session.success) {
                         true -> CreateSessionResult.Success
                         false -> CreateSessionResult.ErrorUnknown

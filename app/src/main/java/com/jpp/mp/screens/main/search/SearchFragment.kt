@@ -71,7 +71,7 @@ class SearchFragment : Fragment() {
 
         withViewModel {
             /*
-             * Loading this images in such a big configuration is only
+             * ShowLoading this images in such a big configuration is only
              * to favor the transition to details
              */
             init(getScreenSizeInPixels().x)

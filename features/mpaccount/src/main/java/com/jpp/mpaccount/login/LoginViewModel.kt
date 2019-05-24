@@ -7,97 +7,104 @@ import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.viewstate.HandledViewState
 import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
+import com.jpp.mpaccount.login.LoginInteractor.LoginEvent
+import com.jpp.mpaccount.login.LoginInteractor.OauthEvent
+import com.jpp.mpaccount.login.LoginViewState.*
 import com.jpp.mpdomain.AccessToken
-import com.jpp.mpdomain.Connectivity
-import com.jpp.mpdomain.repository.MPAccessTokenRepository
-import com.jpp.mpdomain.repository.MPAccessTokenRepository.AccessTokenData.NoAccessTokenAvailable
-import com.jpp.mpdomain.repository.MPAccessTokenRepository.AccessTokenData.Success
-import com.jpp.mpdomain.repository.MPConnectivityRepository
-import com.jpp.mpdomain.repository.MPSessionRepository
-import com.jpp.mpdomain.repository.MPSessionRepository.SessionData.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * ViewModel used to support the login process.
+ * Contains the view layer logic defined to provide the user the steps needed to login to
+ * the system.
  */
 class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                         connectivityRepository: MPConnectivityRepository,
-                                         private val sessionRepository: MPSessionRepository,
-                                         private val accessTokenRepository: MPAccessTokenRepository)
+                                         private val loginInteractor: LoginInteractor)
     : MPScopedViewModel(dispatchers) {
 
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<LoginViewState>>() }
     private val _navEvents by lazy { SingleLiveEvent<LoginNavigationEvent>() }
+    private var loginAccessToken: AccessToken? = null
 
+    /*
+     * Map the business logic coming from the interactor into view layer logic.
+     */
     init {
-        _viewStates.addSource(sessionRepository.data()) { sessionData ->
-            when (sessionData) {
-                is CurrentSession -> { _navEvents.value = LoginNavigationEvent.BackToPrevious }
-                is NoCurrentSessionAvailable -> { _viewStates.value = of(executeAccessTokenStep()) }
-                is SessionCreated -> { _navEvents.value = LoginNavigationEvent.BackToPrevious }
-                is UnableToCreateSession -> { _viewStates.value = of(LoginViewState.UnableToLogin) }
+        _viewStates.addSource(loginInteractor.loginEvents) { loginEvent ->
+            when (loginEvent) {
+                is LoginEvent.NotConnectedToNetwork -> { _viewStates.value = of(ShowNotConnected) }
+                is LoginEvent.LoginSuccessful -> { _navEvents.value = LoginNavigationEvent.RemoveLogin }
+                is LoginEvent.LoginError -> { _viewStates.value = of(ShowLoginError)}
             }
         }
 
-        _viewStates.addSource(accessTokenRepository.data()) { atData ->
-            when (atData) {
-                is Success -> { _viewStates.value = of(createOauthViewState(atData.data, false)) }
-                is NoAccessTokenAvailable -> { _viewStates.value = of(LoginViewState.UnableToLogin) }
-            }
-        }
-
-        _viewStates.addSource(connectivityRepository.data()) {connectivity ->
-            when (connectivity) {
-                is Connectivity.Disconnected -> _viewStates.value = of(LoginViewState.NotConnected)
-                is Connectivity.Connected ->  launch { verifyUserLoggedIn() }
+        _viewStates.addSource(loginInteractor.oauthEvents) { oauthEvent ->
+            when (oauthEvent) {
+                is OauthEvent.NotConnectedToNetwork -> { _viewStates.value = of(ShowNotConnected) }
+                is OauthEvent.OauthSuccessful -> { _viewStates.value = of(createOauthViewState(oauthEvent))}
+                is OauthEvent.OauthError -> { _viewStates.value = of(ShowLoginError) }
             }
         }
     }
 
+    /**
+     * Called when the view is initialized.
+     */
     fun onInit() {
-        launch { verifyUserLoggedIn() }
+        _viewStates.value = of(executeOauth())
     }
 
-    fun onUserRedirectedToUrl(redirectUrl: String, accessToken: AccessToken) {
+    /**
+     * Called when the user is redirected toa new URL in the Oauth step.
+     */
+    fun onUserRedirectedToUrl(redirectUrl: String) {
         when {
-            redirectUrl.contains("approved=true") -> { _viewStates.value = of(executeCreateSessionStep(accessToken)) }
-            redirectUrl.contains("denied=true") -> _viewStates.value = of(createOauthViewState(accessToken, true))
-            else -> _viewStates.value = of(LoginViewState.UnableToLogin)
+            redirectUrl.contains("approved=true") -> _viewStates.value = of(loginUser())
+            redirectUrl.contains("denied=true") -> _viewStates.value = of(executeOauth())
+            else -> _viewStates.value = of(ShowLoginError)
         }
     }
 
+    /**
+     * Called when the user retries the login.
+     */
     fun onUserRetry() {
-        _viewStates.value = of(executeAccessTokenStep())
+        _viewStates.value = of(executeOauth())
     }
 
+    /**
+     * Subscribe to this [LiveData] in order to get notified about the different states that
+     * the view should render.
+     */
     val viewStates: LiveData<HandledViewState<LoginViewState>> get() = _viewStates
+
+    /**
+     * Subscribe to this [LiveData] in order to get notified about navigation steps that
+     * should be performed by the view.
+     */
     val navEvents: LiveData<LoginNavigationEvent> get() = _navEvents
 
-    private suspend fun verifyUserLoggedIn() = withContext(dispatchers.default()) { sessionRepository.getCurrentSession() }
-    private suspend fun getAccessToken() = withContext(dispatchers.default()) { accessTokenRepository.getAccessToken() }
-    private suspend fun createSession(accessToken: AccessToken) = withContext(dispatchers.default()) { sessionRepository.createAndStoreSession(accessToken) }
-
-    private fun createOauthViewState(accessToken: AccessToken, asReminder: Boolean) = LoginViewState.ShowOauth(
-            url = "$authUrl/${accessToken.request_token}?redirect_to=$redirectUrl",
-            interceptUrl = redirectUrl,
-            accessToken = accessToken,
-            reminder = asReminder
-    )
-
-    private fun executeAccessTokenStep(): LoginViewState {
-        launch { getAccessToken() }
-        return LoginViewState.Loading
+    private fun executeOauth(): LoginViewState {
+        launch { withContext(dispatchers.default()) { loginInteractor.fetchOauthData() } }
+        return ShowLoading
     }
 
-    private fun executeCreateSessionStep(accessToken: AccessToken): LoginViewState {
-        launch { createSession(accessToken) }
-        return LoginViewState.Loading
+    private fun loginUser(): LoginViewState {
+        return loginAccessToken?.let {
+            launch { withContext(dispatchers.default()) { loginInteractor.loginUser(it) } }
+            ShowLoading
+        } ?: ShowLoginError
     }
 
-    private companion object {
-        const val authUrl = "https://www.themoviedb.org/authenticate/"
-        const val redirectUrl = "http://www.mp.com/approved"
+    private fun createOauthViewState(oauthEvent: OauthEvent.OauthSuccessful) : LoginViewState {
+        val asReminder = loginAccessToken != null
+        loginAccessToken = oauthEvent.accessToken
+        return LoginViewState.ShowOauth(
+                url = oauthEvent.url,
+                interceptUrl = oauthEvent.interceptUrl,
+                reminder = asReminder
+        )
     }
 }

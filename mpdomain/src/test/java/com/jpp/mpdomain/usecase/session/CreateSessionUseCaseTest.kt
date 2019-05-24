@@ -37,7 +37,7 @@ class CreateSessionUseCaseTest {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
         subject.createSessionWith(mockk()).let { result ->
-            verify(exactly = 0) { sessionRepository.getSession(any()) }
+            verify(exactly = 0) { sessionRepository.createSession(any()) }
             assertEquals(ErrorNoConnectivity, result)
         }
     }
@@ -45,11 +45,11 @@ class CreateSessionUseCaseTest {
     @Test
     fun `Should return ErrorUnknown when connected to network and an error occurs`() {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getSession(any()) } returns null
+        every { sessionRepository.createSession(any()) } returns null
         val accessToken = mockk<AccessToken>()
 
         subject.createSessionWith(accessToken).let { result ->
-            verify(exactly = 1) { sessionRepository.getSession(accessToken) }
+            verify(exactly = 1) { sessionRepository.createSession(accessToken) }
             assertEquals(ErrorUnknown, result)
         }
     }
@@ -60,10 +60,10 @@ class CreateSessionUseCaseTest {
         val accessToken = mockk<AccessToken>()
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getSession(any()) } returns session
+        every { sessionRepository.createSession(any()) } returns session
 
         subject.createSessionWith(accessToken).let { result ->
-            verify(exactly = 1) { sessionRepository.getSession(accessToken) }
+            verify(exactly = 1) { sessionRepository.createSession(accessToken) }
             assertEquals(ErrorUnknown, result)
         }
     }
@@ -74,10 +74,10 @@ class CreateSessionUseCaseTest {
         val accessToken = mockk<AccessToken>()
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getSession(any()) } returns session
+        every { sessionRepository.createSession(any()) } returns session
 
         subject.createSessionWith(accessToken).let { result ->
-            verify(exactly = 1) { sessionRepository.getSession(accessToken) }
+            verify(exactly = 1) { sessionRepository.createSession(accessToken) }
             assertEquals(Success, result)
         }
     }
