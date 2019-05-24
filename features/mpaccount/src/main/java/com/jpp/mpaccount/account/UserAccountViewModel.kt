@@ -27,6 +27,9 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<UserAccountViewState>>() }
     private val _navEvents by lazy { SingleLiveEvent<UserAccountNavigationEvent>() }
 
+    /*
+     * Map the business logic coming from the interactor into view layer logic.
+     */
     init {
         _viewStates.addSource(accountInteractor.userAccountEvents) { event ->
             when (event) {
@@ -38,21 +41,35 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
         }
     }
 
+    /**
+     * Called when the view is initialized.
+     */
     fun onInit() {
         _viewStates.postValue(of(executeGetUserAccountStep()))
     }
 
+    /**
+     * Called when the user retries after an error.
+     */
     fun onUserRetry() {
         _viewStates.postValue(of(executeGetUserAccountStep()))
     }
 
+    /**
+     * Subscribe to this [LiveData] in order to get notified about the different states that
+     * the view should render.
+     */
     val viewStates: LiveData<HandledViewState<UserAccountViewState>> get() = _viewStates
+
+    /**
+     * Subscribe to this [LiveData] in order to get notified about navigation steps that
+     * should be performed by the view.
+     */
     val navEvents: LiveData<UserAccountNavigationEvent> get() = _navEvents
 
-    private suspend fun getUserAccount() = withContext(dispatchers.default()) { accountInteractor.fetchUserAccountData() }
 
     private fun executeGetUserAccountStep(): UserAccountViewState {
-        launch { getUserAccount() }
+        launch { withContext(dispatchers.default()) { accountInteractor.fetchUserAccountData() } }
         return Loading
     }
 
