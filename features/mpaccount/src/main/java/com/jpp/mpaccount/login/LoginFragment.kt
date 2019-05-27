@@ -94,7 +94,7 @@ class LoginFragment : Fragment() {
         }
 
         if (oauthState.reminder) {
-            snackBar(loginContent, R.string.account_approve_reminder, R.string.error_retry) {
+            snackBar(loginContent, R.string.user_account_approve_reminder, R.string.error_retry) {
                 withViewModel { onUserRetry() }
             }
         }
@@ -166,7 +166,7 @@ class LoginFragment : Fragment() {
         override fun onProgressChanged(view: WebView?, newProgress: Int) {
             when (newProgress) {
                 100 -> pgBar.setInvisible()
-                else -> pgBar.progress = newProgress;
+                else -> pgBar.progress = newProgress
             }
         }
     }

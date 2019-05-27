@@ -57,7 +57,9 @@ sealed class UserMoviesViewState {
 /**
  * Represents an item shown in the user movies section.
  */
-data class UserMovieItem(val imageUrl: String)
+data class UserMovieItem(val image: String) : UserAccountMoviesView.UserAccountMovieItem {
+    override fun getImageUrl(): String = image
+}
 
 /**
  * Represents all the navigation events that the user account view will response to.

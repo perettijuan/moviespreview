@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="account_approve_reminder">Por favor, permite a Movies Preview usar tu cuenta.</string>
+    <string name="user_account_approve_reminder">Por favor, permite a Movies Preview usar tu cuenta.</string>
+    <string name="user_account_favorite_title">Películas favoritas</string>
+    <string name="user_account_no_favorite_movies">Aún no tienes películas como favoritas. Añade favoritas a tu lista seleccionando una película desde la pantalla principal.</string>
+    <string name="user_account_favorite_movies_error">Algo salió mal al intentar traer tus películas favoritas. Por favor, intenta nuevamente luego.</string>
 </resources>

@@ -100,7 +100,7 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
                     favMovieState.data.results.isEmpty() -> UserMoviesViewState.ShowNoMovies
                     else -> favMovieState.data.results
                             .map { imagesPathInteractor.configurePathMovie(10, 10, it) }
-                            .map { UserMovieItem(imageUrl = it.poster_path ?: "noPath") }
+                            .map { UserMovieItem(image = it.poster_path ?: "noPath") }
                             .let { UserMoviesViewState.ShowUserMovies(it) }
                 }
             }

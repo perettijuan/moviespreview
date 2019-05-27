@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mpaccount.R
 import com.jpp.mpdesign.ext.inflate
 import com.jpp.mpdesign.ext.loadImageUrl
+import com.jpp.mpdesign.ext.setInvisible
 import com.jpp.mpdesign.ext.setVisible
 import kotlinx.android.synthetic.main.layout_user_account_movies.view.*
 import kotlinx.android.synthetic.main.list_item_user_account_movies.view.*
@@ -55,9 +56,20 @@ class UserAccountMoviesView : ConstraintLayout {
             adapter = AccountMovieAdapter(movies)
             setVisible()
         }
+
+        userAccountMoviesError.setInvisible()
     }
 
-    //TODO JPP show as no content
+    fun showErrorMessage(message: String) {
+        userAccountMoviesMoreIv.setInvisible()
+        userAccountMoviesList.setInvisible()
+
+        userAccountMoviesError.apply {
+            text = message
+            setVisible()
+        }
+    }
+
 
     class AccountMovieAdapter(private val items: List<UserAccountMovieItem>) : RecyclerView.Adapter<AccountMovieAdapter.ViewHolder>() {
 

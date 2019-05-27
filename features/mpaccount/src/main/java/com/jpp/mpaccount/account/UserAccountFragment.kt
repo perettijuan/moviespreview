@@ -19,6 +19,7 @@ import com.jpp.mpdesign.ext.setInvisible
 import com.jpp.mpdesign.ext.setVisible
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_user_account.*
+import kotlinx.android.synthetic.main.layout_user_account_content.*
 import kotlinx.android.synthetic.main.layout_user_account_header.*
 import javax.inject.Inject
 
@@ -43,7 +44,7 @@ class UserAccountFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         withViewModel {
             viewStates.observe(this@UserAccountFragment.viewLifecycleOwner, Observer { viewState -> viewState.actionIfNotHandled { renderViewState(it) } })
-            navEvents.observe(this@UserAccountFragment.viewLifecycleOwner, Observer { navEvent ->  reactToNavEvent(navEvent)})
+            navEvents.observe(this@UserAccountFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
             onInit(getScreenWithInPixels())
         }
     }
@@ -62,9 +63,18 @@ class UserAccountFragment : Fragment() {
             is ShowNotConnected -> renderNotConnectedToNetwork()
             is ShowUserAccountData -> {
                 updateHeader(viewState)
+                renderFavoriteMoviesViewState(viewState.favoriteMovieState)
                 renderAccountData()
             }
             is ShowError -> rendeUnknownError()
+        }
+    }
+
+    private fun renderFavoriteMoviesViewState(viewState: UserMoviesViewState) {
+        when (viewState) {
+            is UserMoviesViewState.ShowNoMovies -> userAccountFavoriteMovies.showErrorMessage(getString(R.string.user_account_no_favorite_movies))
+            is UserMoviesViewState.ShowError -> userAccountFavoriteMovies.showErrorMessage(getString(R.string.user_account_favorite_movies_error))
+            is UserMoviesViewState.ShowUserMovies -> userAccountFavoriteMovies.showMovies(viewState.items) { TODO() }
         }
     }
 
