@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.jpp.mp.common.extensions.getScreenWithInPixels
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToLogin
 import com.jpp.mpaccount.account.UserAccountViewState.*
@@ -43,7 +44,7 @@ class UserAccountFragment : Fragment() {
         withViewModel {
             viewStates.observe(this@UserAccountFragment.viewLifecycleOwner, Observer { viewState -> viewState.actionIfNotHandled { renderViewState(it) } })
             navEvents.observe(this@UserAccountFragment.viewLifecycleOwner, Observer { navEvent ->  reactToNavEvent(navEvent)})
-            onInit()
+            onInit(getScreenWithInPixels())
         }
     }
 
@@ -94,7 +95,7 @@ class UserAccountFragment : Fragment() {
         userAccountLoadingView.setInvisible()
         userAccountContentView.setInvisible()
 
-        userAccountErrorView.asNoConnectivityError { withViewModel { onUserRetry() } }
+        userAccountErrorView.asNoConnectivityError { withViewModel { onUserRetry(getScreenWithInPixels()) } }
         userAccountErrorView.setVisible()
     }
 
@@ -102,7 +103,7 @@ class UserAccountFragment : Fragment() {
         userAccountLoadingView.setInvisible()
         userAccountContentView.setInvisible()
 
-        userAccountErrorView.asUnknownError { withViewModel { onUserRetry() } }
+        userAccountErrorView.asUnknownError { withViewModel { onUserRetry(getScreenWithInPixels()) } }
         userAccountErrorView.setVisible()
     }
 

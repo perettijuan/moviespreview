@@ -7,11 +7,12 @@ import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.viewstate.HandledViewState
 import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
+import com.jpp.mpaccount.account.UserAccountInteractor.FavoriteMoviesState
 import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent
 import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToLogin
 import com.jpp.mpaccount.account.UserAccountViewState.*
 import com.jpp.mpdomain.Gravatar
-import com.jpp.mpdomain.UserAccount
+import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -20,12 +21,14 @@ import javax.inject.Inject
  * ViewModel that supports the user account functionality.
  */
 class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                               private val accountInteractor: UserAccountInteractor)
+                                               private val accountInteractor: UserAccountInteractor,
+                                               private val imagesPathInteractor: ImagesPathInteractor)
 
     : MPScopedViewModel(dispatchers) {
 
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<UserAccountViewState>>() }
     private val _navEvents by lazy { SingleLiveEvent<UserAccountNavigationEvent>() }
+    private var moviesPosterTargetSize: Int = 0
 
     /*
      * Map the business logic coming from the interactor into view layer logic.
@@ -36,7 +39,7 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
                 is UserAccountEvent.NotConnectedToNetwork -> _viewStates.value = of(ShowNotConnected)
                 is UserAccountEvent.UnknownError -> _viewStates.value = of(ShowError)
                 is UserAccountEvent.UserNotLogged -> _navEvents.value = GoToLogin
-                is UserAccountEvent.Success -> _viewStates.value = of(mapAccountInfo(event.data))
+                is UserAccountEvent.Success -> mapAccountInfo(event)
             }
         }
     }
@@ -44,14 +47,16 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
     /**
      * Called when the view is initialized.
      */
-    fun onInit() {
+    fun onInit(posterSize: Int) {
+        moviesPosterTargetSize = posterSize
         _viewStates.postValue(of(executeGetUserAccountStep()))
     }
 
     /**
      * Called when the user retries after an error.
      */
-    fun onUserRetry() {
+    fun onUserRetry(posterSize: Int) {
+        moviesPosterTargetSize = posterSize
         _viewStates.postValue(of(executeGetUserAccountStep()))
     }
 
@@ -73,13 +78,32 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
         return Loading
     }
 
-    //TODO map favorite movies
-    private fun mapAccountInfo(userAccount: UserAccount) = with(userAccount) {
-        ShowUserAccountData(
-                avatarUrl = Gravatar.BASE_URL + userAccount.avatar.gravatar.hash + Gravatar.REDIRECT,
-                userName = if (name.isEmpty()) username else name,
-                accountName = username,
-                defaultLetter = if (name.isEmpty()) username.first() else name.first()
-        )
+    private fun mapAccountInfo(successState: UserAccountEvent.Success) {
+        launch {
+            with(successState.data) {
+                ShowUserAccountData(
+                        avatarUrl = Gravatar.BASE_URL + avatar.gravatar.hash + Gravatar.REDIRECT,
+                        userName = if (name.isEmpty()) username else name,
+                        accountName = username,
+                        defaultLetter = if (name.isEmpty()) username.first() else name.first(),
+                        favoriteMovieState = getFavoriteMoviesViewState(successState.favoriteMovies)
+                )
+            }.let { _viewStates.value = of(it) }
+        }
+    }
+
+    private suspend fun getFavoriteMoviesViewState(favMovieState: FavoriteMoviesState): UserMoviesViewState = withContext(dispatchers.default()) {
+        when (favMovieState) {
+            is FavoriteMoviesState.UnknownError -> UserMoviesViewState.ShowError
+            is FavoriteMoviesState.Success -> {
+                when {
+                    favMovieState.data.results.isEmpty() -> UserMoviesViewState.ShowNoMovies
+                    else -> favMovieState.data.results
+                            .map { imagesPathInteractor.configurePathMovie(10, 10, it) }
+                            .map { UserMovieItem(imageUrl = it.poster_path ?: "noPath") }
+                            .let { UserMoviesViewState.ShowUserMovies(it) }
+                }
+            }
+        }
     }
 }

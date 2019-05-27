@@ -29,9 +29,35 @@ sealed class UserAccountViewState {
             val avatarUrl: String,
             val userName: String,
             val accountName: String,
-            val defaultLetter: Char
+            val defaultLetter: Char,
+            val favoriteMovieState: UserMoviesViewState
     ) : UserAccountViewState()
 }
+
+/**
+ * Represents the view state of the user movies.
+ */
+sealed class UserMoviesViewState {
+    /*
+     * Shown when the user has no movies.
+     */
+    object ShowNoMovies: UserMoviesViewState()
+
+    /*
+     * Shows an error state in the movie section.
+     */
+    object ShowError: UserMoviesViewState()
+
+    /*
+     * Shows the list of movies.
+     */
+    data class ShowUserMovies(val items: List<UserMovieItem>) : UserMoviesViewState()
+}
+
+/**
+ * Represents an item shown in the user movies section.
+ */
+data class UserMovieItem(val imageUrl: String)
 
 /**
  * Represents all the navigation events that the user account view will response to.
@@ -41,4 +67,5 @@ sealed class UserAccountNavigationEvent {
      * Used when the VM detects that the user is not logged in.
      */
     object GoToLogin : UserAccountNavigationEvent()
+
 }

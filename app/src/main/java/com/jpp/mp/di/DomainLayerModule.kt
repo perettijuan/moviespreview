@@ -1,5 +1,6 @@
 package com.jpp.mp.di
 
+import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mpdomain.repository.*
 import com.jpp.mpdomain.usecase.about.GetAboutNavigationUrlUseCase
 import com.jpp.mpdomain.usecase.session.CreateSessionUseCase
@@ -138,5 +139,10 @@ class DomainLayerModule {
     @Provides
     fun providesRefreshAppDataUseCase(accountRepository: AccountRepository, languageRepository: LanguageRepository)
             : RefreshAppDataUseCase = RefreshAppDataUseCase.Impl(accountRepository, languageRepository)
+
+
+    @Provides
+    fun providesImagesPathInteractor(configurationRepository: ConfigurationRepository)
+            : ImagesPathInteractor = ImagesPathInteractor.Impl(configurationRepository)
 
 }

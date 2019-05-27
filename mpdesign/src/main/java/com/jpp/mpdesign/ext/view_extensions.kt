@@ -1,7 +1,9 @@
 package com.jpp.mpdesign.ext
 
 import android.graphics.drawable.BitmapDrawable
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -9,6 +11,13 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import com.jpp.mpdesign.R
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+
+/**
+ * Inflates a given layout resources and returns the inflated view.
+ */
+fun ViewGroup.inflate(layoutRes: Int): View {
+    return LayoutInflater.from(context).inflate(layoutRes, this, false)
+}
 
 /**
  * Extension function to retrieve a String from the appModule resources.
@@ -44,6 +53,22 @@ fun View.setInvisible() {
     this.visibility = View.INVISIBLE
 }
 
+/**
+ * Loads an image retrieved from the provided [imageUrl]
+ * into the ImageView.
+ */
+fun ImageView.loadImageUrl(imageUrl: String,
+                           @DrawableRes placeholderRes: Int = R.drawable.ic_app_icon_black,
+                           @DrawableRes errorImageRes: Int = R.drawable.ic_error_black) {
+    Picasso
+            .with(context)
+            .load(imageUrl)
+            .fit()
+            .centerCrop()
+            .placeholder(placeholderRes)
+            .error(errorImageRes)
+            .into(this)
+}
 
 /**
  * Loads an image retrieved from the provided [imageUrl]

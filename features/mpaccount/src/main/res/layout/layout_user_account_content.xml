@@ -15,6 +15,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <com.jpp.mpaccount.account.UserAccountMoviesView
+            android:id="@+id/accountFavoriteMovies"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="6dp"
+            app:accountMoviesTitleText="@string/account_favorite_title" />
+
     </LinearLayout>
 
 </ScrollView>
