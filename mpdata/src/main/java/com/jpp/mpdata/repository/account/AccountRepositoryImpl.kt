@@ -6,7 +6,7 @@ import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.repository.AccountRepository
 
-//TODO JPP we need to do something with this
+//TODO JPP functions commented here should go in a different repository when the favorite state in the details is implemented.
 class AccountRepositoryImpl(private val accountApi: AccountApi,
                             private val accountDb: AccountDb) : AccountRepository {
 

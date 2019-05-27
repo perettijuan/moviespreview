@@ -92,7 +92,7 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
         }
     }
 
-    private suspend fun getFavoriteMoviesViewState(favMovieState: FavoriteMoviesState): UserMoviesViewState = withContext(dispatchers.default()) {
+    private suspend fun getFavoriteMoviesViewState(favMovieState: FavoriteMoviesState) = withContext(dispatchers.default()) {
         when (favMovieState) {
             is FavoriteMoviesState.UnknownError -> UserMoviesViewState.ShowError
             is FavoriteMoviesState.Success -> {

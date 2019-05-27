@@ -1,12 +1,8 @@
 package com.jpp.mpaccount.account
 
 import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent
-import com.jpp.mpdomain.Connectivity
-import com.jpp.mpdomain.Session
-import com.jpp.mpdomain.UserAccount
-import com.jpp.mpdomain.repository.AccountRepository
-import com.jpp.mpdomain.repository.ConnectivityRepository
-import com.jpp.mpdomain.repository.SessionRepository
+import com.jpp.mpdomain.*
+import com.jpp.mpdomain.repository.*
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
@@ -28,6 +24,10 @@ class UserAccountInteractorTest {
     private lateinit var accountRepository: AccountRepository
     @MockK
     private lateinit var sessionRepository: SessionRepository
+    @MockK
+    private lateinit var moviesRepository: MoviesRepository
+    @MockK
+    private lateinit var languageRepository: LanguageRepository
 
     private lateinit var subject: UserAccountInteractor
 
@@ -36,7 +36,9 @@ class UserAccountInteractorTest {
         subject = UserAccountInteractor(
                 connectivityRepository,
                 sessionRepository,
-                accountRepository
+                accountRepository,
+                moviesRepository,
+                languageRepository
         )
     }
 
@@ -51,6 +53,9 @@ class UserAccountInteractorTest {
         subject.fetchUserAccountData()
 
         assertEquals(UserAccountEvent.UserNotLogged, eventPosted)
+        verify(exactly = 0) { accountRepository.getUserAccount(any()) }
+        verify(exactly = 0) { moviesRepository.getFavoriteMovies(any(), any(), any(), any()) }
+        verify(exactly = 0) { languageRepository.getCurrentAppLanguage() }
     }
 
     @Test
@@ -65,6 +70,9 @@ class UserAccountInteractorTest {
         subject.fetchUserAccountData()
 
         assertEquals(UserAccountEvent.NotConnectedToNetwork, eventPosted)
+        verify(exactly = 0) { accountRepository.getUserAccount(any()) }
+        verify(exactly = 0) { moviesRepository.getFavoriteMovies(any(), any(), any(), any()) }
+        verify(exactly = 0) { languageRepository.getCurrentAppLanguage() }
     }
 
     @Test
@@ -80,6 +88,9 @@ class UserAccountInteractorTest {
         subject.fetchUserAccountData()
 
         assertEquals(UserAccountEvent.UnknownError, eventPosted)
+        verify(exactly = 1) { accountRepository.getUserAccount(any()) }
+        verify(exactly = 0) { moviesRepository.getFavoriteMovies(any(), any(), any(), any()) }
+        verify(exactly = 0) { languageRepository.getCurrentAppLanguage() }
     }
 
     @Test
@@ -87,16 +98,26 @@ class UserAccountInteractorTest {
         var eventPosted: UserAccountEvent? = null
         val session = mockk<Session>()
         val accountData = mockk<UserAccount>()
+        val moviePage = mockk<MoviePage>()
+        val expected = UserAccountEvent.Success(
+                accountData,
+                UserAccountInteractor.FavoriteMoviesState.Success(moviePage)
+        )
 
         every { sessionRepository.getCurrentSession() } returns session
+        every { accountRepository.getUserAccount(any()) } returns accountData
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { accountRepository.getUserAccount(any()) } returns accountData
+        every { moviesRepository.getFavoriteMovies(any(), any(), any(), any()) } returns moviePage
+        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
 
         subject.userAccountEvents.observeWith { eventPosted = it }
 
         subject.fetchUserAccountData()
 
-        assertEquals(UserAccountEvent.Success(accountData), eventPosted)
-        verify { accountRepository.getUserAccount(session) }
+        assertEquals(expected, eventPosted)
+        verify(exactly = 1) { accountRepository.getUserAccount(session) }
+        verify(exactly = 1) { moviesRepository.getFavoriteMovies(1, accountData, session, SupportedLanguage.English) }
+        verify(exactly = 1) { languageRepository.getCurrentAppLanguage() }
     }
 }
