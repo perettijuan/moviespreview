@@ -34,13 +34,13 @@ class LanguageRepositoryImpl(private val languageDb: LanguageDb,
         }
     }
 
-    override fun getCurrentAppLanguage(): SupportedLanguage? {
+    override fun getCurrentAppLanguage(): SupportedLanguage {
         return languageDb.getStoredLanguageString()?.let {
             when (Locale(it).language) {
                 Locale(Spanish.id).language -> Spanish
                 else -> English // default is always english.
             }
-        }
+        } ?: English
     }
 
     override fun updateAppLanguage(language: SupportedLanguage) {

@@ -73,6 +73,7 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
         return Loading
     }
 
+    //TODO map favorite movies
     private fun mapAccountInfo(userAccount: UserAccount) = with(userAccount) {
         ShowUserAccountData(
                 avatarUrl = Gravatar.BASE_URL + userAccount.avatar.gravatar.hash + Gravatar.REDIRECT,
