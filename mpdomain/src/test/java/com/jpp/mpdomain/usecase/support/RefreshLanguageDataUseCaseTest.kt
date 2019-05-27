@@ -52,16 +52,4 @@ class RefreshLanguageDataUseCaseTest {
         verify { languageRepository.updateAppLanguage(any()) }
         verify { supportRepository.clearAllData() }
     }
-
-    @Test
-    fun `Should not update if app language does not exists, and also update current app language`() {
-        every { languageRepository.getCurrentDeviceLanguage() } returns SupportedLanguage.English
-        every { languageRepository.getCurrentAppLanguage() } returns null
-
-        val refresh = subject.shouldRefreshDataInApp()
-
-        assertFalse(refresh)
-        verify { languageRepository.updateAppLanguage(SupportedLanguage.English) }
-        verify(exactly = 0) { supportRepository.clearAllData() }
-    }
 }

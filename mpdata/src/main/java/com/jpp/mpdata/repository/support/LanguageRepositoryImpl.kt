@@ -13,7 +13,7 @@ import java.util.*
 
 //TODO JPP this should change to be similar to MPConnectivityRepositoryImpl
 class LanguageRepositoryImpl(private val languageDb: LanguageDb,
-                             private val context: Context) : LanguageRepository {
+                             context: Context) : LanguageRepository {
 
     private val stateUpdates by lazy { MutableLiveData<LanguageRepository.LanguageEvent>() }
     private val languageReceiver = LanguageReceiver {

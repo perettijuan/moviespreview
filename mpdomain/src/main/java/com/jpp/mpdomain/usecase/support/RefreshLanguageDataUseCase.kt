@@ -22,7 +22,7 @@ interface RefreshLanguageDataUseCase {
     class Impl(private val languageRepository: LanguageRepository,
                private val supportRepository: SupportRepository) : RefreshLanguageDataUseCase {
         override fun shouldRefreshDataInApp(): Boolean {
-            return languageRepository.getCurrentAppLanguage()?.let {
+            return languageRepository.getCurrentAppLanguage().let {
                 val refresh = languageRepository.getCurrentDeviceLanguage() != it
 
                 if (refresh) {
@@ -31,10 +31,6 @@ interface RefreshLanguageDataUseCase {
                 }
 
                 return refresh
-            } ?: run {
-                // no app language stored, update
-                languageRepository.updateAppLanguage(languageRepository.getCurrentDeviceLanguage())
-                false
             }
         }
     }
