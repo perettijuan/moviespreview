@@ -102,10 +102,12 @@ class UserAccountInteractorTest {
         val accountData = mockk<UserAccount>()
         val favMoviePage = mockk<MoviePage>()
         val ratedMoviePage = mockk<MoviePage>()
+        val watchListPage = mockk<MoviePage>()
         val expected = UserAccountEvent.Success(
                 accountData,
                 UserAccountInteractor.UserMoviesState.Success(favMoviePage),
-                UserAccountInteractor.UserMoviesState.Success(ratedMoviePage)
+                UserAccountInteractor.UserMoviesState.Success(ratedMoviePage),
+                UserAccountInteractor.UserMoviesState.Success(watchListPage)
         )
 
         every { sessionRepository.getCurrentSession() } returns session
@@ -114,6 +116,7 @@ class UserAccountInteractorTest {
         every { accountRepository.getUserAccount(any()) } returns accountData
         every { moviesRepository.getFavoriteMoviePage(any(), any(), any(), any()) } returns favMoviePage
         every { moviesRepository.getRatedMoviePage(any(), any(), any(), any()) } returns ratedMoviePage
+        every { moviesRepository.getWatchlistMoviePage(any(), any(), any(), any()) } returns watchListPage
 
         subject.userAccountEvents.observeWith { eventPosted = it }
 
@@ -123,6 +126,7 @@ class UserAccountInteractorTest {
         verify(exactly = 1) { accountRepository.getUserAccount(session) }
         verify(exactly = 1) { moviesRepository.getFavoriteMoviePage(1, accountData, session, SupportedLanguage.English) }
         verify(exactly = 1) { moviesRepository.getRatedMoviePage(1, accountData, session, SupportedLanguage.English) }
+        verify(exactly = 1) { moviesRepository.getWatchlistMoviePage(1, accountData, session, SupportedLanguage.English) }
         verify(exactly = 1) { languageRepository.getCurrentAppLanguage() }
     }
 }

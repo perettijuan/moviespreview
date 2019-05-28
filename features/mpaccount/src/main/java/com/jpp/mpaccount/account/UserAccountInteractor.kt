@@ -27,7 +27,8 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
         object UnknownError : UserAccountEvent()
         data class Success(val data: UserAccount,
                            val favoriteMovies: UserMoviesState,
-                           val ratedMovies: UserMoviesState)
+                           val ratedMovies: UserMoviesState,
+                           val watchList: UserMoviesState)
             : UserAccountEvent()
     }
 
@@ -64,7 +65,8 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
                 Success(
                         data = it,
                         favoriteMovies = getFavoriteMovies(session, it, language),
-                        ratedMovies = getRatedMovies(session, it, language)
+                        ratedMovies = getRatedMovies(session, it, language),
+                        watchList = getWatchlist(session, it, language)
                 )
             } ?: UnknownError
         }
@@ -83,6 +85,17 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
 
     private fun getRatedMovies(session: Session, userAccount: UserAccount, language: SupportedLanguage): UserMoviesState {
         return moviesRepository.getRatedMoviePage(
+                page = 1,
+                userAccount = userAccount,
+                session = session,
+                language = language
+        )?.let { favMoviePage ->
+            UserMoviesState.Success(favMoviePage)
+        } ?: UserMoviesState.UnknownError
+    }
+
+    private fun getWatchlist(session: Session, userAccount: UserAccount, language: SupportedLanguage): UserMoviesState {
+        return moviesRepository.getWatchlistMoviePage(
                 page = 1,
                 userAccount = userAccount,
                 session = session,

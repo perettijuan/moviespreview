@@ -87,7 +87,8 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
                         accountName = username,
                         defaultLetter = if (name.isEmpty()) username.first() else name.first(),
                         favoriteMovieState = getUserMoviesViewState(successState.favoriteMovies),
-                        ratedMovieState = getUserMoviesViewState(successState.ratedMovies)
+                        ratedMovieState = getUserMoviesViewState(successState.ratedMovies),
+                        watchListState = getUserMoviesViewState(successState.watchList)
                 )
             }.let { _viewStates.value = of(it) }
         }
