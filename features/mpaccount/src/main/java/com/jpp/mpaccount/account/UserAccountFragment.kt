@@ -65,6 +65,7 @@ class UserAccountFragment : Fragment() {
                 updateHeader(viewState)
                 renderFavoriteMoviesViewState(viewState.favoriteMovieState)
                 renderRatedMoviesViewState(viewState.ratedMovieState)
+                renderWachlistViewState(viewState.watchListState)
                 renderAccountData()
             }
             is ShowError -> rendeUnknownError()
@@ -84,6 +85,14 @@ class UserAccountFragment : Fragment() {
             is UserMoviesViewState.ShowNoMovies -> userAccountRatedMovies.showErrorMessage(getString(R.string.user_account_no_rated_movies))
             is UserMoviesViewState.ShowError -> userAccountRatedMovies.showErrorMessage(getString(R.string.user_account_rated_movies_error))
             is UserMoviesViewState.ShowUserMovies -> userAccountRatedMovies.showMovies(viewState.items) { TODO() }
+        }
+    }
+
+    private fun renderWachlistViewState(viewState: UserMoviesViewState) {
+        when (viewState) {
+            is UserMoviesViewState.ShowNoMovies -> userAccountWatchlist.showErrorMessage(getString(R.string.user_account_no_watchlist_movies))
+            is UserMoviesViewState.ShowError -> userAccountWatchlist.showErrorMessage(getString(R.string.user_account_watchlist_movies_error))
+            is UserMoviesViewState.ShowUserMovies -> userAccountWatchlist.showMovies(viewState.items) { TODO() }
         }
     }
 
