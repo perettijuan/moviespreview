@@ -13,10 +13,7 @@ import com.jpp.mp.common.extensions.getScreenWithInPixels
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToLogin
 import com.jpp.mpaccount.account.UserAccountViewState.*
-import com.jpp.mpdesign.ext.getViewModel
-import com.jpp.mpdesign.ext.loadImageUrlAsCircular
-import com.jpp.mpdesign.ext.setInvisible
-import com.jpp.mpdesign.ext.setVisible
+import com.jpp.mpdesign.ext.*
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_user_account.*
 import kotlinx.android.synthetic.main.layout_user_account_content.*
@@ -68,7 +65,7 @@ class UserAccountFragment : Fragment() {
                 renderWachlistViewState(viewState.watchListState)
                 renderAccountData()
             }
-            is ShowError -> rendeUnknownError()
+            is ShowError -> renderUnknownError()
         }
     }
 
@@ -127,7 +124,7 @@ class UserAccountFragment : Fragment() {
         userAccountErrorView.setVisible()
     }
 
-    private fun rendeUnknownError() {
+    private fun renderUnknownError() {
         userAccountLoadingView.setInvisible()
         userAccountContentView.setInvisible()
 
@@ -137,10 +134,15 @@ class UserAccountFragment : Fragment() {
 
     private fun updateHeader(newContent: ShowUserAccountData) {
         with(newContent) {
-            userAccountHeaderIv.loadImageUrlAsCircular(avatarUrl) {
-                userAccountNameInitialTv.setVisible()
-                userAccountHeaderIv.setInvisible()
-            }
+            userAccountHeaderIv.loadImageUrlAsCircular(avatarUrl,
+                    {
+                        userAccountNameInitialTv.setVisible()
+                        userAccountHeaderIv.setInvisible()
+                    },
+                    {
+                        accountContent.tintBackgroundWithBitmap(it)
+                    }
+            )
             userAccountHeaderUserNameTv.text = userName
             userAccountHeaderAccountNameTv.text = accountName
             userAccountNameInitialTv.text = defaultLetter.toString()

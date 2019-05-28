@@ -1,16 +1,21 @@
 package com.jpp.mpdesign.ext
 
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.palette.graphics.Palette
 import com.jpp.mpdesign.R
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+
 
 /**
  * Inflates a given layout resources and returns the inflated view.
@@ -75,9 +80,10 @@ fun ImageView.loadImageUrl(imageUrl: String,
  * into the ImageView as a circular image.
  */
 fun ImageView.loadImageUrlAsCircular(imageUrl: String,
+                                     onErrorAction: (() -> Unit)? = null,
+                                     onBitmapAvailable: ((Bitmap) -> Unit)? = null,
                                      @DrawableRes placeholderRes: Int = R.drawable.ic_app_icon_black,
-                                     @DrawableRes errorImageRes: Int = R.drawable.ic_error_black,
-                                     onErrorAction: (() -> Unit)? = null) {
+                                     @DrawableRes errorImageRes: Int = R.drawable.ic_error_black) {
     Picasso
             .with(context)
             .load(imageUrl)
@@ -92,6 +98,7 @@ fun ImageView.loadImageUrlAsCircular(imageUrl: String,
                     roundedBitmapDrawable.isCircular = true
                     roundedBitmapDrawable.cornerRadius = Math.max(imageAsBitmap.width.toDouble(), imageAsBitmap.height / 2.0).toFloat()
                     setImageDrawable(roundedBitmapDrawable)
+                    onBitmapAvailable?.invoke(imageAsBitmap)
                 }
 
                 override fun onError() {
@@ -99,4 +106,32 @@ fun ImageView.loadImageUrlAsCircular(imageUrl: String,
                 }
             })
 
+}
+
+/**
+ * Tints the background of the ViewGroup with a linear gradient constructed from the color
+ * palette that can be fetch from the provided [bitmap].
+ */
+fun ViewGroup.tintBackgroundWithBitmap(bitmap: Bitmap) {
+    Palette.from(bitmap).generate { palette ->
+        palette?.withMostPopulous {
+            background = GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    intArrayOf(ContextCompat.getColor(context, android.R.color.white), it.rgb)
+            )
+        }
+    }
+}
+
+/**
+ * Executes the [callback] with the most populous color found in the Palette.
+ */
+private fun Palette.withMostPopulous(callback: (Palette.Swatch) -> Unit) {
+    var mostPopulous: Palette.Swatch? = null
+    for (swatch in swatches) {
+        if (mostPopulous == null || swatch.population > mostPopulous.population) {
+            mostPopulous = swatch
+        }
+    }
+    mostPopulous?.let(callback)
 }
