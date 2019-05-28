@@ -31,6 +31,16 @@ interface MoviesDb {
     fun saveFavoriteMoviesPage(page: Int, moviePage: MoviePage)
 
     /**
+     * @return a [MoviePage] from the rated list.
+     */
+    fun getRatedMovies(page: Int): MoviePage?
+
+    /**
+     * Stores the provided [MoviePage] as a new page of rated movies.
+     */
+    fun saveRatedMoviesPage(page: Int, moviePage: MoviePage)
+
+    /**
      * @return a [MovieDetail] for the provided [movieId] if any is found, null
      * any other case.
      */

@@ -100,6 +100,10 @@ open class MPApi
         return tryCatchOrReturnNull { API.getFavoriteMoviesPage(userAccount.id, page, session.session_id, API_KEY, language.id) }
     }
 
+    override fun getRatedMovies(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
+        return tryCatchOrReturnNull { API.getRatedMoviesPage(userAccount.id, page, session.session_id, API_KEY, language.id) }
+    }
+
     /**
      * Executes the provided [block] in a try-catch block and returns the result.
      * If the [block] fails with an exception, null is returned.
