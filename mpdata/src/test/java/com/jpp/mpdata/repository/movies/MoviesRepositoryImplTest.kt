@@ -98,10 +98,10 @@ class MoviesRepositoryImplTest {
 
         every { moviesDb.getFavoriteMovies(1) } returns moviePage
 
-        val retrieved = subject.getFavoriteMovies(1, mockk(), mockk(), mockk())
+        val retrieved = subject.getFavoriteMoviePage(1, mockk(), mockk(), mockk())
 
         assertEquals(moviePage, retrieved)
-        verify(exactly = 0) { moviesApi.getFavoriteMovies(any(), any(), any(), any()) }
+        verify(exactly = 0) { moviesApi.getFavoriteMoviePage(any(), any(), any(), any()) }
     }
 
     @Test
@@ -109,24 +109,24 @@ class MoviesRepositoryImplTest {
         val moviePage = mockk<MoviePage>()
 
         every { moviesDb.getFavoriteMovies(1) } returns null
-        every { moviesApi.getFavoriteMovies(1, any(), any(), any()) } returns moviePage
+        every { moviesApi.getFavoriteMoviePage(1, any(), any(), any()) } returns moviePage
 
-        val retrieved = subject.getFavoriteMovies(1, mockk(), mockk(), mockk())
+        val retrieved = subject.getFavoriteMoviePage(1, mockk(), mockk(), mockk())
 
         assertEquals(moviePage, retrieved)
-        verify(exactly = 1) { moviesApi.getFavoriteMovies(any(), any(), any(), any()) }
+        verify(exactly = 1) { moviesApi.getFavoriteMoviePage(any(), any(), any(), any()) }
         verify { moviesDb.saveFavoriteMoviesPage(1, moviePage) }
     }
 
     @Test
     fun `Should return null and not attempt to save favorite movie when API returns null`() {
         every { moviesDb.getFavoriteMovies(1) } returns null
-        every { moviesApi.getFavoriteMovies(1, any(), any(), any()) } returns null
+        every { moviesApi.getFavoriteMoviePage(1, any(), any(), any()) } returns null
 
-        val retrieved = subject.getFavoriteMovies(1, mockk(), mockk(), mockk())
+        val retrieved = subject.getFavoriteMoviePage(1, mockk(), mockk(), mockk())
 
         assertNull(retrieved)
-        verify(exactly = 1) { moviesApi.getFavoriteMovies(any(), any(), any(), any()) }
+        verify(exactly = 1) { moviesApi.getFavoriteMoviePage(any(), any(), any(), any()) }
         verify(exactly = 0) { moviesDb.saveFavoriteMoviesPage(1, any()) }
     }
 
@@ -136,10 +136,10 @@ class MoviesRepositoryImplTest {
 
         every { moviesDb.getRatedMovies(1) } returns moviePage
 
-        val retrieved = subject.getRatedMovies(1, mockk(), mockk(), mockk())
+        val retrieved = subject.getRatedMoviePage(1, mockk(), mockk(), mockk())
 
         assertEquals(moviePage, retrieved)
-        verify(exactly = 0) { moviesApi.getRatedMovies(any(), any(), any(), any()) }
+        verify(exactly = 0) { moviesApi.getRatedMoviePage(any(), any(), any(), any()) }
     }
 
     @Test
@@ -147,25 +147,63 @@ class MoviesRepositoryImplTest {
         val moviePage = mockk<MoviePage>()
 
         every { moviesDb.getRatedMovies(1) } returns null
-        every { moviesApi.getRatedMovies(1, any(), any(), any()) } returns moviePage
+        every { moviesApi.getRatedMoviePage(1, any(), any(), any()) } returns moviePage
 
-        val retrieved = subject.getRatedMovies(1, mockk(), mockk(), mockk())
+        val retrieved = subject.getRatedMoviePage(1, mockk(), mockk(), mockk())
 
         assertEquals(moviePage, retrieved)
-        verify(exactly = 1) { moviesApi.getRatedMovies(any(), any(), any(), any()) }
+        verify(exactly = 1) { moviesApi.getRatedMoviePage(any(), any(), any(), any()) }
         verify { moviesDb.saveRatedMoviesPage(1, moviePage) }
     }
 
     @Test
-    fun `Should return null and not attempt to save rate movie when API returns null`() {
+    fun `Should return null and not attempt to save rated movie when API returns null`() {
         every { moviesDb.getRatedMovies(1) } returns null
-        every { moviesApi.getRatedMovies(1, any(), any(), any()) } returns null
+        every { moviesApi.getRatedMoviePage(1, any(), any(), any()) } returns null
 
-        val retrieved = subject.getRatedMovies(1, mockk(), mockk(), mockk())
+        val retrieved = subject.getRatedMoviePage(1, mockk(), mockk(), mockk())
 
         assertNull(retrieved)
-        verify(exactly = 1) { moviesApi.getRatedMovies(any(), any(), any(), any()) }
+        verify(exactly = 1) { moviesApi.getRatedMoviePage(any(), any(), any(), any()) }
         verify(exactly = 0) { moviesDb.saveRatedMoviesPage(1, any()) }
+    }
+
+    @Test
+    fun `Should not retrieve watchlist page from API when stored in DB`() {
+        val moviePage = mockk<MoviePage>()
+
+        every { moviesDb.getWatchlistMoviePage(1) } returns moviePage
+
+        val retrieved = subject.getWatchlistMoviePage(1, mockk(), mockk(), mockk())
+
+        assertEquals(moviePage, retrieved)
+        verify(exactly = 0) { moviesApi.getWatchlistMoviePage(any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `Should retrieve watchlist page from API and store it in DB`() {
+        val moviePage = mockk<MoviePage>()
+
+        every { moviesDb.getWatchlistMoviePage(1) } returns null
+        every { moviesApi.getWatchlistMoviePage(1, any(), any(), any()) } returns moviePage
+
+        val retrieved = subject.getWatchlistMoviePage(1, mockk(), mockk(), mockk())
+
+        assertEquals(moviePage, retrieved)
+        verify(exactly = 1) { moviesApi.getWatchlistMoviePage(any(), any(), any(), any()) }
+        verify { moviesDb.saveWatchlistMoviePage(1, moviePage) }
+    }
+
+    @Test
+    fun `Should return null and not attempt to save watchlist page when API returns null`() {
+        every { moviesDb.getWatchlistMoviePage(1) } returns null
+        every { moviesApi.getWatchlistMoviePage(1, any(), any(), any()) } returns null
+
+        val retrieved = subject.getWatchlistMoviePage(1, mockk(), mockk(), mockk())
+
+        assertNull(retrieved)
+        verify(exactly = 1) { moviesApi.getWatchlistMoviePage(any(), any(), any(), any()) }
+        verify(exactly = 0) { moviesDb.saveWatchlistMoviePage(1, any()) }
     }
 
     @Test

@@ -25,11 +25,17 @@ interface MoviesRepository {
      * Retrieves a [MoviePage] with the favorite movies that the user has.
      * @return a [MoviePage] indicated by [page] only if the user has movies as favorites.
      */
-    fun getFavoriteMovies(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
+    fun getFavoriteMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
 
     /**
      * Retrieves a [MoviePage] with the movies that the user has rated.
      * @return a [MoviePage] indicated by [page] only if the user has movies rated.
      */
-    fun getRatedMovies(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
+    fun getRatedMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
+
+    /**
+     * Retrieves a [MoviePage] from the user's watchlist.
+     * @return a [MoviePage] indicated by [page] only if the user has one in the watchlist.
+     */
+    fun getWatchlistMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
 }

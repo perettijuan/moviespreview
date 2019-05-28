@@ -16,14 +16,19 @@ class MoviesRepositoryImpl(private val moviesApi: MoviesApi,
                 ?: moviesApi.getMovieDetails(movieId, language)?.also { moviesDb.saveMovieDetails(it) }
     }
 
-    override fun getFavoriteMovies(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
+    override fun getFavoriteMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
         return moviesDb.getFavoriteMovies(page)
-                ?: moviesApi.getFavoriteMovies(page, userAccount, session, language)?.also { moviesDb.saveFavoriteMoviesPage(page, it) }
+                ?: moviesApi.getFavoriteMoviePage(page, userAccount, session, language)?.also { moviesDb.saveFavoriteMoviesPage(page, it) }
     }
 
-    override fun getRatedMovies(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
+    override fun getRatedMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
         return moviesDb.getRatedMovies(page)
-                ?: moviesApi.getRatedMovies(page, userAccount, session, language)?.also { moviesDb.saveRatedMoviesPage(page, it) }
+                ?: moviesApi.getRatedMoviePage(page, userAccount, session, language)?.also { moviesDb.saveRatedMoviesPage(page, it) }
+    }
+
+    override fun getWatchlistMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
+        return moviesDb.getWatchlistMoviePage(page)
+                ?: moviesApi.getWatchlistMoviePage(page, userAccount, session, language)?.also { moviesDb.saveWatchlistMoviePage(page, it) }
     }
 
     private fun getFromApi(page: Int, section: MovieSection, language: SupportedLanguage): MoviePage? = with(moviesApi) {

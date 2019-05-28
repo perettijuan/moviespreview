@@ -39,10 +39,15 @@ interface MoviesApi {
     /**
      * @return the [MoviePage] that contains the favorite movies of the user.
      */
-    fun getFavoriteMovies(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
+    fun getFavoriteMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
 
     /**
      * @return the [MoviePage] that contains the movies that the user has rated.
      */
-    fun getRatedMovies(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
+    fun getRatedMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
+
+    /**
+     * @return the [MoviePage] that contains the watchlist of movies.
+     */
+    fun getWatchlistMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
 }

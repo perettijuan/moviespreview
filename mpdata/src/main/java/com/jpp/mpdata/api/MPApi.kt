@@ -96,12 +96,16 @@ open class MPApi
         return tryCatchOrReturnNull { API.getMovieAccountState(movieId, session.session_id, API_KEY) }
     }
 
-    override fun getFavoriteMovies(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
+    override fun getFavoriteMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
         return tryCatchOrReturnNull { API.getFavoriteMoviesPage(userAccount.id, page, session.session_id, API_KEY, language.id) }
     }
 
-    override fun getRatedMovies(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
+    override fun getRatedMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
         return tryCatchOrReturnNull { API.getRatedMoviesPage(userAccount.id, page, session.session_id, API_KEY, language.id) }
+    }
+
+    override fun getWatchlistMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
+        return tryCatchOrReturnNull { API.getWatchlistMoviesPage(userAccount.id, page, session.session_id, API_KEY, language.id) }
     }
 
     /**

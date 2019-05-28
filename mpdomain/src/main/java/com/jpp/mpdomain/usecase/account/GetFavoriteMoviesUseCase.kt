@@ -50,7 +50,7 @@ interface GetFavoriteMoviesUseCase {
 //                Disconnected -> FavoriteMoviesResult.ErrorNoConnectivity
 //                Connected -> sessionRepository.getCurrentSession()?.let { session ->
 //                    accountRepository.getUserAccount(session)?.let { userAccount ->
-//                        accountRepository.getFavoriteMovies(page, userAccount, session, languageRepository.getCurrentDeviceLanguage())?.let { page ->
+//                        accountRepository.getFavoriteMoviePage(page, userAccount, session, languageRepository.getCurrentDeviceLanguage())?.let { page ->
 //                            when (page.results.size) {
 //                                0 -> FavoriteMoviesResult.NoFavorites
 //                                else -> FavoriteMoviesResult.Success(page)

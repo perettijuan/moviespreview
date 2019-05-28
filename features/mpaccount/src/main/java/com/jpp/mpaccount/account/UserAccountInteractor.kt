@@ -71,7 +71,7 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
     }
 
     private fun getFavoriteMovies(session: Session, userAccount: UserAccount, language: SupportedLanguage): UserMoviesState {
-        return moviesRepository.getFavoriteMovies(
+        return moviesRepository.getFavoriteMoviePage(
                 page = 1,
                 userAccount = userAccount,
                 session = session,
@@ -82,7 +82,7 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
     }
 
     private fun getRatedMovies(session: Session, userAccount: UserAccount, language: SupportedLanguage): UserMoviesState {
-        return moviesRepository.getRatedMovies(
+        return moviesRepository.getRatedMoviePage(
                 page = 1,
                 userAccount = userAccount,
                 session = session,
