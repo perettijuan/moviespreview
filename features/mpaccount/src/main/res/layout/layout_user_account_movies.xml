@@ -16,6 +16,16 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Title" />
 
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="6dp"
+        android:background="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/userAccountMoviesTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/userAccountMoviesTitle"
+        app:layout_constraintTop_toTopOf="@+id/userAccountMoviesTitle" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/userAccountMoviesList"
         android:layout_width="0dp"
