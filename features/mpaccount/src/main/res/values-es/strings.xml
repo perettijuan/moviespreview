@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="user_account_approve_reminder">Por favor, permite a Movies Preview usar tu cuenta.</string>
+
+    <!-- Favorite movies -->
     <string name="user_account_favorite_title">Películas favoritas</string>
     <string name="user_account_no_favorite_movies">Aún no tienes películas como favoritas. Añade favoritas a tu lista seleccionando una película desde la pantalla principal.</string>
     <string name="user_account_favorite_movies_error">Algo salió mal al intentar traer tus películas favoritas. Por favor, intenta nuevamente luego.</string>
+
+    <!-- Rated movies -->
+    <string name="user_account_rated_title">Películas calificadas</string>
+    <string name="user_account_no_rated_movies">Aún no has calificado ninguna película. Califica una película seleccionandola desde la pantalla principal.</string>
+    <string name="user_account_rated_movies_error">Algo salió mal al intentar traer tus películas calificadas. Por favor, intenta nuevamente luego.</string>
 </resources>
