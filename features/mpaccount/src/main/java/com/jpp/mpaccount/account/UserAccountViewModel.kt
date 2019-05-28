@@ -7,7 +7,7 @@ import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.viewstate.HandledViewState
 import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
-import com.jpp.mpaccount.account.UserAccountInteractor.FavoriteMoviesState
+import com.jpp.mpaccount.account.UserAccountInteractor.UserMoviesState
 import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent
 import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToLogin
 import com.jpp.mpaccount.account.UserAccountViewState.*
@@ -86,19 +86,20 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
                         userName = if (name.isEmpty()) username else name,
                         accountName = username,
                         defaultLetter = if (name.isEmpty()) username.first() else name.first(),
-                        favoriteMovieState = getFavoriteMoviesViewState(successState.favoriteMovies)
+                        favoriteMovieState = getUserMoviesViewState(successState.favoriteMovies),
+                        ratedMovieState = getUserMoviesViewState(successState.ratedMovies)
                 )
             }.let { _viewStates.value = of(it) }
         }
     }
 
-    private suspend fun getFavoriteMoviesViewState(favMovieState: FavoriteMoviesState) = withContext(dispatchers.default()) {
-        when (favMovieState) {
-            is FavoriteMoviesState.UnknownError -> UserMoviesViewState.ShowError
-            is FavoriteMoviesState.Success -> {
+    private suspend fun getUserMoviesViewState(userMovieState: UserMoviesState) = withContext(dispatchers.default()) {
+        when (userMovieState) {
+            is UserMoviesState.UnknownError -> UserMoviesViewState.ShowError
+            is UserMoviesState.Success -> {
                 when {
-                    favMovieState.data.results.isEmpty() -> UserMoviesViewState.ShowNoMovies
-                    else -> favMovieState.data.results
+                    userMovieState.data.results.isEmpty() -> UserMoviesViewState.ShowNoMovies
+                    else -> userMovieState.data.results
                             .map { imagesPathInteractor.configurePathMovie(10, 10, it) }
                             .map { UserMovieItem(image = it.poster_path ?: "noPath") }
                             .let { UserMoviesViewState.ShowUserMovies(it) }
