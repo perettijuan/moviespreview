@@ -1,13 +1,12 @@
 package com.jpp.mpdata.repository.account
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.jpp.mpdata.datasources.account.AccountApi
 import com.jpp.mpdata.datasources.account.AccountDb
-import com.jpp.mpdomain.*
+import com.jpp.mpdomain.Session
+import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.repository.AccountRepository
 
-//TODO JPP we need to do something with this
+//TODO JPP functions commented here should go in a different repository when the favorite state in the details is implemented.
 class AccountRepositoryImpl(private val accountApi: AccountApi,
                             private val accountDb: AccountDb) : AccountRepository {
 
@@ -37,13 +36,6 @@ class AccountRepositoryImpl(private val accountApi: AccountApi,
 //                } ?: false
 //    }
 //
-//    override fun getFavoriteMovies(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
-//        return accountDb.getFavoriteMovies(page) ?: run {
-//            accountApi.getFavoriteMovies(page, userAccount, session, language)?.also {
-//                accountDb.storeFavoriteMoviesPage(page, it)
-//            }
-//        }
-//    }
 //
 //    override fun refresh() {
 //        accountDb.flushData()

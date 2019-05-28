@@ -26,7 +26,7 @@ interface LanguageRepository {
     /**
      * @return the [SupportedLanguage] that the application is currently configured with.
      */
-    fun getCurrentAppLanguage(): SupportedLanguage?
+    fun getCurrentAppLanguage(): SupportedLanguage
 
     /**
      * Updates the [SupportedLanguage] that the application is configured with.

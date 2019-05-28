@@ -1,5 +1,6 @@
 package com.jpp.mpdata.cache
 
+import android.util.SparseArray
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.MovieDAO
 import com.jpp.mpdata.cache.room.MovieDetailDAO
@@ -17,6 +18,8 @@ class MoviesCache(private val roomDatabase: MPRoomDataBase,
                   private val adapter: RoomModelAdapter,
                   private val timestampHelper: CacheTimestampHelper) : MoviesDb {
 
+    //TODO JPP we need to flush this when language changes
+    private val favoriteMovies = SparseArray<MoviePage>()
 
     override fun getMoviePageForSection(page: Int, section: MovieSection): MoviePage? {
         return withMovieDao {
@@ -56,6 +59,12 @@ class MoviesCache(private val roomDatabase: MPRoomDataBase,
             insertMovieGenres(movieDetail.genres.map { transformWithAdapter { adaptDataMovieGenreToDBMovieGenre(it, movieDetail.id) } })
         }
     }
+
+    override fun saveFavoriteMoviesPage(page: Int, moviePage: MoviePage) {
+        favoriteMovies.put(page, moviePage)
+    }
+
+    override fun getFavoriteMovies(page: Int): MoviePage? = favoriteMovies.get(page, null)
 
     private fun <T> transformWithAdapter(action: RoomModelAdapter.() -> T): T = with(adapter) { action.invoke(this) }
 

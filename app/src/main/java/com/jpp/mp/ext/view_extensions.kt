@@ -26,6 +26,7 @@ import com.squareup.picasso.Picasso
 /**
  * Inflates a given layout resources and returns the inflated view.
  */
+@Deprecated("use common instead")
 fun ViewGroup.inflate(layoutRes: Int): View {
     return LayoutInflater.from(context).inflate(layoutRes, this, false)
 }
@@ -97,6 +98,7 @@ fun ImageView.clearImage(@DrawableRes placeholderRes: Int = R.drawable.ic_app_ic
  * Loads an image retrieved from the provided [imageUrl]
  * into the ImageView.
  */
+@Deprecated("use common instead")
 fun ImageView.loadImageUrl(imageUrl: String,
                            @DrawableRes placeholderRes: Int = R.drawable.ic_app_icon_black,
                            @DrawableRes errorImageRes: Int = R.drawable.ic_error_black) {

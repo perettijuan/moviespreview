@@ -21,6 +21,16 @@ interface MoviesDb {
     fun saveMoviePageForSection(moviePage: MoviePage, section: MovieSection)
 
     /**
+     * @return a [MoviePage] from the favorite list.
+     */
+    fun getFavoriteMovies(page: Int): MoviePage?
+
+    /**
+     * Stores the provided [MoviePage] as a new page of favorite movies.
+     */
+    fun saveFavoriteMoviesPage(page: Int, moviePage: MoviePage)
+
+    /**
      * @return a [MovieDetail] for the provided [movieId] if any is found, null
      * any other case.
      */

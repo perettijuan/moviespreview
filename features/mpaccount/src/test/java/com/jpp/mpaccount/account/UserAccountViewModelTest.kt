@@ -3,15 +3,19 @@ package com.jpp.mpaccount.account
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mpaccount.TestAccountCoroutineDispatchers
 import com.jpp.mpdomain.Gravatar
+import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.UserAvatar
+import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -21,6 +25,8 @@ class UserAccountViewModelTest {
 
     @RelaxedMockK
     private lateinit var accountInteractor: UserAccountInteractor
+    @RelaxedMockK
+    private lateinit var imagesPathInteractor: ImagesPathInteractor
 
     private val lvInteractorEvents = MutableLiveData<UserAccountInteractor.UserAccountEvent>()
 
@@ -33,7 +39,8 @@ class UserAccountViewModelTest {
 
         subject = UserAccountViewModel(
                 TestAccountCoroutineDispatchers(),
-                accountInteractor
+                accountInteractor,
+                imagesPathInteractor
         )
 
         /*
@@ -91,13 +98,14 @@ class UserAccountViewModelTest {
                 avatarUrl = Gravatar.BASE_URL + "someHash" + Gravatar.REDIRECT,
                 userName = "aName",
                 accountName = "aUserName",
-                defaultLetter = 'a'
+                defaultLetter = 'a',
+                favoriteMovieState = UserMoviesViewState.ShowError
         )
         var actual: UserAccountViewState? = null
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> actual = viewState } }
 
-        lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.Success(userAccount))
+        lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.Success(userAccount, UserAccountInteractor.FavoriteMoviesState.UnknownError))
 
         assertEquals(expected, actual)
     }
@@ -115,15 +123,50 @@ class UserAccountViewModelTest {
                 avatarUrl = Gravatar.BASE_URL + "someHash" + Gravatar.REDIRECT,
                 userName = "UserName",
                 accountName = "UserName",
-                defaultLetter = 'U'
+                defaultLetter = 'U',
+                favoriteMovieState = UserMoviesViewState.ShowError
         )
         var actual: UserAccountViewState? = null
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> actual = viewState } }
 
-        lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.Success(userAccount))
+        lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.Success(userAccount, UserAccountInteractor.FavoriteMoviesState.UnknownError))
 
         assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `Should map user favorite movies`() {
+        val userGravatar = Gravatar("someHash")
+        val userAccount = UserAccount(
+                avatar = UserAvatar(userGravatar),
+                id = 12.toDouble(),
+                name = "",
+                username = "UserName"
+        )
+        var actual: UserAccountViewState? = null
+        val moviePage = MoviePage(
+                page = 1,
+                results = mutableListOf(mockk(), mockk(), mockk(), mockk(), mockk()),
+                total_pages = 10,
+                total_results = 100
+        )
+
+        every { imagesPathInteractor.configurePathMovie(any(), any(), any()) } returns mockk(relaxed = true)
+
+        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> actual = viewState } }
+
+        lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.Success(userAccount,
+                UserAccountInteractor.FavoriteMoviesState.Success(moviePage)))
+
+        assertTrue(actual is UserAccountViewState.ShowUserAccountData)
+        with(actual as UserAccountViewState.ShowUserAccountData) {
+            assertTrue(this.favoriteMovieState is UserMoviesViewState.ShowUserMovies)
+            with(this.favoriteMovieState as UserMoviesViewState.ShowUserMovies) {
+                assertEquals(5, this.items.size)
+            }
+        }
+        verify(exactly = 5) { imagesPathInteractor.configurePathMovie(any(), any(), any()) }
     }
 
     @Test
@@ -131,7 +174,7 @@ class UserAccountViewModelTest {
         var viewStatePosted: UserAccountViewState? = null
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
-        subject.onInit()
+        subject.onInit(10)
 
         verify { accountInteractor.fetchUserAccountData() }
         assertEquals(UserAccountViewState.Loading, viewStatePosted)

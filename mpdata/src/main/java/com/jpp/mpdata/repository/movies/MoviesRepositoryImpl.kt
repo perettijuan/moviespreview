@@ -22,6 +22,14 @@ class MoviesRepositoryImpl(private val moviesApi: MoviesApi,
         }
     }
 
+    override fun getFavoriteMovies(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
+        return moviesDb.getFavoriteMovies(page) ?: run {
+            moviesApi.getFavoriteMovies(page, userAccount, session, language)?.also {
+                moviesDb.saveFavoriteMoviesPage(page, it)
+            }
+        }
+    }
+
     private fun getFromApi(page: Int, section: MovieSection, language: SupportedLanguage): MoviePage? = with(moviesApi) {
         when (section) {
             MovieSection.Playing -> getNowPlayingMoviePage(page, language)

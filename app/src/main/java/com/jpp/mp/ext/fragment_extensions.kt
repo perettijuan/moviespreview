@@ -18,6 +18,7 @@ import com.jpp.mp.R
  * Returns a [Point] in which the x value represents the width of the screen in pixels
  * and the y values represents the height of the screen in pixels.
  */
+@Deprecated("use common instead")
 fun Fragment.getScreenSizeInPixels(): Point {
     activity?.let {
         return it.getScreenSizeInPixels()

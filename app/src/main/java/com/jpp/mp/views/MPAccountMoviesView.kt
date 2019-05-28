@@ -34,12 +34,12 @@ class MPAccountMoviesView : ConstraintLayout {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         init()
 
-        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.MPAccountMoviesView)
-        try {
-            setTitle(typedArray.getText(R.styleable.MPAccountMoviesView_accountMoviesTitleText))
-        } finally {
-            typedArray.recycle()
-        }
+//        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.MPAccountMoviesView)
+//        try {
+//            setTitle(typedArray.getText(R.styleable.MPAccountMoviesView_accountMoviesTitleText))
+//        } finally {
+//            typedArray.recycle()
+//        }
 
     }
 

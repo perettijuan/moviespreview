@@ -51,8 +51,4 @@
         <attr name="emptyIcon" format="reference"/>
     </declare-styleable>
 
-    <declare-styleable name="MPAccountMoviesView">
-        <attr name="accountMoviesTitleText" format="reference"/>
-    </declare-styleable>
-
 </resources>

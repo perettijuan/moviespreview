@@ -125,7 +125,7 @@ class AccountRepositoryTest {
 //        val actualPage = subject.getFavoriteMovies(1, userAccount, session, language)
 //
 //        assertEquals(moviePage, actualPage)
-//        verify { accountDb.storeFavoriteMoviesPage(1, moviePage) }
+//        verify { accountDb.saveFavoriteMoviesPage(1, moviePage) }
 //    }
 
 }

@@ -20,4 +20,10 @@ interface MoviesRepository {
      * null in any other case.
      */
     fun getMovieDetails(movieId: Double, language: SupportedLanguage): MovieDetail?
+
+    /**
+     * Retrieves a [MoviePage] with the favorite movies that the user has.
+     * @return a [MoviePage] indicated by [page] only if the user has movies as favorites.
+     */
+    fun getFavoriteMovies(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
 }

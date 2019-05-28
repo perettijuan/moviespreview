@@ -13,7 +13,7 @@ import java.util.*
 
 //TODO JPP this should change to be similar to MPConnectivityRepositoryImpl
 class LanguageRepositoryImpl(private val languageDb: LanguageDb,
-                             private val context: Context) : LanguageRepository {
+                             context: Context) : LanguageRepository {
 
     private val stateUpdates by lazy { MutableLiveData<LanguageRepository.LanguageEvent>() }
     private val languageReceiver = LanguageReceiver {
@@ -34,13 +34,13 @@ class LanguageRepositoryImpl(private val languageDb: LanguageDb,
         }
     }
 
-    override fun getCurrentAppLanguage(): SupportedLanguage? {
+    override fun getCurrentAppLanguage(): SupportedLanguage {
         return languageDb.getStoredLanguageString()?.let {
             when (Locale(it).language) {
                 Locale(Spanish.id).language -> Spanish
                 else -> English // default is always english.
             }
-        }
+        } ?: English
     }
 
     override fun updateAppLanguage(language: SupportedLanguage) {
