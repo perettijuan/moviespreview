@@ -3,10 +3,7 @@ package com.jpp.mpaccount.account
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent.*
-import com.jpp.mpdomain.Connectivity
-import com.jpp.mpdomain.MoviePage
-import com.jpp.mpdomain.Session
-import com.jpp.mpdomain.UserAccount
+import com.jpp.mpdomain.*
 import com.jpp.mpdomain.repository.*
 import javax.inject.Inject
 
@@ -29,13 +26,14 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
         object NotConnectedToNetwork : UserAccountEvent()
         object UnknownError : UserAccountEvent()
         data class Success(val data: UserAccount,
-                           val favoriteMovies: FavoriteMoviesState)
+                           val favoriteMovies: UserMoviesState,
+                           val ratedMovies: UserMoviesState)
             : UserAccountEvent()
     }
 
-    sealed class FavoriteMoviesState {
-        object UnknownError : FavoriteMoviesState()
-        data class Success(val data: MoviePage) : FavoriteMoviesState()
+    sealed class UserMoviesState {
+        object UnknownError : UserMoviesState()
+        data class Success(val data: MoviePage) : UserMoviesState()
     }
 
     private val _userAccountEvents by lazy { MutableLiveData<UserAccountEvent>() }
@@ -53,32 +51,44 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
         val session = sessionRepository.getCurrentSession()
         when (session) {
             null -> UserNotLogged
-            else -> getUserAccount(session)
+            else -> getUserAccount(session, languageRepository.getCurrentAppLanguage())
         }.let {
             _userAccountEvents.postValue(it)
         }
     }
 
-    private fun getUserAccount(session: Session): UserAccountEvent {
+    private fun getUserAccount(session: Session, language: SupportedLanguage): UserAccountEvent {
         return when (connectivityRepository.getCurrentConnectivity()) {
             is Connectivity.Disconnected -> NotConnectedToNetwork
             is Connectivity.Connected -> accountRepository.getUserAccount(session)?.let {
                 Success(
                         data = it,
-                        favoriteMovies = getFavoriteMovies(session, it)
+                        favoriteMovies = getFavoriteMovies(session, it, language),
+                        ratedMovies = getRatedMovies(session, it, language)
                 )
             } ?: UnknownError
         }
     }
 
-    private fun getFavoriteMovies(session: Session, userAccount: UserAccount): FavoriteMoviesState {
+    private fun getFavoriteMovies(session: Session, userAccount: UserAccount, language: SupportedLanguage): UserMoviesState {
         return moviesRepository.getFavoriteMovies(
                 page = 1,
                 userAccount = userAccount,
                 session = session,
-                language = languageRepository.getCurrentAppLanguage()
+                language = language
         )?.let { favMoviePage ->
-            FavoriteMoviesState.Success(favMoviePage)
-        } ?: FavoriteMoviesState.UnknownError
+            UserMoviesState.Success(favMoviePage)
+        } ?: UserMoviesState.UnknownError
+    }
+
+    private fun getRatedMovies(session: Session, userAccount: UserAccount, language: SupportedLanguage): UserMoviesState {
+        return moviesRepository.getRatedMovies(
+                page = 1,
+                userAccount = userAccount,
+                session = session,
+                language = language
+        )?.let { favMoviePage ->
+            UserMoviesState.Success(favMoviePage)
+        } ?: UserMoviesState.UnknownError
     }
 }

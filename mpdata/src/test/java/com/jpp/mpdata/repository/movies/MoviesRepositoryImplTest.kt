@@ -93,6 +93,82 @@ class MoviesRepositoryImplTest {
     }
 
     @Test
+    fun `Should not retrieve favorite movie from API when stored in DB`() {
+        val moviePage = mockk<MoviePage>()
+
+        every { moviesDb.getFavoriteMovies(1) } returns moviePage
+
+        val retrieved = subject.getFavoriteMovies(1, mockk(), mockk(), mockk())
+
+        assertEquals(moviePage, retrieved)
+        verify(exactly = 0) { moviesApi.getFavoriteMovies(any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `Should retrieve favorite movie from API and store it in DB`() {
+        val moviePage = mockk<MoviePage>()
+
+        every { moviesDb.getFavoriteMovies(1) } returns null
+        every { moviesApi.getFavoriteMovies(1, any(), any(), any()) } returns moviePage
+
+        val retrieved = subject.getFavoriteMovies(1, mockk(), mockk(), mockk())
+
+        assertEquals(moviePage, retrieved)
+        verify(exactly = 1) { moviesApi.getFavoriteMovies(any(), any(), any(), any()) }
+        verify { moviesDb.saveFavoriteMoviesPage(1, moviePage) }
+    }
+
+    @Test
+    fun `Should return null and not attempt to save favorite movie when API returns null`() {
+        every { moviesDb.getFavoriteMovies(1) } returns null
+        every { moviesApi.getFavoriteMovies(1, any(), any(), any()) } returns null
+
+        val retrieved = subject.getFavoriteMovies(1, mockk(), mockk(), mockk())
+
+        assertNull(retrieved)
+        verify(exactly = 1) { moviesApi.getFavoriteMovies(any(), any(), any(), any()) }
+        verify(exactly = 0) { moviesDb.saveFavoriteMoviesPage(1, any()) }
+    }
+
+    @Test
+    fun `Should not retrieve rated movie from API when stored in DB`() {
+        val moviePage = mockk<MoviePage>()
+
+        every { moviesDb.getRatedMovies(1) } returns moviePage
+
+        val retrieved = subject.getRatedMovies(1, mockk(), mockk(), mockk())
+
+        assertEquals(moviePage, retrieved)
+        verify(exactly = 0) { moviesApi.getRatedMovies(any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `Should retrieve rated movie from API and store it in DB`() {
+        val moviePage = mockk<MoviePage>()
+
+        every { moviesDb.getRatedMovies(1) } returns null
+        every { moviesApi.getRatedMovies(1, any(), any(), any()) } returns moviePage
+
+        val retrieved = subject.getRatedMovies(1, mockk(), mockk(), mockk())
+
+        assertEquals(moviePage, retrieved)
+        verify(exactly = 1) { moviesApi.getRatedMovies(any(), any(), any(), any()) }
+        verify { moviesDb.saveRatedMoviesPage(1, moviePage) }
+    }
+
+    @Test
+    fun `Should return null and not attempt to save rate movie when API returns null`() {
+        every { moviesDb.getRatedMovies(1) } returns null
+        every { moviesApi.getRatedMovies(1, any(), any(), any()) } returns null
+
+        val retrieved = subject.getRatedMovies(1, mockk(), mockk(), mockk())
+
+        assertNull(retrieved)
+        verify(exactly = 1) { moviesApi.getRatedMovies(any(), any(), any(), any()) }
+        verify(exactly = 0) { moviesDb.saveRatedMoviesPage(1, any()) }
+    }
+
+    @Test
     fun `Should not get data from API when details is in DB`() {
         val movieDetail = mockk<MovieDetail>()
         every { moviesDb.getMovieDetails(any()) } returns movieDetail

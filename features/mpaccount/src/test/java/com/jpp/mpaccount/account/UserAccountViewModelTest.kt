@@ -99,13 +99,19 @@ class UserAccountViewModelTest {
                 userName = "aName",
                 accountName = "aUserName",
                 defaultLetter = 'a',
-                favoriteMovieState = UserMoviesViewState.ShowError
+                favoriteMovieState = UserMoviesViewState.ShowError,
+                ratedMovieState = UserMoviesViewState.ShowError
         )
         var actual: UserAccountViewState? = null
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> actual = viewState } }
 
-        lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.Success(userAccount, UserAccountInteractor.FavoriteMoviesState.UnknownError))
+        lvInteractorEvents.postValue(
+                UserAccountInteractor.UserAccountEvent.Success(
+                        userAccount,
+                        UserAccountInteractor.UserMoviesState.UnknownError,
+                        UserAccountInteractor.UserMoviesState.UnknownError)
+        )
 
         assertEquals(expected, actual)
     }
@@ -124,19 +130,25 @@ class UserAccountViewModelTest {
                 userName = "UserName",
                 accountName = "UserName",
                 defaultLetter = 'U',
-                favoriteMovieState = UserMoviesViewState.ShowError
+                favoriteMovieState = UserMoviesViewState.ShowError,
+                ratedMovieState = UserMoviesViewState.ShowError
         )
         var actual: UserAccountViewState? = null
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> actual = viewState } }
 
-        lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.Success(userAccount, UserAccountInteractor.FavoriteMoviesState.UnknownError))
+        lvInteractorEvents.postValue(
+                UserAccountInteractor.UserAccountEvent.Success(
+                        userAccount,
+                        UserAccountInteractor.UserMoviesState.UnknownError,
+                        UserAccountInteractor.UserMoviesState.UnknownError)
+        )
 
         assertEquals(expected, actual)
     }
 
     @Test
-    fun `Should map user favorite movies`() {
+    fun `Should map user movies`() {
         val userGravatar = Gravatar("someHash")
         val userAccount = UserAccount(
                 avatar = UserAvatar(userGravatar),
@@ -145,9 +157,16 @@ class UserAccountViewModelTest {
                 username = "UserName"
         )
         var actual: UserAccountViewState? = null
-        val moviePage = MoviePage(
+        val favMoviePage = MoviePage(
                 page = 1,
                 results = mutableListOf(mockk(), mockk(), mockk(), mockk(), mockk()),
+                total_pages = 10,
+                total_results = 100
+        )
+
+        val ratedMoviePage = MoviePage(
+                page = 1,
+                results = mutableListOf(mockk(), mockk(), mockk(), mockk()),
                 total_pages = 10,
                 total_results = 100
         )
@@ -156,8 +175,13 @@ class UserAccountViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> actual = viewState } }
 
-        lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.Success(userAccount,
-                UserAccountInteractor.FavoriteMoviesState.Success(moviePage)))
+        lvInteractorEvents.postValue(
+                UserAccountInteractor.UserAccountEvent.Success(
+                        userAccount,
+                        UserAccountInteractor.UserMoviesState.Success(favMoviePage),
+                        UserAccountInteractor.UserMoviesState.Success(ratedMoviePage)
+                )
+        )
 
         assertTrue(actual is UserAccountViewState.ShowUserAccountData)
         with(actual as UserAccountViewState.ShowUserAccountData) {
@@ -165,8 +189,11 @@ class UserAccountViewModelTest {
             with(this.favoriteMovieState as UserMoviesViewState.ShowUserMovies) {
                 assertEquals(5, this.items.size)
             }
+            with(this.ratedMovieState as UserMoviesViewState.ShowUserMovies) {
+                assertEquals(4, this.items.size)
+            }
         }
-        verify(exactly = 5) { imagesPathInteractor.configurePathMovie(any(), any(), any()) }
+        verify(exactly = 9) { imagesPathInteractor.configurePathMovie(any(), any(), any()) }
     }
 
     @Test

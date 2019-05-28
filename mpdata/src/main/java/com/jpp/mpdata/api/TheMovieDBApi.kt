@@ -177,4 +177,19 @@ interface TheMovieDBApi {
                               @Query("api_key") api_key: String,
                               @Query("language") language: String? = null): Call<MoviePage>
 
+    /**
+     * Retrieves the list of favorite movies of the user.
+     * [accountId] the identifier of users account.
+     * [page] the current page to retrieve.
+     * [sessionId] the session identifier for the current user.
+     * [api_key] the api key provided by themoviedb.
+     * [language] Pass a ISO 639-1 value to display translated data for the fields that support it. - Optional.
+     */
+    @GET("account/{account_id}/rated/movies")
+    fun getRatedMoviesPage(@Path("account_id") accountId: Double,
+                           @Query("page") page: Int,
+                           @Query("session_id") sessionId: String,
+                           @Query("api_key") api_key: String,
+                           @Query("language") language: String? = null): Call<MoviePage>
+
 }

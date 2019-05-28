@@ -20,6 +20,7 @@ class MoviesCache(private val roomDatabase: MPRoomDataBase,
 
     //TODO JPP we need to flush this when language changes
     private val favoriteMovies = SparseArray<MoviePage>()
+    private val ratedMovies = SparseArray<MoviePage>()
 
     override fun getMoviePageForSection(page: Int, section: MovieSection): MoviePage? {
         return withMovieDao {
@@ -60,11 +61,17 @@ class MoviesCache(private val roomDatabase: MPRoomDataBase,
         }
     }
 
+    override fun getFavoriteMovies(page: Int): MoviePage? = favoriteMovies.get(page)
+
     override fun saveFavoriteMoviesPage(page: Int, moviePage: MoviePage) {
         favoriteMovies.put(page, moviePage)
     }
 
-    override fun getFavoriteMovies(page: Int): MoviePage? = favoriteMovies.get(page, null)
+    override fun getRatedMovies(page: Int): MoviePage? = ratedMovies.get(page)
+
+    override fun saveRatedMoviesPage(page: Int, moviePage: MoviePage) {
+        ratedMovies.put(page, moviePage)
+    }
 
     private fun <T> transformWithAdapter(action: RoomModelAdapter.() -> T): T = with(adapter) { action.invoke(this) }
 
