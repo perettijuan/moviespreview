@@ -34,6 +34,9 @@ dependencies {
     implementation deps.androidx.lifecycle.extensions
     kapt deps.androidx.lifecycle.compiler
 
+    // Paging library
+    implementation deps.androidx.paging
+
     def androidTestLibVersion = '1.1.0'
     testImplementation "androidx.test:core:$androidTestLibVersion"
 
