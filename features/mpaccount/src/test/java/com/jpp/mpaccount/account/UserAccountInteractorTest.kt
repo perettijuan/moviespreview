@@ -7,6 +7,7 @@ import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
@@ -20,11 +21,11 @@ class UserAccountInteractorTest {
 
     @MockK
     private lateinit var connectivityRepository: ConnectivityRepository
-    @MockK
+    @RelaxedMockK
     private lateinit var accountRepository: AccountRepository
-    @MockK
+    @RelaxedMockK
     private lateinit var sessionRepository: SessionRepository
-    @MockK
+    @RelaxedMockK
     private lateinit var moviesRepository: MoviesRepository
     @MockK
     private lateinit var languageRepository: LanguageRepository
@@ -128,5 +129,20 @@ class UserAccountInteractorTest {
         verify(exactly = 1) { moviesRepository.getRatedMoviePage(1, accountData, session, SupportedLanguage.English) }
         verify(exactly = 1) { moviesRepository.getWatchlistMoviePage(1, accountData, session, SupportedLanguage.English) }
         verify(exactly = 1) { languageRepository.getCurrentAppLanguage() }
+    }
+
+    @Test
+    fun `Should clear user data and post data cleared when clearUserAccountData`() {
+        var eventPosted: UserAccountEvent? = null
+
+        subject.userAccountEvents.observeWith { eventPosted = it }
+        subject.clearUserAccountData()
+
+        assertEquals(UserAccountEvent.UserDataCleared, eventPosted)
+        verify { accountRepository.flushUserAccountData() }
+        verify { moviesRepository.flushFavoriteMoviePages() }
+        verify { moviesRepository.flushRatedMoviePages() }
+        verify { moviesRepository.flushWatchlistMoviePages() }
+        verify { sessionRepository.deleteCurrentSession() }
     }
 }

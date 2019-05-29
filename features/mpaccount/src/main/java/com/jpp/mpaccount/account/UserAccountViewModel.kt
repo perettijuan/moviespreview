@@ -15,6 +15,7 @@ import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToMain
 import javax.inject.Inject
 
 /**
@@ -39,6 +40,7 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
                 is UserAccountEvent.NotConnectedToNetwork -> _viewStates.value = of(ShowNotConnected)
                 is UserAccountEvent.UnknownError -> _viewStates.value = of(ShowError)
                 is UserAccountEvent.UserNotLogged -> _navEvents.value = GoToLogin
+                is UserAccountEvent.UserDataCleared -> _navEvents.value = GoToMain
                 is UserAccountEvent.Success -> mapAccountInfo(event)
             }
         }
@@ -49,7 +51,7 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
      */
     fun onInit(posterSize: Int) {
         moviesPosterTargetSize = posterSize
-        _viewStates.postValue(of(executeGetUserAccountStep()))
+        _viewStates.value = of(executeGetUserAccountStep())
     }
 
     /**
@@ -57,7 +59,14 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
      */
     fun onUserRetry(posterSize: Int) {
         moviesPosterTargetSize = posterSize
-        _viewStates.postValue(of(executeGetUserAccountStep()))
+        _viewStates.value = of(executeGetUserAccountStep())
+    }
+
+    /**
+     * Called when the user wants to perform the logout of the application.
+     */
+    fun onLogout() {
+        _viewStates.value = of(executeLogout())
     }
 
     /**
@@ -75,6 +84,11 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
 
     private fun executeGetUserAccountStep(): UserAccountViewState {
         launch { withContext(dispatchers.default()) { accountInteractor.fetchUserAccountData() } }
+        return Loading
+    }
+
+    private fun executeLogout(): UserAccountViewState {
+        launch { withContext(dispatchers.default()) { accountInteractor.clearUserAccountData() } }
         return Loading
     }
 

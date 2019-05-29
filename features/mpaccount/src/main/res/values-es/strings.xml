@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="user_account_approve_reminder">Por favor, permite a Movies Preview usar tu cuenta.</string>
+    <string name="user_account_logout">Cerrar Sesión</string>
 
     <!-- Favorite movies -->
     <string name="user_account_favorite_title">Películas favoritas</string>

@@ -72,4 +72,8 @@ sealed class UserAccountNavigationEvent {
      */
     object GoToLogin : UserAccountNavigationEvent()
 
+    /*
+     * Used to redirect the user to the main screen.
+     */
+    object GoToMain : UserAccountNavigationEvent()
 }

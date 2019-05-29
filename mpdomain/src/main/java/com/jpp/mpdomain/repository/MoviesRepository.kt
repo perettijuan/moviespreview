@@ -38,4 +38,19 @@ interface MoviesRepository {
      * @return a [MoviePage] indicated by [page] only if the user has one in the watchlist.
      */
     fun getWatchlistMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
+
+    /**
+     * Flushes out any favorite [MoviePage] data stored locally on the device.
+     */
+    fun flushFavoriteMoviePages()
+
+    /**
+     * Flushes out any rated [MoviePage] data stored locally on the device.
+     */
+    fun flushRatedMoviePages()
+
+    /**
+     * Flushes out any watchlist [MoviePage] data stored locally on the device.
+     */
+    fun flushWatchlistMoviePages()
 }

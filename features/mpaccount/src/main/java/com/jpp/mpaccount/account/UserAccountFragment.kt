@@ -12,11 +12,9 @@ import androidx.navigation.fragment.findNavController
 import com.jpp.mp.common.extensions.getScreenWithInPixels
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToLogin
+import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToMain
 import com.jpp.mpaccount.account.UserAccountViewState.*
-import com.jpp.mpdesign.ext.getViewModel
-import com.jpp.mpdesign.ext.loadImageUrlAsCircular
-import com.jpp.mpdesign.ext.setInvisible
-import com.jpp.mpdesign.ext.setVisible
+import com.jpp.mpdesign.ext.*
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_user_account.*
 import kotlinx.android.synthetic.main.layout_user_account_content.*
@@ -47,6 +45,8 @@ class UserAccountFragment : Fragment() {
             navEvents.observe(this@UserAccountFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
             onInit(getScreenWithInPixels())
         }
+
+        userAccountLogoutBtn.setOnClickListener { withViewModel { onLogout() } }
     }
 
     /**
@@ -65,10 +65,10 @@ class UserAccountFragment : Fragment() {
                 updateHeader(viewState)
                 renderFavoriteMoviesViewState(viewState.favoriteMovieState)
                 renderRatedMoviesViewState(viewState.ratedMovieState)
-                renderWachlistViewState(viewState.watchListState)
+                renderWatchlistViewState(viewState.watchListState)
                 renderAccountData()
             }
-            is ShowError -> rendeUnknownError()
+            is ShowError -> renderUnknownError()
         }
     }
 
@@ -88,7 +88,7 @@ class UserAccountFragment : Fragment() {
         }
     }
 
-    private fun renderWachlistViewState(viewState: UserMoviesViewState) {
+    private fun renderWatchlistViewState(viewState: UserMoviesViewState) {
         when (viewState) {
             is UserMoviesViewState.ShowNoMovies -> userAccountWatchlist.showErrorMessage(getString(R.string.user_account_no_watchlist_movies))
             is UserMoviesViewState.ShowError -> userAccountWatchlist.showErrorMessage(getString(R.string.user_account_watchlist_movies_error))
@@ -102,6 +102,7 @@ class UserAccountFragment : Fragment() {
     private fun reactToNavEvent(navEvent: UserAccountNavigationEvent) {
         when (navEvent) {
             is GoToLogin -> findNavController().navigate(R.id.toLoginFragment)
+            is GoToMain -> findNavController().popBackStack()
         }
     }
 
@@ -127,7 +128,7 @@ class UserAccountFragment : Fragment() {
         userAccountErrorView.setVisible()
     }
 
-    private fun rendeUnknownError() {
+    private fun renderUnknownError() {
         userAccountLoadingView.setInvisible()
         userAccountContentView.setInvisible()
 
@@ -137,10 +138,16 @@ class UserAccountFragment : Fragment() {
 
     private fun updateHeader(newContent: ShowUserAccountData) {
         with(newContent) {
-            userAccountHeaderIv.loadImageUrlAsCircular(avatarUrl) {
-                userAccountNameInitialTv.setVisible()
-                userAccountHeaderIv.setInvisible()
-            }
+            userAccountHeaderIv.loadImageUrlAsCircular(avatarUrl,
+                    {
+                        userAccountNameInitialTv.setVisible()
+                        accountContent.tintBackgroundFromColor(R.color.accentColor)
+                        userAccountHeaderIv.setInvisible()
+                    },
+                    {
+                        accountContent.tintBackgroundWithBitmap(it)
+                    }
+            )
             userAccountHeaderUserNameTv.text = userName
             userAccountHeaderAccountNameTv.text = accountName
             userAccountNameInitialTv.text = defaultLetter.toString()

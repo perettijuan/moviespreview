@@ -1,5 +1,6 @@
 <resources>
     <string name="user_account_approve_reminder">Please approve Movies Preview to use your data.</string>
+    <string name="user_account_logout">Logout</string>
 
     <!-- Favorite movies -->
     <string name="user_account_favorite_title">Favorite Movies</string>

@@ -35,6 +35,7 @@
     <attr name="mpUserMovieItemHeaderImageWidth" format="reference" />
     <attr name="mpUserMovieItemHeaderImageHeight" format="reference" />
     <attr name="mpUserMovieItemImageHeight" format="reference" />
+    <attr name="mpUserAccountContentPadding" format="reference" />
 
 
     <declare-styleable name="MPTitleValueRow">

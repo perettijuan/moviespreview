@@ -84,6 +84,17 @@ class UserAccountViewModelTest {
         assertEquals(UserAccountNavigationEvent.GoToLogin, eventPosted)
     }
 
+    @Test
+    fun `Should redirect to main when user data cleared`() {
+        var eventPosted: UserAccountNavigationEvent? = null
+
+        subject.navEvents.observeWith { eventPosted = it }
+
+        lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.UserDataCleared)
+
+        assertEquals(UserAccountNavigationEvent.GoToMain, eventPosted)
+    }
+
 
     @Test
     fun `Should map user account data and post data into view when user account is fetched`() {
@@ -223,6 +234,17 @@ class UserAccountViewModelTest {
         subject.onInit(10)
 
         verify { accountInteractor.fetchUserAccountData() }
+        assertEquals(UserAccountViewState.Loading, viewStatePosted)
+    }
+
+    @Test
+    fun `Should post loading and clear user data onLogout`() {
+        var viewStatePosted: UserAccountViewState? = null
+
+        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.onLogout()
+
+        verify { accountInteractor.clearUserAccountData() }
         assertEquals(UserAccountViewState.Loading, viewStatePosted)
     }
 }
