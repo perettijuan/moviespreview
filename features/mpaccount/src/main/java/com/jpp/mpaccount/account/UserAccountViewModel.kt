@@ -16,6 +16,7 @@ import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToMain
+import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToFavorites
 import javax.inject.Inject
 
 /**
@@ -67,6 +68,13 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
      */
     fun onLogout() {
         _viewStates.value = of(executeLogout())
+    }
+
+    /**
+     * Called when the user wants to see the favorites movies.
+     */
+    fun onFavorites() {
+        _navEvents.value = GoToFavorites
     }
 
     /**

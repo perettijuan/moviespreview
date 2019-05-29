@@ -45,9 +45,9 @@ class UserMovieListViewModel @Inject constructor(private val userMovieListIntera
 
         _viewStates.addSource(createPagedList(posterSize, backdropSize)) { pagedList ->
             when (pagedList.isEmpty()) {
-                true -> ShowEmptyList
-                false -> ShowMovieList(pagedList)
-            }
+                true -> of(ShowEmptyList)
+                false -> of(ShowMovieList(pagedList))
+            }.let { _viewStates.value = it }
         }
     }
 
@@ -71,9 +71,9 @@ class UserMovieListViewModel @Inject constructor(private val userMovieListIntera
     private fun mapDomainMovie(domainMovie: Movie) = with(domainMovie) {
         UserMovieItem(
                 movieId = id,
-                headerImageUrl = backdrop_path ?: "emptyPath",
+                headerImageUrl = backdrop_path ?: "empty",
                 title = title,
-                contentImageUrl = poster_path ?: "emptyPath"
+                contentImageUrl = poster_path ?: "empty"
         )
     }
 }

@@ -76,4 +76,9 @@ sealed class UserAccountNavigationEvent {
      * Used to redirect the user to the main screen.
      */
     object GoToMain : UserAccountNavigationEvent()
+
+    /*
+     * Used to navigate to the favorite movies section.
+     */
+    object GoToFavorites : UserAccountNavigationEvent()
 }
