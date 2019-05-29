@@ -11,4 +11,9 @@ interface AccountRepository {
      * Retrieves a [UserAccount] for the provided [session].
      */
     fun getUserAccount(session: Session): UserAccount?
+
+    /**
+     * Flushes out any [UserAccount] data stored locally on the device.
+     */
+    fun flushUserAccountData()
 }

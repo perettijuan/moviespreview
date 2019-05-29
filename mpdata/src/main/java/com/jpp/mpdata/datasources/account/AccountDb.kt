@@ -5,6 +5,7 @@ import com.jpp.mpdomain.UserAccount
 interface AccountDb {
     fun storeUserAccountInfo(userAccount: UserAccount)
     fun getUserAccountInfo(): UserAccount?
+    fun flushData()
 
     /**
      * Only in-memory caching since the info of the user should be refreshed every time
@@ -18,5 +19,9 @@ interface AccountDb {
         }
 
         override fun getUserAccountInfo(): UserAccount? = userAccountInfo
+
+        override fun flushData() {
+            userAccountInfo = null
+        }
     }
 }

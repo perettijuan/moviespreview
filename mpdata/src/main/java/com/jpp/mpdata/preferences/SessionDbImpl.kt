@@ -27,6 +27,13 @@ class SessionDbImpl(private val context: Context) : SessionDb {
         }
     }
 
+    override fun flushData() {
+        with(preferences.edit()) {
+            putString(KEY_SESSION_STORED, null)
+            apply()
+        }
+    }
+
     private companion object {
         const val PREFERENCES_FILE_NAME = "com.jpp.moviespreview.preferences.session"
         const val KEY_SESSION_STORED = "session_stored"

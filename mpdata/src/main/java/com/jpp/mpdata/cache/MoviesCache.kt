@@ -80,6 +80,18 @@ class MoviesCache(private val roomDatabase: MPRoomDataBase,
         watchlist.put(page, moviePage)
     }
 
+    override fun flushFavoriteMoviePages() {
+        favoriteMovies.clear()
+    }
+
+    override fun flushRatedMoviePages() {
+        ratedMovies.clear()
+    }
+
+    override fun flushWatchlistMoviePages() {
+        watchlist.clear()
+    }
+
     private fun <T> transformWithAdapter(action: RoomModelAdapter.() -> T): T = with(adapter) { action.invoke(this) }
 
     private fun <T> withMovieDao(action: MovieDAO.() -> T): T = with(roomDatabase.moviesDao()) { action.invoke(this) }

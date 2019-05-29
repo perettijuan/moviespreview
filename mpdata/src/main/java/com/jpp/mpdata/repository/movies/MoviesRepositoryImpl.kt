@@ -31,6 +31,18 @@ class MoviesRepositoryImpl(private val moviesApi: MoviesApi,
                 ?: moviesApi.getWatchlistMoviePage(page, userAccount, session, language)?.also { moviesDb.saveWatchlistMoviePage(page, it) }
     }
 
+    override fun flushFavoriteMoviePages() {
+        moviesDb.flushFavoriteMoviePages()
+    }
+
+    override fun flushRatedMoviePages() {
+        moviesDb.flushRatedMoviePages()
+    }
+
+    override fun flushWatchlistMoviePages() {
+        moviesDb.flushWatchlistMoviePages()
+    }
+
     private fun getFromApi(page: Int, section: MovieSection, language: SupportedLanguage): MoviePage? = with(moviesApi) {
         when (section) {
             MovieSection.Playing -> getNowPlayingMoviePage(page, language)

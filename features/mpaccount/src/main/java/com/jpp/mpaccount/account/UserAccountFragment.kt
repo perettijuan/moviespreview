@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.jpp.mp.common.extensions.getScreenWithInPixels
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToLogin
+import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToMain
 import com.jpp.mpaccount.account.UserAccountViewState.*
 import com.jpp.mpdesign.ext.*
 import dagger.android.support.AndroidSupportInjection
@@ -44,6 +45,8 @@ class UserAccountFragment : Fragment() {
             navEvents.observe(this@UserAccountFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
             onInit(getScreenWithInPixels())
         }
+
+        userAccountLogoutBtn.setOnClickListener { withViewModel { onLogout() } }
     }
 
     /**
@@ -62,7 +65,7 @@ class UserAccountFragment : Fragment() {
                 updateHeader(viewState)
                 renderFavoriteMoviesViewState(viewState.favoriteMovieState)
                 renderRatedMoviesViewState(viewState.ratedMovieState)
-                renderWachlistViewState(viewState.watchListState)
+                renderWatchlistViewState(viewState.watchListState)
                 renderAccountData()
             }
             is ShowError -> renderUnknownError()
@@ -85,7 +88,7 @@ class UserAccountFragment : Fragment() {
         }
     }
 
-    private fun renderWachlistViewState(viewState: UserMoviesViewState) {
+    private fun renderWatchlistViewState(viewState: UserMoviesViewState) {
         when (viewState) {
             is UserMoviesViewState.ShowNoMovies -> userAccountWatchlist.showErrorMessage(getString(R.string.user_account_no_watchlist_movies))
             is UserMoviesViewState.ShowError -> userAccountWatchlist.showErrorMessage(getString(R.string.user_account_watchlist_movies_error))
@@ -99,6 +102,7 @@ class UserAccountFragment : Fragment() {
     private fun reactToNavEvent(navEvent: UserAccountNavigationEvent) {
         when (navEvent) {
             is GoToLogin -> findNavController().navigate(R.id.toLoginFragment)
+            is GoToMain -> findNavController().popBackStack()
         }
     }
 

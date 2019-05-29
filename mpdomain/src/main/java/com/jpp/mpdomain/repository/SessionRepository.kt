@@ -13,6 +13,11 @@ interface SessionRepository {
     fun getCurrentSession(): Session?
 
     /**
+     * Deletes the current [Session] being used - if any.
+     */
+    fun deleteCurrentSession()
+
+    /**
      * Creates a new [Session] for the provided [AccessToken].
      */
     fun createSession(accessToken: AccessToken): Session?

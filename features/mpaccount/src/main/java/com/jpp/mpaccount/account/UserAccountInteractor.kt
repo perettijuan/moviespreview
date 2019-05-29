@@ -22,6 +22,7 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
      * Represents the events that this interactor can route to the upper layers.
      */
     sealed class UserAccountEvent {
+        object UserDataCleared : UserAccountEvent()
         object UserNotLogged : UserAccountEvent()
         object NotConnectedToNetwork : UserAccountEvent()
         object UnknownError : UserAccountEvent()
@@ -56,6 +57,20 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
         }.let {
             _userAccountEvents.postValue(it)
         }
+    }
+
+    /**
+     * Clears all user account data stored locally in the device.
+     */
+    fun clearUserAccountData() {
+        accountRepository.flushUserAccountData()
+        with(moviesRepository) {
+            flushFavoriteMoviePages()
+            flushRatedMoviePages()
+            flushWatchlistMoviePages()
+        }
+        sessionRepository.deleteCurrentSession()
+        _userAccountEvents.postValue(UserDataCleared)
     }
 
     private fun getUserAccount(session: Session, language: SupportedLanguage): UserAccountEvent {

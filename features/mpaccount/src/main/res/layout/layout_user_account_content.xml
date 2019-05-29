@@ -35,7 +35,7 @@
             app:accountMoviesTitleText="@string/user_account_watchlist_title" />
 
         <Button
-            android:id="@+id/navHeaderLoginButton"
+            android:id="@+id/userAccountLogoutBtn"
             style="@style/MPTextViewNormal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

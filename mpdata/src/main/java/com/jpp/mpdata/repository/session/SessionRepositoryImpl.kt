@@ -16,4 +16,8 @@ class SessionRepositoryImpl(private val sessionApi: SessionApi,
             sessionDb.updateSession(it)
         }
     }
+
+    override fun deleteCurrentSession() {
+        sessionDb.flushData()
+    }
 }

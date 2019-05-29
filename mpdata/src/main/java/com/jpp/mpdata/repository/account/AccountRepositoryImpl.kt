@@ -19,7 +19,11 @@ class AccountRepositoryImpl(private val accountApi: AccountApi,
         }
     }
 
-//    override fun getMovieAccountState(movieId: Double, session: Session): MovieAccountState? {
+    override fun flushUserAccountData() {
+        accountDb.flushData()
+    }
+
+    //    override fun getMovieAccountState(movieId: Double, session: Session): MovieAccountState? {
 //        /*
 //         * TODO JPP for the moment, we don't store this state in the local storage
 //         * BUT it is a great candidate to store it and try to use the WorkManager
