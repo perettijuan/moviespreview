@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -121,6 +122,17 @@ fun ViewGroup.tintBackgroundWithBitmap(bitmap: Bitmap) {
             )
         }
     }
+}
+
+/**
+ * Tints the background of the ViewGroup with a linear gradient constructed from the [color]
+ * provided.
+ */
+fun ViewGroup.tintBackgroundFromColor(@ColorRes color: Int) {
+    background = GradientDrawable(
+            GradientDrawable.Orientation.TOP_BOTTOM,
+            intArrayOf(ContextCompat.getColor(context, android.R.color.white), color)
+    )
 }
 
 /**

@@ -141,6 +141,7 @@ class UserAccountFragment : Fragment() {
             userAccountHeaderIv.loadImageUrlAsCircular(avatarUrl,
                     {
                         userAccountNameInitialTv.setVisible()
+                        accountContent.tintBackgroundFromColor(R.color.accentColor)
                         userAccountHeaderIv.setInvisible()
                     },
                     {
