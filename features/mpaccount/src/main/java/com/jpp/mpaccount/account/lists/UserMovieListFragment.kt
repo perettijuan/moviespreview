@@ -90,7 +90,7 @@ class UserMovieListFragment : Fragment() {
         userMoviesList.setInvisible()
         userMoviesLoadingView.setInvisible()
 
-        userMoviesErrorView.asNoConnectivityError { withViewModel { TODO() } }
+        userMoviesErrorView.asNoConnectivityError { withViewModel { onRetry(getScreenWithInPixels(), getScreenWithInPixels()) } }
         userMoviesErrorView.setVisible()
     }
 
@@ -98,7 +98,7 @@ class UserMovieListFragment : Fragment() {
         userMoviesList.setInvisible()
         userMoviesLoadingView.setInvisible()
 
-        userMoviesErrorView.asUnknownError { withViewModel { TODO() } }
+        userMoviesErrorView.asUnknownError { withViewModel { onRetry(getScreenWithInPixels(), getScreenWithInPixels()) } }
         userMoviesErrorView.setVisible()
     }
 

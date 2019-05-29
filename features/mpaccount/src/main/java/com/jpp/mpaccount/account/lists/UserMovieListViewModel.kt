@@ -43,18 +43,28 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     val viewStates: LiveData<HandledViewState<UserMovieListViewState>> get() = _viewStates
 
     fun onInit(posterSize: Int, backdropSize: Int) {
+        initializePagedList(posterSize, backdropSize)
+    }
+
+    /**
+     * Attempts to execute the last movie fetching step that was executed. Typically called after an error
+     * is detected.
+     */
+    fun onRetry(posterSize: Int, backdropSize: Int) {
+        initializePagedList(posterSize, backdropSize)
+    }
+
+
+    private fun initializePagedList(posterSize: Int, backdropSize: Int) {
         with(_viewStates) {
             value = of(ShowLoading)
             addSource(createPagedList(posterSize, backdropSize)) { pagedList -> value = of(ShowMovieList(pagedList)) }
         }
-
     }
-
 
     private fun createPagedList(moviePosterSize: Int,
                                 movieBackdropSize: Int): LiveData<PagedList<UserMovieItem>> {
         return MPPagingDataSourceFactory<Movie> { page, callback -> fetchMoviePageAsync(page, callback) }
-                //TODO JPP .apply { retryFunc = { networkExecutor.execute { retryLast() } } }
                 .map { imagesPathInteractor.configurePathMovie(moviePosterSize, movieBackdropSize, it) }
                 .map { mapDomainMovie(it) }
                 .let {

@@ -37,12 +37,14 @@ class UserMovieListInteractor @Inject constructor(private val connectivityReposi
     fun fetchFavoriteMovies(page: Int, callback: (List<Movie>) -> Unit) {
         withSession { session ->
             withUserAccount(session) { account ->
-                moviesRepository.getFavoriteMoviePage(page, account, session, languageRepository.getCurrentAppLanguage())
-                        ?.let { callback(it.results) }
-                        ?: when (connectivityRepository.getCurrentConnectivity()) {
-                            Connectivity.Connected -> _userMovieListEvents.postValue(UnknownError)
-                            Connectivity.Disconnected -> _userMovieListEvents.postValue(NotConnectedToNetwork)
-                        }
+                when (connectivityRepository.getCurrentConnectivity()) {
+                    Connectivity.Disconnected -> _userMovieListEvents.postValue(NotConnectedToNetwork)
+                    Connectivity.Connected -> {
+                        moviesRepository.getFavoriteMoviePage(page, account, session, languageRepository.getCurrentAppLanguage())
+                                ?.let { callback(it.results) }
+                                ?: _userMovieListEvents.postValue(UnknownError)
+                    }
+                }
             }
         }
     }
