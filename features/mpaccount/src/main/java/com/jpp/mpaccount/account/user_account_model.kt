@@ -31,7 +31,8 @@ sealed class UserAccountViewState {
             val accountName: String,
             val defaultLetter: Char,
             val favoriteMovieState: UserMoviesViewState,
-            val ratedMovieState: UserMoviesViewState
+            val ratedMovieState: UserMoviesViewState,
+            val watchListState: UserMoviesViewState
     ) : UserAccountViewState()
 }
 

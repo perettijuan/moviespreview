@@ -29,6 +29,13 @@
             android:padding="6dp"
             app:accountMoviesTitleText="@string/user_account_rated_title" />
 
+        <com.jpp.mpaccount.account.UserAccountMoviesView
+            android:id="@+id/userAccountWatchlist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="6dp"
+            app:accountMoviesTitleText="@string/user_account_watchlist_title" />
+
     </LinearLayout>
 
 </ScrollView>

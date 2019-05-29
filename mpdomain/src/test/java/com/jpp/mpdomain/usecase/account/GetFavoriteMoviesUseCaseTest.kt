@@ -51,7 +51,7 @@ class GetFavoriteMoviesUseCaseTest {
 //        subject.getUserFavoriteMovies(1).let { result ->
 //            verify(exactly = 0) { sessionRepository.getCurrentSession() }
 //            verify(exactly = 0) { accountRepository.getUserAccount(any()) }
-//            verify(exactly = 0) { accountRepository.getFavoriteMovies(any(), any(), any(), any()) }
+//            verify(exactly = 0) { accountRepository.getFavoriteMoviePage(any(), any(), any(), any()) }
 //            assertEquals(ErrorNoConnectivity, result)
 //        }
 //    }
@@ -64,7 +64,7 @@ class GetFavoriteMoviesUseCaseTest {
 //        subject.getUserFavoriteMovies(1).let { result ->
 //            verify(exactly = 1) { sessionRepository.getCurrentSession() }
 //            verify(exactly = 0) { accountRepository.getUserAccount(any()) }
-//            verify(exactly = 0) { accountRepository.getFavoriteMovies(any(), any(), any(), any()) }
+//            verify(exactly = 0) { accountRepository.getFavoriteMoviePage(any(), any(), any(), any()) }
 //            assertEquals(UserNotLogged, result)
 //        }
 //    }
@@ -78,7 +78,7 @@ class GetFavoriteMoviesUseCaseTest {
 //        subject.getUserFavoriteMovies(1).let { result ->
 //            verify(exactly = 1) { sessionRepository.getCurrentSession() }
 //            verify(exactly = 1) { accountRepository.getUserAccount(any()) }
-//            verify(exactly = 0) { accountRepository.getFavoriteMovies(any(), any(), any(), any()) }
+//            verify(exactly = 0) { accountRepository.getFavoriteMoviePage(any(), any(), any(), any()) }
 //            assertEquals(UserNotLogged, result)
 //        }
 //    }
@@ -88,12 +88,12 @@ class GetFavoriteMoviesUseCaseTest {
 //        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
 //        every { sessionRepository.getCurrentSession() } returns mockk()
 //        every { accountRepository.getUserAccount(any()) } returns mockk()
-//        every { accountRepository.getFavoriteMovies(any(), any(), any(), any()) } returns null
+//        every { accountRepository.getFavoriteMoviePage(any(), any(), any(), any()) } returns null
 //
 //        subject.getUserFavoriteMovies(1).let { result ->
 //            verify(exactly = 1) { sessionRepository.getCurrentSession() }
 //            verify(exactly = 1) { accountRepository.getUserAccount(any()) }
-//            verify(exactly = 1) { accountRepository.getFavoriteMovies(any(), any(), any(), any()) }
+//            verify(exactly = 1) { accountRepository.getFavoriteMoviePage(any(), any(), any(), any()) }
 //            assertEquals(ErrorUnknown, result)
 //        }
 //    }
@@ -109,13 +109,13 @@ class GetFavoriteMoviesUseCaseTest {
 //        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
 //        every { sessionRepository.getCurrentSession() } returns session
 //        every { accountRepository.getUserAccount(any()) } returns userAccount
-//        every { accountRepository.getFavoriteMovies(any(), any(), any(), any()) } returns favPage
+//        every { accountRepository.getFavoriteMoviePage(any(), any(), any(), any()) } returns favPage
 //        every { languageRepository.getCurrentDeviceLanguage() } returns SupportedLanguage.English
 //
 //        subject.getUserFavoriteMovies(1).let { result ->
 //            verify(exactly = 1) { sessionRepository.getCurrentSession() }
 //            verify(exactly = 1) { accountRepository.getUserAccount(any()) }
-//            verify(exactly = 1) { accountRepository.getFavoriteMovies(1, userAccount, session, SupportedLanguage.English) }
+//            verify(exactly = 1) { accountRepository.getFavoriteMoviePage(1, userAccount, session, SupportedLanguage.English) }
 //            assertEquals(NoFavorites, result)
 //        }
 //    }
@@ -131,13 +131,13 @@ class GetFavoriteMoviesUseCaseTest {
 //        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
 //        every { sessionRepository.getCurrentSession() } returns session
 //        every { accountRepository.getUserAccount(any()) } returns userAccount
-//        every { accountRepository.getFavoriteMovies(any(), any(), any(), any()) } returns favPage
+//        every { accountRepository.getFavoriteMoviePage(any(), any(), any(), any()) } returns favPage
 //        every { languageRepository.getCurrentDeviceLanguage() } returns SupportedLanguage.English
 //
 //        subject.getUserFavoriteMovies(1).let { result ->
 //            verify(exactly = 1) { sessionRepository.getCurrentSession() }
 //            verify(exactly = 1) { accountRepository.getUserAccount(any()) }
-//            verify(exactly = 1) { accountRepository.getFavoriteMovies(1, userAccount, session, SupportedLanguage.English) }
+//            verify(exactly = 1) { accountRepository.getFavoriteMoviePage(1, userAccount, session, SupportedLanguage.English) }
 //            assertTrue(result is Success)
 //            assertEquals(3, (result as Success).moviesPage.results.size)
 //        }

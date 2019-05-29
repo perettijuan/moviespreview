@@ -56,7 +56,7 @@ class UserAccountInteractorTest {
 
         assertEquals(UserAccountEvent.UserNotLogged, eventPosted)
         verify(exactly = 0) { accountRepository.getUserAccount(any()) }
-        verify(exactly = 0) { moviesRepository.getFavoriteMovies(any(), any(), any(), any()) }
+        verify(exactly = 0) { moviesRepository.getFavoriteMoviePage(any(), any(), any(), any()) }
         verify(exactly = 0) { languageRepository.getCurrentAppLanguage() }
     }
 
@@ -73,7 +73,7 @@ class UserAccountInteractorTest {
 
         assertEquals(UserAccountEvent.NotConnectedToNetwork, eventPosted)
         verify(exactly = 0) { accountRepository.getUserAccount(any()) }
-        verify(exactly = 0) { moviesRepository.getFavoriteMovies(any(), any(), any(), any()) }
+        verify(exactly = 0) { moviesRepository.getFavoriteMoviePage(any(), any(), any(), any()) }
         verify(exactly = 1) { languageRepository.getCurrentAppLanguage() }
     }
 
@@ -91,7 +91,7 @@ class UserAccountInteractorTest {
 
         assertEquals(UserAccountEvent.UnknownError, eventPosted)
         verify(exactly = 1) { accountRepository.getUserAccount(any()) }
-        verify(exactly = 0) { moviesRepository.getFavoriteMovies(any(), any(), any(), any()) }
+        verify(exactly = 0) { moviesRepository.getFavoriteMoviePage(any(), any(), any(), any()) }
         verify(exactly = 1) { languageRepository.getCurrentAppLanguage() }
     }
 
@@ -102,18 +102,21 @@ class UserAccountInteractorTest {
         val accountData = mockk<UserAccount>()
         val favMoviePage = mockk<MoviePage>()
         val ratedMoviePage = mockk<MoviePage>()
+        val watchListPage = mockk<MoviePage>()
         val expected = UserAccountEvent.Success(
                 accountData,
                 UserAccountInteractor.UserMoviesState.Success(favMoviePage),
-                UserAccountInteractor.UserMoviesState.Success(ratedMoviePage)
+                UserAccountInteractor.UserMoviesState.Success(ratedMoviePage),
+                UserAccountInteractor.UserMoviesState.Success(watchListPage)
         )
 
         every { sessionRepository.getCurrentSession() } returns session
         every { accountRepository.getUserAccount(any()) } returns accountData
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { accountRepository.getUserAccount(any()) } returns accountData
-        every { moviesRepository.getFavoriteMovies(any(), any(), any(), any()) } returns favMoviePage
-        every { moviesRepository.getRatedMovies(any(), any(), any(), any()) } returns ratedMoviePage
+        every { moviesRepository.getFavoriteMoviePage(any(), any(), any(), any()) } returns favMoviePage
+        every { moviesRepository.getRatedMoviePage(any(), any(), any(), any()) } returns ratedMoviePage
+        every { moviesRepository.getWatchlistMoviePage(any(), any(), any(), any()) } returns watchListPage
 
         subject.userAccountEvents.observeWith { eventPosted = it }
 
@@ -121,8 +124,9 @@ class UserAccountInteractorTest {
 
         assertEquals(expected, eventPosted)
         verify(exactly = 1) { accountRepository.getUserAccount(session) }
-        verify(exactly = 1) { moviesRepository.getFavoriteMovies(1, accountData, session, SupportedLanguage.English) }
-        verify(exactly = 1) { moviesRepository.getRatedMovies(1, accountData, session, SupportedLanguage.English) }
+        verify(exactly = 1) { moviesRepository.getFavoriteMoviePage(1, accountData, session, SupportedLanguage.English) }
+        verify(exactly = 1) { moviesRepository.getRatedMoviePage(1, accountData, session, SupportedLanguage.English) }
+        verify(exactly = 1) { moviesRepository.getWatchlistMoviePage(1, accountData, session, SupportedLanguage.English) }
         verify(exactly = 1) { languageRepository.getCurrentAppLanguage() }
     }
 }

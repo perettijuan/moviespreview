@@ -100,7 +100,8 @@ class UserAccountViewModelTest {
                 accountName = "aUserName",
                 defaultLetter = 'a',
                 favoriteMovieState = UserMoviesViewState.ShowError,
-                ratedMovieState = UserMoviesViewState.ShowError
+                ratedMovieState = UserMoviesViewState.ShowError,
+                watchListState = UserMoviesViewState.ShowError
         )
         var actual: UserAccountViewState? = null
 
@@ -109,6 +110,7 @@ class UserAccountViewModelTest {
         lvInteractorEvents.postValue(
                 UserAccountInteractor.UserAccountEvent.Success(
                         userAccount,
+                        UserAccountInteractor.UserMoviesState.UnknownError,
                         UserAccountInteractor.UserMoviesState.UnknownError,
                         UserAccountInteractor.UserMoviesState.UnknownError)
         )
@@ -131,7 +133,8 @@ class UserAccountViewModelTest {
                 accountName = "UserName",
                 defaultLetter = 'U',
                 favoriteMovieState = UserMoviesViewState.ShowError,
-                ratedMovieState = UserMoviesViewState.ShowError
+                ratedMovieState = UserMoviesViewState.ShowError,
+                watchListState = UserMoviesViewState.ShowError
         )
         var actual: UserAccountViewState? = null
 
@@ -140,6 +143,7 @@ class UserAccountViewModelTest {
         lvInteractorEvents.postValue(
                 UserAccountInteractor.UserAccountEvent.Success(
                         userAccount,
+                        UserAccountInteractor.UserMoviesState.UnknownError,
                         UserAccountInteractor.UserMoviesState.UnknownError,
                         UserAccountInteractor.UserMoviesState.UnknownError)
         )
@@ -171,6 +175,13 @@ class UserAccountViewModelTest {
                 total_results = 100
         )
 
+        val watchListMoviePage = MoviePage(
+                page = 1,
+                results = mutableListOf(mockk(), mockk(), mockk()),
+                total_pages = 10,
+                total_results = 100
+        )
+
         every { imagesPathInteractor.configurePathMovie(any(), any(), any()) } returns mockk(relaxed = true)
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> actual = viewState } }
@@ -179,7 +190,8 @@ class UserAccountViewModelTest {
                 UserAccountInteractor.UserAccountEvent.Success(
                         userAccount,
                         UserAccountInteractor.UserMoviesState.Success(favMoviePage),
-                        UserAccountInteractor.UserMoviesState.Success(ratedMoviePage)
+                        UserAccountInteractor.UserMoviesState.Success(ratedMoviePage),
+                        UserAccountInteractor.UserMoviesState.Success(watchListMoviePage)
                 )
         )
 
@@ -189,11 +201,18 @@ class UserAccountViewModelTest {
             with(this.favoriteMovieState as UserMoviesViewState.ShowUserMovies) {
                 assertEquals(5, this.items.size)
             }
+
+            assertTrue(this.ratedMovieState is UserMoviesViewState.ShowUserMovies)
             with(this.ratedMovieState as UserMoviesViewState.ShowUserMovies) {
                 assertEquals(4, this.items.size)
             }
+
+            assertTrue(this.watchListState is UserMoviesViewState.ShowUserMovies)
+            with(this.watchListState as UserMoviesViewState.ShowUserMovies) {
+                assertEquals(3, this.items.size)
+            }
         }
-        verify(exactly = 9) { imagesPathInteractor.configurePathMovie(any(), any(), any()) }
+        verify(exactly = 12) { imagesPathInteractor.configurePathMovie(any(), any(), any()) }
     }
 
     @Test

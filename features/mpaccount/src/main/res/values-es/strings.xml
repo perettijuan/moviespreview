@@ -11,4 +11,9 @@
     <string name="user_account_rated_title">Películas calificadas</string>
     <string name="user_account_no_rated_movies">Aún no has calificado ninguna película. Califica una película seleccionandola desde la pantalla principal.</string>
     <string name="user_account_rated_movies_error">Algo salió mal al intentar traer tus películas calificadas. Por favor, intenta nuevamente luego.</string>
+
+    <!-- Watchlist movies -->
+    <string name="user_account_watchlist_title">Películas en tu lista de pendientes</string>
+    <string name="user_account_no_watchlist_movies">Aún no has agregado ninguna película a tu lista de pendientes. Añade una película seleccionandola desde la pantalla principal.</string>
+    <string name="user_account_watchlist_movies_error">Algo salió mal al intentar traer tu lista de películas pendientes. Por favor, intenta nuevamente luego.</string>
 </resources>

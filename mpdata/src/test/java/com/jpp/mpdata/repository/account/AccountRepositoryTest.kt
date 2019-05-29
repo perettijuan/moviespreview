@@ -103,11 +103,11 @@ class AccountRepositoryTest {
 //
 //        val moviePage = mockk<MoviePage>()
 //
-//        every { accountDb.getFavoriteMovies(any()) } returns moviePage
+//        every { accountDb.getFavoriteMoviePage(any()) } returns moviePage
 //
-//        val actualPage = subject.getFavoriteMovies(1, userAccount, session, language)
+//        val actualPage = subject.getFavoriteMoviePage(1, userAccount, session, language)
 //
-//        verify(exactly = 0) { accountApi.getFavoriteMovies(any(), any(), any(), any()) }
+//        verify(exactly = 0) { accountApi.getFavoriteMoviePage(any(), any(), any(), any()) }
 //        assertEquals(moviePage, actualPage)
 //    }
 //
@@ -119,10 +119,10 @@ class AccountRepositoryTest {
 //
 //        val moviePage = mockk<MoviePage>()
 //
-//        every { accountDb.getFavoriteMovies(any()) } returns null
-//        every { accountApi.getFavoriteMovies(any(), any(), any(), any()) } returns moviePage
+//        every { accountDb.getFavoriteMoviePage(any()) } returns null
+//        every { accountApi.getFavoriteMoviePage(any(), any(), any(), any()) } returns moviePage
 //
-//        val actualPage = subject.getFavoriteMovies(1, userAccount, session, language)
+//        val actualPage = subject.getFavoriteMoviePage(1, userAccount, session, language)
 //
 //        assertEquals(moviePage, actualPage)
 //        verify { accountDb.saveFavoriteMoviesPage(1, moviePage) }

@@ -11,4 +11,9 @@
     <string name="user_account_no_rated_movies">You don\'t have rated movies yet. Rate movies selecting a movie in the home screen.</string>
     <string name="user_account_rated_movies_error">Ups. Something went wrong while trying to fetch your rated movies. Please, try again later.</string>
 
+    <!-- Watchlist movies -->
+    <string name="user_account_watchlist_title">Watchlist Movies</string>
+    <string name="user_account_no_watchlist_movies">You don\'t have movies in your watchlist. Add movies to your watchlist selecting a movie in the home screen.</string>
+    <string name="user_account_watchlist_movies_error">Ups. Something went wrong while trying to fetch your watchlist. Please, try again later.</string>
+
 </resources>
