@@ -22,6 +22,7 @@ import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
 import com.jpp.mp.screens.main.person.PersonViewModel
 import com.jpp.mp.screens.main.search.SearchFragmentViewModel
 import com.jpp.mpaccount.account.UserAccountViewModel
+import com.jpp.mpaccount.account.lists.UserMovieListViewModel
 import com.jpp.mpaccount.login.LoginViewModel
 import dagger.Binds
 import dagger.Module
@@ -147,4 +148,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(UserAccountViewModel::class)
     internal abstract fun getUserAccountViewModel(viewModel: UserAccountViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(UserMovieListViewModel::class)
+    internal abstract fun getUserMovieListViewModel(viewModel: UserMovieListViewModel): ViewModel
 }
