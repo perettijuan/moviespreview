@@ -2,9 +2,10 @@ package com.jpp.mpaccount.account.lists
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import com.jpp.mp.common.coroutines.CoroutineDispatchers
+import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
 import com.jpp.mp.common.viewstate.HandledViewState
 import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
@@ -12,13 +13,15 @@ import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEven
 import com.jpp.mpaccount.account.lists.UserMovieListViewState.*
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
-import java.util.concurrent.Executor
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class UserMovieListViewModel @Inject constructor(private val userMovieListInteractor: UserMovieListInteractor,
-                                                 private val imagesPathInteractor: ImagesPathInteractor,
-                                                 private val networkExecutor: Executor)
-    : ViewModel() {
+//TODO JPP we have to see what happens with the empty list
+class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
+                                                 private val userMovieListInteractor: UserMovieListInteractor,
+                                                 private val imagesPathInteractor: ImagesPathInteractor)
+    : MPScopedViewModel(dispatchers) {
 
 
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<UserMovieListViewState>>() }
@@ -39,22 +42,18 @@ class UserMovieListViewModel @Inject constructor(private val userMovieListIntera
      */
     val viewStates: LiveData<HandledViewState<UserMovieListViewState>> get() = _viewStates
 
-    fun onInit(posterSize: Int,
-               backdropSize: Int) {
-        _viewStates.value = of(ShowLoading)
-
-        _viewStates.addSource(createPagedList(posterSize, backdropSize)) { pagedList ->
-            when (pagedList.isEmpty()) {
-                true -> of(ShowEmptyList)
-                false -> of(ShowMovieList(pagedList))
-            }.let { _viewStates.value = it }
+    fun onInit(posterSize: Int, backdropSize: Int) {
+        with(_viewStates) {
+            value = of(ShowLoading)
+            addSource(createPagedList(posterSize, backdropSize)) { pagedList -> value = of(ShowMovieList(pagedList)) }
         }
+
     }
 
 
     private fun createPagedList(moviePosterSize: Int,
                                 movieBackdropSize: Int): LiveData<PagedList<UserMovieItem>> {
-        return MPPagingDataSourceFactory<Movie> { page, callback -> userMovieListInteractor.fetchFavoriteMovies(page, callback) }
+        return MPPagingDataSourceFactory<Movie> { page, callback -> fetchMoviePageAsync(page, callback) }
                 //TODO JPP .apply { retryFunc = { networkExecutor.execute { retryLast() } } }
                 .map { imagesPathInteractor.configurePathMovie(moviePosterSize, movieBackdropSize, it) }
                 .map { mapDomainMovie(it) }
@@ -63,9 +62,12 @@ class UserMovieListViewModel @Inject constructor(private val userMovieListIntera
                             .setPrefetchDistance(2)
                             .build()
                     LivePagedListBuilder(it, config)
-                            .setFetchExecutor(networkExecutor)
                             .build()
                 }
+    }
+
+    private fun fetchMoviePageAsync(page: Int, callback: (List<Movie>) -> Unit) {
+        launch { withContext(dispatchers.default()) { userMovieListInteractor.fetchFavoriteMovies(page, callback) } }
     }
 
     private fun mapDomainMovie(domainMovie: Movie) = with(domainMovie) {

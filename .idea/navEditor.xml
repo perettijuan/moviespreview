@@ -318,12 +318,12 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_userAccountFragment_to_userMovieListFragment">
+                            <entry key="toLoginFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="toLoginFragment">
+                            <entry key="userMovieListFragment">
                               <value>
                                 <LayoutPositions />
                               </value>

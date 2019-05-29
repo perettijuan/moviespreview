@@ -18,10 +18,6 @@ class UserMovieListInteractor @Inject constructor(private val connectivityReposi
                                                   private val accountRepository: AccountRepository,
                                                   private val moviesRepository: MoviesRepository,
                                                   private val languageRepository: LanguageRepository) {
-
-
-    //TODO JPP can we avoid using an executor for the PagedList?
-
     sealed class UserMovieListEvent {
         object UserNotLogged : UserMovieListEvent()
         object NotConnectedToNetwork : UserMovieListEvent()
