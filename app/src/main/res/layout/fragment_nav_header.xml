@@ -56,7 +56,6 @@
         style="@style/MPTextViewNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_login_button"
         android:text="@string/nav_header_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/navHeaderIv"

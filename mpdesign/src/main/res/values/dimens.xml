@@ -70,4 +70,7 @@
     <!-- User lists -->
     <dimen name="user_item_max_height">420dp</dimen>
 
+    <!-- User Account -->
+    <dimen name="user_account_content_padding">6dp</dimen>
+
 </resources>

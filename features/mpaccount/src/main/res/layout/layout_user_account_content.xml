@@ -8,7 +8,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="?attr/mpUserAccountContentPadding">
 
         <include
             layout="@layout/layout_user_account_header"
@@ -19,22 +20,28 @@
             android:id="@+id/userAccountFavoriteMovies"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="6dp"
             app:accountMoviesTitleText="@string/user_account_favorite_title" />
 
         <com.jpp.mpaccount.account.UserAccountMoviesView
             android:id="@+id/userAccountRatedMovies"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="6dp"
             app:accountMoviesTitleText="@string/user_account_rated_title" />
 
         <com.jpp.mpaccount.account.UserAccountMoviesView
             android:id="@+id/userAccountWatchlist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="6dp"
             app:accountMoviesTitleText="@string/user_account_watchlist_title" />
+
+        <Button
+            android:id="@+id/navHeaderLoginButton"
+            style="@style/MPTextViewNormal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_login_button"
+            android:text="@string/user_account_logout" />
 
     </LinearLayout>
 

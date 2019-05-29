@@ -6,16 +6,6 @@
     android:layout_height="wrap_content"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
-    <TextView
-        android:id="@+id/userAccountMoviesTitle"
-        style="@style/MPTextViewTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Title" />
-
     <View
         android:layout_width="0dp"
         android:layout_height="1dp"
@@ -25,6 +15,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/userAccountMoviesTitle"
         app:layout_constraintTop_toTopOf="@+id/userAccountMoviesTitle" />
+
+    <TextView
+        android:id="@+id/userAccountMoviesTitle"
+        style="@style/MPTextViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Title" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginEnd="6dp"
+        android:background="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/userAccountMoviesTitle"
+        app:layout_constraintEnd_toStartOf="@+id/userAccountMoviesTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/userAccountMoviesTitle" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/userAccountMoviesList"
