@@ -59,7 +59,7 @@ class UserAccountFragment : Fragment() {
      */
     private fun renderViewState(viewState: UserAccountViewState) {
         when (viewState) {
-            is Loading -> renderLoading()
+            is ShowLoading -> renderLoading()
             is ShowNotConnected -> renderNotConnectedToNetwork()
             is ShowUserAccountData -> {
                 updateHeader(viewState)

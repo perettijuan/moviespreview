@@ -5,7 +5,7 @@ import androidx.paging.PageKeyedDataSource
 
 //TODO JPP add description
 //TODO can we use coroutines?
-class MPPagingDataSource<T>(private val fetchItems: (Int, (List<T>, Int) -> Unit) -> Unit)
+class MPPagingDataSource<T>(private val fetchItems: (Int, (List<T>) -> Unit) -> Unit)
     : PageKeyedDataSource<Int, T>() {
 
     // keep a function reference for the retry event
@@ -19,8 +19,8 @@ class MPPagingDataSource<T>(private val fetchItems: (Int, (List<T>, Int) -> Unit
      */
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, T>) {
         retry = { loadInitial(params, callback) }
-        fetchItems(1) { itemList, nextPage ->
-            callback.onResult(itemList, null, nextPage)
+        fetchItems(1) { itemList ->
+            callback.onResult(itemList, null, 2)
         }
     }
 
@@ -33,8 +33,8 @@ class MPPagingDataSource<T>(private val fetchItems: (Int, (List<T>, Int) -> Unit
      */
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, T>) {
         retry = { loadAfter(params, callback) }
-        fetchItems(params.key) { itemList, nextPage ->
-            callback.onResult(itemList, nextPage)
+        fetchItems(params.key) { itemList ->
+            callback.onResult(itemList, params.key + 1)
         }
     }
 

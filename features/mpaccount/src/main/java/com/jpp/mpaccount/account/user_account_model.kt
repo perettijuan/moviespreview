@@ -15,7 +15,7 @@ sealed class UserAccountViewState {
     /*
      * Shows when the VM indicates that a work is in progress.
      */
-    object Loading : UserAccountViewState()
+    object ShowLoading : UserAccountViewState()
 
     /*
      * Shows the generic error screen.

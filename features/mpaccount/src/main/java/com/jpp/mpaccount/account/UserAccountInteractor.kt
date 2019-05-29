@@ -50,8 +50,7 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
      * Fetches the user account data to be shown in the screen.
      */
     fun fetchUserAccountData() {
-        val session = sessionRepository.getCurrentSession()
-        when (session) {
+        when (val session = sessionRepository.getCurrentSession()) {
             null -> UserNotLogged
             else -> getUserAccount(session, languageRepository.getCurrentAppLanguage())
         }.let {

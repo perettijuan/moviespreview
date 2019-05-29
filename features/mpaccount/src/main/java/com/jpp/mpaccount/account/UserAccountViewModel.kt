@@ -84,12 +84,12 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
 
     private fun executeGetUserAccountStep(): UserAccountViewState {
         launch { withContext(dispatchers.default()) { accountInteractor.fetchUserAccountData() } }
-        return Loading
+        return ShowLoading
     }
 
     private fun executeLogout(): UserAccountViewState {
         launch { withContext(dispatchers.default()) { accountInteractor.clearUserAccountData() } }
-        return Loading
+        return ShowLoading
     }
 
     private fun mapAccountInfo(successState: UserAccountEvent.Success) {
@@ -115,7 +115,7 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
                 when {
                     userMovieState.data.results.isEmpty() -> UserMoviesViewState.ShowNoMovies
                     else -> userMovieState.data.results
-                            .map { imagesPathInteractor.configurePathMovie(10, 10, it) }
+                            .map { imagesPathInteractor.configurePathMovie(moviesPosterTargetSize, moviesPosterTargetSize, it) }
                             .map { UserMovieItem(image = it.poster_path ?: "noPath") }
                             .let { UserMoviesViewState.ShowUserMovies(it) }
                 }

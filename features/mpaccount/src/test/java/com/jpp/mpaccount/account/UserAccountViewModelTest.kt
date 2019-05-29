@@ -234,7 +234,7 @@ class UserAccountViewModelTest {
         subject.onInit(10)
 
         verify { accountInteractor.fetchUserAccountData() }
-        assertEquals(UserAccountViewState.Loading, viewStatePosted)
+        assertEquals(UserAccountViewState.ShowLoading, viewStatePosted)
     }
 
     @Test
@@ -245,6 +245,6 @@ class UserAccountViewModelTest {
         subject.onLogout()
 
         verify { accountInteractor.clearUserAccountData() }
-        assertEquals(UserAccountViewState.Loading, viewStatePosted)
+        assertEquals(UserAccountViewState.ShowLoading, viewStatePosted)
     }
 }

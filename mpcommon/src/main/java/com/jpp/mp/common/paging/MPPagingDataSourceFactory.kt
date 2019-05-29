@@ -6,7 +6,7 @@ import androidx.paging.DataSource
  * A [DataSource.Factory] implementation, part of the paging library. It only takes care
  * of creating the proper [DataSource] when needed.
  */
-class MPPagingDataSourceFactory<T>(private val fetchItems: (Int, (List<T>, Int) -> Unit) -> Unit)
+class MPPagingDataSourceFactory<T>(private val fetchItems: (Int, (List<T>) -> Unit) -> Unit)
     : DataSource.Factory<Int, T>() {
 
     private lateinit var dsInstance: MPPagingDataSource<T>
