@@ -66,8 +66,8 @@ class UserMovieListFragment : Fragment() {
             navEvents.observe(this@UserMovieListFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
             when (args.get("listType") as UserMovieListType) {
                 UserMovieListType.FAVORITE_LIST -> onInitWithFavorites(getScreenWidthInPixels(), getScreenWidthInPixels())
-                UserMovieListType.RATED_LIST -> TODO()
-                UserMovieListType.WATCH_LIST -> TODO()
+                UserMovieListType.RATED_LIST -> onInitWithRated(getScreenWidthInPixels(), getScreenWidthInPixels())
+                UserMovieListType.WATCH_LIST -> onInitWithWatchlist(getScreenWidthInPixels(), getScreenWidthInPixels())
             }
         }
     }

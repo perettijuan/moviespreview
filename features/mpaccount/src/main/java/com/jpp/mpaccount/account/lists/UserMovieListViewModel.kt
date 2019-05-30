@@ -19,7 +19,6 @@ import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import javax.inject.Inject
 
 //TODO JPP once the movie details is implemented with favorites functionallity, we need to check what happens here with an empty list.
-//TODO we need to have rated movies and watchlist movies
 //TODO JPP add tests
 class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                                  private val userMovieListInteractor: UserMovieListInteractor,
@@ -42,10 +41,26 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     }
 
     /**
-     * Called when the view is initialized.
+     * Called when the view is initialized with the favorite movies.
      */
     fun onInitWithFavorites(posterSize: Int, backdropSize: Int) {
         dsFactoryCreator = { createFavoritesPagingFactory(posterSize, backdropSize) }
+        pushLoadingAndInitializePagedList(dsFactoryCreator)
+    }
+
+    /**
+     * Called when the view is initialized with the rated movies.
+     */
+    fun onInitWithRated(posterSize: Int, backdropSize: Int) {
+        dsFactoryCreator = { createRatedPagingFactory(posterSize, backdropSize) }
+        pushLoadingAndInitializePagedList(dsFactoryCreator)
+    }
+
+    /**
+     * Called when the view is initialized with the watchlist movies.
+     */
+    fun onInitWithWatchlist(posterSize: Int, backdropSize: Int) {
+        dsFactoryCreator = { createWatchlistPagingFactory(posterSize, backdropSize) }
         pushLoadingAndInitializePagedList(dsFactoryCreator)
     }
 
@@ -108,6 +123,22 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     private fun createFavoritesPagingFactory(moviePosterSize: Int, movieBackdropSize: Int): MPPagingDataSourceFactory<Movie> {
         return MPPagingDataSourceFactory { page, callback ->
             userMovieListInteractor.fetchFavoriteMovies(page) { movieList ->
+                callback(movieList.map { imagesPathInteractor.configurePathMovie(moviePosterSize, movieBackdropSize, it) })
+            }
+        }
+    }
+
+    private fun createRatedPagingFactory(moviePosterSize: Int, movieBackdropSize: Int): MPPagingDataSourceFactory<Movie> {
+        return MPPagingDataSourceFactory { page, callback ->
+            userMovieListInteractor.fetchRatedMovies(page) { movieList ->
+                callback(movieList.map { imagesPathInteractor.configurePathMovie(moviePosterSize, movieBackdropSize, it) })
+            }
+        }
+    }
+
+    private fun createWatchlistPagingFactory(moviePosterSize: Int, movieBackdropSize: Int): MPPagingDataSourceFactory<Movie> {
+        return MPPagingDataSourceFactory { page, callback ->
+            userMovieListInteractor.fetchWatchlist(page) { movieList ->
                 callback(movieList.map { imagesPathInteractor.configurePathMovie(moviePosterSize, movieBackdropSize, it) })
             }
         }

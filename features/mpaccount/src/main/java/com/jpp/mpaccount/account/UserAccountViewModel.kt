@@ -17,6 +17,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToMain
 import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToFavorites
+import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToRated
+import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToWatchlist
 import javax.inject.Inject
 
 /**
@@ -75,6 +77,20 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
      */
     fun onFavorites() {
         _navEvents.value = GoToFavorites
+    }
+
+    /**
+     * Called when the user wants to see the rated movies.
+     */
+    fun onRated() {
+        _navEvents.value = GoToRated
+    }
+
+    /**
+     * Called when the user wants to see the watchlist.
+     */
+    fun onWatchlist() {
+        _navEvents.value = GoToWatchlist
     }
 
     /**

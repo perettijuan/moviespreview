@@ -86,7 +86,7 @@ class UserAccountFragment : Fragment() {
         when (viewState) {
             is UserMoviesViewState.ShowNoMovies -> userAccountRatedMovies.showErrorMessage(getString(R.string.user_account_no_rated_movies))
             is UserMoviesViewState.ShowError -> userAccountRatedMovies.showErrorMessage(getString(R.string.user_account_rated_movies_error))
-            is UserMoviesViewState.ShowUserMovies -> userAccountRatedMovies.showMovies(viewState.items) { TODO() }
+            is UserMoviesViewState.ShowUserMovies -> userAccountRatedMovies.showMovies(viewState.items) { withViewModel { onRated() } }
         }
     }
 
@@ -94,7 +94,7 @@ class UserAccountFragment : Fragment() {
         when (viewState) {
             is UserMoviesViewState.ShowNoMovies -> userAccountWatchlist.showErrorMessage(getString(R.string.user_account_no_watchlist_movies))
             is UserMoviesViewState.ShowError -> userAccountWatchlist.showErrorMessage(getString(R.string.user_account_watchlist_movies_error))
-            is UserMoviesViewState.ShowUserMovies -> userAccountWatchlist.showMovies(viewState.items) { TODO() }
+            is UserMoviesViewState.ShowUserMovies -> userAccountWatchlist.showMovies(viewState.items) { withViewModel { onWatchlist() } }
         }
     }
 
@@ -106,6 +106,8 @@ class UserAccountFragment : Fragment() {
             is GoToLogin -> findNavController().navigate(toLoginFragment())
             is GoToMain -> findNavController().popBackStack()
             is GoToFavorites -> findNavController().navigate(userMovieListFragment(UserMovieListFragment.UserMovieListType.FAVORITE_LIST))
+            is GoToRated -> findNavController().navigate(userMovieListFragment(UserMovieListFragment.UserMovieListType.RATED_LIST))
+            is GoToWatchlist -> findNavController().navigate(userMovieListFragment(UserMovieListFragment.UserMovieListType.WATCH_LIST))
         }
     }
 

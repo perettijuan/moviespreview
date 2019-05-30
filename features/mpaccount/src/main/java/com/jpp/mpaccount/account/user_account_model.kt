@@ -81,4 +81,14 @@ sealed class UserAccountNavigationEvent {
      * Used to navigate to the favorite movies section.
      */
     object GoToFavorites : UserAccountNavigationEvent()
+
+    /*
+     * Used to navigate to the rated movies section.
+     */
+    object GoToRated : UserAccountNavigationEvent()
+
+    /*
+     * Used to navigate to the watchlist movies section.
+     */
+    object GoToWatchlist : UserAccountNavigationEvent()
 }
