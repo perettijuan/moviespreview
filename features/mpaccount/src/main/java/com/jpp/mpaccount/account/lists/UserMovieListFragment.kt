@@ -13,7 +13,7 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jpp.mp.common.extensions.getScreenWithInPixels
+import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mpaccount.R
 import dagger.android.support.AndroidSupportInjection
 import com.jpp.mpaccount.account.lists.UserMovieListViewState.*
@@ -24,6 +24,12 @@ import javax.inject.Inject
 import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToUserAccount
 
 class UserMovieListFragment : Fragment() {
+
+    enum class UserMovieListType {
+        FAVORITE_LIST,
+        RATED_LIST,
+        WATCH_LIST
+    }
 
 
     @Inject
@@ -51,10 +57,18 @@ class UserMovieListFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        val args = arguments
+                ?: throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the content")
+
         withViewModel {
             viewStates.observe(this@UserMovieListFragment.viewLifecycleOwner, Observer { viewState -> viewState.actionIfNotHandled { renderViewState(it) } })
             navEvents.observe(this@UserMovieListFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
-            onInit(getScreenWithInPixels(), getScreenWithInPixels())
+            when (args.get("listType") as UserMovieListType) {
+                UserMovieListType.FAVORITE_LIST -> onInitWithFavorites(getScreenWidthInPixels(), getScreenWidthInPixels())
+                UserMovieListType.RATED_LIST -> TODO()
+                UserMovieListType.WATCH_LIST -> TODO()
+            }
         }
     }
 
@@ -93,7 +107,7 @@ class UserMovieListFragment : Fragment() {
         userMoviesList.setInvisible()
         userMoviesLoadingView.setInvisible()
 
-        userMoviesErrorView.asNoConnectivityError { withViewModel { onRetry(getScreenWithInPixels(), getScreenWithInPixels()) } }
+        userMoviesErrorView.asNoConnectivityError { withViewModel { onRetry() } }
         userMoviesErrorView.setVisible()
     }
 
@@ -101,7 +115,7 @@ class UserMovieListFragment : Fragment() {
         userMoviesList.setInvisible()
         userMoviesLoadingView.setInvisible()
 
-        userMoviesErrorView.asUnknownError { withViewModel { onRetry(getScreenWithInPixels(), getScreenWithInPixels()) } }
+        userMoviesErrorView.asUnknownError { withViewModel { onRetry() } }
         userMoviesErrorView.setVisible()
     }
 

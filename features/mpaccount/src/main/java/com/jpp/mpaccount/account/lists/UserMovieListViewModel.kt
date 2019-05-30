@@ -29,6 +29,7 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
 
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<UserMovieListViewState>>() }
     private val _navEvents by lazy { SingleLiveEvent<UserMovieListNavigationEvent>() }
+    private lateinit var dsFactoryCreator: (() -> MPPagingDataSourceFactory<Movie>)
 
     init {
         _viewStates.addSource(userMovieListInteractor.userAccountEvents) { event ->
@@ -43,15 +44,16 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     /**
      * Called when the view is initialized.
      */
-    fun onInit(posterSize: Int, backdropSize: Int) {
-        pushLoadingAndInitializePagedList(posterSize, backdropSize)
+    fun onInitWithFavorites(posterSize: Int, backdropSize: Int) {
+        dsFactoryCreator = { createFavoritesPagingFactory(posterSize, backdropSize) }
+        pushLoadingAndInitializePagedList(dsFactoryCreator)
     }
 
     /**
      * Called when the user retries after an error.
      */
-    fun onRetry(posterSize: Int, backdropSize: Int) {
-        pushLoadingAndInitializePagedList(posterSize, backdropSize)
+    fun onRetry() {
+        pushLoadingAndInitializePagedList(dsFactoryCreator)
     }
 
     /**
@@ -70,10 +72,10 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
      * Pushes the Loading view state into the view layer and creates the [PagedList]
      * of [UserMovieItem] that will be rendered by the view layer.
      */
-    private fun pushLoadingAndInitializePagedList(posterSize: Int, backdropSize: Int) {
+    private fun pushLoadingAndInitializePagedList(dataSourceFactoryCreator: () -> MPPagingDataSourceFactory<Movie>) {
         with(_viewStates) {
             value = of(ShowLoading)
-            addSource(createPagedList(posterSize, backdropSize)) { pagedList -> value = of(ShowMovieList(pagedList)) }
+            addSource(createPagedList(dataSourceFactoryCreator)) { pagedList -> value = of(ShowMovieList(pagedList)) }
         }
     }
 
@@ -81,8 +83,8 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
      * Creates the [LiveData] of [PagedList] that will be pushed to the view layer to render each movie
      * as a [UserMovieItem].
      */
-    private fun createPagedList(moviePosterSize: Int, movieBackdropSize: Int): LiveData<PagedList<UserMovieItem>> {
-        return createPagingFactory(moviePosterSize, movieBackdropSize)
+    private fun createPagedList(dataSourceFactoryCreator: () -> MPPagingDataSourceFactory<Movie>): LiveData<PagedList<UserMovieItem>> {
+        return dataSourceFactoryCreator()
                 .map { mapDomainMovie(it) }
                 .let {
                     val config = PagedList.Config.Builder()
@@ -103,7 +105,7 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
      *  1 - Produces a List of Movies from the [userMovieListInteractor].
      *  2 - Configures the images path of each Movie in the list with the [imagesPathInteractor].
      */
-    private fun createPagingFactory(moviePosterSize: Int, movieBackdropSize: Int): MPPagingDataSourceFactory<Movie> {
+    private fun createFavoritesPagingFactory(moviePosterSize: Int, movieBackdropSize: Int): MPPagingDataSourceFactory<Movie> {
         return MPPagingDataSourceFactory { page, callback ->
             userMovieListInteractor.fetchFavoriteMovies(page) { movieList ->
                 callback(movieList.map { imagesPathInteractor.configurePathMovie(moviePosterSize, movieBackdropSize, it) })
