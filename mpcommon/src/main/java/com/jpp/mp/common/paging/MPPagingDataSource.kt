@@ -3,7 +3,22 @@ package com.jpp.mp.common.paging
 
 import androidx.paging.PageKeyedDataSource
 
-//TODO JPP add description
+/**
+ * [PageKeyedDataSource] implementation for the paging library.
+ *
+ * This class provides only the skeleton to fetch each page when needed, the responsibility
+ * to actually fetch the data from the proper place is delegated to the lambda provided
+ * in the constructor ([fetchItems]).
+ *
+ * Having this class to define only the skeleton of the data fetching allows us to keep the
+ * separation of concerns principle: the repository takes care of looking the data in the
+ * right place (either local database or remote server) and updating the local data when needed,
+ * and this class takes care of knowing when a new page is needed.
+ *
+ * This class has no threading responsibilities, meaning that it will run its methods in the
+ * UI thread. The way you can provide threading functionality is adding some threading mechanism
+ * inside the [fetchItems] lambda.
+ */
 class MPPagingDataSource<T>(private val fetchItems: (Int, (List<T>) -> Unit) -> Unit)
     : PageKeyedDataSource<Int, T>() {
 

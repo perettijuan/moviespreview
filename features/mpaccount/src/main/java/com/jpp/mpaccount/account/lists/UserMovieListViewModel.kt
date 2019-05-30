@@ -45,14 +45,14 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
      * Called when the view is initialized.
      */
     fun onInit(posterSize: Int, backdropSize: Int) {
-        initializePagedList(posterSize, backdropSize)
+        pushLoadingAndInitializePagedList(posterSize, backdropSize)
     }
 
     /**
      * Called when the user retries after an error.
      */
     fun onRetry(posterSize: Int, backdropSize: Int) {
-        initializePagedList(posterSize, backdropSize)
+        pushLoadingAndInitializePagedList(posterSize, backdropSize)
     }
 
     /**
@@ -67,19 +67,23 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
      */
     val navEvents: LiveData<UserMovieListNavigationEvent> get() = _navEvents
 
-
-    private fun initializePagedList(posterSize: Int, backdropSize: Int) {
+    /**
+     * Pushes the Loading view state into the view layer and creates the [PagedList]
+     * of [UserMovieItem] that will be rendered by the view layer.
+     */
+    private fun pushLoadingAndInitializePagedList(posterSize: Int, backdropSize: Int) {
         with(_viewStates) {
             value = of(ShowLoading)
             addSource(createPagedList(posterSize, backdropSize)) { pagedList -> value = of(ShowMovieList(pagedList)) }
         }
     }
 
-    private fun createPagedList(moviePosterSize: Int,
-                                movieBackdropSize: Int): LiveData<PagedList<UserMovieItem>> {
-        return MPPagingDataSourceFactory<Movie> { page, callback -> fetchMoviePageAsync(page, callback) }
-                .map {//TODO JPP tenes qie nert esyp
-                    imagesPathInteractor.configurePathMovie(moviePosterSize, movieBackdropSize, it) }
+    /**
+     * Creates the [LiveData] of [PagedList] that will be pushed to the view layer to render each movie
+     * as a [UserMovieItem].
+     */
+    private fun createPagedList(moviePosterSize: Int, movieBackdropSize: Int): LiveData<PagedList<UserMovieItem>> {
+        return MPPagingDataSourceFactory<Movie> { page, callback -> fetchMoviePageAsync(page, moviePosterSize, movieBackdropSize, callback) }
                 .map { mapDomainMovie(it) }
                 .let {
                     val config = PagedList.Config.Builder()
@@ -90,10 +94,19 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
                 }
     }
 
-    private fun fetchMoviePageAsync(page: Int, callback: (List<Movie>) -> Unit) {
+    /**
+     * This is the actual function that retrieves the movie page. It executes it work in a background thread (the default
+     * dispatcher used by the coroutine).
+     * It does two basic things in the background:
+     *  1 - Produces a List of Movies from the [userMovieListInteractor].
+     *  2 - Configures the images path of each Movie in the list with the [imagesPathInteractor].
+     */
+    private fun fetchMoviePageAsync(page: Int, moviePosterSize: Int, movieBackdropSize: Int, callback: (List<Movie>) -> Unit) {
         launch {
             withContext(dispatchers.default()) {
-                userMovieListInteractor.fetchFavoriteMovies(page, callback)
+                userMovieListInteractor.fetchFavoriteMovies(page) { movieList ->
+                    callback(movieList.map { imagesPathInteractor.configurePathMovie(moviePosterSize, movieBackdropSize, it) })
+                }
             }
         }
     }
