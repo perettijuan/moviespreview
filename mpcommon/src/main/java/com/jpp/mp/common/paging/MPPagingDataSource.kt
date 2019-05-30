@@ -2,7 +2,6 @@ package com.jpp.mp.common.paging
 
 
 import androidx.paging.PageKeyedDataSource
-import com.jpp.mp.common.extensions.logYourThread
 
 /**
  * [PageKeyedDataSource] implementation for the paging library.
@@ -30,7 +29,7 @@ class MPPagingDataSource<T>(private val fetchItems: (Int, (List<T>) -> Unit) -> 
      */
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, T>) {
         retry = { loadInitial(params, callback) }
-        logYourThread()
+        // for debug reasons logYourThread()
         fetchItems(1) { itemList ->
             callback.onResult(itemList, null, 2)
         }
@@ -45,7 +44,7 @@ class MPPagingDataSource<T>(private val fetchItems: (Int, (List<T>) -> Unit) -> 
      */
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, T>) {
         retry = { loadAfter(params, callback) }
-        logYourThread()
+        // for debug reasons logYourThread()
         fetchItems(params.key) { itemList ->
             callback.onResult(itemList, params.key + 1)
         }

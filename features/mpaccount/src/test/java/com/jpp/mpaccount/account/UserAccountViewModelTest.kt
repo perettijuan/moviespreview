@@ -74,7 +74,7 @@ class UserAccountViewModelTest {
     }
 
     @Test
-    fun `Should redirect with user not logged in`() {
+    fun `Should redirect when user not logged in`() {
         var eventPosted: UserAccountNavigationEvent? = null
 
         subject.navEvents.observeWith { eventPosted = it }

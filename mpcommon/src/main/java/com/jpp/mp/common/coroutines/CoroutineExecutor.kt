@@ -1,6 +1,5 @@
 package com.jpp.mp.common.coroutines
 
-import com.jpp.mp.common.extensions.logYourThread
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -13,12 +12,12 @@ import java.util.concurrent.Executor
  * This allows to cancel the execution of the command when the [context] is terminated.
  */
 class CoroutineExecutor(private val context: CoroutineScope,
-                        private val background: CoroutineDispatcher)  : Executor {
+                        private val background: CoroutineDispatcher) : Executor {
 
     override fun execute(command: Runnable?) {
         context.launch {
             withContext(background) {
-                logYourThread()
+                // for debug reasons logYourThread()
                 command?.run()
             }
         }

@@ -2,13 +2,22 @@ package com.jpp.mpaccount.account.lists
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.common.extensions.logYourThread
 import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.*
 import com.jpp.mpdomain.*
 import com.jpp.mpdomain.repository.*
 import javax.inject.Inject
 
-//TODO JPP add tests
+/**
+ * Interactor to support the list of movies that the user has in the account (either favorites,
+ * rated or watchlist).
+ * Since this interactor is used with the paging library, it provides to ways to communicate the
+ * responses obtained from the data layer (via repositories):
+ *  - One way, is a [LiveData] object that publishes events of status obtained in error
+ *    scenarios ([UserMovieListEvent]).
+ *  - The other way is using a callback. This is defined this way because of the limitation
+ *    in the paging library, where a callback needs to be provided - instead of using
+ *    a reactive approach.
+ */
 class UserMovieListInteractor @Inject constructor(private val connectivityRepository: ConnectivityRepository,
                                                   private val sessionRepository: SessionRepository,
                                                   private val accountRepository: AccountRepository,
@@ -36,7 +45,7 @@ class UserMovieListInteractor @Inject constructor(private val connectivityReposi
      * If an error is detected, it will be posted into [userAccountEvents].
      */
     fun fetchFavoriteMovies(page: Int, callback: (List<Movie>) -> Unit) {
-        logYourThread()
+        // for debug reasons logYourThread()
         fetchFromRepository(callback) { userAccount, session, language ->
             moviesRepository.getFavoriteMoviePage(page, userAccount, session, language)
         }
@@ -48,7 +57,7 @@ class UserMovieListInteractor @Inject constructor(private val connectivityReposi
      * If an error is detected, it will be posted into [userAccountEvents].
      */
     fun fetchRatedMovies(page: Int, callback: (List<Movie>) -> Unit) {
-        logYourThread()
+        // for debug reasons logYourThread()
         fetchFromRepository(callback) { userAccount, session, language ->
             moviesRepository.getRatedMoviePage(page, userAccount, session, language)
         }
@@ -60,12 +69,19 @@ class UserMovieListInteractor @Inject constructor(private val connectivityReposi
      * If an error is detected, it will be posted into [userAccountEvents].
      */
     fun fetchWatchlist(page: Int, callback: (List<Movie>) -> Unit) {
-        logYourThread()
+        // for debug reasons logYourThread()
         fetchFromRepository(callback) { userAccount, session, language ->
             moviesRepository.getWatchlistMoviePage(page, userAccount, session, language)
         }
     }
 
+    /**
+     * Fetches the data from the repository by verifying the application's inner state (user
+     * logged in and with an account obtained) before executing the [fetch].
+     * The results of this fetching process are notified to the [callback] on a success
+     * scenario. On an error scenario, the state is published via the [LiveData] object
+     * obtained in [userAccountEvents].
+     */
     private fun fetchFromRepository(callback: (List<Movie>) -> Unit,
                                     fetch: (UserAccount, Session, SupportedLanguage) -> MoviePage?) {
         withSession { session ->

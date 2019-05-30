@@ -19,7 +19,10 @@ import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import javax.inject.Inject
 
 //TODO JPP once the movie details is implemented with favorites functionallity, we need to check what happens here with an empty list.
-//TODO JPP add tests
+/**
+ * ViewModel implementation for the user movies list section. It allows to fetch all types of
+ * listing that the user might have.
+ */
 class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                                  private val userMovieListInteractor: UserMovieListInteractor,
                                                  private val imagesPathInteractor: ImagesPathInteractor)

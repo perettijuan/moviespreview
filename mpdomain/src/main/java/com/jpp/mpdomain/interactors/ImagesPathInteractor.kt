@@ -13,7 +13,6 @@ import com.jpp.mpdomain.repository.ConfigurationRepository
  * original resource with a valid URL formed with the information retrieved in the configuration.
  * This interactor takes care of doing such configuration.
  */
-//TODO JPP add tests
 interface ImagesPathInteractor {
 
     /**
