@@ -6,18 +6,17 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
+import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
 import com.jpp.mp.common.viewstate.HandledViewState
 import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
 import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.*
+import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToUserAccount
 import com.jpp.mpaccount.account.lists.UserMovieListViewState.*
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToUserAccount
 
 //TODO JPP once the movie details is implemented with favorites functionallity, we need to check what happens here with an empty list.
 //TODO we need to have rated movies and watchlist movies
@@ -83,30 +82,31 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
      * as a [UserMovieItem].
      */
     private fun createPagedList(moviePosterSize: Int, movieBackdropSize: Int): LiveData<PagedList<UserMovieItem>> {
-        return MPPagingDataSourceFactory<Movie> { page, callback -> fetchMoviePageAsync(page, moviePosterSize, movieBackdropSize, callback) }
+        return createPagingFactory(moviePosterSize, movieBackdropSize)
                 .map { mapDomainMovie(it) }
                 .let {
                     val config = PagedList.Config.Builder()
                             .setPrefetchDistance(2)
                             .build()
                     LivePagedListBuilder(it, config)
+                            .setFetchExecutor(CoroutineExecutor(this, dispatchers.default()))
                             .build()
                 }
     }
 
     /**
-     * This is the actual function that retrieves the movie page. It executes it work in a background thread (the default
-     * dispatcher used by the coroutine).
+     * Creates a [MPPagingDataSourceFactory] instance that will be used to show the list of movies.
+     *
+     * IMPORTANT:
+     * The lambda created as parameter of the factory executes it work in a background thread.
      * It does two basic things in the background:
      *  1 - Produces a List of Movies from the [userMovieListInteractor].
      *  2 - Configures the images path of each Movie in the list with the [imagesPathInteractor].
      */
-    private fun fetchMoviePageAsync(page: Int, moviePosterSize: Int, movieBackdropSize: Int, callback: (List<Movie>) -> Unit) {
-        launch {
-            withContext(dispatchers.default()) {
-                userMovieListInteractor.fetchFavoriteMovies(page) { movieList ->
-                    callback(movieList.map { imagesPathInteractor.configurePathMovie(moviePosterSize, movieBackdropSize, it) })
-                }
+    private fun createPagingFactory(moviePosterSize: Int, movieBackdropSize: Int): MPPagingDataSourceFactory<Movie> {
+        return MPPagingDataSourceFactory { page, callback ->
+            userMovieListInteractor.fetchFavoriteMovies(page) { movieList ->
+                callback(movieList.map { imagesPathInteractor.configurePathMovie(moviePosterSize, movieBackdropSize, it) })
             }
         }
     }

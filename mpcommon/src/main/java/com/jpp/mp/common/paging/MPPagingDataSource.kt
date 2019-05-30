@@ -2,6 +2,7 @@ package com.jpp.mp.common.paging
 
 
 import androidx.paging.PageKeyedDataSource
+import com.jpp.mp.common.extensions.logYourThread
 
 /**
  * [PageKeyedDataSource] implementation for the paging library.
@@ -14,10 +15,6 @@ import androidx.paging.PageKeyedDataSource
  * separation of concerns principle: the repository takes care of looking the data in the
  * right place (either local database or remote server) and updating the local data when needed,
  * and this class takes care of knowing when a new page is needed.
- *
- * This class has no threading responsibilities, meaning that it will run its methods in the
- * UI thread. The way you can provide threading functionality is adding some threading mechanism
- * inside the [fetchItems] lambda.
  */
 class MPPagingDataSource<T>(private val fetchItems: (Int, (List<T>) -> Unit) -> Unit)
     : PageKeyedDataSource<Int, T>() {
@@ -33,6 +30,7 @@ class MPPagingDataSource<T>(private val fetchItems: (Int, (List<T>) -> Unit) -> 
      */
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, T>) {
         retry = { loadInitial(params, callback) }
+        logYourThread()
         fetchItems(1) { itemList ->
             callback.onResult(itemList, null, 2)
         }
@@ -47,6 +45,7 @@ class MPPagingDataSource<T>(private val fetchItems: (Int, (List<T>) -> Unit) -> 
      */
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, T>) {
         retry = { loadAfter(params, callback) }
+        logYourThread()
         fetchItems(params.key) { itemList ->
             callback.onResult(itemList, params.key + 1)
         }

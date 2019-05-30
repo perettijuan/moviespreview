@@ -2,9 +2,8 @@ package com.jpp.mpaccount.account.lists
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.UnknownError
-import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.UserNotLogged
-import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.NotConnectedToNetwork
+import com.jpp.mp.common.extensions.logYourThread
+import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.*
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.Session
@@ -35,6 +34,7 @@ class UserMovieListInteractor @Inject constructor(private val connectivityReposi
 
 
     fun fetchFavoriteMovies(page: Int, callback: (List<Movie>) -> Unit) {
+        logYourThread()
         withSession { session ->
             withUserAccount(session) { account ->
                 when (connectivityRepository.getCurrentConnectivity()) {
