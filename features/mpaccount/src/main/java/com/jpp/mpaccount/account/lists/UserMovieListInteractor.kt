@@ -12,7 +12,7 @@ import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.repository.*
 import javax.inject.Inject
 
-
+//TODO JPP add tests
 class UserMovieListInteractor @Inject constructor(private val connectivityRepository: ConnectivityRepository,
                                                   private val sessionRepository: SessionRepository,
                                                   private val accountRepository: AccountRepository,
@@ -49,9 +49,6 @@ class UserMovieListInteractor @Inject constructor(private val connectivityReposi
         }
     }
 
-    /**
-     * Fetches the user account data to be shown in the screen.
-     */
     private fun withSession(callback: (Session) -> Unit) {
         when (val session = sessionRepository.getCurrentSession()) {
             null -> _userMovieListEvents.postValue(UserNotLogged)

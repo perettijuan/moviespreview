@@ -4,7 +4,6 @@ package com.jpp.mp.common.paging
 import androidx.paging.PageKeyedDataSource
 
 //TODO JPP add description
-//TODO can we use coroutines?
 class MPPagingDataSource<T>(private val fetchItems: (Int, (List<T>) -> Unit) -> Unit)
     : PageKeyedDataSource<Int, T>() {
 

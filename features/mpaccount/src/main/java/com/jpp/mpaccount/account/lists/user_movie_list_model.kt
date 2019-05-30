@@ -33,6 +33,15 @@ sealed class UserMovieListViewState {
     data class ShowMovieList(val pagedList: PagedList<UserMovieItem>) : UserMovieListViewState()
 }
 
+/**
+ * Represents all the navigation events that the user movie list view will response to.
+ */
+sealed class UserMovieListNavigationEvent {
+    /*
+     * Redirects the user to the previous step
+     */
+    object GoToUserAccount : UserMovieListNavigationEvent()
+}
 
 data class UserMovieItem(
         val movieId: Double,

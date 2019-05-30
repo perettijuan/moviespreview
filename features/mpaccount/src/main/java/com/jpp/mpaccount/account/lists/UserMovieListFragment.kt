@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +21,7 @@ import com.jpp.mpdesign.ext.*
 import kotlinx.android.synthetic.main.fragment_user_movie_list.*
 import kotlinx.android.synthetic.main.list_item_user_movie.view.*
 import javax.inject.Inject
+import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToUserAccount
 
 class UserMovieListFragment : Fragment() {
 
@@ -42,7 +44,7 @@ class UserMovieListFragment : Fragment() {
         userMoviesList.apply {
             layoutManager = LinearLayoutManager(requireActivity())
             adapter = UserMoviesAdapter {
-                withViewModel { TODO() }
+                withViewModel { TODO("TODO JPP Go to details ") }
             }
         }
     }
@@ -51,6 +53,7 @@ class UserMovieListFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         withViewModel {
             viewStates.observe(this@UserMovieListFragment.viewLifecycleOwner, Observer { viewState -> viewState.actionIfNotHandled { renderViewState(it) } })
+            navEvents.observe(this@UserMovieListFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
             onInit(getScreenWithInPixels(), getScreenWithInPixels())
         }
     }
@@ -71,7 +74,7 @@ class UserMovieListFragment : Fragment() {
             is ShowNotConnected -> renderNotConnectedToNetwork()
             is ShowLoading -> renderLoading()
             is ShowError -> renderUnknownError()
-            is ShowEmptyList -> TODO()
+            is ShowEmptyList -> TODO() //TODO JPP show empty list.
             is ShowMovieList -> {
                 withRecyclerViewAdapter { submitList(viewState.pagedList) }
                 renderContent()
@@ -107,6 +110,15 @@ class UserMovieListFragment : Fragment() {
         userMoviesErrorView.setInvisible()
 
         userMoviesList.setVisible()
+    }
+
+    /**
+     * Reacts to the navigation event provided.
+     */
+    private fun reactToNavEvent(navEvent: UserMovieListNavigationEvent) {
+        when (navEvent) {
+            is GoToUserAccount -> findNavController().popBackStack()
+        }
     }
 
 
