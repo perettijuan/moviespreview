@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.jpp.mpdata.datasources.connectivity.ConnectivityMonitor
+import com.jpp.mpdata.datasources.language.LanguageMonitor
+import com.jpp.mpdomain.repository.LanguageRepository
 import javax.inject.Inject
 
 /**
@@ -21,7 +23,9 @@ import javax.inject.Inject
  * and asks the Activity to update the Action Bar's title.
  *
  */
-class MainActivityViewModel @Inject constructor(private val connectivityMonitor: ConnectivityMonitor) : ViewModel() {
+class MainActivityViewModel @Inject constructor(private val connectivityMonitor: ConnectivityMonitor,
+                                                private val languageMonitor: LanguageMonitor,
+                                                private val languageRepository: LanguageRepository) : ViewModel() {
 
     private val viewState by lazy { MutableLiveData<MainActivityViewState>() }
 
@@ -29,11 +33,14 @@ class MainActivityViewModel @Inject constructor(private val connectivityMonitor:
      * When called, all platform dependent monitoring will start the monitoring process.
      */
     fun onInit() {
+        languageRepository.syncPlatformLanguage()
         connectivityMonitor.startMonitoring()
+        languageMonitor.startMonitoring()
     }
 
     override fun onCleared() {
         connectivityMonitor.stopMonitoring()
+        languageMonitor.stopMonitoring()
     }
 
     fun viewState(): LiveData<MainActivityViewState> = viewState

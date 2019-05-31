@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
  * Monitors connectivity changes - when requested to monitor - and notifies to the interested
  * client when an event is triggered.
  */
+//TODO JPP delete ME
 interface ConnectivityMonitor {
     /**
      * Call this method when the monitor needs to start monitoring the network changes.

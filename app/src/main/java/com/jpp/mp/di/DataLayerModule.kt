@@ -20,8 +20,9 @@ import com.jpp.mpdata.datasources.tokens.AccessTokenApi
 import com.jpp.mpdata.repository.account.MPUserAccountRepositoryImpl
 import com.jpp.mpdata.repository.session.SessionRepositoryImpl
 import com.jpp.mpdata.repository.appversion.AppVersionRepositoryImpl
-import com.jpp.mpdata.repository.configuration.ConfigurationApi
-import com.jpp.mpdata.repository.configuration.ConfigurationDb
+import com.jpp.mpdata.datasources.configuration.ConfigurationApi
+import com.jpp.mpdata.datasources.configuration.ConfigurationDb
+import com.jpp.mpdata.datasources.language.LanguageMonitor
 import com.jpp.mpdata.repository.configuration.ConfigurationRepositoryImpl
 import com.jpp.mpdata.repository.connectivity.ConnectivityRepositoryImpl
 import com.jpp.mpdata.repository.connectivity.MPConnectivityRepositoryImpl
@@ -38,8 +39,8 @@ import com.jpp.mpdata.repository.person.PersonRepositoryImpl
 import com.jpp.mpdata.repository.search.SearchApi
 import com.jpp.mpdata.repository.search.SearchRepositoryImpl
 import com.jpp.mpdata.repository.session.MPSessionRepositoryImpl
-import com.jpp.mpdata.repository.support.LanguageDb
-import com.jpp.mpdata.repository.support.LanguageRepositoryImpl
+import com.jpp.mpdata.datasources.language.LanguageDb
+import com.jpp.mpdata.repository.language.LanguageRepositoryImpl
 import com.jpp.mpdata.repository.support.SupportDb
 import com.jpp.mpdata.repository.support.SupportRepositoryImpl
 import com.jpp.mpdata.repository.tokens.AccessTokenRepositoryImpl
@@ -96,6 +97,10 @@ class DataLayerModule {
             ConnectivityMonitor.ConnectivityMonitorAPI23(context)
         }
     }
+
+    @Singleton
+    @Provides
+    fun providesLanguageMonitor(context: Context) : LanguageMonitor = LanguageMonitor.Impl(context)
 
 
     /***********************************
@@ -227,8 +232,8 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesLanguageRepository(languageDb: LanguageDb, context: Context)
-            : LanguageRepository = LanguageRepositoryImpl(languageDb, context)
+    fun providesLanguageRepository(languageDb: LanguageDb, languageMonitor: LanguageMonitor)
+            : LanguageRepository = LanguageRepositoryImpl(languageDb, languageMonitor)
 
     @Singleton
     @Provides

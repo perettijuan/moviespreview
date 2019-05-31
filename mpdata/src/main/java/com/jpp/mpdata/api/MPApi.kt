@@ -4,7 +4,7 @@ import com.jpp.mpdata.BuildConfig
 import com.jpp.mpdata.datasources.account.AccountApi
 import com.jpp.mpdata.datasources.tokens.AccessTokenApi
 import com.jpp.mpdata.datasources.session.SessionApi
-import com.jpp.mpdata.repository.configuration.ConfigurationApi
+import com.jpp.mpdata.datasources.configuration.ConfigurationApi
 import com.jpp.mpdata.repository.credits.CreditsApi
 import com.jpp.mpdata.repository.movies.MoviesApi
 import com.jpp.mpdata.repository.person.PersonApi

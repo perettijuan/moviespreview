@@ -1,10 +1,13 @@
 package com.jpp.mp.screens.main
 
 import com.jpp.mpdata.datasources.connectivity.ConnectivityMonitor
+import com.jpp.mpdata.datasources.language.LanguageMonitor
+import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -15,12 +18,16 @@ class MainActivityViewModelTest {
 
     @RelaxedMockK
     private lateinit var connectivityMonitor: ConnectivityMonitor
+    @RelaxedMockK
+    private lateinit var languageMonitor: LanguageMonitor
+    @RelaxedMockK
+    private lateinit var languageRepository: LanguageRepository
 
     private lateinit var subject: MainActivityViewModel
 
     @BeforeEach
     fun setUp() {
-        subject = MainActivityViewModel(connectivityMonitor)
+        subject = MainActivityViewModel(connectivityMonitor, languageMonitor, languageRepository)
     }
 
     @Test
@@ -193,4 +200,18 @@ class MainActivityViewModelTest {
         subject.userNavigatesToAccountDetails(sectionName)
     }
 
+    @Test
+    fun `Should start monitoring in onInit`() {
+        subject.onInit()
+
+        verify { connectivityMonitor.startMonitoring() }
+        verify { languageMonitor.startMonitoring() }
+    }
+
+    @Test
+    fun `Should ask language repository to sync languages onInit`() {
+        subject.onInit()
+
+        verify { languageRepository.syncPlatformLanguage() }
+    }
 }
