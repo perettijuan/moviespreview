@@ -1,6 +1,7 @@
 package com.jpp.mpaccount.account
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent.*
 import com.jpp.mpdomain.*
@@ -22,6 +23,7 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
      * Represents the events that this interactor can route to the upper layers.
      */
     sealed class UserAccountEvent {
+        object UserChangedLanguage : UserAccountEvent()
         object UserDataCleared : UserAccountEvent()
         object UserNotLogged : UserAccountEvent()
         object NotConnectedToNetwork : UserAccountEvent()
@@ -38,7 +40,11 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
         data class Success(val data: MoviePage) : UserMoviesState()
     }
 
-    private val _userAccountEvents by lazy { MutableLiveData<UserAccountEvent>() }
+    private val _userAccountEvents by lazy { MediatorLiveData<UserAccountEvent>() }
+
+    init {
+        _userAccountEvents.addSource(languageRepository.updates()) { _userAccountEvents.postValue(UserChangedLanguage) }
+    }
 
     /**
      * @return a [LiveData] of [UserAccountEvent]. Subscribe to this [LiveData]
@@ -50,26 +56,33 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
      * Fetches the user account data to be shown in the screen.
      */
     fun fetchUserAccountData() {
-        when (val session = sessionRepository.getCurrentSession()) {
-            null -> UserNotLogged
-            else -> getUserAccount(session, languageRepository.getCurrentAppLanguage())
-        }.let {
-            _userAccountEvents.postValue(it)
-        }
+        fetchUserAccountDataInternal()
     }
 
     /**
      * Clears all user account data stored locally in the device.
      */
     fun clearUserAccountData() {
-        accountRepository.flushUserAccountData()
-        with(moviesRepository) {
-            flushFavoriteMoviePages()
-            flushRatedMoviePages()
-            flushWatchlistMoviePages()
-        }
+        flushCurrentUserData()
         sessionRepository.deleteCurrentSession()
         _userAccountEvents.postValue(UserDataCleared)
+    }
+
+    /**
+     * Refreshes any cached user account data.
+     */
+    fun refreshUserAccountData() {
+        flushCurrentUserData()
+        fetchUserAccountDataInternal()
+    }
+
+    private fun fetchUserAccountDataInternal() {
+        when (val session = sessionRepository.getCurrentSession()) {
+            null -> UserNotLogged
+            else -> getUserAccount(session, languageRepository.getCurrentAppLanguage())
+        }.let {
+            _userAccountEvents.postValue(it)
+        }
     }
 
     private fun getUserAccount(session: Session, language: SupportedLanguage): UserAccountEvent {
@@ -117,5 +130,14 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
         )?.let { favMoviePage ->
             UserMoviesState.Success(favMoviePage)
         } ?: UserMoviesState.UnknownError
+    }
+
+    private fun flushCurrentUserData() {
+        accountRepository.flushUserAccountData()
+        with(moviesRepository) {
+            flushFavoriteMoviePages()
+            flushRatedMoviePages()
+            flushWatchlistMoviePages()
+        }
     }
 }

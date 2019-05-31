@@ -18,7 +18,6 @@ class MoviesCache(private val roomDatabase: MPRoomDataBase,
                   private val adapter: RoomModelAdapter,
                   private val timestampHelper: CacheTimestampHelper) : MoviesDb {
 
-    //TODO JPP we need to flush this when language changes
     private val favoriteMovies = SparseArray<MoviePage>()
     private val ratedMovies = SparseArray<MoviePage>()
     private val watchlist = SparseArray<MoviePage>()
