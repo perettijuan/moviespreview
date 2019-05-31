@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'androidx.navigation.safeargs'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -52,6 +53,9 @@ dependencies {
     // Navigation Components
     implementation deps.android.arch.navigation.fragment
     implementation deps.android.arch.navigation.ui
+
+    // Paging library
+    implementation deps.androidx.paging
 
     // Junit 5
     testImplementation deps.test.junit5.jupiter.api

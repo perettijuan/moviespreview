@@ -74,7 +74,7 @@ class UserAccountViewModelTest {
     }
 
     @Test
-    fun `Should redirect with user not logged in`() {
+    fun `Should redirect when user not logged in`() {
         var eventPosted: UserAccountNavigationEvent? = null
 
         subject.navEvents.observeWith { eventPosted = it }
@@ -234,7 +234,7 @@ class UserAccountViewModelTest {
         subject.onInit(10)
 
         verify { accountInteractor.fetchUserAccountData() }
-        assertEquals(UserAccountViewState.Loading, viewStatePosted)
+        assertEquals(UserAccountViewState.ShowLoading, viewStatePosted)
     }
 
     @Test
@@ -245,6 +245,6 @@ class UserAccountViewModelTest {
         subject.onLogout()
 
         verify { accountInteractor.clearUserAccountData() }
-        assertEquals(UserAccountViewState.Loading, viewStatePosted)
+        assertEquals(UserAccountViewState.ShowLoading, viewStatePosted)
     }
 }

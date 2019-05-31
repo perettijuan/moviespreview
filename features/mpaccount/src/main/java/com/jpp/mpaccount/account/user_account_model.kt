@@ -15,7 +15,7 @@ sealed class UserAccountViewState {
     /*
      * Shows when the VM indicates that a work is in progress.
      */
-    object Loading : UserAccountViewState()
+    object ShowLoading : UserAccountViewState()
 
     /*
      * Shows the generic error screen.
@@ -76,4 +76,19 @@ sealed class UserAccountNavigationEvent {
      * Used to redirect the user to the main screen.
      */
     object GoToMain : UserAccountNavigationEvent()
+
+    /*
+     * Used to navigate to the favorite movies section.
+     */
+    object GoToFavorites : UserAccountNavigationEvent()
+
+    /*
+     * Used to navigate to the rated movies section.
+     */
+    object GoToRated : UserAccountNavigationEvent()
+
+    /*
+     * Used to navigate to the watchlist movies section.
+     */
+    object GoToWatchlist : UserAccountNavigationEvent()
 }

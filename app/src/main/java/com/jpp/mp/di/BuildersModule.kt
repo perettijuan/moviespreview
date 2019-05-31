@@ -16,6 +16,7 @@ import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
 import com.jpp.mp.screens.main.person.PersonFragment
 import com.jpp.mp.screens.main.search.SearchFragment
 import com.jpp.mpaccount.account.UserAccountFragment
+import com.jpp.mpaccount.account.lists.UserMovieListFragment
 import com.jpp.mpaccount.login.LoginFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -74,4 +75,7 @@ abstract class BuildersModule {
 
     @ContributesAndroidInjector
     abstract fun bindUserAccountFragment(): UserAccountFragment
+
+    @ContributesAndroidInjector
+    abstract fun bindUserMovieListFragment(): UserMovieListFragment
 }

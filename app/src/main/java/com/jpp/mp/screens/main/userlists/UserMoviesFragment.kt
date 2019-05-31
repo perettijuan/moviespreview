@@ -18,7 +18,7 @@ import com.jpp.mp.ext.*
 import com.jpp.mp.screens.main.userlists.UserMoviesFragmentDirections.toMovieDetails
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_user_movies.*
-import kotlinx.android.synthetic.main.list_item_user_movies.view.*
+import kotlinx.android.synthetic.main.list_item_user_movies_deprecated.view.*
 import javax.inject.Inject
 
 /**
@@ -140,7 +140,7 @@ class UserMoviesFragment : Fragment() {
 
     class UserMoviesAdapter(private val itemSelectionListener: (UserMovieItem) -> Unit) : PagedListAdapter<UserMovieItem, UserMoviesAdapter.ViewHolder>(UserMovieDiffCallback()) {
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent.inflate(R.layout.list_item_user_movies))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent.inflate(R.layout.list_item_user_movies_deprecated))
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             getItem(position)?.let {

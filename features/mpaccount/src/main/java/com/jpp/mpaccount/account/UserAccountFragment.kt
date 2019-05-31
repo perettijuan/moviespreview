@@ -9,11 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.jpp.mp.common.extensions.getScreenWithInPixels
+import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mpaccount.R
-import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToLogin
-import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToMain
+import com.jpp.mpaccount.account.UserAccountFragmentDirections.toLoginFragment
+import com.jpp.mpaccount.account.UserAccountFragmentDirections.userMovieListFragment
+import com.jpp.mpaccount.account.UserAccountNavigationEvent.*
 import com.jpp.mpaccount.account.UserAccountViewState.*
+import com.jpp.mpaccount.account.lists.UserMovieListFragment
 import com.jpp.mpdesign.ext.*
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_user_account.*
@@ -43,7 +45,7 @@ class UserAccountFragment : Fragment() {
         withViewModel {
             viewStates.observe(this@UserAccountFragment.viewLifecycleOwner, Observer { viewState -> viewState.actionIfNotHandled { renderViewState(it) } })
             navEvents.observe(this@UserAccountFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
-            onInit(getScreenWithInPixels())
+            onInit(getScreenWidthInPixels())
         }
 
         userAccountLogoutBtn.setOnClickListener { withViewModel { onLogout() } }
@@ -59,7 +61,7 @@ class UserAccountFragment : Fragment() {
      */
     private fun renderViewState(viewState: UserAccountViewState) {
         when (viewState) {
-            is Loading -> renderLoading()
+            is ShowLoading -> renderLoading()
             is ShowNotConnected -> renderNotConnectedToNetwork()
             is ShowUserAccountData -> {
                 updateHeader(viewState)
@@ -76,7 +78,7 @@ class UserAccountFragment : Fragment() {
         when (viewState) {
             is UserMoviesViewState.ShowNoMovies -> userAccountFavoriteMovies.showErrorMessage(getString(R.string.user_account_no_favorite_movies))
             is UserMoviesViewState.ShowError -> userAccountFavoriteMovies.showErrorMessage(getString(R.string.user_account_favorite_movies_error))
-            is UserMoviesViewState.ShowUserMovies -> userAccountFavoriteMovies.showMovies(viewState.items) { TODO() }
+            is UserMoviesViewState.ShowUserMovies -> userAccountFavoriteMovies.showMovies(viewState.items) { withViewModel { onFavorites() } }
         }
     }
 
@@ -84,7 +86,7 @@ class UserAccountFragment : Fragment() {
         when (viewState) {
             is UserMoviesViewState.ShowNoMovies -> userAccountRatedMovies.showErrorMessage(getString(R.string.user_account_no_rated_movies))
             is UserMoviesViewState.ShowError -> userAccountRatedMovies.showErrorMessage(getString(R.string.user_account_rated_movies_error))
-            is UserMoviesViewState.ShowUserMovies -> userAccountRatedMovies.showMovies(viewState.items) { TODO() }
+            is UserMoviesViewState.ShowUserMovies -> userAccountRatedMovies.showMovies(viewState.items) { withViewModel { onRated() } }
         }
     }
 
@@ -92,7 +94,7 @@ class UserAccountFragment : Fragment() {
         when (viewState) {
             is UserMoviesViewState.ShowNoMovies -> userAccountWatchlist.showErrorMessage(getString(R.string.user_account_no_watchlist_movies))
             is UserMoviesViewState.ShowError -> userAccountWatchlist.showErrorMessage(getString(R.string.user_account_watchlist_movies_error))
-            is UserMoviesViewState.ShowUserMovies -> userAccountWatchlist.showMovies(viewState.items) { TODO() }
+            is UserMoviesViewState.ShowUserMovies -> userAccountWatchlist.showMovies(viewState.items) { withViewModel { onWatchlist() } }
         }
     }
 
@@ -101,8 +103,11 @@ class UserAccountFragment : Fragment() {
      */
     private fun reactToNavEvent(navEvent: UserAccountNavigationEvent) {
         when (navEvent) {
-            is GoToLogin -> findNavController().navigate(R.id.toLoginFragment)
+            is GoToLogin -> findNavController().navigate(toLoginFragment())
             is GoToMain -> findNavController().popBackStack()
+            is GoToFavorites -> findNavController().navigate(userMovieListFragment(UserMovieListFragment.UserMovieListType.FAVORITE_LIST))
+            is GoToRated -> findNavController().navigate(userMovieListFragment(UserMovieListFragment.UserMovieListType.RATED_LIST))
+            is GoToWatchlist -> findNavController().navigate(userMovieListFragment(UserMovieListFragment.UserMovieListType.WATCH_LIST))
         }
     }
 
@@ -124,7 +129,7 @@ class UserAccountFragment : Fragment() {
         userAccountLoadingView.setInvisible()
         userAccountContentView.setInvisible()
 
-        userAccountErrorView.asNoConnectivityError { withViewModel { onUserRetry(getScreenWithInPixels()) } }
+        userAccountErrorView.asNoConnectivityError { withViewModel { onUserRetry(getScreenWidthInPixels()) } }
         userAccountErrorView.setVisible()
     }
 
@@ -132,7 +137,7 @@ class UserAccountFragment : Fragment() {
         userAccountLoadingView.setInvisible()
         userAccountContentView.setInvisible()
 
-        userAccountErrorView.asUnknownError { withViewModel { onUserRetry(getScreenWithInPixels()) } }
+        userAccountErrorView.asUnknownError { withViewModel { onUserRetry(getScreenWidthInPixels()) } }
         userAccountErrorView.setVisible()
     }
 

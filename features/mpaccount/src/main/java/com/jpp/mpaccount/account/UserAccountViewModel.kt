@@ -16,6 +16,9 @@ import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToMain
+import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToFavorites
+import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToRated
+import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToWatchlist
 import javax.inject.Inject
 
 /**
@@ -70,6 +73,27 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
     }
 
     /**
+     * Called when the user wants to see the favorites movies.
+     */
+    fun onFavorites() {
+        _navEvents.value = GoToFavorites
+    }
+
+    /**
+     * Called when the user wants to see the rated movies.
+     */
+    fun onRated() {
+        _navEvents.value = GoToRated
+    }
+
+    /**
+     * Called when the user wants to see the watchlist.
+     */
+    fun onWatchlist() {
+        _navEvents.value = GoToWatchlist
+    }
+
+    /**
      * Subscribe to this [LiveData] in order to get notified about the different states that
      * the view should render.
      */
@@ -84,12 +108,12 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
 
     private fun executeGetUserAccountStep(): UserAccountViewState {
         launch { withContext(dispatchers.default()) { accountInteractor.fetchUserAccountData() } }
-        return Loading
+        return ShowLoading
     }
 
     private fun executeLogout(): UserAccountViewState {
         launch { withContext(dispatchers.default()) { accountInteractor.clearUserAccountData() } }
-        return Loading
+        return ShowLoading
     }
 
     private fun mapAccountInfo(successState: UserAccountEvent.Success) {
@@ -115,7 +139,7 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
                 when {
                     userMovieState.data.results.isEmpty() -> UserMoviesViewState.ShowNoMovies
                     else -> userMovieState.data.results
-                            .map { imagesPathInteractor.configurePathMovie(10, 10, it) }
+                            .map { imagesPathInteractor.configurePathMovie(moviesPosterTargetSize, moviesPosterTargetSize, it) }
                             .map { UserMovieItem(image = it.poster_path ?: "noPath") }
                             .let { UserMoviesViewState.ShowUserMovies(it) }
                 }

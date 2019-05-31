@@ -300,8 +300,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="256" />
-                            <option name="y" value="12" />
+                            <option name="x" value="295" />
+                            <option name="y" value="-206" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -323,7 +323,24 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="userMovieListFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                           </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="userMovieListFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="301" />
+                            <option name="y" value="232" />
+                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>

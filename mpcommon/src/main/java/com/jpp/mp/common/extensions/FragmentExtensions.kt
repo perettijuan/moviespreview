@@ -16,7 +16,7 @@ fun Fragment.getScreenSizeInPixels(): Point {
 /**
  * Returns an integer that represents the width of the screen in pixels.
  */
-fun Fragment.getScreenWithInPixels(): Int {
+fun Fragment.getScreenWidthInPixels(): Int {
     activity?.let {
         return it.getScreenSizeInPixels().x
     } ?: throw IllegalStateException("Activity is null at this point")
