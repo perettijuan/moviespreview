@@ -1,5 +1,6 @@
 package com.jpp.mpaccount.account.lists
 
+import androidx.lifecycle.MutableLiveData
 import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.*
 import com.jpp.mpdomain.*
 import com.jpp.mpdomain.repository.*
@@ -30,11 +31,14 @@ class UserMovieListInteractorTest {
     @MockK
     private lateinit var languageRepository: LanguageRepository
 
+    private val languageRepositoryLiveData = MutableLiveData<SupportedLanguage>()
+
     private lateinit var subject: UserMovieListInteractor
 
     @BeforeEach
     fun setUp() {
         every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+        every { languageRepository.updates() } returns languageRepositoryLiveData
 
         subject = UserMovieListInteractor(
                 connectivityRepository,
@@ -118,5 +122,16 @@ class UserMovieListInteractorTest {
         verify(exactly = 1) { accountRepository.getUserAccount(session) }
         verify(exactly = 1) { moviesRepository.getFavoriteMoviePage(1, accountData, session, SupportedLanguage.English) }
         verify(exactly = 1) { languageRepository.getCurrentAppLanguage() }
+    }
+
+    @Test
+    fun `Should notify when user changes language`() {
+        var eventPosted: UserMovieListInteractor.UserMovieListEvent? = null
+
+        subject.userAccountEvents.observeWith { eventPosted = it }
+
+        languageRepositoryLiveData.postValue(SupportedLanguage.Spanish)
+
+        assertEquals(UserChangedLanguage, eventPosted)
     }
 }
