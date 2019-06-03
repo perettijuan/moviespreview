@@ -1,7 +1,7 @@
 package com.jpp.mpdata.preferences
 
 import android.content.Context
-import com.jpp.mpdata.repository.support.LanguageDb
+import com.jpp.mpdata.datasources.language.LanguageDb
 
 /**
  * [LanguageDb] implementation.

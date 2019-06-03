@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.jpp.mpdomain.repository.AccountRepository
 import com.jpp.mpdomain.repository.LanguageRepository
-import com.jpp.mpdomain.repository.LanguageRepository.LanguageEvent.LanguageChangeEvent
 
 /**
  * Use case definition to update the data being handled by the application when needed.
@@ -42,14 +41,14 @@ interface RefreshAppDataUseCase {
 //                    is FavoritesMovies -> dataRefreshUpdates.postValue(AppDataRefresh.UserAccountMovies)
 //                }
 //            }
-            dataRefreshUpdates.addSource(languageRepository.updates()) { languageRepositoryEvent ->
-                when (languageRepositoryEvent) {
-                    is LanguageChangeEvent -> {
-                        //accountRepository.refresh()
-                        dataRefreshUpdates.postValue(AppDataRefresh.LanguageChanged)
-                    }
-                }
-            }
+//            dataRefreshUpdates.addSource(languageRepository.updates()) { languageRepositoryEvent ->
+//                when (languageRepositoryEvent) {
+//                    is LanguageChangeEvent -> {
+//                        //accountRepository.refresh()
+//                        dataRefreshUpdates.postValue(AppDataRefresh.LanguageChanged)
+//                    }
+//                }
+//            }
         }
 
         override fun appDataUpdates(): LiveData<AppDataRefresh> = dataRefreshUpdates

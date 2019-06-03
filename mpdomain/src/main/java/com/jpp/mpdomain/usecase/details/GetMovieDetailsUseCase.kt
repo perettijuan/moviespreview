@@ -41,7 +41,7 @@ interface GetMovieDetailsUseCase {
         override fun getDetailsForMovie(movieId: Double): GetMovieDetailsResult {
             return when(connectivityRepository.getCurrentConnectivity()) {
                 Connectivity.Disconnected -> ErrorNoConnectivity
-                Connectivity.Connected -> moviesRepository.getMovieDetails(movieId, languageRepository.getCurrentDeviceLanguage())?.let {
+                Connectivity.Connected -> moviesRepository.getMovieDetails(movieId, languageRepository.getCurrentAppLanguage())?.let {
                     Success(it)
                 } ?: run {
                     ErrorUnknown

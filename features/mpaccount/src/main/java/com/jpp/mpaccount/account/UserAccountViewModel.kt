@@ -44,6 +44,7 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
                 is UserAccountEvent.UnknownError -> _viewStates.value = of(ShowError)
                 is UserAccountEvent.UserNotLogged -> _navEvents.value = GoToLogin
                 is UserAccountEvent.UserDataCleared -> _navEvents.value = GoToMain
+                is UserAccountEvent.UserChangedLanguage -> _viewStates.value = of(refreshData())
                 is UserAccountEvent.Success -> mapAccountInfo(event)
             }
         }
@@ -107,12 +108,17 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
 
 
     private fun executeGetUserAccountStep(): UserAccountViewState {
-        launch { withContext(dispatchers.default()) { accountInteractor.fetchUserAccountData() } }
+        withAccountInteractor { fetchUserAccountData() }
         return ShowLoading
     }
 
     private fun executeLogout(): UserAccountViewState {
-        launch { withContext(dispatchers.default()) { accountInteractor.clearUserAccountData() } }
+        withAccountInteractor { clearUserAccountData() }
+        return ShowLoading
+    }
+
+    private fun refreshData() : UserAccountViewState {
+        withAccountInteractor { refreshUserAccountData() }
         return ShowLoading
     }
 
@@ -130,6 +136,11 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
                 )
             }.let { _viewStates.value = of(it) }
         }
+    }
+
+
+    private fun withAccountInteractor(action: UserAccountInteractor.() -> Unit) {
+        launch { withContext(dispatchers.default()) { action(accountInteractor) } }
     }
 
     private suspend fun getUserMoviesViewState(userMovieState: UserMoviesState) = withContext(dispatchers.default()) {

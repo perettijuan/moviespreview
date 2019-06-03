@@ -36,7 +36,7 @@ class SearchUseCaseTest {
     @BeforeEach
     fun setUp() {
         subject = SearchUseCase.Impl(searchRepository, connectivityRepository, languageRepository)
-        every { languageRepository.getCurrentDeviceLanguage() } returns language
+        every { languageRepository.getCurrentAppLanguage() } returns language
     }
 
     @Test

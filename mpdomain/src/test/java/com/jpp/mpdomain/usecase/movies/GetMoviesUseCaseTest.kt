@@ -37,7 +37,7 @@ class GetMoviesUseCaseTest {
     @BeforeEach
     fun setUp() {
         subject = GetMoviesUseCase.Impl(moviesRepository, connectivityRepository, languageRepository)
-        every { languageRepository.getCurrentDeviceLanguage() } returns language
+        every { languageRepository.getCurrentAppLanguage() } returns language
     }
 
     @ParameterizedTest

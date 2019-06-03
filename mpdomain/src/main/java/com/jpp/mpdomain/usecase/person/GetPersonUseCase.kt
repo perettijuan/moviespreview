@@ -29,7 +29,7 @@ interface GetPersonUseCase {
         override fun getPerson(personId: Double): GetPersonResult {
             return when (connectivityRepository.getCurrentConnectivity()) {
                 Connectivity.Disconnected -> GetPersonResult.ErrorNoConnectivity
-                Connectivity.Connected -> personRepository.getPerson(personId, languageRepository.getCurrentDeviceLanguage())?.let {
+                Connectivity.Connected -> personRepository.getPerson(personId, languageRepository.getCurrentAppLanguage())?.let {
                     GetPersonResult.Success(it)
                 } ?: run {
                     GetPersonResult.ErrorUnknown

@@ -12,6 +12,7 @@ import com.jpp.mpdomain.repository.MPConnectivityRepository
  * [MPConnectivityRepository] implementation. Notifies every time a new [Connectivity] becomes
  * available.
  */
+//TODO JPP delete me
 class MPConnectivityRepositoryImpl(monitor: ConnectivityMonitor,
                                    private val context: Context) : MPConnectivityRepository {
     private val updates by lazy { MutableLiveData<Connectivity>() }

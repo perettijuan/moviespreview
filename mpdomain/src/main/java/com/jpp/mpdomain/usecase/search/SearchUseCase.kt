@@ -30,7 +30,7 @@ interface SearchUseCase {
         override fun search(query: String, page: Int): SearchUseCaseResult {
             return when (connectivityRepository.getCurrentConnectivity()) {
                 Connectivity.Disconnected -> SearchUseCaseResult.ErrorNoConnectivity
-                Connectivity.Connected -> searchRepository.searchPage(query, page, languageRepository.getCurrentDeviceLanguage())?.let {
+                Connectivity.Connected -> searchRepository.searchPage(query, page, languageRepository.getCurrentAppLanguage())?.let {
                     SearchUseCaseResult.Success(sanitizeSearchPage(it))
                 } ?: run {
                     SearchUseCaseResult.ErrorUnknown

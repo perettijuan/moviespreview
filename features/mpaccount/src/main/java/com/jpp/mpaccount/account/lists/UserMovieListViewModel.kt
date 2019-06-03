@@ -39,6 +39,7 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
                 is NotConnectedToNetwork -> _viewStates.value = of(ShowNotConnected)
                 is UnknownError -> _viewStates.value = of(ShowError)
                 is UserNotLogged -> _navEvents.value = GoToUserAccount
+                is UserChangedLanguage -> refreshMovieListData()
             }
         }
     }
@@ -95,6 +96,11 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
             value = of(ShowLoading)
             addSource(createPagedList(dataSourceFactoryCreator)) { pagedList -> value = of(ShowMovieList(pagedList)) }
         }
+    }
+
+    private fun refreshMovieListData() {
+        userMovieListInteractor.refreshUserMoviesData()
+        pushLoadingAndInitializePagedList(dsFactoryCreator)
     }
 
     /**

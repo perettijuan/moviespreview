@@ -247,4 +247,15 @@ class UserAccountViewModelTest {
         verify { accountInteractor.clearUserAccountData() }
         assertEquals(UserAccountViewState.ShowLoading, viewStatePosted)
     }
+
+    @Test
+    fun `Should post loading and refresh user data when language changed`() {
+        var viewStatePosted: UserAccountViewState? = null
+
+        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.UserChangedLanguage)
+
+        verify { accountInteractor.refreshUserAccountData() }
+        assertEquals(UserAccountViewState.ShowLoading, viewStatePosted)
+    }
 }

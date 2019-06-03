@@ -1,6 +1,7 @@
 package com.jpp.mpaccount.account.lists
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.*
 import com.jpp.mpdomain.*
@@ -24,13 +25,18 @@ class UserMovieListInteractor @Inject constructor(private val connectivityReposi
                                                   private val moviesRepository: MoviesRepository,
                                                   private val languageRepository: LanguageRepository) {
     sealed class UserMovieListEvent {
+        object UserChangedLanguage : UserMovieListEvent()
         object UserNotLogged : UserMovieListEvent()
         object NotConnectedToNetwork : UserMovieListEvent()
         object UnknownError : UserMovieListEvent()
     }
 
 
-    private val _userMovieListEvents by lazy { MutableLiveData<UserMovieListEvent>() }
+    private val _userMovieListEvents by lazy { MediatorLiveData<UserMovieListEvent>() }
+
+    init {
+        _userMovieListEvents.addSource(languageRepository.updates()) { _userMovieListEvents.postValue(UserChangedLanguage)}
+    }
 
     /**
      * @return a [LiveData] of [UserMovieListEvent]. Subscribe to this [LiveData]
@@ -72,6 +78,14 @@ class UserMovieListInteractor @Inject constructor(private val connectivityReposi
         // for debug reasons logYourThread()
         fetchFromRepository(callback) { userAccount, session, language ->
             moviesRepository.getWatchlistMoviePage(page, userAccount, session, language)
+        }
+    }
+
+    fun refreshUserMoviesData() {
+        with(moviesRepository) {
+            flushFavoriteMoviePages()
+            flushRatedMoviePages()
+            flushWatchlistMoviePages()
         }
     }
 

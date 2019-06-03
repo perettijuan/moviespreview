@@ -10,7 +10,7 @@ import com.jpp.mpdomain.repository.SupportRepository
  */
 interface RefreshLanguageDataUseCase {
 
-    //TODO JPP replace this for RefreshAppDataUseCase
+    //TODO JPP delete ME
 
     /**
      * Verifies if the state being shown to the user needs to be refreshed.
@@ -22,16 +22,17 @@ interface RefreshLanguageDataUseCase {
     class Impl(private val languageRepository: LanguageRepository,
                private val supportRepository: SupportRepository) : RefreshLanguageDataUseCase {
         override fun shouldRefreshDataInApp(): Boolean {
-            return languageRepository.getCurrentAppLanguage().let {
-                val refresh = languageRepository.getCurrentDeviceLanguage() != it
-
-                if (refresh) {
-                    supportRepository.clearAllData()
-                    languageRepository.updateAppLanguage(languageRepository.getCurrentDeviceLanguage()) // always update
-                }
-
-                return refresh
-            }
+//            return languageRepository.getCurrentAppLanguage().let {
+//                val refresh = languageRepository.getCurrentDeviceLanguage() != it
+//
+//                if (refresh) {
+//                    supportRepository.clearAllData()
+//                    languageRepository.updateAppLanguage(languageRepository.getCurrentDeviceLanguage()) // always update
+//                }
+//
+//                return refresh
+//            }
+            return false
         }
     }
 }

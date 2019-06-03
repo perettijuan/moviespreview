@@ -1,4 +1,4 @@
-package com.jpp.mpdata.repository.support
+package com.jpp.mpdata.datasources.language
 
 interface LanguageDb {
     fun getStoredLanguageString(): String?
