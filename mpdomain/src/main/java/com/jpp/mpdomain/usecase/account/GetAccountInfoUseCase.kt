@@ -15,6 +15,7 @@ import com.jpp.mpdomain.repository.SessionRepository
  * If not connected, return an error that indicates such state.
  * If the user is not logged in, return an error that indicates such state.
  */
+//TODO JPP delete me
 interface GetAccountInfoUseCase {
 
     /**
