@@ -37,6 +37,7 @@ class NavigationHeaderViewModel @Inject constructor(dispatchers: CoroutineDispat
         _viewStates.addSource(interactor.userAccountEvents) { event ->
             when (event) {
                 is UserNotLogged -> _viewStates.value = of(ShowLogin)
+                is UnknownError -> _viewStates.value = of(ShowLogin)
                 is Success -> _viewStates.value = of(mapAccountInfo(event.data))
             }
         }

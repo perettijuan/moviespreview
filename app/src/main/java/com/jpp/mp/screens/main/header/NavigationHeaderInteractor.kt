@@ -9,6 +9,12 @@ import com.jpp.mpdomain.repository.AccountRepository
 import com.jpp.mpdomain.repository.SessionRepository
 import javax.inject.Inject
 
+/**
+ * Interactor to support the navigation header section of the main screen.
+ * This interactor takes care of accessing the
+ * repository layer to perform the inner state updates needed to provide functionality in the
+ * header section of the navigation view.
+ */
 class NavigationHeaderInteractor @Inject constructor(private val sessionRepository: SessionRepository,
                                                      private val accountRepository: AccountRepository) {
 
