@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.CookieManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.jpp.mp.common.extensions.clearAllCookies
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.account.UserAccountFragmentDirections.toLoginFragment
@@ -48,7 +50,10 @@ class UserAccountFragment : Fragment() {
             onInit(getScreenWidthInPixels())
         }
 
-        userAccountLogoutBtn.setOnClickListener { withViewModel { onLogout() } }
+        userAccountLogoutBtn.setOnClickListener {
+            withViewModel { onLogout() }
+            CookieManager.getInstance().clearAllCookies()
+        }
     }
 
     /**
