@@ -6,12 +6,9 @@ import com.jpp.mp.screens.main.MainActivityViewModel
 import com.jpp.mp.screens.main.RefreshAppViewModel
 import com.jpp.mp.screens.main.SearchViewViewModel
 import com.jpp.mp.screens.main.about.AboutViewModel
-import com.jpp.mp.screens.main.account.AccountFavoriteMoviesViewModel
-import com.jpp.mp.screens.main.account.AccountViewModel
 import com.jpp.mp.screens.main.credits.CreditsViewModel
 import com.jpp.mp.screens.main.details.MovieActionsViewModel
 import com.jpp.mp.screens.main.details.MovieDetailsViewModel
-import com.jpp.mp.screens.main.userlists.UserMoviesViewModel
 import com.jpp.mp.screens.main.header.NavigationHeaderViewModel
 import com.jpp.mp.screens.main.licenses.LicensesViewModel
 import com.jpp.mp.screens.main.licenses.content.LicenseContentViewModel
@@ -21,6 +18,7 @@ import com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
 import com.jpp.mp.screens.main.person.PersonViewModel
 import com.jpp.mp.screens.main.search.SearchFragmentViewModel
+import com.jpp.mp.screens.main.userlists.UserMoviesViewModel
 import com.jpp.mpaccount.account.UserAccountViewModel
 import com.jpp.mpaccount.account.lists.UserMovieListViewModel
 import com.jpp.mpaccount.login.LoginViewModel
@@ -117,17 +115,6 @@ abstract class ViewModelModule {
     @ViewModelKey(NavigationHeaderViewModel::class)
     internal abstract fun postNavigationHeaderViewModel(viewModel: NavigationHeaderViewModel): ViewModel
 
-    //TODO JPP remove this
-    @Binds
-    @IntoMap
-    @ViewModelKey(AccountViewModel::class)
-    internal abstract fun getAccountViewModel(viewModel: AccountViewModel): ViewModel
-
-    //TODO JPP remove this
-    @Binds
-    @IntoMap
-    @ViewModelKey(AccountFavoriteMoviesViewModel::class)
-    internal abstract fun getAccountFavoriteMoviesViewModel(viewModel: AccountFavoriteMoviesViewModel): ViewModel
 
     //TODO JPP remove this
     @Binds
