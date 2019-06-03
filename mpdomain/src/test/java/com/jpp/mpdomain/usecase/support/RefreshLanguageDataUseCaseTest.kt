@@ -28,28 +28,28 @@ class RefreshLanguageDataUseCaseTest {
         subject = RefreshLanguageDataUseCase.Impl(languageRepository, supportRepository)
     }
 
-    @Test
-    fun `Should not update if app language is same as device language`() {
-        every { languageRepository.getCurrentDeviceLanguage() } returns SupportedLanguage.English
-        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
-
-        val refresh = subject.shouldRefreshDataInApp()
-
-        assertFalse(refresh)
-        verify(exactly = 0) { languageRepository.updateAppLanguage(any()) }
-        verify(exactly = 0) { supportRepository.clearAllData() }
-    }
-
-    @Test
-    fun `Should update if app language is different than device language`() {
-        every { languageRepository.getCurrentDeviceLanguage() } returns SupportedLanguage.Spanish
-        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
-
-        val refresh = subject.shouldRefreshDataInApp()
-
-        assertTrue(refresh)
-
-        verify { languageRepository.updateAppLanguage(any()) }
-        verify { supportRepository.clearAllData() }
-    }
+//    @Test
+//    fun `Should not update if app language is same as device language`() {
+//        every { languageRepository.getCurrentDeviceLanguage() } returns SupportedLanguage.English
+//        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+//
+//        val refresh = subject.shouldRefreshDataInApp()
+//
+//        assertFalse(refresh)
+//        verify(exactly = 0) { languageRepository.updateAppLanguage(any()) }
+//        verify(exactly = 0) { supportRepository.clearAllData() }
+//    }
+//
+//    @Test
+//    fun `Should update if app language is different than device language`() {
+//        every { languageRepository.getCurrentDeviceLanguage() } returns SupportedLanguage.Spanish
+//        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+//
+//        val refresh = subject.shouldRefreshDataInApp()
+//
+//        assertTrue(refresh)
+//
+//        verify { languageRepository.updateAppLanguage(any()) }
+//        verify { supportRepository.clearAllData() }
+//    }
 }

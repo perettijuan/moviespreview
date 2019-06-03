@@ -33,7 +33,7 @@ class GetPersonUseCaseTest {
     @BeforeEach
     fun setUp() {
         subject = GetPersonUseCase.Impl(personRepository, connectivityRepository, languageRepository)
-        every { languageRepository.getCurrentDeviceLanguage() } returns language
+        every { languageRepository.getCurrentAppLanguage() } returns language
     }
 
 
