@@ -72,15 +72,6 @@
 
     <!-- Account -->
     <string name="account_title">Cuenta</string>
-    <string name="account_approve_reminder">Por favor, permite a Movies Preview usar tu cuenta.</string>
     <string name="account_need_to_login">Debes estar registrado para ejecutar esta acción.</string>
-    <string name="account_favorite_title">Películas favoritas</string>
-    <string name="account_no_favorite_movies">Aún no tienes películas como favoritas.</string>
-    <string name="account_favorite_movies_error">Error al cargar tus favoritas.</string>
-    <!-- End Account -->
-
-    <!-- Favorites -->
-    <string name="favorite_movies_title">Películas Favoritas</string>
-    <!-- End Favorites -->
 
 </resources>

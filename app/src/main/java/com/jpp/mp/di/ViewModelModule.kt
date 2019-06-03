@@ -18,7 +18,6 @@ import com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
 import com.jpp.mp.screens.main.person.PersonViewModel
 import com.jpp.mp.screens.main.search.SearchFragmentViewModel
-import com.jpp.mp.screens.main.userlists.UserMoviesViewModel
 import com.jpp.mpaccount.account.UserAccountViewModel
 import com.jpp.mpaccount.account.lists.UserMovieListViewModel
 import com.jpp.mpaccount.login.LoginViewModel
@@ -114,14 +113,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(NavigationHeaderViewModel::class)
     internal abstract fun postNavigationHeaderViewModel(viewModel: NavigationHeaderViewModel): ViewModel
-
-
-    //TODO JPP remove this
-    @Binds
-    @IntoMap
-    @ViewModelKey(UserMoviesViewModel::class)
-    internal abstract fun getFavoriteMoviesViewModel(viewModel: UserMoviesViewModel): ViewModel
-
 
     /*
      * User account feature injections

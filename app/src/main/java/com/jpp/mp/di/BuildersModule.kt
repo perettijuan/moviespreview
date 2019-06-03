@@ -13,7 +13,6 @@ import com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
 import com.jpp.mp.screens.main.person.PersonFragment
 import com.jpp.mp.screens.main.search.SearchFragment
-import com.jpp.mp.screens.main.userlists.UserMoviesFragment
 import com.jpp.mpaccount.account.UserAccountFragment
 import com.jpp.mpaccount.account.lists.UserMovieListFragment
 import com.jpp.mpaccount.login.LoginFragment
@@ -60,10 +59,6 @@ abstract class BuildersModule {
 
     @ContributesAndroidInjector
     abstract fun bindNavigationHeaderFragment(): NavigationHeaderFragment
-
-    //TODO JPP remove this
-    @ContributesAndroidInjector
-    abstract fun bindFavoriteMoviesFragment(): UserMoviesFragment
 
     @ContributesAndroidInjector
     abstract fun bindLoginFragment(): LoginFragment
