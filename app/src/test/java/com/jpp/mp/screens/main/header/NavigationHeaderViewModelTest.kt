@@ -6,7 +6,6 @@ import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.UserAvatar
 import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
 import com.jpp.mptestutils.InstantTaskExecutorExtension
-import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -46,7 +45,7 @@ class NavigationHeaderViewModelTest {
 
         subject.viewState().observeWith { viewStatePosted.add(it) }
 
-        subject.init()
+        subject.onInit()
 
         // states are posted in correct order
         assertTrue(viewStatePosted[0] is HeaderViewState.ShowLoading)
@@ -69,7 +68,7 @@ class NavigationHeaderViewModelTest {
 
         subject.viewState().observeWith { viewStatePosted.add(it) }
 
-        subject.init()
+        subject.onInit()
 
         // states are posted in correct order
         assertTrue(viewStatePosted[0] is HeaderViewState.ShowLoading)
@@ -85,7 +84,7 @@ class NavigationHeaderViewModelTest {
 
         subject.viewState().observeWith { viewStatePosted.add(it) }
 
-        subject.init()
+        subject.onInit()
 
         // states are posted in correct order
         assertTrue(viewStatePosted[0] is HeaderViewState.ShowLoading)
@@ -100,7 +99,7 @@ class NavigationHeaderViewModelTest {
 
         subject.viewState().observeWith { viewStatePosted.add(it) }
 
-        subject.init()
+        subject.onInit()
 
         // states are posted in correct order
         assertTrue(viewStatePosted[0] is HeaderViewState.ShowLoading)

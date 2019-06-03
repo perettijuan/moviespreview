@@ -22,7 +22,15 @@ import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToWatchlist
 import javax.inject.Inject
 
 /**
- * ViewModel that supports the user account functionality.
+ * [MPScopedViewModel] to handle the state of the [UserAccountFragment]. It is a coroutine-scoped
+ * ViewModel, which indicates that some work will be executed in a background context and synced
+ * to the main context when over.
+ *
+ * It consumes data coming from the lower layers - exposed by interactors -
+ * and maps that data to view logic.
+ *
+ * This VM consumes data from two interactors - [UserAccountInteractor] and [ImagesPathInteractor] -
+ * because it needs to map the URL of the movies to be shown before rendering the data.
  */
 class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                                private val accountInteractor: UserAccountInteractor,

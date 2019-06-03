@@ -44,27 +44,34 @@ class NavigationHeaderFragment : Fragment() {
         }
 
         withViewModel {
-            viewState().observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { viewState ->
-                when (viewState) {
-                    is HeaderViewState.Loading -> renderLoading()
-                    is HeaderViewState.Login -> renderLogin()
-                    is HeaderViewState.WithInfo -> {
-                        navHeaderUserNameTv.text = viewState.accountInfo.userName
-                        navHeaderAccountNameTv.text = viewState.accountInfo.accountName
-                        navHeaderIv.loadImageUrlAsCircular(viewState.accountInfo.avatarUrl)//TODO JPP -> we need to detect default image in Gravatar ==> https://es.gravatar.com/site/implement/images/
-                        renderAccountInfo()
-                    }
-                }
-            })
+            viewStates.observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { viewState -> viewState.actionIfNotHandled { renderViewState(it) } })
+            navEvents.observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
+            onInit()
+        }
+    }
 
-            navEvents().observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { navEvent ->
-                when (navEvent) {
-                    is HeaderNavigationEvent.ToUserAccount -> navigateToLogin()
-                    is HeaderNavigationEvent.ToLogin -> navigateToLogin()
-                }
-            })
-
-            init()
+    /**
+     * Performs the branching to render the proper views given then [viewState].
+     */
+    private fun renderViewState(viewState: HeaderViewState) {
+        when (viewState) {
+            is HeaderViewState.ShowLoading -> renderLoading()
+            is HeaderViewState.ShowLogin -> renderLogin()
+            is HeaderViewState.ShowAccount -> {
+                navHeaderUserNameTv.text = viewState.userName
+                navHeaderAccountNameTv.text = viewState.accountName
+                navHeaderIv.loadImageUrlAsCircular(viewState.avatarUrl)//TODO JPP -> we need to detect default image in Gravatar ==> https://es.gravatar.com/site/implement/images/
+                renderAccountInfo()
+            }
+        }
+    }
+    /**
+     * Reacts to the navigation event provided.
+     */
+    private fun reactToNavEvent(navEvent: HeaderNavigationEvent) {
+        when (navEvent) {
+            is HeaderNavigationEvent.ToUserAccount -> navigateToLogin()
+            is HeaderNavigationEvent.ToLogin -> navigateToLogin()
         }
     }
 
