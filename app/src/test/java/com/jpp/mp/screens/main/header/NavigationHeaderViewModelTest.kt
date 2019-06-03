@@ -49,10 +49,10 @@ class NavigationHeaderViewModelTest {
         subject.init()
 
         // states are posted in correct order
-        assertTrue(viewStatePosted[0] is HeaderViewState.Loading)
-        assertTrue(viewStatePosted[1] is HeaderViewState.WithInfo)
+        assertTrue(viewStatePosted[0] is HeaderViewState.ShowLoading)
+        assertTrue(viewStatePosted[1] is HeaderViewState.ShowAccountInfo)
 
-        val headerAccountInfo = (viewStatePosted[1] as HeaderViewState.WithInfo).accountInfo
+        val headerAccountInfo = (viewStatePosted[1] as HeaderViewState.ShowAccountInfo).accountInfo
 
         // domain object mapped correctly
         assertEquals(expectedImage, headerAccountInfo.avatarUrl)
@@ -72,8 +72,8 @@ class NavigationHeaderViewModelTest {
         subject.init()
 
         // states are posted in correct order
-        assertTrue(viewStatePosted[0] is HeaderViewState.Loading)
-        assertTrue(viewStatePosted[1] is HeaderViewState.Login)
+        assertTrue(viewStatePosted[0] is HeaderViewState.ShowLoading)
+        assertTrue(viewStatePosted[1] is HeaderViewState.ShowLogin)
     }
 
 
@@ -88,8 +88,8 @@ class NavigationHeaderViewModelTest {
         subject.init()
 
         // states are posted in correct order
-        assertTrue(viewStatePosted[0] is HeaderViewState.Loading)
-        assertTrue(viewStatePosted[1] is HeaderViewState.Login)
+        assertTrue(viewStatePosted[0] is HeaderViewState.ShowLoading)
+        assertTrue(viewStatePosted[1] is HeaderViewState.ShowLogin)
     }
 
     @Test
@@ -103,7 +103,7 @@ class NavigationHeaderViewModelTest {
         subject.init()
 
         // states are posted in correct order
-        assertTrue(viewStatePosted[0] is HeaderViewState.Loading)
-        assertTrue(viewStatePosted[1] is HeaderViewState.Login)
+        assertTrue(viewStatePosted[0] is HeaderViewState.ShowLoading)
+        assertTrue(viewStatePosted[1] is HeaderViewState.ShowLogin)
     }
 }
