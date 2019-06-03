@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation.findNavController
 import com.jpp.mp.R
-import com.jpp.mp.ext.*
+import com.jpp.mpdesign.ext.*
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_nav_header.*
 import javax.inject.Inject
@@ -29,7 +29,7 @@ class NavigationHeaderFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return layoutInflater.inflate(R.layout.fragment_nav_header, container, false)
+        return inflater.inflate(R.layout.fragment_nav_header, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -58,13 +58,12 @@ class NavigationHeaderFragment : Fragment() {
             is HeaderViewState.ShowLoading -> renderLoading()
             is HeaderViewState.ShowLogin -> renderLogin()
             is HeaderViewState.ShowAccount -> {
-                navHeaderUserNameTv.text = viewState.userName
-                navHeaderAccountNameTv.text = viewState.accountName
-                navHeaderIv.loadImageUrlAsCircular(viewState.avatarUrl)//TODO JPP -> we need to detect default image in Gravatar ==> https://es.gravatar.com/site/implement/images/
+                updateHeader(viewState)
                 renderAccountInfo()
             }
         }
     }
+
     /**
      * Reacts to the navigation event provided.
      */
@@ -112,5 +111,23 @@ class NavigationHeaderFragment : Fragment() {
         navHeaderUserNameTv.setVisible()
         navHeaderAccountNameTv.setVisible()
         navHeaderAccountDetailsTv.setVisible()
+    }
+
+    private fun updateHeader(newContent: HeaderViewState.ShowAccount) {
+        with(newContent) {
+            navHeaderIv.loadImageUrlAsCircular(avatarUrl,
+                    {
+                        navHeaderNameInitialTv.setVisible()
+                        tintBackgroundFromColor(R.color.accentColor)
+                        navHeaderIv.setInvisible()
+                    },
+                    {
+                        tintBackgroundWithBitmap(it)
+                    }
+            )
+            navHeaderUserNameTv.text = userName
+            navHeaderAccountNameTv.text = accountName
+            navHeaderNameInitialTv.text = defaultLetter.toString()
+        }
     }
 }

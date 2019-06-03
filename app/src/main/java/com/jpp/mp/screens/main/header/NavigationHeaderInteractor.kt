@@ -51,6 +51,11 @@ class NavigationHeaderInteractor @Inject constructor(private val sessionReposito
     }
 
     private fun getUserAccount(session: Session): HeaderDataEvent {
+        /*
+         * //TODO JPP esto esta tirando un error cuando el usuario se loguea.
+         * Podria hacer lo siguiente: que AccountRepository tenga un LiveData,
+         * mapeo eso a un evento del interactor.
+         */
         return accountRepository.getUserAccount(session)?.let {
             Success(data = it)
         } ?: UnknownError

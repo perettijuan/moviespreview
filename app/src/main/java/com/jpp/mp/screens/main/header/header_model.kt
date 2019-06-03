@@ -8,6 +8,7 @@ sealed class HeaderViewState {
     object ShowLogin : HeaderViewState()
     data class ShowAccount(val avatarUrl: String,
                            val userName: String,
+                           val defaultLetter: Char,
                            val accountName: String) : HeaderViewState()
 }
 

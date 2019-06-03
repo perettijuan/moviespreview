@@ -15,6 +15,7 @@ import com.jpp.mp.screens.main.header.HeaderViewState.ShowLoading
 import com.jpp.mp.screens.main.header.HeaderViewState.ShowLogin
 import com.jpp.mp.screens.main.header.HeaderViewState.ShowAccount
 import com.jpp.mp.screens.main.header.NavigationHeaderInteractor.HeaderDataEvent.*
+import com.jpp.mpdomain.Gravatar
 
 /**
  * [MPScopedViewModel] to handle the state of the [NavigationHeaderFragment]. It is a coroutine-scoped
@@ -85,8 +86,9 @@ class NavigationHeaderViewModel @Inject constructor(dispatchers: CoroutineDispat
 
     private fun mapAccountInfo(userAccount: UserAccount): HeaderViewState = with(userAccount) {
         ShowAccount(
-                avatarUrl = avatar.gravatar.hash,
+                avatarUrl = Gravatar.BASE_URL + avatar.gravatar.hash + Gravatar.REDIRECT,
                 userName = if (name.isEmpty()) username else name,
+                defaultLetter = if (name.isEmpty()) username.first() else name.first(),
                 accountName = username
         )
     }
