@@ -73,6 +73,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/nav_header_login"
+        android:background="@drawable/bg_login_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/navHeaderIv"
         app:layout_constraintTop_toBottomOf="@+id/navHeaderIv" />
