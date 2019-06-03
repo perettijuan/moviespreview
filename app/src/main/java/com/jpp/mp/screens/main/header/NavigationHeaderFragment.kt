@@ -56,9 +56,12 @@ class NavigationHeaderFragment : Fragment() {
     private fun renderViewState(viewState: HeaderViewState) {
         when (viewState) {
             is HeaderViewState.ShowLoading -> renderLoading()
-            is HeaderViewState.ShowLogin -> renderLogin()
+            is HeaderViewState.ShowLogin -> {
+                updateLoginState()
+                renderLogin()
+            }
             is HeaderViewState.ShowAccount -> {
-                updateHeader(viewState)
+                updateWithAccountData(viewState)
                 renderAccountInfo()
             }
         }
@@ -113,7 +116,21 @@ class NavigationHeaderFragment : Fragment() {
         navHeaderAccountDetailsTv.setVisible()
     }
 
-    private fun updateHeader(newContent: HeaderViewState.ShowAccount) {
+    private fun updateLoginState() {
+        navHeaderIv.apply {
+            setImageResource(R.drawable.ic_person_black)
+            setVisible()
+        }
+        navHeaderNameInitialTv.apply {
+            text = ""
+            setInvisible()
+        }
+        navHeaderUserNameTv.text = ""
+        navHeaderAccountNameTv.text = ""
+        view?.setBackgroundResource(R.drawable.bg_nav_header)
+    }
+
+    private fun updateWithAccountData(newContent: HeaderViewState.ShowAccount) {
         with(newContent) {
             navHeaderIv.loadImageUrlAsCircular(avatarUrl,
                     {
