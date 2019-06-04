@@ -15,7 +15,6 @@ import com.jpp.mp.R
 import com.jpp.mp.ext.*
 import com.jpp.mp.screens.main.RefreshAppViewModel
 import com.jpp.mp.screens.main.details.MovieDetailsFragmentArgs.fromBundle
-import com.jpp.mp.screens.main.details.MovieDetailsFragmentDirections.actionMovieDetailsFragmentToAccountFragment
 import com.jpp.mp.screens.main.details.MovieDetailsFragmentDirections.actionMovieDetailsFragmentToCreditsFragment
 import com.jpp.mpdesign.ext.getStringFromResources
 import dagger.android.support.AndroidSupportInjection
@@ -132,8 +131,8 @@ class MovieDetailsFragment : Fragment() {
                         .navigate(actionMovieDetailsFragmentToCreditsFragment(navEvent.movieId.toString(), navEvent.movieTitle))
             }
             is MovieDetailsNavigationEvent.ToLogin -> {
-                findNavController()
-                        .navigate(actionMovieDetailsFragmentToAccountFragment())
+                //TODO JPP implement this
+                TODO()
             }
         }
     }

@@ -3,20 +3,16 @@ package com.jpp.mp.di
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mpdomain.repository.*
 import com.jpp.mpdomain.usecase.about.GetAboutNavigationUrlUseCase
-import com.jpp.mpdomain.usecase.session.CreateSessionUseCase
-import com.jpp.mpdomain.usecase.session.GetAuthenticationDataUseCase
-import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
-import com.jpp.mpdomain.usecase.account.GetFavoriteMoviesUseCase
+import com.jpp.mpdomain.usecase.account.GetMovieAccountStateUseCase
+import com.jpp.mpdomain.usecase.account.MarkMovieAsFavoriteUseCase
 import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase
 import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
 import com.jpp.mpdomain.usecase.credits.GetCreditsUseCase
-import com.jpp.mpdomain.usecase.account.GetMovieAccountStateUseCase
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
 import com.jpp.mpdomain.usecase.licenses.GetAppLicensesUseCase
 import com.jpp.mpdomain.usecase.licenses.GetLicenseUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
-import com.jpp.mpdomain.usecase.account.MarkMovieAsFavoriteUseCase
 import com.jpp.mpdomain.usecase.person.GetPersonUseCase
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
@@ -112,29 +108,6 @@ class DomainLayerModule {
     fun providesRefreshDataUseCase(languageRepository: LanguageRepository,
                                    supportRepository: SupportRepository)
             : RefreshLanguageDataUseCase = RefreshLanguageDataUseCase.Impl(languageRepository, supportRepository)
-
-    @Provides
-    fun providesGetAccountInfoUseCase(sessionRepository: SessionRepository,
-                                      accountRepository: AccountRepository,
-                                      connectivityRepository: ConnectivityRepository)
-            : GetAccountInfoUseCase = GetAccountInfoUseCase.Impl(sessionRepository, accountRepository, connectivityRepository)
-
-    @Provides
-    fun providesGetAccessTokenUseCase(sessionRepository: SessionRepository,
-                                      connectivityRepository: ConnectivityRepository)
-            : GetAuthenticationDataUseCase = GetAuthenticationDataUseCase.Impl(sessionRepository, connectivityRepository)
-
-    @Provides
-    fun providesCreateSessionUseCase(sessionRepository: SessionRepository,
-                                     connectivityRepository: ConnectivityRepository)
-            : CreateSessionUseCase = CreateSessionUseCase.Impl(sessionRepository, connectivityRepository)
-
-    @Provides
-    fun providesGetFavoriteMoviesUseCase(sessionRepository: SessionRepository,
-                                         accountRepository: AccountRepository,
-                                         languageRepository: LanguageRepository,
-                                         connectivityRepository: ConnectivityRepository)
-            : GetFavoriteMoviesUseCase = GetFavoriteMoviesUseCase.Impl(sessionRepository, accountRepository, languageRepository, connectivityRepository)
 
     @Provides
     fun providesRefreshAppDataUseCase(accountRepository: AccountRepository, languageRepository: LanguageRepository)

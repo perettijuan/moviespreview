@@ -2,10 +2,8 @@ package com.jpp.mp.di
 
 import com.jpp.mp.screens.main.MainActivity
 import com.jpp.mp.screens.main.about.AboutFragment
-import com.jpp.mp.screens.main.account.AccountFragment
 import com.jpp.mp.screens.main.credits.CreditsFragment
 import com.jpp.mp.screens.main.details.MovieDetailsFragment
-import com.jpp.mp.screens.main.userlists.UserMoviesFragment
 import com.jpp.mp.screens.main.header.NavigationHeaderFragment
 import com.jpp.mp.screens.main.licenses.LicensesFragment
 import com.jpp.mp.screens.main.licenses.content.LicenseContentFragment
@@ -61,14 +59,6 @@ abstract class BuildersModule {
 
     @ContributesAndroidInjector
     abstract fun bindNavigationHeaderFragment(): NavigationHeaderFragment
-
-    //TODO JPP remove this
-    @ContributesAndroidInjector
-    abstract fun bindAccountFragment(): AccountFragment
-
-    //TODO JPP remove this
-    @ContributesAndroidInjector
-    abstract fun bindFavoriteMoviesFragment(): UserMoviesFragment
 
     @ContributesAndroidInjector
     abstract fun bindLoginFragment(): LoginFragment
