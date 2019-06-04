@@ -1,14 +1,13 @@
 package com.jpp.mp.screens.main.search
 
-import androidx.lifecycle.Observer
-import com.jpp.mp.utiltest.CurrentThreadExecutorService
-import com.jpp.mp.InstantTaskExecutorExtension
-import com.jpp.mp.resumedLifecycleOwner
 import com.jpp.mpdomain.SearchPage
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCaseResult
+import com.jpp.mptestutils.CurrentThreadExecutorService
+import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -51,9 +50,7 @@ class SearchFragmentViewModelTest {
         every { searchUseCase.search(any(), 1) } returns SearchUseCaseResult.Success(createSearchPage(1, expectedPageResultsCount))
         every { configSearchResultUseCase.configure(any(), any()) } answers { arg(1) }
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            searchViewStates.add(it)
-        })
+        subject.viewState().observeWith { searchViewStates.add(it) }
 
         subject.search(searchText)
 
@@ -71,9 +68,7 @@ class SearchFragmentViewModelTest {
 
         every { searchUseCase.search(any(), 1) } returns SearchUseCaseResult.ErrorNoConnectivity
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            searchViewStates.add(it)
-        })
+        subject.viewState().observeWith { searchViewStates.add(it) }
 
         subject.search(searchText)
 
@@ -88,9 +83,7 @@ class SearchFragmentViewModelTest {
 
         every { searchUseCase.search(any(), 1) } returns SearchUseCaseResult.ErrorUnknown
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            searchViewStates.add(it)
-        })
+        subject.viewState().observeWith { searchViewStates.add(it) }
 
         subject.search(searchText)
 
@@ -108,9 +101,7 @@ class SearchFragmentViewModelTest {
         every { searchUseCase.search(any(), 1) } returns SearchUseCaseResult.Success(createSearchPage(1, 10))
         every { configSearchResultUseCase.configure(imageSize, capture(searchResultCapture)) } answers { searchResultCapture.captured }
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            searchViewStates.add(it)
-        })
+        subject.viewState().observeWith { searchViewStates.add(it) }
 
         subject.search(searchText)
 
@@ -133,14 +124,13 @@ class SearchFragmentViewModelTest {
             every { icon } returns mockk<SearchResultTypeIcon.MovieType>()
         }
 
-        subject.navEvents().observe(resumedLifecycleOwner(), Observer {
+        subject.navEvents().observeWith {
             assertTrue(it is SearchViewNavigationEvent.ToMovieDetails)
             with(it as SearchViewNavigationEvent.ToMovieDetails) {
                 assertEquals("22.0", movieId)
                 assertEquals("aPath", movieImageUrl)
                 assertEquals("aName", movieTitle)
-            }
-        })
+            } }
 
         subject.onSearchItemSelected(searchResultItem)
     }

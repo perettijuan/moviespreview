@@ -1,10 +1,10 @@
 package com.jpp.mp.di
 
+import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mpdomain.repository.*
 import com.jpp.mpdomain.usecase.about.GetAboutNavigationUrlUseCase
-import com.jpp.mpdomain.usecase.session.CreateSessionUseCase
-import com.jpp.mpdomain.usecase.session.GetAuthenticationDataUseCase
-import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
+import com.jpp.mpdomain.usecase.account.GetMovieAccountStateUseCase
+import com.jpp.mpdomain.usecase.account.MarkMovieAsFavoriteUseCase
 import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase
 import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
 import com.jpp.mpdomain.usecase.credits.GetCreditsUseCase
@@ -16,7 +16,8 @@ import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
 import com.jpp.mpdomain.usecase.person.GetPersonUseCase
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
-import com.jpp.mpdomain.usecase.support.RefreshDataUseCase
+import com.jpp.mpdomain.usecase.support.RefreshAppDataUseCase
+import com.jpp.mpdomain.usecase.support.RefreshLanguageDataUseCase
 import dagger.Module
 import dagger.Provides
 import java.util.concurrent.Executor
@@ -61,6 +62,18 @@ class DomainLayerModule {
             : GetMovieDetailsUseCase = GetMovieDetailsUseCase.Impl(moviesRepository, connectivityRepository, languageRepository)
 
     @Provides
+    fun providesGetMovieAccountStateUseCase(sessionRepository: SessionRepository,
+                                            accountRepository: AccountRepository,
+                                            connectivityRepository: ConnectivityRepository)
+            : GetMovieAccountStateUseCase = GetMovieAccountStateUseCase.Impl(sessionRepository, accountRepository, connectivityRepository)
+
+    @Provides
+    fun providesMarkMovieAsFavoriteUseCase(sessionRepository: SessionRepository,
+                                           accountRepository: AccountRepository,
+                                           connectivityRepository: ConnectivityRepository)
+            : MarkMovieAsFavoriteUseCase = MarkMovieAsFavoriteUseCase.Impl(sessionRepository, accountRepository, connectivityRepository)
+
+    @Provides
     fun providesGetPersonUseCase(personRepository: PersonRepository,
                                  connectivityRepository: ConnectivityRepository,
                                  languageRepository: LanguageRepository)
@@ -94,21 +107,15 @@ class DomainLayerModule {
     @Provides
     fun providesRefreshDataUseCase(languageRepository: LanguageRepository,
                                    supportRepository: SupportRepository)
-            : RefreshDataUseCase = RefreshDataUseCase.Impl(languageRepository, supportRepository)
+            : RefreshLanguageDataUseCase = RefreshLanguageDataUseCase.Impl(languageRepository, supportRepository)
 
     @Provides
-    fun providesGetAccountInfoUseCase(sessionRepository: SessionRepository,
-                                      accountRepository: AccountRepository,
-                                      connectivityRepository: ConnectivityRepository)
-            : GetAccountInfoUseCase = GetAccountInfoUseCase.Impl(sessionRepository, accountRepository, connectivityRepository)
+    fun providesRefreshAppDataUseCase(accountRepository: AccountRepository, languageRepository: LanguageRepository)
+            : RefreshAppDataUseCase = RefreshAppDataUseCase.Impl(accountRepository, languageRepository)
+
 
     @Provides
-    fun providesGetAccessTokenUseCase(sessionRepository: SessionRepository,
-                                      connectivityRepository: ConnectivityRepository)
-            : GetAuthenticationDataUseCase = GetAuthenticationDataUseCase.Impl(sessionRepository, connectivityRepository)
+    fun providesImagesPathInteractor(configurationRepository: ConfigurationRepository)
+            : ImagesPathInteractor = ImagesPathInteractor.Impl(configurationRepository)
 
-    @Provides
-    fun providesCreateSessionUseCase(sessionRepository: SessionRepository,
-                                     connectivityRepository: ConnectivityRepository)
-            : CreateSessionUseCase = CreateSessionUseCase.Impl(sessionRepository, connectivityRepository)
 }

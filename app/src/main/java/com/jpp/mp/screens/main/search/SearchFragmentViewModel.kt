@@ -7,7 +7,7 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mp.paging.MPPagingDataSourceFactory
-import com.jpp.mp.screens.SingleLiveEvent
+import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCaseResult

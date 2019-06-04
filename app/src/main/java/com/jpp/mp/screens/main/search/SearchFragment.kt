@@ -71,7 +71,7 @@ class SearchFragment : Fragment() {
 
         withViewModel {
             /*
-             * Loading this images in such a big configuration is only
+             * ShowLoading this images in such a big configuration is only
              * to favor the transition to details
              */
             init(getScreenSizeInPixels().x)
@@ -120,9 +120,7 @@ class SearchFragment : Fragment() {
                 searchErrorView.asUnknownError { withViewModel { retryLastSearch() } }
             }
             is SearchViewState.ErrorUnknownWithItems -> {
-                snackBar(fragmentSearchRoot, R.string.error_unexpected_error_message, R.string.error_retry) {
-                    withViewModel { retryLastSearch() }
-                }
+                snackBarErrorUnknown(fragmentSearchRoot) { withViewModel { retryLastSearch() } }
                 renderDoneSearching()
             }
             is SearchViewState.ErrorNoConnectivity -> {
@@ -130,9 +128,7 @@ class SearchFragment : Fragment() {
                 searchErrorView.asNoConnectivityError { withViewModel { retryLastSearch() } }
             }
             is SearchViewState.ErrorNoConnectivityWithItems -> {
-                snackBar(fragmentSearchRoot, R.string.error_no_network_connection_message, R.string.error_retry) {
-                    withViewModel { retryLastSearch() }
-                }
+                snackBarErrorNoConnectivity(fragmentSearchRoot) { withViewModel { retryLastSearch() } }
                 renderDoneSearching()
             }
             is SearchViewState.EmptySearch -> {

@@ -3,11 +3,10 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 28
-
+    compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 28
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
         buildConfigField 'String', 'API_KEY', '"eddf6980a6d7dadd72386f55f94ab571"'
@@ -24,6 +23,10 @@ android {
     kotlinOptions{
         jvmTarget = '1.8'
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -31,7 +34,7 @@ dependencies {
     implementation deps.kotlin.stdlib
 
     // Common module -> DO NOT leak dependency
-    implementation project(path: ':common')
+    implementation project(path: ':mpcommon')
     implementation project(path: ':mpdomain')
 
     // Retrofit
@@ -41,6 +44,10 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
+
+    // ViewModel and LiveData
+    implementation deps.androidx.lifecycle.extensions
+    kapt deps.androidx.lifecycle.compiler
 
     // Room persistence
     implementation deps.androidx.room.runtime
@@ -53,6 +60,9 @@ dependencies {
     testRuntimeOnly deps.test.junit5.jupiter.engine         // <-- allows running JUnit5 tests
     testImplementation 'org.hamcrest:hamcrest-library:1.3'
     testImplementation deps.test.mockk.unit
+
+    // Include testing utils
+    testImplementation project(path: ':mptestutils')
 }
 
 

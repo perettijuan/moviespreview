@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation.findNavController
 import com.jpp.mp.R
-import com.jpp.mp.ext.*
+import com.jpp.mpdesign.ext.*
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_nav_header.*
 import javax.inject.Inject
@@ -29,7 +29,7 @@ class NavigationHeaderFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return layoutInflater.inflate(R.layout.fragment_nav_header, container, false)
+        return inflater.inflate(R.layout.fragment_nav_header, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -44,27 +44,36 @@ class NavigationHeaderFragment : Fragment() {
         }
 
         withViewModel {
-            viewState().observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { viewState ->
-                when (viewState) {
-                    is HeaderViewState.Loading -> renderLoading()
-                    is HeaderViewState.Login -> renderLogin()
-                    is HeaderViewState.WithInfo -> {
-                        navHeaderUserNameTv.text = viewState.accountInfo.userName
-                        navHeaderAccountNameTv.text = viewState.accountInfo.accountName
-                        navHeaderIv.loadImageUrlAsCircular(viewState.accountInfo.avatarUrl)//TODO JPP -> we need to detect default image in Gravatar ==> https://es.gravatar.com/site/implement/images/
-                        renderAccountInfo()
-                    }
-                }
-            })
+            viewStates.observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { viewState -> viewState.actionIfNotHandled { renderViewState(it) } })
+            navEvents.observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
+            onInit()
+        }
+    }
 
-            navEvents().observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { navEvent ->
-                when (navEvent) {
-                    is HeaderNavigationEvent.ToUserAccount -> navigateToLogin()
-                    is HeaderNavigationEvent.ToLogin -> navigateToLogin()
-                }
-            })
+    /**
+     * Performs the branching to render the proper views given then [viewState].
+     */
+    private fun renderViewState(viewState: HeaderViewState) {
+        when (viewState) {
+            is HeaderViewState.ShowLoading -> renderLoading()
+            is HeaderViewState.ShowLogin -> {
+                updateLoginState()
+                renderLogin()
+            }
+            is HeaderViewState.ShowAccount -> {
+                updateWithAccountData(viewState)
+                renderAccountInfo()
+            }
+        }
+    }
 
-            init()
+    /**
+     * Reacts to the navigation event provided.
+     */
+    private fun reactToNavEvent(navEvent: HeaderNavigationEvent) {
+        when (navEvent) {
+            is HeaderNavigationEvent.ToUserAccount -> navigateToLogin()
+            is HeaderNavigationEvent.ToLogin -> navigateToLogin()
         }
     }
 
@@ -76,7 +85,7 @@ class NavigationHeaderFragment : Fragment() {
 
     private fun navigateToLogin() {
         activity?.let {
-            findNavController(it, R.id.mainNavHostFragment).navigate(R.id.accountFragment)
+            findNavController(it, R.id.mainNavHostFragment).navigate(R.id.user_account_nav)
         }
     }
 
@@ -105,5 +114,37 @@ class NavigationHeaderFragment : Fragment() {
         navHeaderUserNameTv.setVisible()
         navHeaderAccountNameTv.setVisible()
         navHeaderAccountDetailsTv.setVisible()
+    }
+
+    private fun updateLoginState() {
+        navHeaderIv.apply {
+            setImageResource(R.drawable.ic_person_black)
+            setVisible()
+        }
+        navHeaderNameInitialTv.apply {
+            text = ""
+            setInvisible()
+        }
+        navHeaderUserNameTv.text = ""
+        navHeaderAccountNameTv.text = ""
+        view?.setBackgroundResource(R.drawable.bg_nav_header)
+    }
+
+    private fun updateWithAccountData(newContent: HeaderViewState.ShowAccount) {
+        with(newContent) {
+            navHeaderIv.loadImageUrlAsCircular(avatarUrl,
+                    {
+                        navHeaderNameInitialTv.setVisible()
+                        tintBackgroundFromColor(R.color.accentColor)
+                        navHeaderIv.setInvisible()
+                    },
+                    {
+                        tintBackgroundWithBitmap(it)
+                    }
+            )
+            navHeaderUserNameTv.text = userName
+            navHeaderAccountNameTv.text = accountName
+            navHeaderNameInitialTv.text = defaultLetter.toString()
+        }
     }
 }

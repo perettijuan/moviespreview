@@ -1,11 +1,10 @@
 package com.jpp.mp.screens.main.about
 
-import androidx.lifecycle.Observer
-import com.jpp.mp.InstantTaskExecutorExtension
-import com.jpp.mp.resumedLifecycleOwner
 import com.jpp.mpdomain.usecase.about.AboutNavigationType
 import com.jpp.mpdomain.usecase.about.GetAboutNavigationUrlUseCase
 import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase
+import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
@@ -49,9 +48,7 @@ class AboutViewModelTest {
 
         every { appVersionUseCase.getCurrentAppVersion() } returns "appVersion"
 
-        subject.viewState().observe(resumedLifecycleOwner(), Observer {
-            postedAboutViewState = it
-        })
+        subject.viewState().observeWith { postedAboutViewState = it }
 
         subject.init()
 
@@ -65,9 +62,7 @@ class AboutViewModelTest {
     fun `Should navigate when item selected`(param: AboutViewModelTestParam) {
         var postedEvents: AboutNavEvent? = null
 
-        subject.navEvents().observe(resumedLifecycleOwner(), Observer {
-            postedEvents = it
-        })
+        subject.navEvents().observeWith { postedEvents = it }
 
         subject.onUserSelectedAboutItem(param.selected)
 

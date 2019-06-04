@@ -14,7 +14,10 @@ buildscript {
             'dagger' : '2.16',
             'room' : '2.0.0',
             'mockk' : '1.8.13.kotlin13',
-            'canary' : '1.6.3'
+            'canary' : '1.6.3',
+            'lifecycle': '2.0.0',
+            'appCompat': '1.0.2',
+            'coroutines' : '1.1.1'
     ]
 
     ext.deps = [
@@ -33,7 +36,12 @@ buildscript {
                     'room': [
                             'runtime' : "androidx.room:room-runtime:${versions.room}",
                             'compiler' : "androidx.room:room-compiler:${versions.room}"
-                    ]
+                    ],
+                    'lifecycle': [
+                            'extensions': "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}",
+                            'compiler' : "androidx.lifecycle:lifecycle-compiler:${versions.lifecycle}"
+                    ],
+                    'appcompat' : "androidx.appcompat:appcompat:${versions.appCompat}"
             ],
             'kotlin'  : [
                     'plugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
@@ -44,6 +52,10 @@ buildscript {
                     'android' : "com.google.dagger:dagger-android-support:${versions.dagger}",
                     'compiler' : "com.google.dagger:dagger-compiler:${versions.dagger}",
                     'processor' : "com.google.dagger:dagger-android-processor:${versions.dagger}"
+            ],
+            'coroutines': [
+                    'core' : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}",
+                    'android' : "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
             ],
             'test'    : [
                     'junit5'  : [
@@ -82,12 +94,18 @@ buildscript {
 }
 
 
+project.ext {
+    compileSdkVersion = 28
+    minSdkVersion = 18
+    targetSdkVersion = 28
+}
+
 /**
  * Returns sources from common project (only) that are shared between different
  * modules of the application to execute test code.
  */
 def getCommonTestResources() {
-    return fileFromProjectRoot(':common', 'src', 'test', 'java').absolutePath
+    return fileFromProjectRoot(':mpcommon', 'src', 'test', 'java').absolutePath
 }
 
 /**
@@ -95,7 +113,7 @@ def getCommonTestResources() {
  * modules of the application to execute test code.
  */
 def getCommonJunit5TestResources() {
-    return fileFromProjectRoot(':common', 'src', 'test', 'junit5').absolutePath
+    return fileFromProjectRoot(':mpcommon', 'src', 'test', 'junit5').absolutePath
 }
 
 /**

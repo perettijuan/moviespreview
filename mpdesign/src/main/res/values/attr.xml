@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Custom attributes declared to be able to implement Dynamic Themes
+         ref = https://medium.com/mindorks/mastering-android-themes-chapter-3-26a5b7773b6b -->
+    <attr name="mpActionBarHeightExpanded" format="reference" />
+    <attr name="mpActionBarHeightNormal" format="reference" />
+    <attr name="mpMovieItemHeaderImageWidth" format="reference" />
+    <attr name="mpMovieItemHeaderImageHeight" format="reference" />
+    <attr name="mpMovieItemImageHeight" format="reference" />
+    <attr name="mpMovieItemBottomIconSize" format="reference" />
+    <attr name="mpMovieItemMaxSize" format="reference" />
+    <attr name="mpDetailsVerticalSpacing" format="reference" />
+    <attr name="mpDetailsContentPadding" format="reference" />
+    <attr name="mpSearchImageSize" format="reference" />
+    <attr name="mpSearchItemImageSize" format="reference" />
+    <attr name="mpSearchItemTitlePadding" format="reference" />
+    <attr name="mpSearchItemChevronPadding" format="reference" />
+    <attr name="mpSearchItemTypeImageSize" format="reference" />
+    <attr name="mpSearchItemGeneralPadding" format="reference" />
+    <attr name="mpCreditItemImageSize" format="reference"/>
+    <attr name="mpCreditItemPadding" format="reference"/>
+    <attr name="mpAboutIconSize" format="reference"/>
+    <attr name="mpAboutIconMarginTop" format="reference"/>
+    <attr name="mpAboutItemIconSize" format="reference"/>
+    <attr name="mpAboutItemVerticalSpacing" format="reference"/>
+    <attr name="mpNavHeaderIconSize" format="reference"/>
+    <attr name="mpNavHeaderPadding" format="reference"/>
+    <attr name="mpAccountAvatarSize" format="reference"/>
+    <attr name="mpActionButtonSize" format="reference"/>
+    <attr name="mpAccountMovieItemWidth" format="reference"/>
+    <attr name="mpAccountMovieItemHeight" format="reference"/>
+    <attr name="mpAccountMovieListHeight" format="reference"/>
+    <attr name="mpUserMovieItemMaxSize" format="reference" />
+    <attr name="mpUserMovieItemHeaderImageWidth" format="reference" />
+    <attr name="mpUserMovieItemHeaderImageHeight" format="reference" />
+    <attr name="mpUserMovieItemImageHeight" format="reference" />
+    <attr name="mpUserAccountContentPadding" format="reference" />
+
+
+    <declare-styleable name="MPTitleValueRow">
+        <attr name="titleText" format="reference"/>
+        <attr name="valueText" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="MPItemSelectionView">
+        <attr name="itemText" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="MPActionButton">
+        <attr name="fillIcon" format="reference"/>
+        <attr name="emptyIcon" format="reference"/>
+    </declare-styleable>
+
+</resources>

@@ -21,6 +21,52 @@ interface MoviesDb {
     fun saveMoviePageForSection(moviePage: MoviePage, section: MovieSection)
 
     /**
+     * @return a [MoviePage] from the favorite list.
+     */
+    fun getFavoriteMovies(page: Int): MoviePage?
+
+    /**
+     * Stores the provided [MoviePage] as a new page of favorite movies.
+     */
+    fun saveFavoriteMoviesPage(page: Int, moviePage: MoviePage)
+
+    /**
+     * Flushes out any favorite [MoviePage] stored.
+     */
+    fun flushFavoriteMoviePages()
+
+    /**
+     * @return a [MoviePage] from the rated list.
+     */
+    fun getRatedMovies(page: Int): MoviePage?
+
+    /**
+     * Stores the provided [MoviePage] as a new page of rated movies.
+     */
+    fun saveRatedMoviesPage(page: Int, moviePage: MoviePage)
+
+    /**
+     * Flushes out any rated [MoviePage] stored.
+     */
+    fun flushRatedMoviePages()
+
+    /**
+     * @return a [MoviePage] from the watchlist.
+     */
+    fun getWatchlistMoviePage(page: Int): MoviePage?
+
+    /**
+     * Stores the provided [MoviePage] as a new page of watchlist.
+     */
+    fun saveWatchlistMoviePage(page: Int, moviePage: MoviePage)
+
+    /**
+     * Flushes out any [MoviePage] in the watchlist stored locally.
+     */
+    fun flushWatchlistMoviePages()
+
+
+    /**
      * @return a [MovieDetail] for the provided [movieId] if any is found, null
      * any other case.
      */

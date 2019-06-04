@@ -6,8 +6,8 @@ import com.jpp.mp.screens.main.MainActivityViewModel
 import com.jpp.mp.screens.main.RefreshAppViewModel
 import com.jpp.mp.screens.main.SearchViewViewModel
 import com.jpp.mp.screens.main.about.AboutViewModel
-import com.jpp.mp.screens.main.account.AccountViewModel
 import com.jpp.mp.screens.main.credits.CreditsViewModel
+import com.jpp.mp.screens.main.details.MovieActionsViewModel
 import com.jpp.mp.screens.main.details.MovieDetailsViewModel
 import com.jpp.mp.screens.main.header.NavigationHeaderViewModel
 import com.jpp.mp.screens.main.licenses.LicensesViewModel
@@ -18,6 +18,9 @@ import com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
 import com.jpp.mp.screens.main.person.PersonViewModel
 import com.jpp.mp.screens.main.search.SearchFragmentViewModel
+import com.jpp.mpaccount.account.UserAccountViewModel
+import com.jpp.mpaccount.account.lists.UserMovieListViewModel
+import com.jpp.mpaccount.login.LoginViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -55,6 +58,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MovieDetailsViewModel::class)
     internal abstract fun postMovieDetailsViewModel(viewModel: MovieDetailsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MovieActionsViewModel::class)
+    internal abstract fun postMovieActionsViewModel(viewModel: MovieActionsViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -106,8 +114,21 @@ abstract class ViewModelModule {
     @ViewModelKey(NavigationHeaderViewModel::class)
     internal abstract fun postNavigationHeaderViewModel(viewModel: NavigationHeaderViewModel): ViewModel
 
+    /*
+     * User account feature injections
+     */
     @Binds
     @IntoMap
-    @ViewModelKey(AccountViewModel::class)
-    internal abstract fun getAccountViewModel(viewModel: AccountViewModel): ViewModel
+    @ViewModelKey(LoginViewModel::class)
+    internal abstract fun getLoginViewModel(viewModel: LoginViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(UserAccountViewModel::class)
+    internal abstract fun getUserAccountViewModel(viewModel: UserAccountViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(UserMovieListViewModel::class)
+    internal abstract fun getUserMovieListViewModel(viewModel: UserMovieListViewModel): ViewModel
 }

@@ -26,11 +26,11 @@ repositories {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "com.jpp.mp"
-        minSdkVersion 18
-        targetSdkVersion 28
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         vectorDrawables.useSupportLibrary = true
         versionCode 3
         versionName "1.5"
@@ -47,48 +47,26 @@ android {
     kotlinOptions{
         jvmTarget = '1.8'
     }
-
-    sourceSets {
-        /*
-         * Include test sources that are located in the common project
-         */
-        test {
-            java.srcDirs += getCommonTestResources()
-            java.srcDirs += getCommonJunit5TestResources()
-        }
-
-        androidTest {
-            java.srcDirs += getCommonTestResources()
-        }
-    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     // Kotlin standard libs
     implementation deps.kotlin.stdlib
+    // appCompat libraries
+    implementation deps.androidx.appcompat
 
     // Kotlin coroutines
-    def kotlinCoroutines = '1.1.1'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
-
-    // appCompat libraries
-    def appCompatVersion = "1.0.2"
-    implementation "androidx.appcompat:appcompat:$appCompatVersion"
-
-    // ConstraintLayout
-    def constraintLayoutVersion = '2.0.0-alpha3'
-    implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
-    implementation "androidx.constraintlayout:constraintlayout-solver:$constraintLayoutVersion"
+    implementation deps.coroutines.core
+    implementation deps.coroutines.android
 
     // Navigation Components
     implementation deps.android.arch.navigation.fragment
     implementation deps.android.arch.navigation.ui
 
     // ViewModel and LiveData
-    implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
-    kapt "androidx.lifecycle:lifecycle-compiler:2.0.0"
+    implementation deps.androidx.lifecycle.extensions
+    kapt deps.androidx.lifecycle.compiler
 
     // Paging library
     implementation deps.androidx.paging
@@ -120,14 +98,21 @@ dependencies {
     releaseImplementation deps.canary.release
 
 
+    implementation project(path: ':mpdesign')
     implementation project(path: ':mpdomain')
     implementation project(path: ':mpdata')
-    implementation project(path: ':common')
+    implementation project(path: ':mpcommon')
+
+    // features
+    implementation project(path: ':features:mpaccount')
 
     testImplementation deps.test.junit5.jupiter.api         // <-- allows running JUnit5 tests
     testImplementation deps.test.junit5.jupiter.params      // <-- allows running JUnit5 parameterized tests
     testRuntimeOnly deps.test.junit5.jupiter.engine         // <-- allows running JUnit5 tests
     testImplementation deps.test.mockk.unit
+
+    // Include testing utils
+    testImplementation project(path: ':mptestutils')
 
     // Core library
     def androidTestLibVersion = '1.1.0'
@@ -145,6 +130,9 @@ dependencies {
     }
     androidTestImplementation 'com.azimolabs.conditionwatcher:conditionwatcher:0.2'
     androidTestImplementation 'junit:junit:4.12'
+
+    // Include testing utils
+    androidTestImplementation project(path: ':mptestutils')
 }
 
 

@@ -1,7 +1,7 @@
 package com.jpp.mpdata.preferences
 
 import android.content.Context
-import com.jpp.mpdata.repository.session.SessionDb
+import com.jpp.mpdata.datasources.session.SessionDb
 import com.jpp.mpdomain.Session
 
 /**
@@ -23,6 +23,13 @@ class SessionDbImpl(private val context: Context) : SessionDb {
     override fun updateSession(session: Session) {
         with(preferences.edit()) {
             putString(KEY_SESSION_STORED, session.session_id)
+            apply()
+        }
+    }
+
+    override fun flushData() {
+        with(preferences.edit()) {
+            putString(KEY_SESSION_STORED, null)
             apply()
         }
     }

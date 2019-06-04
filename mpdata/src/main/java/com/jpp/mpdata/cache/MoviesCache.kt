@@ -1,5 +1,6 @@
 package com.jpp.mpdata.cache
 
+import android.util.SparseArray
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.MovieDAO
 import com.jpp.mpdata.cache.room.MovieDetailDAO
@@ -17,6 +18,9 @@ class MoviesCache(private val roomDatabase: MPRoomDataBase,
                   private val adapter: RoomModelAdapter,
                   private val timestampHelper: CacheTimestampHelper) : MoviesDb {
 
+    private val favoriteMovies = SparseArray<MoviePage>()
+    private val ratedMovies = SparseArray<MoviePage>()
+    private val watchlist = SparseArray<MoviePage>()
 
     override fun getMoviePageForSection(page: Int, section: MovieSection): MoviePage? {
         return withMovieDao {
@@ -55,6 +59,36 @@ class MoviesCache(private val roomDatabase: MPRoomDataBase,
             insertMovieDetail(transformWithAdapter { adaptDataMovieDetailToDBMovieDetail(movieDetail, movieDetailsRefreshTime()) })
             insertMovieGenres(movieDetail.genres.map { transformWithAdapter { adaptDataMovieGenreToDBMovieGenre(it, movieDetail.id) } })
         }
+    }
+
+    override fun getFavoriteMovies(page: Int): MoviePage? = favoriteMovies[page]
+
+    override fun saveFavoriteMoviesPage(page: Int, moviePage: MoviePage) {
+        favoriteMovies.put(page, moviePage)
+    }
+
+    override fun getRatedMovies(page: Int): MoviePage? = ratedMovies[page]
+
+    override fun saveRatedMoviesPage(page: Int, moviePage: MoviePage) {
+        ratedMovies.put(page, moviePage)
+    }
+
+    override fun getWatchlistMoviePage(page: Int): MoviePage? = watchlist[page]
+
+    override fun saveWatchlistMoviePage(page: Int, moviePage: MoviePage) {
+        watchlist.put(page, moviePage)
+    }
+
+    override fun flushFavoriteMoviePages() {
+        favoriteMovies.clear()
+    }
+
+    override fun flushRatedMoviePages() {
+        ratedMovies.clear()
+    }
+
+    override fun flushWatchlistMoviePages() {
+        watchlist.clear()
     }
 
     private fun <T> transformWithAdapter(action: RoomModelAdapter.() -> T): T = with(adapter) { action.invoke(this) }

@@ -1,0 +1,20 @@
+<resources>
+    <string name="user_account_approve_reminder">Please approve Movies Preview to use your data.</string>
+    <string name="user_account_logout">Logout</string>
+
+    <!-- Favorite movies -->
+    <string name="user_account_favorite_title">Favorite Movies</string>
+    <string name="user_account_no_favorite_movies">You don\'t have favorite movies yet. Add movies to your favorite list selecting movies in the home screen.</string>
+    <string name="user_account_favorite_movies_error">Ups. Something went wrong while trying to fetch your favorite movies. Please, try again later.</string>
+
+    <!-- Rated movies -->
+    <string name="user_account_rated_title">Rated Movies</string>
+    <string name="user_account_no_rated_movies">You don\'t have rated movies yet. Rate movies selecting a movie in the home screen.</string>
+    <string name="user_account_rated_movies_error">Ups. Something went wrong while trying to fetch your rated movies. Please, try again later.</string>
+
+    <!-- Watchlist movies -->
+    <string name="user_account_watchlist_title">Watchlist Movies</string>
+    <string name="user_account_no_watchlist_movies">You don\'t have movies in your watchlist. Add movies to your watchlist selecting a movie in the home screen.</string>
+    <string name="user_account_watchlist_movies_error">Ups. Something went wrong while trying to fetch your watchlist. Please, try again later.</string>
+
+</resources>

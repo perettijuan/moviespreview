@@ -18,6 +18,7 @@ import com.jpp.mp.R
  * Returns a [Point] in which the x value represents the width of the screen in pixels
  * and the y values represents the height of the screen in pixels.
  */
+@Deprecated("use common instead")
 fun Fragment.getScreenSizeInPixels(): Point {
     activity?.let {
         return it.getScreenSizeInPixels()
@@ -38,6 +39,7 @@ fun Fragment.getResIdFromAttribute(attr: Int): Int {
 /**
  * Creates and shows a [Snackbar] styled with the application resources.
  */
+@Deprecated("use common instead")
 fun Fragment.snackBar(contentView: View,
                       @StringRes message: Int,
                       @StringRes actionMessage: Int,
@@ -54,6 +56,22 @@ fun Fragment.snackBar(contentView: View,
             setActionTextColor(ContextCompat.getColor(it, R.color.primaryColor))
         }.show()
     }
+}
+
+/**
+ * Creates and shows a [Snackbar] with the standard unknown error styled with the application resources.
+ */
+fun Fragment.snackBarErrorUnknown(contentView: View,
+                                  action: () -> Unit) {
+    snackBar(contentView, R.string.error_unexpected_error_message, R.string.error_retry, action)
+}
+
+/**
+ * Creates and shows a [Snackbar] with the standard no connectivity error styled with the application resources.
+ */
+fun Fragment.snackBarErrorNoConnectivity(contentView: View,
+                                         action: () -> Unit) {
+    snackBar(contentView, R.string.error_no_network_connection_message, R.string.error_retry, action)
 }
 
 /**

@@ -2,7 +2,6 @@ package com.jpp.mp.di
 
 import com.jpp.mp.screens.main.MainActivity
 import com.jpp.mp.screens.main.about.AboutFragment
-import com.jpp.mp.screens.main.account.AccountFragment
 import com.jpp.mp.screens.main.credits.CreditsFragment
 import com.jpp.mp.screens.main.details.MovieDetailsFragment
 import com.jpp.mp.screens.main.header.NavigationHeaderFragment
@@ -14,6 +13,9 @@ import com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
 import com.jpp.mp.screens.main.person.PersonFragment
 import com.jpp.mp.screens.main.search.SearchFragment
+import com.jpp.mpaccount.account.UserAccountFragment
+import com.jpp.mpaccount.account.lists.UserMovieListFragment
+import com.jpp.mpaccount.login.LoginFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -59,5 +61,11 @@ abstract class BuildersModule {
     abstract fun bindNavigationHeaderFragment(): NavigationHeaderFragment
 
     @ContributesAndroidInjector
-    abstract fun bindAccountFragment() : AccountFragment
+    abstract fun bindLoginFragment(): LoginFragment
+
+    @ContributesAndroidInjector
+    abstract fun bindUserAccountFragment(): UserAccountFragment
+
+    @ContributesAndroidInjector
+    abstract fun bindUserMovieListFragment(): UserMovieListFragment
 }

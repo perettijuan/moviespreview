@@ -1,0 +1,7 @@
+package com.jpp.mpdata.datasources.configuration
+
+import com.jpp.mpdomain.AppConfiguration
+
+interface ConfigurationApi {
+    fun getAppConfiguration(): AppConfiguration?
+}

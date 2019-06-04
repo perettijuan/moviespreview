@@ -3,7 +3,7 @@ package com.jpp.mp.screens.main.about
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.jpp.mp.screens.SingleLiveEvent
+import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mpdomain.usecase.about.AboutNavigationType
 import com.jpp.mpdomain.usecase.about.GetAboutNavigationUrlUseCase
 import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase

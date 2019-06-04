@@ -1,90 +1,95 @@
 package com.jpp.mp.screens.main.header
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.screens.CoroutineDispatchers
-import com.jpp.mp.screens.MPScopedViewModel
-import com.jpp.mp.screens.SingleLiveEvent
+import androidx.lifecycle.MediatorLiveData
+import com.jpp.mp.common.coroutines.CoroutineDispatchers
+import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
+import com.jpp.mp.common.viewstate.HandledViewState
+import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
 import com.jpp.mpdomain.UserAccount
-import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import com.jpp.mpdomain.usecase.account.GetAccountInfoUseCase.AccountInfoResult.*
 import kotlinx.coroutines.launch
+import com.jpp.mp.screens.main.header.HeaderViewState.ShowLoading
+import com.jpp.mp.screens.main.header.HeaderViewState.ShowLogin
+import com.jpp.mp.screens.main.header.HeaderViewState.ShowAccount
+import com.jpp.mp.screens.main.header.NavigationHeaderInteractor.HeaderDataEvent.*
+import com.jpp.mpdomain.Gravatar
 
 /**
- * [MPScopedViewModel] to handle the state of the NavigationHeaderFragment. It is a coroutine-scoped
+ * [MPScopedViewModel] to handle the state of the [NavigationHeaderFragment]. It is a coroutine-scoped
  * ViewModel, which indicates that some work will be executed in a background context and synced
  * to the main context when over.
  *
- * It exposes a single output in a LiveData object that receives [HeaderViewState] updates as soon
- * as any new state is identified by the ViewModel.
+ * It consumes data coming from the lower layers - exposed by [NavigationHeaderInteractor] -
+ * and maps that data to view logic.
  */
 class NavigationHeaderViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                                    private val getAccountInfoUseCase: GetAccountInfoUseCase)
+                                                    private val interactor: NavigationHeaderInteractor)
     : MPScopedViewModel(dispatchers) {
 
-    private val viewStateLiveData by lazy { MutableLiveData<HeaderViewState>() }
-    private val navigationEvents by lazy { SingleLiveEvent<HeaderNavigationEvent>() }
+    private val _viewStates by lazy { MediatorLiveData<HandledViewState<HeaderViewState>>() }
+    private val _navEvents by lazy { SingleLiveEvent<HeaderNavigationEvent>() }
 
-    /**
-     * Called on initialization of the header fragment.
-     * Each time this method is called it will fetch the user account data and will update
-     * the UI.
-     * The updates will be posted to the [LiveData] object provided by [viewState()].
-     */
-    fun init() {
-        viewStateLiveData.value = HeaderViewState.Loading
-        launch {
-            viewStateLiveData.value = getAccountInfo()
+
+    init {
+        _viewStates.addSource(interactor.userAccountEvents) { event ->
+            when (event) {
+                is UserNotLogged -> _viewStates.value = of(ShowLogin)
+                is UnknownError -> _viewStates.value = of(ShowLogin)
+                is Success -> _viewStates.value = of(mapAccountInfo(event.data))
+            }
         }
     }
 
     /**
-     * Subscribe to this [LiveData] in order to get updates of the [HeaderViewState].
+     * Called when the view is initialized.
      */
-    fun viewState(): LiveData<HeaderViewState> = viewStateLiveData
+    fun onInit() {
+        _viewStates.value = of(getAccountInfo())
+    }
 
     /**
-     * Exposes the events that are triggered when a navigation event is detected.
-     * We need a different LiveData here in order to avoid the problem of back navigation:
-     * - The default LiveData object posts the last value every time a new observer starts observing.
+     * Subscribe to this [LiveData] in order to get notified about the different states that
+     * the view should render.
      */
-    fun navEvents(): LiveData<HeaderNavigationEvent> = navigationEvents
+    val viewStates: LiveData<HandledViewState<HeaderViewState>> get() = _viewStates
+
+    /**
+     * Subscribe to this [LiveData] in order to get notified about navigation steps that
+     * should be performed by the view.
+     */
+    val navEvents: LiveData<HeaderNavigationEvent> get() = _navEvents
 
     /**
      * Called when the user attempts to navigate to the login screen.
      */
     fun onUserNavigatesToLogin() {
-        navigationEvents.value = HeaderNavigationEvent.ToLogin
+        _navEvents.value = HeaderNavigationEvent.ToLogin
     }
 
     /**
      * Called when the user attempts to navigate to the account details.
      */
     fun onUserNavigatesToAccountDetails() {
-        navigationEvents.value = HeaderNavigationEvent.ToUserAccount
+        _navEvents.value = HeaderNavigationEvent.ToUserAccount
     }
 
     /**
      * Executes the use case to fetch the user account info. If an error is detected, the
      * login view will be shown in order to let the user attempt a login.
      */
-    private suspend fun getAccountInfo(): HeaderViewState = withContext(dispatchers.default()) {
-        getAccountInfoUseCase
-                .getAccountInfo()
-                .let { ucResult ->
-                    when (ucResult) {
-                        is AccountInfo -> mapAccountInfo(ucResult.userAccount).let { HeaderViewState.WithInfo(accountInfo = it) }
-                        else -> HeaderViewState.Login
-                    }
-                }
+    private fun getAccountInfo(): HeaderViewState {
+        launch { withContext(dispatchers.default()) { interactor.fetchUserData() } }
+        return ShowLoading
     }
 
-    private fun mapAccountInfo(userAccount: UserAccount) = with(userAccount) {
-        HeaderAccountInfo(
-                avatarUrl = avatar.gravatar.hash,
+    private fun mapAccountInfo(userAccount: UserAccount): HeaderViewState = with(userAccount) {
+        ShowAccount(
+                avatarUrl = Gravatar.BASE_URL + avatar.gravatar.hash + Gravatar.REDIRECT,
                 userName = if (name.isEmpty()) username else name,
+                defaultLetter = if (name.isEmpty()) username.first() else name.first(),
                 accountName = username
         )
     }

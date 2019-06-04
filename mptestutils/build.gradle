@@ -1,0 +1,44 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    /******************************************************************
+     ************************* IMPORTANT ******************************
+     ******************************************************************
+     ******** This module contains common test utilities to be ********
+     ******** used across the different modules of the project ********
+     ********** DO NOT include this module in production code.*********
+     ******************************************************************
+     ************************* IMPORTANT ******************************
+     ******************************************************************/
+    
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // Kotlin standard libs
+    implementation deps.kotlin.stdlib
+    // ViewModel and LiveData
+    implementation deps.androidx.lifecycle.extensions
+    kapt deps.androidx.lifecycle.compiler
+    // Junit 5
+    implementation deps.test.junit5.jupiter.api
+    // MockK
+    implementation deps.test.mockk.unit
+}

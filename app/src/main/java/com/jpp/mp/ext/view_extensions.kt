@@ -26,6 +26,7 @@ import com.squareup.picasso.Picasso
 /**
  * Inflates a given layout resources and returns the inflated view.
  */
+@Deprecated("use common instead")
 fun ViewGroup.inflate(layoutRes: Int): View {
     return LayoutInflater.from(context).inflate(layoutRes, this, false)
 }
@@ -33,6 +34,7 @@ fun ViewGroup.inflate(layoutRes: Int): View {
 /**
  * Extension function for the View class to make a View visible
  */
+@Deprecated("use common instead")
 fun View.setVisible() {
     this.visibility = View.VISIBLE
 }
@@ -41,6 +43,7 @@ fun View.setVisible() {
  * Extension function for the View class to make a View visible when [condition] is true.
  * If [condition] is false, the [defVisibility] is applied.
  */
+@Deprecated("use common instead")
 fun View.setVisibleWhen(condition: Boolean, defVisibility: Int = View.GONE) {
     this.visibility = if (condition) View.VISIBLE else defVisibility
 }
@@ -48,6 +51,7 @@ fun View.setVisibleWhen(condition: Boolean, defVisibility: Int = View.GONE) {
 /**
  * Extension function for the View class to make a View gone
  */
+@Deprecated("use common instead")
 fun View.setGone() {
     this.visibility = View.GONE
 }
@@ -55,6 +59,7 @@ fun View.setGone() {
 /**
  * Extension function for the View class to make a View invisible
  */
+@Deprecated("use common instead")
 fun View.setInvisible() {
     this.visibility = View.INVISIBLE
 }
@@ -63,11 +68,6 @@ fun View.setInvisible() {
  * Extension function for the View class to retrieve a color given its resource identifier
  */
 fun View.getColor(@ColorRes colorRes: Int) = ContextCompat.getColor(context, colorRes)
-
-/**
- * Extension function to retrieve a String from the appModule resources.
- */
-fun View.getStringFromResources(@StringRes stringResId: Int): CharSequence = resources.getString(stringResId)
 
 /**
  * Animates the from the current alpha property value to alpha [toAlpha].
@@ -98,6 +98,7 @@ fun ImageView.clearImage(@DrawableRes placeholderRes: Int = R.drawable.ic_app_ic
  * Loads an image retrieved from the provided [imageUrl]
  * into the ImageView.
  */
+@Deprecated("use common instead")
 fun ImageView.loadImageUrl(imageUrl: String,
                            @DrawableRes placeholderRes: Int = R.drawable.ic_app_icon_black,
                            @DrawableRes errorImageRes: Int = R.drawable.ic_error_black) {
@@ -115,6 +116,7 @@ fun ImageView.loadImageUrl(imageUrl: String,
  * Loads an image retrieved from the provided [imageUrl]
  * into the ImageView as a circular image.
  */
+@Deprecated("use common instead")
 fun ImageView.loadImageUrlAsCircular(imageUrl: String,
                                      @DrawableRes placeholderRes: Int = R.drawable.ic_app_icon_black,
                                      @DrawableRes errorImageRes: Int = R.drawable.ic_error_black,

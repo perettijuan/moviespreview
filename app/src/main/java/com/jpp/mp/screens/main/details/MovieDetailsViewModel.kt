@@ -2,9 +2,9 @@ package com.jpp.mp.screens.main.details
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.screens.CoroutineDispatchers
-import com.jpp.mp.screens.MPScopedViewModel
-import com.jpp.mp.screens.SingleLiveEvent
+import com.jpp.mp.common.coroutines.CoroutineDispatchers
+import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
@@ -84,6 +84,14 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
     }
 
     /**
+     * Called when the user has attempted to execute an action when is not logged
+     * in the application.
+     */
+    fun userAttemptedActionWhenNotLoggedIn() {
+        navigationEvents.value = MovieDetailsNavigationEvent.ToLogin
+    }
+
+    /**
      * Pushes the loading state into the view and starts the process to fetch the details
      * of the movie.
      */
@@ -116,7 +124,6 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
                     }
                 }
     }
-
 
     /**
      * Maps a domain [MovieDetail] into a UI [UiMovieDetails].

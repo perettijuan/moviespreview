@@ -1,9 +1,6 @@
 package com.jpp.mpdomain.repository
 
-import com.jpp.mpdomain.MovieDetail
-import com.jpp.mpdomain.MoviePage
-import com.jpp.mpdomain.MovieSection
-import com.jpp.mpdomain.SupportedLanguage
+import com.jpp.mpdomain.*
 
 /**
  * Repository definition to access all movies related data.
@@ -23,4 +20,37 @@ interface MoviesRepository {
      * null in any other case.
      */
     fun getMovieDetails(movieId: Double, language: SupportedLanguage): MovieDetail?
+
+    /**
+     * Retrieves a [MoviePage] with the favorite movies that the user has.
+     * @return a [MoviePage] indicated by [page] only if the user has movies as favorites.
+     */
+    fun getFavoriteMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
+
+    /**
+     * Retrieves a [MoviePage] with the movies that the user has rated.
+     * @return a [MoviePage] indicated by [page] only if the user has movies rated.
+     */
+    fun getRatedMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
+
+    /**
+     * Retrieves a [MoviePage] from the user's watchlist.
+     * @return a [MoviePage] indicated by [page] only if the user has one in the watchlist.
+     */
+    fun getWatchlistMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
+
+    /**
+     * Flushes out any favorite [MoviePage] data stored locally on the device.
+     */
+    fun flushFavoriteMoviePages()
+
+    /**
+     * Flushes out any rated [MoviePage] data stored locally on the device.
+     */
+    fun flushRatedMoviePages()
+
+    /**
+     * Flushes out any watchlist [MoviePage] data stored locally on the device.
+     */
+    fun flushWatchlistMoviePages()
 }

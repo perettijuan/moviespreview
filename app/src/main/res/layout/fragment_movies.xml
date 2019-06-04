@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.jpp.mp.views.MPErrorView
+    <com.jpp.mpdesign.views.MPErrorView
         android:id="@+id/moviesErrorView"
         android:layout_width="0dp"
         android:layout_height="0dp"

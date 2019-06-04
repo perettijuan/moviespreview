@@ -1,5 +1,7 @@
 package com.jpp.mpdata.repository.configuration
 
+import com.jpp.mpdata.datasources.configuration.ConfigurationApi
+import com.jpp.mpdata.datasources.configuration.ConfigurationDb
 import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.repository.ConfigurationRepository
 import io.mockk.every

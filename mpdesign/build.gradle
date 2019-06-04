@@ -1,0 +1,60 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        vectorDrawables.useSupportLibrary = true
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Kotlin standard libs
+    implementation deps.kotlin.stdlib
+    // appCompat libraries
+    implementation deps.androidx.appcompat
+    // ViewModel and LiveData
+    implementation deps.androidx.lifecycle.extensions
+    kapt deps.androidx.lifecycle.compiler
+    /*
+     * Navigation Components -
+     * Even thought is not used by this module, Snackbar seems to be
+     * included in the design library and the navigation library seems to
+     * be leaking the design library.
+     * This way, we make sure to access the Snackbar without cycling dependencies.
+     */
+    implementation deps.android.arch.navigation.ui
+
+    implementation "androidx.palette:palette:1.0.0"
+
+    /*
+     * ConstraintLayout:
+     *  - alpha version in order to use MotionLayout. Should be updated once it is stable.
+     *  - api because we want to leak the dependency on purpose to all modules that uses mpdesign.
+     */
+    def constraintLayoutVersion = '2.0.0-alpha3'
+    api "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+    api "androidx.constraintlayout:constraintlayout-solver:$constraintLayoutVersion"
+
+    // image loading library Picasso
+    implementation "com.squareup.picasso:picasso:2.5.2"
+}

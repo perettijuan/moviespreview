@@ -41,7 +41,7 @@ interface GetMoviesUseCase {
         override fun getMoviePageForSection(page: Int, section: MovieSection): GetMoviesResult {
             return when (connectivityRepository.getCurrentConnectivity()) {
                 Connectivity.Disconnected -> GetMoviesResult.ErrorNoConnectivity
-                Connectivity.Connected -> moviesRepository.getMoviePageForSection(page, section, languageRepository.getCurrentDeviceLanguage())?.let {
+                Connectivity.Connected -> moviesRepository.getMoviePageForSection(page, section, languageRepository.getCurrentAppLanguage())?.let {
                     GetMoviesResult.Success(it)
                 } ?: run {
                     GetMoviesResult.ErrorUnknown
