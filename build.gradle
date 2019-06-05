@@ -93,63 +93,10 @@ buildscript {
     }
 }
 
-
 project.ext {
     compileSdkVersion = 28
-    minSdkVersion = 18
+    minSdkVersion = 21
     targetSdkVersion = 28
-}
-
-/**
- * Returns sources from common project (only) that are shared between different
- * modules of the application to execute test code.
- */
-def getCommonTestResources() {
-    return fileFromProjectRoot(':mpcommon', 'src', 'test', 'java').absolutePath
-}
-
-/**
- * Returns sources from common project (only) that are shared between different
- * modules of the application to execute test code.
- */
-def getCommonJunit5TestResources() {
-    return fileFromProjectRoot(':mpcommon', 'src', 'test', 'junit5').absolutePath
-}
-
-/**
- * @param projectId the unambiguous id of the project
- * @param path in one of two forms:
- *  <ul>
- *    <li>path the path without the file separator</li>
- *    <li>a single unix-style path</li>
- *  </ul>
- * @return a File object at the path you want
- */
-def fileFromProjectRoot(String projectId, String... path) {
-    return fileFromProjectRoot(rootProject.project(projectId), path)
-}
-
-/**
- * @param p the {@link Project} to use as a base directory
- * @param path the path to add to the project's base directory in one of two forms:
- *  <ul>
- *    <li>path the path without the file separator</li>
- *    <li>a single unix-style path</li>
- *  </ul>
- * @return a {@link File} with the path passed in, starting at the project's
- * base directory
- */
-def fileFromProjectRoot(Project p, String... path) {
-    return p.file(pathify(path))
-}
-
-/**
- * @param path An array of string to be made into a path with the
- * {@link File#separator}
- * @return the path joined by {@link File#separator}
- */
-def pathify(String... path) {
-    return path.join(File.separator)
 }
 
 allprojects {

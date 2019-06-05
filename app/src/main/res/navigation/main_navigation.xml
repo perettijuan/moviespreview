@@ -6,7 +6,9 @@
     app:startDestination="@id/playingMoviesFragment">
 
     <include app:graph="@navigation/user_account_nav"/>
+    <include app:graph="@navigation/movie_details_nav"/>
 
+    <!-- TODO JPP remove all actions in these fragments -->
     <fragment
         android:id="@+id/playingMoviesFragment"
         android:name="com.jpp.mp.screens.main.movies.fragments.PlayingMoviesFragment"
@@ -14,7 +16,7 @@
         tools:layout="@layout/fragment_movies">
         <action
             android:id="@+id/action_playingMoviesFragment_to_movieDetailsFragment"
-            app:destination="@id/movieDetailsFragment"
+            app:destination="@id/movie_details_nav"
             app:enterAnim="@anim/fragment_enter_slide_down"
             app:exitAnim="@anim/fragment_exit_slide_down"
             app:popEnterAnim="@anim/fragment_enter_slide_up"
@@ -27,7 +29,7 @@
         tools:layout="@layout/fragment_movies">
         <action
             android:id="@+id/action_popularMoviesFragment_to_movieDetailsFragment"
-            app:destination="@id/movieDetailsFragment"
+            app:destination="@id/movie_details_nav"
             app:enterAnim="@anim/fragment_enter_slide_down"
             app:exitAnim="@anim/fragment_exit_slide_down"
             app:popEnterAnim="@anim/fragment_enter_slide_up"
@@ -40,7 +42,7 @@
         tools:layout="@layout/fragment_movies">
         <action
             android:id="@+id/action_upcomingMoviesFragment_to_movieDetailsFragment"
-            app:destination="@id/movieDetailsFragment"
+            app:destination="@id/movie_details_nav"
             app:enterAnim="@anim/fragment_enter_slide_down"
             app:exitAnim="@anim/fragment_exit_slide_down"
             app:popEnterAnim="@anim/fragment_enter_slide_up"
@@ -53,13 +55,14 @@
         tools:layout="@layout/fragment_movies">
         <action
             android:id="@+id/action_topRatedMoviesFragment_to_movieDetailsFragment"
-            app:destination="@id/movieDetailsFragment"
+            app:destination="@id/movie_details_nav"
             app:enterAnim="@anim/fragment_enter_slide_down"
             app:exitAnim="@anim/fragment_exit_slide_down"
             app:popEnterAnim="@anim/fragment_enter_slide_up"
             app:popExitAnim="@anim/fragment_exit_slide_up" />
     </fragment>
-    <fragment
+    <!-- TODO JPP can we use the arguments to navigate to movie details? -->
+    <!--<fragment
         android:id="@+id/movieDetailsFragment"
         android:name="com.jpp.mp.screens.main.details.MovieDetailsFragment"
         tools:layout="@layout/fragment_details">
@@ -79,7 +82,7 @@
             app:exitAnim="@anim/fragment_exit_slide_right"
             app:popEnterAnim="@anim/fragment_enter_slide_up"
             app:popExitAnim="@anim/fragment_exit_slide_up"/>
-    </fragment>
+    </fragment> -->
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.jpp.mp.screens.main.search.SearchFragment"

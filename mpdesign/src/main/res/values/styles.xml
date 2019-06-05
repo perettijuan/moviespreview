@@ -48,7 +48,9 @@
     <style name="MPNavigationViewItemStyle" parent="@android:style/TextAppearance.Medium" />
 
     <!-- Application TopBar -->
-    <style name="MPAppToolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="MPAppToolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:background">?attr/colorPrimary</item>
+    </style>
 
 
     <!-- MPLoadingView -->

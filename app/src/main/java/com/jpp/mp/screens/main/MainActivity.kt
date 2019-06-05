@@ -100,11 +100,11 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
          * - or I couldn't find a way to do it - this is the best approach
          * I found to load the fonts I want for it.
          */
-        with(mainCollapsingToolbarLayout) {
-            val tf = Typeface.createFromAsset(assets, "fonts/poppins.ttf")
-            setCollapsedTitleTypeface(tf)
-            setExpandedTitleTypeface(tf)
-        }
+//        with(mainCollapsingToolbarLayout) {
+//            val tf = Typeface.createFromAsset(assets, "fonts/poppins.ttf")
+//            setCollapsedTitleTypeface(tf)
+//            setExpandedTitleTypeface(tf)
+//        }
 
     }
 
@@ -231,23 +231,23 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     private fun withRefreshAppViewModel(action: RefreshAppViewModel.() -> Unit) = withViewModel<RefreshAppViewModel>(viewModelFactory) { action() }
 
     private fun renderViewState(viewState: MainActivityViewState) {
-        when (viewState) {
-            is MainActivityViewState.ActionBarLocked -> {
-                if (viewState.withAnimation) lockActionBarWithAnimation() else lockActionBar()
-                if (viewState.searchEnabled) showSearchView() else mainSearchView.setGone()
-                setActionBarTitle(viewState.sectionTitle)
-            }
-            is MainActivityViewState.ActionBarUnlocked -> {
-                mainImageView.clearImage()
-                mainSearchView.setGone()
-                unlockActionBarWithAnimation {
-                    mainImageView.loadImageUrl(viewState.contentImageUrl)
-                    mainCollapsingToolbarLayout.enableTitle()
-                    enableCollapsingToolBarLayoutTitle(viewState.sectionTitle)
-                }
-                mpToolbarManager.clearInsetStartWithNavigation(mainToolbar)
-            }
-        }
+//        when (viewState) {
+//            is MainActivityViewState.ActionBarLocked -> {
+//                if (viewState.withAnimation) lockActionBarWithAnimation() else lockActionBar()
+//                if (viewState.searchEnabled) showSearchView() else mainSearchView.setGone()
+//                setActionBarTitle(viewState.sectionTitle)
+//            }
+//            is MainActivityViewState.ActionBarUnlocked -> {
+//                mainImageView.clearImage()
+//                mainSearchView.setGone()
+//                unlockActionBarWithAnimation {
+//                    mainImageView.loadImageUrl(viewState.contentImageUrl)
+//                    mainCollapsingToolbarLayout.enableTitle()
+//                    enableCollapsingToolBarLayoutTitle(viewState.sectionTitle)
+//                }
+//                mpToolbarManager.clearInsetStartWithNavigation(mainToolbar)
+//            }
+//        }
 
         /*
          * Forces to inflate the menu shown in the Toolbar.
@@ -259,19 +259,19 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     }
 
     private fun onSearchEvent(event: SearchEvent) {
-        when (event) {
-            is SearchEvent.ClearSearch -> {
-                with(mainSearchView) {
-                    setQuery("", false)
-                    requestFocus()
-                }
-            }
-            is SearchEvent.Search -> {
-                with(mainSearchView) {
-                    clearFocus()
-                }
-            }
-        }
+//        when (event) {
+//            is SearchEvent.ClearSearch -> {
+//                with(mainSearchView) {
+//                    setQuery("", false)
+//                    requestFocus()
+//                }
+//            }
+//            is SearchEvent.Search -> {
+//                with(mainSearchView) {
+//                    clearFocus()
+//                }
+//            }
+//        }
     }
 
 
@@ -280,117 +280,117 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
      * title when the user scrolls the content of the Activity.
      */
     private fun enableCollapsingToolBarLayoutTitle(title: String) {
-        mainAppBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-
-            var show = true
-            var scrollRange = -1
-
-            override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.totalScrollRange
-                }
-
-                if (scrollRange + verticalOffset == 0) {
-                    mainCollapsingToolbarLayout.title = title
-                    show = true
-                } else if (show) {
-                    mainCollapsingToolbarLayout.title = " "
-                    show = false
-                }
-            }
-        })
+//        mainAppBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+//
+//            var show = true
+//            var scrollRange = -1
+//
+//            override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
+//                if (scrollRange == -1) {
+//                    scrollRange = appBarLayout.totalScrollRange
+//                }
+//
+//                if (scrollRange + verticalOffset == 0) {
+//                    mainCollapsingToolbarLayout.title = title
+//                    show = true
+//                } else if (show) {
+//                    mainCollapsingToolbarLayout.title = " "
+//                    show = false
+//                }
+//            }
+//        })
     }
 
 
     private fun lockActionBar() {
-        // disable expanded mode in AppBarLayout container
-        mainAppBarLayout.apply {
-            setExpanded(false, false)
-            isActivated = false
-            val lp = layoutParams as CoordinatorLayout.LayoutParams
-            lp.height = resources.getDimension(R.dimen.action_bar_height_normal).toInt()
-        }
-        mainCollapsingToolbarLayout.disableTitle()
-        mainImageView.setGone()
+//        // disable expanded mode in AppBarLayout container
+//        mainAppBarLayout.apply {
+//            setExpanded(false, false)
+//            isActivated = false
+//            val lp = layoutParams as CoordinatorLayout.LayoutParams
+//            lp.height = resources.getDimension(R.dimen.action_bar_height_normal).toInt()
+//        }
+//        mainCollapsingToolbarLayout.disableTitle()
+//        mainImageView.setGone()
     }
-
-    private fun lockActionBarWithAnimation() {
-        //This is what performs the visible animation.
-        mainAppBarLayout.apply {
-            setExpanded(false, true)
-            isActivated = false
-
-        }
-        /*
-         * Sadly, setExpanded has no listener -- in order to ensure
-         * that the unlock animation works as expected, we need to reset
-         * the size of the mainAppBarLayout - that's why we execute this animation, that
-         * actually is not seen because it is delayed until the setExpanded(false, true)
-         * animation is done.
-         */
-        ValueAnimator
-                .ofInt(resources.getDimension(R.dimen.action_bar_height_expanded).toInt(), resources.getDimension(R.dimen.action_bar_height_normal).toInt())
-                .apply { duration = 300 }
-                .also { it.startDelay = 200 }
-                .also {
-                    it.addUpdateListener {
-                        val newHeight = it.animatedValue as Int
-                        val lp = mainAppBarLayout.layoutParams as CoordinatorLayout.LayoutParams
-                        lp.height = newHeight
-                        mainAppBarLayout.layoutParams = lp
-                    }
-                }
-                .also {
-                    it.addListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationStart(animation: Animator?) {
-                            mainCollapsingToolbarLayout.disableTitle()
-                            mainImageView.setGone()
-                        }
-                    })
-                }
-                .run { start() }
-    }
-
-    private fun unlockActionBarWithAnimation(animationEndListener: () -> Unit) {
-        mainAppBarLayout.apply {
-            setExpanded(true, false)
-            isActivated = true
-        }
-
-        ValueAnimator
-                .ofInt(mainAppBarLayout.measuredHeight, resources.getDimension(R.dimen.action_bar_height_expanded).toInt())
-                .apply { duration = 500 }
-                .also {
-                    it.addUpdateListener {
-                        val newHeight = it.animatedValue as Int
-                        val lp = mainAppBarLayout.layoutParams as CoordinatorLayout.LayoutParams
-                        lp.height = newHeight
-                        mainAppBarLayout.layoutParams = lp
-                    }
-                }
-                .also {
-                    it.addListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator?) {
-                            mainImageView.setVisible()
-                            animationEndListener.invoke()
-                        }
-                    })
-                }
-                .run { start() }
-    }
-
-    private fun showSearchView() {
-        with(mainSearchView) {
-            isIconified = false
-            setIconifiedByDefault(false)
-            setOnQueryTextListener(QuerySubmitter { withSearchViewViewModel { search(it) } })
-            setVisible()
-            findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener {
-                withSearchViewViewModel { clearSearch() }
-            }
-        }
-        mpToolbarManager.setInsetStartWithNavigation(0, mainToolbar)
-    }
+//
+//    private fun lockActionBarWithAnimation() {
+//        //This is what performs the visible animation.
+//        mainAppBarLayout.apply {
+//            setExpanded(false, true)
+//            isActivated = false
+//
+//        }
+//        /*
+//         * Sadly, setExpanded has no listener -- in order to ensure
+//         * that the unlock animation works as expected, we need to reset
+//         * the size of the mainAppBarLayout - that's why we execute this animation, that
+//         * actually is not seen because it is delayed until the setExpanded(false, true)
+//         * animation is done.
+//         */
+//        ValueAnimator
+//                .ofInt(resources.getDimension(R.dimen.action_bar_height_expanded).toInt(), resources.getDimension(R.dimen.action_bar_height_normal).toInt())
+//                .apply { duration = 300 }
+//                .also { it.startDelay = 200 }
+//                .also {
+//                    it.addUpdateListener {
+//                        val newHeight = it.animatedValue as Int
+//                        val lp = mainAppBarLayout.layoutParams as CoordinatorLayout.LayoutParams
+//                        lp.height = newHeight
+//                        mainAppBarLayout.layoutParams = lp
+//                    }
+//                }
+//                .also {
+//                    it.addListener(object : AnimatorListenerAdapter() {
+//                        override fun onAnimationStart(animation: Animator?) {
+//                            mainCollapsingToolbarLayout.disableTitle()
+//                            mainImageView.setGone()
+//                        }
+//                    })
+//                }
+//                .run { start() }
+//    }
+//
+//    private fun unlockActionBarWithAnimation(animationEndListener: () -> Unit) {
+//        mainAppBarLayout.apply {
+//            setExpanded(true, false)
+//            isActivated = true
+//        }
+//
+//        ValueAnimator
+//                .ofInt(mainAppBarLayout.measuredHeight, resources.getDimension(R.dimen.action_bar_height_expanded).toInt())
+//                .apply { duration = 500 }
+//                .also {
+//                    it.addUpdateListener {
+//                        val newHeight = it.animatedValue as Int
+//                        val lp = mainAppBarLayout.layoutParams as CoordinatorLayout.LayoutParams
+//                        lp.height = newHeight
+//                        mainAppBarLayout.layoutParams = lp
+//                    }
+//                }
+//                .also {
+//                    it.addListener(object : AnimatorListenerAdapter() {
+//                        override fun onAnimationEnd(animation: Animator?) {
+//                            mainImageView.setVisible()
+//                            animationEndListener.invoke()
+//                        }
+//                    })
+//                }
+//                .run { start() }
+//    }
+//
+//    private fun showSearchView() {
+//        with(mainSearchView) {
+//            isIconified = false
+//            setIconifiedByDefault(false)
+//            setOnQueryTextListener(QuerySubmitter { withSearchViewViewModel { search(it) } })
+//            setVisible()
+//            findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener {
+//                withSearchViewViewModel { clearSearch() }
+//            }
+//        }
+//        mpToolbarManager.setInsetStartWithNavigation(0, mainToolbar)
+//    }
 
 
     /**

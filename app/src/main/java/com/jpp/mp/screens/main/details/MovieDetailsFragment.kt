@@ -14,8 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
 import com.jpp.mp.ext.*
 import com.jpp.mp.screens.main.RefreshAppViewModel
-import com.jpp.mp.screens.main.details.MovieDetailsFragmentArgs.fromBundle
-import com.jpp.mp.screens.main.details.MovieDetailsFragmentDirections.actionMovieDetailsFragmentToCreditsFragment
 import com.jpp.mpdesign.ext.getStringFromResources
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_details.*
@@ -40,7 +38,7 @@ class MovieDetailsFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_details, container, false)
+        return inflater.inflate(R.layout.fragment_movie_details, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -50,14 +48,14 @@ class MovieDetailsFragment : Fragment() {
                 ?: throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the content")
 
         withViewModel {
-            init(fromBundle(args).movieId.toDouble())
+            //init(fromBundle(args).movieId.toDouble())
             viewState().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { viewState -> renderViewState(viewState) })
             navEvents().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { navEvent -> navigateWith(navEvent) })
         }
 
         withActionsViewModel {
             actionsState().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { actionState -> renderActionState(actionState) })
-            init(fromBundle(args).movieId.toDouble())
+            //init(fromBundle(args).movieId.toDouble())
         }
 
         /*
@@ -67,19 +65,19 @@ class MovieDetailsFragment : Fragment() {
         withRefreshAppViewModel {
             refreshState().observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer {
                 if (it) {
-                    withViewModel { refresh(fromBundle(args).movieId.toDouble()) }
+                    //withViewModel { refresh(fromBundle(args).movieId.toDouble()) }
                 }
             })
         }
 
         detailsCreditsSelectionView.setOnClickListener {
             withViewModel {
-                onCreditsSelected(fromBundle(args).movieId.toDouble(), fromBundle(args).movieTitle)
+                //onCreditsSelected(fromBundle(args).movieId.toDouble(), fromBundle(args).movieTitle)
             }
         }
 
         favActionButton.setOnClickListener {
-            withActionsViewModel { updateMovieFavoriteState(fromBundle(args).movieId.toDouble()) }
+            //withActionsViewModel { updateMovieFavoriteState(fromBundle(args).movieId.toDouble()) }
         }
     }
 
@@ -127,8 +125,8 @@ class MovieDetailsFragment : Fragment() {
     private fun navigateWith(navEvent: MovieDetailsNavigationEvent) {
         when (navEvent) {
             is MovieDetailsNavigationEvent.ToCredits -> {
-                findNavController()
-                        .navigate(actionMovieDetailsFragmentToCreditsFragment(navEvent.movieId.toString(), navEvent.movieTitle))
+//                findNavController()
+//                        .navigate(actionMovieDetailsFragmentToCreditsFragment(navEvent.movieId.toString(), navEvent.movieTitle))
             }
             is MovieDetailsNavigationEvent.ToLogin -> {
                 //TODO JPP implement this

@@ -5,11 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavDirections
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,8 +44,11 @@ abstract class MoviesFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val movieSelectionListener: (MovieItem) -> Unit = {
-        withViewModel { onMovieSelected(it) }
+    private lateinit var selectedMovieIV: ImageView
+
+    private val movieSelectionListener: (MovieItem, ImageView) -> Unit = { movie, iv ->
+        selectedMovieIV = iv
+        withViewModel { onMovieSelected(movie) }
     }
 
     override fun onAttach(context: Context?) {
@@ -85,9 +90,18 @@ abstract class MoviesFragment : Fragment() {
             navEvents().observe(this@MoviesFragment.viewLifecycleOwner, Observer {
                 when (it) {
                     is MoviesViewNavigationEvent.ToMovieDetails -> {
-                        findNavController().navigate(
-                                getNavDirectionsForMovieDetails(it.movieId, it.movieImageUrl, it.movieTitle)
+
+                        val transitionName = selectedMovieIV.transitionName
+                        val extras = FragmentNavigatorExtras(
+                                selectedMovieIV to transitionName
                         )
+
+                        val bundle = Bundle().apply {
+                            putString("movieImageUrl", it.movieImageUrl)
+                            putString("transitionName", transitionName)
+                        }
+
+                        Navigation.findNavController(requireActivity(), R.id.mainNavHostFragment).navigate(R.id.movie_details_nav, bundle, null, extras)
                     }
                 }
             })
@@ -169,12 +183,6 @@ abstract class MoviesFragment : Fragment() {
     }
 
     /**
-     * MUST be implemented for all fragments that are showing a list of movies in order to enable
-     * navigation to the movie details section.
-     */
-    abstract fun getNavDirectionsForMovieDetails(movieId: String, movieImageUrl: String, movieTitle: String): NavDirections
-
-    /**
      * MUST be implemented for all fragments that are showing a list of movies in order to provide
      * the proper ViewModel instance to use.
      */
@@ -203,13 +211,14 @@ abstract class MoviesFragment : Fragment() {
     }
 
 
-    class MoviesAdapter(private val movieSelectionListener: (MovieItem) -> Unit) : PagedListAdapter<MovieItem, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {
+    class MoviesAdapter(private val movieSelectionListener: (MovieItem, ImageView) -> Unit) : PagedListAdapter<MovieItem, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_movies, parent, false))
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             getItem(position)?.let {
+                ViewCompat.setTransitionName(holder.itemView.movieListItemImage, "Test_$position")
                 holder.bindMovie(it, movieSelectionListener)
             }
         }
@@ -222,14 +231,14 @@ abstract class MoviesFragment : Fragment() {
 
         class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 
-            fun bindMovie(movie: MovieItem, movieSelectionListener: (MovieItem) -> Unit) {
+            fun bindMovie(movie: MovieItem, movieSelectionListener: (MovieItem, ImageView) -> Unit) {
                 with(itemView) {
                     movieListItemHeaderIcon.loadImageUrlAsCircular(movie.headerImageUrl)
                     movieListItemTitle.text = movie.title
                     movieListItemImage.loadImageUrl(movie.contentImageUrl)
                     movieListItemPopularityText.text = movie.popularity
                     movieListItemVoteCountText.text = movie.voteCount
-                    setOnClickListener { movieSelectionListener(movie) }
+                    setOnClickListener { movieSelectionListener(movie, movieListItemImage) }
                 }
             }
         }
