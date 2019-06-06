@@ -30,8 +30,8 @@ import com.jpp.mpdata.repository.credits.CreditsApi
 import com.jpp.mpdata.repository.credits.CreditsDb
 import com.jpp.mpdata.repository.credits.CreditsRepositoryImpl
 import com.jpp.mpdata.repository.licenses.LicensesRepositoryImpl
-import com.jpp.mpdata.repository.movies.MoviesApi
-import com.jpp.mpdata.repository.movies.MoviesDb
+import com.jpp.mpdata.datasources.moviepage.MoviesApi
+import com.jpp.mpdata.datasources.moviepage.MoviesDb
 import com.jpp.mpdata.repository.movies.MoviesRepositoryImpl
 import com.jpp.mpdata.repository.person.PersonApi
 import com.jpp.mpdata.repository.person.PersonDb

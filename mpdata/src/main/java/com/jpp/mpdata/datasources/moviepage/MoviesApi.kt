@@ -1,6 +1,9 @@
-package com.jpp.mpdata.repository.movies
+package com.jpp.mpdata.datasources.moviepage
 
-import com.jpp.mpdomain.*
+import com.jpp.mpdomain.MoviePage
+import com.jpp.mpdomain.Session
+import com.jpp.mpdomain.SupportedLanguage
+import com.jpp.mpdomain.UserAccount
 
 /**
  * API definition to retrieve all movies related data from the server.
@@ -29,12 +32,6 @@ interface MoviesApi {
      * Null if no data is available.
      */
     fun getUpcomingMoviePage(page: Int, language: SupportedLanguage): MoviePage?
-
-    /**
-     * @return a [MovieDetail] for the provided [movieId] if any is found, null
-     * any other case.
-     */
-    fun getMovieDetails(movieId: Double, language: SupportedLanguage): MovieDetail?
 
     /**
      * @return the [MoviePage] that contains the favorite movies of the user.

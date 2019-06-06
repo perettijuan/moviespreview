@@ -1,6 +1,5 @@
-package com.jpp.mpdata.repository.movies
+package com.jpp.mpdata.datasources.moviepage
 
-import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
 
@@ -64,16 +63,4 @@ interface MoviesDb {
      * Flushes out any [MoviePage] in the watchlist stored locally.
      */
     fun flushWatchlistMoviePages()
-
-
-    /**
-     * @return a [MovieDetail] for the provided [movieId] if any is found, null
-     * any other case.
-     */
-    fun getMovieDetails(movieId: Double): MovieDetail?
-
-    /**
-     * Stores the provided [MovieDetail] in the local database.
-     */
-    fun saveMovieDetails(movieDetail: MovieDetail)
 }

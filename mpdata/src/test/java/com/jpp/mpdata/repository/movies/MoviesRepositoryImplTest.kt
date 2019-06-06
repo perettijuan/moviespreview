@@ -1,6 +1,7 @@
 package com.jpp.mpdata.repository.movies
 
-import com.jpp.mpdomain.MovieDetail
+import com.jpp.mpdata.datasources.moviepage.MoviesApi
+import com.jpp.mpdata.datasources.moviepage.MoviesDb
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.SupportedLanguage
@@ -205,44 +206,6 @@ class MoviesRepositoryImplTest {
         verify(exactly = 1) { moviesApi.getWatchlistMoviePage(any(), any(), any(), any()) }
         verify(exactly = 0) { moviesDb.saveWatchlistMoviePage(1, any()) }
     }
-
-    @Test
-    fun `Should not get data from API when details is in DB`() {
-        val movieDetail = mockk<MovieDetail>()
-        every { moviesDb.getMovieDetails(any()) } returns movieDetail
-
-        val result = subject.getMovieDetails(10.toDouble(), SupportedLanguage.English)
-
-        assertEquals(movieDetail, result)
-        verify { moviesDb.getMovieDetails(10.toDouble()) }
-        verify(exactly = 0) { moviesApi.getMovieDetails(any(), SupportedLanguage.English) }
-    }
-
-    @Test
-    fun `Should get data from API and update the DB when details is not in DB`() {
-        val movieDetail = mockk<MovieDetail>()
-        every { moviesDb.getMovieDetails(any()) } returns null
-        every { moviesApi.getMovieDetails(any(), any()) } returns movieDetail
-
-        val result = subject.getMovieDetails(10.toDouble(), SupportedLanguage.English)
-
-        assertEquals(result, result)
-        verify { moviesDb.getMovieDetails(10.toDouble()) }
-        verify { moviesApi.getMovieDetails(10.toDouble(), SupportedLanguage.English) }
-        verify { moviesDb.saveMovieDetails(movieDetail) }
-    }
-
-    @Test
-    fun `Should not attempt to store null responses from API when fetching movie details`() {
-        every { moviesDb.getMovieDetails(any()) } returns null
-        every { moviesApi.getMovieDetails(any(), any()) } returns null
-
-        val result = subject.getMovieDetails(10.toDouble(), SupportedLanguage.English)
-
-        assertNull(result)
-        verify(exactly = 0) { moviesDb.saveMovieDetails(any()) }
-    }
-
 
     data class MoviesRepositoryTestInput(
             val callsToNowPlaying: Int = 0,

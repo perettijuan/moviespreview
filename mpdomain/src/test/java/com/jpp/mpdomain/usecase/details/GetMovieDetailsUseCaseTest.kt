@@ -38,37 +38,5 @@ class GetMovieDetailsUseCaseTest {
         every { languageRepository.getCurrentAppLanguage() } returns language
     }
 
-    @Test
-    fun `Should check connectivity before fetching details and return ErrorNoConnectivity`() {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
-        subject.getDetailsForMovie(1.toDouble()).let { result ->
-            verify(exactly = 0) { moviesRepository.getMovieDetails(any(), language) }
-            assertEquals(ErrorNoConnectivity, result)
-        }
-    }
-
-    @Test
-    fun `Should return ErrorUnknown when connected to network and an error occurs`() {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { moviesRepository.getMovieDetails(any(), any()) } returns null
-
-        subject.getDetailsForMovie(1.toDouble()).let { result ->
-            verify(exactly = 1) { moviesRepository.getMovieDetails(any(), language) }
-            assertEquals(ErrorUnknown, result)
-        }
-    }
-
-    @Test
-    fun `Should return Success when connected to network and an can get details`() {
-        val details = mockk<MovieDetail>()
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { moviesRepository.getMovieDetails(any(), any()) } returns details
-
-        subject.getDetailsForMovie(1.toDouble()).let { result ->
-            verify(exactly = 1) { moviesRepository.getMovieDetails(any(), language) }
-            assertTrue(result is Success)
-            assertEquals((result as Success).details, details)
-        }
-    }
 }

@@ -13,6 +13,7 @@ import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase.GetMovieDetailsRe
  * not connected). If connected, retrieve the details of the movie identified with movieId.
  * If not connected, return an error that indicates such state.
  */
+//TODO JPP DELETE ME
 interface GetMovieDetailsUseCase {
 
     /**
@@ -39,14 +40,15 @@ interface GetMovieDetailsUseCase {
                private val languageRepository: LanguageRepository) : GetMovieDetailsUseCase {
 
         override fun getDetailsForMovie(movieId: Double): GetMovieDetailsResult {
-            return when(connectivityRepository.getCurrentConnectivity()) {
-                Connectivity.Disconnected -> ErrorNoConnectivity
-                Connectivity.Connected -> moviesRepository.getMovieDetails(movieId, languageRepository.getCurrentAppLanguage())?.let {
-                    Success(it)
-                } ?: run {
-                    ErrorUnknown
-                }
-            }
+//            return when(connectivityRepository.getCurrentConnectivity()) {
+//                Connectivity.Disconnected -> ErrorNoConnectivity
+//                Connectivity.Connected -> moviesRepository.getMovieDetails(movieId, languageRepository.getCurrentAppLanguage())?.let {
+//                    Success(it)
+//                } ?: run {
+//                    ErrorUnknown
+//                }
+//            }
+            return ErrorUnknown
         }
     }
 }

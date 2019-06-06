@@ -1,5 +1,7 @@
 package com.jpp.mpdata.repository.movies
 
+import com.jpp.mpdata.datasources.moviepage.MoviesApi
+import com.jpp.mpdata.datasources.moviepage.MoviesDb
 import com.jpp.mpdomain.*
 import com.jpp.mpdomain.repository.MoviesRepository
 
@@ -9,11 +11,6 @@ class MoviesRepositoryImpl(private val moviesApi: MoviesApi,
     override fun getMoviePageForSection(page: Int, section: MovieSection, language: SupportedLanguage): MoviePage? {
         return moviesDb.getMoviePageForSection(page, section)
                 ?: getFromApi(page, section, language)?.also { moviesDb.saveMoviePageForSection(it, section) }
-    }
-
-    override fun getMovieDetails(movieId: Double, language: SupportedLanguage): MovieDetail? {
-        return moviesDb.getMovieDetails(movieId)
-                ?: moviesApi.getMovieDetails(movieId, language)?.also { moviesDb.saveMovieDetails(it) }
     }
 
     override fun getFavoriteMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
