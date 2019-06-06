@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,8 +15,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
+import com.jpp.mp.common.extensions.navigate
 import com.jpp.mp.ext.*
 import com.jpp.mp.screens.main.RefreshAppViewModel
+import com.jpp.mpdesign.ext.findViewInPositionWithId
+import com.jpp.mpmoviedetails.NavigationMovieDetails.navArgs
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movies.*
 import kotlinx.android.synthetic.main.list_item_movies.view.*
@@ -44,11 +45,8 @@ abstract class MoviesFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var selectedMovieIV: ImageView
-
-    private val movieSelectionListener: (MovieItem, ImageView) -> Unit = { movie, iv ->
-        selectedMovieIV = iv
-        withViewModel { onMovieSelected(movie) }
+    private val movieSelectionListener: (MovieItem, Int) -> Unit = { movie, ivPosition ->
+        withViewModel { onMovieSelected(movie, ivPosition) }
     }
 
     override fun onAttach(context: Context?) {
@@ -90,18 +88,7 @@ abstract class MoviesFragment : Fragment() {
             navEvents().observe(this@MoviesFragment.viewLifecycleOwner, Observer {
                 when (it) {
                     is MoviesViewNavigationEvent.ToMovieDetails -> {
-
-                        val transitionName = selectedMovieIV.transitionName
-                        val extras = FragmentNavigatorExtras(
-                                selectedMovieIV to transitionName
-                        )
-
-                        val bundle = Bundle().apply {
-                            putString("movieImageUrl", it.movieImageUrl)
-                            putString("transitionName", transitionName)
-                        }
-
-                        Navigation.findNavController(requireActivity(), R.id.mainNavHostFragment).navigate(R.id.movie_details_nav, bundle, null, extras)
+                        navigateToMovieDetails(it)
                     }
                 }
             })
@@ -163,6 +150,17 @@ abstract class MoviesFragment : Fragment() {
         }
     }
 
+    private fun navigateToMovieDetails(event: MoviesViewNavigationEvent.ToMovieDetails) {
+        with(event) {
+            val view = moviesList.findViewInPositionWithId(positionInList, R.id.movieListItemImage)
+            Navigation
+                    .findNavController(requireActivity(), R.id.mainNavHostFragment)
+                    .navigate(R.id.movie_details_nav,
+                            navArgs(movieId, movieImageUrl, movieTitle, view.transitionName),
+                            FragmentNavigatorExtras(view to view.transitionName))
+        }
+    }
+
     /**
      * Helper function to execute actions with the [MoviesFragmentViewModel].
      */
@@ -211,14 +209,13 @@ abstract class MoviesFragment : Fragment() {
     }
 
 
-    class MoviesAdapter(private val movieSelectionListener: (MovieItem, ImageView) -> Unit) : PagedListAdapter<MovieItem, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {
+    class MoviesAdapter(private val movieSelectionListener: (MovieItem, Int) -> Unit) : PagedListAdapter<MovieItem, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_movies, parent, false))
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             getItem(position)?.let {
-                ViewCompat.setTransitionName(holder.itemView.movieListItemImage, "Test_$position")
                 holder.bindMovie(it, movieSelectionListener)
             }
         }
@@ -231,14 +228,15 @@ abstract class MoviesFragment : Fragment() {
 
         class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 
-            fun bindMovie(movie: MovieItem, movieSelectionListener: (MovieItem, ImageView) -> Unit) {
+            fun bindMovie(movie: MovieItem, movieSelectionListener: (MovieItem, Int) -> Unit) {
                 with(itemView) {
                     movieListItemHeaderIcon.loadImageUrlAsCircular(movie.headerImageUrl)
                     movieListItemTitle.text = movie.title
                     movieListItemImage.loadImageUrl(movie.contentImageUrl)
                     movieListItemPopularityText.text = movie.popularity
                     movieListItemVoteCountText.text = movie.voteCount
-                    setOnClickListener { movieSelectionListener(movie, movieListItemImage) }
+                    movieListItemImage.transitionName = "MovieImageAt$adapterPosition"
+                    setOnClickListener { movieSelectionListener(movie, adapterPosition) }
                 }
             }
         }

@@ -29,7 +29,7 @@
 
     <ImageView
         android:id="@+id/movieListItemImage"
-        android:layout_width="420dp"
+        android:layout_width="?attr/mpMovieItemImageWidth"
         android:layout_height="?attr/mpMovieItemImageHeight"
         android:layout_marginTop="6dp"
         app:layout_constraintLeft_toLeftOf="parent"

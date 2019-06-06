@@ -116,11 +116,11 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
          * Manage inner navigation: since we have multiple home destinations (all the fragments that
          * are sub-classes of MoviesFragment) we need to manage the ActionBar button click for some cases (the
          * burger or the arrow). If we fail to do so, the navigation library is assuming we're trying to
-         * open the nav drawer from the current destination.
+         * open the navigate drawer from the current destination.
          * The logic here determinate if the current destination is one of the non-home destination fragments
-         * (the ones that are deeper in the navigation structure) and if it is the case asks the nav controller
+         * (the ones that are deeper in the navigation structure) and if it is the case asks the navigate controller
          * to navigate one step up.
-         * If it is a home destination, it opens the drawer and asks the nav controller to manage the navigation
+         * If it is a home destination, it opens the drawer and asks the navigate controller to manage the navigation
          * as usual.
          */
         if (topLevelDestinations.contains(findNavController(this, R.id.mainNavHostFragment).currentDestination?.id)) {
@@ -230,6 +230,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     private fun withSearchViewViewModel(action: SearchViewViewModel.() -> Unit) = withViewModel<SearchViewViewModel>(viewModelFactory) { action() }
     private fun withRefreshAppViewModel(action: RefreshAppViewModel.() -> Unit) = withViewModel<RefreshAppViewModel>(viewModelFactory) { action() }
 
+    //TODO JPP remove this code?]
     private fun renderViewState(viewState: MainActivityViewState) {
 //        when (viewState) {
 //            is MainActivityViewState.ActionBarLocked -> {

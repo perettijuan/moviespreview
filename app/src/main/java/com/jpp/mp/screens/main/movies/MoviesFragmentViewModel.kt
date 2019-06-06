@@ -75,12 +75,13 @@ abstract class MoviesFragmentViewModel(private val getMoviesUseCase: GetMoviesUs
      * Called when an item is selected in the list of movies.
      * A new state is posted in navEvents() in order to handle the event.
      */
-    fun onMovieSelected(movieItem: MovieItem) {
+    fun onMovieSelected(movieItem: MovieItem, positionInList: Int) {
         with(movieItem) {
             navigationEvents.value = MoviesViewNavigationEvent.ToMovieDetails(
                     movieId = movieId.toString(),
                     movieImageUrl = contentImageUrl,
-                    movieTitle = title)
+                    movieTitle = title,
+                    positionInList = positionInList)
         }
     }
 

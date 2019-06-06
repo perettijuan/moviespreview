@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionInflater
 import com.jpp.mpdesign.ext.loadImageUrl
+import com.jpp.mpmoviedetails.NavigationMovieDetails.imageUrl
+import com.jpp.mpmoviedetails.NavigationMovieDetails.transition
 import kotlinx.android.synthetic.main.fragment_movie_details.*
 
 class MovieDetailsFragment : Fragment() {
@@ -27,13 +28,10 @@ class MovieDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         arguments?.let {
-            val url = it.getString("movieImageUrl")
-            val transitionName = it.getString("transitionName")
-            ViewCompat.setTransitionName(mainImageView, transitionName)
-            mainImageView.loadImageUrl(url)
-
+            mainImageView.transitionName = transition(it)
+            mainImageView.loadImageUrl(imageUrl(it))
         } ?: run {
-            throw IllegalStateException("ARGS IS NULL")
+            throw IllegalStateException("Arguments are needed to start the movie details view")
         }
 
     }

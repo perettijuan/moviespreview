@@ -8,6 +8,7 @@
     <attr name="mpMovieItemHeaderImageWidth" format="reference" />
     <attr name="mpMovieItemHeaderImageHeight" format="reference" />
     <attr name="mpMovieItemImageHeight" format="reference" />
+    <attr name="mpMovieItemImageWidth" format="reference" />
     <attr name="mpMovieItemBottomIconSize" format="reference" />
     <attr name="mpMovieItemMaxSize" format="reference" />
     <attr name="mpDetailsVerticalSpacing" format="reference" />

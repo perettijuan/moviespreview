@@ -9,8 +9,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/mainAppBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/MPAppToolbar">
+        android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/mainCollapsingToolbarLayout"
@@ -24,7 +23,7 @@
 
             <ImageView
                 android:id="@+id/mainImageView"
-                android:layout_width="420dp"
+                android:layout_width="?attr/mpMovieItemImageWidth"
                 android:layout_height="?attr/mpMovieItemImageHeight"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax"
