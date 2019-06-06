@@ -5,7 +5,7 @@ import com.jpp.mpdata.datasources.moviepage.MoviesDb
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.SupportedLanguage
-import com.jpp.mpdomain.repository.MoviesRepository
+import com.jpp.mpdomain.repository.MoviePageRepository
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
@@ -21,18 +21,18 @@ import org.junit.jupiter.params.provider.Arguments.arguments
 import org.junit.jupiter.params.provider.MethodSource
 
 @ExtendWith(MockKExtension::class)
-class MoviesRepositoryImplTest {
+class MoviePageRepositoryImplTest {
 
     @RelaxedMockK
     private lateinit var moviesApi: MoviesApi
     @RelaxedMockK
     private lateinit var moviesDb: MoviesDb
 
-    private lateinit var subject: MoviesRepository
+    private lateinit var subject: MoviePageRepository
 
     @BeforeEach
     fun setUp() {
-        subject = MoviesRepositoryImpl(moviesApi, moviesDb)
+        subject = MoviePageRepositoryImpl(moviesApi, moviesDb)
     }
 
 

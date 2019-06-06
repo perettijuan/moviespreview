@@ -5,7 +5,7 @@ import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
-import com.jpp.mpdomain.repository.MoviesRepository
+import com.jpp.mpdomain.repository.MoviePageRepository
 
 /**
  * Defines a UseCase that fetches movies for a particular section.
@@ -34,14 +34,14 @@ interface GetMoviesUseCase {
     fun getMoviePageForSection(page: Int, section: MovieSection): GetMoviesResult
 
 
-    class Impl(private val moviesRepository: MoviesRepository,
+    class Impl(private val moviePageRepository: MoviePageRepository,
                private val connectivityRepository: ConnectivityRepository,
                private val languageRepository: LanguageRepository) : GetMoviesUseCase {
 
         override fun getMoviePageForSection(page: Int, section: MovieSection): GetMoviesResult {
             return when (connectivityRepository.getCurrentConnectivity()) {
                 Connectivity.Disconnected -> GetMoviesResult.ErrorNoConnectivity
-                Connectivity.Connected -> moviesRepository.getMoviePageForSection(page, section, languageRepository.getCurrentAppLanguage())?.let {
+                Connectivity.Connected -> moviePageRepository.getMoviePageForSection(page, section, languageRepository.getCurrentAppLanguage())?.let {
                     GetMoviesResult.Success(it)
                 } ?: run {
                     GetMoviesResult.ErrorUnknown

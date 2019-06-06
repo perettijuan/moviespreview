@@ -1,10 +1,9 @@
 package com.jpp.mpdomain.usecase.details
 
-import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
-import com.jpp.mpdomain.repository.MoviesRepository
+import com.jpp.mpdomain.repository.MoviePageRepository
 import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase.GetMovieDetailsResult.*
 
 /**
@@ -35,14 +34,14 @@ interface GetMovieDetailsUseCase {
     fun getDetailsForMovie(movieId: Double) : GetMovieDetailsResult
 
 
-    class Impl(private val moviesRepository: MoviesRepository,
+    class Impl(private val moviePageRepository: MoviePageRepository,
                private val connectivityRepository: ConnectivityRepository,
                private val languageRepository: LanguageRepository) : GetMovieDetailsUseCase {
 
         override fun getDetailsForMovie(movieId: Double): GetMovieDetailsResult {
 //            return when(connectivityRepository.getCurrentConnectivity()) {
 //                Connectivity.Disconnected -> ErrorNoConnectivity
-//                Connectivity.Connected -> moviesRepository.getMovieDetails(movieId, languageRepository.getCurrentAppLanguage())?.let {
+//                Connectivity.Connected -> moviePageRepository.getMovieDetails(movieId, languageRepository.getCurrentAppLanguage())?.let {
 //                    Success(it)
 //                } ?: run {
 //                    ErrorUnknown

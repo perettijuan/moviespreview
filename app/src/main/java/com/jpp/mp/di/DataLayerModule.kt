@@ -32,7 +32,7 @@ import com.jpp.mpdata.repository.credits.CreditsRepositoryImpl
 import com.jpp.mpdata.repository.licenses.LicensesRepositoryImpl
 import com.jpp.mpdata.datasources.moviepage.MoviesApi
 import com.jpp.mpdata.datasources.moviepage.MoviesDb
-import com.jpp.mpdata.repository.movies.MoviesRepositoryImpl
+import com.jpp.mpdata.repository.movies.MoviePageRepositoryImpl
 import com.jpp.mpdata.repository.person.PersonApi
 import com.jpp.mpdata.repository.person.PersonDb
 import com.jpp.mpdata.repository.person.PersonRepositoryImpl
@@ -122,7 +122,7 @@ class DataLayerModule {
     @Provides
     fun providesMoviesRepository(moviesApi: MoviesApi,
                                  moviesDb: MoviesDb)
-            : MoviesRepository = MoviesRepositoryImpl(moviesApi, moviesDb)
+            : MoviePageRepository = MoviePageRepositoryImpl(moviesApi, moviesDb)
 
     /*****************************************
      ****** CONFIGURATION DEPENDENCIES *******

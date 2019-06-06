@@ -2,7 +2,6 @@ package com.jpp.mpaccount.account.lists
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.*
 import com.jpp.mpdomain.*
 import com.jpp.mpdomain.repository.*
@@ -22,7 +21,7 @@ import javax.inject.Inject
 class UserMovieListInteractor @Inject constructor(private val connectivityRepository: ConnectivityRepository,
                                                   private val sessionRepository: SessionRepository,
                                                   private val accountRepository: AccountRepository,
-                                                  private val moviesRepository: MoviesRepository,
+                                                  private val moviePageRepository: MoviePageRepository,
                                                   private val languageRepository: LanguageRepository) {
     sealed class UserMovieListEvent {
         object UserChangedLanguage : UserMovieListEvent()
@@ -53,7 +52,7 @@ class UserMovieListInteractor @Inject constructor(private val connectivityReposi
     fun fetchFavoriteMovies(page: Int, callback: (List<Movie>) -> Unit) {
         // for debug reasons logYourThread()
         fetchFromRepository(callback) { userAccount, session, language ->
-            moviesRepository.getFavoriteMoviePage(page, userAccount, session, language)
+            moviePageRepository.getFavoriteMoviePage(page, userAccount, session, language)
         }
     }
 
@@ -65,7 +64,7 @@ class UserMovieListInteractor @Inject constructor(private val connectivityReposi
     fun fetchRatedMovies(page: Int, callback: (List<Movie>) -> Unit) {
         // for debug reasons logYourThread()
         fetchFromRepository(callback) { userAccount, session, language ->
-            moviesRepository.getRatedMoviePage(page, userAccount, session, language)
+            moviePageRepository.getRatedMoviePage(page, userAccount, session, language)
         }
     }
 
@@ -77,12 +76,12 @@ class UserMovieListInteractor @Inject constructor(private val connectivityReposi
     fun fetchWatchlist(page: Int, callback: (List<Movie>) -> Unit) {
         // for debug reasons logYourThread()
         fetchFromRepository(callback) { userAccount, session, language ->
-            moviesRepository.getWatchlistMoviePage(page, userAccount, session, language)
+            moviePageRepository.getWatchlistMoviePage(page, userAccount, session, language)
         }
     }
 
     fun refreshUserMoviesData() {
-        with(moviesRepository) {
+        with(moviePageRepository) {
             flushFavoriteMoviePages()
             flushRatedMoviePages()
             flushWatchlistMoviePages()

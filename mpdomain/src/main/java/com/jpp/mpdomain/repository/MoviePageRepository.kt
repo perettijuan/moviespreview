@@ -3,9 +3,9 @@ package com.jpp.mpdomain.repository
 import com.jpp.mpdomain.*
 
 /**
- * Repository definition to access all [Movie] related data.
+ * Repository definition to access all [MoviePage] related data.
  */
-interface MoviesRepository {
+interface MoviePageRepository {
 
     /**
      * Retrieves a [MoviePage] for the provided [section] and [language].

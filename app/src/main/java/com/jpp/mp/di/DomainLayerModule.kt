@@ -46,20 +46,20 @@ class DomainLayerModule {
             : ConfigSearchResultUseCase = ConfigSearchResultUseCase.Impl(configurationRepository)
 
     @Provides
-    fun providesGetMoviesUseCase(moviesRepository: MoviesRepository,
+    fun providesGetMoviesUseCase(moviePageRepository: MoviePageRepository,
                                  connectivityRepository: ConnectivityRepository,
                                  languageRepository: LanguageRepository)
-            : GetMoviesUseCase = GetMoviesUseCase.Impl(moviesRepository, connectivityRepository, languageRepository)
+            : GetMoviesUseCase = GetMoviesUseCase.Impl(moviePageRepository, connectivityRepository, languageRepository)
 
     @Provides
     fun providesConfigMovieUseCase(configurationRepository: ConfigurationRepository)
             : ConfigMovieUseCase = ConfigMovieUseCase.Impl(configurationRepository)
 
     @Provides
-    fun providesGetMovieDetailsUseCase(moviesRepository: MoviesRepository,
+    fun providesGetMovieDetailsUseCase(moviePageRepository: MoviePageRepository,
                                        connectivityRepository: ConnectivityRepository,
                                        languageRepository: LanguageRepository)
-            : GetMovieDetailsUseCase = GetMovieDetailsUseCase.Impl(moviesRepository, connectivityRepository, languageRepository)
+            : GetMovieDetailsUseCase = GetMovieDetailsUseCase.Impl(moviePageRepository, connectivityRepository, languageRepository)
 
     @Provides
     fun providesGetMovieAccountStateUseCase(sessionRepository: SessionRepository,
