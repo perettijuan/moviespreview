@@ -38,6 +38,11 @@ sealed class MovieDetailViewState {
                           val genres: List<MovieGenreItem>) : MovieDetailViewState()
 }
 
+sealed class MovieDetailActionViewState {
+    object Open : MovieDetailActionViewState()
+    object Closed : MovieDetailActionViewState()
+}
+
 
 /**
  * All the supported genres.

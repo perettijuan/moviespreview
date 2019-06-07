@@ -6,16 +6,17 @@
     android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/movieDetailAppBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@android:color/white"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
-            android:background="@android:color/white"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
@@ -59,11 +60,11 @@
                 android:id="@+id/movieDetailLoadingView"
                 style="@style/MPProgressBar"
                 android:visibility="invisible"
-                app:layout_constraintVertical_bias="0.10"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.10" />
 
             <include
                 android:id="@+id/movieDetailContent"
@@ -79,6 +80,28 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/movieDetailFavoritesFab"
+        style="@style/FabMovieDetailAction"
+        android:src="@drawable/ic_favorite_empty"
+        app:layout_anchor="@id/movieDetailAppBarLayout"
+        app:layout_anchorGravity="bottom|right|end" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/movieDetailWatchlistFab"
+        style="@style/FabMovieDetailAction"
+        android:src="@drawable/ic_adventure"
+        app:layout_anchor="@id/movieDetailAppBarLayout"
+        app:layout_anchorGravity="bottom|right|end" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/movieDetailActionFab"
+        style="@style/FabMovieDetailMainAction"
+        android:src="@drawable/ic_arrow_down"
+        app:layout_anchor="@id/movieDetailAppBarLayout"
+        app:layout_anchorGravity="bottom|right|end" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

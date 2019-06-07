@@ -25,6 +25,8 @@ import com.jpp.mpmoviedetails.MovieDetailViewState.ShowNotConnected
 import kotlinx.android.synthetic.main.fragment_movie_details.*
 import kotlinx.android.synthetic.main.layout_movie_detail_content.*
 import kotlinx.android.synthetic.main.list_item_movie_detail_genre.view.*
+import com.jpp.mpmoviedetails.MovieDetailActionViewState.Closed
+import com.jpp.mpmoviedetails.MovieDetailActionViewState.Open
 
 /**
  * Fragment used to show the details of a particular movie selected by the user.
@@ -60,12 +62,19 @@ class MovieDetailsFragment : Fragment() {
             viewStates.observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { it.actionIfNotHandled { viewState -> renderViewState(viewState) } })
             onInit(movieId(arguments).toDouble(), title(arguments))
         }
+
+        withActionsViewModel {
+            viewStates.observe(this@MovieDetailsFragment, Observer { it.actionIfNotHandled { viewState -> renderActionViewState(viewState) } })
+        }
+
+        movieDetailActionFab.setOnClickListener { withActionsViewModel { onMainActionSelected() } }
     }
 
     /**
      * Helper function to execute actions with the [MovieDetailsViewModel].
      */
     private fun withViewModel(action: MovieDetailsViewModel.() -> Unit) = withViewModel<MovieDetailsViewModel>(viewModelFactory) { action() }
+    private fun withActionsViewModel(action: MovieDetailsActionViewModel.() -> Unit) = withViewModel<MovieDetailsActionViewModel>(viewModelFactory) { action() }
 
     private fun renderViewState(viewState: MovieDetailViewState) {
         when (viewState) {
@@ -113,6 +122,25 @@ class MovieDetailsFragment : Fragment() {
 
         movieDetailErrorView.asNoConnectivityError { withViewModel { onRetry() } }
         movieDetailErrorView.setVisible()
+    }
+
+    private fun renderActionViewState(actionViewState: MovieDetailActionViewState) {
+        when (actionViewState) {
+            is Closed -> renderClosedActions()
+            is Open -> renderExpandedActions()
+        }
+    }
+
+    private fun renderExpandedActions() {
+        movieDetailActionFab.animate().rotation(180F)
+        movieDetailFavoritesFab.animate().translationY(resources.getDimension(R.dimen.standard_55)).alpha(1F)
+        movieDetailWatchlistFab.animate().translationY(resources.getDimension(R.dimen.standard_105)).alpha(1F)
+    }
+
+    private fun renderClosedActions() {
+        movieDetailActionFab.animate().rotation(0F)
+        movieDetailFavoritesFab.animate().translationY(0F).alpha(0F)
+        movieDetailWatchlistFab.animate().translationY(0F).alpha(0F)
     }
 
     class MovieDetailsGenreAdapter(private val genres: List<MovieGenreItem>) : RecyclerView.Adapter<MovieDetailsGenreAdapter.ViewHolder>() {

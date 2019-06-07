@@ -21,6 +21,7 @@ import com.jpp.mp.screens.main.search.SearchFragmentViewModel
 import com.jpp.mpaccount.account.UserAccountViewModel
 import com.jpp.mpaccount.account.lists.UserMovieListViewModel
 import com.jpp.mpaccount.login.LoginViewModel
+import com.jpp.mpmoviedetails.MovieDetailsActionViewModel
 import com.jpp.mpmoviedetails.MovieDetailsViewModel
 import dagger.Binds
 import dagger.Module
@@ -134,6 +135,11 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(MovieDetailsViewModel::class)
-    internal abstract fun getMovieDetailsViewModel(viewModel: MovieDetailsViewModel) : ViewModel
+    internal abstract fun getMovieDetailsViewModel(viewModel: MovieDetailsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MovieDetailsActionViewModel::class)
+    internal abstract fun getMovieDetailsActionViewModel(viewModel: MovieDetailsActionViewModel): ViewModel
 
 }
