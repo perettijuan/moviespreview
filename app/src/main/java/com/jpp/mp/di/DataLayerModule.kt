@@ -40,7 +40,10 @@ import com.jpp.mpdata.repository.search.SearchApi
 import com.jpp.mpdata.repository.search.SearchRepositoryImpl
 import com.jpp.mpdata.repository.session.MPSessionRepositoryImpl
 import com.jpp.mpdata.datasources.language.LanguageDb
+import com.jpp.mpdata.datasources.moviedetail.MovieDetailApi
+import com.jpp.mpdata.datasources.moviedetail.MovieDetailDb
 import com.jpp.mpdata.repository.language.LanguageRepositoryImpl
+import com.jpp.mpdata.repository.moviedetail.MovieDetailRepositoryImpl
 import com.jpp.mpdata.repository.support.SupportDb
 import com.jpp.mpdata.repository.support.SupportRepositoryImpl
 import com.jpp.mpdata.repository.tokens.AccessTokenRepositoryImpl
@@ -302,5 +305,24 @@ class DataLayerModule {
     @Provides
     fun providesMPAccessTokenRepository(accessTokenApi: AccessTokenApi)
             : AccessTokenRepository = AccessTokenRepositoryImpl(accessTokenApi)
+
+    /***************************************
+     ****** MOVIE DETAIL DEPENDENCIES ******
+     ***************************************/
+    @Singleton
+    @Provides
+    fun providesMovieDetailApi(mpApiInstance: MPApi): MovieDetailApi = mpApiInstance
+
+    @Singleton
+    @Provides
+    fun providesMovieDetailDb(roomDb: MPRoomDataBase,
+                              adapter: RoomModelAdapter,
+                              timestampHelper: CacheTimestampHelper) : MovieDetailDb = MovieDetailCache(roomDb, adapter, timestampHelper)
+
+    @Singleton
+    @Provides
+    fun providesMovieDetailRepository(movieDetailApi: MovieDetailApi,
+                                      movieDetailDb: MovieDetailDb) : MovieDetailRepository = MovieDetailRepositoryImpl(movieDetailApi, movieDetailDb)
+
 }
 

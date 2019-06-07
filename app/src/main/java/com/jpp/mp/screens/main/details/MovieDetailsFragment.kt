@@ -32,10 +32,10 @@ class MovieDetailsFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    override fun onAttach(context: Context?) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
-    }
+//    override fun onAttach(context: Context?) {
+//        AndroidSupportInjection.inject(this)
+//        super.onAttach(context)
+//    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_movie_details, container, false)
@@ -109,16 +109,16 @@ class MovieDetailsFragment : Fragment() {
                 detailsErrorView.asNoConnectivityError { withViewModel { retry() } }
                 renderError()
             }
-            is MovieDetailsViewState.ShowDetail -> {
-                with(viewState.detail) {
-                    detailsOverviewContentTxt.text = overview
-                    detailsPopularityContentTxt.text = popularity.toString()
-                    detailsVoteCountContentTxt.text = voteCount.toString()
-                    detailsReleaseDateContentTxt.text = releaseDate
-                    renderMovieGenres(genres)
-                }
-                renderContent()
-            }
+//            is MovieDetailsViewState.ShowDetail -> {
+//                with(viewState.detail) {
+//                    detailsOverviewContentTxt.text = overview
+//                    detailsPopularityContentTxt.text = popularity.toString()
+//                    detailsVoteCountContentTxt.text = voteCount.toString()
+//                    detailsReleaseDateContentTxt.text = releaseDate
+//                    renderMovieGenres(genres)
+//                }
+//                renderContent()
+//            }
         }
     }
 
@@ -183,31 +183,31 @@ class MovieDetailsFragment : Fragment() {
     }
 
 
-    private fun renderMovieGenres(genres: List<MovieGenreItem>) {
-        val layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
-        detailsGenresRv.layoutManager = layoutManager
-        detailsGenresRv.adapter = MovieDetailsGenreAdapter(genres)
-    }
-
-    class MovieDetailsGenreAdapter(private val genres: List<MovieGenreItem>) : RecyclerView.Adapter<MovieDetailsGenreAdapter.ViewHolder>() {
-
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(genres[position])
-
-        override fun getItemCount() = genres.size
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent.inflate(R.layout.list_item_details_genre))
-
-
-        class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
-            fun bind(genre: MovieGenreItem) {
-                with(genre) {
-                    itemView.genreListItemIv.setImageResource(icon)
-                    itemView.genreListItemTxt.text = itemView.getStringFromResources(name)
-                }
-            }
-
-        }
-    }
+//    private fun renderMovieGenres(genres: List<MovieGenreItem>) {
+//        val layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
+//        detailsGenresRv.layoutManager = layoutManager
+//        detailsGenresRv.adapter = MovieDetailsGenreAdapter(genres)
+//    }
+//
+//    class MovieDetailsGenreAdapter(private val genres: List<MovieGenreItem>) : RecyclerView.Adapter<MovieDetailsGenreAdapter.ViewHolder>() {
+//
+//
+//        override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(genres[position])
+//
+//        override fun getItemCount() = genres.size
+//
+//        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent.inflate(R.layout.list_item_details_genre))
+//
+//
+//        class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+//
+//            fun bind(genre: MovieGenreItem) {
+//                with(genre) {
+//                    itemView.genreListItemIv.setImageResource(icon)
+//                    itemView.genreListItemTxt.text = itemView.getStringFromResources(name)
+//                }
+//            }
+//
+//        }
+//    }
 }

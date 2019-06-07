@@ -19,8 +19,8 @@ object NavigationMovieDetails {
                 putString("transitionName", transitionName)
             }
 
-    fun movieId(args: Bundle) = args.getString("movieId")
-    fun imageUrl(args: Bundle) = args.getString("movieImageUrl")
-    fun title(args: Bundle) = args.getString("movieTitle")
-    fun transition(args: Bundle) = args.getString("transitionName")
+    fun movieId(args: Bundle) = args.getString("movieId") ?: throw IllegalStateException("Can't find movieId in arguments")
+    fun imageUrl(args: Bundle) = args.getString("movieImageUrl") ?: throw  IllegalStateException("Can't find movieImageUrl in arguments")
+    fun title(args: Bundle) = args.getString("movieTitle") ?: throw  IllegalStateException("Can't find movieTitle in arguments")
+    fun transition(args: Bundle) = args.getString("transitionName") ?: throw  IllegalStateException("Can't find transitionName in arguments")
 }
