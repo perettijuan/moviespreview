@@ -11,7 +11,11 @@ import com.jpp.mpdomain.repository.MovieDetailRepository
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.*
 import javax.inject.Inject
 
-//TODO JPP add tests
+/**
+ * Interactor to support the movie detail screen. This interactor takes care of accessing the
+ * repository layer to perform the inner state updates needed to provide functionality to the
+ * view layer.
+ */
 class MovieDetailsInteractor @Inject constructor(private val connectivityRepository: ConnectivityRepository,
                                                  private val movieDetailRepository: MovieDetailRepository,
                                                  private val languageRepository: LanguageRepository) {

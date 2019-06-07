@@ -24,7 +24,7 @@ sealed class MovieDetailViewState {
     /*
      * Shows when the VM indicates that a work is in progress.
      */
-    data class ShowLoading(val imageUrl: String) : MovieDetailViewState()
+    data class ShowLoading(val title: String) : MovieDetailViewState()
 
     /*
      * Shows the data of the movie detail.

@@ -32,7 +32,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-//TODO JPP add tests
+/**
+ * [MPScopedViewModel] to handle the state of the [MovieDetailsFragment]. It is a coroutine-scoped
+ * ViewModel, which indicates that some work will be executed in a background context and synced
+ * to the main context when over.
+ *
+ * It consumes data coming from the lower layers - exposed by interactors -
+ * and maps that data to view logic.
+ */
 class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                                 private val movieDetailsInteractor: MovieDetailsInteractor)
     : MPScopedViewModel(dispatchers) {
@@ -42,6 +49,9 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
     private var movieId: Double = 0.0
     private lateinit var movieTitle: String
 
+    /*
+     * Map the business logic coming from the interactor into view layer logic.
+     */
     init {
         _viewStates.addSource(movieDetailsInteractor.movieDetailEvents) { event ->
             when (event) {
@@ -52,12 +62,18 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
         }
     }
 
+    /**
+     * Called when the view is initialized.
+     */
     fun onInit(movieId: Double, movieTitle: String) {
         this.movieId = movieId
         this.movieTitle = movieTitle
         _viewStates.value = of(executeFetchMovieDetailStep(movieId, movieTitle))
     }
 
+    /**
+     * Called when the user retries after an error.
+     */
     fun onRetry() {
         _viewStates.value = of(executeFetchMovieDetailStep(movieId, movieTitle))
     }

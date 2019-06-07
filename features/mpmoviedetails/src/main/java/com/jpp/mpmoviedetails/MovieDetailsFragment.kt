@@ -26,6 +26,9 @@ import kotlinx.android.synthetic.main.fragment_movie_details.*
 import kotlinx.android.synthetic.main.layout_movie_detail_content.*
 import kotlinx.android.synthetic.main.list_item_movie_detail_genre.view.*
 
+/**
+ * Fragment used to show the details of a particular movie selected by the user.
+ */
 class MovieDetailsFragment : Fragment() {
 
     @Inject

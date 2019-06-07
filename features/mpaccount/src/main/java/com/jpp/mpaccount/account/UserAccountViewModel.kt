@@ -69,7 +69,7 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
     /**
      * Called when the user retries after an error.
      */
-    fun onUserRetry(posterSize: Int) {
+    fun onRetry(posterSize: Int) {
         moviesPosterTargetSize = posterSize
         _viewStates.value = of(executeGetUserAccountStep())
     }
