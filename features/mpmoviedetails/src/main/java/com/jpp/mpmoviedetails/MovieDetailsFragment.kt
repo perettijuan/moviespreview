@@ -2,25 +2,29 @@ package com.jpp.mpmoviedetails
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionInflater
-import com.jpp.mpdesign.ext.loadImageUrl
-import com.jpp.mpdesign.ext.withViewModel
+import com.jpp.mpdesign.ext.*
 import com.jpp.mpmoviedetails.NavigationMovieDetails.imageUrl
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieId
 import com.jpp.mpmoviedetails.NavigationMovieDetails.title
 import com.jpp.mpmoviedetails.NavigationMovieDetails.transition
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_movie_details.*
 import javax.inject.Inject
+import com.jpp.mpmoviedetails.MovieDetailViewState.ShowLoading
+import com.jpp.mpmoviedetails.MovieDetailViewState.ShowDetail
+import com.jpp.mpmoviedetails.MovieDetailViewState.ShowError
+import com.jpp.mpmoviedetails.MovieDetailViewState.ShowNotConnected
+import kotlinx.android.synthetic.main.fragment_movie_details.*
+import kotlinx.android.synthetic.main.layout_movie_detail_content.*
+import kotlinx.android.synthetic.main.list_item_movie_detail_genre.view.*
 
 class MovieDetailsFragment : Fragment() {
 
@@ -45,22 +49,19 @@ class MovieDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         arguments?.let { args ->
-            mainImageView.transitionName = transition(args)
-            mainImageView.loadImageUrl(imageUrl(args))
+            with(movieDetailImageView) {
+                transitionName = transition(args)
+                loadImageUrl(imageUrl(args))
+            }
 
             withViewModel {
                 viewStates.observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { it.actionIfNotHandled { viewState -> renderViewState(viewState) } })
-                onInit(
-                        movieId(args).toDouble(),
-                        title(args),
-                        imageUrl(args)
-                )
+                onInit(movieId(args).toDouble(), title(args))
             }
 
         } ?: run {
             throw IllegalStateException("Arguments are needed to start the movie details view")
         }
-
     }
 
     /**
@@ -69,6 +70,72 @@ class MovieDetailsFragment : Fragment() {
     private fun withViewModel(action: MovieDetailsViewModel.() -> Unit) = withViewModel<MovieDetailsViewModel>(viewModelFactory) { action() }
 
     private fun renderViewState(viewState: MovieDetailViewState) {
-        Log.d("JPPLOG", "VS $viewState")
+        when (viewState) {
+            is ShowLoading -> renderLoading()
+            is ShowError -> renderUnknownError()
+            is ShowNotConnected -> renderConnectivityError()
+            is ShowDetail -> renderDetail(viewState)
+        }
+    }
+
+    private fun renderDetail(detail: ShowDetail) {
+        with(detail) {
+            detailOverviewContentTxt.text = overview
+            detailPopularityContentTxt.text = popularity
+            detailVoteCountContentTxt.text = voteCount
+            detailReleaseDateContentTxt.text = releaseDate
+
+            val layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
+            detailGenresRv.layoutManager = layoutManager
+            detailGenresRv.adapter = MovieDetailsGenreAdapter(genres)
+        }
+
+        movieDetailErrorView.setInvisible()
+        movieDetailLoadingView.setInvisible()
+        movieDetailContent.setVisible()
+    }
+
+    private fun renderLoading() {
+        movieDetailErrorView.setInvisible()
+        movieDetailContent.setInvisible()
+        movieDetailLoadingView.setVisible()
+    }
+
+    private fun renderUnknownError() {
+        movieDetailContent.setInvisible()
+        movieDetailLoadingView.setInvisible()
+
+        movieDetailErrorView.asUnknownError { withViewModel { onRetry() } }
+        movieDetailErrorView.setVisible()
+    }
+
+    private fun renderConnectivityError() {
+        movieDetailContent.setInvisible()
+        movieDetailLoadingView.setInvisible()
+
+        movieDetailErrorView.asNoConnectivityError { withViewModel { onRetry() } }
+        movieDetailErrorView.setVisible()
+    }
+
+    class MovieDetailsGenreAdapter(private val genres: List<MovieGenreItem>) : RecyclerView.Adapter<MovieDetailsGenreAdapter.ViewHolder>() {
+
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(genres[position])
+
+        override fun getItemCount() = genres.size
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent.inflate(R.layout.list_item_movie_detail_genre))
+
+
+        class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+            fun bind(genre: MovieGenreItem) {
+                with(genre) {
+                    itemView.genreListItemIv.setImageResource(icon)
+                    itemView.genreListItemTxt.text = itemView.getStringFromResources(name)
+                }
+            }
+
+        }
     }
 }

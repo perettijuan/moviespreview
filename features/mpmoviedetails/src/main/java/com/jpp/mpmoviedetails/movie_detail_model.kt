@@ -24,7 +24,7 @@ sealed class MovieDetailViewState {
     /*
      * Shows when the VM indicates that a work is in progress.
      */
-    data class ShowLoading(val title: String, val imageUrl: String) : MovieDetailViewState()
+    data class ShowLoading(val imageUrl: String) : MovieDetailViewState()
 
     /*
      * Shows the data of the movie detail.
@@ -32,9 +32,9 @@ sealed class MovieDetailViewState {
     data class ShowDetail(val title: String,
                           val overview: String,
                           val releaseDate: String,
-                          val voteCount: Double,
-                          val voteAverage: Float,
-                          val popularity: Float,
+                          val voteCount: String,
+                          val voteAverage: String,
+                          val popularity: String,
                           val genres: List<MovieGenreItem>) : MovieDetailViewState()
 }
 

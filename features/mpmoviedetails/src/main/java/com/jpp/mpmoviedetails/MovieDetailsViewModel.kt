@@ -41,7 +41,6 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<MovieDetailViewState>>() }
     private var movieId: Double = 0.0
     private lateinit var movieTitle: String
-    private lateinit var movieImageUrl: String
 
     init {
         _viewStates.addSource(movieDetailsInteractor.movieDetailEvents) { event ->
@@ -53,11 +52,14 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
         }
     }
 
-    fun onInit(movieId: Double, movieTitle: String, movieImageUrl: String) {
+    fun onInit(movieId: Double, movieTitle: String) {
         this.movieId = movieId
         this.movieTitle = movieTitle
-        this.movieImageUrl = movieImageUrl
-        executeFetchMovieDetailStep(movieId, movieTitle, movieImageUrl)
+        _viewStates.value = of(executeFetchMovieDetailStep(movieId, movieTitle))
+    }
+
+    fun onRetry() {
+        _viewStates.value = of(executeFetchMovieDetailStep(movieId, movieTitle))
     }
 
     /**
@@ -67,9 +69,9 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
     val viewStates: LiveData<HandledViewState<MovieDetailViewState>> get() = _viewStates
 
 
-    private fun executeFetchMovieDetailStep(movieId: Double, movieTitle: String, movieImageUrl: String): MovieDetailViewState {
+    private fun executeFetchMovieDetailStep(movieId: Double, movieTitle: String): MovieDetailViewState {
         withMovieDetailsInteractor { fetchMovieDetail(movieId) }
-        return ShowLoading(movieTitle, movieImageUrl)
+        return ShowLoading(movieTitle)
     }
 
     private fun withMovieDetailsInteractor(action: MovieDetailsInteractor.() -> Unit) {
@@ -87,9 +89,9 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
                             title = title,
                             overview = overview,
                             releaseDate = release_date,
-                            voteCount = vote_count,
-                            voteAverage = vote_average,
-                            popularity = popularity,
+                            voteCount = vote_count.toString(),
+                            voteAverage = vote_average.toString(),
+                            popularity = popularity.toString(),
                             genres = genres.map { genre -> mapGenreToIcon(genre) }
                     )
                 }

@@ -44,7 +44,7 @@
         <attr name="valueText" format="reference"/>
     </declare-styleable>
 
-    <declare-styleable name="MPItemSelectionView">
+    <declare-styleable name="MPSimpleItemSelectionView">
         <attr name="itemText" format="reference" />
     </declare-styleable>
 

@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/mainCoordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/mainAppBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/mainCollapsingToolbarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:contentScrim="?attr/colorPrimary"
@@ -22,7 +19,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
-                android:id="@+id/mainImageView"
+                android:id="@+id/movieDetailImageView"
                 android:layout_width="?attr/mpMovieItemImageWidth"
                 android:layout_height="?attr/mpMovieItemImageHeight"
                 android:scaleType="centerCrop"
@@ -37,7 +34,6 @@
 
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/detailsContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
@@ -45,29 +41,40 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/fragmentDetailsRoot"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:animateLayoutChanges="true">
 
             <com.jpp.mpdesign.views.MPErrorView
-                android:id="@+id/detailsErrorView"
+                android:id="@+id/movieDetailErrorView"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ProgressBar
-                android:id="@+id/detailsLoadingView"
+                android:id="@+id/movieDetailLoadingView"
                 style="@style/MPProgressBar"
                 android:visibility="invisible"
+                app:layout_constraintVertical_bias="0.10"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <include
+                android:id="@+id/movieDetailContent"
+                layout="@layout/layout_movie_detail_content"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
