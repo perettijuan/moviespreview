@@ -1,4 +1,4 @@
-package com.jpp.mp.ext
+package com.jpp.mp.common.extensions
 
 import android.os.Bundle
 
@@ -8,4 +8,8 @@ import android.os.Bundle
  */
 fun Bundle?.getStringOrDefault(key: String, default: String = ""): String {
     return this?.let { getString(key) } ?: default
+}
+
+fun Bundle?.getStringOrFail(key: String) : String {
+    return this?.let { getString(key) } ?: throw IllegalStateException("Can't find the provided $key in this Bundle")
 }

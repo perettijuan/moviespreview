@@ -1,6 +1,7 @@
 package com.jpp.mpmoviedetails
 
 import android.os.Bundle
+import com.jpp.mp.common.extensions.getStringOrFail
 
 /**
  * Contains utilities to perform navigation to movie details details.
@@ -19,8 +20,8 @@ object NavigationMovieDetails {
                 putString("transitionName", transitionName)
             }
 
-    fun movieId(args: Bundle) = args.getString("movieId") ?: throw IllegalStateException("Can't find movieId in arguments")
-    fun imageUrl(args: Bundle) = args.getString("movieImageUrl") ?: throw  IllegalStateException("Can't find movieImageUrl in arguments")
-    fun title(args: Bundle) = args.getString("movieTitle") ?: throw  IllegalStateException("Can't find movieTitle in arguments")
-    fun transition(args: Bundle) = args.getString("transitionName") ?: throw  IllegalStateException("Can't find transitionName in arguments")
+    fun movieId(args: Bundle?) = args.getStringOrFail("movieId")
+    fun imageUrl(args: Bundle?) = args.getStringOrFail("movieImageUrl")
+    fun title(args: Bundle?) = args.getStringOrFail("movieTitle")
+    fun transition(args: Bundle?) = args.getStringOrFail("transitionName")
 }

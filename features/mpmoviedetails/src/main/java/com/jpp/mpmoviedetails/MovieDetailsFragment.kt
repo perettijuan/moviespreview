@@ -51,19 +51,14 @@ class MovieDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        arguments?.let { args ->
-            with(movieDetailImageView) {
-                transitionName = transition(args)
-                loadImageUrl(imageUrl(args))
-            }
+        with(movieDetailImageView) {
+            transitionName = transition(arguments)
+            loadImageUrl(imageUrl(arguments))
+        }
 
-            withViewModel {
-                viewStates.observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { it.actionIfNotHandled { viewState -> renderViewState(viewState) } })
-                onInit(movieId(args).toDouble(), title(args))
-            }
-
-        } ?: run {
-            throw IllegalStateException("Arguments are needed to start the movie details view")
+        withViewModel {
+            viewStates.observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { it.actionIfNotHandled { viewState -> renderViewState(viewState) } })
+            onInit(movieId(arguments).toDouble(), title(arguments))
         }
     }
 
