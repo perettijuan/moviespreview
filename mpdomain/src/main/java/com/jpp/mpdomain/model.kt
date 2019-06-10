@@ -344,7 +344,7 @@ data class UserAccount(
  * [rated] whether the user has rated the movie or not.
  * [watchlist] whether the user has added the movie to his watchlist or not.
  */
-data class MovieAccountState(
+data class MovieState(
         val id: Double,
         val favorite: Boolean,
         val rated: Boolean,

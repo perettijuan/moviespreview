@@ -1,26 +1,56 @@
 package com.jpp.mpmoviedetails
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.MediatorLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.viewstate.HandledViewState
 import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
-import com.jpp.mpmoviedetails.MovieDetailActionViewState.Closed
-import com.jpp.mpmoviedetails.MovieDetailActionViewState.Open
+import com.jpp.mpdomain.MovieState
+import com.jpp.mpmoviedetails.MovieDetailActionViewState.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.NotConnectedToNetwork
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UserNotLogged
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UnknownError
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.FetchSuccess
 
-class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDispatchers)
-    : MPScopedViewModel(dispatchers) {
+class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
+                                                      private val movieDetailsInteractor: MovieDetailsInteractor) : MPScopedViewModel(dispatchers) {
 
-    private val _viewStates by lazy { MutableLiveData<HandledViewState<MovieDetailActionViewState>>() }
-    private var currentActionState: MovieDetailActionViewState = Closed
+    private val _viewStates by lazy { MediatorLiveData<HandledViewState<MovieDetailActionViewState>>() }
+    private var movieId: Double = 0.0
+
+    init {
+        _viewStates.addSource(movieDetailsInteractor.movieStateEvents) { event ->
+            when (event) {
+                is NotConnectedToNetwork -> pushActionState(ShowError)
+                is UserNotLogged -> TODO()
+                is UnknownError -> pushActionState(ShowError)
+                is FetchSuccess -> pushActionState(mapMovieState(event.data))
+            }
+        }
+    }
+
+    fun onInit(movieId: Double) {
+        this.movieId = movieId
+        _viewStates.value = of(fetchMovieState(movieId))
+    }
 
     fun onMainActionSelected() {
-        pushActionState(when (currentActionState) {
-            is Closed -> Open
-            is Open -> Closed
-        })
+        viewStates.value?.peekContent()?.let { currentViewState ->
+            pushActionState(when (currentViewState) {
+                is ShowLoading -> ShowLoading
+                is ShowError -> ShowError
+                is ShowState -> {
+                    currentViewState.copy(
+                            shouldAnimate = true,
+                            showOpen = !currentViewState.showOpen
+                    )
+                }
+            })
+        }
     }
 
     /**
@@ -30,7 +60,30 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
     val viewStates: LiveData<HandledViewState<MovieDetailActionViewState>> get() = _viewStates
 
     private fun pushActionState(state: MovieDetailActionViewState) {
-        currentActionState = state
         _viewStates.value = of(state)
+    }
+
+    private fun fetchMovieState(movieId: Double): MovieDetailActionViewState {
+        withMovieDetailsInteractor { fetchMovieState(movieId) }
+        return ShowLoading
+    }
+
+    private fun mapMovieState(movieState: MovieState): MovieDetailActionViewState {
+        val favState = when(movieState.favorite) {
+            true -> ActionButtonState.IsFavorite
+            false -> ActionButtonState.IsNotFavorite
+        }
+
+        return ShowState(
+                showOpen = false,
+                shouldAnimate = false,
+                favorite = favState,
+                isInWatchlist = movieState.watchlist,
+                isRated = movieState.rated
+        )
+    }
+
+    private fun withMovieDetailsInteractor(action: MovieDetailsInteractor.() -> Unit) {
+        launch { withContext(dispatchers.default()) { action(movieDetailsInteractor) } }
     }
 }

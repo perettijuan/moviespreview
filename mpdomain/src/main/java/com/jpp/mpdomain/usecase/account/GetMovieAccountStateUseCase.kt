@@ -1,8 +1,6 @@
 package com.jpp.mpdomain.usecase.account
 
-import com.jpp.mpdomain.Connectivity.Connected
-import com.jpp.mpdomain.Connectivity.Disconnected
-import com.jpp.mpdomain.MovieAccountState
+import com.jpp.mpdomain.MovieState
 import com.jpp.mpdomain.repository.AccountRepository
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.SessionRepository
@@ -23,7 +21,7 @@ interface GetMovieAccountStateUseCase {
         object ErrorNoConnectivity : MovieAccountStateResult()
         object ErrorUnknown : MovieAccountStateResult()
         object UserNotLogged : MovieAccountStateResult()
-        data class Success(val movieState: MovieAccountState) : MovieAccountStateResult()
+        data class Success(val movieState: MovieState) : MovieAccountStateResult()
     }
 
     /**

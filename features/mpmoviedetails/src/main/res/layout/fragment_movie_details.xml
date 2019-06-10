@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -86,6 +87,7 @@
         android:id="@+id/movieDetailFavoritesFab"
         style="@style/FabMovieDetailAction"
         android:src="@drawable/ic_favorite_empty"
+        android:visibility="invisible"
         app:layout_anchor="@id/movieDetailAppBarLayout"
         app:layout_anchorGravity="bottom|right|end" />
 
@@ -93,6 +95,7 @@
         android:id="@+id/movieDetailWatchlistFab"
         style="@style/FabMovieDetailAction"
         android:src="@drawable/ic_adventure"
+        android:visibility="invisible"
         app:layout_anchor="@id/movieDetailAppBarLayout"
         app:layout_anchorGravity="bottom|right|end" />
 
@@ -100,6 +103,17 @@
         android:id="@+id/movieDetailActionFab"
         style="@style/FabMovieDetailMainAction"
         android:src="@drawable/ic_arrow_down"
+        android:visibility="invisible"
+        app:layout_anchor="@id/movieDetailAppBarLayout"
+        app:layout_anchorGravity="bottom|right|end" />
+
+    <ProgressBar
+        android:id="@+id/movieDetailActionsLoadingView"
+        style="@style/MPProgressBar"
+        android:layout_width="?attr/mpDetailsActionLoadingSize"
+        android:layout_height="?attr/mpDetailsActionLoadingSize"
+        android:layout_margin="?attr/mpDetailsActionMargin"
+        android:visibility="invisible"
         app:layout_anchor="@id/movieDetailAppBarLayout"
         app:layout_anchorGravity="bottom|right|end" />
 

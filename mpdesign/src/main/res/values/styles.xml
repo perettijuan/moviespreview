@@ -16,8 +16,12 @@
         <item name="mpMovieItemImageWidth">@dimen/movie_item_image_width</item>
         <item name="mpMovieItemBottomIconSize">@dimen/movie_item_bottom_bar_icon_size</item>
         <item name="mpMovieItemMaxSize">@dimen/movie_item_max_height</item>
+
         <item name="mpDetailsVerticalSpacing">@dimen/movie_details_vertical_spacing</item>
         <item name="mpDetailsContentPadding">@dimen/movie_details_content_padding</item>
+        <item name="mpDetailsActionLoadingSize">@dimen/movie_details_actions_loading_size</item>
+        <item name="mpDetailsActionMargin">@dimen/movie_details_actions_margin</item>
+
         <item name="mpSearchImageSize">@dimen/search_body_icon_size</item>
         <item name="mpSearchItemImageSize">@dimen/search_result_image_size</item>
         <item name="mpSearchItemTitlePadding">@dimen/search_result_title_padding</item>

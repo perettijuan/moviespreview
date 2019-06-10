@@ -8,6 +8,7 @@ import com.jpp.mpdata.datasources.configuration.ConfigurationApi
 import com.jpp.mpdata.datasources.moviedetail.MovieDetailApi
 import com.jpp.mpdata.repository.credits.CreditsApi
 import com.jpp.mpdata.datasources.moviepage.MoviesApi
+import com.jpp.mpdata.datasources.moviestate.MovieStateApi
 import com.jpp.mpdata.repository.person.PersonApi
 import com.jpp.mpdata.repository.search.SearchApi
 import com.jpp.mpdomain.*
@@ -30,7 +31,8 @@ open class MPApi
         SessionApi,
         AccountApi,
         AccessTokenApi,
-        MovieDetailApi {
+        MovieDetailApi,
+        MovieStateApi {
 
     override fun getAppConfiguration(): AppConfiguration? {
         return tryCatchOrReturnNull { API.getAppConfiguration(API_KEY) }
@@ -94,7 +96,7 @@ open class MPApi
         }
     }
 
-    override fun getMovieAccountState(movieId: Double, session: Session): MovieAccountState? {
+    override fun getMovieAccountState(movieId: Double, session: Session): MovieState? {
         return tryCatchOrReturnNull { API.getMovieAccountState(movieId, session.session_id, API_KEY) }
     }
 

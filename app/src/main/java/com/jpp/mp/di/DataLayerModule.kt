@@ -42,8 +42,10 @@ import com.jpp.mpdata.repository.session.MPSessionRepositoryImpl
 import com.jpp.mpdata.datasources.language.LanguageDb
 import com.jpp.mpdata.datasources.moviedetail.MovieDetailApi
 import com.jpp.mpdata.datasources.moviedetail.MovieDetailDb
+import com.jpp.mpdata.datasources.moviestate.MovieStateApi
 import com.jpp.mpdata.repository.language.LanguageRepositoryImpl
 import com.jpp.mpdata.repository.moviedetail.MovieDetailRepositoryImpl
+import com.jpp.mpdata.repository.moviestate.MovieStateRepositoryImpl
 import com.jpp.mpdata.repository.support.SupportDb
 import com.jpp.mpdata.repository.support.SupportRepositoryImpl
 import com.jpp.mpdata.repository.tokens.AccessTokenRepositoryImpl
@@ -103,7 +105,7 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesLanguageMonitor(context: Context) : LanguageMonitor = LanguageMonitor.Impl(context)
+    fun providesLanguageMonitor(context: Context): LanguageMonitor = LanguageMonitor.Impl(context)
 
 
     /***********************************
@@ -317,12 +319,20 @@ class DataLayerModule {
     @Provides
     fun providesMovieDetailDb(roomDb: MPRoomDataBase,
                               adapter: RoomModelAdapter,
-                              timestampHelper: CacheTimestampHelper) : MovieDetailDb = MovieDetailCache(roomDb, adapter, timestampHelper)
+                              timestampHelper: CacheTimestampHelper): MovieDetailDb = MovieDetailCache(roomDb, adapter, timestampHelper)
 
     @Singleton
     @Provides
     fun providesMovieDetailRepository(movieDetailApi: MovieDetailApi,
-                                      movieDetailDb: MovieDetailDb) : MovieDetailRepository = MovieDetailRepositoryImpl(movieDetailApi, movieDetailDb)
+                                      movieDetailDb: MovieDetailDb): MovieDetailRepository = MovieDetailRepositoryImpl(movieDetailApi, movieDetailDb)
+
+    @Singleton
+    @Provides
+    fun providesMovieStateApi(mpApiInstance: MPApi): MovieStateApi = mpApiInstance
+
+    @Singleton
+    @Provides
+    fun providesMovieStateRepository(movieStateApi: MovieStateApi): MovieStateRepository = MovieStateRepositoryImpl(movieStateApi)
 
 }
 

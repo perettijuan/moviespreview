@@ -1,21 +1,11 @@
 package com.jpp.mpdomain.usecase.account
 
-import com.jpp.mpdomain.Connectivity
-import com.jpp.mpdomain.MovieAccountState
-import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.repository.AccountRepository
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.SessionRepository
-import com.jpp.mpdomain.usecase.account.GetMovieAccountStateUseCase.MovieAccountStateResult.*
-import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.mockk
-import io.mockk.verify
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 //TODO JPP do something with me
@@ -78,7 +68,7 @@ class GetMovieAccountStateUseCaseTest {
 //    fun `Should return Success when connected to network and can get account state`() {
 //        val session = mockk<Session>()
 //        val movieId = 1.toDouble()
-//        val accountState = mockk<MovieAccountState>()
+//        val accountState = mockk<MovieState>()
 //        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
 //        every { sessionRepository.getCurrentSession() } returns session
 //        every { accountRepository.getMovieAccountState(any(), any()) } returns accountState

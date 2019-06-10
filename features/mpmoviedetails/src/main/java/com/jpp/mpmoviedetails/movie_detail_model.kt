@@ -38,9 +38,22 @@ sealed class MovieDetailViewState {
                           val genres: List<MovieGenreItem>) : MovieDetailViewState()
 }
 
-sealed class MovieDetailActionViewState {
-    object Open : MovieDetailActionViewState()
-    object Closed : MovieDetailActionViewState()
+/**
+ * Represents the view state that the action item in the movie detail can assume.
+ */
+sealed class MovieDetailActionViewState(val animate: Boolean, val open: Boolean) {
+    object ShowLoading : MovieDetailActionViewState(animate = false, open = false)
+    object ShowError : MovieDetailActionViewState(animate = false, open = false)
+    data class ShowState(val showOpen: Boolean,
+                         val shouldAnimate: Boolean,
+                         val favorite: ActionButtonState,
+                         val isRated: Boolean,
+                         val isInWatchlist: Boolean) : MovieDetailActionViewState(animate = shouldAnimate, open = showOpen)
+}
+
+sealed class ActionButtonState(@DrawableRes val resId: Int) {
+    object IsFavorite : ActionButtonState(R.drawable.ic_favorite_filled)
+    object IsNotFavorite : ActionButtonState(R.drawable.ic_favorite_empty)
 }
 
 

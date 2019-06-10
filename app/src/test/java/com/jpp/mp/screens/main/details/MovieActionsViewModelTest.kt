@@ -1,7 +1,7 @@
 package com.jpp.mp.screens.main.details
 
 import com.jpp.mp.screens.main.TestCoroutineDispatchers
-import com.jpp.mpdomain.MovieAccountState
+import com.jpp.mpdomain.MovieState
 import com.jpp.mpdomain.usecase.account.GetMovieAccountStateUseCase
 import com.jpp.mpdomain.usecase.account.MarkMovieAsFavoriteUseCase
 import com.jpp.mptestutils.InstantTaskExecutorExtension
@@ -65,7 +65,7 @@ class MovieActionsViewModelTest {
                                                                   expectedFinalState: MovieActionsState) {
         // First, set the VM in the proper state
         val ucResponse = GetMovieAccountStateUseCase.MovieAccountStateResult.Success(
-                MovieAccountState(121.toDouble(), favorite = initialFavState, rated = false, watchlist = false))
+                MovieState(121.toDouble(), favorite = initialFavState, rated = false, watchlist = false))
         every { getMovieAccountStateUseCase.getMovieAccountState(any()) } returns ucResponse
 
         subject.init(movieDetailId)
@@ -101,12 +101,12 @@ class MovieActionsViewModelTest {
                 ),
                 Arguments.of(
                         GetMovieAccountStateUseCase.MovieAccountStateResult.Success(
-                                MovieAccountState(121.toDouble(), favorite = true, rated = false, watchlist = false)),
+                                MovieState(121.toDouble(), favorite = true, rated = false, watchlist = false)),
                         MovieActionsState.Shown(isFavorite = true)
                 ),
                 Arguments.of(
                         GetMovieAccountStateUseCase.MovieAccountStateResult.Success(
-                                MovieAccountState(121.toDouble(), favorite = false, rated = false, watchlist = false)),
+                                MovieState(121.toDouble(), favorite = false, rated = false, watchlist = false)),
                         MovieActionsState.Shown(isFavorite = false)
                 )
         )

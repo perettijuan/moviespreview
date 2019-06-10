@@ -33,6 +33,8 @@
     <!-- Details Screen -->
     <dimen name="movie_details_vertical_spacing">10dp</dimen>
     <dimen name="movie_details_content_padding">20dp</dimen>
+    <dimen name="movie_details_actions_loading_size">50dp</dimen>
+    <dimen name="movie_details_actions_margin">6dp</dimen>
 
     <!-- Search -->
     <dimen name="search_body_icon_size">300dp</dimen>

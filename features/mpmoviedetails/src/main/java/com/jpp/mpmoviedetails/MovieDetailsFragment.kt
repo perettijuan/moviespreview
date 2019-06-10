@@ -12,21 +12,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionInflater
 import com.jpp.mpdesign.ext.*
+import com.jpp.mpmoviedetails.MovieDetailViewState.*
 import com.jpp.mpmoviedetails.NavigationMovieDetails.imageUrl
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieId
 import com.jpp.mpmoviedetails.NavigationMovieDetails.title
 import com.jpp.mpmoviedetails.NavigationMovieDetails.transition
 import dagger.android.support.AndroidSupportInjection
-import javax.inject.Inject
-import com.jpp.mpmoviedetails.MovieDetailViewState.ShowLoading
-import com.jpp.mpmoviedetails.MovieDetailViewState.ShowDetail
-import com.jpp.mpmoviedetails.MovieDetailViewState.ShowError
-import com.jpp.mpmoviedetails.MovieDetailViewState.ShowNotConnected
 import kotlinx.android.synthetic.main.fragment_movie_details.*
 import kotlinx.android.synthetic.main.layout_movie_detail_content.*
 import kotlinx.android.synthetic.main.list_item_movie_detail_genre.view.*
-import com.jpp.mpmoviedetails.MovieDetailActionViewState.Closed
-import com.jpp.mpmoviedetails.MovieDetailActionViewState.Open
+import javax.inject.Inject
 
 /**
  * Fragment used to show the details of a particular movie selected by the user.
@@ -65,6 +60,7 @@ class MovieDetailsFragment : Fragment() {
 
         withActionsViewModel {
             viewStates.observe(this@MovieDetailsFragment, Observer { it.actionIfNotHandled { viewState -> renderActionViewState(viewState) } })
+            onInit(movieId(arguments).toDouble())
         }
 
         movieDetailActionFab.setOnClickListener { withActionsViewModel { onMainActionSelected() } }
@@ -74,6 +70,7 @@ class MovieDetailsFragment : Fragment() {
      * Helper function to execute actions with the [MovieDetailsViewModel].
      */
     private fun withViewModel(action: MovieDetailsViewModel.() -> Unit) = withViewModel<MovieDetailsViewModel>(viewModelFactory) { action() }
+
     private fun withActionsViewModel(action: MovieDetailsActionViewModel.() -> Unit) = withViewModel<MovieDetailsActionViewModel>(viewModelFactory) { action() }
 
     private fun renderViewState(viewState: MovieDetailViewState) {
@@ -126,8 +123,17 @@ class MovieDetailsFragment : Fragment() {
 
     private fun renderActionViewState(actionViewState: MovieDetailActionViewState) {
         when (actionViewState) {
-            is Closed -> renderClosedActions()
-            is Open -> renderExpandedActions()
+            is MovieDetailActionViewState.ShowLoading -> renderLoadingActions()
+            is MovieDetailActionViewState.ShowError -> TODO()
+            is MovieDetailActionViewState.ShowState -> renderActionsState(actionViewState)
+        }
+
+
+        if (actionViewState.animate) {
+            when (actionViewState.open) {
+                true -> renderExpandedActions()
+                false -> renderClosedActions()
+            }
         }
     }
 
@@ -141,6 +147,27 @@ class MovieDetailsFragment : Fragment() {
         movieDetailActionFab.animate().rotation(0F)
         movieDetailFavoritesFab.animate().translationY(0F).alpha(0F)
         movieDetailWatchlistFab.animate().translationY(0F).alpha(0F)
+    }
+
+    private fun renderLoadingActions() {
+        movieDetailActionFab.setInvisible()
+        movieDetailFavoritesFab.setInvisible()
+        movieDetailWatchlistFab.setInvisible()
+
+        movieDetailActionsLoadingView.setVisible()
+    }
+
+    private fun renderActionsState(movieState: MovieDetailActionViewState.ShowState) {
+        with(movieState) {
+            movieDetailFavoritesFab.setImageResource(favorite.resId)
+        }
+
+
+        movieDetailActionsLoadingView.setInvisible()
+
+        movieDetailActionFab.setVisible()
+        movieDetailFavoritesFab.setVisible()
+        movieDetailWatchlistFab.setVisible()
     }
 
     class MovieDetailsGenreAdapter(private val genres: List<MovieGenreItem>) : RecyclerView.Adapter<MovieDetailsGenreAdapter.ViewHolder>() {
