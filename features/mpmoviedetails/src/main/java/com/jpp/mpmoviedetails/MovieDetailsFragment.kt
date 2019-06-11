@@ -110,7 +110,10 @@ class MovieDetailsFragment : Fragment() {
         movieDetailContent.setInvisible()
         movieDetailLoadingView.setInvisible()
 
-        movieDetailErrorView.asUnknownError { withViewModel { onRetry() } }
+        movieDetailErrorView.asUnknownError {
+            withViewModel { onRetry() }
+            withActionsViewModel { onRetry() }
+        }
         movieDetailErrorView.setVisible()
     }
 
@@ -118,20 +121,31 @@ class MovieDetailsFragment : Fragment() {
         movieDetailContent.setInvisible()
         movieDetailLoadingView.setInvisible()
 
-        movieDetailErrorView.asNoConnectivityError { withViewModel { onRetry() } }
+        movieDetailErrorView.asNoConnectivityError {
+            withViewModel { onRetry() }
+            withActionsViewModel { onRetry() }
+        }
         movieDetailErrorView.setVisible()
     }
 
+    /*
+ * TODO
+     * 2 - process user not logged
+*/
     private fun renderActionViewState(actionViewState: MovieDetailActionViewState) {
         when (actionViewState) {
             is MovieDetailActionViewState.ShowLoading -> renderLoadingActions()
-            is MovieDetailActionViewState.ShowError -> TODO()
-            is MovieDetailActionViewState.ShowState -> renderActionsState(actionViewState)
+            is MovieDetailActionViewState.ShowError -> snackBarNoAction(detailsContent, R.string.unexpected_action_error)
+            is MovieDetailActionViewState.ShowMovieState -> renderMovieState(actionViewState)
+            is MovieDetailActionViewState.ShowNoMovieState -> renderVisibleActions()
+            is MovieDetailActionViewState.ShowUserNotLogged -> snackBar(detailsContent, R.string.account_need_to_login, R.string.login_generic) {
+                TODO()
+            }
         }
 
 
         if (actionViewState.animate) {
-            when (actionViewState.open) {
+            when (actionViewState.expanded) {
                 true -> renderExpandedActions()
                 false -> renderClosedActions()
             }
@@ -150,6 +164,14 @@ class MovieDetailsFragment : Fragment() {
         movieDetailWatchlistFab.animate().translationY(0F).alpha(0F)
     }
 
+    private fun renderVisibleActions() {
+        movieDetailActionsLoadingView.setInvisible()
+
+        movieDetailFavoritesFab.setVisible()
+        movieDetailWatchlistFab.setVisible()
+        movieDetailActionFab.setVisible()
+    }
+
     private fun renderLoadingActions() {
         movieDetailActionFab.setInvisible()
         movieDetailFavoritesFab.setInvisible()
@@ -158,8 +180,8 @@ class MovieDetailsFragment : Fragment() {
         movieDetailActionsLoadingView.setVisible()
     }
 
-    private fun renderActionsState(movieState: MovieDetailActionViewState.ShowState) {
-        when(movieState.favorite) {
+    private fun renderMovieState(movieState: MovieDetailActionViewState.ShowMovieState) {
+        when (movieState.favorite) {
             is ActionButtonState.ShowAsEmpty -> {
                 movieDetailFavoritesFab.asClickable()
                 movieDetailFavoritesFab.asEmpty()

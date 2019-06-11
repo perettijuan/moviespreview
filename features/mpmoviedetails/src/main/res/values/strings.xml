@@ -24,4 +24,7 @@
     <string name="western_genre">Western</string>
     <string name="generic_genre">Generic</string>
     <string name="movie_credits_title">Credits</string>
+
+    <string name="account_need_to_login">You need to be logged in to execute this action.</string>
+    <string name="unexpected_action_error">Something went wrong. Please, try again later.</string>
 </resources>

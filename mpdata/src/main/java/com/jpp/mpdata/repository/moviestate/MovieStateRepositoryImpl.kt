@@ -3,6 +3,7 @@ package com.jpp.mpdata.repository.moviestate
 import com.jpp.mpdata.datasources.moviestate.MovieStateApi
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpdomain.Session
+import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.repository.MovieStateRepository
 
 class MovieStateRepositoryImpl(private val movieStateApi: MovieStateApi) : MovieStateRepository {
@@ -14,5 +15,10 @@ class MovieStateRepositoryImpl(private val movieStateApi: MovieStateApi) : Movie
          * to sync the state with the API
          */
         return movieStateApi.getMovieAccountState(movieId, session)
+    }
+
+    override fun updateFavoriteMovieState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean {
+        return movieStateApi
+                .updateFavoriteMovieState(movieId, asFavorite, userAccount, session)?.let { true } ?: false
     }
 }

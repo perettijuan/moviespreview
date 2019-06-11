@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
          * Manage inner navigation: since we have multiple home destinations (all the fragments that
          * are sub-classes of MoviesFragment) we need to manage the ActionBar button click for some cases (the
          * burger or the arrow). If we fail to do so, the navigation library is assuming we're trying to
-         * open the navigate drawer from the current destination.
+         * expanded the navigate drawer from the current destination.
          * The logic here determinate if the current destination is one of the non-home destination fragments
          * (the ones that are deeper in the navigation structure) and if it is the case asks the navigate controller
          * to navigate one step up.

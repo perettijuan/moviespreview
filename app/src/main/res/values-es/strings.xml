@@ -43,6 +43,5 @@
 
     <!-- Account -->
     <string name="account_title">Cuenta</string>
-    <string name="account_need_to_login">Debes estar registrado para ejecutar esta acción.</string>
 
 </resources>

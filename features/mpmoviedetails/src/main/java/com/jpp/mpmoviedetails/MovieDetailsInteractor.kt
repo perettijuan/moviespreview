@@ -6,6 +6,8 @@ import com.jpp.mpdomain.Connectivity.Connected
 import com.jpp.mpdomain.Connectivity.Disconnected
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieState
+import com.jpp.mpdomain.Session
+import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.repository.*
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.*
 import javax.inject.Inject
@@ -21,6 +23,7 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
                                                  private val movieDetailRepository: MovieDetailRepository,
                                                  private val languageRepository: LanguageRepository,
                                                  private val sessionRepository: SessionRepository,
+                                                 private val accountRepository: AccountRepository,
                                                  private val movieStateRepository: MovieStateRepository) {
     /**
      * Represents the events that this interactor
@@ -37,9 +40,11 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
      * can route to the upper layers.
      */
     sealed class MovieStateEvent {
+        object None : MovieStateEvent()
         object NotConnectedToNetwork : MovieStateEvent()
         object UnknownError : MovieStateEvent()
         object UserNotLogged : MovieStateEvent()
+        data class UpdateFavorite(val success: Boolean) : MovieStateEvent()
         data class FetchSuccess(val data: MovieState) : MovieStateEvent()
     }
 
@@ -86,7 +91,29 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
                     movieStateRepository.getStateForMovie(movieId, session)?.let { movieState ->
                         _movieStateEvents.postValue(MovieStateEvent.FetchSuccess(movieState))
                     } ?: _movieStateEvents.postValue(MovieStateEvent.UnknownError)
-                } ?: _movieStateEvents.postValue(MovieStateEvent.UserNotLogged)
+                } ?: _movieStateEvents.postValue(MovieStateEvent.None)
+            }
+        }
+    }
+
+    /**
+     * Updates the favorite state of the movie identified with [movieId] to [asFavorite].
+     */
+    fun updateFavoriteMovieState(movieId: Double, asFavorite: Boolean) {
+        withAccountData { session, userAccount ->
+            movieStateRepository
+                    .updateFavoriteMovieState(movieId, asFavorite, userAccount, session)
+                    .let { MovieStateEvent.UpdateFavorite(it) }
+                    .let { _movieStateEvents.postValue(it) }
+        }
+    }
+
+    private fun withAccountData(callback: (Session, UserAccount) -> Unit) {
+        when (val session = sessionRepository.getCurrentSession()) {
+            null -> _movieStateEvents.postValue(MovieStateEvent.UserNotLogged)
+            else -> when (val account = accountRepository.getUserAccount(session)) {
+                null -> _movieStateEvents.postValue(MovieStateEvent.UnknownError)
+                else -> callback(session, account)
             }
         }
     }

@@ -40,12 +40,12 @@
     <!-- End About -->
 
     <!-- Nav Header -->
-    <string name="nav_header_login">Login</string>
+    <string name="nav_header_login">@string/login_generic</string>
     <string name="nav_header_to_account">Account >></string>
     <!-- End Nav Header -->
 
     <!-- Account -->
     <string name="account_title">Account</string>
-    <string name="account_need_to_login">You need to be logged in to execute this action.</string>
+
 
 </resources>

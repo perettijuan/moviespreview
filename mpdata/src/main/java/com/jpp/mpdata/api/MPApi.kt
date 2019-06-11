@@ -82,7 +82,7 @@ open class MPApi
         return tryCatchOrReturnNull { API.getUserAccount(session.session_id, API_KEY) }
     }
 
-    override fun updateMovieFavoriteState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean? {
+    override fun updateFavoriteMovieState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean? {
         return API.markMediaAsFavorite(
                 accountId = userAccount.id,
                 sessionId = session.session_id,
