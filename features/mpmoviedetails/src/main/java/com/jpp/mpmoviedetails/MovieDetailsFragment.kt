@@ -64,6 +64,7 @@ class MovieDetailsFragment : Fragment() {
         }
 
         movieDetailActionFab.setOnClickListener { withActionsViewModel { onMainActionSelected() } }
+        movieDetailFavoritesFab.setOnClickListener { withActionsViewModel { onFavoriteStateChanged() } }
     }
 
     /**
@@ -158,8 +159,19 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun renderActionsState(movieState: MovieDetailActionViewState.ShowState) {
-        with(movieState) {
-            movieDetailFavoritesFab.setImageResource(favorite.resId)
+        when(movieState.favorite) {
+            is ActionButtonState.ShowAsEmpty -> {
+                movieDetailFavoritesFab.asClickable()
+                movieDetailFavoritesFab.asEmpty()
+            }
+            is ActionButtonState.ShowAsFilled -> {
+                movieDetailFavoritesFab.asClickable()
+                movieDetailFavoritesFab.asFilled()
+            }
+            is ActionButtonState.ShowAsLoading -> {
+                movieDetailFavoritesFab.asNonClickable()
+                movieDetailFavoritesFab.doAnimation()
+            }
         }
 
 

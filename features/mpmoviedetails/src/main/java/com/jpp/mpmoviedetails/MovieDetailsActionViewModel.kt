@@ -21,6 +21,7 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
 
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<MovieDetailActionViewState>>() }
     private var movieId: Double = 0.0
+    private lateinit var currentMovieState: MovieState
 
     init {
         _viewStates.addSource(movieDetailsInteractor.movieStateEvents) { event ->
@@ -33,11 +34,19 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
         }
     }
 
+    /**
+     * Called when the view is initialized.
+     */
     fun onInit(movieId: Double) {
         this.movieId = movieId
         _viewStates.value = of(fetchMovieState(movieId))
     }
 
+    /**
+     * Called when the user selects the main action. This will
+     * start the animation to show/hide the possible actions the
+     * user can take.
+     */
     fun onMainActionSelected() {
         viewStates.value?.peekContent()?.let { currentViewState ->
             pushActionState(when (currentViewState) {
@@ -50,6 +59,14 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
                     )
                 }
             })
+        }
+    }
+
+    fun onFavoriteStateChanged() {
+        withCurrentMovieState { movieState ->
+            when (val currentState = viewStates.value?.peekContent()) {
+                is ShowState -> pushActionState(currentState.copy(favorite = ActionButtonState.ShowAsLoading))
+            }
         }
     }
 
@@ -68,10 +85,18 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
         return ShowLoading
     }
 
+    private fun withCurrentMovieState(action: (MovieState) -> Unit) {
+        if (::currentMovieState.isInitialized) {
+            action(currentMovieState)
+        }
+    }
+
     private fun mapMovieState(movieState: MovieState): MovieDetailActionViewState {
-        val favState = when(movieState.favorite) {
-            true -> ActionButtonState.IsFavorite
-            false -> ActionButtonState.IsNotFavorite
+        currentMovieState = movieState
+
+        val favState = when (movieState.favorite) {
+            true -> ActionButtonState.ShowAsFilled
+            false -> ActionButtonState.ShowAsEmpty
         }
 
         return ShowState(

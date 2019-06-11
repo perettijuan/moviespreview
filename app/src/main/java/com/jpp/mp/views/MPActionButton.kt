@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.layout_mp_action_button.view.*
  * Call asClickable/asNonClickable to change the clickable state of the button.
  * Call doAnimation to perform a simple rotating animation.
  */
+//TODO JPP delete ME
 class MPActionButton : ConstraintLayout {
 
     private var filledIcon: Drawable? = null
@@ -29,11 +30,11 @@ class MPActionButton : ConstraintLayout {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         init()
 
-        with(context.obtainStyledAttributes(attrs, R.styleable.MPActionButton)) {
-            filledIcon = getDrawable(R.styleable.MPActionButton_fillIcon)
-            emptyIcon = getDrawable(R.styleable.MPActionButton_emptyIcon)
-            recycle()
-        }
+//        with(context.obtainStyledAttributes(attrs, R.styleable.MPActionButton)) {
+//            filledIcon = getDrawable(R.styleable.MPActionButton_fillIcon)
+//            emptyIcon = getDrawable(R.styleable.MPActionButton_emptyIcon)
+//            recycle()
+//        }
 
         mpActionButtonImage.setImageDrawable(emptyIcon)
     }
@@ -61,24 +62,24 @@ class MPActionButton : ConstraintLayout {
     }
 
     fun doAnimation() {
-        val animation = AnimationUtils.loadAnimation(context, R.anim.action_button_animation)
-        animation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationRepeat(animation: Animation?) {
-                // no-op
-            }
-
-            override fun onAnimationEnd(animation: Animation?) {
-                isAnimating = false
-                syncClickableState()
-            }
-
-            override fun onAnimationStart(animation: Animation?) {
-                isAnimating = true
-                syncClickableState()
-            }
-
-        })
-        startAnimation(animation)
+//        val animation = AnimationUtils.loadAnimation(context, R.anim.action_button_animation)
+//        animation.setAnimationListener(object : Animation.AnimationListener {
+//            override fun onAnimationRepeat(animation: Animation?) {
+//                // no-op
+//            }
+//
+//            override fun onAnimationEnd(animation: Animation?) {
+//                isAnimating = false
+//                syncClickableState()
+//            }
+//
+//            override fun onAnimationStart(animation: Animation?) {
+//                isAnimating = true
+//                syncClickableState()
+//            }
+//
+//        })
+//        startAnimation(animation)
     }
 
     private fun syncClickableState() {

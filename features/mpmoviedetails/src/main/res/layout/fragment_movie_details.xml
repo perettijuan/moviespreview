@@ -83,11 +83,12 @@
     </androidx.core.widget.NestedScrollView>
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.jpp.mpmoviedetails.MPFloatingActionButton
         android:id="@+id/movieDetailFavoritesFab"
         style="@style/FabMovieDetailAction"
-        android:src="@drawable/ic_favorite_empty"
         android:visibility="invisible"
+        app:emptyIcon="@drawable/ic_favorite_empty"
+        app:fillIcon="@drawable/ic_favorite_filled"
         app:layout_anchor="@id/movieDetailAppBarLayout"
         app:layout_anchorGravity="bottom|right|end" />
 

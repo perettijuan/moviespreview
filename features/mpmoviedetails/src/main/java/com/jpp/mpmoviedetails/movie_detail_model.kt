@@ -51,9 +51,10 @@ sealed class MovieDetailActionViewState(val animate: Boolean, val open: Boolean)
                          val isInWatchlist: Boolean) : MovieDetailActionViewState(animate = shouldAnimate, open = showOpen)
 }
 
-sealed class ActionButtonState(@DrawableRes val resId: Int) {
-    object IsFavorite : ActionButtonState(R.drawable.ic_favorite_filled)
-    object IsNotFavorite : ActionButtonState(R.drawable.ic_favorite_empty)
+sealed class ActionButtonState {
+    object ShowAsFilled : ActionButtonState()
+    object ShowAsEmpty : ActionButtonState()
+    object ShowAsLoading : ActionButtonState()
 }
 
 

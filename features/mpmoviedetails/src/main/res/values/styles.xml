@@ -26,4 +26,9 @@
         <item name="fabSize">normal</item>
     </style>
 
+    <declare-styleable name="MPFloatingActionButton">
+        <attr name="fillIcon" format="reference"/>
+        <attr name="emptyIcon" format="reference"/>
+    </declare-styleable>
+
 </resources>
