@@ -10,9 +10,6 @@
     <string name="about_menu_item">About</string>
     <!-- End Main Activity -->
 
-
-
-
     <!-- Search -->
     <string name="search_hint">Search movies and characters</string>
     <string name="empty_search">No results found for %1$s</string>

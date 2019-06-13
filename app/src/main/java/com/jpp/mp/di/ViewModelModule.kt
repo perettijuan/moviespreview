@@ -7,8 +7,6 @@ import com.jpp.mp.screens.main.RefreshAppViewModel
 import com.jpp.mp.screens.main.SearchViewViewModel
 import com.jpp.mp.screens.main.about.AboutViewModel
 import com.jpp.mp.screens.main.credits.CreditsViewModel
-import com.jpp.mp.screens.main.details.MovieActionsViewModel
-
 import com.jpp.mp.screens.main.header.NavigationHeaderViewModel
 import com.jpp.mp.screens.main.licenses.LicensesViewModel
 import com.jpp.mp.screens.main.licenses.content.LicenseContentViewModel
@@ -55,11 +53,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(UpcomingMoviesFragment.UpcomingMoviesFragmentViewModel::class)
     internal abstract fun postUpcomingMoviesFragmentViewModel(viewModel: UpcomingMoviesFragment.UpcomingMoviesFragmentViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(MovieActionsViewModel::class)
-    internal abstract fun postMovieActionsViewModel(viewModel: MovieActionsViewModel): ViewModel
 
     @Binds
     @IntoMap
