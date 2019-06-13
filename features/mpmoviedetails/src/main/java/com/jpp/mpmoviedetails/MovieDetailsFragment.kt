@@ -129,8 +129,9 @@ class MovieDetailsFragment : Fragment() {
     }
 
     /*
- * TODO
+ * TODO JPP
      * 2 - process user not logged
+     * 3 - detect fav true/false update user movie list
 */
     private fun renderActionViewState(actionViewState: MovieDetailActionViewState) {
         when (actionViewState) {

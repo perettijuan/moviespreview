@@ -40,7 +40,7 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
      * can route to the upper layers.
      */
     sealed class MovieStateEvent {
-        object None : MovieStateEvent()
+        object NoStateFound : MovieStateEvent()
         object NotConnectedToNetwork : MovieStateEvent()
         object UnknownError : MovieStateEvent()
         object UserNotLogged : MovieStateEvent()
@@ -91,7 +91,7 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
                     movieStateRepository.getStateForMovie(movieId, session)?.let { movieState ->
                         _movieStateEvents.postValue(MovieStateEvent.FetchSuccess(movieState))
                     } ?: _movieStateEvents.postValue(MovieStateEvent.UnknownError)
-                } ?: _movieStateEvents.postValue(MovieStateEvent.None)
+                } ?: _movieStateEvents.postValue(MovieStateEvent.NoStateFound)
             }
         }
     }
@@ -112,7 +112,7 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
         when (val session = sessionRepository.getCurrentSession()) {
             null -> _movieStateEvents.postValue(MovieStateEvent.UserNotLogged)
             else -> when (val account = accountRepository.getUserAccount(session)) {
-                null -> _movieStateEvents.postValue(MovieStateEvent.UnknownError)
+                null -> _movieStateEvents.postValue(MovieStateEvent.UserNotLogged)
                 else -> callback(session, account)
             }
         }

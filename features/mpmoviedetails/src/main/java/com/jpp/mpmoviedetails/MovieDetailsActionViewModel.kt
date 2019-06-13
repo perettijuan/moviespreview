@@ -13,7 +13,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-
+/**
+ * [MPScopedViewModel] to handle the actions that the user can take on  the[MovieDetailsFragment].
+ * It is a coroutine-scoped ViewModel, which indicates that some work will be executed
+ * in a background context and synced to the main context when over.
+ *
+ * It consumes data coming from the lower layers - exposed by interactors -
+ * and maps that data to view logic.
+ */
 class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                                       private val movieDetailsInteractor: MovieDetailsInteractor) : MPScopedViewModel(dispatchers) {
 
@@ -24,7 +31,7 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
     init {
         _viewStates.addSource(movieDetailsInteractor.movieStateEvents) { event ->
             when (event) {
-                is None -> pushActionState(ShowNoMovieState(false, false))
+                is NoStateFound -> pushActionState(ShowNoMovieState(false, false))
                 is NotConnectedToNetwork -> pushActionState(ShowError)
                 is UserNotLogged -> pushActionState(processUserNotLogged())
                 is UnknownError -> pushActionState(ShowError)
@@ -76,6 +83,10 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
         }
     }
 
+    /**
+     * Called when the user attempts to change the favorite state of
+     * the movie being handled.
+     */
     fun onFavoriteStateChanged() {
         when (val currentState = viewStates.value?.peekContent()) {
             is ShowMovieState -> {

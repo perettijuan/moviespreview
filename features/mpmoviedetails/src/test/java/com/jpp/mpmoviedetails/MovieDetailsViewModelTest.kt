@@ -3,14 +3,12 @@ package com.jpp.mpmoviedetails
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
-import com.jpp.mpdomain.usecase.details.GetMovieDetailsUseCase
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
