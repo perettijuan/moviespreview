@@ -96,6 +96,21 @@ open class MPApi
         }
     }
 
+    override fun updateWatchlistMovieState(movieId: Double, inWatchList: Boolean, userAccount: UserAccount, session: Session): Boolean? {
+        return API.addMediaToWatchlist(
+                accountId = userAccount.id,
+                sessionId = session.session_id,
+                api_key = API_KEY,
+                body = WatchlistMediaBody(
+                        media_type = "movie",
+                        media_id = movieId,
+                        watchlist = inWatchList
+                )
+        ).let {
+            it.execute().body()?.let { true }
+        }
+    }
+
     override fun getMovieAccountState(movieId: Double, session: Session): MovieState? {
         return tryCatchOrReturnNull { API.getMovieAccountState(movieId, session.session_id, API_KEY) }
     }

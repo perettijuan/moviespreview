@@ -18,4 +18,9 @@ interface MovieStateRepository {
      * Updates the favorite state of the movie identified by [movieId] to [asFavorite].
      */
     fun updateFavoriteMovieState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean
+
+    /**
+     * Updates the watchlist state of the movie identified by [movieId] to [inWatchList].
+     */
+    fun updateWatchlistMovieState(movieId: Double, inWatchList: Boolean, userAccount: UserAccount, session: Session): Boolean
 }

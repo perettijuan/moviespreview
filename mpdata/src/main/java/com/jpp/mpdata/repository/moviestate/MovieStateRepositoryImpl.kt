@@ -19,6 +19,13 @@ class MovieStateRepositoryImpl(private val movieStateApi: MovieStateApi) : Movie
 
     override fun updateFavoriteMovieState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean {
         return movieStateApi
-                .updateFavoriteMovieState(movieId, asFavorite, userAccount, session)?.let { true } ?: false
+                .updateFavoriteMovieState(movieId, asFavorite, userAccount, session)?.let { true }
+                ?: false
+    }
+
+    override fun updateWatchlistMovieState(movieId: Double, inWatchList: Boolean, userAccount: UserAccount, session: Session): Boolean {
+        return movieStateApi
+                .updateWatchlistMovieState(movieId, inWatchList, userAccount, session)?.let { true }
+                ?: false
     }
 }
