@@ -25,6 +25,11 @@ class HandledViewState<out T>(private val viewState: T) {
         }
     }
 
+    /**
+     * Returns the content, even if it's already been handled.
+     */
+    fun peekContent(): T = viewState
+
     companion object {
         fun <T> of(viewState: T) : HandledViewState<T> = HandledViewState(viewState)
     }

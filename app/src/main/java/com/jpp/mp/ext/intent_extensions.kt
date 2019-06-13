@@ -5,7 +5,7 @@ import android.net.Uri
 import android.os.Build
 
 /**
- * Formats the [Intent] to open the provided [uriString] in a completely
+ * Formats the [Intent] to expanded the provided [uriString] in a completely
  * new task.
  */
 fun Intent.cleanView(uriString: String): Intent {
@@ -22,7 +22,7 @@ fun Intent.cleanView(uriString: String): Intent {
 }
 
 /**
- * Formats the [Intent] to open the native sharing options.
+ * Formats the [Intent] to expanded the native sharing options.
  */
 fun Intent.send(sharingText: String): Intent {
     action = Intent.ACTION_SEND
@@ -32,7 +32,7 @@ fun Intent.send(sharingText: String): Intent {
 }
 
 /**
- * Formats the [Intent] to open the web browser at the provided [url].
+ * Formats the [Intent] to expanded the web browser at the provided [url].
  */
 fun Intent.web(url: String) : Intent {
     action = Intent.ACTION_VIEW

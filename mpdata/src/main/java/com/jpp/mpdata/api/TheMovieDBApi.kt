@@ -147,7 +147,7 @@ interface TheMovieDBApi {
     @GET("movie/{movie_id}/account_states")
     fun getMovieAccountState(@Path("movie_id") movieId: Double,
                              @Query("session_id") sessionId: String,
-                             @Query("api_key") api_key: String): Call<MovieAccountState>
+                             @Query("api_key") api_key: String): Call<MovieState>
 
 
     /**

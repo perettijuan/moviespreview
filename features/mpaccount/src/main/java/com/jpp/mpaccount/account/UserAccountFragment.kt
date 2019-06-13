@@ -134,7 +134,7 @@ class UserAccountFragment : Fragment() {
         userAccountLoadingView.setInvisible()
         userAccountContentView.setInvisible()
 
-        userAccountErrorView.asNoConnectivityError { withViewModel { onUserRetry(getScreenWidthInPixels()) } }
+        userAccountErrorView.asNoConnectivityError { withViewModel { onRetry(getScreenWidthInPixels()) } }
         userAccountErrorView.setVisible()
     }
 
@@ -142,7 +142,7 @@ class UserAccountFragment : Fragment() {
         userAccountLoadingView.setInvisible()
         userAccountContentView.setInvisible()
 
-        userAccountErrorView.asUnknownError { withViewModel { onUserRetry(getScreenWidthInPixels()) } }
+        userAccountErrorView.asUnknownError { withViewModel { onRetry(getScreenWidthInPixels()) } }
         userAccountErrorView.setVisible()
     }
 

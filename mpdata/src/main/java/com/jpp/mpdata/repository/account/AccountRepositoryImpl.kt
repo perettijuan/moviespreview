@@ -27,14 +27,6 @@ class AccountRepositoryImpl(private val accountApi: AccountApi,
         accountDb.flushData()
     }
 
-    //    override fun getMovieAccountState(movieId: Double, session: Session): MovieAccountState? {
-//        /*
-//         * TODO JPP for the moment, we don't store this state in the local storage
-//         * BUT it is a great candidate to store it and try to use the WorkManager
-//         * to sync the state with the API
-//         */
-//        return accountApi.getMovieAccountState(movieId, session)
-//    }
 
 //    override fun updateMovieFavoriteState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean {
 //        return accountApi

@@ -10,7 +10,7 @@ buildscript {
             ],
             'hamcrest' : '1.3',
             'pagingLib': '2.1.0-rc01',
-            'navigationLib' : '1.0.0-rc01',
+            'navigationLib' : '2.0.0',
             'dagger' : '2.16',
             'room' : '2.0.0',
             'mockk' : '1.8.13.kotlin13',
@@ -25,9 +25,9 @@ buildscript {
                     'plugin': 'com.android.tools.build:gradle:3.2.0',
                     'arch' : [
                             'navigation' : [
-                                    'safeargs' : "android.arch.navigation:navigation-safe-args-gradle-plugin:${versions.navigationLib}",
-                                    'fragment' : "android.arch.navigation:navigation-fragment-ktx:${versions.navigationLib}",
-                                    'ui' : "android.arch.navigation:navigation-ui-ktx:${versions.navigationLib}"
+                                    'safeargs' : "androidx.navigation:navigation-safe-args-gradle-plugin:${versions.navigationLib}",
+                                    'fragment' : "androidx.navigation:navigation-fragment-ktx:${versions.navigationLib}",
+                                    'ui' : "androidx.navigation:navigation-ui-ktx:${versions.navigationLib}"
                             ]
                     ]
             ],
@@ -93,63 +93,10 @@ buildscript {
     }
 }
 
-
 project.ext {
     compileSdkVersion = 28
-    minSdkVersion = 18
+    minSdkVersion = 21
     targetSdkVersion = 28
-}
-
-/**
- * Returns sources from common project (only) that are shared between different
- * modules of the application to execute test code.
- */
-def getCommonTestResources() {
-    return fileFromProjectRoot(':mpcommon', 'src', 'test', 'java').absolutePath
-}
-
-/**
- * Returns sources from common project (only) that are shared between different
- * modules of the application to execute test code.
- */
-def getCommonJunit5TestResources() {
-    return fileFromProjectRoot(':mpcommon', 'src', 'test', 'junit5').absolutePath
-}
-
-/**
- * @param projectId the unambiguous id of the project
- * @param path in one of two forms:
- *  <ul>
- *    <li>path the path without the file separator</li>
- *    <li>a single unix-style path</li>
- *  </ul>
- * @return a File object at the path you want
- */
-def fileFromProjectRoot(String projectId, String... path) {
-    return fileFromProjectRoot(rootProject.project(projectId), path)
-}
-
-/**
- * @param p the {@link Project} to use as a base directory
- * @param path the path to add to the project's base directory in one of two forms:
- *  <ul>
- *    <li>path the path without the file separator</li>
- *    <li>a single unix-style path</li>
- *  </ul>
- * @return a {@link File} with the path passed in, starting at the project's
- * base directory
- */
-def fileFromProjectRoot(Project p, String... path) {
-    return p.file(pathify(path))
-}
-
-/**
- * @param path An array of string to be made into a path with the
- * {@link File#separator}
- * @return the path joined by {@link File#separator}
- */
-def pathify(String... path) {
-    return path.join(File.separator)
 }
 
 allprojects {

@@ -3,10 +3,8 @@ package com.jpp.mpdata.cache
 import android.util.SparseArray
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.MovieDAO
-import com.jpp.mpdata.cache.room.MovieDetailDAO
 import com.jpp.mpdata.cache.room.RoomModelAdapter
-import com.jpp.mpdata.repository.movies.MoviesDb
-import com.jpp.mpdomain.MovieDetail
+import com.jpp.mpdata.datasources.moviepage.MoviesDb
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
 
@@ -44,23 +42,6 @@ class MoviesCache(private val roomDatabase: MPRoomDataBase,
         }
     }
 
-    override fun getMovieDetails(movieId: Double): MovieDetail? {
-        return withMovieDetailsDao {
-            getMovieDetail(movieId, now())?.let { dbMovieDetails ->
-                getGenresForDetailId(dbMovieDetails.id)?.let { dbGenres ->
-                    transformWithAdapter { adaptDBMovieDetailToDataMovieDetail(dbMovieDetails, dbGenres) }
-                }
-            }
-        }
-    }
-
-    override fun saveMovieDetails(movieDetail: MovieDetail) {
-        withMovieDetailsDao {
-            insertMovieDetail(transformWithAdapter { adaptDataMovieDetailToDBMovieDetail(movieDetail, movieDetailsRefreshTime()) })
-            insertMovieGenres(movieDetail.genres.map { transformWithAdapter { adaptDataMovieGenreToDBMovieGenre(it, movieDetail.id) } })
-        }
-    }
-
     override fun getFavoriteMovies(page: Int): MoviePage? = favoriteMovies[page]
 
     override fun saveFavoriteMoviesPage(page: Int, moviePage: MoviePage) {
@@ -95,11 +76,7 @@ class MoviesCache(private val roomDatabase: MPRoomDataBase,
 
     private fun <T> withMovieDao(action: MovieDAO.() -> T): T = with(roomDatabase.moviesDao()) { action.invoke(this) }
 
-    private fun <T> withMovieDetailsDao(action: MovieDetailDAO.() -> T): T = with(roomDatabase.movieDetailsDao()) { action.invoke(this) }
-
     private fun now() = timestampHelper.now()
 
     private fun moviePagesRefreshTime() = with(timestampHelper) { now() + moviePagesRefreshTime() }
-
-    private fun movieDetailsRefreshTime() = with(timestampHelper) { now() + movieDetailsRefreshTime() }
 }

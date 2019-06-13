@@ -3,7 +3,6 @@ package com.jpp.mp.di
 import com.jpp.mp.screens.main.MainActivity
 import com.jpp.mp.screens.main.about.AboutFragment
 import com.jpp.mp.screens.main.credits.CreditsFragment
-import com.jpp.mp.screens.main.details.MovieDetailsFragment
 import com.jpp.mp.screens.main.header.NavigationHeaderFragment
 import com.jpp.mp.screens.main.licenses.LicensesFragment
 import com.jpp.mp.screens.main.licenses.content.LicenseContentFragment
@@ -16,6 +15,7 @@ import com.jpp.mp.screens.main.search.SearchFragment
 import com.jpp.mpaccount.account.UserAccountFragment
 import com.jpp.mpaccount.account.lists.UserMovieListFragment
 import com.jpp.mpaccount.login.LoginFragment
+import com.jpp.mpmoviedetails.MovieDetailsFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

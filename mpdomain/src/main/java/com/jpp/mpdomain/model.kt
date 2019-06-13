@@ -81,7 +81,28 @@ data class Movie(val id: Double,
  * [name] - the name to show.
  */
 data class MovieGenre(val id: Int,
-                      val name: String)
+                      val name: String) {
+    companion object GenresId {
+        const val ACTION_GENRE_ID = 28
+        const val ADVENTURE_GENRE_ID = 12
+        const val ANIMATION_GENRE_ID = 16
+        const val COMEDY_GENRE_ID = 35
+        const val CRIME_GENRE_ID = 80
+        const val DOCUMENTARY_GENRE_ID = 99
+        const val DRAMA_GENRE_ID = 18
+        const val FAMILY_GENRE_ID = 10751
+        const val FANTASY_GENRE_ID = 14
+        const val HISTORY_GENRE_ID = 36
+        const val HORROR_GENRE_ID = 27
+        const val MUSIC_GENRE_ID = 10402
+        const val MYSTERY_GENRE_ID = 9648
+        const val SCI_FY_GENRE_ID = 878
+        const val TV_MOVIE_GENRE_ID = 10770
+        const val THRILLER_GENRE_ID = 53
+        const val WAR_GENRE_ID = 10752
+        const val WESTERN_GENRE_ID = 37
+    }
+}
 
 /**
  * Represents the details of a given Movie.
@@ -323,7 +344,7 @@ data class UserAccount(
  * [rated] whether the user has rated the movie or not.
  * [watchlist] whether the user has added the movie to his watchlist or not.
  */
-data class MovieAccountState(
+data class MovieState(
         val id: Double,
         val favorite: Boolean,
         val rated: Boolean,

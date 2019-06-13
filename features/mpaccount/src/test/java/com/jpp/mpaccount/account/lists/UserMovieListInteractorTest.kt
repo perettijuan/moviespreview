@@ -27,7 +27,7 @@ class UserMovieListInteractorTest {
     @RelaxedMockK
     private lateinit var sessionRepository: SessionRepository
     @RelaxedMockK
-    private lateinit var moviesRepository: MoviesRepository
+    private lateinit var moviePageRepository: MoviePageRepository
     @MockK
     private lateinit var languageRepository: LanguageRepository
 
@@ -44,7 +44,7 @@ class UserMovieListInteractorTest {
                 connectivityRepository,
                 sessionRepository,
                 accountRepository,
-                moviesRepository,
+                moviePageRepository,
                 languageRepository
         )
     }
@@ -61,7 +61,7 @@ class UserMovieListInteractorTest {
 
         assertEquals(UserNotLogged, eventPosted)
         verify(exactly = 0) { accountRepository.getUserAccount(any()) }
-        verify(exactly = 0) { moviesRepository.getFavoriteMoviePage(any(), any(), any(), any()) }
+        verify(exactly = 0) { moviePageRepository.getFavoriteMoviePage(any(), any(), any(), any()) }
         verify(exactly = 0) { languageRepository.getCurrentAppLanguage() }
     }
 
@@ -78,7 +78,7 @@ class UserMovieListInteractorTest {
 
         assertEquals(NotConnectedToNetwork, eventPosted)
         verify(exactly = 1) { accountRepository.getUserAccount(any()) }
-        verify(exactly = 0) { moviesRepository.getFavoriteMoviePage(any(), any(), any(), any()) }
+        verify(exactly = 0) { moviePageRepository.getFavoriteMoviePage(any(), any(), any(), any()) }
         verify(exactly = 0) { languageRepository.getCurrentAppLanguage() }
     }
 
@@ -89,7 +89,7 @@ class UserMovieListInteractorTest {
         every { sessionRepository.getCurrentSession() } returns mockk()
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { accountRepository.getUserAccount(any()) } returns mockk()
-        every { moviesRepository.getFavoriteMoviePage(any(), any(), any(), any()) } returns null
+        every { moviePageRepository.getFavoriteMoviePage(any(), any(), any(), any()) } returns null
 
         subject.userAccountEvents.observeWith { eventPosted = it }
 
@@ -97,7 +97,7 @@ class UserMovieListInteractorTest {
 
         assertEquals(UnknownError, eventPosted)
         verify(exactly = 1) { accountRepository.getUserAccount(any()) }
-        verify(exactly = 1) { moviesRepository.getFavoriteMoviePage(any(), any(), any(), any()) }
+        verify(exactly = 1) { moviePageRepository.getFavoriteMoviePage(any(), any(), any(), any()) }
         verify(exactly = 1) { languageRepository.getCurrentAppLanguage() }
     }
 
@@ -114,13 +114,13 @@ class UserMovieListInteractorTest {
         every { sessionRepository.getCurrentSession() } returns session
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { accountRepository.getUserAccount(any()) } returns accountData
-        every { moviesRepository.getFavoriteMoviePage(any(), any(), any(), any()) } returns moviePage
+        every { moviePageRepository.getFavoriteMoviePage(any(), any(), any(), any()) } returns moviePage
 
         subject.fetchFavoriteMovies(1, callback)
 
         assertEquals(movieList, result)
         verify(exactly = 1) { accountRepository.getUserAccount(session) }
-        verify(exactly = 1) { moviesRepository.getFavoriteMoviePage(1, accountData, session, SupportedLanguage.English) }
+        verify(exactly = 1) { moviePageRepository.getFavoriteMoviePage(1, accountData, session, SupportedLanguage.English) }
         verify(exactly = 1) { languageRepository.getCurrentAppLanguage() }
     }
 

@@ -13,6 +13,7 @@ import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.palette.graphics.Palette
+import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mpdesign.R
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -146,4 +147,17 @@ private fun Palette.withMostPopulous(callback: (Palette.Swatch) -> Unit) {
         }
     }
     mostPopulous?.let(callback)
+}
+
+
+/**
+ * Finds a particular view identified with [viewId] in the provided [position]
+ * of the Adapter that backs the [RecyclerView].
+ * Pre-condition: the [RecyclerView] needs to have a [LayoutManager] set.
+ */
+fun RecyclerView.findViewInPositionWithId(position: Int, viewId: Int): View {
+    return layoutManager
+            ?.findViewByPosition(position)
+            ?.findViewById(viewId)
+            ?: throw IllegalStateException("You need to set a LayoutManager first")
 }

@@ -30,9 +30,9 @@ import com.jpp.mpdata.repository.credits.CreditsApi
 import com.jpp.mpdata.repository.credits.CreditsDb
 import com.jpp.mpdata.repository.credits.CreditsRepositoryImpl
 import com.jpp.mpdata.repository.licenses.LicensesRepositoryImpl
-import com.jpp.mpdata.repository.movies.MoviesApi
-import com.jpp.mpdata.repository.movies.MoviesDb
-import com.jpp.mpdata.repository.movies.MoviesRepositoryImpl
+import com.jpp.mpdata.datasources.moviepage.MoviesApi
+import com.jpp.mpdata.datasources.moviepage.MoviesDb
+import com.jpp.mpdata.repository.movies.MoviePageRepositoryImpl
 import com.jpp.mpdata.repository.person.PersonApi
 import com.jpp.mpdata.repository.person.PersonDb
 import com.jpp.mpdata.repository.person.PersonRepositoryImpl
@@ -40,7 +40,12 @@ import com.jpp.mpdata.repository.search.SearchApi
 import com.jpp.mpdata.repository.search.SearchRepositoryImpl
 import com.jpp.mpdata.repository.session.MPSessionRepositoryImpl
 import com.jpp.mpdata.datasources.language.LanguageDb
+import com.jpp.mpdata.datasources.moviedetail.MovieDetailApi
+import com.jpp.mpdata.datasources.moviedetail.MovieDetailDb
+import com.jpp.mpdata.datasources.moviestate.MovieStateApi
 import com.jpp.mpdata.repository.language.LanguageRepositoryImpl
+import com.jpp.mpdata.repository.moviedetail.MovieDetailRepositoryImpl
+import com.jpp.mpdata.repository.moviestate.MovieStateRepositoryImpl
 import com.jpp.mpdata.repository.support.SupportDb
 import com.jpp.mpdata.repository.support.SupportRepositoryImpl
 import com.jpp.mpdata.repository.tokens.AccessTokenRepositoryImpl
@@ -100,7 +105,7 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesLanguageMonitor(context: Context) : LanguageMonitor = LanguageMonitor.Impl(context)
+    fun providesLanguageMonitor(context: Context): LanguageMonitor = LanguageMonitor.Impl(context)
 
 
     /***********************************
@@ -122,7 +127,7 @@ class DataLayerModule {
     @Provides
     fun providesMoviesRepository(moviesApi: MoviesApi,
                                  moviesDb: MoviesDb)
-            : MoviesRepository = MoviesRepositoryImpl(moviesApi, moviesDb)
+            : MoviePageRepository = MoviePageRepositoryImpl(moviesApi, moviesDb)
 
     /*****************************************
      ****** CONFIGURATION DEPENDENCIES *******
@@ -302,5 +307,32 @@ class DataLayerModule {
     @Provides
     fun providesMPAccessTokenRepository(accessTokenApi: AccessTokenApi)
             : AccessTokenRepository = AccessTokenRepositoryImpl(accessTokenApi)
+
+    /***************************************
+     ****** MOVIE DETAIL DEPENDENCIES ******
+     ***************************************/
+    @Singleton
+    @Provides
+    fun providesMovieDetailApi(mpApiInstance: MPApi): MovieDetailApi = mpApiInstance
+
+    @Singleton
+    @Provides
+    fun providesMovieDetailDb(roomDb: MPRoomDataBase,
+                              adapter: RoomModelAdapter,
+                              timestampHelper: CacheTimestampHelper): MovieDetailDb = MovieDetailCache(roomDb, adapter, timestampHelper)
+
+    @Singleton
+    @Provides
+    fun providesMovieDetailRepository(movieDetailApi: MovieDetailApi,
+                                      movieDetailDb: MovieDetailDb): MovieDetailRepository = MovieDetailRepositoryImpl(movieDetailApi, movieDetailDb)
+
+    @Singleton
+    @Provides
+    fun providesMovieStateApi(mpApiInstance: MPApi): MovieStateApi = mpApiInstance
+
+    @Singleton
+    @Provides
+    fun providesMovieStateRepository(movieStateApi: MovieStateApi): MovieStateRepository = MovieStateRepositoryImpl(movieStateApi)
+
 }
 
