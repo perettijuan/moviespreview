@@ -25,6 +25,9 @@ import javax.inject.Inject
 
 /**
  * Fragment used to show the details of a particular movie selected by the user.
+ * This Fragment in particular uses two ViewModels:
+ *   - [MovieDetailsViewModel] to fetch the details of the movie.
+ *   - [MovieDetailsActionViewModel] to allow the user to add to favorites, add to watchlist and/or rate the movie.
  */
 class MovieDetailsFragment : Fragment() {
 
@@ -72,6 +75,9 @@ class MovieDetailsFragment : Fragment() {
      */
     private fun withViewModel(action: MovieDetailsViewModel.() -> Unit) = withViewModel<MovieDetailsViewModel>(viewModelFactory) { action() }
 
+    /**
+     * Helper function to execute actions with the [MovieDetailsActionViewModel].
+     */
     private fun withActionsViewModel(action: MovieDetailsActionViewModel.() -> Unit) = withViewModel<MovieDetailsActionViewModel>(viewModelFactory) { action() }
 
     private fun renderViewState(viewState: MovieDetailViewState) {
@@ -128,11 +134,7 @@ class MovieDetailsFragment : Fragment() {
         movieDetailErrorView.setVisible()
     }
 
-    /*
- * TODO JPP
-     * 2 - process user not logged
-     * 3 - detect fav true/false update user movie list
-*/
+
     private fun renderActionViewState(actionViewState: MovieDetailActionViewState) {
         when (actionViewState) {
             is MovieDetailActionViewState.ShowLoading -> renderLoadingActions()
@@ -140,7 +142,7 @@ class MovieDetailsFragment : Fragment() {
             is MovieDetailActionViewState.ShowMovieState -> renderMovieState(actionViewState)
             is MovieDetailActionViewState.ShowNoMovieState -> renderVisibleActions()
             is MovieDetailActionViewState.ShowUserNotLogged -> snackBar(detailsContent, R.string.account_need_to_login, R.string.login_generic) {
-                TODO()
+                TODO() //TODO JPP redirect user to login screen
             }
         }
 
