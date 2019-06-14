@@ -16,4 +16,10 @@ interface MovieStateApi {
      * @return true if the favorite state can be updated, false any other case.
      */
     fun updateFavoriteMovieState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean?
+
+    /**
+     * Updates the watchlist state of the provided [movieId] for the current user.
+     * @return true if the watchlist state of the movie can be updated, false any other case.
+     */
+    fun updateWatchlistMovieState(movieId: Double, inWatchList: Boolean, userAccount: UserAccount, session: Session): Boolean?
 }

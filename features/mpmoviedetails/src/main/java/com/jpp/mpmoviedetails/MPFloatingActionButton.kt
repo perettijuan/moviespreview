@@ -1,10 +1,10 @@
 package com.jpp.mpmoviedetails
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 /**
@@ -19,6 +19,7 @@ class MPFloatingActionButton : FloatingActionButton {
     private var filledIcon: Drawable? = null
     private var emptyIcon: Drawable? = null
 
+    private var isRotated: Boolean = false
     private var isAnimating: Boolean = false
     private var isAsClickable: Boolean = true
 
@@ -54,24 +55,28 @@ class MPFloatingActionButton : FloatingActionButton {
     }
 
     fun doAnimation() {
-        val animation = AnimationUtils.loadAnimation(context, R.anim.action_button_animation)
-        animation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationRepeat(animation: Animation?) {
-                // no-op
-            }
+        val degrees = if (isRotated) {
+            isRotated = false
+            0F
+        } else {
+            isRotated = true
+            360F
+        }
 
-            override fun onAnimationEnd(animation: Animation?) {
-                isAnimating = false
-                syncClickableState()
-            }
+        animate()
+                .rotation(degrees)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        isAnimating = false
+                        syncClickableState()
+                    }
 
-            override fun onAnimationStart(animation: Animation?) {
-                isAnimating = true
-                syncClickableState()
-            }
-
-        })
-        startAnimation(animation)
+                    override fun onAnimationStart(animation: Animator?) {
+                        isAnimating = true
+                        syncClickableState()
+                    }
+                })
+                .start()
     }
 
     private fun syncClickableState() {

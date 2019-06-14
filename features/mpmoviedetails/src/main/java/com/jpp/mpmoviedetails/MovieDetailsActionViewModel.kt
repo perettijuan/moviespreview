@@ -37,6 +37,7 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
                 is UnknownError -> pushActionState(ShowError)
                 is FetchSuccess -> pushActionState(processMovieStateUpdate(event.data))
                 is UpdateFavorite -> pushActionState(processUpdateFavorite(event))
+                is UpdateWatchlist -> pushActionState(processUpdateWatchlist(event))
             }
         }
     }
@@ -88,17 +89,25 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
      * the movie being handled.
      */
     fun onFavoriteStateChanged() {
-        when (val currentState = viewStates.value?.peekContent()) {
-            is ShowMovieState -> {
-                pushActionState(currentState.copy(favorite = ActionButtonState.ShowAsLoading))
-                withMovieDetailsInteractor { updateFavoriteMovieState(currentMovieState.id, !currentMovieState.favorite) }
-            }
-            is ShowNoMovieState -> {
-                pushActionState(ShowUserNotLogged(showActionsExpanded = currentState.expanded, animateActionsExpanded = false))
-            }
-            is ShowUserNotLogged -> pushActionState(currentState)
-        }
+        executeMovieStateUpdate({
+            updateFavoriteMovieState(movieId = currentMovieState.id, asFavorite = !currentMovieState.favorite)
+        }, { currentShowingState ->
+            currentShowingState.copy(favorite = ActionButtonState.ShowAsLoading)
+        })
     }
+
+    /**
+     * Called when the user attempts to change the watchlist state of the
+     * movie being handled.
+     */
+    fun onWatchlistStateChanged() {
+        executeMovieStateUpdate({
+            updateWatchlistMovieState(movieId = currentMovieState.id, inWatchlist = !currentMovieState.watchlist)
+        }, { currentShowingState ->
+            currentShowingState.copy(isInWatchlist = ActionButtonState.ShowAsLoading)
+        })
+    }
+
 
     /**
      * Subscribe to this [LiveData] in order to get notified about the different states that
@@ -128,11 +137,16 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
             false -> ActionButtonState.ShowAsEmpty
         }
 
+        val watchlistState = when (movieState.watchlist) {
+            true -> ActionButtonState.ShowAsFilled
+            false -> ActionButtonState.ShowAsEmpty
+        }
+
         return ShowMovieState(
                 showActionsExpanded = false,
                 animateActionsExpanded = false,
                 favorite = favState,
-                isInWatchlist = movieState.watchlist,
+                isInWatchlist = watchlistState,
                 isRated = movieState.rated
         )
     }
@@ -140,6 +154,13 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
     private fun processUpdateFavorite(updateFavorite: UpdateFavorite): MovieDetailActionViewState {
         return when (updateFavorite.success) {
             true -> processMovieStateUpdate(currentMovieState.copy(favorite = !currentMovieState.favorite))
+            false -> processMovieStateUpdate(currentMovieState)
+        }
+    }
+
+    private fun processUpdateWatchlist(updateWatchlist: UpdateWatchlist): MovieDetailActionViewState {
+        return when (updateWatchlist.success) {
+            true -> processMovieStateUpdate(currentMovieState.copy(watchlist = !currentMovieState.watchlist))
             false -> processMovieStateUpdate(currentMovieState)
         }
     }
@@ -152,5 +173,31 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
 
     private fun withMovieDetailsInteractor(action: MovieDetailsInteractor.() -> Unit) {
         launch { withContext(dispatchers.default()) { action(movieDetailsInteractor) } }
+    }
+
+    /**
+     * Inner helper function that triggers an update on the movie state being shown, based
+     * on the current UI state.
+     * It receives two arguments:
+     *  - [stateUpdateFunction] is the function that will be executed on the [MovieDetailsInteractor]
+     *    instance to trigger the state update.
+     *  - [copyLoadingStateFunction] a copy function that will provide a next UI state [ShowMovieState]
+     *    based on the current one.
+     *
+     * Based on the current state being shown to the user, this function will allow
+     * to update the state of the movie (via interactor) and update the UI state.
+     */
+    private fun executeMovieStateUpdate(stateUpdateFunction: MovieDetailsInteractor.() -> Unit,
+                                        copyLoadingStateFunction: (ShowMovieState) -> ShowMovieState) {
+        when (val currentState = viewStates.value?.peekContent()) {
+            is ShowMovieState -> {
+                pushActionState(copyLoadingStateFunction(currentState))
+                withMovieDetailsInteractor { stateUpdateFunction() }
+            }
+            is ShowNoMovieState -> {
+                pushActionState(ShowUserNotLogged(showActionsExpanded = currentState.expanded, animateActionsExpanded = false))
+            }
+            is ShowUserNotLogged -> pushActionState(currentState)
+        }
     }
 }

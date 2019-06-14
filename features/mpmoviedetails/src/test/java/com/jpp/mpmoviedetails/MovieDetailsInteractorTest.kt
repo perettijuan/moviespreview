@@ -200,4 +200,50 @@ class MovieDetailsInteractorTest {
         assertEquals(expected, eventPosted)
         verify { movieStateRepository.updateFavoriteMovieState(12.0, true, userAccount, session) }
     }
+
+    @Test
+    fun `Should post user not logged when there is no session created on updateWatchlistMovieState`() {
+        var eventPosted: MovieStateEvent? = null
+
+        every { sessionRepository.getCurrentSession() } returns null
+
+        subject.movieStateEvents.observeWith { eventPosted = it }
+
+        subject.updateWatchlistMovieState(12.0, true)
+        assertEquals(MovieStateEvent.UserNotLogged, eventPosted)
+        verify(exactly = 0) { movieStateRepository.updateWatchlistMovieState(any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `Should post user not logged when there is a session created but no user account data on updateWatchlistMovieState`() {
+        var eventPosted: MovieStateEvent? = null
+        val session = mockk<Session>()
+
+        every { sessionRepository.getCurrentSession() } returns session
+        every { accountRepository.getUserAccount(any()) } returns null
+
+        subject.movieStateEvents.observeWith { eventPosted = it }
+
+        subject.updateWatchlistMovieState(12.0, true)
+        assertEquals(MovieStateEvent.UserNotLogged, eventPosted)
+        verify(exactly = 0) { movieStateRepository.updateWatchlistMovieState(any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `Should update favorite state and post result when session and account data available updateWatchlistMovieState`() {
+        var eventPosted: MovieStateEvent? = null
+        val session = mockk<Session>()
+        val userAccount = mockk<UserAccount>()
+        val expected = MovieStateEvent.UpdateWatchlist(true)
+
+        every { sessionRepository.getCurrentSession() } returns session
+        every { accountRepository.getUserAccount(any()) } returns userAccount
+        every { movieStateRepository.updateWatchlistMovieState(any(), any(), any(), any()) } returns true
+
+        subject.movieStateEvents.observeWith { eventPosted = it }
+
+        subject.updateWatchlistMovieState(12.0, true)
+        assertEquals(expected, eventPosted)
+        verify { movieStateRepository.updateWatchlistMovieState(12.0, true, userAccount, session) }
+    }
 }

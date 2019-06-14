@@ -86,7 +86,7 @@ class MovieDetailsActionViewModelTest {
                                 showActionsExpanded = false,
                                 animateActionsExpanded = false,
                                 favorite = ActionButtonState.ShowAsEmpty,
-                                isInWatchlist = false,
+                                isInWatchlist = ActionButtonState.ShowAsEmpty,
                                 isRated = false
                         ),
                         MovieStateEvent.FetchSuccess(MOVIE_STATE_NO_FAVORITE)
@@ -96,50 +96,20 @@ class MovieDetailsActionViewModelTest {
                                 showActionsExpanded = false,
                                 animateActionsExpanded = false,
                                 favorite = ActionButtonState.ShowAsFilled,
-                                isInWatchlist = false,
+                                isInWatchlist = ActionButtonState.ShowAsEmpty,
                                 isRated = false
                         ),
                         MovieStateEvent.FetchSuccess(MOVIE_STATE_FAVORITE)
-                )
-        )
-
-        @JvmStatic
-        fun userNotLogedCases() = listOf(
-                arguments(
-                        MovieDetailActionViewState.ShowNoMovieState(false, false),
-                        MovieStateEvent.NoStateFound
-                ),
-                arguments(
-                        MovieDetailActionViewState.ShowError,
-                        MovieStateEvent.NotConnectedToNetwork
-                ),
-                arguments(
-                        MovieDetailActionViewState.ShowError,
-                        MovieStateEvent.UnknownError
-                ),
-                arguments(
-                        MovieDetailActionViewState.ShowNoMovieState(false, false),
-                        MovieStateEvent.NoStateFound
-                ),
-                arguments(
-                        MovieDetailActionViewState.ShowMovieState(
-                                showActionsExpanded = false,
-                                animateActionsExpanded = false,
-                                favorite = ActionButtonState.ShowAsEmpty,
-                                isInWatchlist = false,
-                                isRated = false
-                        ),
-                        MovieStateEvent.FetchSuccess(MOVIE_STATE_NO_FAVORITE)
                 ),
                 arguments(
                         MovieDetailActionViewState.ShowMovieState(
                                 showActionsExpanded = false,
                                 animateActionsExpanded = false,
                                 favorite = ActionButtonState.ShowAsFilled,
-                                isInWatchlist = false,
+                                isInWatchlist = ActionButtonState.ShowAsFilled,
                                 isRated = false
                         ),
-                        MovieStateEvent.FetchSuccess(MOVIE_STATE_FAVORITE)
+                        MovieStateEvent.FetchSuccess(MOVIE_STATE_FAVORITE_AND_WATCHLIST)
                 )
         )
 
@@ -154,6 +124,13 @@ class MovieDetailsActionViewModelTest {
                 id = 12.0,
                 favorite = true,
                 watchlist = false,
+                rated = false
+        )
+
+        private val MOVIE_STATE_FAVORITE_AND_WATCHLIST = MovieState(
+                id = 12.0,
+                favorite = true,
+                watchlist = true,
                 rated = false
         )
     }
