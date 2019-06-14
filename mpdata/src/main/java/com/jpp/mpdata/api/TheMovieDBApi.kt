@@ -168,7 +168,7 @@ interface TheMovieDBApi {
      * [sessionId] the session identifier for the current user.
      * [api_key] the api key provided by themoviedb.
      */
-    @POST("account/{account_id}/favorite")
+    @POST("account/{account_id}/watchlist")
     fun addMediaToWatchlist(@Path("account_id") accountId: Double,
                             @Query("session_id") sessionId: String,
                             @Query("api_key") api_key: String,

@@ -45,6 +45,7 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
         object UnknownError : MovieStateEvent()
         object UserNotLogged : MovieStateEvent()
         data class UpdateFavorite(val success: Boolean) : MovieStateEvent()
+        data class UpdateWatchlist(val success: Boolean) : MovieStateEvent()
         data class FetchSuccess(val data: MovieState) : MovieStateEvent()
     }
 
@@ -104,6 +105,18 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
             movieStateRepository
                     .updateFavoriteMovieState(movieId, asFavorite, userAccount, session)
                     .let { MovieStateEvent.UpdateFavorite(it) }
+                    .let { _movieStateEvents.postValue(it) }
+        }
+    }
+
+    /**
+     * Updates the watchlist state of the movie identified with [movieId] to [inWatchlist].
+     */
+    fun updateWatchlistMovieState(movieId: Double, inWatchlist: Boolean) {
+        withAccountData { session, userAccount ->
+            movieStateRepository
+                    .updateWatchlistMovieState(movieId, inWatchlist, userAccount, session)
+                    .let { MovieStateEvent.UpdateWatchlist(it) }
                     .let { _movieStateEvents.postValue(it) }
         }
     }

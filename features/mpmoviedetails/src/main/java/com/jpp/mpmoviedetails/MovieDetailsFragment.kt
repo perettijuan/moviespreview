@@ -68,6 +68,8 @@ class MovieDetailsFragment : Fragment() {
 
         movieDetailActionFab.setOnClickListener { withActionsViewModel { onMainActionSelected() } }
         movieDetailFavoritesFab.setOnClickListener { withActionsViewModel { onFavoriteStateChanged() } }
+        movieDetailWatchlistFab.setOnClickListener { withActionsViewModel { onWatchlistStateChanged() } }
+
     }
 
     /**
@@ -196,6 +198,21 @@ class MovieDetailsFragment : Fragment() {
             is ActionButtonState.ShowAsLoading -> {
                 movieDetailFavoritesFab.asNonClickable()
                 movieDetailFavoritesFab.doAnimation()
+            }
+        }
+
+        when (movieState.isInWatchlist) {
+            is ActionButtonState.ShowAsEmpty -> {
+                movieDetailWatchlistFab.asClickable()
+                movieDetailWatchlistFab.asEmpty()
+            }
+            is ActionButtonState.ShowAsFilled -> {
+                movieDetailWatchlistFab.asClickable()
+                movieDetailWatchlistFab.asFilled()
+            }
+            is ActionButtonState.ShowAsLoading -> {
+                movieDetailWatchlistFab.asNonClickable()
+                movieDetailWatchlistFab.doAnimation()
             }
         }
 

@@ -72,7 +72,7 @@ sealed class MovieDetailActionViewState(val animate: Boolean, val expanded: Bool
                               val animateActionsExpanded: Boolean,
                               val favorite: ActionButtonState,
                               val isRated: Boolean,
-                              val isInWatchlist: Boolean)
+                              val isInWatchlist: ActionButtonState)
         : MovieDetailActionViewState(animate = animateActionsExpanded, expanded = showActionsExpanded)
 }
 
