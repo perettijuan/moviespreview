@@ -14,11 +14,14 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.*
 import com.jpp.mp.R
 import com.jpp.mp.common.extensions.getStringOrDefault
+import com.jpp.mp.common.extensions.navigate
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.ext.*
@@ -202,7 +205,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 R.id.popularMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
                 R.id.upcomingMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
                 R.id.topRatedMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
-                R.id.movieDetailsFragment -> withMainViewModel { userNavigatesToMovieDetails(NavigationMovieDetails.title(arguments)) }
                 R.id.searchFragment -> withMainViewModel { userNavigatesToSearch() }
                 R.id.personFragment -> withMainViewModel { userNavigatesToPerson(arguments.getStringOrDefault("personName", destination.label.toString())) }
                 R.id.creditsFragment -> withMainViewModel { userNavigatesToCredits(arguments.getStringOrDefault("movieTitle", destination.label.toString())) }
@@ -225,6 +227,14 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 withMainViewModel { userNavigatesToAccountDetails(getString(R.string.login_generic)) }
                 innerNavigate(R.id.user_account_nav)
             }
+            is Destination.MovieDetails -> {
+                withNavController {
+                    navigate(R.id.movie_details_nav,
+                            NavigationMovieDetails.navArgs(destination.movieId, destination.movieImageUrl, destination.movieTitle, destination.transitionView.transitionName),
+                            FragmentNavigatorExtras(destination.transitionView to destination.transitionView.transitionName))
+                }
+                withMainViewModel { userNavigatesWithinFeature(destination.movieTitle) }
+            }
             is Destination.InnerDestination -> {
                 withMainViewModel { userNavigatesWithinFeature(destination.destinationTitle) }
             }
@@ -232,7 +242,11 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     }
 
     private fun innerNavigate(@IdRes resId: Int) {
-        findNavController(this, R.id.mainNavHostFragment).navigate(resId)
+        withNavController { navigate(resId) }
+    }
+
+    private fun withNavController(action: NavController.() -> Unit) {
+        findNavController(this, R.id.mainNavHostFragment).action()
     }
 
 

@@ -8,18 +8,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
-import com.jpp.mp.common.extensions.navigate
+import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.ext.*
 import com.jpp.mp.screens.main.RefreshAppViewModel
 import com.jpp.mpdesign.ext.findViewInPositionWithId
-import com.jpp.mpmoviedetails.NavigationMovieDetails.navArgs
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movies.*
 import kotlinx.android.synthetic.main.list_item_movies.view.*
@@ -153,11 +150,7 @@ abstract class MoviesFragment : Fragment() {
     private fun navigateToMovieDetails(event: MoviesViewNavigationEvent.ToMovieDetails) {
         with(event) {
             val view = moviesList.findViewInPositionWithId(positionInList, R.id.movieListItemImage)
-            Navigation
-                    .findNavController(requireActivity(), R.id.mainNavHostFragment)
-                    .navigate(R.id.movie_details_nav,
-                            navArgs(movieId, movieImageUrl, movieTitle, view.transitionName),
-                            FragmentNavigatorExtras(view to view.transitionName))
+            withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(movieId, movieImageUrl, movieTitle, view) }
         }
     }
 

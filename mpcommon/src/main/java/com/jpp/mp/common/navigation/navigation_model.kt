@@ -1,5 +1,6 @@
 package com.jpp.mp.common.navigation
 
+import android.view.View
 import java.util.concurrent.atomic.AtomicBoolean
 
 /*
@@ -35,6 +36,11 @@ sealed class Destination {
      * user account feature module.
      */
     object MPAccount : Destination()
+
+    data class MovieDetails(val movieId: String,
+                            val movieImageUrl: String,
+                            val movieTitle: String,
+                            val transitionView: View) : Destination()
 
     /*
      * Represents a Destination that is internal to a module. It is used to
