@@ -81,6 +81,10 @@ class MainActivityViewModel @Inject constructor(private val languageMonitor: Lan
         navigateToSimpleDestination(sectionName)
     }
 
+    fun userNavigatesWithinFeature(sectionName: String) {
+        navigateToSimpleDestination(sectionName)
+    }
+
     /**
      * Update view state when it is navigating to a destination without animation
      * and without menu enabled.

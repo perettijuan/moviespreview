@@ -35,4 +35,10 @@ sealed class Destination {
      * user account feature module.
      */
     object MPAccount : Destination()
+
+    /*
+     * Represents a Destination that is internal to a module. It is used to
+     * update the Toolbar title.
+     */
+    data class InnerDestination(val destinationTitle: String) : Destination()
 }

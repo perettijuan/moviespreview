@@ -14,14 +14,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
+import com.jpp.mp.common.extensions.getViewModel
 import com.jpp.mpaccount.R
-import dagger.android.support.AndroidSupportInjection
+import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToUserAccount
 import com.jpp.mpaccount.account.lists.UserMovieListViewState.*
 import com.jpp.mpdesign.ext.*
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_user_movie_list.*
 import kotlinx.android.synthetic.main.list_item_user_movie.view.*
 import javax.inject.Inject
-import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToUserAccount
 
 class UserMovieListFragment : Fragment() {
 

@@ -29,4 +29,7 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
         _navEvents.value = of(Destination.MPAccount)
     }
 
+    fun innerNavigate(innerDestination: Destination.InnerDestination) {
+        _navEvents.value = of(innerDestination)
+    }
 }

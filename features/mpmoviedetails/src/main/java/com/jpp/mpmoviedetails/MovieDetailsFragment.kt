@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionInflater
+import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mpdesign.ext.*
 import com.jpp.mpmoviedetails.MovieDetailViewState.*
 import com.jpp.mpmoviedetails.NavigationMovieDetails.imageUrl

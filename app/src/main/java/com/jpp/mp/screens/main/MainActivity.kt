@@ -220,9 +220,13 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             is Destination.MPAccount -> {
                 /*
                  * TODO JPP this should change. The View (MainActivity) should not decide what's the title of the screen. Think of a better way!
+                 *      Change this once all features are modularized.
                  */
                 withMainViewModel { userNavigatesToAccountDetails(getString(R.string.login_generic)) }
                 innerNavigate(R.id.user_account_nav)
+            }
+            is Destination.InnerDestination -> {
+                withMainViewModel { userNavigatesWithinFeature(destination.destinationTitle) }
             }
         }
     }

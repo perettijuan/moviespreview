@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.R
+import com.jpp.mp.common.extensions.getViewModel
+import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mpdesign.ext.*
 import dagger.android.support.AndroidSupportInjection
@@ -45,7 +47,7 @@ class NavigationHeaderFragment : Fragment() {
 
         withViewModel {
             viewStates.observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { viewState -> viewState.actionIfNotHandled { renderViewState(it) } })
-            navEvents.observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { withNavigationViewModel { navigateToUserAccount() } })
+            navEvents.observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { withNavigationViewModel(viewModelFactory) { navigateToUserAccount() } })
             onInit()
         }
     }
@@ -69,7 +71,6 @@ class NavigationHeaderFragment : Fragment() {
 
 
     private fun withViewModel(action: NavigationHeaderViewModel.() -> Unit) = getViewModel<NavigationHeaderViewModel>(viewModelFactory).action()
-    private fun withNavigationViewModel(action: NavigationViewModel.() -> Unit) = getViewModel<NavigationViewModel>(viewModelFactory).action()
 
     private fun renderLoading() {
         navHeaderUserNameTv.setInvisible()
