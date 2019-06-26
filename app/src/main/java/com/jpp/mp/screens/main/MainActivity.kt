@@ -6,6 +6,7 @@ import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -21,7 +22,6 @@ import com.jpp.mp.common.extensions.getStringOrDefault
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.ext.*
-import com.jpp.mpdesign.ext.getViewModel
 import com.jpp.mpmoviedetails.NavigationMovieDetails
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
@@ -155,11 +155,11 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         return when (item.itemId) {
             R.id.search_menu -> {
                 // Probably the best idea here is to navigate to a new Activity
-                findNavController(this, R.id.mainNavHostFragment).navigate(R.id.searchFragment)
+                innerNavigate(R.id.searchFragment)
                 return true
             }
             R.id.about_menu -> {
-                findNavController(this, R.id.mainNavHostFragment).navigate(R.id.aboutFragment)
+                innerNavigate(R.id.aboutFragment)
                 return true
             }
             else -> super.onOptionsItemSelected(item)
@@ -217,11 +217,18 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     private fun navigateToDestination(destination: Destination) {
         when (destination) {
-            is Destination.MPAccount ->  {
-                withMainViewModel { userNavigatesToAccountDetails(getString(R.string.account_title)) }
-                findNavController(this, R.id.mainNavHostFragment).navigate(R.id.user_account_nav)
+            is Destination.MPAccount -> {
+                /*
+                 * TODO JPP this should change. The View (MainActivity) should not decide what's the title of the screen. Think of a better way!
+                 */
+                withMainViewModel { userNavigatesToAccountDetails(getString(R.string.login_generic)) }
+                innerNavigate(R.id.user_account_nav)
             }
         }
+    }
+
+    private fun innerNavigate(@IdRes resId: Int) {
+        findNavController(this, R.id.mainNavHostFragment).navigate(resId)
     }
 
 
