@@ -2,6 +2,7 @@ package com.jpp.mp.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.screens.main.MainActivityViewModel
 import com.jpp.mp.screens.main.RefreshAppViewModel
 import com.jpp.mp.screens.main.SearchViewViewModel
@@ -105,7 +106,7 @@ abstract class ViewModelModule {
     internal abstract fun postNavigationHeaderViewModel(viewModel: NavigationHeaderViewModel): ViewModel
 
     /*
-     * User account feature dependencies
+     * User account feature dependencies.
      */
     @Binds
     @IntoMap
@@ -123,7 +124,7 @@ abstract class ViewModelModule {
     internal abstract fun getUserMovieListViewModel(viewModel: UserMovieListViewModel): ViewModel
 
     /*
-     *
+     * Movie details feature dependencies.
      */
     @Binds
     @IntoMap
@@ -134,5 +135,13 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MovieDetailsActionViewModel::class)
     internal abstract fun getMovieDetailsActionViewModel(viewModel: MovieDetailsActionViewModel): ViewModel
+
+    /*
+     * Navigation dependencies.
+     */
+    @Binds
+    @IntoMap
+    @ViewModelKey(NavigationViewModel::class)
+    internal abstract fun getNavigationViewModel(viewModel: NavigationViewModel): ViewModel
 
 }

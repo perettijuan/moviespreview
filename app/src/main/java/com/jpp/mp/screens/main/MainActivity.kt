@@ -18,7 +18,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.*
 import com.jpp.mp.R
 import com.jpp.mp.common.extensions.getStringOrDefault
+import com.jpp.mp.common.navigation.Destination
+import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.ext.*
+import com.jpp.mpdesign.ext.getViewModel
 import com.jpp.mpmoviedetails.NavigationMovieDetails
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
@@ -86,6 +89,10 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
         withRefreshAppViewModel {
             init()
+        }
+
+        withNavigationViewModel {
+            navEvents.observe(this@MainActivity, Observer { it.actionIfNotHandled { destination -> navigateToDestination(destination) } })
         }
 
         setSupportActionBar(mainToolbar)
@@ -202,17 +209,26 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 R.id.aboutFragment -> withMainViewModel { userNavigatesToAbout(getString(R.string.about_top_bar_title)) }
                 R.id.licensesFragment -> withMainViewModel { userNavigatesToLicenses(getString(R.string.about_open_source_action)) }
                 R.id.licenseContentFragment -> withMainViewModel { userNavigatesToLicenseContent(arguments.getStringOrDefault("licenseTitle", destination.label.toString())) }
-                R.id.userAccountFragment -> withMainViewModel { userNavigatesToAccountDetails(getString(R.string.account_title)) }
             }
         }
 
         setupWithNavController(mainNavigationView, navController)
     }
 
+    private fun navigateToDestination(destination: Destination) {
+        when (destination) {
+            is Destination.MPAccount ->  {
+                withMainViewModel { userNavigatesToAccountDetails(getString(R.string.account_title)) }
+                findNavController(this, R.id.mainNavHostFragment).navigate(R.id.user_account_nav)
+            }
+        }
+    }
+
 
     private fun withMainViewModel(action: MainActivityViewModel.() -> Unit) = withViewModel<MainActivityViewModel>(viewModelFactory) { action() }
     private fun withSearchViewViewModel(action: SearchViewViewModel.() -> Unit) = withViewModel<SearchViewViewModel>(viewModelFactory) { action() }
     private fun withRefreshAppViewModel(action: RefreshAppViewModel.() -> Unit) = withViewModel<RefreshAppViewModel>(viewModelFactory) { action() }
+    private fun withNavigationViewModel(action: NavigationViewModel.() -> Unit) = withViewModel<NavigationViewModel>(viewModelFactory) { action() }
 
     private fun renderViewState(viewState: MainActivityViewState) {
         setActionBarTitle(viewState.sectionTitle)

@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation.findNavController
 import com.jpp.mp.R
+import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mpdesign.ext.*
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_nav_header.*
@@ -45,7 +45,7 @@ class NavigationHeaderFragment : Fragment() {
 
         withViewModel {
             viewStates.observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { viewState -> viewState.actionIfNotHandled { renderViewState(it) } })
-            navEvents.observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
+            navEvents.observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { withNavigationViewModel { navigateToUserAccount() } })
             onInit()
         }
     }
@@ -67,27 +67,9 @@ class NavigationHeaderFragment : Fragment() {
         }
     }
 
-    /**
-     * Reacts to the navigation event provided.
-     */
-    private fun reactToNavEvent(navEvent: HeaderNavigationEvent) {
-        when (navEvent) {
-            is HeaderNavigationEvent.ToUserAccount -> navigateToLogin()
-            is HeaderNavigationEvent.ToLogin -> navigateToLogin()
-        }
-    }
 
-
-    /**
-     * Helper function to execute actions with the [NavigationHeaderViewModel].
-     */
     private fun withViewModel(action: NavigationHeaderViewModel.() -> Unit) = getViewModel<NavigationHeaderViewModel>(viewModelFactory).action()
-
-    private fun navigateToLogin() {
-        activity?.let {
-            findNavController(it, R.id.mainNavHostFragment).navigate(R.id.user_account_nav)
-        }
-    }
+    private fun withNavigationViewModel(action: NavigationViewModel.() -> Unit) = getViewModel<NavigationViewModel>(viewModelFactory).action()
 
     private fun renderLoading() {
         navHeaderUserNameTv.setInvisible()
