@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.getViewModel
+import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToUserAccount
 import com.jpp.mpaccount.account.lists.UserMovieListViewState.*
@@ -23,6 +24,7 @@ import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_user_movie_list.*
 import kotlinx.android.synthetic.main.list_item_user_movie.view.*
 import javax.inject.Inject
+import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToMovieDetails
 
 class UserMovieListFragment : Fragment() {
 
@@ -50,8 +52,8 @@ class UserMovieListFragment : Fragment() {
 
         userMoviesList.apply {
             layoutManager = LinearLayoutManager(requireActivity())
-            adapter = UserMoviesAdapter {
-                withViewModel { TODO("TODO JPP Go to details ") }
+            adapter = UserMoviesAdapter { item, position ->
+                withViewModel { onMovieSelected(item, position) }
             }
         }
     }
@@ -133,11 +135,15 @@ class UserMovieListFragment : Fragment() {
     private fun reactToNavEvent(navEvent: UserMovieListNavigationEvent) {
         when (navEvent) {
             is GoToUserAccount -> findNavController().popBackStack()
+            is GoToMovieDetails -> {
+                val view = userMoviesList.findViewInPositionWithId(navEvent.positionInList, R.id.listItemUserMovieMainImage)
+                withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(navEvent.movieId, navEvent.movieImageUrl, navEvent.movieTitle, view) }
+            }
         }
     }
 
 
-    class UserMoviesAdapter(private val itemSelectionListener: (UserMovieItem) -> Unit) : PagedListAdapter<UserMovieItem, UserMoviesAdapter.ViewHolder>(UserMovieDiffCallback()) {
+    class UserMoviesAdapter(private val itemSelectionListener: (UserMovieItem, Int) -> Unit) : PagedListAdapter<UserMovieItem, UserMoviesAdapter.ViewHolder>(UserMovieDiffCallback()) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent.inflate(R.layout.list_item_user_movie))
 
@@ -148,12 +154,13 @@ class UserMovieListFragment : Fragment() {
         }
 
         class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
-            fun bindMovieItem(item: UserMovieItem, itemSelectionListener: (UserMovieItem) -> Unit) {
+            fun bindMovieItem(item: UserMovieItem, itemSelectionListener: (UserMovieItem, Int) -> Unit) {
                 with(itemView) {
                     listItemUserMovieHeaderImage.loadImageUrlAsCircular(item.headerImageUrl)
                     listItemUserMovieTitle.text = item.title
                     listItemUserMovieMainImage.loadImageUrl(item.contentImageUrl)
-                    setOnClickListener { itemSelectionListener(item) }
+                    listItemUserMovieMainImage.transitionName = "MovieImageAt$adapterPosition"
+                    setOnClickListener { itemSelectionListener(item, adapterPosition) }
                 }
             }
         }

@@ -41,6 +41,11 @@ sealed class UserMovieListNavigationEvent {
      * Redirects the user to the previous step
      */
     object GoToUserAccount : UserMovieListNavigationEvent()
+
+    /*
+     * Redirects the user to the details of the selected movie.
+     */
+    data class GoToMovieDetails(val movieId: String, val movieImageUrl: String, val movieTitle: String, var positionInList: Int) : UserMovieListNavigationEvent()
 }
 
 data class UserMovieItem(

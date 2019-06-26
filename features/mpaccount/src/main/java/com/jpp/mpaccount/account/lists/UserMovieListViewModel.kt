@@ -69,6 +69,20 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     }
 
     /**
+     * Called when an item is selected in the list of movies.
+     * A new state is posted in navEvents() in order to handle the event.
+     */
+    fun onMovieSelected(movieItem: UserMovieItem, positionInList: Int) {
+        with(movieItem) {
+            _navEvents.value = UserMovieListNavigationEvent.GoToMovieDetails(
+                    movieId = movieId.toString(),
+                    movieImageUrl = contentImageUrl,
+                    movieTitle = title,
+                    positionInList = positionInList)
+        }
+    }
+
+    /**
      * Called when the user retries after an error.
      */
     fun onRetry() {
