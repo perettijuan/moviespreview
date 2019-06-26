@@ -19,6 +19,7 @@ import com.jpp.mp.common.extensions.getViewModel
 import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpaccount.R
+import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToMovieDetails
 import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToUserAccount
 import com.jpp.mpaccount.account.lists.UserMovieListViewState.*
 import com.jpp.mpdesign.ext.*
@@ -26,7 +27,6 @@ import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_user_movie_list.*
 import kotlinx.android.synthetic.main.list_item_user_movie.view.*
 import javax.inject.Inject
-import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToMovieDetails
 
 class UserMovieListFragment : Fragment() {
 
@@ -100,6 +100,18 @@ class UserMovieListFragment : Fragment() {
 
     private fun withRecyclerViewAdapter(action: UserMoviesAdapter.() -> Unit) = (userMoviesList.adapter as UserMoviesAdapter).action()
 
+    /**
+     * Reacts to the navigation event provided.
+     */
+    private fun reactToNavEvent(navEvent: UserMovieListNavigationEvent) {
+        when (navEvent) {
+            is GoToUserAccount -> findNavController().popBackStack()
+            is GoToMovieDetails -> {
+                val view = userMoviesList.findViewInPositionWithId(navEvent.positionInList, R.id.listItemUserMovieMainImage)
+                withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(navEvent.movieId, navEvent.movieImageUrl, navEvent.movieTitle, view) }
+            }
+        }
+    }
 
     /**
      * Performs the branching to render the proper views given then [viewState].
@@ -109,7 +121,6 @@ class UserMovieListFragment : Fragment() {
             is ShowNotConnected -> renderNotConnectedToNetwork()
             is ShowLoading -> renderLoading()
             is ShowError -> renderUnknownError()
-            is ShowEmptyList -> TODO() //TODO JPP show empty list.
             is ShowMovieList -> {
                 withRecyclerViewAdapter { submitList(viewState.pagedList) }
                 renderContent()
@@ -145,19 +156,6 @@ class UserMovieListFragment : Fragment() {
         userMoviesErrorView.setInvisible()
 
         userMoviesList.setVisible()
-    }
-
-    /**
-     * Reacts to the navigation event provided.
-     */
-    private fun reactToNavEvent(navEvent: UserMovieListNavigationEvent) {
-        when (navEvent) {
-            is GoToUserAccount -> findNavController().popBackStack()
-            is GoToMovieDetails -> {
-                val view = userMoviesList.findViewInPositionWithId(navEvent.positionInList, R.id.listItemUserMovieMainImage)
-                withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(navEvent.movieId, navEvent.movieImageUrl, navEvent.movieTitle, view) }
-            }
-        }
     }
 
 

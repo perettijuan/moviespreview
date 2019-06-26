@@ -23,11 +23,6 @@ sealed class UserMovieListViewState {
     object ShowError : UserMovieListViewState()
 
     /*
-     * Shows the empty state.
-     */
-    object ShowEmptyList : UserMovieListViewState()
-
-    /*
      * Shows the list of movies.
      */
     data class ShowMovieList(val pagedList: PagedList<UserMovieItem>) : UserMovieListViewState()
