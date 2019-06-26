@@ -1,7 +1,5 @@
 package com.jpp.mpaccount.login
 
-import com.jpp.mpdomain.AccessToken
-
 /*
  * Contains the definitions for the entire model used in the login feature.
  */
@@ -14,6 +12,7 @@ sealed class LoginViewState {
      * Shows the not connected to network state
      */
     object ShowNotConnected : LoginViewState()
+
     /*
      * Shown when the VM indicates that a work is in progress.
      */
@@ -37,8 +36,8 @@ sealed class LoginViewState {
  */
 sealed class LoginNavigationEvent {
     /*
-     * Used when the user is logged in to dismiss the login view and go back
-     * to the previous step.
+     * Used when the user is logged in to dismiss the login view and go to user
+     * account section.
      */
-    object RemoveLogin : LoginNavigationEvent()
+    object ContinueToUserAccount : LoginNavigationEvent()
 }

@@ -3,35 +3,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/user_account_nav"
-    app:startDestination="@id/userAccountFragment">
+    app:startDestination="@id/loginFragment">
 
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.jpp.mpaccount.login.LoginFragment"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/toAccountFragment"
+            app:destination="@id/userAccountFragment"
+            app:enterAnim="@anim/fragment_enter_slide_right"
+            app:exitAnim="@anim/fragment_exit_slide_right"
+            app:popEnterAnim="@anim/fragment_enter_slide_left"
+            app:popExitAnim="@anim/fragment_exit_slide_left"
+            app:popUpTo="@+id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/userAccountFragment"
         android:name="com.jpp.mpaccount.account.UserAccountFragment"
         tools:layout="@layout/fragment_user_account">
-        <action
-            android:id="@+id/toLoginFragment"
-            app:destination="@id/loginFragment"
-            app:enterAnim="@anim/fragment_enter_slide_right"
-            app:exitAnim="@anim/fragment_exit_slide_right"
-            app:popEnterAnim="@anim/fragment_enter_slide_left"
-            app:popExitAnim="@anim/fragment_exit_slide_left" />
         <action
             android:id="@+id/userMovieListFragment"
             app:destination="@id/userMovieListFragment"
             app:enterAnim="@anim/fragment_enter_slide_right"
             app:exitAnim="@anim/fragment_exit_slide_right"
             app:popEnterAnim="@anim/fragment_enter_slide_left"
-            app:popExitAnim="@anim/fragment_exit_slide_left"/>
+            app:popExitAnim="@anim/fragment_exit_slide_left" />
     </fragment>
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.jpp.mpaccount.login.LoginFragment"
-        tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/userMovieListFragment"
         android:name="com.jpp.mpaccount.account.lists.UserMovieListFragment"
-        tools:layout="@layout/fragment_user_movie_list" >
+        tools:layout="@layout/fragment_user_movie_list">
         <argument
             android:name="listType"
             app:argType="com.jpp.mpaccount.account.lists.UserMovieListFragment$UserMovieListType" />

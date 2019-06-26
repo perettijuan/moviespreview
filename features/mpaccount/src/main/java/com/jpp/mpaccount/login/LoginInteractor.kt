@@ -25,6 +25,8 @@ class LoginInteractor @Inject constructor(private val connectivityRepository: Co
         object NotConnectedToNetwork : LoginEvent()
         object LoginSuccessful : LoginEvent()
         object LoginError : LoginEvent()
+        object UserAlreadyLogged : LoginEvent()
+        object ReadyToLogin : LoginEvent()
     }
 
     /**
@@ -52,6 +54,19 @@ class LoginInteractor @Inject constructor(private val connectivityRepository: Co
      * in order to be notified about Oauth process related event.
      */
     val oauthEvents: LiveData<OauthEvent> get() = _oauthEvents
+
+    /**
+     * Verifies if the user is logged in.
+     * A new event will be pushed to [loginEvents] indicating the state of the user.
+     */
+    fun verifyUserLogged() {
+        when (sessionRepository.getCurrentSession()) {
+            null -> LoginEvent.ReadyToLogin
+            else -> LoginEvent.UserAlreadyLogged
+        }.let {
+            _loginEvents.postValue(it)
+        }
+    }
 
     /**
      * Fetches the data needed to perform the Oauth step of the login process.

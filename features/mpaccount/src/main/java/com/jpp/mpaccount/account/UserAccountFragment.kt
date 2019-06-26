@@ -13,7 +13,6 @@ import androidx.navigation.fragment.findNavController
 import com.jpp.mp.common.extensions.clearAllCookies
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mpaccount.R
-import com.jpp.mpaccount.account.UserAccountFragmentDirections.toLoginFragment
 import com.jpp.mpaccount.account.UserAccountFragmentDirections.userMovieListFragment
 import com.jpp.mpaccount.account.UserAccountNavigationEvent.*
 import com.jpp.mpaccount.account.UserAccountViewState.*
@@ -108,8 +107,7 @@ class UserAccountFragment : Fragment() {
      */
     private fun reactToNavEvent(navEvent: UserAccountNavigationEvent) {
         when (navEvent) {
-            is GoToLogin -> findNavController().navigate(toLoginFragment())
-            is GoToMain -> findNavController().popBackStack()
+            is GoToPrevious -> findNavController().popBackStack()
             is GoToFavorites -> findNavController().navigate(userMovieListFragment(UserMovieListFragment.UserMovieListType.FAVORITE_LIST))
             is GoToRated -> findNavController().navigate(userMovieListFragment(UserMovieListFragment.UserMovieListType.RATED_LIST))
             is GoToWatchlist -> findNavController().navigate(userMovieListFragment(UserMovieListFragment.UserMovieListType.WATCH_LIST))

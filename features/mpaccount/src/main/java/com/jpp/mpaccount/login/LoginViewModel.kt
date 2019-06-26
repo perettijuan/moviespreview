@@ -41,9 +41,11 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                      * one when the Login screen is accessed again.
                      */
                     loginAccessToken = null
-                    _navEvents.value = LoginNavigationEvent.RemoveLogin
+                    _navEvents.value = LoginNavigationEvent.ContinueToUserAccount
                 }
                 is LoginEvent.LoginError -> _viewStates.value = of(ShowLoginError)
+                is LoginEvent.UserAlreadyLogged -> _navEvents.value = LoginNavigationEvent.ContinueToUserAccount
+                is LoginEvent.ReadyToLogin -> _viewStates.value = of(executeOauth())
             }
         }
 
@@ -60,7 +62,7 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Called when the view is initialized.
      */
     fun onInit() {
-        _viewStates.value = of(executeOauth())
+        _viewStates.value = of(verifyUserLoggedIn())
     }
 
     /**
@@ -95,15 +97,24 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
 
     private fun executeOauth(): LoginViewState {
-        launch { withContext(dispatchers.default()) { loginInteractor.fetchOauthData() } }
+        withLoginInteractor { fetchOauthData() }
+        return ShowLoading
+    }
+
+    private fun verifyUserLoggedIn(): LoginViewState {
+        withLoginInteractor { verifyUserLogged() }
         return ShowLoading
     }
 
     private fun loginUser(): LoginViewState {
         return loginAccessToken?.let {
-            launch { withContext(dispatchers.default()) { loginInteractor.loginUser(it) } }
+            withLoginInteractor { loginUser(it) }
             ShowLoading
         } ?: ShowLoginError
+    }
+
+    private fun withLoginInteractor(action: LoginInteractor.() -> Unit) {
+        launch { withContext(dispatchers.default()) { action(loginInteractor) } }
     }
 
     private fun createOauthViewState(oauthEvent: OauthEvent.OauthSuccessful): LoginViewState {

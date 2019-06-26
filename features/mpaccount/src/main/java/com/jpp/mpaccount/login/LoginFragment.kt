@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.jpp.mpaccount.R
+import com.jpp.mpaccount.login.LoginFragmentDirections.toAccountFragment
 import com.jpp.mpdesign.ext.getViewModel
 import com.jpp.mpdesign.ext.setInvisible
 import com.jpp.mpdesign.ext.setVisible
@@ -51,7 +52,7 @@ class LoginFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         withViewModel {
             viewStates.observe(this@LoginFragment.viewLifecycleOwner, Observer { viewState -> viewState.actionIfNotHandled { renderViewState(it) } })
-            navEvents.observe(this@LoginFragment.viewLifecycleOwner, Observer { navEvent ->  reactToNavEvent(navEvent)})
+            navEvents.observe(this@LoginFragment.viewLifecycleOwner, Observer { continueToUserAccount() })
             onInit()
         }
     }
@@ -73,13 +74,8 @@ class LoginFragment : Fragment() {
         }
     }
 
-    /**
-     * Reacts to the navigation event provided.
-     */
-    private fun reactToNavEvent(navEvent: LoginNavigationEvent) {
-        when (navEvent) {
-            is LoginNavigationEvent.RemoveLogin -> findNavController().popBackStack()
-        }
+    private fun continueToUserAccount() {
+        findNavController().navigate(toAccountFragment())
     }
 
     private fun renderOauthState(oauthState: LoginViewState.ShowOauth) {
