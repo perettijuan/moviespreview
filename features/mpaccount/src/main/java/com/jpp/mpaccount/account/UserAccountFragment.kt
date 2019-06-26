@@ -13,6 +13,8 @@ import androidx.navigation.fragment.findNavController
 import com.jpp.mp.common.extensions.clearAllCookies
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.getViewModel
+import com.jpp.mp.common.extensions.withNavigationViewModel
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.account.UserAccountFragmentDirections.userMovieListFragment
 import com.jpp.mpaccount.account.UserAccountNavigationEvent.*
@@ -53,6 +55,14 @@ class UserAccountFragment : Fragment() {
         userAccountLogoutBtn.setOnClickListener {
             withViewModel { onLogout() }
             CookieManager.getInstance().clearAllCookies()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // sync app bar title
+        withNavigationViewModel(viewModelFactory) {
+            innerNavigate(Destination.InnerDestination(getString(R.string.account_title)))
         }
     }
 
