@@ -4,6 +4,7 @@ import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavDirections
 import com.jpp.mp.common.navigation.InterModuleNavigationEvent.Companion.of
 import javax.inject.Inject
 
@@ -31,10 +32,18 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
     }
 
     fun navigateToMovieDetails(movieId: String, movieImageUrl: String, movieTitle: String, transitionView: View) {
-        _navEvents.value = of(Destination.MovieDetails(movieId, movieImageUrl, movieTitle, transitionView))
+        _navEvents.value = of(Destination.MPMovieDetails(movieId, movieImageUrl, movieTitle, transitionView))
     }
 
     fun destinationReached(destinationTitle: String) {
         _navEvents.value = of(Destination.DestinationReached(destinationTitle))
+    }
+
+    fun toPrevious() {
+        _navEvents.value = of(Destination.PreviousDestination)
+    }
+
+    fun performInnerNavigation(directions: NavDirections) {
+        _navEvents.value = of(Destination.InnerDestination(directions))
     }
 }

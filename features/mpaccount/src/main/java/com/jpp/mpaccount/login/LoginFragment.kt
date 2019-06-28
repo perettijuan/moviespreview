@@ -16,7 +16,6 @@ import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import com.jpp.mp.common.extensions.getViewModel
 import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mpaccount.R
@@ -90,7 +89,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun continueToUserAccount() {
-        findNavController().navigate(toAccountFragment())
+        withNavigationViewModel(viewModelFactory) { performInnerNavigation(toAccountFragment()) }
     }
 
     private fun renderOauthState(oauthState: LoginViewState.ShowOauth) {

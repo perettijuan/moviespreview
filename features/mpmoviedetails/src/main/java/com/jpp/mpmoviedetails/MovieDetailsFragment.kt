@@ -148,7 +148,7 @@ class MovieDetailsFragment : Fragment() {
             is MovieDetailActionViewState.ShowMovieState -> renderMovieState(actionViewState)
             is MovieDetailActionViewState.ShowNoMovieState -> renderVisibleActions()
             is MovieDetailActionViewState.ShowUserNotLogged -> snackBar(detailsContent, R.string.account_need_to_login, R.string.login_generic) {
-                TODO() //TODO JPP redirect user to login screen
+                withNavigationViewModel(viewModelFactory) { navigateToUserAccount() }
             }
         }
 

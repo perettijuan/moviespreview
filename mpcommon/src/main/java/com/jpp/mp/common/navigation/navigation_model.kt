@@ -1,6 +1,7 @@
 package com.jpp.mp.common.navigation
 
 import android.view.View
+import androidx.navigation.NavDirections
 import java.util.concurrent.atomic.AtomicBoolean
 
 /*
@@ -32,19 +33,33 @@ class InterModuleNavigationEvent(private val destination: Destination) {
 
 sealed class Destination {
     /*
+     * Represents a request to perform an up destination.
+     */
+    object PreviousDestination : Destination()
+
+    /*
      * The destination used to perform inter-module navigation to the
      * user account feature module.
      */
     object MPAccount : Destination()
 
-    data class MovieDetails(val movieId: String,
-                            val movieImageUrl: String,
-                            val movieTitle: String,
-                            val transitionView: View) : Destination()
+    /*
+     * Destination used to perform inter-module navigation to the details
+     * module.
+     */
+    data class MPMovieDetails(val movieId: String,
+                              val movieImageUrl: String,
+                              val movieTitle: String,
+                              val transitionView: View) : Destination()
 
     /*
-     * Represents a Destination that is internal to a module. It is used to
+     * Represents a Destination that is reached. It is used to
      * update the Toolbar title.
      */
     data class DestinationReached(val destinationTitle: String) : Destination()
+
+    /*
+     * Represents a Destination that is internal to a module.
+     */
+    data class InnerDestination(val directions: NavDirections) : Destination()
 }

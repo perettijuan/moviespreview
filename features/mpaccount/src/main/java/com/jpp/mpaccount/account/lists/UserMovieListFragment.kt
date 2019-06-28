@@ -9,7 +9,6 @@ import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.getViewModel
 import com.jpp.mp.common.extensions.withNavigationViewModel
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToMovieDetails
 import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToUserAccount
@@ -103,7 +101,7 @@ class UserMovieListFragment : Fragment() {
      */
     private fun reactToNavEvent(navEvent: UserMovieListNavigationEvent) {
         when (navEvent) {
-            is GoToUserAccount -> findNavController().popBackStack()
+            is GoToUserAccount -> withNavigationViewModel(viewModelFactory) { toPrevious() }
             is GoToMovieDetails -> {
                 val view = userMoviesList.findViewInPositionWithId(navEvent.positionInList, R.id.listItemUserMovieMainImage)
                 withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(navEvent.movieId, navEvent.movieImageUrl, navEvent.movieTitle, view) }

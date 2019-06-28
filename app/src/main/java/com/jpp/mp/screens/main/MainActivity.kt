@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
+import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.ui.AppBarConfiguration
@@ -158,11 +159,11 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         return when (item.itemId) {
             R.id.search_menu -> {
                 // Probably the best idea here is to navigate to a new Activity
-                innerNavigate(R.id.searchFragment)
+                interModuleNavigationTo(R.id.searchFragment)
                 return true
             }
             R.id.about_menu -> {
-                innerNavigate(R.id.aboutFragment)
+                interModuleNavigationTo(R.id.aboutFragment)
                 return true
             }
             else -> super.onOptionsItemSelected(item)
@@ -219,20 +220,26 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     private fun navigateToDestination(destination: Destination) {
         when (destination) {
-            is Destination.MPAccount -> innerNavigate(R.id.user_account_nav)
-            is Destination.MovieDetails -> {
+            is Destination.MPAccount -> interModuleNavigationTo(R.id.user_account_nav)
+            is Destination.MPMovieDetails -> {
                 withNavController {
                     navigate(R.id.movie_details_nav,
                             NavigationMovieDetails.navArgs(destination.movieId, destination.movieImageUrl, destination.movieTitle, destination.transitionView.transitionName),
                             FragmentNavigatorExtras(destination.transitionView to destination.transitionView.transitionName))
                 }
             }
+            is Destination.PreviousDestination -> withNavController { popBackStack() }
             is Destination.DestinationReached -> withMainViewModel { userNavigatesWithinFeature(destination.destinationTitle) }
+            is Destination.InnerDestination -> innerNavigateTo(destination.directions)
         }
     }
 
-    private fun innerNavigate(@IdRes resId: Int) {
+    private fun interModuleNavigationTo(@IdRes resId: Int) {
         withNavController { navigate(resId) }
+    }
+
+    private fun innerNavigateTo(directions: NavDirections) {
+        withNavController { navigate(directions) }
     }
 
     private fun withNavController(action: NavController.() -> Unit) {
