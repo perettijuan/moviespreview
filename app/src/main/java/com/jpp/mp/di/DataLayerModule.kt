@@ -1,7 +1,6 @@
 package com.jpp.mp.di
 
 import android.content.Context
-import android.os.Build
 import androidx.room.Room
 import com.jpp.mpdata.api.MPApi
 import com.jpp.mpdata.cache.*
@@ -11,7 +10,6 @@ import com.jpp.mpdata.datasources.account.AccountApi
 import com.jpp.mpdata.datasources.account.AccountDb
 import com.jpp.mpdata.datasources.configuration.ConfigurationApi
 import com.jpp.mpdata.datasources.configuration.ConfigurationDb
-import com.jpp.mpdata.datasources.connectivity.ConnectivityMonitor
 import com.jpp.mpdata.datasources.language.LanguageDb
 import com.jpp.mpdata.datasources.language.LanguageMonitor
 import com.jpp.mpdata.datasources.moviedetail.MovieDetailApi
@@ -84,16 +82,6 @@ class DataLayerModule {
     @Provides
     fun providesConnectivityRepository(context: Context)
             : ConnectivityRepository = ConnectivityRepositoryImpl(context)
-
-    @Singleton
-    @Provides
-    fun providesConnectivityMonitor(context: Context): ConnectivityMonitor {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            ConnectivityMonitor.ConnectivityMonitorAPI24(context)
-        } else {
-            ConnectivityMonitor.ConnectivityMonitorAPI23(context)
-        }
-    }
 
     @Singleton
     @Provides
