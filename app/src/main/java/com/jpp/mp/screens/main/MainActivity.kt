@@ -219,25 +219,15 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     private fun navigateToDestination(destination: Destination) {
         when (destination) {
-            is Destination.MPAccount -> {
-                /*
-                 * TODO JPP this should change. The View (MainActivity) should not decide what's the title of the screen. Think of a better way!
-                 *      Change this once all features are modularized.
-                 */
-                withMainViewModel { userNavigatesToAccountDetails(getString(R.string.login_generic)) }
-                innerNavigate(R.id.user_account_nav)
-            }
+            is Destination.MPAccount -> innerNavigate(R.id.user_account_nav)
             is Destination.MovieDetails -> {
                 withNavController {
                     navigate(R.id.movie_details_nav,
                             NavigationMovieDetails.navArgs(destination.movieId, destination.movieImageUrl, destination.movieTitle, destination.transitionView.transitionName),
                             FragmentNavigatorExtras(destination.transitionView to destination.transitionView.transitionName))
                 }
-                withMainViewModel { userNavigatesWithinFeature(destination.movieTitle) }
             }
-            is Destination.InnerDestination -> {
-                withMainViewModel { userNavigatesWithinFeature(destination.destinationTitle) }
-            }
+            is Destination.DestinationReached -> withMainViewModel { userNavigatesWithinFeature(destination.destinationTitle) }
         }
     }
 

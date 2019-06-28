@@ -41,7 +41,7 @@ class MainActivityViewModelTest {
     @Test
     fun `Should start monitoring in onInit`() {
         subject.onInit()
-        
+
         verify { languageMonitor.startMonitoring() }
     }
 

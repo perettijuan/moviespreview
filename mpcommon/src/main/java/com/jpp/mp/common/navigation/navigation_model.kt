@@ -46,5 +46,5 @@ sealed class Destination {
      * Represents a Destination that is internal to a module. It is used to
      * update the Toolbar title.
      */
-    data class InnerDestination(val destinationTitle: String) : Destination()
+    data class DestinationReached(val destinationTitle: String) : Destination()
 }

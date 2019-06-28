@@ -14,7 +14,6 @@ import com.jpp.mp.common.extensions.clearAllCookies
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.getViewModel
 import com.jpp.mp.common.extensions.withNavigationViewModel
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.account.UserAccountFragmentDirections.userMovieListFragment
 import com.jpp.mpaccount.account.UserAccountNavigationEvent.*
@@ -61,9 +60,7 @@ class UserAccountFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         // sync app bar title
-        withNavigationViewModel(viewModelFactory) {
-            innerNavigate(Destination.InnerDestination(getString(R.string.account_title)))
-        }
+        withNavigationViewModel(viewModelFactory) { destinationReached(getString(R.string.account_title)) }
     }
 
     /**
@@ -118,6 +115,7 @@ class UserAccountFragment : Fragment() {
      */
     private fun reactToNavEvent(navEvent: UserAccountNavigationEvent) {
         when (navEvent) {
+            //TODO JPP ESTE ES EL PROXIMO
             is GoToPrevious -> findNavController().popBackStack()
             is GoToFavorites -> findNavController().navigate(userMovieListFragment(UserMovieListFragment.UserMovieListType.FAVORITE_LIST))
             is GoToRated -> findNavController().navigate(userMovieListFragment(UserMovieListFragment.UserMovieListType.RATED_LIST))

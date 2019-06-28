@@ -34,7 +34,7 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
         _navEvents.value = of(Destination.MovieDetails(movieId, movieImageUrl, movieTitle, transitionView))
     }
 
-    fun innerNavigate(innerDestination: Destination.InnerDestination) {
-        _navEvents.value = of(innerDestination)
+    fun destinationReached(destinationTitle: String) {
+        _navEvents.value = of(Destination.DestinationReached(destinationTitle))
     }
 }

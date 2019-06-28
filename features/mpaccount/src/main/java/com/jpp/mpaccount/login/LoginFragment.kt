@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.jpp.mp.common.extensions.getViewModel
+import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.login.LoginFragmentDirections.toAccountFragment
 import com.jpp.mpdesign.ext.setInvisible
@@ -55,6 +56,12 @@ class LoginFragment : Fragment() {
             navEvents.observe(this@LoginFragment.viewLifecycleOwner, Observer { continueToUserAccount() })
             onInit()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // sync app bar title
+        withNavigationViewModel(viewModelFactory) { destinationReached(getString(R.string.login_generic)) }
     }
 
     /**

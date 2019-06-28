@@ -79,9 +79,7 @@ class UserMovieListFragment : Fragment() {
         super.onResume()
         // sync app bar title
         withUserMovieListType { viewType ->
-            withNavigationViewModel(viewModelFactory) {
-                innerNavigate(Destination.InnerDestination(getString(viewType.titleRes)))
-            }
+            withNavigationViewModel(viewModelFactory) { destinationReached(getString(viewType.titleRes)) }
         }
     }
 
