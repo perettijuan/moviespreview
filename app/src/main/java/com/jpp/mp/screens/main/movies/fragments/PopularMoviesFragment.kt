@@ -12,10 +12,6 @@ import javax.inject.Inject
 
 class PopularMoviesFragment : MoviesFragment() {
 
-
-    override fun getNavDirectionsForMovieDetails(movieId: String, movieImageUrl: String, movieTitle: String) =
-        PopularMoviesFragmentDirections.actionPopularMoviesFragmentToMovieDetailsFragment(movieId, movieImageUrl, movieTitle)
-
     override fun getViewModelInstance(viewModelFactory: ViewModelProvider.Factory) = getViewModel<PopularMoviesFragmentViewModel>(viewModelFactory)
 
     class PopularMoviesFragmentViewModel @Inject constructor(getMoviesUseCase: GetMoviesUseCase,

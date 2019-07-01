@@ -8,6 +8,7 @@
     <dimen name="error_image_view_default_height">@dimen/error_image_view_default_size</dimen>
     <dimen name="error_image_view_default_width">@dimen/error_image_view_default_size</dimen>
     <dimen name="movie_item_image_height">400dp</dimen>
+    <dimen name="movie_item_image_width">420dp</dimen>
     <dimen name="movie_item_max_height">480dp</dimen>
     <dimen name="movie_item_header_image_view_size">40dp</dimen>
     <dimen name="movie_item_header_image_view_height">@dimen/movie_item_header_image_view_size</dimen>
@@ -32,6 +33,8 @@
     <!-- Details Screen -->
     <dimen name="movie_details_vertical_spacing">10dp</dimen>
     <dimen name="movie_details_content_padding">20dp</dimen>
+    <dimen name="movie_details_actions_loading_size">50dp</dimen>
+    <dimen name="movie_details_actions_margin">6dp</dimen>
 
     <!-- Search -->
     <dimen name="search_body_icon_size">300dp</dimen>

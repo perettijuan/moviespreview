@@ -8,15 +8,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavDirections
-import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
+import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.ext.*
-import com.jpp.mp.screens.main.RefreshAppViewModel
+import com.jpp.mpdesign.ext.findViewInPositionWithId
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movies.*
 import kotlinx.android.synthetic.main.list_item_movies.view.*
@@ -37,13 +36,14 @@ import javax.inject.Inject
  *
  * It uses the Paging Library to allow infinite scrolling in the list of movies.
  */
+//TODO JPP modularize this. When modularize, remember that this guy needs to be language aware.
 abstract class MoviesFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val movieSelectionListener: (MovieItem) -> Unit = {
-        withViewModel { onMovieSelected(it) }
+    private val movieSelectionListener: (MovieItem, Int) -> Unit = { movie, ivPosition ->
+        withViewModel { onMovieSelected(movie, ivPosition) }
     }
 
     override fun onAttach(context: Context?) {
@@ -85,30 +85,13 @@ abstract class MoviesFragment : Fragment() {
             navEvents().observe(this@MoviesFragment.viewLifecycleOwner, Observer {
                 when (it) {
                     is MoviesViewNavigationEvent.ToMovieDetails -> {
-                        findNavController().navigate(
-                                getNavDirectionsForMovieDetails(it.movieId, it.movieImageUrl, it.movieTitle)
-                        )
+                        navigateToMovieDetails(it)
                     }
                 }
             })
 
             init(moviePosterSize = getScreenSizeInPixels().x,
                     movieBackdropSize = getScreenSizeInPixels().x)
-        }
-
-        /*
-         * Get notified if the app being shown to the user needs to be refreshed for some reason
-         * and do it.
-         */
-        withRefreshAppViewModel {
-            refreshState().observe(this@MoviesFragment.viewLifecycleOwner, Observer {
-                if (it) {
-                    withViewModel {
-                        refresh(moviePosterSize = getScreenSizeInPixels().x,
-                                movieBackdropSize = getScreenSizeInPixels().x)
-                    }
-                }
-            })
         }
     }
 
@@ -149,6 +132,13 @@ abstract class MoviesFragment : Fragment() {
         }
     }
 
+    private fun navigateToMovieDetails(event: MoviesViewNavigationEvent.ToMovieDetails) {
+        with(event) {
+            val view = moviesList.findViewInPositionWithId(positionInList, R.id.movieListItemImage)
+            withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(movieId, movieImageUrl, movieTitle, view) }
+        }
+    }
+
     /**
      * Helper function to execute actions with the [MoviesFragmentViewModel].
      */
@@ -157,22 +147,11 @@ abstract class MoviesFragment : Fragment() {
     }
 
     /**
-     * Helper function to execute actions with [RefreshAppViewModel] backed by the MainActivity.
-     */
-    private fun withRefreshAppViewModel(action: RefreshAppViewModel.() -> Unit) = withViewModel<RefreshAppViewModel>(viewModelFactory) { action() }
-
-    /**
      * Helper function to execute functions that are part of the [MoviesAdapter].
      */
     private fun withRecyclerViewAdapter(action: MoviesAdapter.() -> Unit) {
         (moviesList.adapter as MoviesAdapter).action()
     }
-
-    /**
-     * MUST be implemented for all fragments that are showing a list of movies in order to enable
-     * navigation to the movie details section.
-     */
-    abstract fun getNavDirectionsForMovieDetails(movieId: String, movieImageUrl: String, movieTitle: String): NavDirections
 
     /**
      * MUST be implemented for all fragments that are showing a list of movies in order to provide
@@ -203,7 +182,7 @@ abstract class MoviesFragment : Fragment() {
     }
 
 
-    class MoviesAdapter(private val movieSelectionListener: (MovieItem) -> Unit) : PagedListAdapter<MovieItem, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {
+    class MoviesAdapter(private val movieSelectionListener: (MovieItem, Int) -> Unit) : PagedListAdapter<MovieItem, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_movies, parent, false))
@@ -222,14 +201,15 @@ abstract class MoviesFragment : Fragment() {
 
         class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 
-            fun bindMovie(movie: MovieItem, movieSelectionListener: (MovieItem) -> Unit) {
+            fun bindMovie(movie: MovieItem, movieSelectionListener: (MovieItem, Int) -> Unit) {
                 with(itemView) {
                     movieListItemHeaderIcon.loadImageUrlAsCircular(movie.headerImageUrl)
                     movieListItemTitle.text = movie.title
                     movieListItemImage.loadImageUrl(movie.contentImageUrl)
                     movieListItemPopularityText.text = movie.popularity
                     movieListItemVoteCountText.text = movie.voteCount
-                    setOnClickListener { movieSelectionListener(movie) }
+                    movieListItemImage.transitionName = "MovieImageAt$adapterPosition"
+                    setOnClickListener { movieSelectionListener(movie, adapterPosition) }
                 }
             }
         }

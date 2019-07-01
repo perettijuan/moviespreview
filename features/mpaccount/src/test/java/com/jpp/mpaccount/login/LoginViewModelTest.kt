@@ -6,7 +6,6 @@ import com.jpp.mpdomain.AccessToken
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
@@ -58,14 +57,14 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `Should navigate to previews screen when login is successful`() {
+    fun `Should navigate to user account screen when login is successful`() {
         var eventPosted: LoginNavigationEvent? = null
 
         subject.navEvents.observeWith { eventPosted = it }
 
         lvLoginEvent.postValue(LoginInteractor.LoginEvent.LoginSuccessful)
 
-        assertEquals(LoginNavigationEvent.RemoveLogin, eventPosted)
+        assertEquals(LoginNavigationEvent.ContinueToUserAccount, eventPosted)
     }
 
     @Test
@@ -165,7 +164,7 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `Should ask interactor to fetch oauth data and push loading state in onInit`() {
+    fun `Should verify user logged in and push loading state in onInit`() {
         var viewStatePosted: LoginViewState? = null
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
@@ -173,7 +172,18 @@ class LoginViewModelTest {
         subject.onInit()
 
         assertEquals(LoginViewState.ShowLoading, viewStatePosted)
-        verify { loginInteractor.fetchOauthData() }
+        verify { loginInteractor.verifyUserLogged() }
+    }
+
+    @Test
+    fun `Should fetch oauth data when user is ready to login`() {
+        var viewStatePosted: LoginViewState? = null
+
+        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+
+        lvLoginEvent.postValue(LoginInteractor.LoginEvent.ReadyToLogin)
+
+        assertEquals(LoginViewState.ShowLoading, viewStatePosted)
     }
 
     @Test

@@ -1,29 +1,34 @@
 package com.jpp.mp.screens.main
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.ValueAnimator
-import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.*
-import com.google.android.material.appbar.AppBarLayout
 import com.jpp.mp.R
+import com.jpp.mp.common.extensions.getStringOrDefault
+import com.jpp.mp.common.extensions.navigate
+import com.jpp.mp.common.navigation.Destination
+import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.ext.*
+import com.jpp.mpdesign.ext.setGone
+import com.jpp.mpdesign.ext.setVisible
+import com.jpp.mpmoviedetails.NavigationMovieDetails
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -88,24 +93,12 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             })
         }
 
-        withRefreshAppViewModel {
-            init()
+        withNavigationViewModel {
+            navEvents.observe(this@MainActivity, Observer { it.actionIfNotHandled { destination -> navigateToDestination(destination) } })
         }
 
         setSupportActionBar(mainToolbar)
         setupNavigation()
-
-        /*
-         * CollapsingToolbarLayout does not supports custom downloadable fonts
-         * - or I couldn't find a way to do it - this is the best approach
-         * I found to load the fonts I want for it.
-         */
-        with(mainCollapsingToolbarLayout) {
-            val tf = Typeface.createFromAsset(assets, "fonts/poppins.ttf")
-            setCollapsedTitleTypeface(tf)
-            setExpandedTitleTypeface(tf)
-        }
-
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -116,11 +109,11 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
          * Manage inner navigation: since we have multiple home destinations (all the fragments that
          * are sub-classes of MoviesFragment) we need to manage the ActionBar button click for some cases (the
          * burger or the arrow). If we fail to do so, the navigation library is assuming we're trying to
-         * open the nav drawer from the current destination.
+         * expanded the navigate drawer from the current destination.
          * The logic here determinate if the current destination is one of the non-home destination fragments
-         * (the ones that are deeper in the navigation structure) and if it is the case asks the nav controller
+         * (the ones that are deeper in the navigation structure) and if it is the case asks the navigate controller
          * to navigate one step up.
-         * If it is a home destination, it opens the drawer and asks the nav controller to manage the navigation
+         * If it is a home destination, it opens the drawer and asks the navigate controller to manage the navigation
          * as usual.
          */
         if (topLevelDestinations.contains(findNavController(this, R.id.mainNavHostFragment).currentDestination?.id)) {
@@ -164,11 +157,11 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         return when (item.itemId) {
             R.id.search_menu -> {
                 // Probably the best idea here is to navigate to a new Activity
-                findNavController(this, R.id.mainNavHostFragment).navigate(R.id.searchFragment)
+                interModuleNavigationTo(R.id.searchFragment)
                 return true
             }
             R.id.about_menu -> {
-                findNavController(this, R.id.mainNavHostFragment).navigate(R.id.aboutFragment)
+                interModuleNavigationTo(R.id.aboutFragment)
                 return true
             }
             else -> super.onOptionsItemSelected(item)
@@ -211,40 +204,57 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 R.id.popularMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
                 R.id.upcomingMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
                 R.id.topRatedMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
-                R.id.movieDetailsFragment -> { withMainViewModel { userNavigatesToMovieDetails(arguments.getStringOrDefault("movieTitle", destination.label.toString()), arguments.getStringOrDefault("movieImageUrl")) } }
                 R.id.searchFragment -> withMainViewModel { userNavigatesToSearch() }
                 R.id.personFragment -> withMainViewModel { userNavigatesToPerson(arguments.getStringOrDefault("personName", destination.label.toString())) }
-                R.id.creditsFragment -> withMainViewModel {userNavigatesToCredits(arguments.getStringOrDefault("movieTitle", destination.label.toString())) }
+                R.id.creditsFragment -> withMainViewModel { userNavigatesToCredits(arguments.getStringOrDefault("movieTitle", destination.label.toString())) }
                 R.id.aboutFragment -> withMainViewModel { userNavigatesToAbout(getString(R.string.about_top_bar_title)) }
                 R.id.licensesFragment -> withMainViewModel { userNavigatesToLicenses(getString(R.string.about_open_source_action)) }
                 R.id.licenseContentFragment -> withMainViewModel { userNavigatesToLicenseContent(arguments.getStringOrDefault("licenseTitle", destination.label.toString())) }
-                R.id.userAccountFragment -> withMainViewModel { userNavigatesToAccountDetails(getString(R.string.account_title)) }
             }
         }
 
         setupWithNavController(mainNavigationView, navController)
     }
 
+    private fun navigateToDestination(destination: Destination) {
+        when (destination) {
+            is Destination.MPAccount -> interModuleNavigationTo(R.id.user_account_nav)
+            is Destination.MPMovieDetails -> {
+                withNavController {
+                    navigate(R.id.movie_details_nav,
+                            NavigationMovieDetails.navArgs(destination.movieId, destination.movieImageUrl, destination.movieTitle, destination.transitionView.transitionName),
+                            FragmentNavigatorExtras(destination.transitionView to destination.transitionView.transitionName))
+                }
+            }
+            is Destination.PreviousDestination -> withNavController { popBackStack() }
+            is Destination.DestinationReached -> withMainViewModel { userNavigatesWithinFeature(destination.destinationTitle) }
+            is Destination.InnerDestination -> innerNavigateTo(destination.directions)
+        }
+    }
+
+    private fun interModuleNavigationTo(@IdRes resId: Int) {
+        withNavController { navigate(resId) }
+    }
+
+    private fun innerNavigateTo(directions: NavDirections) {
+        withNavController { navigate(directions) }
+    }
+
+    private fun withNavController(action: NavController.() -> Unit) {
+        findNavController(this, R.id.mainNavHostFragment).action()
+    }
+
 
     private fun withMainViewModel(action: MainActivityViewModel.() -> Unit) = withViewModel<MainActivityViewModel>(viewModelFactory) { action() }
     private fun withSearchViewViewModel(action: SearchViewViewModel.() -> Unit) = withViewModel<SearchViewViewModel>(viewModelFactory) { action() }
-    private fun withRefreshAppViewModel(action: RefreshAppViewModel.() -> Unit) = withViewModel<RefreshAppViewModel>(viewModelFactory) { action() }
+    private fun withNavigationViewModel(action: NavigationViewModel.() -> Unit) = withViewModel<NavigationViewModel>(viewModelFactory) { action() }
 
     private fun renderViewState(viewState: MainActivityViewState) {
-        when (viewState) {
-            is MainActivityViewState.ActionBarLocked -> {
-                if (viewState.withAnimation) lockActionBarWithAnimation() else lockActionBar()
-                if (viewState.searchEnabled) showSearchView() else mainSearchView.setGone()
-                setActionBarTitle(viewState.sectionTitle)
-            }
-            is MainActivityViewState.ActionBarUnlocked -> {
-                mainImageView.clearImage()
+        setActionBarTitle(viewState.sectionTitle)
+        when (viewState.searchEnabled) {
+            true -> showSearchView()
+            false -> {
                 mainSearchView.setGone()
-                unlockActionBarWithAnimation {
-                    mainImageView.loadImageUrl(viewState.contentImageUrl)
-                    mainCollapsingToolbarLayout.enableTitle()
-                    enableCollapsingToolBarLayoutTitle(viewState.sectionTitle)
-                }
                 mpToolbarManager.clearInsetStartWithNavigation(mainToolbar)
             }
         }
@@ -272,111 +282,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 }
             }
         }
-    }
-
-
-    /**
-     * Hides the mainCollapsingToolbarLayout title when it is fully extended and shows the
-     * title when the user scrolls the content of the Activity.
-     */
-    private fun enableCollapsingToolBarLayoutTitle(title: String) {
-        mainAppBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-
-            var show = true
-            var scrollRange = -1
-
-            override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.totalScrollRange
-                }
-
-                if (scrollRange + verticalOffset == 0) {
-                    mainCollapsingToolbarLayout.title = title
-                    show = true
-                } else if (show) {
-                    mainCollapsingToolbarLayout.title = " "
-                    show = false
-                }
-            }
-        })
-    }
-
-
-    private fun lockActionBar() {
-        // disable expanded mode in AppBarLayout container
-        mainAppBarLayout.apply {
-            setExpanded(false, false)
-            isActivated = false
-            val lp = layoutParams as CoordinatorLayout.LayoutParams
-            lp.height = resources.getDimension(R.dimen.action_bar_height_normal).toInt()
-        }
-        mainCollapsingToolbarLayout.disableTitle()
-        mainImageView.setGone()
-    }
-
-    private fun lockActionBarWithAnimation() {
-        //This is what performs the visible animation.
-        mainAppBarLayout.apply {
-            setExpanded(false, true)
-            isActivated = false
-
-        }
-        /*
-         * Sadly, setExpanded has no listener -- in order to ensure
-         * that the unlock animation works as expected, we need to reset
-         * the size of the mainAppBarLayout - that's why we execute this animation, that
-         * actually is not seen because it is delayed until the setExpanded(false, true)
-         * animation is done.
-         */
-        ValueAnimator
-                .ofInt(resources.getDimension(R.dimen.action_bar_height_expanded).toInt(), resources.getDimension(R.dimen.action_bar_height_normal).toInt())
-                .apply { duration = 300 }
-                .also { it.startDelay = 200 }
-                .also {
-                    it.addUpdateListener {
-                        val newHeight = it.animatedValue as Int
-                        val lp = mainAppBarLayout.layoutParams as CoordinatorLayout.LayoutParams
-                        lp.height = newHeight
-                        mainAppBarLayout.layoutParams = lp
-                    }
-                }
-                .also {
-                    it.addListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationStart(animation: Animator?) {
-                            mainCollapsingToolbarLayout.disableTitle()
-                            mainImageView.setGone()
-                        }
-                    })
-                }
-                .run { start() }
-    }
-
-    private fun unlockActionBarWithAnimation(animationEndListener: () -> Unit) {
-        mainAppBarLayout.apply {
-            setExpanded(true, false)
-            isActivated = true
-        }
-
-        ValueAnimator
-                .ofInt(mainAppBarLayout.measuredHeight, resources.getDimension(R.dimen.action_bar_height_expanded).toInt())
-                .apply { duration = 500 }
-                .also {
-                    it.addUpdateListener {
-                        val newHeight = it.animatedValue as Int
-                        val lp = mainAppBarLayout.layoutParams as CoordinatorLayout.LayoutParams
-                        lp.height = newHeight
-                        mainAppBarLayout.layoutParams = lp
-                    }
-                }
-                .also {
-                    it.addListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator?) {
-                            mainImageView.setVisible()
-                            animationEndListener.invoke()
-                        }
-                    })
-                }
-                .run { start() }
     }
 
     private fun showSearchView() {

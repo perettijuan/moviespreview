@@ -9,11 +9,12 @@ import android.webkit.CookieManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import com.jpp.mp.common.extensions.clearAllCookies
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
+import com.jpp.mp.common.extensions.getViewModel
+import com.jpp.mp.common.extensions.withNavigationViewModel
+import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mpaccount.R
-import com.jpp.mpaccount.account.UserAccountFragmentDirections.toLoginFragment
 import com.jpp.mpaccount.account.UserAccountFragmentDirections.userMovieListFragment
 import com.jpp.mpaccount.account.UserAccountNavigationEvent.*
 import com.jpp.mpaccount.account.UserAccountViewState.*
@@ -56,10 +57,17 @@ class UserAccountFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        // sync app bar title
+        withNavigationViewModel { destinationReached(getString(R.string.account_title)) }
+    }
+
     /**
      * Helper function to execute methods over the [UserAccountViewModel].
      */
     private fun withViewModel(action: UserAccountViewModel.() -> Unit) = getViewModel<UserAccountViewModel>(viewModelFactory).action()
+    private fun withNavigationViewModel(action: NavigationViewModel.() -> Unit) = withNavigationViewModel(viewModelFactory) { action() }
 
     /**
      * Performs the branching to render the proper views given then [viewState].
@@ -108,11 +116,10 @@ class UserAccountFragment : Fragment() {
      */
     private fun reactToNavEvent(navEvent: UserAccountNavigationEvent) {
         when (navEvent) {
-            is GoToLogin -> findNavController().navigate(toLoginFragment())
-            is GoToMain -> findNavController().popBackStack()
-            is GoToFavorites -> findNavController().navigate(userMovieListFragment(UserMovieListFragment.UserMovieListType.FAVORITE_LIST))
-            is GoToRated -> findNavController().navigate(userMovieListFragment(UserMovieListFragment.UserMovieListType.RATED_LIST))
-            is GoToWatchlist -> findNavController().navigate(userMovieListFragment(UserMovieListFragment.UserMovieListType.WATCH_LIST))
+            is GoToPrevious -> withNavigationViewModel { toPrevious() }
+            is GoToFavorites -> withNavigationViewModel { performInnerNavigation(userMovieListFragment(UserMovieListFragment.UserMovieListType.FAVORITE_LIST)) }
+            is GoToRated -> withNavigationViewModel { performInnerNavigation(userMovieListFragment(UserMovieListFragment.UserMovieListType.RATED_LIST)) }
+            is GoToWatchlist -> withNavigationViewModel { performInnerNavigation(userMovieListFragment(UserMovieListFragment.UserMovieListType.WATCH_LIST)) }
         }
     }
 
@@ -134,7 +141,7 @@ class UserAccountFragment : Fragment() {
         userAccountLoadingView.setInvisible()
         userAccountContentView.setInvisible()
 
-        userAccountErrorView.asNoConnectivityError { withViewModel { onUserRetry(getScreenWidthInPixels()) } }
+        userAccountErrorView.asNoConnectivityError { withViewModel { onRetry(getScreenWidthInPixels()) } }
         userAccountErrorView.setVisible()
     }
 
@@ -142,7 +149,7 @@ class UserAccountFragment : Fragment() {
         userAccountLoadingView.setInvisible()
         userAccountContentView.setInvisible()
 
-        userAccountErrorView.asUnknownError { withViewModel { onUserRetry(getScreenWidthInPixels()) } }
+        userAccountErrorView.asUnknownError { withViewModel { onRetry(getScreenWidthInPixels()) } }
         userAccountErrorView.setVisible()
     }
 

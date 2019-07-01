@@ -27,7 +27,7 @@ class UserAccountInteractorTest {
     @RelaxedMockK
     private lateinit var sessionRepository: SessionRepository
     @RelaxedMockK
-    private lateinit var moviesRepository: MoviesRepository
+    private lateinit var moviePageRepository: MoviePageRepository
     @MockK
     private lateinit var languageRepository: LanguageRepository
 
@@ -44,7 +44,7 @@ class UserAccountInteractorTest {
                 connectivityRepository,
                 sessionRepository,
                 accountRepository,
-                moviesRepository,
+                moviePageRepository,
                 languageRepository
         )
     }
@@ -61,7 +61,7 @@ class UserAccountInteractorTest {
 
         assertEquals(UserAccountEvent.UserNotLogged, eventPosted)
         verify(exactly = 0) { accountRepository.getUserAccount(any()) }
-        verify(exactly = 0) { moviesRepository.getFavoriteMoviePage(any(), any(), any(), any()) }
+        verify(exactly = 0) { moviePageRepository.getFavoriteMoviePage(any(), any(), any(), any()) }
         verify(exactly = 0) { languageRepository.getCurrentAppLanguage() }
     }
 
@@ -78,7 +78,7 @@ class UserAccountInteractorTest {
 
         assertEquals(UserAccountEvent.NotConnectedToNetwork, eventPosted)
         verify(exactly = 0) { accountRepository.getUserAccount(any()) }
-        verify(exactly = 0) { moviesRepository.getFavoriteMoviePage(any(), any(), any(), any()) }
+        verify(exactly = 0) { moviePageRepository.getFavoriteMoviePage(any(), any(), any(), any()) }
         verify(exactly = 1) { languageRepository.getCurrentAppLanguage() }
     }
 
@@ -96,7 +96,7 @@ class UserAccountInteractorTest {
 
         assertEquals(UserAccountEvent.UnknownError, eventPosted)
         verify(exactly = 1) { accountRepository.getUserAccount(any()) }
-        verify(exactly = 0) { moviesRepository.getFavoriteMoviePage(any(), any(), any(), any()) }
+        verify(exactly = 0) { moviePageRepository.getFavoriteMoviePage(any(), any(), any(), any()) }
         verify(exactly = 1) { languageRepository.getCurrentAppLanguage() }
     }
 
@@ -119,9 +119,9 @@ class UserAccountInteractorTest {
         every { accountRepository.getUserAccount(any()) } returns accountData
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { accountRepository.getUserAccount(any()) } returns accountData
-        every { moviesRepository.getFavoriteMoviePage(any(), any(), any(), any()) } returns favMoviePage
-        every { moviesRepository.getRatedMoviePage(any(), any(), any(), any()) } returns ratedMoviePage
-        every { moviesRepository.getWatchlistMoviePage(any(), any(), any(), any()) } returns watchListPage
+        every { moviePageRepository.getFavoriteMoviePage(any(), any(), any(), any()) } returns favMoviePage
+        every { moviePageRepository.getRatedMoviePage(any(), any(), any(), any()) } returns ratedMoviePage
+        every { moviePageRepository.getWatchlistMoviePage(any(), any(), any(), any()) } returns watchListPage
 
         subject.userAccountEvents.observeWith { eventPosted = it }
 
@@ -129,9 +129,9 @@ class UserAccountInteractorTest {
 
         assertEquals(expected, eventPosted)
         verify(exactly = 1) { accountRepository.getUserAccount(session) }
-        verify(exactly = 1) { moviesRepository.getFavoriteMoviePage(1, accountData, session, SupportedLanguage.English) }
-        verify(exactly = 1) { moviesRepository.getRatedMoviePage(1, accountData, session, SupportedLanguage.English) }
-        verify(exactly = 1) { moviesRepository.getWatchlistMoviePage(1, accountData, session, SupportedLanguage.English) }
+        verify(exactly = 1) { moviePageRepository.getFavoriteMoviePage(1, accountData, session, SupportedLanguage.English) }
+        verify(exactly = 1) { moviePageRepository.getRatedMoviePage(1, accountData, session, SupportedLanguage.English) }
+        verify(exactly = 1) { moviePageRepository.getWatchlistMoviePage(1, accountData, session, SupportedLanguage.English) }
         verify(exactly = 1) { languageRepository.getCurrentAppLanguage() }
     }
 
@@ -144,9 +144,9 @@ class UserAccountInteractorTest {
 
         assertEquals(UserAccountEvent.UserDataCleared, eventPosted)
         verify { accountRepository.flushUserAccountData() }
-        verify { moviesRepository.flushFavoriteMoviePages() }
-        verify { moviesRepository.flushRatedMoviePages() }
-        verify { moviesRepository.flushWatchlistMoviePages() }
+        verify { moviePageRepository.flushFavoriteMoviePages() }
+        verify { moviePageRepository.flushRatedMoviePages() }
+        verify { moviePageRepository.flushWatchlistMoviePages() }
         verify { sessionRepository.deleteCurrentSession() }
     }
 

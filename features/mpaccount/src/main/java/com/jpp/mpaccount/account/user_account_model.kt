@@ -12,6 +12,7 @@ sealed class UserAccountViewState {
      * Shows the not connected to network state
      */
     object ShowNotConnected : UserAccountViewState()
+
     /*
      * Shows when the VM indicates that a work is in progress.
      */
@@ -68,14 +69,9 @@ data class UserMovieItem(val image: String) : UserAccountMoviesView.UserAccountM
  */
 sealed class UserAccountNavigationEvent {
     /*
-     * Used when the VM detects that the user is not logged in.
+     * Used to redirect the previous step.
      */
-    object GoToLogin : UserAccountNavigationEvent()
-
-    /*
-     * Used to redirect the user to the main screen.
-     */
-    object GoToMain : UserAccountNavigationEvent()
+    object GoToPrevious : UserAccountNavigationEvent()
 
     /*
      * Used to navigate to the favorite movies section.

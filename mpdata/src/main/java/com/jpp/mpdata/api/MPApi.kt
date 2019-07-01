@@ -5,8 +5,10 @@ import com.jpp.mpdata.datasources.account.AccountApi
 import com.jpp.mpdata.datasources.tokens.AccessTokenApi
 import com.jpp.mpdata.datasources.session.SessionApi
 import com.jpp.mpdata.datasources.configuration.ConfigurationApi
+import com.jpp.mpdata.datasources.moviedetail.MovieDetailApi
 import com.jpp.mpdata.repository.credits.CreditsApi
-import com.jpp.mpdata.repository.movies.MoviesApi
+import com.jpp.mpdata.datasources.moviepage.MoviesApi
+import com.jpp.mpdata.datasources.moviestate.MovieStateApi
 import com.jpp.mpdata.repository.person.PersonApi
 import com.jpp.mpdata.repository.search.SearchApi
 import com.jpp.mpdomain.*
@@ -28,7 +30,9 @@ open class MPApi
         CreditsApi,
         SessionApi,
         AccountApi,
-        AccessTokenApi {
+        AccessTokenApi,
+        MovieDetailApi,
+        MovieStateApi {
 
     override fun getAppConfiguration(): AppConfiguration? {
         return tryCatchOrReturnNull { API.getAppConfiguration(API_KEY) }
@@ -78,7 +82,7 @@ open class MPApi
         return tryCatchOrReturnNull { API.getUserAccount(session.session_id, API_KEY) }
     }
 
-    override fun updateMovieFavoriteState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean? {
+    override fun updateFavoriteMovieState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean? {
         return API.markMediaAsFavorite(
                 accountId = userAccount.id,
                 sessionId = session.session_id,
@@ -92,7 +96,22 @@ open class MPApi
         }
     }
 
-    override fun getMovieAccountState(movieId: Double, session: Session): MovieAccountState? {
+    override fun updateWatchlistMovieState(movieId: Double, inWatchList: Boolean, userAccount: UserAccount, session: Session): Boolean? {
+        return API.addMediaToWatchlist(
+                accountId = userAccount.id,
+                sessionId = session.session_id,
+                api_key = API_KEY,
+                body = WatchlistMediaBody(
+                        media_type = "movie",
+                        media_id = movieId,
+                        watchlist = inWatchList
+                )
+        ).let {
+            it.execute().body()?.let { true }
+        }
+    }
+
+    override fun getMovieAccountState(movieId: Double, session: Session): MovieState? {
         return tryCatchOrReturnNull { API.getMovieAccountState(movieId, session.session_id, API_KEY) }
     }
 

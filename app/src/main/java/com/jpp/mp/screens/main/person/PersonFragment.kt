@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.R
 import com.jpp.mp.ext.*
-import com.jpp.mp.screens.main.RefreshAppViewModel
 import com.jpp.mp.screens.main.person.PersonFragmentArgs.fromBundle
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_person.*
@@ -75,33 +74,12 @@ class PersonFragment : Fragment() {
                 }
             })
         }
-
-        /*
-        * Get notified if the app being shown to the user needs to be refreshed for some reason
-        * and do it.
-        */
-        withRefreshAppViewModel {
-            refreshState().observe(this@PersonFragment.viewLifecycleOwner, Observer {
-                if (it) {
-                    withViewModel {
-                        refresh(fromBundle(args).personId.toDouble(),
-                                fromBundle(args).personImageUrl,
-                                fromBundle(args).personName)
-                    }
-                }
-            })
-        }
     }
 
     /**
      * Helper function to execute actions with the [PersonViewModel].
      */
     private fun withViewModel(action: PersonViewModel.() -> Unit) = withViewModel<PersonViewModel>(viewModelFactory) { action() }
-
-    /**
-     * Helper function to execute actions with [RefreshAppViewModel] backed by the MainActivity.
-     */
-    private fun withRefreshAppViewModel(action: RefreshAppViewModel.() -> Unit) = withViewModel<RefreshAppViewModel>(viewModelFactory) { action() }
 
     private fun renderLoading() {
         personBirthdayRow.setInvisible()

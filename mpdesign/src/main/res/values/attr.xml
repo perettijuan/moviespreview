@@ -8,10 +8,15 @@
     <attr name="mpMovieItemHeaderImageWidth" format="reference" />
     <attr name="mpMovieItemHeaderImageHeight" format="reference" />
     <attr name="mpMovieItemImageHeight" format="reference" />
+    <attr name="mpMovieItemImageWidth" format="reference" />
     <attr name="mpMovieItemBottomIconSize" format="reference" />
     <attr name="mpMovieItemMaxSize" format="reference" />
+
     <attr name="mpDetailsVerticalSpacing" format="reference" />
     <attr name="mpDetailsContentPadding" format="reference" />
+    <attr name="mpDetailsActionLoadingSize" format="reference" />
+    <attr name="mpDetailsActionMargin" format="reference" />
+
     <attr name="mpSearchImageSize" format="reference" />
     <attr name="mpSearchItemImageSize" format="reference" />
     <attr name="mpSearchItemTitlePadding" format="reference" />
@@ -43,13 +48,8 @@
         <attr name="valueText" format="reference"/>
     </declare-styleable>
 
-    <declare-styleable name="MPItemSelectionView">
+    <declare-styleable name="MPSimpleItemSelectionView">
         <attr name="itemText" format="reference" />
-    </declare-styleable>
-
-    <declare-styleable name="MPActionButton">
-        <attr name="fillIcon" format="reference"/>
-        <attr name="emptyIcon" format="reference"/>
     </declare-styleable>
 
 </resources>

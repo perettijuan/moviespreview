@@ -2,7 +2,6 @@ package com.jpp.mpaccount.account
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent.*
 import com.jpp.mpdomain.*
 import com.jpp.mpdomain.repository.*
@@ -16,7 +15,7 @@ import javax.inject.Inject
 class UserAccountInteractor @Inject constructor(private val connectivityRepository: ConnectivityRepository,
                                                 private val sessionRepository: SessionRepository,
                                                 private val accountRepository: AccountRepository,
-                                                private val moviesRepository: MoviesRepository,
+                                                private val moviePageRepository: MoviePageRepository,
                                                 private val languageRepository: LanguageRepository) {
 
     /**
@@ -100,7 +99,7 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
     }
 
     private fun getFavoriteMovies(session: Session, userAccount: UserAccount, language: SupportedLanguage): UserMoviesState {
-        return moviesRepository.getFavoriteMoviePage(
+        return moviePageRepository.getFavoriteMoviePage(
                 page = 1,
                 userAccount = userAccount,
                 session = session,
@@ -111,7 +110,7 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
     }
 
     private fun getRatedMovies(session: Session, userAccount: UserAccount, language: SupportedLanguage): UserMoviesState {
-        return moviesRepository.getRatedMoviePage(
+        return moviePageRepository.getRatedMoviePage(
                 page = 1,
                 userAccount = userAccount,
                 session = session,
@@ -122,7 +121,7 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
     }
 
     private fun getWatchlist(session: Session, userAccount: UserAccount, language: SupportedLanguage): UserMoviesState {
-        return moviesRepository.getWatchlistMoviePage(
+        return moviePageRepository.getWatchlistMoviePage(
                 page = 1,
                 userAccount = userAccount,
                 session = session,
@@ -134,7 +133,7 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
 
     private fun flushCurrentUserData() {
         accountRepository.flushUserAccountData()
-        with(moviesRepository) {
+        with(moviePageRepository) {
             flushFavoriteMoviePages()
             flushRatedMoviePages()
             flushWatchlistMoviePages()

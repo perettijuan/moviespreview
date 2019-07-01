@@ -72,7 +72,7 @@ class AboutViewModel @Inject constructor(private val appVersionUseCase: GetAppVe
     }
 
     /**
-     * Called when the app fails to open the Google Play app in the device.
+     * Called when the app fails to expanded the Google Play app in the device.
      */
     fun onFailedToOpenPlayStore() {
         navigationEvents.value = AboutNavEvent.InnerNavigation(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.GooglePlayWeb))

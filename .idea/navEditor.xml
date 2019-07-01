@@ -29,27 +29,6 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="accountFragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="-361" />
-                            <option name="y" value="916" />
-                          </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="toFavoriteMoviesFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
                   <entry key="creditsFragment">
                     <value>
                       <LayoutPositions>
@@ -62,27 +41,6 @@
                         <option name="myPositions">
                           <map>
                             <entry key="action_creditsFragment_to_personFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="favoriteMoviesFragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="528" />
-                            <option name="y" value="913" />
-                          </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="toMovieDetails">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -125,28 +83,14 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="movieDetailsFragment">
+                  <entry key="movie_details_nav">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="19" />
-                            <option name="y" value="-45" />
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
                           </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="action_movieDetailsFragment_to_accountFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="action_movieDetailsFragment_to_creditsFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -290,6 +234,21 @@
             </LayoutPositions>
           </value>
         </entry>
+        <entry key="movie_details_nav.xml">
+          <value>
+            <LayoutPositions>
+              <option name="myPositions">
+                <map>
+                  <entry key="movieDetailsFragment">
+                    <value>
+                      <LayoutPositions />
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </LayoutPositions>
+          </value>
+        </entry>
         <entry key="user_account_nav.xml">
           <value>
             <LayoutPositions>
@@ -300,9 +259,18 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="295" />
-                            <option name="y" value="-206" />
+                            <option name="x" value="256" />
+                            <option name="y" value="12" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="toAccountFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -313,16 +281,11 @@
                         <option name="myPosition">
                           <Point>
                             <option name="x" value="12" />
-                            <option name="y" value="12" />
+                            <option name="y" value="54" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="toLoginFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
                             <entry key="userMovieListFragment">
                               <value>
                                 <LayoutPositions />
@@ -338,8 +301,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="301" />
-                            <option name="y" value="232" />
+                            <option name="x" value="256" />
+                            <option name="y" value="368" />
                           </Point>
                         </option>
                       </LayoutPositions>

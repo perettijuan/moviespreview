@@ -3,7 +3,6 @@ package com.jpp.mp.screens.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.jpp.mpdata.datasources.connectivity.ConnectivityMonitor
 import com.jpp.mpdata.datasources.language.LanguageMonitor
 import com.jpp.mpdomain.repository.LanguageRepository
 import javax.inject.Inject
@@ -23,8 +22,7 @@ import javax.inject.Inject
  * and asks the Activity to update the Action Bar's title.
  *
  */
-class MainActivityViewModel @Inject constructor(private val connectivityMonitor: ConnectivityMonitor,
-                                                private val languageMonitor: LanguageMonitor,
+class MainActivityViewModel @Inject constructor(private val languageMonitor: LanguageMonitor,
                                                 private val languageRepository: LanguageRepository) : ViewModel() {
 
     private val viewState by lazy { MutableLiveData<MainActivityViewState>() }
@@ -34,44 +32,33 @@ class MainActivityViewModel @Inject constructor(private val connectivityMonitor:
      */
     fun onInit() {
         languageRepository.syncPlatformLanguage()
-        connectivityMonitor.startMonitoring()
         languageMonitor.startMonitoring()
     }
 
     override fun onCleared() {
-        connectivityMonitor.stopMonitoring()
         languageMonitor.stopMonitoring()
     }
 
     fun viewState(): LiveData<MainActivityViewState> = viewState
 
     fun userNavigatesToMovieListSection(sectionName: String) {
-        viewState.postValue(MainActivityViewState.ActionBarLocked(
-                abTitle = sectionName,
-                withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked,
-                menuEnabled = true,
-                isSearch = false)
-        )
+        navigateToSimpleDestination(sectionName)
     }
 
-    fun userNavigatesToMovieDetails(movieTitle: String, contentImageUrl: String) {
-        viewState.postValue(MainActivityViewState.ActionBarUnlocked(
-                abTitle = movieTitle,
-                contentImageUrl = contentImageUrl)
-        )
+    fun userNavigatesToMovieDetails(movieTitle: String) {
+        navigateToSimpleDestination(movieTitle)
     }
 
     fun userNavigatesToSearch() {
-        viewState.postValue(MainActivityViewState.ActionBarLocked(
-                abTitle = "",
-                withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked,
-                menuEnabled = false,
-                isSearch = true)
+        viewState.value = MainActivityViewState(
+                sectionTitle = "",
+                menuBarEnabled = false,
+                searchEnabled = true
         )
     }
 
     fun userNavigatesToCredits(sectionName: String) {
-        navigateToSimpleDestinationWithAnimation(sectionName)
+        navigateToSimpleDestination(sectionName)
     }
 
     fun userNavigatesToPerson(sectionName: String) {
@@ -94,8 +81,8 @@ class MainActivityViewModel @Inject constructor(private val connectivityMonitor:
         navigateToSimpleDestination(sectionName)
     }
 
-    fun userNavigatesToFavoriteMovies(sectionName: String) {
-        navigateToSimpleDestinationWithAnimation(sectionName)
+    fun userNavigatesWithinFeature(sectionName: String) {
+        navigateToSimpleDestination(sectionName)
     }
 
     /**
@@ -103,24 +90,10 @@ class MainActivityViewModel @Inject constructor(private val connectivityMonitor:
      * and without menu enabled.
      */
     private fun navigateToSimpleDestination(sectionName: String) {
-        viewState.postValue(MainActivityViewState.ActionBarLocked(
-                abTitle = sectionName,
-                withAnimation = false,
-                menuEnabled = false,
-                isSearch = false)
-        )
-    }
-
-    /**
-     * Update view state when it is navigating to a destination with animation
-     * and without menu enabled.
-     */
-    private fun navigateToSimpleDestinationWithAnimation(sectionName: String) {
-        viewState.postValue(MainActivityViewState.ActionBarLocked(
-                abTitle = sectionName,
-                withAnimation = viewState.value is MainActivityViewState.ActionBarUnlocked,
-                menuEnabled = false,
-                isSearch = false)
+        viewState.value = MainActivityViewState(
+                sectionTitle = sectionName,
+                menuBarEnabled = false,
+                searchEnabled = false
         )
     }
 }

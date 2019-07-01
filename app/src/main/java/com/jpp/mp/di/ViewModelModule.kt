@@ -2,13 +2,11 @@ package com.jpp.mp.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.screens.main.MainActivityViewModel
-import com.jpp.mp.screens.main.RefreshAppViewModel
 import com.jpp.mp.screens.main.SearchViewViewModel
 import com.jpp.mp.screens.main.about.AboutViewModel
 import com.jpp.mp.screens.main.credits.CreditsViewModel
-import com.jpp.mp.screens.main.details.MovieActionsViewModel
-import com.jpp.mp.screens.main.details.MovieDetailsViewModel
 import com.jpp.mp.screens.main.header.NavigationHeaderViewModel
 import com.jpp.mp.screens.main.licenses.LicensesViewModel
 import com.jpp.mp.screens.main.licenses.content.LicenseContentViewModel
@@ -21,6 +19,8 @@ import com.jpp.mp.screens.main.search.SearchFragmentViewModel
 import com.jpp.mpaccount.account.UserAccountViewModel
 import com.jpp.mpaccount.account.lists.UserMovieListViewModel
 import com.jpp.mpaccount.login.LoginViewModel
+import com.jpp.mpmoviedetails.MovieDetailsActionViewModel
+import com.jpp.mpmoviedetails.MovieDetailsViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -53,16 +53,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(UpcomingMoviesFragment.UpcomingMoviesFragmentViewModel::class)
     internal abstract fun postUpcomingMoviesFragmentViewModel(viewModel: UpcomingMoviesFragment.UpcomingMoviesFragmentViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(MovieDetailsViewModel::class)
-    internal abstract fun postMovieDetailsViewModel(viewModel: MovieDetailsViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(MovieActionsViewModel::class)
-    internal abstract fun postMovieActionsViewModel(viewModel: MovieActionsViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -106,16 +96,11 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(RefreshAppViewModel::class)
-    internal abstract fun postRefreshAppViewModel(viewModel: RefreshAppViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(NavigationHeaderViewModel::class)
     internal abstract fun postNavigationHeaderViewModel(viewModel: NavigationHeaderViewModel): ViewModel
 
     /*
-     * User account feature injections
+     * User account feature dependencies.
      */
     @Binds
     @IntoMap
@@ -131,4 +116,26 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(UserMovieListViewModel::class)
     internal abstract fun getUserMovieListViewModel(viewModel: UserMovieListViewModel): ViewModel
+
+    /*
+     * Movie details feature dependencies.
+     */
+    @Binds
+    @IntoMap
+    @ViewModelKey(MovieDetailsViewModel::class)
+    internal abstract fun getMovieDetailsViewModel(viewModel: MovieDetailsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MovieDetailsActionViewModel::class)
+    internal abstract fun getMovieDetailsActionViewModel(viewModel: MovieDetailsActionViewModel): ViewModel
+
+    /*
+     * Navigation dependencies.
+     */
+    @Binds
+    @IntoMap
+    @ViewModelKey(NavigationViewModel::class)
+    internal abstract fun getNavigationViewModel(viewModel: NavigationViewModel): ViewModel
+
 }

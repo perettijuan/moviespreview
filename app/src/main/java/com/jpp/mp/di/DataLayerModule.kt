@@ -1,46 +1,46 @@
 package com.jpp.mp.di
 
 import android.content.Context
-import android.os.Build
 import androidx.room.Room
 import com.jpp.mpdata.api.MPApi
 import com.jpp.mpdata.cache.*
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter
-import com.jpp.mpdata.preferences.LanguageDbImpl
-import com.jpp.mpdata.preferences.SessionDbImpl
-import com.jpp.mpdata.repository.about.AboutNavigationRepositoryImpl
 import com.jpp.mpdata.datasources.account.AccountApi
 import com.jpp.mpdata.datasources.account.AccountDb
-import com.jpp.mpdata.datasources.connectivity.ConnectivityMonitor
-import com.jpp.mpdata.repository.account.AccountRepositoryImpl
+import com.jpp.mpdata.datasources.configuration.ConfigurationApi
+import com.jpp.mpdata.datasources.configuration.ConfigurationDb
+import com.jpp.mpdata.datasources.language.LanguageDb
+import com.jpp.mpdata.datasources.language.LanguageMonitor
+import com.jpp.mpdata.datasources.moviedetail.MovieDetailApi
+import com.jpp.mpdata.datasources.moviedetail.MovieDetailDb
+import com.jpp.mpdata.datasources.moviepage.MoviesApi
+import com.jpp.mpdata.datasources.moviepage.MoviesDb
+import com.jpp.mpdata.datasources.moviestate.MovieStateApi
 import com.jpp.mpdata.datasources.session.SessionApi
 import com.jpp.mpdata.datasources.session.SessionDb
 import com.jpp.mpdata.datasources.tokens.AccessTokenApi
-import com.jpp.mpdata.repository.account.MPUserAccountRepositoryImpl
-import com.jpp.mpdata.repository.session.SessionRepositoryImpl
+import com.jpp.mpdata.preferences.LanguageDbImpl
+import com.jpp.mpdata.preferences.SessionDbImpl
+import com.jpp.mpdata.repository.about.AboutNavigationRepositoryImpl
+import com.jpp.mpdata.repository.account.AccountRepositoryImpl
 import com.jpp.mpdata.repository.appversion.AppVersionRepositoryImpl
-import com.jpp.mpdata.datasources.configuration.ConfigurationApi
-import com.jpp.mpdata.datasources.configuration.ConfigurationDb
-import com.jpp.mpdata.datasources.language.LanguageMonitor
 import com.jpp.mpdata.repository.configuration.ConfigurationRepositoryImpl
 import com.jpp.mpdata.repository.connectivity.ConnectivityRepositoryImpl
-import com.jpp.mpdata.repository.connectivity.MPConnectivityRepositoryImpl
 import com.jpp.mpdata.repository.credits.CreditsApi
 import com.jpp.mpdata.repository.credits.CreditsDb
 import com.jpp.mpdata.repository.credits.CreditsRepositoryImpl
+import com.jpp.mpdata.repository.language.LanguageRepositoryImpl
 import com.jpp.mpdata.repository.licenses.LicensesRepositoryImpl
-import com.jpp.mpdata.repository.movies.MoviesApi
-import com.jpp.mpdata.repository.movies.MoviesDb
-import com.jpp.mpdata.repository.movies.MoviesRepositoryImpl
+import com.jpp.mpdata.repository.moviedetail.MovieDetailRepositoryImpl
+import com.jpp.mpdata.repository.movies.MoviePageRepositoryImpl
+import com.jpp.mpdata.repository.moviestate.MovieStateRepositoryImpl
 import com.jpp.mpdata.repository.person.PersonApi
 import com.jpp.mpdata.repository.person.PersonDb
 import com.jpp.mpdata.repository.person.PersonRepositoryImpl
 import com.jpp.mpdata.repository.search.SearchApi
 import com.jpp.mpdata.repository.search.SearchRepositoryImpl
-import com.jpp.mpdata.repository.session.MPSessionRepositoryImpl
-import com.jpp.mpdata.datasources.language.LanguageDb
-import com.jpp.mpdata.repository.language.LanguageRepositoryImpl
+import com.jpp.mpdata.repository.session.SessionRepositoryImpl
 import com.jpp.mpdata.repository.support.SupportDb
 import com.jpp.mpdata.repository.support.SupportRepositoryImpl
 import com.jpp.mpdata.repository.tokens.AccessTokenRepositoryImpl
@@ -85,22 +85,7 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesMPConnectivityRepository(connectivityMonitor: ConnectivityMonitor, context: Context)
-            : MPConnectivityRepository = MPConnectivityRepositoryImpl(connectivityMonitor, context)
-
-    @Singleton
-    @Provides
-    fun providesConnectivityMonitor(context: Context): ConnectivityMonitor {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            ConnectivityMonitor.ConnectivityMonitorAPI24(context)
-        } else {
-            ConnectivityMonitor.ConnectivityMonitorAPI23(context)
-        }
-    }
-
-    @Singleton
-    @Provides
-    fun providesLanguageMonitor(context: Context) : LanguageMonitor = LanguageMonitor.Impl(context)
+    fun providesLanguageMonitor(context: Context): LanguageMonitor = LanguageMonitor.Impl(context)
 
 
     /***********************************
@@ -122,7 +107,7 @@ class DataLayerModule {
     @Provides
     fun providesMoviesRepository(moviesApi: MoviesApi,
                                  moviesDb: MoviesDb)
-            : MoviesRepository = MoviesRepositoryImpl(moviesApi, moviesDb)
+            : MoviePageRepository = MoviePageRepositoryImpl(moviesApi, moviesDb)
 
     /*****************************************
      ****** CONFIGURATION DEPENDENCIES *******
@@ -263,11 +248,6 @@ class DataLayerModule {
     fun providesSessionRepository(sessionApi: SessionApi, sessionDb: SessionDb)
             : SessionRepository = SessionRepositoryImpl(sessionApi, sessionDb)
 
-    @Singleton
-    @Provides
-    fun providesMPSessionRepository(sessionApi: SessionApi, sessionDb: SessionDb)
-            : MPSessionRepository = MPSessionRepositoryImpl(sessionApi, sessionDb)
-
     /**********************************
      ****** ACCOUNT DEPENDENCIES ******
      **********************************/
@@ -284,11 +264,6 @@ class DataLayerModule {
     @Provides
     fun providesAccountRepository(accountApi: AccountApi, accountDb: AccountDb): AccountRepository = AccountRepositoryImpl(accountApi, accountDb)
 
-    @Singleton
-    @Provides
-    fun providesUserAccountRepository(accountApi: AccountApi, accountDb: AccountDb)
-            : MPUserAccountRepository = MPUserAccountRepositoryImpl(accountApi, accountDb)
-
     /***************************************
      ****** ACCESS TOKEN DEPENDENCIES ******
      ***************************************/
@@ -302,5 +277,32 @@ class DataLayerModule {
     @Provides
     fun providesMPAccessTokenRepository(accessTokenApi: AccessTokenApi)
             : AccessTokenRepository = AccessTokenRepositoryImpl(accessTokenApi)
+
+    /***************************************
+     ****** MOVIE DETAIL DEPENDENCIES ******
+     ***************************************/
+    @Singleton
+    @Provides
+    fun providesMovieDetailApi(mpApiInstance: MPApi): MovieDetailApi = mpApiInstance
+
+    @Singleton
+    @Provides
+    fun providesMovieDetailDb(roomDb: MPRoomDataBase,
+                              adapter: RoomModelAdapter,
+                              timestampHelper: CacheTimestampHelper): MovieDetailDb = MovieDetailCache(roomDb, adapter, timestampHelper)
+
+    @Singleton
+    @Provides
+    fun providesMovieDetailRepository(movieDetailApi: MovieDetailApi,
+                                      movieDetailDb: MovieDetailDb): MovieDetailRepository = MovieDetailRepositoryImpl(movieDetailApi, movieDetailDb)
+
+    @Singleton
+    @Provides
+    fun providesMovieStateApi(mpApiInstance: MPApi): MovieStateApi = mpApiInstance
+
+    @Singleton
+    @Provides
+    fun providesMovieStateRepository(movieStateApi: MovieStateApi): MovieStateRepository = MovieStateRepositoryImpl(movieStateApi)
+
 }
 

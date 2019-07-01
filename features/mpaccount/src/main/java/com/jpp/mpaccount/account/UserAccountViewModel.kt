@@ -7,18 +7,14 @@ import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.viewstate.HandledViewState
 import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
-import com.jpp.mpaccount.account.UserAccountInteractor.UserMoviesState
 import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent
-import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToLogin
+import com.jpp.mpaccount.account.UserAccountInteractor.UserMoviesState
+import com.jpp.mpaccount.account.UserAccountNavigationEvent.*
 import com.jpp.mpaccount.account.UserAccountViewState.*
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToMain
-import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToFavorites
-import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToRated
-import com.jpp.mpaccount.account.UserAccountNavigationEvent.GoToWatchlist
 import javax.inject.Inject
 
 /**
@@ -50,8 +46,8 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
             when (event) {
                 is UserAccountEvent.NotConnectedToNetwork -> _viewStates.value = of(ShowNotConnected)
                 is UserAccountEvent.UnknownError -> _viewStates.value = of(ShowError)
-                is UserAccountEvent.UserNotLogged -> _navEvents.value = GoToLogin
-                is UserAccountEvent.UserDataCleared -> _navEvents.value = GoToMain
+                is UserAccountEvent.UserNotLogged -> _navEvents.value = GoToPrevious
+                is UserAccountEvent.UserDataCleared -> _navEvents.value = GoToPrevious
                 is UserAccountEvent.UserChangedLanguage -> _viewStates.value = of(refreshData())
                 is UserAccountEvent.Success -> mapAccountInfo(event)
             }
@@ -69,7 +65,7 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
     /**
      * Called when the user retries after an error.
      */
-    fun onUserRetry(posterSize: Int) {
+    fun onRetry(posterSize: Int) {
         moviesPosterTargetSize = posterSize
         _viewStates.value = of(executeGetUserAccountStep())
     }
@@ -125,7 +121,7 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
         return ShowLoading
     }
 
-    private fun refreshData() : UserAccountViewState {
+    private fun refreshData(): UserAccountViewState {
         withAccountInteractor { refreshUserAccountData() }
         return ShowLoading
     }

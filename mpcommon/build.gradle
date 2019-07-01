@@ -37,6 +37,16 @@ dependencies {
     // Paging library
     implementation deps.androidx.paging
 
+    // Navigation Components
+    implementation deps.android.arch.navigation.fragment
+    implementation deps.android.arch.navigation.ui
+
+    // Dagger
+    implementation deps.dagger.dagger
+    implementation deps.dagger.android
+    kapt deps.dagger.compiler
+    kapt deps.dagger.processor
+
     def androidTestLibVersion = '1.1.0'
     testImplementation "androidx.test:core:$androidTestLibVersion"
 

@@ -178,7 +178,7 @@ fun TextView.setTextAppearanceCompat(@StyleRes resId: Int) {
 }
 
 /**
- * Closes the drawer if it is open (using the START margin to determinate if is open).
+ * Closes the drawer if it is expanded (using the START margin to determinate if is expanded).
  */
 fun DrawerLayout.closeDrawerIfOpen() {
     if (isDrawerOpen(GravityCompat.START)) {

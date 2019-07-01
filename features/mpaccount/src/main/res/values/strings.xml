@@ -1,4 +1,7 @@
 <resources>
+    <!-- Account -->
+    <string name="account_title">Account</string>
+
     <string name="user_account_approve_reminder">Please approve Movies Preview to use your data.</string>
     <string name="user_account_logout">Logout</string>
 
