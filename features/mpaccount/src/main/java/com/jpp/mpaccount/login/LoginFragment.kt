@@ -23,6 +23,7 @@ import com.jpp.mpaccount.login.LoginFragmentDirections.toAccountFragment
 import com.jpp.mpdesign.ext.setInvisible
 import com.jpp.mpdesign.ext.setVisible
 import com.jpp.mpdesign.ext.snackBar
+import com.jpp.mpdesign.ext.snackBarNoAction
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_login.*
 import javax.inject.Inject
@@ -73,18 +74,10 @@ class LoginFragment : Fragment() {
      */
     private fun renderViewState(viewState: LoginViewState) {
         when (viewState) {
-            is LoginViewState.ShowNotConnected -> {
-                renderNotConnectedToNetwork()
-            }
-            is LoginViewState.ShowLoading -> {
-                renderLoading()
-            }
-            is LoginViewState.ShowLoginError -> {
-                renderUnableToLogin()
-            }
-            is LoginViewState.ShowOauth -> {
-                renderOauthState(viewState)
-            }
+            is LoginViewState.ShowNotConnected -> renderNotConnectedToNetwork()
+            is LoginViewState.ShowLoading -> renderLoading()
+            is LoginViewState.ShowLoginError -> renderUnableToLogin()
+            is LoginViewState.ShowOauth -> renderOauthState(viewState)
         }
     }
 
@@ -104,9 +97,11 @@ class LoginFragment : Fragment() {
         }
 
         if (oauthState.reminder) {
-            snackBar(loginContent, R.string.user_account_approve_reminder, R.string.error_retry) {
+            snackBarNoAction(loginContent, R.string.user_account_approve_reminder)
+            // Disabling retry since it is causing a loop
+            /*snackBar(loginContent, R.string.user_account_approve_reminder, R.string.error_retry) {
                 withViewModel { onUserRetry() }
-            }
+            }*/
         }
 
         loginErrorView.setInvisible()

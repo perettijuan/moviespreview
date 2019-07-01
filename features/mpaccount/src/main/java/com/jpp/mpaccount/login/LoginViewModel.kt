@@ -35,14 +35,7 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         _viewStates.addSource(loginInteractor.loginEvents) { loginEvent ->
             when (loginEvent) {
                 is LoginEvent.NotConnectedToNetwork -> _viewStates.value = of(ShowNotConnected)
-                is LoginEvent.LoginSuccessful -> {
-                    /*
-                     * Clear the used access token so we can fetch a new
-                     * one when the Login screen is accessed again.
-                     */
-                    loginAccessToken = null
-                    _navEvents.value = LoginNavigationEvent.ContinueToUserAccount
-                }
+                is LoginEvent.LoginSuccessful -> _navEvents.value = LoginNavigationEvent.ContinueToUserAccount
                 is LoginEvent.LoginError -> _viewStates.value = of(ShowLoginError)
                 is LoginEvent.UserAlreadyLogged -> _navEvents.value = LoginNavigationEvent.ContinueToUserAccount
                 is LoginEvent.ReadyToLogin -> _viewStates.value = of(executeOauth())
@@ -62,6 +55,7 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Called when the view is initialized.
      */
     fun onInit() {
+        clearState()
         _viewStates.value = of(verifyUserLoggedIn())
     }
 
@@ -95,6 +89,9 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     val navEvents: LiveData<LoginNavigationEvent> get() = _navEvents
 
+    private fun clearState() {
+        loginAccessToken = null
+    }
 
     private fun executeOauth(): LoginViewState {
         withLoginInteractor { fetchOauthData() }
