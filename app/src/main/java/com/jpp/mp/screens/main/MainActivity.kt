@@ -157,7 +157,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         return when (item.itemId) {
             R.id.search_menu -> {
                 // Probably the best idea here is to navigate to a new Activity
-                interModuleNavigationTo(R.id.searchFragment)
+                interModuleNavigationTo(R.id.search_nav)
                 return true
             }
             R.id.about_menu -> {

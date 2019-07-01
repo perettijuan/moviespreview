@@ -148,19 +148,21 @@ class SearchFragment : Fragment() {
     private fun navigateTo(event: SearchViewNavigationEvent) {
         when (event) {
             is SearchViewNavigationEvent.ToMovieDetails -> {
-                findNavController().navigate(
-                        //TODO JPP need to navigate to details properly
-                        SearchFragmentDirections.actionSearchFragmentToMovieDetailsFragment()
-                )
+                //TODO JPP need to navigate to details properly
+                /*findNavController().navigate(
+
+                         SearchFragmentDirections.actionSearchFragmentToMovieDetailsFragment()
+                )*/
             }
             is SearchViewNavigationEvent.ToPerson -> {
-                findNavController().navigate(
+                //TODO JPP need to navigate to person properly
+                /*findNavController().navigate(
                         SearchFragmentDirections.actionSearchFragmentToPersonFragment(
                                 event.personId,
                                 event.personImageUrl,
                                 event.personName
                         )
-                )
+                )*/
             }
         }
     }
