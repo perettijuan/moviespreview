@@ -8,18 +8,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
-import com.jpp.mp.common.extensions.navigate
+import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.ext.*
-import com.jpp.mp.screens.main.RefreshAppViewModel
 import com.jpp.mpdesign.ext.findViewInPositionWithId
-import com.jpp.mpmoviedetails.NavigationMovieDetails.navArgs
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movies.*
 import kotlinx.android.synthetic.main.list_item_movies.view.*
@@ -40,6 +36,7 @@ import javax.inject.Inject
  *
  * It uses the Paging Library to allow infinite scrolling in the list of movies.
  */
+//TODO JPP modularize this. When modularize, remember that this guy needs to be language aware.
 abstract class MoviesFragment : Fragment() {
 
     @Inject
@@ -96,21 +93,6 @@ abstract class MoviesFragment : Fragment() {
             init(moviePosterSize = getScreenSizeInPixels().x,
                     movieBackdropSize = getScreenSizeInPixels().x)
         }
-
-        /*
-         * Get notified if the app being shown to the user needs to be refreshed for some reason
-         * and do it.
-         */
-        withRefreshAppViewModel {
-            refreshState().observe(this@MoviesFragment.viewLifecycleOwner, Observer {
-                if (it) {
-                    withViewModel {
-                        refresh(moviePosterSize = getScreenSizeInPixels().x,
-                                movieBackdropSize = getScreenSizeInPixels().x)
-                    }
-                }
-            })
-        }
     }
 
     /**
@@ -153,11 +135,7 @@ abstract class MoviesFragment : Fragment() {
     private fun navigateToMovieDetails(event: MoviesViewNavigationEvent.ToMovieDetails) {
         with(event) {
             val view = moviesList.findViewInPositionWithId(positionInList, R.id.movieListItemImage)
-            Navigation
-                    .findNavController(requireActivity(), R.id.mainNavHostFragment)
-                    .navigate(R.id.movie_details_nav,
-                            navArgs(movieId, movieImageUrl, movieTitle, view.transitionName),
-                            FragmentNavigatorExtras(view to view.transitionName))
+            withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(movieId, movieImageUrl, movieTitle, view) }
         }
     }
 
@@ -167,11 +145,6 @@ abstract class MoviesFragment : Fragment() {
     private fun withViewModel(action: MoviesFragmentViewModel.() -> Unit) {
         getViewModelInstance(viewModelFactory).action()
     }
-
-    /**
-     * Helper function to execute actions with [RefreshAppViewModel] backed by the MainActivity.
-     */
-    private fun withRefreshAppViewModel(action: RefreshAppViewModel.() -> Unit) = withViewModel<RefreshAppViewModel>(viewModelFactory) { action() }
 
     /**
      * Helper function to execute functions that are part of the [MoviesAdapter].

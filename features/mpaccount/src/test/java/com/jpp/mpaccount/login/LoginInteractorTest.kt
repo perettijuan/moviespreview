@@ -91,6 +91,32 @@ class LoginInteractorTest {
     }
 
     @Test
+    fun `Should post ReadyToLogin when user is not logged in`() {
+        var eventPosted: LoginInteractor.LoginEvent? = null
+
+        every { sessionRepository.getCurrentSession() } returns null
+
+        subject.loginEvents.observeWith { eventPosted = it }
+
+        subject.verifyUserLogged()
+
+        assertEquals(LoginInteractor.LoginEvent.ReadyToLogin, eventPosted)
+    }
+
+    @Test
+    fun `Should post UserAlreadyLogged when user is already logged in`() {
+        var eventPosted: LoginInteractor.LoginEvent? = null
+
+        every { sessionRepository.getCurrentSession() } returns mockk()
+
+        subject.loginEvents.observeWith { eventPosted = it }
+
+        subject.verifyUserLogged()
+
+        assertEquals(LoginInteractor.LoginEvent.UserAlreadyLogged, eventPosted)
+    }
+
+    @Test
     fun `Should post login no connectivity when trying to login disconnected`() {
         var eventPosted: LoginInteractor.LoginEvent? = null
 

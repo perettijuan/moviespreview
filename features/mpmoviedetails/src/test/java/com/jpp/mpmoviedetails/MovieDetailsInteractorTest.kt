@@ -9,6 +9,7 @@ import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
@@ -32,6 +33,8 @@ class MovieDetailsInteractorTest {
     private lateinit var accountRepository: AccountRepository
     @MockK
     private lateinit var movieStateRepository: MovieStateRepository
+    @RelaxedMockK
+    private lateinit var moviePageRepository: MoviePageRepository
 
     private lateinit var subject: MovieDetailsInteractor
 
@@ -43,7 +46,8 @@ class MovieDetailsInteractorTest {
                 languageRepository,
                 sessionRepository,
                 accountRepository,
-                movieStateRepository)
+                movieStateRepository,
+                moviePageRepository)
     }
 
     @Test
@@ -199,6 +203,7 @@ class MovieDetailsInteractorTest {
         subject.updateFavoriteMovieState(12.0, true)
         assertEquals(expected, eventPosted)
         verify { movieStateRepository.updateFavoriteMovieState(12.0, true, userAccount, session) }
+        verify { moviePageRepository.flushFavoriteMoviePages() }
     }
 
     @Test
@@ -245,5 +250,6 @@ class MovieDetailsInteractorTest {
         subject.updateWatchlistMovieState(12.0, true)
         assertEquals(expected, eventPosted)
         verify { movieStateRepository.updateWatchlistMovieState(12.0, true, userAccount, session) }
+        verify { moviePageRepository.flushWatchlistMoviePages() }
     }
 }

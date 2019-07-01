@@ -3,7 +3,6 @@ package com.jpp.mp.screens.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.jpp.mpdata.datasources.connectivity.ConnectivityMonitor
 import com.jpp.mpdata.datasources.language.LanguageMonitor
 import com.jpp.mpdomain.repository.LanguageRepository
 import javax.inject.Inject
@@ -23,8 +22,7 @@ import javax.inject.Inject
  * and asks the Activity to update the Action Bar's title.
  *
  */
-class MainActivityViewModel @Inject constructor(private val connectivityMonitor: ConnectivityMonitor,
-                                                private val languageMonitor: LanguageMonitor,
+class MainActivityViewModel @Inject constructor(private val languageMonitor: LanguageMonitor,
                                                 private val languageRepository: LanguageRepository) : ViewModel() {
 
     private val viewState by lazy { MutableLiveData<MainActivityViewState>() }
@@ -34,12 +32,10 @@ class MainActivityViewModel @Inject constructor(private val connectivityMonitor:
      */
     fun onInit() {
         languageRepository.syncPlatformLanguage()
-        connectivityMonitor.startMonitoring()
         languageMonitor.startMonitoring()
     }
 
     override fun onCleared() {
-        connectivityMonitor.stopMonitoring()
         languageMonitor.stopMonitoring()
     }
 
@@ -82,6 +78,10 @@ class MainActivityViewModel @Inject constructor(private val connectivityMonitor:
     }
 
     fun userNavigatesToAccountDetails(sectionName: String) {
+        navigateToSimpleDestination(sectionName)
+    }
+
+    fun userNavigatesWithinFeature(sectionName: String) {
         navigateToSimpleDestination(sectionName)
     }
 

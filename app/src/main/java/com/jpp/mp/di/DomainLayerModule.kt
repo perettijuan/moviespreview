@@ -13,8 +13,6 @@ import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
 import com.jpp.mpdomain.usecase.person.GetPersonUseCase
 import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
 import com.jpp.mpdomain.usecase.search.SearchUseCase
-import com.jpp.mpdomain.usecase.support.RefreshAppDataUseCase
-import com.jpp.mpdomain.usecase.support.RefreshLanguageDataUseCase
 import dagger.Module
 import dagger.Provides
 import java.util.concurrent.Executor
@@ -82,16 +80,6 @@ class DomainLayerModule {
     @Provides
     fun providesGetLicenseUseCase(licensesRepository: LicensesRepository)
             : GetLicenseUseCase = GetLicenseUseCase.Impl(licensesRepository)
-
-    @Provides
-    fun providesRefreshDataUseCase(languageRepository: LanguageRepository,
-                                   supportRepository: SupportRepository)
-            : RefreshLanguageDataUseCase = RefreshLanguageDataUseCase.Impl(languageRepository, supportRepository)
-
-    @Provides
-    fun providesRefreshAppDataUseCase(accountRepository: AccountRepository, languageRepository: LanguageRepository)
-            : RefreshAppDataUseCase = RefreshAppDataUseCase.Impl(accountRepository, languageRepository)
-
 
     @Provides
     fun providesImagesPathInteractor(configurationRepository: ConfigurationRepository)

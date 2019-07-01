@@ -1,6 +1,5 @@
 package com.jpp.mp.screens.main
 
-import com.jpp.mpdata.datasources.connectivity.ConnectivityMonitor
 import com.jpp.mpdata.datasources.language.LanguageMonitor
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mptestutils.InstantTaskExecutorExtension
@@ -8,19 +7,16 @@ import com.jpp.mptestutils.observeWith
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
 @ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
 class MainActivityViewModelTest {
 
-    @RelaxedMockK
-    private lateinit var connectivityMonitor: ConnectivityMonitor
     @RelaxedMockK
     private lateinit var languageMonitor: LanguageMonitor
     @RelaxedMockK
@@ -30,7 +26,7 @@ class MainActivityViewModelTest {
 
     @BeforeEach
     fun setUp() {
-        subject = MainActivityViewModel(connectivityMonitor, languageMonitor, languageRepository)
+        subject = MainActivityViewModel(languageMonitor, languageRepository)
     }
 
 
@@ -46,7 +42,6 @@ class MainActivityViewModelTest {
     fun `Should start monitoring in onInit`() {
         subject.onInit()
 
-        verify { connectivityMonitor.startMonitoring() }
         verify { languageMonitor.startMonitoring() }
     }
 

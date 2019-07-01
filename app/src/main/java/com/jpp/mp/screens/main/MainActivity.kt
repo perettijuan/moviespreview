@@ -6,6 +6,7 @@ import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -13,12 +14,20 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.*
 import com.jpp.mp.R
 import com.jpp.mp.common.extensions.getStringOrDefault
+import com.jpp.mp.common.extensions.navigate
+import com.jpp.mp.common.navigation.Destination
+import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.ext.*
+import com.jpp.mpdesign.ext.setGone
+import com.jpp.mpdesign.ext.setVisible
 import com.jpp.mpmoviedetails.NavigationMovieDetails
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
@@ -84,8 +93,8 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             })
         }
 
-        withRefreshAppViewModel {
-            init()
+        withNavigationViewModel {
+            navEvents.observe(this@MainActivity, Observer { it.actionIfNotHandled { destination -> navigateToDestination(destination) } })
         }
 
         setSupportActionBar(mainToolbar)
@@ -148,11 +157,11 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         return when (item.itemId) {
             R.id.search_menu -> {
                 // Probably the best idea here is to navigate to a new Activity
-                findNavController(this, R.id.mainNavHostFragment).navigate(R.id.searchFragment)
+                interModuleNavigationTo(R.id.searchFragment)
                 return true
             }
             R.id.about_menu -> {
-                findNavController(this, R.id.mainNavHostFragment).navigate(R.id.aboutFragment)
+                interModuleNavigationTo(R.id.aboutFragment)
                 return true
             }
             else -> super.onOptionsItemSelected(item)
@@ -195,24 +204,50 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 R.id.popularMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
                 R.id.upcomingMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
                 R.id.topRatedMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
-                R.id.movieDetailsFragment -> withMainViewModel { userNavigatesToMovieDetails(NavigationMovieDetails.title(arguments)) }
                 R.id.searchFragment -> withMainViewModel { userNavigatesToSearch() }
                 R.id.personFragment -> withMainViewModel { userNavigatesToPerson(arguments.getStringOrDefault("personName", destination.label.toString())) }
                 R.id.creditsFragment -> withMainViewModel { userNavigatesToCredits(arguments.getStringOrDefault("movieTitle", destination.label.toString())) }
                 R.id.aboutFragment -> withMainViewModel { userNavigatesToAbout(getString(R.string.about_top_bar_title)) }
                 R.id.licensesFragment -> withMainViewModel { userNavigatesToLicenses(getString(R.string.about_open_source_action)) }
                 R.id.licenseContentFragment -> withMainViewModel { userNavigatesToLicenseContent(arguments.getStringOrDefault("licenseTitle", destination.label.toString())) }
-                R.id.userAccountFragment -> withMainViewModel { userNavigatesToAccountDetails(getString(R.string.account_title)) }
             }
         }
 
         setupWithNavController(mainNavigationView, navController)
     }
 
+    private fun navigateToDestination(destination: Destination) {
+        when (destination) {
+            is Destination.MPAccount -> interModuleNavigationTo(R.id.user_account_nav)
+            is Destination.MPMovieDetails -> {
+                withNavController {
+                    navigate(R.id.movie_details_nav,
+                            NavigationMovieDetails.navArgs(destination.movieId, destination.movieImageUrl, destination.movieTitle, destination.transitionView.transitionName),
+                            FragmentNavigatorExtras(destination.transitionView to destination.transitionView.transitionName))
+                }
+            }
+            is Destination.PreviousDestination -> withNavController { popBackStack() }
+            is Destination.DestinationReached -> withMainViewModel { userNavigatesWithinFeature(destination.destinationTitle) }
+            is Destination.InnerDestination -> innerNavigateTo(destination.directions)
+        }
+    }
+
+    private fun interModuleNavigationTo(@IdRes resId: Int) {
+        withNavController { navigate(resId) }
+    }
+
+    private fun innerNavigateTo(directions: NavDirections) {
+        withNavController { navigate(directions) }
+    }
+
+    private fun withNavController(action: NavController.() -> Unit) {
+        findNavController(this, R.id.mainNavHostFragment).action()
+    }
+
 
     private fun withMainViewModel(action: MainActivityViewModel.() -> Unit) = withViewModel<MainActivityViewModel>(viewModelFactory) { action() }
     private fun withSearchViewViewModel(action: SearchViewViewModel.() -> Unit) = withViewModel<SearchViewViewModel>(viewModelFactory) { action() }
-    private fun withRefreshAppViewModel(action: RefreshAppViewModel.() -> Unit) = withViewModel<RefreshAppViewModel>(viewModelFactory) { action() }
+    private fun withNavigationViewModel(action: NavigationViewModel.() -> Unit) = withViewModel<NavigationViewModel>(viewModelFactory) { action() }
 
     private fun renderViewState(viewState: MainActivityViewState) {
         setActionBarTitle(viewState.sectionTitle)

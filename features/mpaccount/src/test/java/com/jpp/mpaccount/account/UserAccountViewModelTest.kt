@@ -81,7 +81,7 @@ class UserAccountViewModelTest {
 
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.UserNotLogged)
 
-        assertEquals(UserAccountNavigationEvent.GoToLogin, eventPosted)
+        assertEquals(UserAccountNavigationEvent.GoToPrevious, eventPosted)
     }
 
     @Test
@@ -92,7 +92,7 @@ class UserAccountViewModelTest {
 
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.UserDataCleared)
 
-        assertEquals(UserAccountNavigationEvent.GoToMain, eventPosted)
+        assertEquals(UserAccountNavigationEvent.GoToPrevious, eventPosted)
     }
 
 

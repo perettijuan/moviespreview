@@ -16,9 +16,10 @@ import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
+import com.jpp.mp.common.extensions.getViewModel
+import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mpaccount.R
-import com.jpp.mpdesign.ext.getViewModel
+import com.jpp.mpaccount.login.LoginFragmentDirections.toAccountFragment
 import com.jpp.mpdesign.ext.setInvisible
 import com.jpp.mpdesign.ext.setVisible
 import com.jpp.mpdesign.ext.snackBar
@@ -51,9 +52,15 @@ class LoginFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         withViewModel {
             viewStates.observe(this@LoginFragment.viewLifecycleOwner, Observer { viewState -> viewState.actionIfNotHandled { renderViewState(it) } })
-            navEvents.observe(this@LoginFragment.viewLifecycleOwner, Observer { navEvent ->  reactToNavEvent(navEvent)})
+            navEvents.observe(this@LoginFragment.viewLifecycleOwner, Observer { continueToUserAccount() })
             onInit()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // sync app bar title
+        withNavigationViewModel(viewModelFactory) { destinationReached(getString(R.string.login_generic)) }
     }
 
     /**
@@ -66,20 +73,23 @@ class LoginFragment : Fragment() {
      */
     private fun renderViewState(viewState: LoginViewState) {
         when (viewState) {
-            is LoginViewState.ShowNotConnected -> { renderNotConnectedToNetwork() }
-            is LoginViewState.ShowLoading -> { renderLoading() }
-            is LoginViewState.ShowLoginError -> { renderUnableToLogin() }
-            is LoginViewState.ShowOauth -> { renderOauthState(viewState) }
+            is LoginViewState.ShowNotConnected -> {
+                renderNotConnectedToNetwork()
+            }
+            is LoginViewState.ShowLoading -> {
+                renderLoading()
+            }
+            is LoginViewState.ShowLoginError -> {
+                renderUnableToLogin()
+            }
+            is LoginViewState.ShowOauth -> {
+                renderOauthState(viewState)
+            }
         }
     }
 
-    /**
-     * Reacts to the navigation event provided.
-     */
-    private fun reactToNavEvent(navEvent: LoginNavigationEvent) {
-        when (navEvent) {
-            is LoginNavigationEvent.RemoveLogin -> findNavController().popBackStack()
-        }
+    private fun continueToUserAccount() {
+        withNavigationViewModel(viewModelFactory) { performInnerNavigation(toAccountFragment()) }
     }
 
     private fun renderOauthState(oauthState: LoginViewState.ShowOauth) {

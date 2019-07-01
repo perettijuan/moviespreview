@@ -41,8 +41,4 @@
     <string name="nav_header_to_account">Account >></string>
     <!-- End Nav Header -->
 
-    <!-- Account -->
-    <string name="account_title">Account</string>
-
-
 </resources>

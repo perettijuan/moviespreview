@@ -24,7 +24,8 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
                                                  private val languageRepository: LanguageRepository,
                                                  private val sessionRepository: SessionRepository,
                                                  private val accountRepository: AccountRepository,
-                                                 private val movieStateRepository: MovieStateRepository) {
+                                                 private val movieStateRepository: MovieStateRepository,
+                                                 private val moviePageRepository: MoviePageRepository) {
     /**
      * Represents the events that this interactor
      * can route to the upper layers.
@@ -105,6 +106,7 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
             movieStateRepository
                     .updateFavoriteMovieState(movieId, asFavorite, userAccount, session)
                     .let { MovieStateEvent.UpdateFavorite(it) }
+                    .also { moviePageRepository.flushFavoriteMoviePages() }
                     .let { _movieStateEvents.postValue(it) }
         }
     }
@@ -117,6 +119,7 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
             movieStateRepository
                     .updateWatchlistMovieState(movieId, inWatchlist, userAccount, session)
                     .let { MovieStateEvent.UpdateWatchlist(it) }
+                    .also { moviePageRepository.flushWatchlistMoviePages() }
                     .let { _movieStateEvents.postValue(it) }
         }
     }
