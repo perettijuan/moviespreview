@@ -14,7 +14,6 @@ import javax.inject.Inject
  * library from Architecture Components. The problem this ViewModel solves is how to navigate
  * from a feature-module A to a feature-module B without adding a dependency to the feature-module A.
  */
-//TODO JPP add tests
 class NavigationViewModel @Inject constructor() : ViewModel() {
 
     private val _navEvents by lazy { MutableLiveData<InterModuleNavigationEvent>() }
