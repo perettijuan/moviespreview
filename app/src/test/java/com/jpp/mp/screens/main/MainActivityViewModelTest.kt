@@ -62,7 +62,7 @@ class MainActivityViewModelTest {
         @JvmStatic
         fun navigationEvents() = listOf(
                 NavigationEventsParams(
-                        MainActivityViewState(sectionTitle = "aSection", menuBarEnabled = false, searchEnabled = false),
+                        MainActivityViewState(sectionTitle = "aSection", menuBarEnabled = true, searchEnabled = false),
                         action = { it.userNavigatesToMovieListSection("aSection") }
                 ),
                 NavigationEventsParams(
