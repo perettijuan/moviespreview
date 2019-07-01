@@ -26,6 +26,8 @@ import com.jpp.mp.common.extensions.navigate
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.ext.*
+import com.jpp.mpdesign.ext.setGone
+import com.jpp.mpdesign.ext.setVisible
 import com.jpp.mpmoviedetails.NavigationMovieDetails
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
@@ -89,10 +91,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             searchEvents().observe(this@MainActivity, Observer { event ->
                 onSearchEvent(event)
             })
-        }
-
-        withRefreshAppViewModel {
-            init()
         }
 
         withNavigationViewModel {
@@ -249,7 +247,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     private fun withMainViewModel(action: MainActivityViewModel.() -> Unit) = withViewModel<MainActivityViewModel>(viewModelFactory) { action() }
     private fun withSearchViewViewModel(action: SearchViewViewModel.() -> Unit) = withViewModel<SearchViewViewModel>(viewModelFactory) { action() }
-    private fun withRefreshAppViewModel(action: RefreshAppViewModel.() -> Unit) = withViewModel<RefreshAppViewModel>(viewModelFactory) { action() }
     private fun withNavigationViewModel(action: NavigationViewModel.() -> Unit) = withViewModel<NavigationViewModel>(viewModelFactory) { action() }
 
     private fun renderViewState(viewState: MainActivityViewState) {

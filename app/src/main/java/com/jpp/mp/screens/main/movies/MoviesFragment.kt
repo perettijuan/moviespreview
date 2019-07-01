@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
 import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.ext.*
-import com.jpp.mp.screens.main.RefreshAppViewModel
 import com.jpp.mpdesign.ext.findViewInPositionWithId
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movies.*
@@ -37,6 +36,7 @@ import javax.inject.Inject
  *
  * It uses the Paging Library to allow infinite scrolling in the list of movies.
  */
+//TODO JPP modularize this. When modularize, remember that this guy needs to be language aware.
 abstract class MoviesFragment : Fragment() {
 
     @Inject
@@ -93,21 +93,6 @@ abstract class MoviesFragment : Fragment() {
             init(moviePosterSize = getScreenSizeInPixels().x,
                     movieBackdropSize = getScreenSizeInPixels().x)
         }
-
-        /*
-         * Get notified if the app being shown to the user needs to be refreshed for some reason
-         * and do it.
-         */
-        withRefreshAppViewModel {
-            refreshState().observe(this@MoviesFragment.viewLifecycleOwner, Observer {
-                if (it) {
-                    withViewModel {
-                        refresh(moviePosterSize = getScreenSizeInPixels().x,
-                                movieBackdropSize = getScreenSizeInPixels().x)
-                    }
-                }
-            })
-        }
     }
 
     /**
@@ -160,11 +145,6 @@ abstract class MoviesFragment : Fragment() {
     private fun withViewModel(action: MoviesFragmentViewModel.() -> Unit) {
         getViewModelInstance(viewModelFactory).action()
     }
-
-    /**
-     * Helper function to execute actions with [RefreshAppViewModel] backed by the MainActivity.
-     */
-    private fun withRefreshAppViewModel(action: RefreshAppViewModel.() -> Unit) = withViewModel<RefreshAppViewModel>(viewModelFactory) { action() }
 
     /**
      * Helper function to execute functions that are part of the [MoviesAdapter].

@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.screens.main.MainActivityViewModel
-import com.jpp.mp.screens.main.RefreshAppViewModel
 import com.jpp.mp.screens.main.SearchViewViewModel
 import com.jpp.mp.screens.main.about.AboutViewModel
 import com.jpp.mp.screens.main.credits.CreditsViewModel
@@ -94,11 +93,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(LicenseContentViewModel::class)
     internal abstract fun postLicenseContentViewModel(viewModel: LicenseContentViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(RefreshAppViewModel::class)
-    internal abstract fun postRefreshAppViewModel(viewModel: RefreshAppViewModel): ViewModel
 
     @Binds
     @IntoMap
