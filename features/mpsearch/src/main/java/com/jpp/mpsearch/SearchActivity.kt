@@ -31,6 +31,14 @@ class SearchActivity : AppCompatActivity() {
 
     override fun finish() {
         super.finish()
-        overridePendingTransition(R.anim.fragment_enter_slide_left, R.anim.fragment_exit_slide_left)
+        overridePendingTransition(R.anim.activity_enter_slide_right, R.anim.activity_exit_slide_left)
+    }
+
+    /**
+     * Override in order to support exit navigation. Check [finish] to get the details of it.
+     */
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return true
     }
 }

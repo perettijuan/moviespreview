@@ -249,7 +249,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     private fun navigateToSearch() {
         startActivity(Intent(this, SearchActivity::class.java))
-        overridePendingTransition(R.anim.fragment_enter_slide_right, R.anim.fragment_exit_slide_right)
+        overridePendingTransition(R.anim.activity_enter_slide_left, R.anim.activity_exit_slide_right)
     }
 
 
