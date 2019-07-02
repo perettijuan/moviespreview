@@ -18,7 +18,7 @@
             android:id="@+id/mpSearchView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:queryHint="SEARCH ME"
+            app:queryHint="@string/search_hint"
             app:searchIcon="@null" />
     </androidx.appcompat.widget.Toolbar>
 
