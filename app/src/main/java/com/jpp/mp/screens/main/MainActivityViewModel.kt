@@ -42,7 +42,11 @@ class MainActivityViewModel @Inject constructor(private val languageMonitor: Lan
     fun viewState(): LiveData<MainActivityViewState> = viewState
 
     fun userNavigatesToMovieListSection(sectionName: String) {
-        navigateToSimpleDestination(sectionName)
+        viewState.value = MainActivityViewState(
+                sectionTitle = sectionName,
+                menuBarEnabled = true,
+                searchEnabled = false
+        )
     }
 
     fun userNavigatesToMovieDetails(movieTitle: String) {

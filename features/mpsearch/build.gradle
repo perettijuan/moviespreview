@@ -1,0 +1,77 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'androidx.navigation.safeargs'
+
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        vectorDrawables.useSupportLibrary = true
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    kotlinOptions{
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(path: ':mpdomain')
+    implementation project(path: ':mpdesign')
+    implementation project(path: ':mpcommon')
+
+    // Dagger
+    implementation deps.dagger.dagger
+    implementation deps.dagger.android
+    kapt deps.dagger.compiler
+    kapt deps.dagger.processor
+
+    // Kotlin standard libs
+    implementation deps.kotlin.stdlib
+    // Kotlin coroutines
+    implementation deps.coroutines.core
+    implementation deps.coroutines.android
+
+    // appCompat libraries
+    implementation deps.androidx.appcompat
+    // ViewModel and LiveData
+    implementation deps.androidx.lifecycle.extensions
+    kapt deps.androidx.lifecycle.compiler
+    // Navigation Components
+    implementation deps.android.arch.navigation.fragment
+    implementation deps.android.arch.navigation.ui
+
+    // Paging library
+    implementation deps.androidx.paging
+
+    // Junit 5
+    testImplementation deps.test.junit5.jupiter.api
+    testImplementation deps.test.junit5.jupiter.params
+    testRuntimeOnly deps.test.junit5.jupiter.engine
+
+    // MockK
+    testImplementation deps.test.mockk.unit
+
+    // Include testing utils
+    testImplementation project(path: ':mptestutils')
+}
+
+afterEvaluate {
+    project.tasks.withType(Test).forEach { t ->
+        t.useJUnitPlatform()    // <-- specify to gradle that we want to run tests on JUnit5 platform
+    }
+}
