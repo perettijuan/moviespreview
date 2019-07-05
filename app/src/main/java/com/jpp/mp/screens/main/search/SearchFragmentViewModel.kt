@@ -20,7 +20,6 @@ import javax.inject.Inject
  * Output: exposes a LiveData of [SearchViewState] that is updated with each new state that is
  * identified by the ViewModel.
  */
-//TODO JPP cuando lo implementes en el modulo nuevo, acordate del filter
 class SearchFragmentViewModel @Inject constructor(private val searchUseCase: SearchUseCase,
                                                   private val configSearchResultUseCase: ConfigSearchResultUseCase,
                                                   private val networkExecutor: Executor) : ViewModel() {
