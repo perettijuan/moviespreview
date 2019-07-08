@@ -11,8 +11,6 @@ import com.jpp.mpdomain.usecase.licenses.GetLicenseUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
 import com.jpp.mpdomain.usecase.person.GetPersonUseCase
-import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
-import com.jpp.mpdomain.usecase.search.SearchUseCase
 import dagger.Module
 import dagger.Provides
 import java.util.concurrent.Executor
@@ -28,17 +26,6 @@ class DomainLayerModule {
     @Provides
     @Singleton
     fun providesNetworkExecutor(): Executor = Executors.newFixedThreadPool(5)
-
-    @Provides
-    fun providesSearchUseCase(searchRepository: SearchRepository,
-                              connectivityRepository: ConnectivityRepository,
-                              languageRepository: LanguageRepository)
-            : SearchUseCase = SearchUseCase.Impl(searchRepository, connectivityRepository, languageRepository)
-
-    @Provides
-    @Singleton
-    fun providesConfigSearchResultUseCase(configurationRepository: ConfigurationRepository)
-            : ConfigSearchResultUseCase = ConfigSearchResultUseCase.Impl(configurationRepository)
 
     @Provides
     fun providesGetMoviesUseCase(moviePageRepository: MoviePageRepository,

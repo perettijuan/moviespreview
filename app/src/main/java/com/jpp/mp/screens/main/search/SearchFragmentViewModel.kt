@@ -5,12 +5,9 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.jpp.mpdomain.SearchResult
-import com.jpp.mp.paging.MPPagingDataSourceFactory
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
-import com.jpp.mpdomain.usecase.search.ConfigSearchResultUseCase
-import com.jpp.mpdomain.usecase.search.SearchUseCase
-import com.jpp.mpdomain.usecase.search.SearchUseCaseResult
+import com.jpp.mp.paging.MPPagingDataSourceFactory
+import com.jpp.mpdomain.SearchResult
 import java.util.concurrent.Executor
 import javax.inject.Inject
 
@@ -20,13 +17,12 @@ import javax.inject.Inject
  * Output: exposes a LiveData of [SearchViewState] that is updated with each new state that is
  * identified by the ViewModel.
  */
-class SearchFragmentViewModel @Inject constructor(private val searchUseCase: SearchUseCase,
-                                                  private val configSearchResultUseCase: ConfigSearchResultUseCase,
-                                                  private val networkExecutor: Executor) : ViewModel() {
+//TODO JPP delete ME
+class SearchFragmentViewModel @Inject constructor(private val networkExecutor: Executor) : ViewModel() {
 
     private var targetImageSize: Int = -1
     private val viewState = MediatorLiveData<SearchViewState>()
-    private val navigationEvents  by lazy { SingleLiveEvent<SearchViewNavigationEvent>() }
+    private val navigationEvents by lazy { SingleLiveEvent<SearchViewNavigationEvent>() }
     private var retryFunc: (() -> Unit)? = null
     private var currentSearch = ""
 
@@ -128,7 +124,7 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
     private fun createSearchPagedList(query: String): LiveData<PagedList<SearchResultItem>> {
         return MPPagingDataSourceFactory<SearchResult> { page, callback -> searchMoviePage(query, page, callback) } // (1) -
                 .apply { retryFunc = { networkExecutor.execute { retryLast() } } } // (1.1) -> create a retry function.
-                .map { configSearchResultUseCase.configure(targetImageSize, it) } // (2)
+                //.map { configSearchResultUseCase.configure(targetImageSize, it) } // (2)
                 .map { mapSearchResult(it) } // (3)
                 .let {
                     // build the PagedList
@@ -147,27 +143,27 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
      * the [PagedList] detects that a new page needs to be fetched.
      */
     private fun searchMoviePage(queryString: String, page: Int, callback: (List<SearchResult>, Int) -> Unit) {
-        searchUseCase
-                .search(queryString, page)
-                .let { ucResult ->
-                    when (ucResult) {
-                        is SearchUseCaseResult.ErrorNoConnectivity -> {
-                            viewState.postValue(if (page > 1) SearchViewState.ErrorNoConnectivityWithItems else SearchViewState.ErrorNoConnectivity)
-                        }
-                        is SearchUseCaseResult.ErrorUnknown -> {
-                            viewState.postValue(if (page > 1) SearchViewState.ErrorUnknownWithItems else SearchViewState.ErrorUnknown)
-                        }
-                        is SearchUseCaseResult.Success -> {
-                            with(ucResult.searchPage.results) {
-                                when (page) {
-                                    // Post empty value only when it is the first page
-                                    1 -> if (size > 0) callback(this, page + 1) else viewState.postValue(SearchViewState.EmptySearch(queryString))
-                                    else -> callback(this, page + 1)
-                                }
-                            }
-                        }
-                    }
-                }
+//        searchUseCase
+//                .search(queryString, page)
+//                .let { ucResult ->
+//                    when (ucResult) {
+//                        is SearchUseCaseResult.ErrorNoConnectivity -> {
+//                            viewState.postValue(if (page > 1) SearchViewState.ErrorNoConnectivityWithItems else SearchViewState.ErrorNoConnectivity)
+//                        }
+//                        is SearchUseCaseResult.ErrorUnknown -> {
+//                            viewState.postValue(if (page > 1) SearchViewState.ErrorUnknownWithItems else SearchViewState.ErrorUnknown)
+//                        }
+//                        is SearchUseCaseResult.Success -> {
+//                            with(ucResult.searchPage.results) {
+//                                when (page) {
+//                                    // Post empty value only when it is the first page
+//                                    1 -> if (size > 0) callback(this, page + 1) else viewState.postValue(SearchViewState.EmptySearch(queryString))
+//                                    else -> callback(this, page + 1)
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
     }
 
     private fun mapSearchResult(searchResult: SearchResult) = with(searchResult) {

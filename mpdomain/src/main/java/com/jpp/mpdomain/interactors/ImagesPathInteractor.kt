@@ -32,7 +32,6 @@ interface ImagesPathInteractor {
      * @return a [SearchResult] with the exact same properties as the provided one, but with the
      * images path pointing to the correct resource.
      */
-    //TODO JPP add tests for this method, from `ConfigSearchResultUseCase`
     fun configureSearchResult(targetImageSize: Int, searchResult: SearchResult): SearchResult
 
     class Impl(private val configurationRepository: ConfigurationRepository) : ImagesPathInteractor {
