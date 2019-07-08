@@ -29,23 +29,6 @@
         android:name="com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment"
         android:label="@string/main_menu_top_rated"
         tools:layout="@layout/fragment_movies"/>
-    <!-- TODO JPP enable this navigation
-    <fragment
-        android:id="@+id/searchFragment"
-        android:name="com.jpp.mp.screens.main.onSearch.SearchFragmentDeprecatedDeprecated"
-        tools:layout="@layout/fragment_search_depreacted">
-        <action
-            android:id="@+id/action_searchFragment_to_movieDetailsFragment"
-            app:destination="@id/movieDetailsFragment" />
-        <action
-            android:id="@+id/action_searchFragment_to_personFragment"
-            app:destination="@id/personFragment"
-            app:enterAnim="@anim/fragment_enter_slide_down"
-            app:exitAnim="@anim/fragment_exit_slide_down"
-            app:popEnterAnim="@anim/fragment_enter_slide_up"
-            app:popExitAnim="@anim/fragment_exit_slide_up" />
-    </fragment>
-    -->
     <fragment
         android:id="@+id/personFragment"
         android:name="com.jpp.mp.screens.main.person.PersonFragment"
