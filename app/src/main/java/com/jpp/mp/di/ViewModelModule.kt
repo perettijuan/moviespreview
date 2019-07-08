@@ -14,7 +14,6 @@ import com.jpp.mp.screens.main.movies.fragments.PopularMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
 import com.jpp.mp.screens.main.person.PersonViewModel
-import com.jpp.mp.screens.main.search.SearchFragmentViewModel
 import com.jpp.mpaccount.account.UserAccountViewModel
 import com.jpp.mpaccount.account.lists.UserMovieListViewModel
 import com.jpp.mpaccount.login.LoginViewModel
@@ -58,11 +57,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MainActivityViewModel::class)
     internal abstract fun postMainActivityViewModel(viewModel: MainActivityViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(SearchFragmentViewModel::class)
-    internal abstract fun postSearchViewModel(viewModel: SearchFragmentViewModel): ViewModel
 
     @Binds
     @IntoMap
