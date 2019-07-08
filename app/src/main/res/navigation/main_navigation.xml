@@ -32,7 +32,7 @@
     <!-- TODO JPP enable this navigation
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.jpp.mp.screens.main.search.SearchFragmentDeprecatedDeprecated"
+        android:name="com.jpp.mp.screens.main.onSearch.SearchFragmentDeprecatedDeprecated"
         tools:layout="@layout/fragment_search_depreacted">
         <action
             android:id="@+id/action_searchFragment_to_movieDetailsFragment"

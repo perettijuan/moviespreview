@@ -53,7 +53,7 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
     fun navEvents(): LiveData<SearchViewNavigationEvent> = navigationEvents
 
     /**
-     * Called when an item is selected in the list of search results.
+     * Called when an item is selected in the list of onSearch results.
      * A new state is posted in navEvents() in order to handle the event.
      */
     fun onSearchItemSelected(searchResultItem: SearchResultItem) {
@@ -68,10 +68,10 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
     }
 
     /**
-     * Performs the search of the provided [searchText] in the application. Posts [SearchViewState]
+     * Performs the onSearch of the provided [searchText] in the application. Posts [SearchViewState]
      * values when new states are identified:
-     * - [SearchViewState.Searching] -> when a new search is triggered.
-     * - [SearchViewState.DoneSearching] -> when the the initial search of the [searchText] is done.
+     * - [SearchViewState.Searching] -> when a new onSearch is triggered.
+     * - [SearchViewState.DoneSearching] -> when the the initial onSearch of the [searchText] is done.
      *   At this point, the ViewModel provides a [PagedList] that can be bind to a RecyclerView to
      *   perform infinite scrolling.
      */
@@ -96,7 +96,7 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
 
     /**
      * Clears the inner state of the ViewModel when the user clears the current
-     * search.
+     * onSearch.
      */
     fun clearSearch() {
         retryFunc = null
@@ -105,7 +105,7 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
     }
 
     /**
-     * Attempts to execute the last search that was executed. Typically called after an error
+     * Attempts to execute the last onSearch that was executed. Typically called after an error
      * is detected.
      */
     fun retryLastSearch() {
@@ -143,7 +143,7 @@ class SearchFragmentViewModel @Inject constructor(private val searchUseCase: Sea
 
 
     /**
-     * This is the method that actually performs the search. This method is called every time that
+     * This is the method that actually performs the onSearch. This method is called every time that
      * the [PagedList] detects that a new page needs to be fetched.
      */
     private fun searchMoviePage(queryString: String, page: Int, callback: (List<SearchResult>, Int) -> Unit) {

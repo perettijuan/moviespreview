@@ -9,7 +9,7 @@ import androidx.paging.PagedList
 
 sealed class SearchViewState {
     /*
-     * Shows the search view to provide a search option to the user.
+     * Shows the onSearch view to provide a onSearch option to the user.
      */
     object ShowSearchView : SearchViewState()
 
@@ -29,19 +29,19 @@ sealed class SearchViewState {
     object ShowError : SearchViewState()
 
     /*
-     * Shows the empty search status on screen.
+     * Shows the empty onSearch status on screen.
      */
     data class ShowEmptySearch(val searchText: String) : SearchViewState()
 
     /*
-     * Shows the list of search results.
+     * Shows the list of onSearch results.
      */
     data class ShowSearchResults(val pagedList: PagedList<SearchResultItem>) : SearchViewState()
 }
 
 
 /**
- * Represents an item in the list of search results.
+ * Represents an item in the list of onSearch results.
  */
 data class SearchResultItem(val id: Double,
                             val imagePath: String,

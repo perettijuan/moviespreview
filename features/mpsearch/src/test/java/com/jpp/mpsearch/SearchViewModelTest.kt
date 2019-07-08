@@ -47,7 +47,7 @@ class SearchViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
-        subject.init(10)
+        subject.onInit(10)
 
         assertEquals(SearchViewState.ShowSearchView, viewStatePosted)
     }
@@ -81,7 +81,7 @@ class SearchViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatesPosted.add(viewState) } }
 
-        subject.search("aQuery")
+        subject.onSearch("aQuery")
 
         assertEquals(SearchViewState.ShowSearching, viewStatesPosted[0])
         assertTrue(viewStatesPosted[1] is SearchViewState.ShowSearchResults)

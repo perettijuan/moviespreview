@@ -41,16 +41,23 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * [imageSize] represents the size of the images that will be shown in the view
      * that is served by this ViewModel.
      */
-    fun init(imageSize: Int) {
+    fun onInit(imageSize: Int) {
         targetImageSize = imageSize
         _viewStates.value = of(ShowSearchView)
     }
 
     /**
-     * Perform the actual search of the provided [query].
+     * Perform the actual onSearch of the provided [query].
      */
-    fun search(query: String) {
+    fun onSearch(query: String) {
         pushLoadingAndPerformSearch(query)
+    }
+
+    /**
+     * Clears the view current search state.
+     */
+    fun onClearSearch() {
+        _viewStates.value = of(ShowSearchView)
     }
 
     /**
@@ -71,7 +78,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     }
 
     /**
-     * Creates the [LiveData] of [PagedList] that will be pushed to the view layer to render each search result
+     * Creates the [LiveData] of [PagedList] that will be pushed to the view layer to render each onSearch result
      * as a [SearchResultItem].
      */
     private fun createPagedListForSearch(query: String): LiveData<PagedList<SearchResultItem>> {

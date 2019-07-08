@@ -60,7 +60,7 @@ class SearchFragment : Fragment() {
          */
         withViewModel {
             viewStates.observe(viewLifecycleOwner, Observer { it.actionIfNotHandled { viewState -> renderViewState(viewState) } })
-            init(getScreenWidthInPixels())
+            onInit(getScreenWidthInPixels())
         }
     }
 
@@ -88,9 +88,8 @@ class SearchFragment : Fragment() {
     }
 
     private fun withViewModel(action: SearchViewModel.() -> Unit) = withViewModel<SearchViewModel>(viewModelFactory) { action() }
-    private fun withRecyclerViewAdapter(action: SearchItemAdapter.() -> Unit) {
-        (searchResultRv.adapter as SearchItemAdapter).action()
-    }
+    private fun withRecyclerViewAdapter(action: SearchItemAdapter.() -> Unit) { (searchResultRv.adapter as SearchItemAdapter).action() }
+    private fun withSearchView(action: SearchView.() -> Unit) { findSearchView(requireActivity().window.decorView as ViewGroup).action() }
 
     private fun renderSearching() {
         searchPlaceHolderIv.setInvisible()
@@ -99,6 +98,7 @@ class SearchFragment : Fragment() {
         searchResultRv.setInvisible()
 
         searchLoadingView.setVisible()
+        withSearchView { clearFocus() } //hide keyboard
     }
 
     private fun renderError() {
@@ -131,43 +131,24 @@ class SearchFragment : Fragment() {
 
     private fun setUpSearchView() {
         /*
-        * The [SearchView] used to present a search option to the user belongs to the Activity
+        * The [SearchView] used to present a onSearch option to the user belongs to the Activity
         * that contains this Fragment for a variety of reasons:
         * 1 - In order to provide back and forth navigation with the Android Architecture Components,
         * the application has only one Activity with different Fragments that are rendered in it.
         * 2 - To follow the design specs, the SearchView is provided in the Activity's action bar.
         */
-        with(findSearchView(requireActivity().window.decorView as ViewGroup)) {
+        withSearchView {
+            setQuery("", false)
+            requestFocus()
             queryHint = getString(R.string.search_hint)
             isIconified = false
             setIconifiedByDefault(false)
-            setOnQueryTextListener(QuerySubmitter { withViewModel { search(it) } })
-            findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener {
-                TODO("clear search")
-                //onSearchEvent
-            }
+            setOnQueryTextListener(QuerySubmitter { withViewModel { onSearch(it) } })
+            findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener { withViewModel { onClearSearch() } }
         }
+
+        withRecyclerViewAdapter { clear() }
     }
-
-    /*
-     //TODO JPP move to SearchFragment
-     private fun onSearchEvent(event: SearchEvent) {
-        when (event) {
-            is SearchEvent.ClearSearch -> {
-                with(mainSearchView) {
-                    setQuery("", false)
-                    requestFocus()
-                }
-            }
-            is SearchEvent.Search -> {
-                with(mainSearchView) {
-                    clearFocus()
-                }
-            }
-        }
-      }
-     */
-
 
     /**
      * Iterates recursively through the provided [ViewGroup] and finds a [SearchView],

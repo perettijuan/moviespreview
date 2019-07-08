@@ -32,7 +32,7 @@ class SearchInteractor @Inject constructor(private val connectivityRepository: C
 
 
     /**
-     * Performs the search for the provided [query].
+     * Performs the onSearch for the provided [query].
      * If a result is found, [callback] will be executed with that result.
      * If an error is detected, it will be posted to [searchEvents].
      */
