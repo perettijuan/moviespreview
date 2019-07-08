@@ -17,7 +17,10 @@ import com.jpp.mpsearch.SearchInteractor.SearchEvent.UnknownError
 import com.jpp.mpsearch.SearchViewState.*
 import javax.inject.Inject
 
-
+/**
+ * [MPScopedViewModel] implementation to serve the search feature of the application.
+ * It uses the Paging Library in order to provide infinite scroll.
+ */
 class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                           private val searchInteractor: SearchInteractor,
                                           private val imagesPathInteractor: ImagesPathInteractor)
@@ -26,6 +29,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
     private var targetImageSize: Int = -1
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<SearchViewState>>() }
+    private var retryFunc: (() -> Unit)? = null
 
     init {
         _viewStates.addSource(searchInteractor.searchEvents) { event ->
@@ -50,6 +54,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Perform the actual onSearch of the provided [query].
      */
     fun onSearch(query: String) {
+        retryFunc = { pushLoadingAndPerformSearch(query) }
         pushLoadingAndPerformSearch(query)
     }
 
@@ -58,6 +63,10 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun onClearSearch() {
         _viewStates.value = of(ShowSearchView)
+    }
+
+    fun onRetry() {
+        retryFunc?.invoke()
     }
 
     /**
@@ -73,7 +82,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private fun pushLoadingAndPerformSearch(query: String) {
         with(_viewStates) {
             value = of(ShowSearching)
-            addSource(createPagedListForSearch(query)) { pagedList -> value = of(ShowSearchResults(pagedList)) }
+            addSource(createPagedListForSearch(query)) { pagedList -> if (pagedList.size > 0) value = of(ShowSearchResults(pagedList)) }
         }
     }
 

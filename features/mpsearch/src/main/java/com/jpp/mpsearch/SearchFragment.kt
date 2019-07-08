@@ -66,15 +66,18 @@ class SearchFragment : Fragment() {
 
     private fun renderViewState(searchViewState: SearchViewState) {
         when (searchViewState) {
-            is ShowSearchView -> setUpSearchView()
+            is ShowSearchView -> {
+                setUpSearchView()
+                renderClearState()
+            }
             is ShowSearching -> renderSearching()
             is ShowError -> {
                 renderError()
-                searchErrorView.asUnknownError { TODO() }
+                searchErrorView.asUnknownError { withViewModel { onRetry() } }
             }
             is ShowNotConnected -> {
                 renderError()
-                searchErrorView.asNoConnectivityError { TODO() }
+                searchErrorView.asNoConnectivityError { withViewModel { onRetry() } }
             }
             is ShowEmptySearch -> {
                 emptySearch.text = String.format(getString(R.string.empty_search), searchViewState.searchText)
@@ -127,6 +130,15 @@ class SearchFragment : Fragment() {
 
         searchResultRv.setVisible()
         searchResultRv.scheduleLayoutAnimation()
+    }
+
+    private fun renderClearState() {
+        emptySearch.setInvisible()
+        searchErrorView.setInvisible()
+        searchLoadingView.setInvisible()
+        searchResultRv.setInvisible()
+
+        searchPlaceHolderIv.setVisible()
     }
 
     private fun setUpSearchView() {
