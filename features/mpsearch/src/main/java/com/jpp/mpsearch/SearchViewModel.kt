@@ -14,6 +14,7 @@ import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.NotConnectedToNetwork
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.UnknownError
+import com.jpp.mpsearch.SearchInteractor.SearchEvent.AppLanguageChanged
 import com.jpp.mpsearch.SearchViewState.*
 import javax.inject.Inject
 
@@ -36,6 +37,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             when (event) {
                 is NotConnectedToNetwork -> _viewStates.value = of(ShowNotConnected)
                 is UnknownError -> _viewStates.value = of(ShowError)
+                is AppLanguageChanged -> refreshData()
             }
         }
     }
@@ -62,9 +64,13 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Clears the view current search state.
      */
     fun onClearSearch() {
+        retryFunc = null
         _viewStates.value = of(ShowSearchView)
     }
 
+    /**
+     * Retries the last search.
+     */
     fun onRetry() {
         retryFunc?.invoke()
     }
@@ -84,6 +90,14 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             value = of(ShowSearching)
             addSource(createPagedListForSearch(query)) { pagedList -> if (pagedList.size > 0) value = of(ShowSearchResults(pagedList)) }
         }
+    }
+
+    /**
+     * Refreshes any internal app state related to a search.
+     */
+    private fun refreshData() {
+        searchInteractor.flushCurrentSearch()
+        retryFunc?.invoke()
     }
 
     /**

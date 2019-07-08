@@ -19,6 +19,7 @@ import javax.inject.Singleton
  * view layer.
  */
 @Singleton
+//TODO JPP Language dependant!
 class MovieDetailsInteractor @Inject constructor(private val connectivityRepository: ConnectivityRepository,
                                                  private val movieDetailRepository: MovieDetailRepository,
                                                  private val languageRepository: LanguageRepository,

@@ -9,20 +9,27 @@ import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.SearchRepository
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.NotConnectedToNetwork
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.UnknownError
+import com.jpp.mpsearch.SearchInteractor.SearchEvent.AppLanguageChanged
 import javax.inject.Inject
+import javax.inject.Singleton
 
-//TODO JPP Language dependant!
+@Singleton
 class SearchInteractor @Inject constructor(private val connectivityRepository: ConnectivityRepository,
                                            private val searchRepository: SearchRepository,
                                            private val languageRepository: LanguageRepository) {
 
 
     sealed class SearchEvent {
+        object AppLanguageChanged : SearchEvent()
         object NotConnectedToNetwork : SearchEvent()
         object UnknownError : SearchEvent()
     }
 
     private val _searchEvents by lazy { MediatorLiveData<SearchEvent>() }
+
+    init {
+        _searchEvents.addSource(languageRepository.updates()) { _searchEvents.postValue(AppLanguageChanged) }
+    }
 
     /**
      * @return a [LiveData] of [SearchEvent]. Subscribe to this [LiveData]
@@ -45,5 +52,12 @@ class SearchInteractor @Inject constructor(private val connectivityRepository: C
                         ?: _searchEvents.postValue(UnknownError)
             }
         }
+    }
+
+    /**
+     * Clears any inner state related to a search un progress.
+     */
+    fun flushCurrentSearch() {
+        searchRepository.flushSearch()
     }
 }

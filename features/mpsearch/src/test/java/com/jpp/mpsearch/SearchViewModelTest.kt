@@ -39,6 +39,13 @@ class SearchViewModelTest {
                 searchInteractor,
                 imagesPathInteractor
         )
+
+        /*
+         * Since the ViewModel uses a MediatorLiveData, we need to have
+         * an observer on the view states attached all the time in order
+         * to get notifications.
+         */
+        subject.viewStates.observeForever {  }
     }
 
     @Test
@@ -78,13 +85,17 @@ class SearchViewModelTest {
     fun `Should post loading and create paged list with first movie pages onInitWithFavorites`() {
         val viewStatesPosted = mutableListOf<SearchViewState>()
 
-
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatesPosted.add(viewState) } }
 
         subject.onSearch("aQuery")
 
         assertEquals(SearchViewState.ShowSearching, viewStatesPosted[0])
-        assertTrue(viewStatesPosted[1] is SearchViewState.ShowSearchResults)
         verify { searchInteractor.performSearchForPage("aQuery", 1, any()) }
+    }
+
+    @Test
+    fun `Should refresh data when no search has been performed and language changes`() {
+        lvInteractorEvents.value = SearchEvent.AppLanguageChanged
+        verify { searchInteractor.flushCurrentSearch() }
     }
 }
