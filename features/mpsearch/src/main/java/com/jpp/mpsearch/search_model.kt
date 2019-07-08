@@ -9,6 +9,11 @@ import androidx.paging.PagedList
 
 sealed class SearchViewState {
     /*
+     * Shows the search view to provide a search option to the user.
+     */
+    object ShowSearchView : SearchViewState()
+
+    /*
      * Shows the not connected to network state.
      */
     object ShowNotConnected : SearchViewState()

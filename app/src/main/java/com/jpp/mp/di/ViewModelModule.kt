@@ -21,6 +21,7 @@ import com.jpp.mpaccount.account.lists.UserMovieListViewModel
 import com.jpp.mpaccount.login.LoginViewModel
 import com.jpp.mpmoviedetails.MovieDetailsActionViewModel
 import com.jpp.mpmoviedetails.MovieDetailsViewModel
+import com.jpp.mpsearch.SearchViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -137,5 +138,13 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(NavigationViewModel::class)
     internal abstract fun getNavigationViewModel(viewModel: NavigationViewModel): ViewModel
+
+    /*
+     * Search feature dependencies
+     */
+    @Binds
+    @IntoMap
+    @ViewModelKey(SearchViewModel::class)
+    internal abstract fun getSearchViewModel(viewModel: SearchViewModel): ViewModel
 
 }

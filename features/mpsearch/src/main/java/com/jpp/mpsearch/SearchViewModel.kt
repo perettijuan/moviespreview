@@ -43,6 +43,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun init(imageSize: Int) {
         targetImageSize = imageSize
+        _viewStates.value = of(ShowSearchView)
     }
 
     /**

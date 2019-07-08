@@ -42,6 +42,17 @@ class SearchViewModelTest {
     }
 
     @Test
+    fun `Should post ShowSearchView on init`() {
+        var viewStatePosted: SearchViewState? = null
+
+        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+
+        subject.init(10)
+
+        assertEquals(SearchViewState.ShowSearchView, viewStatePosted)
+    }
+
+    @Test
     fun `Should post no connectivity error when disconnected`() {
         var viewStatePosted: SearchViewState? = null
 

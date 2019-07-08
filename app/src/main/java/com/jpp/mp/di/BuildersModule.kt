@@ -16,6 +16,7 @@ import com.jpp.mpaccount.account.UserAccountFragment
 import com.jpp.mpaccount.account.lists.UserMovieListFragment
 import com.jpp.mpaccount.login.LoginFragment
 import com.jpp.mpmoviedetails.MovieDetailsFragment
+import com.jpp.mpsearch.SearchFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -40,7 +41,7 @@ abstract class BuildersModule {
     abstract fun bindMovieDetailsFragment(): MovieDetailsFragment
 
     @ContributesAndroidInjector
-    abstract fun bindSearchFragment(): SearchFragmentDeprecated
+    abstract fun bindSearchFragmentD(): SearchFragmentDeprecated
 
     @ContributesAndroidInjector
     abstract fun bindPersonFragment(): PersonFragment
@@ -68,4 +69,7 @@ abstract class BuildersModule {
 
     @ContributesAndroidInjector
     abstract fun bindUserMovieListFragment(): UserMovieListFragment
+
+    @ContributesAndroidInjector
+    abstract fun bindSearchFragment(): SearchFragment
 }

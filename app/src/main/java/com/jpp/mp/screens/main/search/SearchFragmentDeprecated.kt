@@ -18,7 +18,7 @@ import com.jpp.mp.screens.main.SearchEvent
 import com.jpp.mp.screens.main.SearchViewViewModel
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_search_depreacted.*
-import kotlinx.android.synthetic.main.list_item_search.view.*
+import kotlinx.android.synthetic.main.list_item_search_deprecated.view.*
 import javax.inject.Inject
 
 /**
@@ -235,7 +235,7 @@ class SearchFragmentDeprecated : Fragment() {
      */
     class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem) -> Unit) : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_search, parent, false))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_search_deprecated, parent, false))
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             getItem(position)?.let {
