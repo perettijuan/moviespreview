@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.screens.main.MainActivityViewModel
-import com.jpp.mp.screens.main.SearchViewViewModel
 import com.jpp.mp.screens.main.about.AboutViewModel
 import com.jpp.mp.screens.main.credits.CreditsViewModel
 import com.jpp.mp.screens.main.header.NavigationHeaderViewModel
@@ -64,11 +63,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SearchFragmentViewModel::class)
     internal abstract fun postSearchViewModel(viewModel: SearchFragmentViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(SearchViewViewModel::class)
-    internal abstract fun postSearchViewViewModel(viewModel: SearchViewViewModel): ViewModel
 
     @Binds
     @IntoMap

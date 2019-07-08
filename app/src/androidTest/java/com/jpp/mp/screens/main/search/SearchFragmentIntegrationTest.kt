@@ -13,7 +13,6 @@ import com.jpp.mp.R
 import com.jpp.mp.assertions.*
 import com.jpp.mp.di.TestMPViewModelFactory
 import com.jpp.mp.extras.launch
-import com.jpp.mp.screens.main.SearchViewViewModel
 import com.jpp.mp.testutils.FragmentTestActivity
 import com.jpp.mpdomain.SearchPage
 import com.jpp.mpdomain.SearchResult
@@ -64,7 +63,7 @@ class SearchFragmentIntegrationTest {
         // custom ViewModelFactory to inject the dependencies
         val vmFactory = TestMPViewModelFactory().apply {
             addVm(searchViewModel)
-            addVm(searchViewViewModel)
+            //addVm(searchViewViewModel)
         }
 
         searchFragment.viewModelFactory = vmFactory
@@ -75,7 +74,7 @@ class SearchFragmentIntegrationTest {
     private val configSearchResultUseCase = mockk<ConfigSearchResultUseCase>()
 
     // Hold this reference to perform a searchPage
-    private val searchViewViewModel by lazy { SearchViewViewModel() }
+
     private lateinit var searchViewModel: SearchFragmentViewModel
 
     @Before
@@ -90,7 +89,7 @@ class SearchFragmentIntegrationTest {
         every { searchUseCase.search(any(), any()) } answers { SearchUseCaseResult.Success(pages[arg(1)]) }
         every { configSearchResultUseCase.configure(any(), any()) } answers { arg(1) }
 
-        searchViewViewModel.search("aQuery")
+        //searchViewViewModel.search("aQuery")
 
         waitForDoneSearching()
 
@@ -125,7 +124,7 @@ class SearchFragmentIntegrationTest {
     fun shouldShowUnknownError() {
         every { searchUseCase.search(any(), 1) } answers { SearchUseCaseResult.ErrorUnknown }
 
-        searchViewViewModel.search("aQuery")
+        //searchViewViewModel.search("aQuery")
 
         waitForViewState(SearchViewState.ErrorUnknown)
 
@@ -142,7 +141,7 @@ class SearchFragmentIntegrationTest {
     fun shouldShowConnectivityError() {
         every { searchUseCase.search(any(), 1) } answers { SearchUseCaseResult.ErrorNoConnectivity }
 
-        searchViewViewModel.search("aQuery")
+        //searchViewViewModel.search("aQuery")
 
         waitForViewState(SearchViewState.ErrorNoConnectivity)
 
@@ -160,7 +159,7 @@ class SearchFragmentIntegrationTest {
     fun shouldShowEmptySearchView() {
         every { searchUseCase.search(any(), any()) } answers { SearchUseCaseResult.Success(emptySearchPage()) }
 
-        searchViewViewModel.search("aQuery")
+        //searchViewViewModel.search("aQuery")
 
         waitForEmptySearch()
 
