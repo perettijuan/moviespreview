@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,16 +11,29 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.withViewModel
-import com.jpp.mpsearch.SearchViewState.ShowSearchView
+import com.jpp.mpdesign.ext.loadImageUrlAsCircular
+import com.jpp.mpdesign.ext.setInvisible
+import com.jpp.mpdesign.ext.setVisible
+import com.jpp.mpsearch.SearchViewState.*
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.list_item_search.view.*
+import kotlinx.android.synthetic.main.search_fragment.*
 import javax.inject.Inject
 
 class SearchFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val searchItemSelectionListener: (SearchResultItem) -> Unit = {
+        TODO()
+    }
 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
@@ -34,13 +46,20 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        searchResultRv.apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = SearchItemAdapter(searchItemSelectionListener)
+        }
+    }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         /*
          * Init with full screen width in order to provide proper
          * shared transitions.
          */
-        withMainViewModel {
-            viewStates.observe(this@SearchFragment.viewLifecycleOwner, Observer { it.actionIfNotHandled { viewState -> renderViewState(viewState) } })
+        withViewModel {
+            viewStates.observe(viewLifecycleOwner, Observer { it.actionIfNotHandled { viewState -> renderViewState(viewState) } })
             init(getScreenWidthInPixels())
         }
     }
@@ -48,10 +67,67 @@ class SearchFragment : Fragment() {
     private fun renderViewState(searchViewState: SearchViewState) {
         when (searchViewState) {
             is ShowSearchView -> setUpSearchView()
+            is ShowSearching -> renderSearching()
+            is ShowError -> {
+                renderError()
+                searchErrorView.asUnknownError { TODO() }
+            }
+            is ShowNotConnected -> {
+                renderError()
+                searchErrorView.asNoConnectivityError { TODO() }
+            }
+            is ShowEmptySearch -> {
+                emptySearch.text = String.format(getString(R.string.empty_search), searchViewState.searchText)
+                renderEmptySearch()
+            }
+            is ShowSearchResults -> {
+                withRecyclerViewAdapter { submitList(searchViewState.pagedList) }
+                renderDoneSearching()
+            }
         }
     }
 
-    private fun withMainViewModel(action: SearchViewModel.() -> Unit) = withViewModel<SearchViewModel>(viewModelFactory) { action() }
+    private fun withViewModel(action: SearchViewModel.() -> Unit) = withViewModel<SearchViewModel>(viewModelFactory) { action() }
+    private fun withRecyclerViewAdapter(action: SearchItemAdapter.() -> Unit) {
+        (searchResultRv.adapter as SearchItemAdapter).action()
+    }
+
+    private fun renderSearching() {
+        searchPlaceHolderIv.setInvisible()
+        emptySearch.setInvisible()
+        searchErrorView.setInvisible()
+        searchResultRv.setInvisible()
+
+        searchLoadingView.setVisible()
+    }
+
+    private fun renderError() {
+        searchPlaceHolderIv.setInvisible()
+        emptySearch.setInvisible()
+        searchLoadingView.setInvisible()
+        searchResultRv.setInvisible()
+
+        searchErrorView.setVisible()
+    }
+
+    private fun renderEmptySearch() {
+        searchPlaceHolderIv.setInvisible()
+        searchErrorView.setInvisible()
+        searchLoadingView.setInvisible()
+        searchResultRv.setInvisible()
+
+        emptySearch.setVisible()
+    }
+
+    private fun renderDoneSearching() {
+        searchPlaceHolderIv.setInvisible()
+        emptySearch.setInvisible()
+        searchErrorView.setInvisible()
+        searchLoadingView.setInvisible()
+
+        searchResultRv.setVisible()
+        searchResultRv.scheduleLayoutAnimation()
+    }
 
     private fun setUpSearchView() {
         /*
@@ -65,7 +141,7 @@ class SearchFragment : Fragment() {
             queryHint = getString(R.string.search_hint)
             isIconified = false
             setIconifiedByDefault(false)
-            setOnQueryTextListener(QuerySubmitter { Log.d("JPPLOG", "Search $it") })
+            setOnQueryTextListener(QuerySubmitter { withViewModel { search(it) } })
             findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener {
                 TODO("clear search")
                 //onSearchEvent
@@ -142,4 +218,45 @@ class SearchFragment : Fragment() {
         }
     }
 
+    /**
+     * [PagedListAdapter] implementation to show the list of searchPage results.
+     */
+    class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem) -> Unit) : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_search, parent, false))
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            getItem(position)?.let {
+                holder.bindSearchItem(it, searchSelectionListener)
+            }
+        }
+
+        fun clear() {
+            //Submitting a null paged list causes the adapter to remove all items in the RecyclerView
+            submitList(null)
+        }
+
+        class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
+
+            fun bindSearchItem(searchItem: SearchResultItem, selectionListener: (SearchResultItem) -> Unit) {
+                with(itemView) {
+                    searchItemIv.loadImageUrlAsCircular(searchItem.imagePath)
+                    searchItemTitleTxt.text = searchItem.name
+                    searchItemTypeIv.setImageResource(searchItem.icon.iconRes)
+                    setOnClickListener { selectionListener(searchItem) }
+                }
+            }
+
+        }
+
+        class SearchResultDiffCallback : DiffUtil.ItemCallback<SearchResultItem>() {
+            override fun areItemsTheSame(oldItem: SearchResultItem, newItem: SearchResultItem): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: SearchResultItem, newItem: SearchResultItem): Boolean {
+                return oldItem.id == newItem.id
+            }
+        }
+    }
 }
