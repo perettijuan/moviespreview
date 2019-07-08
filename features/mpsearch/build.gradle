@@ -51,6 +51,9 @@ dependencies {
     // ViewModel and LiveData
     implementation deps.androidx.lifecycle.extensions
     kapt deps.androidx.lifecycle.compiler
+    // Navigation Components
+    implementation deps.android.arch.navigation.fragment
+    implementation deps.android.arch.navigation.ui
 
     // Paging library
     implementation deps.androidx.paging

@@ -30,10 +30,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Tests the interaction between the [SearchFragment], the [SearchFragmentViewModel] and the
+ * Tests the interaction between the [SearchFragmentDeprecated], the [SearchFragmentViewModel] and the
  * [SearchViewViewModel].
  * In order to achieve these tests, the [activityTestRule] adds a new instance of the
- * [SearchFragment] to the empty [FragmentTestActivity] and injects an instance of
+ * [SearchFragmentDeprecated] to the empty [FragmentTestActivity] and injects an instance of
  * [SearchFragmentViewModel] (with a mocked [SearchUseCase] and a mocked [ConfigSearchResultUseCase]).
  */
 @RunWith(AndroidJUnit4::class)
@@ -44,7 +44,7 @@ class SearchFragmentIntegrationTest {
     val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java, true, false) {
         override fun afterActivityLaunched() {
             runOnUiThread {
-                activity.startFragment(SearchFragment(), this@SearchFragmentIntegrationTest::inject)
+                activity.startFragment(SearchFragmentDeprecated(), this@SearchFragmentIntegrationTest::inject)
             }
         }
     }
@@ -53,7 +53,7 @@ class SearchFragmentIntegrationTest {
      * Injects the entire graph used by the feature, excepting
      * for the API.
      */
-    fun inject(searchFragment: SearchFragment) {
+    fun inject(searchFragment: SearchFragmentDeprecated) {
         // real ViewModel
         searchViewModel = SearchFragmentViewModel(
                 searchUseCase = searchUseCase,

@@ -11,7 +11,7 @@ import com.jpp.mp.screens.main.movies.fragments.PopularMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
 import com.jpp.mp.screens.main.person.PersonFragment
-import com.jpp.mp.screens.main.search.SearchFragment
+import com.jpp.mp.screens.main.search.SearchFragmentDeprecated
 import com.jpp.mpaccount.account.UserAccountFragment
 import com.jpp.mpaccount.account.lists.UserMovieListFragment
 import com.jpp.mpaccount.login.LoginFragment
@@ -40,7 +40,7 @@ abstract class BuildersModule {
     abstract fun bindMovieDetailsFragment(): MovieDetailsFragment
 
     @ContributesAndroidInjector
-    abstract fun bindSearchFragment(): SearchFragment
+    abstract fun bindSearchFragment(): SearchFragmentDeprecated
 
     @ContributesAndroidInjector
     abstract fun bindPersonFragment(): PersonFragment

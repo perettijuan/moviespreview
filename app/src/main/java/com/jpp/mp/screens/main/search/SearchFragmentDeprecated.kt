@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +17,7 @@ import com.jpp.mp.ext.*
 import com.jpp.mp.screens.main.SearchEvent
 import com.jpp.mp.screens.main.SearchViewViewModel
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_search.*
+import kotlinx.android.synthetic.main.fragment_search_depreacted.*
 import kotlinx.android.synthetic.main.list_item_search.view.*
 import javax.inject.Inject
 
@@ -36,7 +35,7 @@ import javax.inject.Inject
  * Whenever the MainActivity detects that the user has entered data in the SearchView, it pushes a new
  * event to this Fragment via the ViewModel.
  */
-class SearchFragment : Fragment() {
+class SearchFragmentDeprecated : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -51,7 +50,7 @@ class SearchFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_search, container, false)
+        return inflater.inflate(R.layout.fragment_search_depreacted, container, false)
     }
 
 
@@ -76,11 +75,11 @@ class SearchFragment : Fragment() {
              */
             init(getScreenSizeInPixels().x)
 
-            viewState().observe(this@SearchFragment.viewLifecycleOwner, Observer { viewState ->
+            viewState().observe(this@SearchFragmentDeprecated.viewLifecycleOwner, Observer { viewState ->
                 renderViewState(viewState)
             })
 
-            navEvents().observe(this@SearchFragment.viewLifecycleOwner, Observer { navEvent ->
+            navEvents().observe(this@SearchFragmentDeprecated.viewLifecycleOwner, Observer { navEvent ->
                 navigateTo(navEvent)
             })
         }
@@ -90,7 +89,7 @@ class SearchFragment : Fragment() {
          * React to searchPage events posted by the MainActivity
          */
         withSearchViewViewModel {
-            searchEvents().observe(this@SearchFragment.viewLifecycleOwner, Observer { event ->
+            searchEvents().observe(this@SearchFragmentDeprecated.viewLifecycleOwner, Observer { event ->
                 when (event) {
                     is SearchEvent.ClearSearch -> withViewModel { clearSearch() }
                     is SearchEvent.Search -> withViewModel {

@@ -15,7 +15,7 @@ import java.util.concurrent.Executor
 import javax.inject.Inject
 
 /**
- * [ViewModel] implementation to serve the SearchFragment.
+ * [ViewModel] implementation to serve the SearchFragmentDeprecated.
  *
  * Output: exposes a LiveData of [SearchViewState] that is updated with each new state that is
  * identified by the ViewModel.
