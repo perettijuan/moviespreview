@@ -33,7 +33,6 @@ import com.jpp.mp.ext.withViewModel
 import com.jpp.mpdesign.ext.setGone
 import com.jpp.mpdesign.ext.setVisible
 import com.jpp.mpmoviedetails.NavigationMovieDetails
-import com.jpp.mpsearch.SearchActivity
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -257,10 +256,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         }
 
         withMainViewModel { userNavigatesToSearch() }
-
-        //TODO JPP delete me
-//        startActivity(Intent(this, SearchActivity::class.java))
-//        overridePendingTransition(R.anim.activity_enter_slide_left, R.anim.activity_exit_slide_right)
     }
 
 

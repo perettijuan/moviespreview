@@ -21,13 +21,6 @@
       </intent-filter>
     </activity>
 
-    <activity android:name="com.jpp.mpsearch.SearchActivity"
-      android:parentActivityName=".screens.main.MainActivity">
-      <meta-data
-          android:name="android.support.PARENT_ACTIVITY"
-          android:value=".screens.main.MainActivity" />
-    </activity>
-
     <meta-data
         android:name="io.fabric.ApiKey"
         android:value="80d86f5f5c31a9540a95b44d4f628f5a7464dcb2" />
