@@ -14,27 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
 import com.jpp.mp.ext.*
-import com.jpp.mp.screens.main.SearchEvent
-import com.jpp.mp.screens.main.SearchViewViewModel
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_search_depreacted.*
 import kotlinx.android.synthetic.main.list_item_search_deprecated.view.*
 import javax.inject.Inject
 
-/**
- * Fragment that shows and supports the onSearch functionality in the application.
- * This Fragment is backed by [SearchFragmentViewModel] that is the VM that takes care of performing the
- * onSearch and updating the UI when the results is back from the server. The Fragment reacts to
- * [SearchViewState] state updates, meaning that any given state of the UI shown by the Fragment
- * can be reproduced with the given state.
- *
- * Since the Fragment is contained in the MainActivity and the SearchView that the user interacts
- * with is hosted by the MainActivity, this Fragment also reacts to [SearchEvent]s that are pushed
- * by the [SearchViewViewModel].
- * This [SearchViewViewModel] is a ViewModel that is shared between the MainActivity and this Fragment.
- * Whenever the MainActivity detects that the user has entered data in the SearchView, it pushes a new
- * event to this Fragment via the ViewModel.
- */
 class SearchFragmentDeprecated : Fragment() {
 
     @Inject
@@ -84,20 +68,6 @@ class SearchFragmentDeprecated : Fragment() {
             })
         }
 
-
-        /*
-         * React to searchPage events posted by the MainActivity
-         */
-        withSearchViewViewModel {
-            searchEvents().observe(this@SearchFragmentDeprecated.viewLifecycleOwner, Observer { event ->
-                when (event) {
-                    is SearchEvent.ClearSearch -> withViewModel { clearSearch() }
-                    is SearchEvent.Search -> withViewModel {
-                        search(event.query)
-                    }
-                }
-            })
-        }
     }
 
     /**
@@ -171,14 +141,6 @@ class SearchFragmentDeprecated : Fragment() {
         getViewModel<SearchFragmentViewModel>(viewModelFactory).action()
     }
 
-    /**
-     * The SearchView that triggers the searchPage is in the MainActivity view hierarchy.
-     * SearchViewViewModel allows the communication between this fragment and the SearchView
-     * in the MainActivity.
-     */
-    private fun withSearchViewViewModel(action: SearchViewViewModel.() -> Unit) {
-        getViewModel<SearchViewViewModel>(viewModelFactory).action()
-    }
 
     private fun withRecyclerViewAdapter(action: SearchItemAdapter.() -> Unit) {
         (searchResultRv.adapter as SearchItemAdapter).action()
