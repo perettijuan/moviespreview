@@ -10,10 +10,6 @@
     <string name="about_menu_item">About</string>
     <!-- End Main Activity -->
 
-    <!-- Search -->
-    <string name="empty_search">No results found for %1$s</string>
-    <!-- End Search-->
-
     <!-- Person -->
     <string name="person_birthday_title">Birthday</string>
     <string name="person_birth_place_title">Place of birth</string>

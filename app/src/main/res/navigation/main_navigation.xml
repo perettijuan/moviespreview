@@ -7,6 +7,7 @@
 
     <include app:graph="@navigation/user_account_nav"/>
     <include app:graph="@navigation/movie_details_nav"/>
+    <include app:graph="@navigation/search_nav"/>
 
     <fragment
         android:id="@+id/playingMoviesFragment"
@@ -31,8 +32,8 @@
     <!-- TODO JPP enable this navigation
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.jpp.mp.screens.main.search.SearchFragment"
-        tools:layout="@layout/fragment_search">
+        android:name="com.jpp.mp.screens.main.onSearch.SearchFragmentDeprecatedDeprecated"
+        tools:layout="@layout/fragment_search_depreacted">
         <action
             android:id="@+id/action_searchFragment_to_movieDetailsFragment"
             app:destination="@id/movieDetailsFragment" />

@@ -9,12 +9,13 @@ import javax.inject.Inject
  * [ViewModel] used to handle the SearchView interactions.
  *
  * MOTIVATION: since the SearchView used to detect user input in the searchPage feature is hosted
- * by the Activity and the Search feature is actually implemented by the SearchFragment, we need
- * a mechanism to communicate the SearchFragment with the MainActivity in order to let it
+ * by the Activity and the Search feature is actually implemented by the SearchFragmentDeprecated, we need
+ * a mechanism to communicate the SearchFragmentDeprecated with the MainActivity in order to let it
  * handle the SearchView.
  * In other words: the SearchView belongs to the MainActivity view hierarchy while the searching
- * feature is implemented in the SearchFragment - that has a completely different view hierarchy.
+ * feature is implemented in the SearchFragmentDeprecated - that has a completely different view hierarchy.
  */
+//TODO JPP delete ME
 class SearchViewViewModel @Inject constructor() : ViewModel() {
 
     private val searchLiveData by lazy { MutableLiveData<SearchEvent>() }

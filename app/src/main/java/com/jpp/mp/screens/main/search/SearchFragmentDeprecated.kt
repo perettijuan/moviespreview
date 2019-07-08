@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,14 +17,14 @@ import com.jpp.mp.ext.*
 import com.jpp.mp.screens.main.SearchEvent
 import com.jpp.mp.screens.main.SearchViewViewModel
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_search.*
-import kotlinx.android.synthetic.main.list_item_search.view.*
+import kotlinx.android.synthetic.main.fragment_search_depreacted.*
+import kotlinx.android.synthetic.main.list_item_search_deprecated.view.*
 import javax.inject.Inject
 
 /**
- * Fragment that shows and supports the search functionality in the application.
+ * Fragment that shows and supports the onSearch functionality in the application.
  * This Fragment is backed by [SearchFragmentViewModel] that is the VM that takes care of performing the
- * search and updating the UI when the results is back from the server. The Fragment reacts to
+ * onSearch and updating the UI when the results is back from the server. The Fragment reacts to
  * [SearchViewState] state updates, meaning that any given state of the UI shown by the Fragment
  * can be reproduced with the given state.
  *
@@ -36,7 +35,7 @@ import javax.inject.Inject
  * Whenever the MainActivity detects that the user has entered data in the SearchView, it pushes a new
  * event to this Fragment via the ViewModel.
  */
-class SearchFragment : Fragment() {
+class SearchFragmentDeprecated : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -51,7 +50,7 @@ class SearchFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_search, container, false)
+        return inflater.inflate(R.layout.fragment_search_depreacted, container, false)
     }
 
 
@@ -76,11 +75,11 @@ class SearchFragment : Fragment() {
              */
             init(getScreenSizeInPixels().x)
 
-            viewState().observe(this@SearchFragment.viewLifecycleOwner, Observer { viewState ->
+            viewState().observe(this@SearchFragmentDeprecated.viewLifecycleOwner, Observer { viewState ->
                 renderViewState(viewState)
             })
 
-            navEvents().observe(this@SearchFragment.viewLifecycleOwner, Observer { navEvent ->
+            navEvents().observe(this@SearchFragmentDeprecated.viewLifecycleOwner, Observer { navEvent ->
                 navigateTo(navEvent)
             })
         }
@@ -90,7 +89,7 @@ class SearchFragment : Fragment() {
          * React to searchPage events posted by the MainActivity
          */
         withSearchViewViewModel {
-            searchEvents().observe(this@SearchFragment.viewLifecycleOwner, Observer { event ->
+            searchEvents().observe(this@SearchFragmentDeprecated.viewLifecycleOwner, Observer { event ->
                 when (event) {
                     is SearchEvent.ClearSearch -> withViewModel { clearSearch() }
                     is SearchEvent.Search -> withViewModel {
@@ -132,7 +131,7 @@ class SearchFragment : Fragment() {
                 renderDoneSearching()
             }
             is SearchViewState.EmptySearch -> {
-                emptySearch.text = String.format(getString(R.string.empty_search), viewState.searchText)
+//                emptySearch.text = String.format(getString(R.string.empty_search), viewState.searchText)
                 renderEmptySearch()
             }
             is SearchViewState.DoneSearching -> {
@@ -236,7 +235,7 @@ class SearchFragment : Fragment() {
      */
     class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem) -> Unit) : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_search, parent, false))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_search_deprecated, parent, false))
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             getItem(position)?.let {
