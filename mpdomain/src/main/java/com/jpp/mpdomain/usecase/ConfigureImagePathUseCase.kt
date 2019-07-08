@@ -2,6 +2,7 @@ package com.jpp.mpdomain.usecase
 
 import com.jpp.mp.common.extensions.transformToInt
 
+//TODO DELETE ME
 abstract class ConfigureImagePathUseCase {
 
     protected fun createUrlForPath(original: String?, baseUrl: String, sizes: List<String>, targetSize: Int): String? {
