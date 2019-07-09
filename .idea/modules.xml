@@ -11,6 +11,7 @@
       <module fileurl="file://$PROJECT_DIR$/mpdesign/mpdesign.iml" filepath="$PROJECT_DIR$/mpdesign/mpdesign.iml" />
       <module fileurl="file://$PROJECT_DIR$/mpdomain/mpdomain.iml" filepath="$PROJECT_DIR$/mpdomain/mpdomain.iml" />
       <module fileurl="file://$PROJECT_DIR$/features/mpmoviedetails/mpmoviedetails.iml" filepath="$PROJECT_DIR$/features/mpmoviedetails/mpmoviedetails.iml" />
+      <module fileurl="file://$PROJECT_DIR$/features/mpperson/mpperson.iml" filepath="$PROJECT_DIR$/features/mpperson/mpperson.iml" />
       <module fileurl="file://$PROJECT_DIR$/features/mpsearch/mpsearch.iml" filepath="$PROJECT_DIR$/features/mpsearch/mpsearch.iml" />
       <module fileurl="file://$PROJECT_DIR$/mptestutils/mptestutils.iml" filepath="$PROJECT_DIR$/mptestutils/mptestutils.iml" />
     </modules>
