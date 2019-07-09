@@ -1,5 +1,6 @@
 package com.jpp.mpsearch
 
+import androidx.lifecycle.MutableLiveData
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.SearchPage
 import com.jpp.mpdomain.SearchResult
@@ -10,6 +11,7 @@ import com.jpp.mpdomain.repository.SearchRepository
 import com.jpp.mpsearch.SearchInteractor.SearchEvent
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.NotConnectedToNetwork
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.UnknownError
+import com.jpp.mpsearch.SearchInteractor.SearchEvent.AppLanguageChanged
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
@@ -32,12 +34,15 @@ class SearchInteractorTest {
     @MockK
     private lateinit var languageRepository: LanguageRepository
 
+    private val languageUpdates by lazy { MutableLiveData<SupportedLanguage>() }
+
     private lateinit var subject: SearchInteractor
 
 
     @BeforeEach
     fun setUp() {
         every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+        every { languageRepository.updates() } returns languageUpdates
 
         subject = SearchInteractor(
                 connectivityRepository,
@@ -91,5 +96,16 @@ class SearchInteractorTest {
 
         assertEquals(searchList, result)
         verify { searchRepository.searchPage("aQuery", 1, SupportedLanguage.English) }
+    }
+
+    @Test
+    fun `Should notify when language is changed`() {
+        var posted: SearchEvent? = null
+
+        subject.searchEvents.observeWith { posted = it }
+
+        languageUpdates.value = SupportedLanguage.Spanish
+
+        assertEquals(AppLanguageChanged, posted)
     }
 }

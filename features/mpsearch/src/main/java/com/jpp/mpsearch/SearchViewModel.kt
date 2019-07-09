@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPScopedViewModel
@@ -14,6 +15,7 @@ import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.NotConnectedToNetwork
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.UnknownError
+import com.jpp.mpsearch.SearchInteractor.SearchEvent.AppLanguageChanged
 import com.jpp.mpsearch.SearchViewState.*
 import javax.inject.Inject
 
@@ -29,6 +31,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
     private var targetImageSize: Int = -1
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<SearchViewState>>() }
+    private val _navEvents by lazy { SingleLiveEvent<SearchNavigationEvent>() }
     private var retryFunc: (() -> Unit)? = null
 
     init {
@@ -36,6 +39,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             when (event) {
                 is NotConnectedToNetwork -> _viewStates.value = of(ShowNotConnected)
                 is UnknownError -> _viewStates.value = of(ShowError)
+                is AppLanguageChanged -> refreshData()
             }
         }
     }
@@ -47,7 +51,10 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun onInit(imageSize: Int) {
         targetImageSize = imageSize
-        _viewStates.value = of(ShowSearchView)
+        when (val currentState = _viewStates.value) {
+            null ->_viewStates.value = of(ShowSearchView)
+            else -> _viewStates.value = of(currentState.peekContent())
+        }
     }
 
     /**
@@ -62,11 +69,30 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Clears the view current search state.
      */
     fun onClearSearch() {
+        retryFunc = null
         _viewStates.value = of(ShowSearchView)
     }
 
+    /**
+     * Retries the last search.
+     */
     fun onRetry() {
         retryFunc?.invoke()
+    }
+
+    /**
+     * Called when an item is selected in the list of search results.
+     * A new state is posted in navEvents() in order to handle the event.
+     */
+    fun onItemSelected(item: SearchResultItem, positionInList: Int) {
+        when (item.isMovieType()) {
+            true -> _navEvents.value = SearchNavigationEvent.GoToMovieDetails(
+                    movieId = item.id.toString(),
+                    movieImageUrl = item.imagePath,
+                    movieTitle = item.name,
+                    positionInList = positionInList)
+            false -> TODO("Redirect to profile")
+        }
     }
 
     /**
@@ -74,6 +100,12 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * the view should render.
      */
     val viewStates: LiveData<HandledViewState<SearchViewState>> = _viewStates
+
+    /**
+     * Subscribe to this [LiveData] in order to get notified about navigation steps that
+     * should be performed by the view.
+     */
+    val navEvents: LiveData<SearchNavigationEvent> get() = _navEvents
 
     /**
      * Pushes the Loading view state into the view layer and creates the [PagedList]
@@ -84,6 +116,14 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             value = of(ShowSearching)
             addSource(createPagedListForSearch(query)) { pagedList -> if (pagedList.size > 0) value = of(ShowSearchResults(pagedList)) }
         }
+    }
+
+    /**
+     * Refreshes any internal app state related to a search.
+     */
+    private fun refreshData() {
+        searchInteractor.flushCurrentSearch()
+        retryFunc?.invoke()
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.jpp.mpmoviedetails
 
+import androidx.lifecycle.MutableLiveData
 import com.jpp.mpdomain.*
 import com.jpp.mpdomain.repository.*
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent
@@ -36,10 +37,13 @@ class MovieDetailsInteractorTest {
     @RelaxedMockK
     private lateinit var moviePageRepository: MoviePageRepository
 
+    private val languageUpdates by lazy { MutableLiveData<SupportedLanguage>() }
+
     private lateinit var subject: MovieDetailsInteractor
 
     @BeforeEach
     fun setUp() {
+        every { languageRepository.updates() } returns languageUpdates
         subject = MovieDetailsInteractor(
                 connectivityRepository,
                 movieDetailRepository,
@@ -48,6 +52,13 @@ class MovieDetailsInteractorTest {
                 accountRepository,
                 movieStateRepository,
                 moviePageRepository)
+
+        /*
+         * Since the ViewModel uses a MediatorLiveData, we need to have
+         * an observer on the view states attached all the time in order
+         * to get notifications.
+         */
+        subject.movieDetailEvents.observeForever {  }
     }
 
     @Test
@@ -251,5 +262,16 @@ class MovieDetailsInteractorTest {
         assertEquals(expected, eventPosted)
         verify { movieStateRepository.updateWatchlistMovieState(12.0, true, userAccount, session) }
         verify { moviePageRepository.flushWatchlistMoviePages() }
+    }
+
+    @Test
+    fun `Should post AppLanguageChanged when language changes`() {
+        var eventPosted: MovieDetailEvent? = null
+
+        subject.movieDetailEvents.observeWith { eventPosted = it }
+
+        languageUpdates.value = SupportedLanguage.Spanish
+
+        assertEquals(AppLanguageChanged, eventPosted)
     }
 }

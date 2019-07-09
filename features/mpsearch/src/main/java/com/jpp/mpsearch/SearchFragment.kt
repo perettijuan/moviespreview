@@ -16,7 +16,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
+import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
+import com.jpp.mp.common.navigation.Destination.MPSearch
+import com.jpp.mpdesign.ext.findViewInPositionWithId
 import com.jpp.mpdesign.ext.loadImageUrlAsCircular
 import com.jpp.mpdesign.ext.setInvisible
 import com.jpp.mpdesign.ext.setVisible
@@ -31,10 +34,6 @@ class SearchFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val searchItemSelectionListener: (SearchResultItem) -> Unit = {
-        TODO()
-    }
-
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -48,8 +47,11 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         searchResultRv.apply {
             layoutManager = LinearLayoutManager(activity)
-            adapter = SearchItemAdapter(searchItemSelectionListener)
+            adapter = SearchItemAdapter { item, position ->
+                withViewModel { onItemSelected(item, position) }
+            }
         }
+        setUpSearchView()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -59,15 +61,20 @@ class SearchFragment : Fragment() {
          * shared transitions.
          */
         withViewModel {
-            viewStates.observe(viewLifecycleOwner, Observer { it.actionIfNotHandled { viewState -> renderViewState(viewState) } })
+            viewStates.observe(this@SearchFragment.viewLifecycleOwner, Observer { it.actionIfNotHandled { viewState -> renderViewState(viewState) } })
+            navEvents.observe(this@SearchFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
             onInit(getScreenWidthInPixels())
         }
+
+        // sync search view state in
+        withNavigationViewModel(viewModelFactory) { destinationReached(MPSearch) }
     }
 
     private fun renderViewState(searchViewState: SearchViewState) {
         when (searchViewState) {
             is ShowSearchView -> {
-                setUpSearchView()
+                withSearchView { setQuery("", false) }
+                withRecyclerViewAdapter { clear() }
                 renderClearState()
             }
             is ShowSearching -> renderSearching()
@@ -90,9 +97,23 @@ class SearchFragment : Fragment() {
         }
     }
 
+    private fun reactToNavEvent(navEvent: SearchNavigationEvent) {
+        when (navEvent) {
+            is SearchNavigationEvent.GoToMovieDetails -> {
+                val view = searchResultRv.findViewInPositionWithId(navEvent.positionInList, R.id.searchItemIv)
+                withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(navEvent.movieId, navEvent.movieImageUrl, navEvent.movieTitle, view) }
+            }
+        }
+    }
+
     private fun withViewModel(action: SearchViewModel.() -> Unit) = withViewModel<SearchViewModel>(viewModelFactory) { action() }
-    private fun withRecyclerViewAdapter(action: SearchItemAdapter.() -> Unit) { (searchResultRv.adapter as SearchItemAdapter).action() }
-    private fun withSearchView(action: SearchView.() -> Unit) { findSearchView(requireActivity().window.decorView as ViewGroup).action() }
+    private fun withRecyclerViewAdapter(action: SearchItemAdapter.() -> Unit) {
+        (searchResultRv.adapter as SearchItemAdapter).action()
+    }
+
+    private fun withSearchView(action: SearchView.() -> Unit) {
+        findSearchView(requireActivity().window.decorView as ViewGroup).action()
+    }
 
     private fun renderSearching() {
         searchPlaceHolderIv.setInvisible()
@@ -150,7 +171,6 @@ class SearchFragment : Fragment() {
         * 2 - To follow the design specs, the SearchView is provided in the Activity's action bar.
         */
         withSearchView {
-            setQuery("", false)
             requestFocus()
             queryHint = getString(R.string.search_hint)
             isIconified = false
@@ -158,8 +178,6 @@ class SearchFragment : Fragment() {
             setOnQueryTextListener(QuerySubmitter { withViewModel { onSearch(it) } })
             findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener { withViewModel { onClearSearch() } }
         }
-
-        withRecyclerViewAdapter { clear() }
     }
 
     /**
@@ -214,7 +232,7 @@ class SearchFragment : Fragment() {
     /**
      * [PagedListAdapter] implementation to show the list of searchPage results.
      */
-    class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem) -> Unit) : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
+    class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem, Int) -> Unit) : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_search, parent, false))
 
@@ -231,12 +249,13 @@ class SearchFragment : Fragment() {
 
         class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 
-            fun bindSearchItem(searchItem: SearchResultItem, selectionListener: (SearchResultItem) -> Unit) {
+            fun bindSearchItem(searchItem: SearchResultItem, selectionListener: (SearchResultItem, Int) -> Unit) {
                 with(itemView) {
                     searchItemIv.loadImageUrlAsCircular(searchItem.imagePath)
+                    searchItemIv.transitionName = "MovieImageAt$adapterPosition"
                     searchItemTitleTxt.text = searchItem.name
                     searchItemTypeIv.setImageResource(searchItem.icon.iconRes)
-                    setOnClickListener { selectionListener(searchItem) }
+                    setOnClickListener { selectionListener(searchItem, adapterPosition) }
                 }
             }
 

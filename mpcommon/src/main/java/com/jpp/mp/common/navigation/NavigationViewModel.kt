@@ -17,6 +17,7 @@ import javax.inject.Inject
 class NavigationViewModel @Inject constructor() : ViewModel() {
 
     private val _navEvents by lazy { MutableLiveData<InterModuleNavigationEvent>() }
+    private val _reachedDestinations by lazy { MutableLiveData<Destination>() }
 
 
     /**
@@ -24,6 +25,8 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
      * events.
      */
     val navEvents: LiveData<InterModuleNavigationEvent> = _navEvents
+
+    val reachedDestinations: LiveData<Destination> = _reachedDestinations
 
 
     fun navigateToUserAccount() {
@@ -34,15 +37,15 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
         _navEvents.value = of(Destination.MPMovieDetails(movieId, movieImageUrl, movieTitle, transitionView))
     }
 
-    fun destinationReached(destinationTitle: String) {
-        _navEvents.value = of(Destination.DestinationReached(destinationTitle))
-    }
-
     fun toPrevious() {
         _navEvents.value = of(Destination.PreviousDestination)
     }
 
     fun performInnerNavigation(directions: NavDirections) {
         _navEvents.value = of(Destination.InnerDestination(directions))
+    }
+
+    fun destinationReached(destination: Destination) {
+        _reachedDestinations.value = destination
     }
 }

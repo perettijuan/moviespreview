@@ -59,8 +59,8 @@ class NavigationViewModelTest {
                         expected = Destination.MPMovieDetails("anId", "aUrl", "aTitle", transitionViewMock)
                 ),
                 NavigationViewModelTestParam(
-                        whenAction = { it.destinationReached("aDestination") },
-                        expected = Destination.DestinationReached("aDestination")
+                        whenAction = { it.destinationReached(Destination.ReachedDestination("aDestination")) },
+                        expected = Destination.ReachedDestination("aDestination")
                 ),
                 NavigationViewModelTestParam(
                         whenAction = { it.toPrevious() },

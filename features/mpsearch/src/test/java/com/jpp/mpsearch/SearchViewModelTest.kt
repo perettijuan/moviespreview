@@ -13,7 +13,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -39,6 +38,13 @@ class SearchViewModelTest {
                 searchInteractor,
                 imagesPathInteractor
         )
+
+        /*
+         * Since the ViewModel uses a MediatorLiveData, we need to have
+         * an observer on the view states attached all the time in order
+         * to get notifications.
+         */
+        subject.viewStates.observeForever { }
     }
 
     @Test
@@ -75,16 +81,34 @@ class SearchViewModelTest {
     }
 
     @Test
-    fun `Should post loading and create paged list with first movie pages onInitWithFavorites`() {
+    fun `Should post loading and create paged list with first movie pages onSearch`() {
         val viewStatesPosted = mutableListOf<SearchViewState>()
-
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatesPosted.add(viewState) } }
 
         subject.onSearch("aQuery")
 
         assertEquals(SearchViewState.ShowSearching, viewStatesPosted[0])
-        assertTrue(viewStatesPosted[1] is SearchViewState.ShowSearchResults)
         verify { searchInteractor.performSearchForPage("aQuery", 1, any()) }
     }
+
+    @Test
+    fun `Should refresh data when no search has been performed and language changes`() {
+        lvInteractorEvents.value = SearchEvent.AppLanguageChanged
+        verify { searchInteractor.flushCurrentSearch() }
+    }
+
+    @Test
+    fun `Should post last state when onInit is called for 2nd time`() {
+        var viewStatePosted: SearchViewState? = null
+
+        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+
+        subject.onInit(10)
+        subject.onSearch("aQuery")
+        subject.onInit(10)
+
+        assertEquals(SearchViewState.ShowSearching, viewStatePosted)
+    }
+
 }
