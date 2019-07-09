@@ -39,6 +39,13 @@ sealed class SearchViewState {
     data class ShowSearchResults(val pagedList: PagedList<SearchResultItem>) : SearchViewState()
 }
 
+sealed class SearchNavigationEvent {
+    /*
+     * Redirects the user to the details of the selected movie.
+     */
+    data class GoToMovieDetails(val movieId: String, val movieImageUrl: String, val movieTitle: String, var positionInList: Int) : SearchNavigationEvent()
+}
+
 
 /**
  * Represents an item in the list of onSearch results.
@@ -46,7 +53,9 @@ sealed class SearchViewState {
 data class SearchResultItem(val id: Double,
                             val imagePath: String,
                             val name: String,
-                            val icon: SearchResultTypeIcon)
+                            val icon: SearchResultTypeIcon) {
+    fun isMovieType() = icon == SearchResultTypeIcon.Movie
+}
 
 /**
  * Represents the icon in the type of the [SearchResultItem].

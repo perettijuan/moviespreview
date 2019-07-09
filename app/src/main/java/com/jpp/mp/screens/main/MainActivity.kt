@@ -225,6 +225,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             is Destination.PreviousDestination -> withNavController { popBackStack() }
             is Destination.DestinationReached -> withMainViewModel { userNavigatesWithinFeature(destination.destinationTitle) }
             is Destination.InnerDestination -> innerNavigateTo(destination.directions)
+            is Destination.MPSearch -> withMainViewModel { userNavigatesToSearch() }
         }
     }
 
@@ -254,8 +255,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                             .setPopExitAnim(R.anim.fragment_exit_slide_left)
                             .build())
         }
-
-        withMainViewModel { userNavigatesToSearch() }
     }
 
 

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPScopedViewModel
@@ -30,6 +31,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
     private var targetImageSize: Int = -1
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<SearchViewState>>() }
+    private val _navEvents by lazy { SingleLiveEvent<SearchNavigationEvent>() }
     private var retryFunc: (() -> Unit)? = null
 
     init {
@@ -49,7 +51,10 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun onInit(imageSize: Int) {
         targetImageSize = imageSize
-        _viewStates.value = of(ShowSearchView)
+        when (val currentState = _viewStates.value) {
+            null ->_viewStates.value = of(ShowSearchView)
+            else -> _viewStates.value = of(currentState.peekContent())
+        }
     }
 
     /**
@@ -76,10 +81,31 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     }
 
     /**
+     * Called when an item is selected in the list of search results.
+     * A new state is posted in navEvents() in order to handle the event.
+     */
+    fun onItemSelected(item: SearchResultItem, positionInList: Int) {
+        when (item.isMovieType()) {
+            true -> _navEvents.value = SearchNavigationEvent.GoToMovieDetails(
+                    movieId = item.id.toString(),
+                    movieImageUrl = item.imagePath,
+                    movieTitle = item.name,
+                    positionInList = positionInList)
+            false -> TODO("Redirect to profile")
+        }
+    }
+
+    /**
      * Subscribe to this [LiveData] in order to get notified about the different states that
      * the view should render.
      */
     val viewStates: LiveData<HandledViewState<SearchViewState>> = _viewStates
+
+    /**
+     * Subscribe to this [LiveData] in order to get notified about navigation steps that
+     * should be performed by the view.
+     */
+    val navEvents: LiveData<SearchNavigationEvent> get() = _navEvents
 
     /**
      * Pushes the Loading view state into the view layer and creates the [PagedList]

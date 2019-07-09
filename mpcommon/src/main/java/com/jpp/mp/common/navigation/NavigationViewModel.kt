@@ -38,6 +38,10 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
         _navEvents.value = of(Destination.DestinationReached(destinationTitle))
     }
 
+    fun searchDestinationReached() {
+        _navEvents.value = of(Destination.MPSearch)
+    }
+
     fun toPrevious() {
         _navEvents.value = of(Destination.PreviousDestination)
     }

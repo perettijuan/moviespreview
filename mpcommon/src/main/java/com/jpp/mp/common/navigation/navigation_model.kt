@@ -53,6 +53,11 @@ sealed class Destination {
                               val transitionView: View) : Destination()
 
     /*
+     * Represents the search feature of the application.
+     */
+    object MPSearch : Destination()
+
+    /*
      * Represents a Destination that is reached. It is used to
      * update the Toolbar title.
      */
