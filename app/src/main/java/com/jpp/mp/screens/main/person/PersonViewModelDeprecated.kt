@@ -12,22 +12,23 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * [MPScopedViewModel] to handle the state of the [PersonFragment]. It is a coroutine-scoped
+ * [MPScopedViewModel] to handle the state of the [PersonFragmentDeprecated]. It is a coroutine-scoped
  * ViewModel, which indicates that some work will be executed in a background context and synced
  * to the main context when over.
  *
  * It exposes a single output in a LiveData object that receives [PersonViewState] updates as soon
  * as any new state is identified by the ViewModel.
  */
-class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                          private val getPersonUseCase: GetPersonUseCase)
+// TODO JPP delete me
+class PersonViewModelDeprecated @Inject constructor(dispatchers: CoroutineDispatchers,
+                                                    private val getPersonUseCase: GetPersonUseCase)
     : MPScopedViewModel(dispatchers) {
 
     private val viewStateLiveData by lazy { MutableLiveData<PersonViewState>() }
     private lateinit var retryFunc: () -> Unit
 
     /**
-     * Called on initialization of the PersonFragment.
+     * Called on initialization of the PersonFragmentDeprecated.
      * Each time this method is called the backing UseCase is executed in order to retrieve
      * the data of the person identified by [personId].
      * The updates will be posted to the [LiveData] object provided by [viewState()].

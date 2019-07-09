@@ -23,11 +23,11 @@ class PersonViewModelTest {
     @MockK
     private lateinit var getPersonUseCase: GetPersonUseCase
 
-    private lateinit var subject: PersonViewModel
+    private lateinit var subject: PersonViewModelDeprecated
 
     @BeforeEach
     fun setUp() {
-        subject = PersonViewModel(TestCoroutineDispatchers(), getPersonUseCase)
+        subject = PersonViewModelDeprecated(TestCoroutineDispatchers(), getPersonUseCase)
     }
 
     @ParameterizedTest

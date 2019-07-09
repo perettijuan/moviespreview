@@ -31,8 +31,8 @@
         tools:layout="@layout/fragment_movies"/>
     <fragment
         android:id="@+id/personFragment"
-        android:name="com.jpp.mp.screens.main.person.PersonFragment"
-        tools:layout="@layout/fragment_person">
+        android:name="com.jpp.mp.screens.main.person.PersonFragmentDeprecated"
+        tools:layout="@layout/fragment_person_deprecated">
         <argument
             android:name="personId"
             app:argType="string" />
