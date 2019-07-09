@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.R
 import com.jpp.mp.ext.*
-import com.jpp.mp.screens.main.person.PersonFragmentArgs.fromBundle
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_person_deprecated.*
 import kotlinx.android.synthetic.main.layout_person_header.*
@@ -38,9 +37,9 @@ class PersonFragmentDeprecated : Fragment() {
                 ?: throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the content")
 
         withViewModel {
-            init(fromBundle(args).personId.toDouble(),
-                    fromBundle(args).personImageUrl,
-                    fromBundle(args).personName)
+//            init(fromBundle(args).personId.toDouble(),
+//                    fromBundle(args).personImageUrl,
+//                    fromBundle(args).personName)
 
             viewState().observe(this@PersonFragmentDeprecated.viewLifecycleOwner, Observer { viewState ->
                 when (viewState) {

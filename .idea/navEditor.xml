@@ -206,6 +206,21 @@
             </LayoutPositions>
           </value>
         </entry>
+        <entry key="person_nav.xml">
+          <value>
+            <LayoutPositions>
+              <option name="myPositions">
+                <map>
+                  <entry key="personFragment">
+                    <value>
+                      <LayoutPositions />
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </LayoutPositions>
+          </value>
+        </entry>
         <entry key="search_nav.xml">
           <value>
             <LayoutPositions>

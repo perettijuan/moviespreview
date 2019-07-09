@@ -103,7 +103,7 @@ class MovieDetailsFragmentTest {
 ////                MovieGenreItem.Crime
 ////        )
 ////        val movieDetails = UiMovieDetails(
-////                title = "aMovie",
+////                movieTitle = "aMovie",
 ////                overview = "anOverview",
 ////                releaseDate = "aReleaseDate",
 ////                genres = genres,

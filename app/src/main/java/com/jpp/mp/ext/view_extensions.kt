@@ -145,7 +145,7 @@ fun ImageView.loadImageUrlAsCircular(imageUrl: String,
 }
 
 /**
- * Enables the title shown by the CollapsingToolbarLayout
+ * Enables the movieTitle shown by the CollapsingToolbarLayout
  */
 fun CollapsingToolbarLayout.enableTitle() {
     isTitleEnabled = true
@@ -153,7 +153,7 @@ fun CollapsingToolbarLayout.enableTitle() {
 
 
 /**
- * Disables the title shown by the CollapsingToolbarLayout
+ * Disables the movieTitle shown by the CollapsingToolbarLayout
  */
 fun CollapsingToolbarLayout.disableTitle() {
     isTitleEnabled = false

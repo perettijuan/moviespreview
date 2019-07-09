@@ -26,7 +26,7 @@ class InterModuleNavigationEvent(private val destination: Destination) {
     }
 
     companion object {
-        fun of(destination: Destination) : InterModuleNavigationEvent = InterModuleNavigationEvent(destination)
+        fun of(destination: Destination): InterModuleNavigationEvent = InterModuleNavigationEvent(destination)
     }
 }
 
@@ -51,6 +51,15 @@ sealed class Destination {
                               val movieImageUrl: String,
                               val movieTitle: String,
                               val transitionView: View) : Destination()
+
+    /*
+     * Destination used to perform inter-module navigation to the persons
+     * module.
+     */
+    data class MPPerson(val personId: String,
+                        val personImageUrl: String,
+                        val personName: String) : Destination()
+
     /*
      * Represents a Destination that is internal to a module.
      */
