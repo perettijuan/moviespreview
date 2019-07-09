@@ -1,15 +1,10 @@
 package com.jpp.mp.screens.main
 
-import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
@@ -26,6 +21,7 @@ import com.jpp.mp.R
 import com.jpp.mp.common.extensions.getStringOrDefault
 import com.jpp.mp.common.extensions.navigate
 import com.jpp.mp.common.navigation.Destination
+import com.jpp.mp.common.navigation.Destination.*
 import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.ext.closeDrawerIfOpen
 import com.jpp.mp.ext.setActionBarTitle
@@ -93,6 +89,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
         withNavigationViewModel {
             navEvents.observe(this@MainActivity, Observer { it.actionIfNotHandled { destination -> navigateToDestination(destination) } })
+            reachedDestinations.observe(this@MainActivity, Observer { onDestinationReached(it) })
         }
 
         setSupportActionBar(mainToolbar)
@@ -214,18 +211,23 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     private fun navigateToDestination(destination: Destination) {
         when (destination) {
-            is Destination.MPAccount -> interModuleNavigationTo(R.id.user_account_nav)
-            is Destination.MPMovieDetails -> {
+            is MPAccount -> interModuleNavigationTo(R.id.user_account_nav)
+            is MPMovieDetails -> {
                 withNavController {
                     navigate(R.id.movie_details_nav,
                             NavigationMovieDetails.navArgs(destination.movieId, destination.movieImageUrl, destination.movieTitle, destination.transitionView.transitionName),
                             FragmentNavigatorExtras(destination.transitionView to destination.transitionView.transitionName))
                 }
             }
-            is Destination.PreviousDestination -> withNavController { popBackStack() }
-            is Destination.DestinationReached -> withMainViewModel { userNavigatesWithinFeature(destination.destinationTitle) }
-            is Destination.InnerDestination -> innerNavigateTo(destination.directions)
-            is Destination.MPSearch -> withMainViewModel { userNavigatesToSearch() }
+            is PreviousDestination -> withNavController { popBackStack() }
+            is InnerDestination -> innerNavigateTo(destination.directions)
+        }
+    }
+
+    private fun onDestinationReached(reachedDestination: Destination) {
+        when (reachedDestination) {
+            is ReachedDestination -> withMainViewModel { userNavigatesWithinFeature(reachedDestination.destinationTitle) }
+            is MPSearch -> withMainViewModel { userNavigatesToSearch() }
         }
     }
 

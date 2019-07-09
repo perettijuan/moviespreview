@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
+import com.jpp.mp.common.navigation.Destination.MPSearch
 import com.jpp.mpdesign.ext.findViewInPositionWithId
 import com.jpp.mpdesign.ext.loadImageUrlAsCircular
 import com.jpp.mpdesign.ext.setInvisible
@@ -64,12 +65,9 @@ class SearchFragment : Fragment() {
             navEvents.observe(this@SearchFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
             onInit(getScreenWidthInPixels())
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
         // sync search view state in
-        withNavigationViewModel(viewModelFactory) { searchDestinationReached() }
+        withNavigationViewModel(viewModelFactory) { destinationReached(MPSearch) }
     }
 
     private fun renderViewState(searchViewState: SearchViewState) {

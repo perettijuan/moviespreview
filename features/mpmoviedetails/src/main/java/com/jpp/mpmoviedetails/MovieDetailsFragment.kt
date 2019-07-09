@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionInflater
 import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
+import com.jpp.mp.common.navigation.Destination.ReachedDestination
 import com.jpp.mpdesign.ext.*
 import com.jpp.mpmoviedetails.MovieDetailViewState.*
 import com.jpp.mpmoviedetails.NavigationMovieDetails.imageUrl
@@ -58,7 +59,7 @@ class MovieDetailsFragment : Fragment() {
             loadImageUrl(imageUrl(arguments))
         }
 
-        withNavigationViewModel(viewModelFactory) { destinationReached(title(arguments)) }
+        withNavigationViewModel(viewModelFactory) { destinationReached(ReachedDestination(title(arguments))) }
 
         withViewModel {
             viewStates.observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { it.actionIfNotHandled { viewState -> renderViewState(viewState) } })

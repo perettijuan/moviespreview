@@ -51,6 +51,10 @@ sealed class Destination {
                               val movieImageUrl: String,
                               val movieTitle: String,
                               val transitionView: View) : Destination()
+    /*
+     * Represents a Destination that is internal to a module.
+     */
+    data class InnerDestination(val directions: NavDirections) : Destination()
 
     /*
      * Represents the search feature of the application.
@@ -61,10 +65,5 @@ sealed class Destination {
      * Represents a Destination that is reached. It is used to
      * update the Toolbar title.
      */
-    data class DestinationReached(val destinationTitle: String) : Destination()
-
-    /*
-     * Represents a Destination that is internal to a module.
-     */
-    data class InnerDestination(val directions: NavDirections) : Destination()
+    data class ReachedDestination(val destinationTitle: String) : Destination()
 }

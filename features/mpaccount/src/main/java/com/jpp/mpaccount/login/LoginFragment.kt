@@ -18,11 +18,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.common.extensions.getViewModel
 import com.jpp.mp.common.extensions.withNavigationViewModel
+import com.jpp.mp.common.navigation.Destination.ReachedDestination
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.login.LoginFragmentDirections.toAccountFragment
 import com.jpp.mpdesign.ext.setInvisible
 import com.jpp.mpdesign.ext.setVisible
-import com.jpp.mpdesign.ext.snackBar
 import com.jpp.mpdesign.ext.snackBarNoAction
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_login.*
@@ -56,12 +56,8 @@ class LoginFragment : Fragment() {
             navEvents.observe(this@LoginFragment.viewLifecycleOwner, Observer { continueToUserAccount() })
             onInit()
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
         // sync app bar title
-        withNavigationViewModel(viewModelFactory) { destinationReached(getString(R.string.login_generic)) }
+        withNavigationViewModel(viewModelFactory) { destinationReached(ReachedDestination(getString(R.string.login_generic))) }
     }
 
     /**
