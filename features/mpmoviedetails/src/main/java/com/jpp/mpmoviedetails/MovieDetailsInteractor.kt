@@ -1,6 +1,7 @@
 package com.jpp.mpmoviedetails
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mpdomain.Connectivity.Connected
 import com.jpp.mpdomain.Connectivity.Disconnected
@@ -19,7 +20,6 @@ import javax.inject.Singleton
  * view layer.
  */
 @Singleton
-//TODO JPP Language dependant!
 class MovieDetailsInteractor @Inject constructor(private val connectivityRepository: ConnectivityRepository,
                                                  private val movieDetailRepository: MovieDetailRepository,
                                                  private val languageRepository: LanguageRepository,
@@ -32,6 +32,7 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
      * can route to the upper layers.
      */
     sealed class MovieDetailEvent {
+        object AppLanguageChanged : MovieDetailEvent()
         object NotConnectedToNetwork : MovieDetailEvent()
         object UnknownError : MovieDetailEvent()
         data class Success(val data: MovieDetail) : MovieDetailEvent()
@@ -51,8 +52,14 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
         data class FetchSuccess(val data: MovieState) : MovieStateEvent()
     }
 
-    private val _movieDetailEvents by lazy { MutableLiveData<MovieDetailEvent>() }
+    private val _movieDetailEvents by lazy { MediatorLiveData<MovieDetailEvent>() }
     private val _movieStateEvents by lazy { MutableLiveData<MovieStateEvent>() }
+
+    init {
+        _movieDetailEvents.addSource(languageRepository.updates()) {
+            _movieDetailEvents.postValue(AppLanguageChanged)
+        }
+    }
 
     /**
      * @return a [LiveData] of [MovieDetailEvent]. Subscribe to this [LiveData]
@@ -123,6 +130,13 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
                     .also { moviePageRepository.flushWatchlistMoviePages() }
                     .let { _movieStateEvents.postValue(it) }
         }
+    }
+
+    /**
+     * Flushes out any movie details stored data.
+     */
+    fun flushMovieDetailsData() {
+        movieDetailRepository.flushMovieDetailsData()
     }
 
     private fun withAccountData(callback: (Session, UserAccount) -> Unit) {

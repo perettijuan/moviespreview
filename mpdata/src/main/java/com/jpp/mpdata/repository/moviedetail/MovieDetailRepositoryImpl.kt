@@ -13,4 +13,8 @@ class MovieDetailRepositoryImpl(private val movieDetailApi: MovieDetailApi,
         return movieDetailDb.getMovieDetails(movieId)
                 ?: movieDetailApi.getMovieDetails(movieId, language)?.also { movieDetailDb.saveMovieDetails(it) }
     }
+
+    override fun flushMovieDetailsData() {
+        movieDetailDb.flushData()
+    }
 }

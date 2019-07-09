@@ -18,4 +18,7 @@ interface MovieDetailDAO {
 
     @Query("select * from genres where movie_detail_d = :movieId")
     fun getGenresForDetailId(movieId: Double): List<DBMovieGenre>?
+
+    @Query("DELETE FROM movies_details")
+    fun deleteAll()
 }

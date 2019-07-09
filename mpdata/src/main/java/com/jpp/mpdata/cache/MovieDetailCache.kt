@@ -32,6 +32,10 @@ class MovieDetailCache(private val roomDatabase: MPRoomDataBase,
         }
     }
 
+    override fun flushData() {
+        withMovieDetailsDao { deleteAll() }
+    }
+
     private fun now() = timestampHelper.now()
     private fun <T> transformWithAdapter(action: RoomModelAdapter.() -> T): T = with(adapter) { action.invoke(this) }
     private fun <T> withMovieDetailsDao(action: MovieDetailDAO.() -> T): T = with(roomDatabase.movieDetailsDao()) { action.invoke(this) }

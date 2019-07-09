@@ -58,6 +58,7 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
                 is NotConnectedToNetwork -> _viewStates.value = of(ShowNotConnected)
                 is UnknownError -> _viewStates.value = of(ShowError)
                 is Success -> mapMovieDetails(event.data)
+                is AppLanguageChanged -> _viewStates.value = of(refreshDetailsData(movieId, movieTitle))
             }
         }
     }
@@ -87,6 +88,14 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
 
     private fun executeFetchMovieDetailStep(movieId: Double, movieTitle: String): MovieDetailViewState {
         withMovieDetailsInteractor { fetchMovieDetail(movieId) }
+        return ShowLoading(movieTitle)
+    }
+
+    private fun refreshDetailsData(movieId: Double, movieTitle: String): MovieDetailViewState {
+        withMovieDetailsInteractor {
+            flushMovieDetailsData()
+            fetchMovieDetail(movieId)
+        }
         return ShowLoading(movieTitle)
     }
 
