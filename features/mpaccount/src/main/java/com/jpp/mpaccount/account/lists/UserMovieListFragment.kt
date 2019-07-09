@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.getViewModel
 import com.jpp.mp.common.extensions.withNavigationViewModel
+import com.jpp.mp.common.navigation.Destination.ReachedDestination
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToMovieDetails
 import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToUserAccount
@@ -69,15 +70,9 @@ class UserMovieListFragment : Fragment() {
                     UserMovieListType.RATED_LIST -> onInitWithRated(getScreenWidthInPixels(), getScreenWidthInPixels())
                     UserMovieListType.WATCH_LIST -> onInitWithWatchlist(getScreenWidthInPixels(), getScreenWidthInPixels())
                 }
+                // sync app bar title
+                withNavigationViewModel(viewModelFactory) { destinationReached(ReachedDestination(getString(it.titleRes))) }
             }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // sync app bar title
-        withUserMovieListType { viewType ->
-            withNavigationViewModel(viewModelFactory) { destinationReached(getString(viewType.titleRes)) }
         }
     }
 

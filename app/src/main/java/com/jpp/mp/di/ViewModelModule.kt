@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.screens.main.MainActivityViewModel
-import com.jpp.mp.screens.main.SearchViewViewModel
 import com.jpp.mp.screens.main.about.AboutViewModel
 import com.jpp.mp.screens.main.credits.CreditsViewModel
 import com.jpp.mp.screens.main.header.NavigationHeaderViewModel
@@ -15,12 +14,12 @@ import com.jpp.mp.screens.main.movies.fragments.PopularMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
 import com.jpp.mp.screens.main.person.PersonViewModel
-import com.jpp.mp.screens.main.search.SearchFragmentViewModel
 import com.jpp.mpaccount.account.UserAccountViewModel
 import com.jpp.mpaccount.account.lists.UserMovieListViewModel
 import com.jpp.mpaccount.login.LoginViewModel
 import com.jpp.mpmoviedetails.MovieDetailsActionViewModel
 import com.jpp.mpmoviedetails.MovieDetailsViewModel
+import com.jpp.mpsearch.SearchViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -58,16 +57,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MainActivityViewModel::class)
     internal abstract fun postMainActivityViewModel(viewModel: MainActivityViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(SearchFragmentViewModel::class)
-    internal abstract fun postSearchViewModel(viewModel: SearchFragmentViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(SearchViewViewModel::class)
-    internal abstract fun postSearchViewViewModel(viewModel: SearchViewViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -137,5 +126,13 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(NavigationViewModel::class)
     internal abstract fun getNavigationViewModel(viewModel: NavigationViewModel): ViewModel
+
+    /*
+     * Search feature dependencies
+     */
+    @Binds
+    @IntoMap
+    @ViewModelKey(SearchViewModel::class)
+    internal abstract fun getSearchViewModel(viewModel: SearchViewModel): ViewModel
 
 }

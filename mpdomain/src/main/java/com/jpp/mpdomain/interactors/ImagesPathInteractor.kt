@@ -3,6 +3,7 @@ package com.jpp.mpdomain.interactors
 import com.jpp.mp.common.extensions.transformToInt
 import com.jpp.mpdomain.ImagesConfiguration
 import com.jpp.mpdomain.Movie
+import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.repository.ConfigurationRepository
 
 /**
@@ -26,6 +27,12 @@ interface ImagesPathInteractor {
      */
     fun configurePathMovie(posterSize: Int, backdropSize: Int, movie: Movie): Movie
 
+    /**
+     * Configure the provided [searchResult] adjusting the images path with the provided [targetImageSize].
+     * @return a [SearchResult] with the exact same properties as the provided one, but with the
+     * images path pointing to the correct resource.
+     */
+    fun configureSearchResult(targetImageSize: Int, searchResult: SearchResult): SearchResult
 
     class Impl(private val configurationRepository: ConfigurationRepository) : ImagesPathInteractor {
 
@@ -33,6 +40,14 @@ interface ImagesPathInteractor {
             return configurationRepository.getAppConfiguration()?.let {
                 configureMovieImagesPath(movie, it.images, backdropSize, posterSize)
             } ?: movie
+        }
+
+        override fun configureSearchResult(targetImageSize: Int, searchResult: SearchResult): SearchResult {
+            return configurationRepository.getAppConfiguration()?.let {
+                configureSearchResultImagesPath(searchResult, it.images, targetImageSize)
+            } ?: run {
+                searchResult
+            }
         }
 
         /**
@@ -48,6 +63,28 @@ interface ImagesPathInteractor {
                     poster_path = createUrlForPath(movie.poster_path, imagesConfig.base_url, imagesConfig.poster_sizes, targetPosterSize),
                     backdrop_path = createUrlForPath(movie.backdrop_path, imagesConfig.base_url, imagesConfig.backdrop_sizes, targetBackdropSize)
             )
+        }
+
+        /**
+         * Configures the [SearchResult.profile_path], [SearchResult.backdrop_path] and/or
+         * [SearchResult.poster_path] properties setting the
+         * proper URL based on the provided sizes. It looks for the best possible size based on the
+         * supplied ones in the [imagesConfig] to avoid downloading over-sized images.
+         * @return a new [SearchResult] object with the same properties as the provided [searchResult],
+         * but with the images paths configured.
+         */
+        private fun configureSearchResultImagesPath(searchResult: SearchResult, imagesConfig: ImagesConfiguration, targetImageSize: Int): SearchResult {
+            return with(searchResult) {
+                when (isMovie()) {
+                    true -> {
+                        copy(
+                                poster_path = createUrlForPath(poster_path, imagesConfig.base_url, imagesConfig.poster_sizes, targetImageSize),
+                                backdrop_path = createUrlForPath(backdrop_path, imagesConfig.base_url, imagesConfig.backdrop_sizes, targetImageSize)
+                        )
+                    }
+                    false -> copy(profile_path = createUrlForPath(profile_path, imagesConfig.base_url, imagesConfig.profile_sizes, targetImageSize))
+                }
+            }
         }
 
         /**

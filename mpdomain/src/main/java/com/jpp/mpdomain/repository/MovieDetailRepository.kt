@@ -13,4 +13,9 @@ interface MovieDetailRepository  {
      * null in any other case.
      */
     fun getMovieDetails(movieId: Double, language: SupportedLanguage): MovieDetail?
+
+    /**
+     * Flushes out any stored data related to movie details.
+     */
+    fun flushMovieDetailsData()
 }

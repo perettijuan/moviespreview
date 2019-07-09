@@ -13,7 +13,8 @@
     android:name="com.jpp.mp.MPApp"
     android:usesCleartextTraffic="true">
 
-    <activity android:name="com.jpp.mp.screens.main.MainActivity">
+    <activity android:name="com.jpp.mp.screens.main.MainActivity"
+        android:launchMode="singleTop">
       <intent-filter>
         <category android:name="android.intent.category.LAUNCHER"/>
         <action android:name="android.intent.action.MAIN"/>

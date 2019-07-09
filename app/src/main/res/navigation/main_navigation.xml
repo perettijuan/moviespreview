@@ -7,6 +7,7 @@
 
     <include app:graph="@navigation/user_account_nav"/>
     <include app:graph="@navigation/movie_details_nav"/>
+    <include app:graph="@navigation/search_nav"/>
 
     <fragment
         android:id="@+id/playingMoviesFragment"
@@ -28,21 +29,6 @@
         android:name="com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment"
         android:label="@string/main_menu_top_rated"
         tools:layout="@layout/fragment_movies"/>
-    <fragment
-        android:id="@+id/searchFragment"
-        android:name="com.jpp.mp.screens.main.search.SearchFragment"
-        tools:layout="@layout/fragment_search">
-        <action
-            android:id="@+id/action_searchFragment_to_movieDetailsFragment"
-            app:destination="@id/movieDetailsFragment" />
-        <action
-            android:id="@+id/action_searchFragment_to_personFragment"
-            app:destination="@id/personFragment"
-            app:enterAnim="@anim/fragment_enter_slide_down"
-            app:exitAnim="@anim/fragment_exit_slide_down"
-            app:popEnterAnim="@anim/fragment_enter_slide_up"
-            app:popExitAnim="@anim/fragment_exit_slide_up" />
-    </fragment>
     <fragment
         android:id="@+id/personFragment"
         android:name="com.jpp.mp.screens.main.person.PersonFragment"

@@ -16,4 +16,9 @@ interface MovieDetailDb {
      * Stores the provided [MovieDetail] in the local database.
      */
     fun saveMovieDetails(movieDetail: MovieDetail)
+
+    /**
+     * Flushes any movie detail stored data.
+     */
+    fun flushData()
 }

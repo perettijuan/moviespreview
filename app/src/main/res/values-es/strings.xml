@@ -11,11 +11,6 @@
     <!-- End Main Activity -->
 
 
-    <!-- Search -->
-    <string name="search_hint">Busca películas y personajes</string>
-    <string name="empty_search">No se encontraron resultados para %1$s</string>
-    <!-- End Search-->
-
     <!-- Person -->
     <string name="person_birthday_title">Nacimiento</string>
     <string name="person_birth_place_title">Lugar de nacimiento</string>

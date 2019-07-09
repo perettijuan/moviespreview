@@ -1,14 +1,10 @@
 package com.jpp.mp.screens.main
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
@@ -16,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
+import androidx.navigation.NavOptions
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.ui.AppBarConfiguration
@@ -24,8 +21,11 @@ import com.jpp.mp.R
 import com.jpp.mp.common.extensions.getStringOrDefault
 import com.jpp.mp.common.extensions.navigate
 import com.jpp.mp.common.navigation.Destination
+import com.jpp.mp.common.navigation.Destination.*
 import com.jpp.mp.common.navigation.NavigationViewModel
-import com.jpp.mp.ext.*
+import com.jpp.mp.ext.closeDrawerIfOpen
+import com.jpp.mp.ext.setActionBarTitle
+import com.jpp.mp.ext.withViewModel
 import com.jpp.mpdesign.ext.setGone
 import com.jpp.mpdesign.ext.setVisible
 import com.jpp.mpmoviedetails.NavigationMovieDetails
@@ -87,14 +87,9 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             })
         }
 
-        withSearchViewViewModel {
-            searchEvents().observe(this@MainActivity, Observer { event ->
-                onSearchEvent(event)
-            })
-        }
-
         withNavigationViewModel {
             navEvents.observe(this@MainActivity, Observer { it.actionIfNotHandled { destination -> navigateToDestination(destination) } })
+            reachedDestinations.observe(this@MainActivity, Observer { onDestinationReached(it) })
         }
 
         setSupportActionBar(mainToolbar)
@@ -156,8 +151,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.search_menu -> {
-                // Probably the best idea here is to navigate to a new Activity
-                interModuleNavigationTo(R.id.searchFragment)
+                navigateToSearch()
                 return true
             }
             R.id.about_menu -> {
@@ -204,7 +198,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 R.id.popularMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
                 R.id.upcomingMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
                 R.id.topRatedMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
-                R.id.searchFragment -> withMainViewModel { userNavigatesToSearch() }
                 R.id.personFragment -> withMainViewModel { userNavigatesToPerson(arguments.getStringOrDefault("personName", destination.label.toString())) }
                 R.id.creditsFragment -> withMainViewModel { userNavigatesToCredits(arguments.getStringOrDefault("movieTitle", destination.label.toString())) }
                 R.id.aboutFragment -> withMainViewModel { userNavigatesToAbout(getString(R.string.about_top_bar_title)) }
@@ -218,17 +211,23 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     private fun navigateToDestination(destination: Destination) {
         when (destination) {
-            is Destination.MPAccount -> interModuleNavigationTo(R.id.user_account_nav)
-            is Destination.MPMovieDetails -> {
+            is MPAccount -> interModuleNavigationTo(R.id.user_account_nav)
+            is MPMovieDetails -> {
                 withNavController {
                     navigate(R.id.movie_details_nav,
                             NavigationMovieDetails.navArgs(destination.movieId, destination.movieImageUrl, destination.movieTitle, destination.transitionView.transitionName),
                             FragmentNavigatorExtras(destination.transitionView to destination.transitionView.transitionName))
                 }
             }
-            is Destination.PreviousDestination -> withNavController { popBackStack() }
-            is Destination.DestinationReached -> withMainViewModel { userNavigatesWithinFeature(destination.destinationTitle) }
-            is Destination.InnerDestination -> innerNavigateTo(destination.directions)
+            is PreviousDestination -> withNavController { popBackStack() }
+            is InnerDestination -> innerNavigateTo(destination.directions)
+        }
+    }
+
+    private fun onDestinationReached(reachedDestination: Destination) {
+        when (reachedDestination) {
+            is ReachedDestination -> withMainViewModel { userNavigatesWithinFeature(reachedDestination.destinationTitle) }
+            is MPSearch -> withMainViewModel { userNavigatesToSearch() }
         }
     }
 
@@ -244,15 +243,33 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         findNavController(this, R.id.mainNavHostFragment).action()
     }
 
+    private fun navigateToSearch() {
+        withNavController {
+            navigate(
+                    object : NavDirections {
+                        override fun getArguments() = Bundle()
+                        override fun getActionId() = R.id.search_nav
+                    },
+                    NavOptions.Builder()
+                            .setEnterAnim(R.anim.fragment_enter_slide_right)
+                            .setExitAnim(R.anim.fragment_exit_slide_right)
+                            .setPopEnterAnim(R.anim.fragment_enter_slide_left)
+                            .setPopExitAnim(R.anim.fragment_exit_slide_left)
+                            .build())
+        }
+    }
+
 
     private fun withMainViewModel(action: MainActivityViewModel.() -> Unit) = withViewModel<MainActivityViewModel>(viewModelFactory) { action() }
-    private fun withSearchViewViewModel(action: SearchViewViewModel.() -> Unit) = withViewModel<SearchViewViewModel>(viewModelFactory) { action() }
     private fun withNavigationViewModel(action: NavigationViewModel.() -> Unit) = withViewModel<NavigationViewModel>(viewModelFactory) { action() }
 
     private fun renderViewState(viewState: MainActivityViewState) {
         setActionBarTitle(viewState.sectionTitle)
         when (viewState.searchEnabled) {
-            true -> showSearchView()
+            true -> {
+                mainSearchView.setVisible()
+                mpToolbarManager.setInsetStartWithNavigation(0, mainToolbar)
+            }
             false -> {
                 mainSearchView.setGone()
                 mpToolbarManager.clearInsetStartWithNavigation(mainToolbar)
@@ -267,36 +284,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         invalidateOptionsMenu()
         mainDrawerLayout.closeDrawerIfOpen()
     }
-
-    private fun onSearchEvent(event: SearchEvent) {
-        when (event) {
-            is SearchEvent.ClearSearch -> {
-                with(mainSearchView) {
-                    setQuery("", false)
-                    requestFocus()
-                }
-            }
-            is SearchEvent.Search -> {
-                with(mainSearchView) {
-                    clearFocus()
-                }
-            }
-        }
-    }
-
-    private fun showSearchView() {
-        with(mainSearchView) {
-            isIconified = false
-            setIconifiedByDefault(false)
-            setOnQueryTextListener(QuerySubmitter { withSearchViewViewModel { search(it) } })
-            setVisible()
-            findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener {
-                withSearchViewViewModel { clearSearch() }
-            }
-        }
-        mpToolbarManager.setInsetStartWithNavigation(0, mainToolbar)
-    }
-
 
     /**
      * Helper class to remove the space between the arrow image and the
@@ -325,41 +312,4 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         }
 
     }
-
-
-    /**
-     * Inner [SearchView.OnQueryTextListener] implementation to handle the user searchPage over the
-     * SearchView. It waits to submit the query a given amount of time that is based on the size
-     * of the text introduced by the user.
-     *
-     * Note that this custom implementation could be a lot simpler using Android RxBindings, but
-     * I don't want to bring RxJava into the project for this single reason.
-     */
-    private inner class QuerySubmitter(private val callback: (String) -> Unit) : SearchView.OnQueryTextListener {
-
-        private lateinit var queryToSubmit: String
-        private var isTyping = false
-        private val typingTimeout = 1000L // 1 second
-        private val timeoutHandler = Handler(Looper.getMainLooper())
-        private val timeoutTask = Runnable {
-            isTyping = false
-            callback(queryToSubmit)
-        }
-
-        override fun onQueryTextSubmit(query: String): Boolean {
-            timeoutHandler.removeCallbacks(timeoutTask)
-            callback(query)
-            return true
-        }
-
-        override fun onQueryTextChange(newText: String): Boolean {
-            timeoutHandler.removeCallbacks(timeoutTask)
-            if (newText.length > 3) {
-                queryToSubmit = newText
-                timeoutHandler.postDelayed(timeoutTask, typingTimeout)
-            }
-            return true
-        }
-    }
-
 }

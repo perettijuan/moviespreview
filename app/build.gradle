@@ -106,6 +106,7 @@ dependencies {
     // features
     implementation project(path: ':features:mpaccount')
     implementation project(path: ':features:mpmoviedetails')
+    implementation project(path: ':features:mpsearch')
 
     testImplementation deps.test.junit5.jupiter.api         // <-- allows running JUnit5 tests
     testImplementation deps.test.junit5.jupiter.params      // <-- allows running JUnit5 parameterized tests

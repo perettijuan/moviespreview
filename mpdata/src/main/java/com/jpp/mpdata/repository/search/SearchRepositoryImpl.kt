@@ -10,4 +10,10 @@ import com.jpp.mpdomain.repository.SearchRepository
  */
 class SearchRepositoryImpl(private val searchApi: SearchApi) : SearchRepository {
     override fun searchPage(query: String, page: Int, language: SupportedLanguage): SearchPage? = searchApi.performSearch(query, page, language)
+    override fun flushSearch() {
+      /*
+       * Searches are not being stored for the moment. It will, eventually, and then
+       * we should flush the cache.
+       */
+    }
 }
