@@ -3,14 +3,13 @@ package com.jpp.mpperson
 import android.view.View
 
 sealed class PersonViewState(
-        val unknownErrorVisibility: Int = View.INVISIBLE,
-        val connectivityErrorVisibility: Int = View.INVISIBLE,
+        val errorVisibility: Int = View.INVISIBLE,
         val loadingVisibility: Int = View.INVISIBLE,
         val contentVisibility: Int = View.INVISIBLE) {
 
     object ShowLoading : PersonViewState(loadingVisibility = View.VISIBLE)
-    object ShowUnknownError : PersonViewState(unknownErrorVisibility = View.VISIBLE)
-    object ShowNoConnectivityError : PersonViewState(connectivityErrorVisibility = View.VISIBLE)
+    object ShowUnknownError : PersonViewState(errorVisibility = View.VISIBLE)
+    object ShowNoConnectivityError : PersonViewState(errorVisibility = View.VISIBLE)
     object ShowPerson : PersonViewState(contentVisibility = View.VISIBLE)
 }
 

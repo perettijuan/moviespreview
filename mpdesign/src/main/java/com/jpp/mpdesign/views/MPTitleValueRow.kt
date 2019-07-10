@@ -1,10 +1,10 @@
-package com.jpp.mp.views
+package com.jpp.mpdesign.views
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.jpp.mp.R
+import com.jpp.mpdesign.R
 import kotlinx.android.synthetic.main.layout_title_value_row.view.*
 
 /**

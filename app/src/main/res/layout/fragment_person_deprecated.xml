@@ -31,7 +31,7 @@
             android:layout_height="match_parent"
             android:animateLayoutChanges="true">
 
-            <com.jpp.mp.views.MPTitleValueRow
+            <com.jpp.mpdesign.views.MPTitleValueRow
                 android:id="@+id/personBirthdayRow"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:titleText="@string/person_birthday_title" />
 
-            <com.jpp.mp.views.MPTitleValueRow
+            <com.jpp.mpdesign.views.MPTitleValueRow
                 android:id="@+id/personPlaceOfBirthRow"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/personBirthdayRow"
                 app:titleText="@string/person_birth_place_title" />
 
-            <com.jpp.mp.views.MPTitleValueRow
+            <com.jpp.mpdesign.views.MPTitleValueRow
                 android:id="@+id/personDeathDayRow"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
