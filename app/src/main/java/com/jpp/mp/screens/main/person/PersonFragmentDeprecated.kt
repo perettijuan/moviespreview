@@ -12,7 +12,6 @@ import com.jpp.mp.R
 import com.jpp.mp.ext.*
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_person_deprecated.*
-import kotlinx.android.synthetic.main.layout_person_header.*
 import javax.inject.Inject
 
 // TODO JPP delete me
@@ -44,7 +43,7 @@ class PersonFragmentDeprecated : Fragment() {
             viewState().observe(this@PersonFragmentDeprecated.viewLifecycleOwner, Observer { viewState ->
                 when (viewState) {
                     is PersonViewState.Loading -> {
-                        personImageView.loadImageUrlAsCircular(viewState.imageUrl)
+                        //personImageView.loadImageUrlAsCircular(viewState.imageUrl)
                         renderLoading()
                     }
                     is PersonViewState.ErrorUnknown -> {

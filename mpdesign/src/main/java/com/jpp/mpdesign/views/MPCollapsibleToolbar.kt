@@ -1,4 +1,4 @@
-package com.jpp.mp.views
+package com.jpp.mpdesign.views
 
 import android.content.Context
 import android.util.AttributeSet
