@@ -13,7 +13,7 @@ import com.jpp.mp.screens.main.movies.fragments.PlayingMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.PopularMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
-import com.jpp.mp.screens.main.person.PersonViewModel
+import com.jpp.mp.screens.main.person.PersonViewModelDeprecated
 import com.jpp.mpaccount.account.UserAccountViewModel
 import com.jpp.mpaccount.account.lists.UserMovieListViewModel
 import com.jpp.mpaccount.login.LoginViewModel
@@ -60,8 +60,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(PersonViewModel::class)
-    internal abstract fun postPersonViewModel(viewModel: PersonViewModel): ViewModel
+    @ViewModelKey(PersonViewModelDeprecated::class)
+    internal abstract fun postPersonViewModel(viewModel: PersonViewModelDeprecated): ViewModel
 
     @Binds
     @IntoMap

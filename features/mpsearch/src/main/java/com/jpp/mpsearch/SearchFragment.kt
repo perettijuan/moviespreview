@@ -103,6 +103,7 @@ class SearchFragment : Fragment() {
                 val view = searchResultRv.findViewInPositionWithId(navEvent.positionInList, R.id.searchItemIv)
                 withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(navEvent.movieId, navEvent.movieImageUrl, navEvent.movieTitle, view) }
             }
+            is SearchNavigationEvent.GoToPerson -> withNavigationViewModel(viewModelFactory) { navigateToPersonDetails(navEvent.personId, navEvent.personImageUrl, navEvent.personName) }
         }
     }
 

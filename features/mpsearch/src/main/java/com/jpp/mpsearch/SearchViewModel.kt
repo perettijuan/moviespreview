@@ -91,7 +91,11 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                     movieImageUrl = item.imagePath,
                     movieTitle = item.name,
                     positionInList = positionInList)
-            false -> TODO("Redirect to profile")
+            false -> _navEvents.value = SearchNavigationEvent.GoToPerson(
+                    personId = item.id.toString(),
+                    personImageUrl = item.imagePath,
+                    personName = item.name
+            )
         }
     }
 

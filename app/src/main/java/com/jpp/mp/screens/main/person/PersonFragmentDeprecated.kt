@@ -10,13 +10,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.R
 import com.jpp.mp.ext.*
-import com.jpp.mp.screens.main.person.PersonFragmentArgs.fromBundle
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_person.*
+import kotlinx.android.synthetic.main.fragment_person_deprecated.*
 import kotlinx.android.synthetic.main.layout_person_header.*
 import javax.inject.Inject
 
-class PersonFragment : Fragment() {
+// TODO JPP delete me
+class PersonFragmentDeprecated : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -27,7 +27,7 @@ class PersonFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_person, container, false)
+        return inflater.inflate(R.layout.fragment_person_deprecated, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -37,11 +37,11 @@ class PersonFragment : Fragment() {
                 ?: throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the content")
 
         withViewModel {
-            init(fromBundle(args).personId.toDouble(),
-                    fromBundle(args).personImageUrl,
-                    fromBundle(args).personName)
+//            init(fromBundle(args).personId.toDouble(),
+//                    fromBundle(args).personImageUrl,
+//                    fromBundle(args).personName)
 
-            viewState().observe(this@PersonFragment.viewLifecycleOwner, Observer { viewState ->
+            viewState().observe(this@PersonFragmentDeprecated.viewLifecycleOwner, Observer { viewState ->
                 when (viewState) {
                     is PersonViewState.Loading -> {
                         personImageView.loadImageUrlAsCircular(viewState.imageUrl)
@@ -77,9 +77,9 @@ class PersonFragment : Fragment() {
     }
 
     /**
-     * Helper function to execute actions with the [PersonViewModel].
+     * Helper function to execute actions with the [PersonViewModelDeprecated].
      */
-    private fun withViewModel(action: PersonViewModel.() -> Unit) = withViewModel<PersonViewModel>(viewModelFactory) { action() }
+    private fun withViewModel(action: PersonViewModelDeprecated.() -> Unit) = withViewModel<PersonViewModelDeprecated>(viewModelFactory) { action() }
 
     private fun renderLoading() {
         personBirthdayRow.setInvisible()

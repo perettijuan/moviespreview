@@ -97,16 +97,17 @@ dependencies {
     debugImplementation deps.canary.fragments
     releaseImplementation deps.canary.release
 
-
+    // Support
     implementation project(path: ':mpdesign')
     implementation project(path: ':mpdomain')
     implementation project(path: ':mpdata')
     implementation project(path: ':mpcommon')
 
-    // features
+    // Features
     implementation project(path: ':features:mpaccount')
     implementation project(path: ':features:mpmoviedetails')
     implementation project(path: ':features:mpsearch')
+    implementation project(path: ':features:mpperson')
 
     testImplementation deps.test.junit5.jupiter.api         // <-- allows running JUnit5 tests
     testImplementation deps.test.junit5.jupiter.params      // <-- allows running JUnit5 parameterized tests

@@ -27,7 +27,7 @@ class PersonFragmentTest {
     val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java, true, false) {}
 
     private fun launchAndInjectFragment() {
-        val fragment = PersonFragment().apply {
+        val fragment = PersonFragmentDeprecated().apply {
             arguments = Bundle().apply {
                 putString("personId", "12")
                 putString("personImageUrl", "anImageUrl")
@@ -38,8 +38,8 @@ class PersonFragmentTest {
         activityTestRule.activity.startFragment(fragment, this@PersonFragmentTest::inject)
     }
 
-    private fun inject(fragment: PersonFragment) {
-        val viewModel = mockk<PersonViewModel>(relaxed = true)
+    private fun inject(fragment: PersonFragmentDeprecated) {
+        val viewModel = mockk<PersonViewModelDeprecated>(relaxed = true)
         every { viewModel.viewState() } returns viewStateLiveData
         fragment.viewModelFactory = TestMPViewModelFactory().apply {
             addVm(viewModel)

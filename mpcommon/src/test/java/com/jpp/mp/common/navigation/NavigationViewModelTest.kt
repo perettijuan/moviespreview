@@ -59,16 +59,16 @@ class NavigationViewModelTest {
                         expected = Destination.MPMovieDetails("anId", "aUrl", "aTitle", transitionViewMock)
                 ),
                 NavigationViewModelTestParam(
-                        whenAction = { it.destinationReached(Destination.ReachedDestination("aDestination")) },
-                        expected = Destination.ReachedDestination("aDestination")
-                ),
-                NavigationViewModelTestParam(
                         whenAction = { it.toPrevious() },
                         expected = Destination.PreviousDestination
                 ),
                 NavigationViewModelTestParam(
                         whenAction = { it.performInnerNavigation(navDirectionsMock) },
                         expected = Destination.InnerDestination(navDirectionsMock)
+                ),
+                NavigationViewModelTestParam(
+                        whenAction = { it.navigateToPersonDetails("anId", "aUrl", "aTitle") },
+                        expected = Destination.MPPerson("anId", "aUrl", "aTitle")
                 )
         )
     }

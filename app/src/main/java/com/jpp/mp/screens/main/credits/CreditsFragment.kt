@@ -69,13 +69,14 @@ class CreditsFragment : Fragment() {
             navEvents().observe(this@CreditsFragment.viewLifecycleOwner, Observer { navEvent ->
                 when (navEvent) {
                     is CreditsNavigationEvent.ToPerson -> {
-                        findNavController().navigate(
-                                CreditsFragmentDirections.actionCreditsFragmentToPersonFragment(
-                                        navEvent.personId,
-                                        navEvent.personImageUrl,
-                                        navEvent.personName
-                                )
-                        )
+                        //TODO JPP re-enable navigation once Person module is done
+//                        findNavController().navigate(
+//                                CreditsFragmentDirections.actionCreditsFragmentToPersonFragment(
+//                                        navEvent.personId,
+//                                        navEvent.personImageUrl,
+//                                        navEvent.personName
+//                                )
+//                        )
                     }
                 }
             })
