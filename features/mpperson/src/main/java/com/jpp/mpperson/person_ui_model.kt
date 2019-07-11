@@ -12,8 +12,8 @@ import android.view.View
  * Represents the view state of the profile person screen.
  */
 sealed class PersonViewState(
-        val errorState: ErrorState = ErrorState(),
         val loadingVisibility: Int = View.INVISIBLE,
+        val errorState: PersonErrorState = PersonErrorState(),
         val content: PersonContent = PersonContent()) {
     /*
      * Used when the loading screen needs to be shown.
@@ -23,7 +23,7 @@ sealed class PersonViewState(
     /*
      * Used when the no connectivity state needs to be rendered
      */
-    data class ShowError(val type: ErrorState) : PersonViewState(errorState = type)
+    data class ShowError(val type: PersonErrorState) : PersonViewState(errorState = type)
 
     /*
      * Used when the person data can be rendered properly.
@@ -47,17 +47,20 @@ data class PersonContent(
         val dataAvailable: PersonRow = PersonRow.EmptyRow
 )
 
-class ErrorState(val visibility: Int = View.INVISIBLE,
-                 val isConnectivity: Boolean = false,
-                 val errorHandler: (() -> Unit)? = null) {
+/**
+ * Represents the state of the error view.
+ */
+class PersonErrorState(val visibility: Int = View.INVISIBLE,
+                       val isConnectivity: Boolean = false,
+                       val errorHandler: (() -> Unit)? = null) {
 
     companion object {
-        fun asConnectivity(handler: () -> Unit) = ErrorState(
+        fun asConnectivity(handler: () -> Unit) = PersonErrorState(
                 visibility = View.VISIBLE,
                 isConnectivity = true,
                 errorHandler = handler)
 
-        fun asUnknownError(handler: () -> Unit) = ErrorState(
+        fun asUnknownError(handler: () -> Unit) = PersonErrorState(
                 visibility = View.VISIBLE,
                 isConnectivity = false,
                 errorHandler = handler)

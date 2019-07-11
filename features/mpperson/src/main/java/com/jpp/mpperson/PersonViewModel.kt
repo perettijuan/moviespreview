@@ -7,8 +7,8 @@ import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.viewstate.HandledViewState
 import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
 import com.jpp.mpdomain.Person
-import com.jpp.mpperson.ErrorState.Companion.asConnectivity
-import com.jpp.mpperson.ErrorState.Companion.asUnknownError
+import com.jpp.mpperson.PersonErrorState.Companion.asConnectivity
+import com.jpp.mpperson.PersonErrorState.Companion.asUnknownError
 import com.jpp.mpperson.PersonInteractor.PersonEvent.*
 import com.jpp.mpperson.PersonViewState.*
 import kotlinx.coroutines.launch
