@@ -130,11 +130,13 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:padding="10dp"
-                    android:text="@string/person_no_details"
+                    android:text="@{viewState.content.dataAvailable.titleRes}"
+                    android:visibility="@{viewState.content.dataAvailable.visibility}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
         <!-- End Person Content-->

@@ -28,7 +28,7 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             when (event) {
                 is NotConnectedToNetwork -> _viewStates.value = of(ShowNoConnectivity)
                 is UnknownError -> _viewStates.value = of(ShowUnknownError)
-                is Success -> _viewStates.value = of(ShowPerson(mapPersonData(event.person)))
+                is Success -> _viewStates.value = of(getViewStateFromPerson(event.person))
             }
         }
     }
@@ -56,14 +56,24 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         return ShowLoading
     }
 
-    private fun mapPersonData(person: Person): PersonContent {
-        return PersonContent(
-                birthday = person.birthday?.let { UIPersonRow.Birthday(it) } ?: UIPersonRow.NoDataAvailable,
-                placeOfBirth = person.place_of_birth?.let { UIPersonRow.PlaceOfBirth(it) } ?: UIPersonRow.NoDataAvailable,
-                deathDay = person.deathday?.let { UIPersonRow.DeathDay(it) } ?: UIPersonRow.NoDataAvailable,
-                bio = if (person.biography.isEmpty()) UIPersonRow.NoDataAvailable else UIPersonRow.Bio(person.biography)
-        )
+    private fun getViewStateFromPerson(person: Person): PersonViewState {
+        return when (isPersonDataEmpty(person)) {
+            true -> ShowNoDataAvailable
+            else -> ShowPerson(mapPersonData(person))
+        }
     }
 
+    private fun isPersonDataEmpty(person: Person) = person.biography.isEmpty()
+            && person.birthday.isNullOrEmpty()
+            && person.deathday.isNullOrEmpty()
+            && person.place_of_birth.isNullOrEmpty()
 
+    private fun mapPersonData(person: Person): PersonContent {
+        return PersonContent(
+                birthday = person.birthday?.let { UIPersonRow.Birthday(it) } ?: UIPersonRow.EmptyRow,
+                placeOfBirth = person.place_of_birth?.let { UIPersonRow.PlaceOfBirth(it) } ?: UIPersonRow.EmptyRow,
+                deathDay = person.deathday?.let { UIPersonRow.DeathDay(it) } ?: UIPersonRow.EmptyRow,
+                bio = if (person.biography.isEmpty()) UIPersonRow.EmptyRow else UIPersonRow.Bio(person.biography)
+        )
+    }
 }

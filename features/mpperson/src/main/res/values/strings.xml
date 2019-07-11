@@ -1,4 +1,5 @@
 <resources>
+    <string name="person_empty_data" translatable="false"/>
     <string name="person_birthday_title">Birthday</string>
     <string name="person_birth_place_title">Place of birth</string>
     <string name="person_death_day_title">Day of death</string>
