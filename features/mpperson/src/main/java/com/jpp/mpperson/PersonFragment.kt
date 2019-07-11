@@ -34,7 +34,7 @@ class PersonFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         withViewModel {
-            viewStates.observe(this@PersonFragment.viewLifecycleOwner, Observer { it.actionIfNotHandled { viewState -> renderViewState(viewState) } })
+            viewStates.observe(this@PersonFragment.viewLifecycleOwner, Observer { it.actionIfNotHandled { viewState -> viewBinding.viewState = viewState } })
             onInit(NavigationPerson.personId(arguments).toDouble())
         }
     }
@@ -43,8 +43,4 @@ class PersonFragment : Fragment() {
      * Helper function to execute actions with the [PersonViewModel].
      */
     private fun withViewModel(action: PersonViewModel.() -> Unit) = withViewModel<PersonViewModel>(viewModelFactory) { action() }
-
-    private fun renderViewState(viewState: PersonViewState) {
-        viewBinding.viewState = viewState
-    }
 }

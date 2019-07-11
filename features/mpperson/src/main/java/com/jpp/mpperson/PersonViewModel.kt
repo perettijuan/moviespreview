@@ -7,6 +7,8 @@ import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.viewstate.HandledViewState
 import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
 import com.jpp.mpdomain.Person
+import com.jpp.mpperson.ErrorState.Companion.asConnectivity
+import com.jpp.mpperson.ErrorState.Companion.asUnknownError
 import com.jpp.mpperson.PersonInteractor.PersonEvent.*
 import com.jpp.mpperson.PersonViewState.*
 import kotlinx.coroutines.launch
@@ -17,6 +19,7 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                           private val personInteractor: PersonInteractor)
     : MPScopedViewModel(dispatchers) {
 
+    private val retry = { executeFetchPersonStep(personId) }
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<PersonViewState>>() }
     private var personId: Double = 0.0
 
@@ -26,8 +29,8 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     init {
         _viewStates.addSource(personInteractor.events) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewStates.value = of(ShowNoConnectivity)
-                is UnknownError -> _viewStates.value = of(ShowUnknownError)
+                is NotConnectedToNetwork -> _viewStates.value = of(ShowError(asConnectivity(retry)))
+                is UnknownError -> _viewStates.value = of(ShowError(asUnknownError(retry)))
                 is Success -> _viewStates.value = of(getViewStateFromPerson(event.person))
             }
         }
@@ -38,7 +41,7 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun onInit(personId: Double) {
         this.personId = personId
-        _viewStates.value = of(executeFetchPersonStep(personId))
+        executeFetchPersonStep(personId)
     }
 
     /**
@@ -47,33 +50,30 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     val viewStates: LiveData<HandledViewState<PersonViewState>> get() = _viewStates
 
-    private fun withInteractor(action: PersonInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(personInteractor) } }
-    }
 
-    private fun executeFetchPersonStep(personId: Double): PersonViewState {
-        withInteractor { fetchPerson(personId) }
-        return ShowLoading
+    private fun executeFetchPersonStep(personId: Double) {
+        launch { withContext(dispatchers.default()) { personInteractor.fetchPerson(personId) } }
+        _viewStates.value = of(ShowLoading)
     }
 
     private fun getViewStateFromPerson(person: Person): PersonViewState {
-        return when (isPersonDataEmpty(person)) {
+        return when (person.isEmpty()) {
             true -> ShowNoDataAvailable
-            else -> ShowPerson(mapPersonData(person))
+            else -> ShowPerson(contentValue = mapPersonData(person))
         }
     }
 
-    private fun isPersonDataEmpty(person: Person) = person.biography.isEmpty()
-            && person.birthday.isNullOrEmpty()
-            && person.deathday.isNullOrEmpty()
-            && person.place_of_birth.isNullOrEmpty()
-
     private fun mapPersonData(person: Person): PersonContent {
         return PersonContent(
-                birthday = person.birthday?.let { UIPersonRow.Birthday(it) } ?: UIPersonRow.EmptyRow,
-                placeOfBirth = person.place_of_birth?.let { UIPersonRow.PlaceOfBirth(it) } ?: UIPersonRow.EmptyRow,
-                deathDay = person.deathday?.let { UIPersonRow.DeathDay(it) } ?: UIPersonRow.EmptyRow,
-                bio = if (person.biography.isEmpty()) UIPersonRow.EmptyRow else UIPersonRow.Bio(person.biography)
+                birthday = person.birthday?.let { PersonRow.Birthday(it) } ?: PersonRow.EmptyRow,
+                placeOfBirth = person.place_of_birth?.let { PersonRow.PlaceOfBirth(it) } ?: PersonRow.EmptyRow,
+                deathDay = person.deathday?.let { PersonRow.DeathDay(it) } ?: PersonRow.EmptyRow,
+                bio = if (person.biography.isEmpty()) PersonRow.EmptyRow else PersonRow.Bio(person.biography)
         )
     }
+
+    private fun Person.isEmpty() = biography.isEmpty()
+            && birthday.isNullOrEmpty()
+            && deathday.isNullOrEmpty()
+            && place_of_birth.isNullOrEmpty()
 }

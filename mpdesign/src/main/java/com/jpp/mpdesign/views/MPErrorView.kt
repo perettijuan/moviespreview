@@ -47,6 +47,29 @@ class MPErrorView : ConstraintLayout {
                 retryAction)
     }
 
+    /**
+     * Set a retry action on the button shown in the view.
+     */
+    fun onRetry(retryAction: (() -> Unit)?) {
+        errorActionButton.setOnClickListener { retryAction?.invoke() }
+    }
+
+    /**
+     * When [asConnectivity] is set to true, the view renders the no connectivity state.
+     * Otherwise, it renders the unknown error state.
+     */
+    fun asConnectivity(asConnectivity: Boolean) {
+        when (asConnectivity) {
+            true -> setupWith(
+                    R.drawable.ic_cloud_off,
+                    R.string.error_no_network_connection_message,
+                    R.string.error_retry
+            )
+            false -> setupWith(R.drawable.ic_alert_circle,
+                    R.string.error_unexpected_error_message,
+                    R.string.error_retry)
+        }
+    }
 
     private fun setupWith(@DrawableRes errorImageIcon: Int,
                           @StringRes errorTitle: Int,
@@ -57,6 +80,16 @@ class MPErrorView : ConstraintLayout {
         errorActionButton.apply {
             text = getStringFromResources(errorButton)
             setOnClickListener { retryAction.invoke() }
+        }
+    }
+
+    private fun setupWith(@DrawableRes errorImageIcon: Int,
+                          @StringRes errorTitle: Int,
+                          @StringRes errorButton: Int) {
+        errorImageView.setImageResource(errorImageIcon)
+        errorTitleTextView.apply { text = getStringFromResources(errorTitle) }
+        errorActionButton.apply {
+            text = getStringFromResources(errorButton)
         }
     }
 }
