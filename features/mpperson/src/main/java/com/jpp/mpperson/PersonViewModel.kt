@@ -6,6 +6,7 @@ import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.viewstate.HandledViewState
 import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
+import com.jpp.mpdomain.Person
 import com.jpp.mpperson.PersonInteractor.PersonEvent.*
 import com.jpp.mpperson.PersonViewState.*
 import kotlinx.coroutines.launch
@@ -25,9 +26,9 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     init {
         _viewStates.addSource(personInteractor.events) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewStates.value = of(ShowNoConnectivityError)
+                is NotConnectedToNetwork -> _viewStates.value = of(ShowNoConnectivity)
                 is UnknownError -> _viewStates.value = of(ShowUnknownError)
-                is Success -> _viewStates.value = of(ShowPerson)
+                is Success -> _viewStates.value = of(ShowPerson(mapPersonData(event.person)))
             }
         }
     }
@@ -54,4 +55,15 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         withInteractor { fetchPerson(personId) }
         return ShowLoading
     }
+
+    private fun mapPersonData(person: Person): PersonContent {
+        return PersonContent(
+                birthday = person.birthday?.let { UIPersonRow.Birthday(it) } ?: UIPersonRow.NoDataAvailable,
+                placeOfBirth = person.place_of_birth?.let { UIPersonRow.PlaceOfBirth(it) } ?: UIPersonRow.NoDataAvailable,
+                deathDay = person.deathday?.let { UIPersonRow.DeathDay(it) } ?: UIPersonRow.NoDataAvailable,
+                bio = if (person.biography.isEmpty()) UIPersonRow.NoDataAvailable else UIPersonRow.Bio(person.biography)
+        )
+    }
+
+
 }

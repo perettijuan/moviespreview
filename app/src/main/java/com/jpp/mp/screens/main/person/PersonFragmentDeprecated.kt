@@ -59,9 +59,9 @@ class PersonFragmentDeprecated : Fragment() {
                     }
                     is PersonViewState.Loaded -> {
                         with(viewState.person) {
-                            personBirthdayRow.setValue(birthday)
-                            personPlaceOfBirthRow.setValue(placeOfBirth)
-                            personDeathDayRow.setValue(deathday)
+                            personBirthdayRow.setValueText(birthday)
+                            personPlaceOfBirthRow.setValueText(placeOfBirth)
+                            personDeathDayRow.setValueText(deathday)
                             personBioBodyTextView.text = biography
                         }
                         renderContent(

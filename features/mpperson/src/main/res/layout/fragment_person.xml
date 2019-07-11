@@ -2,11 +2,17 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-        <variable name="viewState" type="com.jpp.mpperson.PersonViewState"/>
+
+        <variable
+            name="viewState"
+            type="com.jpp.mpperson.PersonViewState" />
+
+        <variable
+            name="personData"
+            type="com.jpp.mpperson.UIPersonRow" />
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/personContent"
         android:layout_width="match_parent"
@@ -41,33 +47,36 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
-                    android:visibility="@{viewState.contentVisibility}"
+                    android:visibility="@{viewState.content.birthday.visibility}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:titleText="@string/person_birthday_title" />
+                    app:titleText="@{viewState.content.birthday.titleRes}"
+                    app:valueText="@{viewState.content.birthday.value}" />
 
                 <com.jpp.mpdesign.views.MPTitleValueRow
                     android:id="@+id/personPlaceOfBirthRow"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
-                    android:visibility="@{viewState.contentVisibility}"
+                    android:visibility="@{viewState.content.placeOfBirth.visibility}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/personBirthdayRow"
-                    app:titleText="@string/person_birth_place_title" />
+                    app:titleText="@{viewState.content.placeOfBirth.titleRes}"
+                    app:valueText="@{viewState.content.placeOfBirth.value}" />
 
                 <com.jpp.mpdesign.views.MPTitleValueRow
                     android:id="@+id/personDeathDayRow"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
-                    android:visibility="@{viewState.contentVisibility}"
+                    android:visibility="@{viewState.content.deathDay.visibility}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/personPlaceOfBirthRow"
-                    app:titleText="@string/person_death_day_title" />
+                    app:titleText="@{viewState.content.deathDay.titleRes}"
+                    app:valueText="@{viewState.content.deathDay.value}" />
 
                 <TextView
                     android:id="@+id/personBioTitleTextView"
@@ -75,8 +84,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
-                    android:text="@string/person_bio_title"
-                    android:visibility="@{viewState.contentVisibility}"
+                    android:text="@{viewState.content.bio.titleRes}"
+                    android:visibility="@{viewState.content.bio.visibility}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/personDeathDayRow" />
@@ -88,7 +97,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/movie_details_vertical_spacing"
                     android:padding="10dp"
-                    android:visibility="@{viewState.contentVisibility}"
+                    android:text="@{viewState.content.bio.value}"
+                    android:visibility="@{viewState.content.bio.visibility}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/personBioTitleTextView"
@@ -118,13 +128,13 @@
                     style="@style/MPTextViewTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
                     android:gravity="center_horizontal"
+                    android:padding="10dp"
                     android:text="@string/person_no_details"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
         <!-- End Person Content-->
