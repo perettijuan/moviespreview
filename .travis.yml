@@ -46,5 +46,5 @@ before_script:
 
 
 script:
-    - ./gradlew :mpcommon:test :mpdata:test :mpdomain:test :features:mpaccount:test :features:mpmoviedetails:test :app:test -PdisablePreDex --stacktrace
+    - ./gradlew :mpcommon:test :mpdata:test :mpdomain:test :features:mpaccount:test :features:mpmoviedetails:test :features:mpsearch:test :features:mpperson:test :app:test -PdisablePreDex --stacktrace
     # :app:connectedAndroidTest for the moment, disabled since it is failing and I don't have time to see what's going on

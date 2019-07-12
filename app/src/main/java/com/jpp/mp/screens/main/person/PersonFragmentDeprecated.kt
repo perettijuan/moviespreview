@@ -12,7 +12,6 @@ import com.jpp.mp.R
 import com.jpp.mp.ext.*
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_person_deprecated.*
-import kotlinx.android.synthetic.main.layout_person_header.*
 import javax.inject.Inject
 
 // TODO JPP delete me
@@ -34,7 +33,7 @@ class PersonFragmentDeprecated : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         val args = arguments
-                ?: throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the content")
+                ?: throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the contentViewState")
 
         withViewModel {
 //            init(fromBundle(args).personId.toDouble(),
@@ -44,7 +43,7 @@ class PersonFragmentDeprecated : Fragment() {
             viewState().observe(this@PersonFragmentDeprecated.viewLifecycleOwner, Observer { viewState ->
                 when (viewState) {
                     is PersonViewState.Loading -> {
-                        personImageView.loadImageUrlAsCircular(viewState.imageUrl)
+                        //personImageView.loadImageUrlAsCircular(viewState.imageUrl)
                         renderLoading()
                     }
                     is PersonViewState.ErrorUnknown -> {
@@ -60,9 +59,9 @@ class PersonFragmentDeprecated : Fragment() {
                     }
                     is PersonViewState.Loaded -> {
                         with(viewState.person) {
-                            personBirthdayRow.setValue(birthday)
-                            personPlaceOfBirthRow.setValue(placeOfBirth)
-                            personDeathDayRow.setValue(deathday)
+                            personBirthdayRow.setValueText(birthday)
+                            personPlaceOfBirthRow.setValueText(placeOfBirth)
+                            personDeathDayRow.setValueText(deathday)
                             personBioBodyTextView.text = biography
                         }
                         renderContent(

@@ -11,6 +11,7 @@ import com.jpp.mpdomain.repository.PersonRepository
  * not connected). If connected, retrieve the person identified with personId.
  * If not connected, return an error that indicates such state.
  */
+//TODO Delete ME
 interface GetPersonUseCase {
     /**
      * Retrieves the details of a particular person identified with [personId].

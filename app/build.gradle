@@ -47,6 +47,11 @@ android {
     kotlinOptions{
         jvmTarget = '1.8'
     }
+
+    // needed for some feature modules
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {

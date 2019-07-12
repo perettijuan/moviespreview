@@ -1,10 +1,11 @@
-package com.jpp.mp.views
+package com.jpp.mpdesign.views
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.jpp.mp.R
+import com.jpp.mpdesign.R
 import kotlinx.android.synthetic.main.layout_title_value_row.view.*
 
 /**
@@ -19,8 +20,8 @@ class MPTitleValueRow : ConstraintLayout {
 
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.MPTitleValueRow)
         try {
-            setTitle(typedArray.getText(R.styleable.MPTitleValueRow_titleText))
-            setValue(typedArray.getText(R.styleable.MPTitleValueRow_valueText))
+            setTitleText(typedArray.getText(R.styleable.MPTitleValueRow_titleText))
+            setValueText(typedArray.getText(R.styleable.MPTitleValueRow_valueText))
         } finally {
             typedArray.recycle()
         }
@@ -30,11 +31,15 @@ class MPTitleValueRow : ConstraintLayout {
         View.inflate(context, R.layout.layout_title_value_row, this)
     }
 
-    fun setTitle(title: CharSequence?) {
+    fun setTitleText(title: CharSequence?) {
         columnTextViewTitle.text = title
     }
 
-    fun setValue(value: CharSequence?) {
+    fun setTitleText(@StringRes stringRes: Int) {
+        setTitleText(context.getString(stringRes))
+    }
+
+    fun setValueText(value: CharSequence?) {
         columnTextViewValue.text = value
     }
 }
