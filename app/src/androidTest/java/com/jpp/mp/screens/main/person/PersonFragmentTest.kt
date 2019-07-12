@@ -1,6 +1,5 @@
 package com.jpp.mp.screens.main.person
 
-import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -24,24 +23,24 @@ class PersonFragmentTest {
     val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java, true, false) {}
 
     private fun launchAndInjectFragment() {
-        val fragment = PersonFragmentDeprecated().apply {
-            arguments = Bundle().apply {
-                putString("personId", "12")
-                putString("personImageUrl", "anImageUrl")
-                putString("personName", "aName")
-            }
-        }
+//        val fragment = PersonFragmentDeprecated().apply {
+//            arguments = Bundle().apply {
+//                putString("personId", "12")
+//                putString("personImageUrl", "anImageUrl")
+//                putString("personName", "aName")
+//            }
+//        }
 
-        activityTestRule.activity.startFragment(fragment, this@PersonFragmentTest::inject)
+//        activityTestRule.activity.startFragment(fragment, this@PersonFragmentTest::inject)
     }
 
-    private fun inject(fragment: PersonFragmentDeprecated) {
+//    private fun inject(fragment: PersonFragmentDeprecated) {
 //        val viewModel = mockk<PersonViewModelDeprecated>(relaxed = true)
 //        every { viewModel.viewState() } returns viewStateLiveData
 //        fragment.viewModelFactory = TestMPViewModelFactory().apply {
 //            addVm(viewModel)
 //        }
-    }
+//    }
 
     private val viewStateLiveData = MutableLiveData<PersonViewState>()
 

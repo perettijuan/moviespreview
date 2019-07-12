@@ -95,13 +95,13 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="personFragment">
+                  <entry key="person_nav">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="639" />
-                            <option name="y" value="-697" />
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
                           </Point>
                         </option>
                       </LayoutPositions>
