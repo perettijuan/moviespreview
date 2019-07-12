@@ -11,56 +11,45 @@ import android.view.View
 /**
  * Represents the view state of the profile person screen.
  */
-sealed class PersonViewState(
+data class PersonViewState(
         val loadingVisibility: Int = View.INVISIBLE,
-        val errorState: PersonErrorState = PersonErrorState(),
-        val content: PersonContent = PersonContent()) {
-    /*
-     * Used when the loading screen needs to be shown.
-     */
-    object ShowLoading : PersonViewState(loadingVisibility = View.VISIBLE)
+        val errorViewState: PersonErrorViewState = PersonErrorViewState(),
+        val contentViewState: PersonContentViewState = PersonContentViewState()) {
 
-    /*
-     * Used when the no connectivity state needs to be rendered
-     */
-    data class ShowError(val type: PersonErrorState) : PersonViewState(errorState = type)
-
-    /*
-     * Used when the person data can be rendered properly.
-     */
-    data class ShowPerson(val contentValue: PersonContent) : PersonViewState(content = contentValue)
-
-    /*
-     * Used when the data retrieved for the person is completely empty.
-     */
-    object ShowNoDataAvailable : PersonViewState(content = PersonContent(dataAvailable = PersonRow.NoDataAvailable))
+    companion object {
+        fun showLoading() = PersonViewState(loadingVisibility = View.VISIBLE)
+        fun showUnknownError(errorHandler: () -> Unit) = PersonViewState(errorViewState = PersonErrorViewState.asUnknownError(errorHandler))
+        fun showNoConnectivityError(errorHandler: () -> Unit) = PersonViewState(errorViewState = PersonErrorViewState.asConnectivity(errorHandler))
+        fun showPerson(contentViewStateValue: PersonContentViewState) = PersonViewState(contentViewState = contentViewStateValue)
+        fun showNoDataAvailable() = PersonViewState(contentViewState = PersonContentViewState(dataAvailable = PersonRowViewState.noDataAvailableRow()))
+    }
 }
 
 /**
- * Represents the content of the person biography from the UI perspective.
+ * Represents the view state of the content of the person biography from the UI perspective.
  */
-data class PersonContent(
-        val birthday: PersonRow = PersonRow.EmptyRow,
-        val placeOfBirth: PersonRow = PersonRow.EmptyRow,
-        val deathDay: PersonRow = PersonRow.EmptyRow,
-        val bio: PersonRow = PersonRow.EmptyRow,
-        val dataAvailable: PersonRow = PersonRow.EmptyRow
+data class PersonContentViewState(
+        val birthday: PersonRowViewState = PersonRowViewState.emptyRow(),
+        val placeOfBirth: PersonRowViewState = PersonRowViewState.emptyRow(),
+        val deathDay: PersonRowViewState = PersonRowViewState.emptyRow(),
+        val bio: PersonRowViewState = PersonRowViewState.emptyRow(),
+        val dataAvailable: PersonRowViewState = PersonRowViewState.emptyRow()
 )
 
 /**
  * Represents the state of the error view.
  */
-class PersonErrorState(val visibility: Int = View.INVISIBLE,
-                       val isConnectivity: Boolean = false,
-                       val errorHandler: (() -> Unit)? = null) {
+class PersonErrorViewState(val visibility: Int = View.INVISIBLE,
+                           val isConnectivity: Boolean = false,
+                           val errorHandler: (() -> Unit)? = null) {
 
     companion object {
-        fun asConnectivity(handler: () -> Unit) = PersonErrorState(
+        fun asConnectivity(handler: () -> Unit) = PersonErrorViewState(
                 visibility = View.VISIBLE,
                 isConnectivity = true,
                 errorHandler = handler)
 
-        fun asUnknownError(handler: () -> Unit) = PersonErrorState(
+        fun asUnknownError(handler: () -> Unit) = PersonErrorViewState(
                 visibility = View.VISIBLE,
                 isConnectivity = false,
                 errorHandler = handler)
@@ -68,35 +57,45 @@ class PersonErrorState(val visibility: Int = View.INVISIBLE,
 }
 
 /**
- * Each one of this subclasses represents a row in the UI.
+ * Represents the view state of the rows that are shown in the person's layout.
  */
-sealed class PersonRow(val visibility: Int = View.INVISIBLE,
-                       val titleRes: Int,
-                       val value: String) {
+data class PersonRowViewState(val visibility: Int = View.INVISIBLE,
+                              val titleRes: Int,
+                              val value: String) {
 
-    object EmptyRow : PersonRow(titleRes = R.string.person_empty_data, value = "")
+    companion object {
+        fun emptyRow() = PersonRowViewState(
+                titleRes = R.string.person_empty_data,
+                value = ""
+        )
 
-    object NoDataAvailable : PersonRow(visibility = View.VISIBLE, titleRes = R.string.person_no_details, value = "")
+        fun noDataAvailableRow() = PersonRowViewState(
+                visibility = View.VISIBLE,
+                titleRes = R.string.person_no_details,
+                value = ""
+        )
 
-    data class Birthday(val birthdayValue: String) : PersonRow(
-            visibility = View.VISIBLE,
-            titleRes = R.string.person_birthday_title,
-            value = birthdayValue)
+        fun birthdayRow(birthdayValue: String) = PersonRowViewState(
+                visibility = View.VISIBLE,
+                titleRes = R.string.person_birthday_title,
+                value = birthdayValue
+        )
 
-    data class PlaceOfBirth(val placeOfBirthValue: String) : PersonRow(
-            visibility = View.VISIBLE,
-            titleRes = R.string.person_birth_place_title,
-            value = placeOfBirthValue)
+        fun placeOfBirthRow(placeOfBirthValue: String) = PersonRowViewState(
+                visibility = View.VISIBLE,
+                titleRes = R.string.person_birth_place_title,
+                value = placeOfBirthValue)
 
-    data class DeathDay(val deathDayValue: String) : PersonRow(
-            visibility = View.VISIBLE,
-            titleRes = R.string.person_death_day_title,
-            value = deathDayValue
-    )
+        fun deathDayRow(deathDayValue: String) = PersonRowViewState(
+                visibility = View.VISIBLE,
+                titleRes = R.string.person_death_day_title,
+                value = deathDayValue
+        )
 
-    data class Bio(val bioContent: String) : PersonRow(
-            visibility = View.VISIBLE,
-            titleRes = R.string.person_bio_title,
-            value = bioContent
-    )
+        fun bioRow(bioContent: String) = PersonRowViewState(
+                visibility = View.VISIBLE,
+                titleRes = R.string.person_bio_title,
+                value = bioContent
+        )
+    }
 }

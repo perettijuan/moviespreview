@@ -33,7 +33,7 @@ class PersonFragmentDeprecated : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         val args = arguments
-                ?: throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the content")
+                ?: throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the contentViewState")
 
         withViewModel {
 //            init(fromBundle(args).personId.toDouble(),

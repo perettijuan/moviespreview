@@ -7,10 +7,17 @@ import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.viewstate.HandledViewState
 import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
 import com.jpp.mpdomain.Person
-import com.jpp.mpperson.PersonErrorState.Companion.asConnectivity
-import com.jpp.mpperson.PersonErrorState.Companion.asUnknownError
 import com.jpp.mpperson.PersonInteractor.PersonEvent.*
-import com.jpp.mpperson.PersonViewState.*
+import com.jpp.mpperson.PersonRowViewState.Companion.bioRow
+import com.jpp.mpperson.PersonRowViewState.Companion.birthdayRow
+import com.jpp.mpperson.PersonRowViewState.Companion.deathDayRow
+import com.jpp.mpperson.PersonRowViewState.Companion.emptyRow
+import com.jpp.mpperson.PersonRowViewState.Companion.placeOfBirthRow
+import com.jpp.mpperson.PersonViewState.Companion.showLoading
+import com.jpp.mpperson.PersonViewState.Companion.showNoConnectivityError
+import com.jpp.mpperson.PersonViewState.Companion.showNoDataAvailable
+import com.jpp.mpperson.PersonViewState.Companion.showPerson
+import com.jpp.mpperson.PersonViewState.Companion.showUnknownError
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -29,8 +36,8 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     init {
         _viewStates.addSource(personInteractor.events) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewStates.value = of(ShowError(asConnectivity(retry)))
-                is UnknownError -> _viewStates.value = of(ShowError(asUnknownError(retry)))
+                is NotConnectedToNetwork -> _viewStates.value = of(showNoConnectivityError(retry))
+                is UnknownError -> _viewStates.value = of(showUnknownError(retry))
                 is Success -> _viewStates.value = of(getViewStateFromPerson(event.person))
             }
         }
@@ -53,22 +60,22 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
     private fun executeFetchPersonStep(personId: Double) {
         launch { withContext(dispatchers.default()) { personInteractor.fetchPerson(personId) } }
-        _viewStates.value = of(ShowLoading)
+        _viewStates.value = of(showLoading())
     }
 
     private fun getViewStateFromPerson(person: Person): PersonViewState {
         return when (person.isEmpty()) {
-            true -> ShowNoDataAvailable
-            else -> ShowPerson(contentValue = mapPersonData(person))
+            true -> showNoDataAvailable()
+            else -> showPerson(mapPersonData(person))
         }
     }
 
-    private fun mapPersonData(person: Person): PersonContent {
-        return PersonContent(
-                birthday = person.birthday?.let { PersonRow.Birthday(it) } ?: PersonRow.EmptyRow,
-                placeOfBirth = person.place_of_birth?.let { PersonRow.PlaceOfBirth(it) } ?: PersonRow.EmptyRow,
-                deathDay = person.deathday?.let { PersonRow.DeathDay(it) } ?: PersonRow.EmptyRow,
-                bio = if (person.biography.isEmpty()) PersonRow.EmptyRow else PersonRow.Bio(person.biography)
+    private fun mapPersonData(person: Person): PersonContentViewState {
+        return PersonContentViewState(
+                birthday = person.birthday?.let { birthdayRow(it) } ?: emptyRow(),
+                placeOfBirth = person.place_of_birth?.let { placeOfBirthRow(it) } ?: emptyRow(),
+                deathDay = person.deathday?.let { deathDayRow(it) } ?: emptyRow(),
+                bio = if (person.biography.isEmpty()) emptyRow() else bioRow(person.biography)
         )
     }
 
