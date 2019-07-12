@@ -5,10 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mpdomain.Person
-import com.jpp.mpdomain.usecase.person.GetPersonUseCase
-import com.jpp.mpdomain.usecase.person.GetPersonResult
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -20,8 +17,7 @@ import javax.inject.Inject
  * as any new state is identified by the ViewModel.
  */
 // TODO JPP delete me
-class PersonViewModelDeprecated @Inject constructor(dispatchers: CoroutineDispatchers,
-                                                    private val getPersonUseCase: GetPersonUseCase)
+class PersonViewModelDeprecated @Inject constructor(dispatchers: CoroutineDispatchers)
     : MPScopedViewModel(dispatchers) {
 
     private val viewStateLiveData by lazy { MutableLiveData<PersonViewState>() }
@@ -34,7 +30,7 @@ class PersonViewModelDeprecated @Inject constructor(dispatchers: CoroutineDispat
      * The updates will be posted to the [LiveData] object provided by [viewState()].
      */
     fun init(personId: Double, personImageUrl: String, personName: String) {
-       initImpl(personId, personImageUrl, personName)
+        initImpl(personId, personImageUrl, personName)
     }
 
     /**
@@ -48,6 +44,7 @@ class PersonViewModelDeprecated @Inject constructor(dispatchers: CoroutineDispat
         retryFunc = { pushLoadingAndFetchPersonInfo(personId, personImageUrl, personName) }
         pushLoadingAndFetchPersonInfo(personId, personImageUrl, personName)
     }
+
     /**
      * Subscribe to this [LiveData] in order to get updates of the [PersonViewState].
      */
@@ -75,37 +72,10 @@ class PersonViewModelDeprecated @Inject constructor(dispatchers: CoroutineDispat
              * Since the default context in ViewModel is the main context (UI thread), once
              * that withContext returns is value, we're back in the main context.
              */
-            viewStateLiveData.value = fetchPerson(personId)
+//            viewStateLiveData.value = fetchPerson(personId)
         }
     }
 
-    /**
-     * Fetches the person that is identified by [personId]
-     * @return the [PersonViewState] that will be rendered as result of the
-     * use case execution.
-     */
-    private suspend fun fetchPerson(personId: Double): PersonViewState = withContext(dispatchers.default()) {
-        getPersonUseCase
-                .getPerson(personId)
-                .let { ucResult ->
-                    when (ucResult) {
-                        is GetPersonResult.ErrorNoConnectivity -> PersonViewState.ErrorNoConnectivity
-                        is GetPersonResult.ErrorUnknown -> PersonViewState.ErrorUnknown
-                        is GetPersonResult.Success -> {
-                            if (isPersonDataEmpty(ucResult.person)) {
-                                PersonViewState.LoadedEmpty
-                            } else {
-                                PersonViewState.Loaded(
-                                        person = mapPersonToUiPerson(ucResult.person),
-                                        showBirthday = ucResult.person.birthday != null,
-                                        showDeathDay = ucResult.person.deathday != null,
-                                        showPlaceOfBirth = ucResult.person.place_of_birth != null
-                                )
-                            }
-                        }
-                    }
-                }
-    }
 
     private fun isPersonDataEmpty(person: Person) = person.biography.isEmpty()
             && person.birthday.isNullOrEmpty()
