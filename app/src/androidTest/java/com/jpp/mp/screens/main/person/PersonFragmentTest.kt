@@ -10,11 +10,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.jpp.mp.R
 import com.jpp.mp.assertions.*
-import com.jpp.mp.di.TestMPViewModelFactory
 import com.jpp.mp.extras.launch
 import com.jpp.mp.testutils.FragmentTestActivity
-import io.mockk.every
-import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -39,11 +36,11 @@ class PersonFragmentTest {
     }
 
     private fun inject(fragment: PersonFragmentDeprecated) {
-        val viewModel = mockk<PersonViewModelDeprecated>(relaxed = true)
-        every { viewModel.viewState() } returns viewStateLiveData
-        fragment.viewModelFactory = TestMPViewModelFactory().apply {
-            addVm(viewModel)
-        }
+//        val viewModel = mockk<PersonViewModelDeprecated>(relaxed = true)
+//        every { viewModel.viewState() } returns viewStateLiveData
+//        fragment.viewModelFactory = TestMPViewModelFactory().apply {
+//            addVm(viewModel)
+//        }
     }
 
     private val viewStateLiveData = MutableLiveData<PersonViewState>()
