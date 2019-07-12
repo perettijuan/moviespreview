@@ -10,7 +10,6 @@ import com.jpp.mpdomain.usecase.licenses.GetAppLicensesUseCase
 import com.jpp.mpdomain.usecase.licenses.GetLicenseUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
-import com.jpp.mpdomain.usecase.person.GetPersonUseCase
 import dagger.Module
 import dagger.Provides
 import java.util.concurrent.Executor
@@ -36,12 +35,6 @@ class DomainLayerModule {
     @Provides
     fun providesConfigMovieUseCase(configurationRepository: ConfigurationRepository)
             : ConfigMovieUseCase = ConfigMovieUseCase.Impl(configurationRepository)
-
-    @Provides
-    fun providesGetPersonUseCase(personRepository: PersonRepository,
-                                 connectivityRepository: ConnectivityRepository,
-                                 languageRepository: LanguageRepository)
-            : GetPersonUseCase = GetPersonUseCase.Impl(personRepository, connectivityRepository, languageRepository)
 
     @Provides
     fun providesGetCreditsUseCase(creditsRepository: CreditsRepository,
