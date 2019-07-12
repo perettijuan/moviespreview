@@ -11,4 +11,8 @@ class PersonRepositoryImpl(private val personApi: PersonApi,
             personApi.getPerson(personId, language)?.also { personDb.savePerson(it) }
         }
     }
+
+    override fun flushPersonData() {
+        personDb.clearAllData()
+    }
 }

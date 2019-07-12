@@ -1,7 +1,7 @@
 package com.jpp.mpperson
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.MediatorLiveData
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.Person
 import com.jpp.mpdomain.repository.ConnectivityRepository
@@ -18,12 +18,19 @@ class PersonInteractor @Inject constructor(private val connectivityRepository: C
                                            private val languageRepository: LanguageRepository) {
 
     sealed class PersonEvent {
+        object AppLanguageChanged : PersonEvent()
         object NotConnectedToNetwork : PersonEvent()
         object UnknownError : PersonEvent()
         data class Success(val person: Person) : PersonEvent()
     }
 
-    private val _personEvents by lazy { MutableLiveData<PersonEvent>() }
+    private val _personEvents by lazy { MediatorLiveData<PersonEvent>() }
+
+    init {
+        _personEvents.addSource(languageRepository.updates()) {
+            _personEvents.postValue(AppLanguageChanged)
+        }
+    }
 
     /**
      * @return a [LiveData] of [PersonEvent]. Subscribe to this [LiveData]
@@ -45,5 +52,10 @@ class PersonInteractor @Inject constructor(private val connectivityRepository: C
                         ?: _personEvents.postValue(UnknownError)
             }
         }
+    }
+
+
+    fun flushPersonData() {
+        personRepository.flushPersonData()
     }
 }

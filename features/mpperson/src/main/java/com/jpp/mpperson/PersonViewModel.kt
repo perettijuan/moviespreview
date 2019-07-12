@@ -26,7 +26,7 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                           private val personInteractor: PersonInteractor)
     : MPScopedViewModel(dispatchers) {
 
-    private val retry = { executeFetchPersonStep(personId) }
+    private val retry: () -> Unit = { executeFetchPersonStep(personId) }
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<PersonViewState>>() }
     private var personId: Double = 0.0
 
@@ -36,9 +36,12 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     init {
         _viewStates.addSource(personInteractor.events) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewStates.value = of(showNoConnectivityError(retry))
-                is UnknownError -> _viewStates.value = of(showUnknownError(retry))
-                is Success -> _viewStates.value = of(getViewStateFromPerson(event.person))
+                is NotConnectedToNetwork -> of(showNoConnectivityError(retry))
+                is UnknownError -> of(showUnknownError(retry))
+                is Success -> of(getViewStateFromPerson(event.person))
+                is AppLanguageChanged -> of(executeRefreshDataStep(personId))
+            }.let {
+                _viewStates.value = it
             }
         }
     }
@@ -48,7 +51,7 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun onInit(personId: Double) {
         this.personId = personId
-        executeFetchPersonStep(personId)
+        _viewStates.value = of(executeFetchPersonStep(personId))
     }
 
     /**
@@ -58,9 +61,21 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     val viewStates: LiveData<HandledViewState<PersonViewState>> get() = _viewStates
 
 
-    private fun executeFetchPersonStep(personId: Double) {
-        launch { withContext(dispatchers.default()) { personInteractor.fetchPerson(personId) } }
-        _viewStates.value = of(showLoading())
+    private fun executeFetchPersonStep(personId: Double): PersonViewState {
+        withInteractor { fetchPerson(personId) }
+        return showLoading()
+    }
+
+    private fun executeRefreshDataStep(personId: Double): PersonViewState {
+        withInteractor {
+            flushPersonData()
+            fetchPerson(personId)
+        }
+        return showLoading()
+    }
+
+    private fun withInteractor(action: PersonInteractor.() -> Unit) {
+        launch { withContext(dispatchers.default()) { action(personInteractor) } }
     }
 
     private fun getViewStateFromPerson(person: Person): PersonViewState {
