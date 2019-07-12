@@ -1,5 +1,6 @@
 package com.jpp.mpperson
 
+import androidx.lifecycle.MutableLiveData
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.Person
 import com.jpp.mpdomain.SupportedLanguage
@@ -30,10 +31,13 @@ class PersonInteractorTest {
     @MockK
     private lateinit var languageRepository: LanguageRepository
 
+    private val languageUpdates by lazy { MutableLiveData<SupportedLanguage>() }
+
     private lateinit var subject: PersonInteractor
 
     @BeforeEach
     fun setUp() {
+        every { languageRepository.updates() } returns languageUpdates
         every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
 
         subject = PersonInteractor(
@@ -41,6 +45,13 @@ class PersonInteractorTest {
                 personRepository,
                 languageRepository
         )
+
+        /*
+         * Since the ViewModel uses a MediatorLiveData, we need to have
+         * an observer on the view states attached all the time in order
+         * to get notifications.
+         */
+        subject.events.observeForever {  }
     }
 
     @Test
@@ -87,6 +98,17 @@ class PersonInteractorTest {
 
         assertEquals(expected, eventPosted)
         verify { personRepository.getPerson(12.0, SupportedLanguage.English) }
+    }
+
+    @Test
+    fun `Should post AppLanguageChanged when language changes`() {
+        var eventPosted: PersonInteractor.PersonEvent? = null
+
+        subject.events.observeWith { eventPosted = it }
+
+        languageUpdates.value = SupportedLanguage.Spanish
+
+        assertEquals(AppLanguageChanged, eventPosted)
     }
 
 }

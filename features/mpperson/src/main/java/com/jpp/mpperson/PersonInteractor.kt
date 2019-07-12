@@ -11,7 +11,11 @@ import com.jpp.mpperson.PersonInteractor.PersonEvent.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
-//TODO JPP language support.
+/**
+ * Interactor to support the person screen. This interactor takes care of accessing the
+ * repository layer to perform the inner state updates needed to provide functionality to the
+ * view layer.
+ */
 @Singleton
 class PersonInteractor @Inject constructor(private val connectivityRepository: ConnectivityRepository,
                                            private val personRepository: PersonRepository,
@@ -24,11 +28,11 @@ class PersonInteractor @Inject constructor(private val connectivityRepository: C
         data class Success(val person: Person) : PersonEvent()
     }
 
-    private val _personEvents by lazy { MediatorLiveData<PersonEvent>() }
+    private val _events by lazy { MediatorLiveData<PersonEvent>() }
 
     init {
-        _personEvents.addSource(languageRepository.updates()) {
-            _personEvents.postValue(AppLanguageChanged)
+        _events.addSource(languageRepository.updates()) {
+            _events.postValue(AppLanguageChanged)
         }
     }
 
@@ -36,7 +40,7 @@ class PersonInteractor @Inject constructor(private val connectivityRepository: C
      * @return a [LiveData] of [PersonEvent]. Subscribe to this [LiveData]
      * in order to be notified about interactor related events.
      */
-    val events: LiveData<PersonEvent> get() = _personEvents
+    val events: LiveData<PersonEvent> get() = _events
 
     /**
      * Fetches the [Person] that corresponds to the provided by [personId].
@@ -44,17 +48,19 @@ class PersonInteractor @Inject constructor(private val connectivityRepository: C
      */
     fun fetchPerson(personId: Double) {
         when (connectivityRepository.getCurrentConnectivity()) {
-            is Connectivity.Disconnected -> _personEvents.postValue(NotConnectedToNetwork)
+            is Connectivity.Disconnected -> _events.postValue(NotConnectedToNetwork)
             is Connectivity.Connected -> {
                 personRepository
                         .getPerson(personId, languageRepository.getCurrentAppLanguage())
-                        ?.let { _personEvents.postValue(Success(it)) }
-                        ?: _personEvents.postValue(UnknownError)
+                        ?.let { _events.postValue(Success(it)) }
+                        ?: _events.postValue(UnknownError)
             }
         }
     }
 
-
+    /**
+     * Flushes out any person stored data.
+     */
     fun flushPersonData() {
         personRepository.flushPersonData()
     }
