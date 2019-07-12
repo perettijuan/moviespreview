@@ -3,7 +3,7 @@
     xmlns:motion="http://schemas.android.com/apk/res-auto">
 
     <!-- This MotionScene describes the transitions that take place
-         in fragment_person_deprecated when the user scrolls the contentViewState of the
+         in fragment_person when the user scrolls the content of the
          view.-->
 
     <!-- Perform a single transition with two ConstrainSet:
