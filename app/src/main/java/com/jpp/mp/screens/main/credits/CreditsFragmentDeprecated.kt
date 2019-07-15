@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
 import com.jpp.mp.ext.*
-import com.jpp.mp.screens.main.credits.CreditsFragmentArgs.fromBundle
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_credits_deprecated.*
 import kotlinx.android.synthetic.main.list_item_credits_deprecated.view.*
@@ -41,8 +40,8 @@ class CreditsFragmentDeprecated : Fragment() {
                 ?: throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the contentViewState")
 
         withViewModel {
-            init(movieId = fromBundle(args).movieId.toDouble(),
-                    targetImageSize = resources.getDimensionPixelSize(getResIdFromAttribute(R.attr.mpCreditItemImageSize)))
+//            init(movieId = fromBundle(args).movieId.toDouble(),
+//                    targetImageSize = resources.getDimensionPixelSize(getResIdFromAttribute(R.attr.mpCreditItemImageSize)))
 
             viewState().observe(this@CreditsFragmentDeprecated.viewLifecycleOwner, Observer { viewState ->
                 when (viewState) {

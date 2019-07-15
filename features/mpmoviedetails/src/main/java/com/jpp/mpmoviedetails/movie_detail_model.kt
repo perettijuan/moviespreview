@@ -85,6 +85,13 @@ sealed class ActionButtonState {
     object ShowAsLoading : ActionButtonState()
 }
 
+sealed class MovieDetailsNavigationEvent {
+    /*
+     * Redirects the user to the credits of the movie being shown.
+     */
+    data class GoToCredits(val movieId: Double, val movieTitle: String) : MovieDetailsNavigationEvent()
+}
+
 /**
  * All the supported genres.
  */
