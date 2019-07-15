@@ -16,16 +16,17 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * [MPScopedViewModel] to handle the state of the CreditsFragment. It is a coroutine-scoped
+ * [MPScopedViewModel] to handle the state of the CreditsFragmentDeprecated. It is a coroutine-scoped
  * ViewModel, which indicates that some work will be executed in a background context and synced
  * to the main context when over.
  *
  * It exposes a single output in a LiveData object that receives [CreditsViewState] updates as soon
  * as any new state is identified by the ViewModel.
  */
-class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                           private val getCreditsUseCase: GetCreditsUseCase,
-                                           private val configCastCharacterUseCase: ConfigCastCharacterUseCase)
+//TODO JPP delete ME
+class CreditsViewModelDeprecated @Inject constructor(dispatchers: CoroutineDispatchers,
+                                                     private val getCreditsUseCase: GetCreditsUseCase,
+                                                     private val configCastCharacterUseCase: ConfigCastCharacterUseCase)
     : MPScopedViewModel(dispatchers) {
 
     private val viewStateLiveData by lazy { MutableLiveData<CreditsViewState>() }
@@ -33,7 +34,7 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private lateinit var retryFunc: () -> Unit
 
     /**
-     * Called on initialization of the CreditsFragment.
+     * Called on initialization of the CreditsFragmentDeprecated.
      * Each time this method is called the backing UseCase are executed in order to retrieve
      * the credits of the movie identified by [movieId].
      * The updates will be posted to the [LiveData] object provided by [viewState()].

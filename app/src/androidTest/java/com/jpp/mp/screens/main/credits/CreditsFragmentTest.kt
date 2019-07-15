@@ -27,7 +27,7 @@ class CreditsFragmentTest {
     val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java, true, false) {}
 
     private fun launchAndInjectFragment() {
-        val fragment = CreditsFragment().apply {
+        val fragment = CreditsFragmentDeprecated().apply {
             arguments = Bundle().apply {
                 putString("movieId", "12")
                 putString("movieTitle", "aMovie")
@@ -36,8 +36,8 @@ class CreditsFragmentTest {
         activityTestRule.activity.startFragment(fragment, this@CreditsFragmentTest::inject)
     }
 
-    private fun inject(fragment: CreditsFragment) {
-        val viewModel = mockk<CreditsViewModel>(relaxed = true)
+    private fun inject(fragment: CreditsFragmentDeprecated) {
+        val viewModel = mockk<CreditsViewModelDeprecated>(relaxed = true)
         every { viewModel.viewState() } returns viewStateLiveData
         fragment.viewModelFactory = TestMPViewModelFactory().apply {
             addVm(viewModel)

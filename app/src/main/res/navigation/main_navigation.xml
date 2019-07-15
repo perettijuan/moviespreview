@@ -9,6 +9,7 @@
     <include app:graph="@navigation/movie_details_nav"/>
     <include app:graph="@navigation/search_nav"/>
     <include app:graph="@navigation/person_nav"/>
+    <include app:graph="@navigation/credits_nav"/>
 
     <fragment
         android:id="@+id/playingMoviesFragment"
@@ -30,10 +31,11 @@
         android:name="com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment"
         android:label="@string/main_menu_top_rated"
         tools:layout="@layout/fragment_movies"/>
+    <!-- TODO JPP enable and delete this navigation
     <fragment
         android:id="@+id/creditsFragment"
-        android:name="com.jpp.mp.screens.main.credits.CreditsFragment"
-        tools:layout="@layout/fragment_credits">
+        android:name="com.jpp.mp.screens.main.credits.CreditsFragmentDeprecated"
+        tools:layout="@layout/fragment_credits_deprecated">
         <argument
             android:name="movieId"
             app:argType="string" />
@@ -48,6 +50,7 @@
             app:popEnterAnim="@anim/fragment_enter_slide_left"
             app:popExitAnim="@anim/fragment_exit_slide_left"/>
     </fragment>
+    -->
     <fragment
         android:id="@+id/aboutFragment"
         android:name="com.jpp.mp.screens.main.about.AboutFragment"

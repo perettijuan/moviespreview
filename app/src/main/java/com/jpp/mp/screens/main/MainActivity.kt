@@ -26,6 +26,7 @@ import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.ext.closeDrawerIfOpen
 import com.jpp.mp.ext.setActionBarTitle
 import com.jpp.mp.ext.withViewModel
+import com.jpp.mpcredits.NavigationCredits
 import com.jpp.mpdesign.ext.setGone
 import com.jpp.mpdesign.ext.setVisible
 import com.jpp.mpmoviedetails.NavigationMovieDetails
@@ -199,8 +200,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 R.id.popularMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
                 R.id.upcomingMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
                 R.id.topRatedMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
-                //TODO JPP delete this R.id.personFragment -> withMainViewModel { userNavigatesToPerson(arguments.getStringOrDefault("personName", destination.label.toString())) }
-                R.id.creditsFragment -> withMainViewModel { userNavigatesToCredits(arguments.getStringOrDefault("movieTitle", destination.label.toString())) }
                 R.id.aboutFragment -> withMainViewModel { userNavigatesToAbout(getString(R.string.about_top_bar_title)) }
                 R.id.licensesFragment -> withMainViewModel { userNavigatesToLicenses(getString(R.string.about_open_source_action)) }
                 R.id.licenseContentFragment -> withMainViewModel { userNavigatesToLicenseContent(arguments.getStringOrDefault("licenseTitle", destination.label.toString())) }
@@ -222,17 +221,23 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 }
             }
             is MPPerson -> {
-                withNavController {
-                    navigate(R.id.person_nav,
-                            NavigationPerson.navArgs(destination.personId, destination.personImageUrl, destination.personName),
-                            NavOptions.Builder()
-                                    .setEnterAnim(R.anim.fragment_enter_slide_right)
-                                    .setExitAnim(R.anim.fragment_exit_slide_right)
-                                    .setPopEnterAnim(R.anim.fragment_enter_slide_left)
-                                    .setPopExitAnim(R.anim.fragment_exit_slide_left)
-                                    .build()
-                    )
-                }
+                navigateToModuleWithExtras(
+                        R.id.person_nav,
+                        NavigationPerson.navArgs(
+                                destination.personId,
+                                destination.personImageUrl,
+                                destination.personName)
+                )
+            }
+            is MPCredits -> {
+                navigateToModuleWithExtras(
+                        R.id.credits_nav,
+                        NavigationCredits.navArgs(
+                                destination.movieId,
+                                destination.movieTitle
+                        )
+                )
+
             }
             is PreviousDestination -> withNavController { popBackStack() }
             is InnerDestination -> innerNavigateTo(destination.directions)
@@ -243,6 +248,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         when (reachedDestination) {
             is ReachedDestination -> withMainViewModel { userNavigatesWithinFeature(reachedDestination.destinationTitle) }
             is MPSearch -> withMainViewModel { userNavigatesToSearch() }
+            is MPCredits ->  withMainViewModel { userNavigatesToCredits(reachedDestination.movieTitle) }
         }
     }
 
@@ -256,6 +262,20 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     private fun withNavController(action: NavController.() -> Unit) {
         findNavController(this, R.id.mainNavHostFragment).action()
+    }
+
+    private fun navigateToModuleWithExtras(@IdRes moduleNavId: Int, extras: Bundle) {
+        withNavController {
+            navigate(moduleNavId,
+                    extras,
+                    NavOptions.Builder()
+                            .setEnterAnim(R.anim.fragment_enter_slide_right)
+                            .setExitAnim(R.anim.fragment_exit_slide_right)
+                            .setPopEnterAnim(R.anim.fragment_enter_slide_left)
+                            .setPopExitAnim(R.anim.fragment_exit_slide_left)
+                            .build()
+            )
+        }
     }
 
     private fun navigateToSearch() {

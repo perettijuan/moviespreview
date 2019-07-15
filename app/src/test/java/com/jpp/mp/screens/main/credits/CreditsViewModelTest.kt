@@ -27,13 +27,13 @@ class CreditsViewModelTest {
     @MockK
     private lateinit var configCastCharacterUseCase: ConfigCastCharacterUseCase
 
-    private lateinit var subject: CreditsViewModel
+    private lateinit var subject: CreditsViewModelDeprecated
     private val movieId = 121.toDouble()
     private val targetImageSize = 200
 
     @BeforeEach
     fun setUp() {
-        subject = CreditsViewModel(
+        subject = CreditsViewModelDeprecated(
                 TestCoroutineDispatchers(),
                 getCreditsUseCase,
                 configCastCharacterUseCase

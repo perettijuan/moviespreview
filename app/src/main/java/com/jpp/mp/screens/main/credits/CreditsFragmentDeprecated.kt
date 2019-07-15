@@ -8,19 +8,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
 import com.jpp.mp.ext.*
-import com.jpp.mp.screens.main.credits.CreditsFragmentArgs.fromBundle
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_credits.*
-import kotlinx.android.synthetic.main.list_item_credits.view.*
+import kotlinx.android.synthetic.main.fragment_credits_deprecated.*
+import kotlinx.android.synthetic.main.list_item_credits_deprecated.view.*
 import javax.inject.Inject
 
-class CreditsFragment : Fragment() {
+//TODO JPP delete ME
+class CreditsFragmentDeprecated : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -31,7 +30,7 @@ class CreditsFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_credits, container, false)
+        return inflater.inflate(R.layout.fragment_credits_deprecated, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -41,10 +40,10 @@ class CreditsFragment : Fragment() {
                 ?: throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the contentViewState")
 
         withViewModel {
-            init(movieId = fromBundle(args).movieId.toDouble(),
-                    targetImageSize = resources.getDimensionPixelSize(getResIdFromAttribute(R.attr.mpCreditItemImageSize)))
+//            init(movieId = fromBundle(args).movieId.toDouble(),
+//                    targetImageSize = resources.getDimensionPixelSize(getResIdFromAttribute(R.attr.mpCreditItemImageSize)))
 
-            viewState().observe(this@CreditsFragment.viewLifecycleOwner, Observer { viewState ->
+            viewState().observe(this@CreditsFragmentDeprecated.viewLifecycleOwner, Observer { viewState ->
                 when (viewState) {
                     is CreditsViewState.Loading -> renderLoading()
                     is CreditsViewState.ErrorUnknown -> {
@@ -66,7 +65,7 @@ class CreditsFragment : Fragment() {
                 }
             })
 
-            navEvents().observe(this@CreditsFragment.viewLifecycleOwner, Observer { navEvent ->
+            navEvents().observe(this@CreditsFragmentDeprecated.viewLifecycleOwner, Observer { navEvent ->
                 when (navEvent) {
                     is CreditsNavigationEvent.ToPerson -> {
                         //TODO JPP re-enable navigation once Person module is done
@@ -84,10 +83,10 @@ class CreditsFragment : Fragment() {
     }
 
     /**
-     * Helper function to execute actions with the [CreditsViewModel].
+     * Helper function to execute actions with the [CreditsViewModelDeprecated].
      */
-    private fun withViewModel(action: CreditsViewModel.() -> Unit) {
-        getViewModel<CreditsViewModel>(viewModelFactory).action()
+    private fun withViewModel(action: CreditsViewModelDeprecated.() -> Unit) {
+        getViewModel<CreditsViewModelDeprecated>(viewModelFactory).action()
     }
 
     private fun renderLoading() {
@@ -114,7 +113,7 @@ class CreditsFragment : Fragment() {
 
     class CreditsAdapter(private val credits: List<CreditPerson>, private val selectionListener: (CreditPerson) -> Unit) : RecyclerView.Adapter<CreditsAdapter.ViewHolder>() {
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent.inflate(R.layout.list_item_credits))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent.inflate(R.layout.list_item_credits_deprecated))
         override fun getItemCount() = credits.size
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
