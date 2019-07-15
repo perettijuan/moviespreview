@@ -13,12 +13,12 @@ import com.jpp.mp.screens.main.movies.fragments.PlayingMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.PopularMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
-import com.jpp.mp.screens.main.person.PersonViewModel
 import com.jpp.mpaccount.account.UserAccountViewModel
 import com.jpp.mpaccount.account.lists.UserMovieListViewModel
 import com.jpp.mpaccount.login.LoginViewModel
 import com.jpp.mpmoviedetails.MovieDetailsActionViewModel
 import com.jpp.mpmoviedetails.MovieDetailsViewModel
+import com.jpp.mpperson.PersonViewModel
 import com.jpp.mpsearch.SearchViewModel
 import dagger.Binds
 import dagger.Module
@@ -57,11 +57,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MainActivityViewModel::class)
     internal abstract fun postMainActivityViewModel(viewModel: MainActivityViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(PersonViewModel::class)
-    internal abstract fun postPersonViewModel(viewModel: PersonViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -134,5 +129,13 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SearchViewModel::class)
     internal abstract fun getSearchViewModel(viewModel: SearchViewModel): ViewModel
+
+    /*
+     * Person feature dependencies
+     */
+    @Binds
+    @IntoMap
+    @ViewModelKey(PersonViewModel::class)
+    internal abstract fun getPersonViewModel(viewModel: PersonViewModel): ViewModel
 
 }

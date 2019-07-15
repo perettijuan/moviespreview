@@ -38,7 +38,7 @@ class CreditsFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         val args = arguments
-                ?: throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the content")
+                ?: throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the contentViewState")
 
         withViewModel {
             init(movieId = fromBundle(args).movieId.toDouble(),
@@ -69,13 +69,14 @@ class CreditsFragment : Fragment() {
             navEvents().observe(this@CreditsFragment.viewLifecycleOwner, Observer { navEvent ->
                 when (navEvent) {
                     is CreditsNavigationEvent.ToPerson -> {
-                        findNavController().navigate(
-                                CreditsFragmentDirections.actionCreditsFragmentToPersonFragment(
-                                        navEvent.personId,
-                                        navEvent.personImageUrl,
-                                        navEvent.personName
-                                )
-                        )
+                        //TODO JPP re-enable navigation once Person module is done
+//                        findNavController().navigate(
+//                                CreditsFragmentDirections.actionCreditsFragmentToPersonFragment(
+//                                        navEvent.personId,
+//                                        navEvent.personImageUrl,
+//                                        navEvent.personName
+//                                )
+//                        )
                     }
                 }
             })

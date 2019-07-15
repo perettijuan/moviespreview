@@ -29,6 +29,7 @@ import com.jpp.mp.ext.withViewModel
 import com.jpp.mpdesign.ext.setGone
 import com.jpp.mpdesign.ext.setVisible
 import com.jpp.mpmoviedetails.NavigationMovieDetails
+import com.jpp.mpperson.NavigationPerson
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -198,7 +199,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 R.id.popularMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
                 R.id.upcomingMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
                 R.id.topRatedMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
-                R.id.personFragment -> withMainViewModel { userNavigatesToPerson(arguments.getStringOrDefault("personName", destination.label.toString())) }
+                //TODO JPP delete this R.id.personFragment -> withMainViewModel { userNavigatesToPerson(arguments.getStringOrDefault("personName", destination.label.toString())) }
                 R.id.creditsFragment -> withMainViewModel { userNavigatesToCredits(arguments.getStringOrDefault("movieTitle", destination.label.toString())) }
                 R.id.aboutFragment -> withMainViewModel { userNavigatesToAbout(getString(R.string.about_top_bar_title)) }
                 R.id.licensesFragment -> withMainViewModel { userNavigatesToLicenses(getString(R.string.about_open_source_action)) }
@@ -216,7 +217,21 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 withNavController {
                     navigate(R.id.movie_details_nav,
                             NavigationMovieDetails.navArgs(destination.movieId, destination.movieImageUrl, destination.movieTitle, destination.transitionView.transitionName),
-                            FragmentNavigatorExtras(destination.transitionView to destination.transitionView.transitionName))
+                            FragmentNavigatorExtras(destination.transitionView to destination.transitionView.transitionName)
+                    )
+                }
+            }
+            is MPPerson -> {
+                withNavController {
+                    navigate(R.id.person_nav,
+                            NavigationPerson.navArgs(destination.personId, destination.personImageUrl, destination.personName),
+                            NavOptions.Builder()
+                                    .setEnterAnim(R.anim.fragment_enter_slide_right)
+                                    .setExitAnim(R.anim.fragment_exit_slide_right)
+                                    .setPopEnterAnim(R.anim.fragment_enter_slide_left)
+                                    .setPopExitAnim(R.anim.fragment_exit_slide_left)
+                                    .build()
+                    )
                 }
             }
             is PreviousDestination -> withNavController { popBackStack() }
@@ -289,7 +304,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
      * Helper class to remove the space between the arrow image and the
      * text (or the SearchView) that is shown in the Toolbar.
      * In some screens (e.g.: searchPage screen) we want to remove this
-     * space to provide more space for the content shown right next
+     * space to provide more space for the contentViewState shown right next
      * to the arrow/burger icon.
      */
     private inner class MPToolbarManager {

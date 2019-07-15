@@ -10,11 +10,11 @@ import com.jpp.mp.screens.main.movies.fragments.PlayingMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.PopularMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
-import com.jpp.mp.screens.main.person.PersonFragment
 import com.jpp.mpaccount.account.UserAccountFragment
 import com.jpp.mpaccount.account.lists.UserMovieListFragment
 import com.jpp.mpaccount.login.LoginFragment
 import com.jpp.mpmoviedetails.MovieDetailsFragment
+import com.jpp.mpperson.PersonFragment
 import com.jpp.mpsearch.SearchFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -38,9 +38,6 @@ abstract class BuildersModule {
 
     @ContributesAndroidInjector
     abstract fun bindMovieDetailsFragment(): MovieDetailsFragment
-
-    @ContributesAndroidInjector
-    abstract fun bindPersonFragment(): PersonFragment
 
     @ContributesAndroidInjector
     abstract fun bindCreditsFragment(): CreditsFragment
@@ -68,4 +65,7 @@ abstract class BuildersModule {
 
     @ContributesAndroidInjector
     abstract fun bindSearchFragment(): SearchFragment
+
+    @ContributesAndroidInjector
+    abstract fun bindPersonFragment(): PersonFragment
 }

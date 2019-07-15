@@ -53,7 +53,7 @@ class LicenseContentViewModel @Inject constructor(dispatchers: CoroutineDispatch
     }
 
     /**
-     * Pushes the loading state into the view and starts the process to fetch the content of the license.
+     * Pushes the loading state into the view and starts the process to fetch the contentViewState of the license.
      */
     private fun pushLoadingAndFetchLicenseContent(licenseId: Int) {
         viewStateLiveData.value = LicenseViewState.Loading
@@ -63,7 +63,7 @@ class LicenseContentViewModel @Inject constructor(dispatchers: CoroutineDispatch
     }
 
     /**
-     * Fetches the content of the licenses identified with [licenseId].
+     * Fetches the contentViewState of the licenses identified with [licenseId].
      * @return a [LicenseViewState] that is posted in viewState in order
      * to update the UI.
      */

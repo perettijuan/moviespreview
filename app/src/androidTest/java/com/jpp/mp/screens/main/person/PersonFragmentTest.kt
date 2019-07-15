@@ -1,6 +1,5 @@
 package com.jpp.mp.screens.main.person
 
-import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -10,11 +9,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.jpp.mp.R
 import com.jpp.mp.assertions.*
-import com.jpp.mp.di.TestMPViewModelFactory
 import com.jpp.mp.extras.launch
 import com.jpp.mp.testutils.FragmentTestActivity
-import io.mockk.every
-import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -27,24 +23,24 @@ class PersonFragmentTest {
     val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java, true, false) {}
 
     private fun launchAndInjectFragment() {
-        val fragment = PersonFragment().apply {
-            arguments = Bundle().apply {
-                putString("personId", "12")
-                putString("personImageUrl", "anImageUrl")
-                putString("personName", "aName")
-            }
-        }
+//        val fragment = PersonFragmentDeprecated().apply {
+//            arguments = Bundle().apply {
+//                putString("personId", "12")
+//                putString("personImageUrl", "anImageUrl")
+//                putString("personName", "aName")
+//            }
+//        }
 
-        activityTestRule.activity.startFragment(fragment, this@PersonFragmentTest::inject)
+//        activityTestRule.activity.startFragment(fragment, this@PersonFragmentTest::inject)
     }
 
-    private fun inject(fragment: PersonFragment) {
-        val viewModel = mockk<PersonViewModel>(relaxed = true)
-        every { viewModel.viewState() } returns viewStateLiveData
-        fragment.viewModelFactory = TestMPViewModelFactory().apply {
-            addVm(viewModel)
-        }
-    }
+//    private fun inject(fragment: PersonFragmentDeprecated) {
+//        val viewModel = mockk<PersonViewModelDeprecated>(relaxed = true)
+//        every { viewModel.viewState() } returns viewStateLiveData
+//        fragment.viewModelFactory = TestMPViewModelFactory().apply {
+//            addVm(viewModel)
+//        }
+//    }
 
     private val viewStateLiveData = MutableLiveData<PersonViewState>()
 

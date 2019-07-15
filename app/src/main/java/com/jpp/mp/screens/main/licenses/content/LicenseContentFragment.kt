@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.fragment_license_content.*
 import javax.inject.Inject
 
 /**
- * Shows the content of a particular license.
+ * Shows the contentViewState of a particular license.
  */
 class LicenseContentFragment : Fragment() {
 
@@ -38,7 +38,7 @@ class LicenseContentFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         val args = arguments
-                ?: throw IllegalStateException("You need to pass arguments to LicenseContentFragment in order to show the content")
+                ?: throw IllegalStateException("You need to pass arguments to LicenseContentFragment in order to show the contentViewState")
 
         withViewModel {
             init(fromBundle(args).licenseId.toInt())

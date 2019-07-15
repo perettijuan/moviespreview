@@ -33,7 +33,7 @@ fun Activity.getResIdFromAttribute(attr: Int): Int {
 }
 
 /**
- * Sets the provided [title] as title of the ActionBar
+ * Sets the provided [title] as movieTitle of the ActionBar
  */
 fun AppCompatActivity.setActionBarTitle(title: String) {
     supportActionBar?.title = title

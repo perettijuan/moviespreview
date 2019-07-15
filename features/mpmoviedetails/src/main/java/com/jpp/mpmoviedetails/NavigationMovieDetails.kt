@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.jpp.mp.common.extensions.getStringOrFail
 
 /**
- * Contains utilities to perform navigation to movie details details.
+ * Contains utilities to perform navigation to the movie details module.
  */
 object NavigationMovieDetails {
 
@@ -21,7 +21,7 @@ object NavigationMovieDetails {
             }
 
     fun movieId(args: Bundle?) = args.getStringOrFail("movieId")
-    fun imageUrl(args: Bundle?) = args.getStringOrFail("movieImageUrl")
-    fun title(args: Bundle?) = args.getStringOrFail("movieTitle")
+    fun movieImageUrl(args: Bundle?) = args.getStringOrFail("movieImageUrl")
+    fun movieTitle(args: Bundle?) = args.getStringOrFail("movieTitle")
     fun transition(args: Bundle?) = args.getStringOrFail("transitionName")
 }

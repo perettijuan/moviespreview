@@ -56,7 +56,7 @@ class MovieDetailsViewModelTest {
     }
 
     @Test
-    fun `Should post loading and fetch user account onInit`() {
+    fun `Should post loading and fetch movie details onInit`() {
         var viewStatePosted: MovieDetailViewState? = null
         val expected = MovieDetailViewState.ShowLoading("aMovie")
 

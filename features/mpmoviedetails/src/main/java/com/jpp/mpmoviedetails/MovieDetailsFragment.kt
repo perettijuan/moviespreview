@@ -16,9 +16,9 @@ import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.Destination.ReachedDestination
 import com.jpp.mpdesign.ext.*
 import com.jpp.mpmoviedetails.MovieDetailViewState.*
-import com.jpp.mpmoviedetails.NavigationMovieDetails.imageUrl
+import com.jpp.mpmoviedetails.NavigationMovieDetails.movieImageUrl
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieId
-import com.jpp.mpmoviedetails.NavigationMovieDetails.title
+import com.jpp.mpmoviedetails.NavigationMovieDetails.movieTitle
 import com.jpp.mpmoviedetails.NavigationMovieDetails.transition
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movie_details.*
@@ -56,14 +56,14 @@ class MovieDetailsFragment : Fragment() {
 
         with(movieDetailImageView) {
             transitionName = transition(arguments)
-            loadImageUrl(imageUrl(arguments))
+            loadImageUrl(movieImageUrl(arguments))
         }
 
-        withNavigationViewModel(viewModelFactory) { destinationReached(ReachedDestination(title(arguments))) }
+        withNavigationViewModel(viewModelFactory) { destinationReached(ReachedDestination(movieTitle(arguments))) }
 
         withViewModel {
             viewStates.observe(this@MovieDetailsFragment.viewLifecycleOwner, Observer { it.actionIfNotHandled { viewState -> renderViewState(viewState) } })
-            onInit(movieId(arguments).toDouble(), title(arguments))
+            onInit(movieId(arguments).toDouble(), movieTitle(arguments))
         }
 
         withActionsViewModel {

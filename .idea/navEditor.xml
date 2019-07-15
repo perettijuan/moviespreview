@@ -95,13 +95,13 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="personFragment">
+                  <entry key="person_nav">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="639" />
-                            <option name="y" value="-697" />
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -199,6 +199,21 @@
                           </Point>
                         </option>
                       </LayoutPositions>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </LayoutPositions>
+          </value>
+        </entry>
+        <entry key="person_nav.xml">
+          <value>
+            <LayoutPositions>
+              <option name="myPositions">
+                <map>
+                  <entry key="personFragment">
+                    <value>
+                      <LayoutPositions />
                     </value>
                   </entry>
                 </map>

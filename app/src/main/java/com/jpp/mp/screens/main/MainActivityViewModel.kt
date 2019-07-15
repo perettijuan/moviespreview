@@ -19,7 +19,7 @@ import javax.inject.Inject
  *
  * 2 - The application is using the navigation architecture components, with the caveat that needs to
  * show dynamic titles in the Action Bar. This VM takes care of verifying the navigation events
- * and asks the Activity to update the Action Bar's title.
+ * and asks the Activity to update the Action Bar's movieTitle.
  *
  */
 class MainActivityViewModel @Inject constructor(private val languageMonitor: LanguageMonitor,

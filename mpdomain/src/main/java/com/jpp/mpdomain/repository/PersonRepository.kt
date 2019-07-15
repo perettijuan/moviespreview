@@ -11,4 +11,9 @@ interface PersonRepository {
      * Retrieves the person that is identified by [personId].
      */
     fun getPerson(personId: Double, language: SupportedLanguage) : Person?
+
+    /**
+     * Flushes out any stored data.
+     */
+    fun flushPersonData()
 }

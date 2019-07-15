@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="person_birthday_title">Nacimiento</string>
+    <string name="person_birth_place_title">Lugar de nacimiento</string>
+    <string name="person_death_day_title">Muerte</string>
+    <string name="person_bio_title">Biografia</string>
+    <string name="person_no_details">No existe informacion acerca de esta persona</string>
+</resources>
