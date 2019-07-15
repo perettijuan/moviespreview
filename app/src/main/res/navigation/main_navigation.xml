@@ -32,8 +32,8 @@
         tools:layout="@layout/fragment_movies"/>
     <fragment
         android:id="@+id/creditsFragment"
-        android:name="com.jpp.mp.screens.main.credits.CreditsFragment"
-        tools:layout="@layout/fragment_credits">
+        android:name="com.jpp.mp.screens.main.credits.CreditsFragmentDeprecated"
+        tools:layout="@layout/fragment_credits_deprecated">
         <argument
             android:name="movieId"
             app:argType="string" />
