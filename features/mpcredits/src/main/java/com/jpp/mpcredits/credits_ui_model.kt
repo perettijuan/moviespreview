@@ -78,3 +78,10 @@ data class CreditPerson(val id: Double,
                         val profilePath: String,
                         val title: String,
                         val subTitle: String)
+
+/**
+ * Represents the navigation events that can be routed through the credits section.
+ */
+sealed class CreditsNavigationEvent {
+    data class ToPerson(val personId: String, val personImageUrl: String, val personName: String) : CreditsNavigationEvent()
+}

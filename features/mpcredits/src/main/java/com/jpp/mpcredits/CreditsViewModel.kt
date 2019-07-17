@@ -2,6 +2,7 @@ package com.jpp.mpcredits
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.extensions.addAllMapping
@@ -26,6 +27,7 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private var movieId: Double = 0.0
     private var targetImageSize: Int = -1
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<CreditsViewState>>() }
+    private val _navEvents by lazy { SingleLiveEvent<CreditsNavigationEvent>() }
 
     init {
         _viewStates.addSource(creditsInteractor.events) { event ->
@@ -38,7 +40,9 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         }
     }
 
-
+    /**
+     * Called when the view is initialized.
+     */
     fun onInit(movieId: Double, targetImageSize: Int) {
         this.movieId = movieId
         this.targetImageSize = targetImageSize
@@ -46,10 +50,26 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     }
 
     /**
+     * Called when an item is selected in the list of credit persons.
+     * A new state is posted in navEvents() in order to handle the event.
+     */
+    fun onCreditItemSelected(personItem: CreditPerson) {
+        with (personItem) {
+            _navEvents.value = CreditsNavigationEvent.ToPerson(personId = id.toString(), personImageUrl = profilePath, personName = subTitle)
+        }
+    }
+
+    /**
      * Subscribe to this [LiveData] in order to get notified about the different states that
      * the view should render.
      */
     val viewStates: LiveData<HandledViewState<CreditsViewState>> get() = _viewStates
+
+    /**
+     * Subscribe to this [LiveData] in order to get notified about navigation steps that
+     * should be performed by the view.
+     */
+    val navEvents: LiveData<CreditsNavigationEvent> get() = _navEvents
 
     private fun executeFetchCreditsStep(movieId: Double): CreditsViewState {
         withInteractor { fetchCreditsForMovie(movieId) }

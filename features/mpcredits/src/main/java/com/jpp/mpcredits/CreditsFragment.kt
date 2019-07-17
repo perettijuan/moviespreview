@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.getResIdFromAttribute
+import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpcredits.databinding.CreditsFragmentBinding
 import com.jpp.mpcredits.databinding.ListItemCreditsBinding
 import dagger.android.support.AndroidSupportInjection
@@ -45,17 +47,21 @@ class CreditsFragment : Fragment() {
                     viewBinding.viewState = viewState
                     creditsRv.apply {
                         layoutManager = LinearLayoutManager(context)
-                        adapter = CreditsAdapter(viewState.creditsViewState.creditItems)
+                        adapter = CreditsAdapter(viewState.creditsViewState.creditItems) { withViewModel { onCreditItemSelected(it) } }
                         addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
                     }
                 }
             })
+
+            navEvents.observe(viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
 
             onInit(
                     movieId = NavigationCredits.movieId(arguments),
                     targetImageSize = resources.getDimensionPixelSize(getResIdFromAttribute(R.attr.mpCreditItemImageSize))
             )
         }
+
+        withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(NavigationCredits.movieTitle(arguments))) }
     }
 
     /**
@@ -63,7 +69,14 @@ class CreditsFragment : Fragment() {
      */
     private fun withViewModel(action: CreditsViewModel.() -> Unit) = withViewModel<CreditsViewModel>(viewModelFactory) { action() }
 
-    class CreditsAdapter(private val credits: List<CreditPerson>) : RecyclerView.Adapter<CreditsAdapter.ViewHolder>() {
+    private fun reactToNavEvent(navEvent: CreditsNavigationEvent) {
+        when (navEvent) {
+            is CreditsNavigationEvent.ToPerson -> withNavigationViewModel(viewModelFactory) { navigateToPersonDetails(navEvent.personId, navEvent.personImageUrl, navEvent.personName) }
+        }
+    }
+
+
+    class CreditsAdapter(private val credits: List<CreditPerson>, private val selectionListener: (CreditPerson) -> Unit) : RecyclerView.Adapter<CreditsAdapter.ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
@@ -77,18 +90,18 @@ class CreditsFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bindCredit(credits[position])
+            holder.bindCredit(credits[position], selectionListener)
         }
 
         override fun getItemCount(): Int = credits.size
 
 
         class ViewHolder(private val itemBinding: ListItemCreditsBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-            fun bindCredit(credit: CreditPerson) {
+            fun bindCredit(credit: CreditPerson, selectionListener: (CreditPerson) -> Unit) {
                 itemBinding.viewState = credit
                 itemBinding.executePendingBindings()
+                itemView.setOnClickListener { selectionListener(credit) }
             }
         }
-
     }
 }
