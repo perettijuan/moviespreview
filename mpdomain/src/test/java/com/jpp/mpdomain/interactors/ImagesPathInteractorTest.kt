@@ -1,9 +1,6 @@
 package com.jpp.mpdomain.interactors
 
-import com.jpp.mpdomain.AppConfiguration
-import com.jpp.mpdomain.ImagesConfiguration
-import com.jpp.mpdomain.Movie
-import com.jpp.mpdomain.SearchResult
+import com.jpp.mpdomain.*
 import com.jpp.mpdomain.repository.ConfigurationRepository
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -46,6 +43,14 @@ class ImagesPathInteractorTest {
         assertEquals(param.expected, configured)
     }
 
+    @ParameterizedTest
+    @MethodSource("executeCastCharacterParameters")
+    fun `Should configure cast character images path`(param: CastCharacterConfigParam) {
+        val configured = subject.configureCastCharacter(param.targetImageSize, param.castCharacter)
+
+        assertEquals(param.expected, configured)
+    }
+
 
     data class MoviePathConfigParam(
             val targetImageSize: Int,
@@ -57,6 +62,12 @@ class ImagesPathInteractorTest {
             val targetImageSize: Int,
             val searchResult: SearchResult,
             val expected: SearchResult
+    )
+
+    data class CastCharacterConfigParam(
+            val targetImageSize: Int,
+            val castCharacter: CastCharacter,
+            val expected: CastCharacter
     )
 
     private val imagesConfig = ImagesConfiguration(
@@ -187,6 +198,34 @@ class ImagesPathInteractorTest {
                 )
         )
 
+
+        @JvmStatic
+        fun executeCastCharacterParameters() = listOf(
+                CastCharacterConfigParam(
+                        targetImageSize = 185,
+                        castCharacter = castCharacter,
+                        expected = castCharacter.copy(
+                                profile_path = "baseUrl/w185/m110vLaDDOCca4hfOcS5mK5cDke.jpg"
+                        )
+                ),
+                CastCharacterConfigParam(
+                        targetImageSize = 200,
+                        castCharacter = castCharacter,
+                        expected = castCharacter.copy(
+                                profile_path = "baseUrl/h632/m110vLaDDOCca4hfOcS5mK5cDke.jpg"
+                        )
+                ),
+                CastCharacterConfigParam(
+                        targetImageSize = 700,
+                        castCharacter = castCharacter,
+                        expected = castCharacter.copy(
+                                profile_path = "baseUrl/original/m110vLaDDOCca4hfOcS5mK5cDke.jpg"
+                        )
+                )
+
+        )
+
+
         private val originalMovie = Movie(
                 id = 15.toDouble(),
                 poster_path = "/m110vLaDDOCca4hfOcS5mK5cDke.jpg",
@@ -235,6 +274,17 @@ class ImagesPathInteractorTest {
                 vote_count = null,
                 vote_average = null,
                 popularity = null
+        )
+
+        private val castCharacter = CastCharacter(
+                cast_id = 12.toDouble(),
+                character = "aCharacter",
+                credit_id = "aCredit",
+                gender = 2,
+                id = 22.toDouble(),
+                name = "aName",
+                order = 2,
+                profile_path = "/m110vLaDDOCca4hfOcS5mK5cDke.jpg"
         )
     }
 

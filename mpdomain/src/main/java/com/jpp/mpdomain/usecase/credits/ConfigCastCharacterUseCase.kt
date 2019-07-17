@@ -10,6 +10,7 @@ import com.jpp.mpdomain.usecase.ConfigureImagePathUseCase
  * property is initialized to a value that does not contains the full path of the image. This use
  * case takes care of adjusting such property based on the provided image size.
  */
+//TODO DELETE ME
 interface ConfigCastCharacterUseCase {
     /**
      * Configures the provided [castCharacter] adjusting the profile path image to the provided
