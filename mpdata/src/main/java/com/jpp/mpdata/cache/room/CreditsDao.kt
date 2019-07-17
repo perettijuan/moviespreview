@@ -18,4 +18,10 @@ interface CreditsDao {
 
     @Query("select * from movie_crew_person where movie_id = :movieId and duedate >= :nowDate")
     fun getMovieCrew(movieId: Double, nowDate: Long): List<DBCrewPerson>?
+
+    @Query("DELETE FROM movie_cast_characters")
+    fun deleteAllCastCharacters()
+
+    @Query("DELETE FROM movie_crew_person")
+    fun deleteAllCrew()
 }

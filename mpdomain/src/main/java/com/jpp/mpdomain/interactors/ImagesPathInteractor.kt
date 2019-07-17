@@ -1,6 +1,7 @@
 package com.jpp.mpdomain.interactors
 
 import com.jpp.mp.common.extensions.transformToInt
+import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.ImagesConfiguration
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.SearchResult
@@ -34,6 +35,13 @@ interface ImagesPathInteractor {
      */
     fun configureSearchResult(targetImageSize: Int, searchResult: SearchResult): SearchResult
 
+    /**
+     * Configure the provided [castCharacter] adjusting the profile path with the provided [targetImageSize].
+     * @return a [CastCharacter] with the exact same properties as the provided one, but with the
+     * images path pointing to the correct resource.
+     */
+    fun configureCastCharacter(targetImageSize: Int, castCharacter: CastCharacter): CastCharacter
+
     class Impl(private val configurationRepository: ConfigurationRepository) : ImagesPathInteractor {
 
         override fun configurePathMovie(posterSize: Int, backdropSize: Int, movie: Movie): Movie {
@@ -45,9 +53,13 @@ interface ImagesPathInteractor {
         override fun configureSearchResult(targetImageSize: Int, searchResult: SearchResult): SearchResult {
             return configurationRepository.getAppConfiguration()?.let {
                 configureSearchResultImagesPath(searchResult, it.images, targetImageSize)
-            } ?: run {
-                searchResult
-            }
+            } ?: searchResult
+        }
+
+        override fun configureCastCharacter(targetImageSize: Int, castCharacter: CastCharacter): CastCharacter {
+            return configurationRepository.getAppConfiguration()?.let {
+                configureCastCharacterImagesPath(castCharacter, it.images, targetImageSize)
+            } ?: castCharacter
         }
 
         /**
@@ -85,6 +97,19 @@ interface ImagesPathInteractor {
                     false -> copy(profile_path = createUrlForPath(profile_path, imagesConfig.base_url, imagesConfig.profile_sizes, targetImageSize))
                 }
             }
+        }
+
+        /**
+         * Configures the [CastCharacter.profile_path] property setting the
+         * proper URL based on the provided sizes. It looks for the best possible size based on the
+         * supplied ones in the [imagesConfig] to avoid downloading over-sized images.
+         * @return a new [CastCharacter] object with the same properties as the provided [castCharacter],
+         * but with the images paths configured.
+         */
+        private fun configureCastCharacterImagesPath(castCharacter: CastCharacter, imagesConfig: ImagesConfiguration, targetImageSize: Int): CastCharacter {
+            return castCharacter.copy(
+                    profile_path = createUrlForPath(castCharacter.profile_path, imagesConfig.base_url, imagesConfig.profile_sizes, targetImageSize)
+            )
         }
 
         /**

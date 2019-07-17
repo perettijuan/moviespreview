@@ -48,14 +48,14 @@ class PersonInteractor @Inject constructor(private val connectivityRepository: C
      */
     fun fetchPerson(personId: Double) {
         when (connectivityRepository.getCurrentConnectivity()) {
-            is Connectivity.Disconnected -> _events.postValue(NotConnectedToNetwork)
+            is Connectivity.Disconnected -> NotConnectedToNetwork
             is Connectivity.Connected -> {
                 personRepository
                         .getPerson(personId, languageRepository.getCurrentAppLanguage())
-                        ?.let { _events.postValue(Success(it)) }
-                        ?: _events.postValue(UnknownError)
+                        ?.let { Success(it) }
+                        ?: UnknownError
             }
-        }
+        }.let { _events.postValue(it) }
     }
 
     /**

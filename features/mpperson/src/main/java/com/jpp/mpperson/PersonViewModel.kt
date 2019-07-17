@@ -13,11 +13,6 @@ import com.jpp.mpperson.PersonRowViewState.Companion.birthdayRow
 import com.jpp.mpperson.PersonRowViewState.Companion.deathDayRow
 import com.jpp.mpperson.PersonRowViewState.Companion.emptyRow
 import com.jpp.mpperson.PersonRowViewState.Companion.placeOfBirthRow
-import com.jpp.mpperson.PersonViewState.Companion.showLoading
-import com.jpp.mpperson.PersonViewState.Companion.showNoConnectivityError
-import com.jpp.mpperson.PersonViewState.Companion.showNoDataAvailable
-import com.jpp.mpperson.PersonViewState.Companion.showPerson
-import com.jpp.mpperson.PersonViewState.Companion.showUnknownError
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -30,14 +25,11 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<PersonViewState>>() }
     private var personId: Double = 0.0
 
-    /*
-     * Map the business logic coming from the interactor into view layer logic.
-     */
     init {
         _viewStates.addSource(personInteractor.events) { event ->
             when (event) {
-                is NotConnectedToNetwork -> of(showNoConnectivityError(retry))
-                is UnknownError -> of(showUnknownError(retry))
+                is NotConnectedToNetwork -> of(PersonViewState.showNoConnectivityError(retry))
+                is UnknownError -> of(PersonViewState.showUnknownError(retry))
                 is Success -> of(getViewStateFromPerson(event.person))
                 is AppLanguageChanged -> of(executeRefreshDataStep(personId))
             }.let {
@@ -63,7 +55,7 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
     private fun executeFetchPersonStep(personId: Double): PersonViewState {
         withInteractor { fetchPerson(personId) }
-        return showLoading()
+        return PersonViewState.showLoading()
     }
 
     private fun executeRefreshDataStep(personId: Double): PersonViewState {
@@ -71,7 +63,7 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             flushPersonData()
             fetchPerson(personId)
         }
-        return showLoading()
+        return PersonViewState.showLoading()
     }
 
     private fun withInteractor(action: PersonInteractor.() -> Unit) {
@@ -80,8 +72,8 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
     private fun getViewStateFromPerson(person: Person): PersonViewState {
         return when (person.isEmpty()) {
-            true -> showNoDataAvailable()
-            else -> showPerson(mapPersonData(person))
+            true -> PersonViewState.showNoDataAvailable()
+            else -> PersonViewState.showPerson(mapPersonData(person))
         }
     }
 

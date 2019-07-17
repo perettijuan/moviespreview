@@ -12,4 +12,9 @@ interface CreditsRepository {
      * null any other case.
      */
     fun getCreditsForMovie(movieId: Double): Credits?
+
+    /**
+     * Clear all data stored in the credits section.
+     */
+    fun flushCreditsData()
 }

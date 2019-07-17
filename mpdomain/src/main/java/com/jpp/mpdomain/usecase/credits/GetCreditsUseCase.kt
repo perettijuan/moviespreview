@@ -10,6 +10,7 @@ import com.jpp.mpdomain.repository.CreditsRepository
  * not connected). If connected, retrieve the credits for the movie identified with the provided id.
  * If not connected, return an error that indicates such state.
  */
+//TODO delete ME
 interface GetCreditsUseCase {
 
     sealed class Ordering {

@@ -1,12 +1,8 @@
 package com.jpp.mpperson
 
 import android.view.View
-
-/*
- * This file contains the data definition classes that helps to render the data in the screen.
- * There's a 1 to 1 matching between each one of these classes and each view shown in the
- * person data screen.
- */
+import com.jpp.mpperson.PersonErrorViewState.Companion.asConnectivity
+import com.jpp.mpperson.PersonErrorViewState.Companion.asUnknownError
 
 /**
  * Represents the view state of the profile person screen.
@@ -18,8 +14,8 @@ data class PersonViewState(
 
     companion object {
         fun showLoading() = PersonViewState(loadingVisibility = View.VISIBLE)
-        fun showUnknownError(errorHandler: () -> Unit) = PersonViewState(errorViewState = PersonErrorViewState.asUnknownError(errorHandler))
-        fun showNoConnectivityError(errorHandler: () -> Unit) = PersonViewState(errorViewState = PersonErrorViewState.asConnectivity(errorHandler))
+        fun showUnknownError(errorHandler: () -> Unit) = PersonViewState(errorViewState = asUnknownError(errorHandler))
+        fun showNoConnectivityError(errorHandler: () -> Unit) = PersonViewState(errorViewState = asConnectivity(errorHandler))
         fun showPerson(contentViewStateValue: PersonContentViewState) = PersonViewState(contentViewState = contentViewStateValue)
         fun showNoDataAvailable() = PersonViewState(contentViewState = PersonContentViewState(dataAvailable = PersonRowViewState.noDataAvailableRow()))
     }
@@ -39,9 +35,9 @@ data class PersonContentViewState(
 /**
  * Represents the state of the error view.
  */
-class PersonErrorViewState(val visibility: Int = View.INVISIBLE,
-                           val isConnectivity: Boolean = false,
-                           val errorHandler: (() -> Unit)? = null) {
+data class PersonErrorViewState(val visibility: Int = View.INVISIBLE,
+                                val isConnectivity: Boolean = false,
+                                val errorHandler: (() -> Unit)? = null) {
 
     companion object {
         fun asConnectivity(handler: () -> Unit) = PersonErrorViewState(
