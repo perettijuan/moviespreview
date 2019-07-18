@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="viewState"
+            type="com.jpp.mpcredits.CreditPerson" />
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:padding="?attr/mpCreditItemPadding">
+
+        <com.jpp.mpdesign.views.MPImageView
+            android:id="@+id/creditsItemImageView"
+            android:layout_width="?attr/mpCreditItemImageSize"
+            android:layout_height="?attr/mpCreditItemImageSize"
+            app:circularUrl="@{viewState.profilePath}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/creditsItemTitle"
+            style="@style/MPTextViewTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@{viewState.title}"
+            app:layout_constraintBottom_toTopOf="@+id/creditsItemSubTitle"
+            app:layout_constraintEnd_toStartOf="@+id/creditsItemChevronImage"
+            app:layout_constraintStart_toEndOf="@+id/creditsItemImageView"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Title 1" />
+
+        <TextView
+            android:id="@+id/creditsItemSubTitle"
+            style="@style/MPTextViewSmall"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{viewState.subTitle}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/creditsItemTitle"
+            app:layout_constraintStart_toStartOf="@+id/creditsItemTitle"
+            app:layout_constraintTop_toBottomOf="@+id/creditsItemTitle"
+            tools:text="Title 2" />
+
+        <ImageView
+            android:id="@+id/creditsItemChevronImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_chevron_right_black" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

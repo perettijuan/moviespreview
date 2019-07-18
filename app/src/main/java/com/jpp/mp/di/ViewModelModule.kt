@@ -16,6 +16,7 @@ import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
 import com.jpp.mpaccount.account.UserAccountViewModel
 import com.jpp.mpaccount.account.lists.UserMovieListViewModel
 import com.jpp.mpaccount.login.LoginViewModel
+import com.jpp.mpcredits.CreditsViewModel
 import com.jpp.mpmoviedetails.MovieDetailsActionViewModel
 import com.jpp.mpmoviedetails.MovieDetailsViewModel
 import com.jpp.mpperson.PersonViewModel
@@ -137,5 +138,13 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(PersonViewModel::class)
     internal abstract fun getPersonViewModel(viewModel: PersonViewModel): ViewModel
+
+    /*
+     * Credits feature dependencies
+     */
+    @Binds
+    @IntoMap
+    @ViewModelKey(CreditsViewModel::class)
+    internal abstract fun provideCreditsViewModel(viewModel: CreditsViewModel): ViewModel
 
 }
