@@ -22,7 +22,7 @@ import com.jpp.mpdata.datasources.session.SessionDb
 import com.jpp.mpdata.datasources.tokens.AccessTokenApi
 import com.jpp.mpdata.preferences.LanguageDbImpl
 import com.jpp.mpdata.preferences.SessionDbImpl
-import com.jpp.mpdata.repository.about.AboutNavigationRepositoryImpl
+import com.jpp.mpdata.repository.about.AboutUrlRepositoryImpl
 import com.jpp.mpdata.repository.account.AccountRepositoryImpl
 import com.jpp.mpdata.repository.appversion.AppVersionRepositoryImpl
 import com.jpp.mpdata.repository.configuration.ConfigurationRepositoryImpl
@@ -194,7 +194,7 @@ class DataLayerModule {
     @Singleton
     @Provides
     fun providesAboutNavigationRepository(context: Context)
-            : AboutNavigationRepository = AboutNavigationRepositoryImpl(context)
+            : AboutUrlRepository = AboutUrlRepositoryImpl(context)
 
     /**********************************
      ****** LICENSES DEPENDENCIES *****

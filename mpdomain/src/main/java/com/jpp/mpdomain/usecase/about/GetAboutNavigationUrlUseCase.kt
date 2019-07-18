@@ -1,12 +1,13 @@
 package com.jpp.mpdomain.usecase.about
 
-import com.jpp.mpdomain.repository.AboutNavigationRepository
+import com.jpp.mpdomain.repository.AboutUrlRepository
 
 
 /**
  * Defines a UseCase that retrieves the URLs that are needed for navigate the content in the
  * about section of the application.
  */
+//TODO delete ME
 interface GetAboutNavigationUrlUseCase {
 
     /**
@@ -15,16 +16,16 @@ interface GetAboutNavigationUrlUseCase {
      */
     fun getUrlFor(navigationType: AboutNavigationType): String
 
-    class Impl(private val repository: AboutNavigationRepository) : GetAboutNavigationUrlUseCase {
+    class Impl(private val repository: AboutUrlRepository) : GetAboutNavigationUrlUseCase {
 
         override fun getUrlFor(navigationType: AboutNavigationType): String {
             return when (navigationType) {
-                is AboutNavigationType.TheMovieDbTermsOfUse -> repository.getTheMovieDbTermOfUseUrl()
-                is AboutNavigationType.AppCodeRepo -> repository.getCodeRepoUrl()
-                is AboutNavigationType.GooglePlayApp -> repository.getGPlayAppUrl()
-                is AboutNavigationType.GooglePlayWeb -> repository.getGPlayWebUrl()
-                is AboutNavigationType.ShareApp -> repository.getSharingUrl()
-                is AboutNavigationType.PrivacyPolicy -> repository.getPrivacyPolicyUrl()
+                is AboutNavigationType.TheMovieDbTermsOfUse -> repository.getTheMovieDbTermOfUseUrl().url
+                is AboutNavigationType.AppCodeRepo -> repository.getCodeRepoUrl().url
+                is AboutNavigationType.GooglePlayApp -> repository.getGPlayAppUrl().url
+                is AboutNavigationType.GooglePlayWeb -> repository.getGPlayWebUrl().url
+                is AboutNavigationType.ShareApp -> repository.getSharingUrl().url
+                is AboutNavigationType.PrivacyPolicy -> repository.getPrivacyPolicyUrl().url
             }
         }
     }

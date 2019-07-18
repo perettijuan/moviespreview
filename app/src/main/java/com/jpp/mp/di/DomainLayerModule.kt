@@ -39,8 +39,8 @@ class DomainLayerModule {
             : GetAppVersionUseCase = GetAppVersionUseCase.Impl(appVersionRepository)
 
     @Provides
-    fun providesGetAboutNavigationUrlUseCase(aboutNavigationRepository: AboutNavigationRepository)
-            : GetAboutNavigationUrlUseCase = GetAboutNavigationUrlUseCase.Impl(aboutNavigationRepository)
+    fun providesGetAboutNavigationUrlUseCase(aboutUrlRepository: AboutUrlRepository)
+            : GetAboutNavigationUrlUseCase = GetAboutNavigationUrlUseCase.Impl(aboutUrlRepository)
 
     @Provides
     fun providesGetAppLicensesUseCase(licensesRepository: LicensesRepository)
