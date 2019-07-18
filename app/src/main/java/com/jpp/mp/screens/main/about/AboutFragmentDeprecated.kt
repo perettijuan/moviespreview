@@ -18,13 +18,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
 import com.jpp.mp.ext.*
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_about.*
-import kotlinx.android.synthetic.main.list_item_about.view.*
+import kotlinx.android.synthetic.main.fragment_about_depreacted.*
+import kotlinx.android.synthetic.main.list_item_about_deprecated.view.*
 import javax.inject.Inject
 
 /**
  * Shows the about section in the application.
  */
+//TODO DELETE ME
 class AboutFragmentDeprecated : Fragment() {
 
     @Inject
@@ -40,7 +41,7 @@ class AboutFragmentDeprecated : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_about, container, false)
+        return inflater.inflate(R.layout.fragment_about_depreacted, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -118,7 +119,7 @@ class AboutFragmentDeprecated : Fragment() {
 
         override fun getItemCount() = items.size
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent.inflate(R.layout.list_item_about))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent.inflate(R.layout.list_item_about_deprecated))
 
         class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 

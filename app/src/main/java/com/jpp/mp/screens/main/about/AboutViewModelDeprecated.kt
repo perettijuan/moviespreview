@@ -16,6 +16,7 @@ import javax.inject.Inject
  *
  * Note: Untested for simplicity.
  */
+//TODO DELETE ME
 class AboutViewModelDeprecated @Inject constructor(private val appVersionUseCase: GetAppVersionUseCase,
                                                    private val getAboutNavigationUrlUseCase: GetAboutNavigationUrlUseCase) : ViewModel() {
 
