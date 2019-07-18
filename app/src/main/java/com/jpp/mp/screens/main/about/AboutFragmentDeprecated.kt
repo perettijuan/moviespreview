@@ -96,7 +96,7 @@ class AboutFragmentDeprecated : Fragment() {
     }
 
     private fun goToLicensesScreen() {
-        findNavController().navigate(AboutFragmentDirections.actionAboutFragmentToLicensesFragment())
+        //findNavController().navigate(AboutFragmentDirections.actionAboutFragmentToLicensesFragment())
     }
 
     private fun goToWebBrowser(url: String) {
