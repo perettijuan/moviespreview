@@ -15,7 +15,7 @@ interface GetAppVersionUseCase {
 
     class Impl(private val repository: AppVersionRepository) : GetAppVersionUseCase {
         override fun getCurrentAppVersion(): String {
-            return repository.getCurrentAppVersion()
+            return repository.getCurrentAppVersion().version
         }
     }
 }
