@@ -5,13 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
-import com.jpp.mp.common.extensions.addAllMapping
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.CrewMember
-import com.jpp.mpdomain.usecase.credits.GetCreditsResult
-import com.jpp.mpdomain.usecase.credits.GetCreditsUseCase
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -23,8 +18,7 @@ import javax.inject.Inject
  * as any new state is identified by the ViewModel.
  */
 //TODO JPP delete ME
-class CreditsViewModelDeprecated @Inject constructor(dispatchers: CoroutineDispatchers,
-                                                     private val getCreditsUseCase: GetCreditsUseCase)
+class CreditsViewModelDeprecated @Inject constructor(dispatchers: CoroutineDispatchers)
     : MPScopedViewModel(dispatchers) {
 
     private val viewStateLiveData by lazy { MutableLiveData<CreditsViewState>() }
@@ -80,36 +74,8 @@ class CreditsViewModelDeprecated @Inject constructor(dispatchers: CoroutineDispa
      */
     private fun pushLoadingAndFetchMovieCredits(movieId: Double, targetImageSize: Int) {
         viewStateLiveData.value = CreditsViewState.Loading
-        launch {
-            viewStateLiveData.value = fetchMovieCredits(movieId, targetImageSize)
-        }
     }
 
-    /**
-     * Fetches the credits of the movie identified by [movieId].
-     * @return a [CreditsViewState] that is posted in viewState in order
-     * to update the UI.
-     */
-    private suspend fun fetchMovieCredits(movieId: Double, targetImageSize: Int): CreditsViewState = withContext(dispatchers.default()) {
-        getCreditsUseCase
-                .getCreditsForMovie(movieId)
-                .let { ucResult ->
-                    when (ucResult) {
-                        is GetCreditsResult.ErrorNoConnectivity -> CreditsViewState.ErrorNoConnectivity
-                        is GetCreditsResult.ErrorUnknown -> CreditsViewState.ErrorUnknown
-                        is GetCreditsResult.Success -> {
-                            ucResult.credits
-                                    .cast
-                                    .map { mapCastCharacterToCreditPerson(it) }
-                                    .toMutableList()
-                                    .addAllMapping { ucResult.credits.crew.map { crewMember -> mapCrewMemberToCreditPerson(crewMember) } }
-                                    .let {
-                                        CreditsViewState.ShowCredits(it)
-                                    }
-                        }
-                    }
-                }
-    }
 
     /**
      * Map a [CastCharacter] to a [CreditPerson].

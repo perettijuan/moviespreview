@@ -4,14 +4,9 @@ import com.jpp.mp.screens.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
 import com.jpp.mpdomain.CrewMember
-import com.jpp.mpdomain.usecase.credits.GetCreditsResult
-import com.jpp.mpdomain.usecase.credits.GetCreditsUseCase
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
-import io.mockk.every
-import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -21,8 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
 class CreditsViewModelTest {
 
-    @MockK
-    private lateinit var getCreditsUseCase: GetCreditsUseCase
 
     private lateinit var subject: CreditsViewModelDeprecated
     private val movieId = 121.toDouble()
@@ -31,8 +24,7 @@ class CreditsViewModelTest {
     @BeforeEach
     fun setUp() {
         subject = CreditsViewModelDeprecated(
-                TestCoroutineDispatchers(),
-                getCreditsUseCase
+                TestCoroutineDispatchers()
         )
     }
 
@@ -46,7 +38,7 @@ class CreditsViewModelTest {
         )
         val expectedUiListSize = cast.size + crew.size
 
-        every { getCreditsUseCase.getCreditsForMovie(any()) } returns GetCreditsResult.Success(credits)
+//        every { getCreditsUseCase.getCreditsForMovie(any()) } returns GetCreditsResult.Success(credits)
 //        every { configCastCharacterUseCase.configure(any(), any()) } answers { arg(1) }
 
         subject.viewState().observeWith { viewStatePosted.add(it) }
@@ -77,7 +69,7 @@ class CreditsViewModelTest {
         }
 
         // use cases are executed
-        verify(exactly = 1) { getCreditsUseCase.getCreditsForMovie(movieId) }
+//        verify(exactly = 1) { getCreditsUseCase.getCreditsForMovie(movieId) }
 //        verify(exactly = cast.size) { configCastCharacterUseCase.configure(targetImageSize, any()) }
     }
 
@@ -86,7 +78,7 @@ class CreditsViewModelTest {
     fun `Should execute use and show connectivity error`() {
         val viewStatePosted = mutableListOf<CreditsViewState>()
 
-        every { getCreditsUseCase.getCreditsForMovie(any()) } returns GetCreditsResult.ErrorNoConnectivity
+//        every { getCreditsUseCase.getCreditsForMovie(any()) } returns GetCreditsResult.ErrorNoConnectivity
 
         subject.viewState().observeWith { viewStatePosted.add(it) }
 
@@ -100,7 +92,7 @@ class CreditsViewModelTest {
     fun `Should execute use and show unknown error`() {
         val viewStatePosted = mutableListOf<CreditsViewState>()
 
-        every { getCreditsUseCase.getCreditsForMovie(any()) } returns GetCreditsResult.ErrorUnknown
+//        every { getCreditsUseCase.getCreditsForMovie(any()) } returns GetCreditsResult.ErrorUnknown
 
         subject.viewState().observeWith { viewStatePosted.add(it) }
 
@@ -112,22 +104,22 @@ class CreditsViewModelTest {
 
     @Test
     fun `Should retry if state is error unknown`() {
-        every { getCreditsUseCase.getCreditsForMovie(any()) } returns GetCreditsResult.ErrorUnknown
+//        every { getCreditsUseCase.getCreditsForMovie(any()) } returns GetCreditsResult.ErrorUnknown
 
         subject.init(movieId, targetImageSize)
         subject.retry()
 
-        verify(exactly = 2) { getCreditsUseCase.getCreditsForMovie(movieId) }
+//        verify(exactly = 2) { getCreditsUseCase.getCreditsForMovie(movieId) }
     }
 
     @Test
     fun `Should retry if state is error connectivity`() {
-        every { getCreditsUseCase.getCreditsForMovie(any()) } returns GetCreditsResult.ErrorNoConnectivity
+//        every { getCreditsUseCase.getCreditsForMovie(any()) } returns GetCreditsResult.ErrorNoConnectivity
 
         subject.init(movieId, targetImageSize)
         subject.retry()
 
-        verify(exactly = 2) { getCreditsUseCase.getCreditsForMovie(movieId) }
+//        verify(exactly = 2) { getCreditsUseCase.getCreditsForMovie(movieId) }
     }
 
     @Test
@@ -138,13 +130,13 @@ class CreditsViewModelTest {
                 crew = crew
         )
 
-        every { getCreditsUseCase.getCreditsForMovie(any()) } returns GetCreditsResult.Success(credits)
+//        every { getCreditsUseCase.getCreditsForMovie(any()) } returns GetCreditsResult.Success(credits)
 //        every { configCastCharacterUseCase.configure(any(), any()) } answers { arg(1) }
 
         subject.init(movieId, targetImageSize)
         subject.retry()
 
-        verify(exactly = 1) { getCreditsUseCase.getCreditsForMovie(movieId) }
+//        verify(exactly = 1) { getCreditsUseCase.getCreditsForMovie(movieId) }
     }
 
     @Test
