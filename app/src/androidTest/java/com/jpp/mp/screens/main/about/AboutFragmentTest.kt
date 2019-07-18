@@ -33,10 +33,10 @@ class AboutFragmentTest {
     val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java, true, false) {}
 
     private fun launchAndInjectFragment() {
-        activityTestRule.activity.startFragment(AboutFragment(), this@AboutFragmentTest::inject)
+        activityTestRule.activity.startFragment(AboutFragmentDeprecated(), this@AboutFragmentTest::inject)
     }
 
-    private fun inject(fragment: AboutFragment) {
+    private fun inject(fragment: AboutFragmentDeprecated) {
         every { viewModelMock.viewState() } returns viewStateLiveData
         every { viewModelMock.navEvents() } returns navigationEvents
         fragment.viewModelFactory = TestMPViewModelFactory().apply {
@@ -46,7 +46,7 @@ class AboutFragmentTest {
 
     private val viewStateLiveData = MutableLiveData<AboutViewState>()
     private val navigationEvents = SingleLiveEvent<AboutNavEvent>()
-    private val viewModelMock = mockk<AboutViewModel>(relaxed = true)
+    private val viewModelMock = mockk<AboutViewModelDeprecated>(relaxed = true)
     private val supportedAboutItems by lazy {
         listOf(
                 AboutItem.RateApp,

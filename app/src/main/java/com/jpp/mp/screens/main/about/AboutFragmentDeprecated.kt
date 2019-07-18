@@ -18,14 +18,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
 import com.jpp.mp.ext.*
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_about.*
-import kotlinx.android.synthetic.main.list_item_about.view.*
+import kotlinx.android.synthetic.main.fragment_about_depreacted.*
+import kotlinx.android.synthetic.main.list_item_about_deprecated.view.*
 import javax.inject.Inject
 
 /**
  * Shows the about section in the application.
  */
-class AboutFragment : Fragment() {
+//TODO DELETE ME
+class AboutFragmentDeprecated : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -40,7 +41,7 @@ class AboutFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_about, container, false)
+        return inflater.inflate(R.layout.fragment_about_depreacted, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -49,13 +50,13 @@ class AboutFragment : Fragment() {
         withViewModel {
             init()
 
-            viewState().observe(this@AboutFragment.viewLifecycleOwner, Observer { viewState ->
+            viewState().observe(this@AboutFragmentDeprecated.viewLifecycleOwner, Observer { viewState ->
                 when (viewState) {
                     is AboutViewState.InitialContent -> renderContent(viewState.appVersion, viewState.aboutItems)
                 }
             })
 
-            navEvents().observe(this@AboutFragment.viewLifecycleOwner, Observer { navEvent ->
+            navEvents().observe(this@AboutFragmentDeprecated.viewLifecycleOwner, Observer { navEvent ->
                 when (navEvent) {
                     is AboutNavEvent.InnerNavigation -> navigateInnerBrowser(navEvent.url)
                     is AboutNavEvent.OpenGooglePlay -> goToRateAppScreen(navEvent.url)
@@ -68,10 +69,10 @@ class AboutFragment : Fragment() {
     }
 
     /**
-     * Helper function to execute actions with the [AboutViewModel].
+     * Helper function to execute actions with the [AboutViewModelDeprecated].
      */
-    private fun withViewModel(action: AboutViewModel.() -> Unit) {
-        getViewModel<AboutViewModel>(viewModelFactory).action()
+    private fun withViewModel(action: AboutViewModelDeprecated.() -> Unit) {
+        getViewModel<AboutViewModelDeprecated>(viewModelFactory).action()
     }
 
     private fun renderContent(appVersion: String, aboutItems: List<AboutItem>) {
@@ -95,7 +96,7 @@ class AboutFragment : Fragment() {
     }
 
     private fun goToLicensesScreen() {
-        findNavController().navigate(AboutFragmentDirections.actionAboutFragmentToLicensesFragment())
+        //findNavController().navigate(AboutFragmentDirections.actionAboutFragmentToLicensesFragment())
     }
 
     private fun goToWebBrowser(url: String) {
@@ -118,7 +119,7 @@ class AboutFragment : Fragment() {
 
         override fun getItemCount() = items.size
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent.inflate(R.layout.list_item_about))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent.inflate(R.layout.list_item_about_deprecated))
 
         class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 

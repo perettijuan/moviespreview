@@ -18,18 +18,18 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
 @ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
-class AboutViewModelTest {
+class AboutViewModelDeprecatedTest {
 
     @RelaxedMockK
     private lateinit var appVersionUseCase: GetAppVersionUseCase
     @RelaxedMockK
     private lateinit var getAboutNavigationUrlUseCase: GetAboutNavigationUrlUseCase
 
-    private lateinit var subject: AboutViewModel
+    private lateinit var subject: AboutViewModelDeprecated
 
     @BeforeEach
     fun setUp() {
-        subject = AboutViewModel(appVersionUseCase, getAboutNavigationUrlUseCase)
+        subject = AboutViewModelDeprecated(appVersionUseCase, getAboutNavigationUrlUseCase)
     }
 
     @Test

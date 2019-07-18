@@ -9,7 +9,7 @@ buildscript {
 
         // We recommend changing it to the latest version from our changelog:
         // https://docs.fabric.io/android/changelog.html#fabric-gradle-plugin
-        classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'io.fabric.tools:gradle:1.30.0'
     }
 }
 
@@ -114,6 +114,7 @@ dependencies {
     implementation project(path: ':features:mpsearch')
     implementation project(path: ':features:mpperson')
     implementation project(path: ':features:mpcredits')
+    implementation project(path: ':features:mpabout')
 
     testImplementation deps.test.junit5.jupiter.api         // <-- allows running JUnit5 tests
     testImplementation deps.test.junit5.jupiter.params      // <-- allows running JUnit5 parameterized tests
