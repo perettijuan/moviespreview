@@ -16,8 +16,8 @@ import javax.inject.Inject
  *
  * Note: Untested for simplicity.
  */
-class AboutViewModel @Inject constructor(private val appVersionUseCase: GetAppVersionUseCase,
-                                         private val getAboutNavigationUrlUseCase: GetAboutNavigationUrlUseCase) : ViewModel() {
+class AboutViewModelDeprecated @Inject constructor(private val appVersionUseCase: GetAppVersionUseCase,
+                                                   private val getAboutNavigationUrlUseCase: GetAboutNavigationUrlUseCase) : ViewModel() {
 
     private val viewStateLiveData by lazy { MutableLiveData<AboutViewState>() }
     private val navigationEvents by lazy { SingleLiveEvent<AboutNavEvent>() }
@@ -33,7 +33,7 @@ class AboutViewModel @Inject constructor(private val appVersionUseCase: GetAppVe
     }
 
     /**
-     * Called on initialization of the AboutFragment.
+     * Called on initialization of the AboutFragmentDeprecated.
      */
     fun init() {
         appVersionUseCase

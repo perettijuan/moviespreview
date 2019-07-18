@@ -25,7 +25,7 @@ import javax.inject.Inject
 /**
  * Shows the about section in the application.
  */
-class AboutFragment : Fragment() {
+class AboutFragmentDeprecated : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -49,13 +49,13 @@ class AboutFragment : Fragment() {
         withViewModel {
             init()
 
-            viewState().observe(this@AboutFragment.viewLifecycleOwner, Observer { viewState ->
+            viewState().observe(this@AboutFragmentDeprecated.viewLifecycleOwner, Observer { viewState ->
                 when (viewState) {
                     is AboutViewState.InitialContent -> renderContent(viewState.appVersion, viewState.aboutItems)
                 }
             })
 
-            navEvents().observe(this@AboutFragment.viewLifecycleOwner, Observer { navEvent ->
+            navEvents().observe(this@AboutFragmentDeprecated.viewLifecycleOwner, Observer { navEvent ->
                 when (navEvent) {
                     is AboutNavEvent.InnerNavigation -> navigateInnerBrowser(navEvent.url)
                     is AboutNavEvent.OpenGooglePlay -> goToRateAppScreen(navEvent.url)
@@ -68,10 +68,10 @@ class AboutFragment : Fragment() {
     }
 
     /**
-     * Helper function to execute actions with the [AboutViewModel].
+     * Helper function to execute actions with the [AboutViewModelDeprecated].
      */
-    private fun withViewModel(action: AboutViewModel.() -> Unit) {
-        getViewModel<AboutViewModel>(viewModelFactory).action()
+    private fun withViewModel(action: AboutViewModelDeprecated.() -> Unit) {
+        getViewModel<AboutViewModelDeprecated>(viewModelFactory).action()
     }
 
     private fun renderContent(appVersion: String, aboutItems: List<AboutItem>) {
