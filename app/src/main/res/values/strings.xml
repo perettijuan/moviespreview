@@ -7,21 +7,9 @@
     <string name="main_menu_top_rated">Top Rated</string>
     <string name="main_menu_upcoming">Upcoming</string>
     <string name="main_activity_search_menu_title">Search</string>
-    <string name="about_menu_item">About</string>
+    <string name="about_menu_item">@string/about_generic</string>
     <!-- End Main Activity -->
 
-    <!-- About -->
-    <string name="about_top_bar_title" translatable="false">@string/about_menu_item</string>
-    <string name="about_rate_app_action">Rate app</string>
-    <string name="about_share_app_action">Share app</string>
-    <string name="about_privacy_policy_action">Privacy Policy</string>
-    <string name="about_brows_code_action">Browse app code</string>
-    <string name="about_open_source_action">Open source licenses</string>
-    <string name="about_the_movie_db_terms_of_use">The Movie DB Terms of Use</string>
-    <string name="about_content">Movies Preview is an application developed to verify some development ideas and to have an example of how some things can be done in the Android world.\n
-                              It provides to the user access to The Movie DB, browsing the information available in the database. </string>
-    <string name="share_app_text">Hey check out this app: %1$s </string>
-    <!-- End About -->
 
     <!-- Nav Header -->
     <string name="nav_header_login">@string/login_generic</string>
