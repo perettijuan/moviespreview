@@ -33,6 +33,12 @@ class CreditsCache(private val roomDatabase: MPRoomDataBase,
         }
     }
 
+    override fun clearAllData() {
+        withCreditsDao {
+            deleteAllCastCharacters()
+            deleteAllCrew()
+        }
+    }
 
     private fun <T> withCreditsDao(action: CreditsDao.() -> T): T = with(roomDatabase.creditsDao()) { action.invoke(this) }
     private fun <T> transformWithAdapter(action: RoomModelAdapter.() -> T): T = with(adapter) { action.invoke(this) }

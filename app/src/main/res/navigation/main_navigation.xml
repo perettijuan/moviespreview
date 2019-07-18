@@ -9,6 +9,7 @@
     <include app:graph="@navigation/movie_details_nav"/>
     <include app:graph="@navigation/search_nav"/>
     <include app:graph="@navigation/person_nav"/>
+    <include app:graph="@navigation/credits_nav"/>
 
     <fragment
         android:id="@+id/playingMoviesFragment"
@@ -30,24 +31,6 @@
         android:name="com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment"
         android:label="@string/main_menu_top_rated"
         tools:layout="@layout/fragment_movies"/>
-    <fragment
-        android:id="@+id/creditsFragment"
-        android:name="com.jpp.mp.screens.main.credits.CreditsFragment"
-        tools:layout="@layout/fragment_credits">
-        <argument
-            android:name="movieId"
-            app:argType="string" />
-        <argument
-            android:name="movieTitle"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_creditsFragment_to_personFragment"
-            app:destination="@id/personFragment"
-            app:enterAnim="@anim/fragment_enter_slide_right"
-            app:exitAnim="@anim/fragment_exit_slide_right"
-            app:popEnterAnim="@anim/fragment_enter_slide_left"
-            app:popExitAnim="@anim/fragment_exit_slide_left"/>
-    </fragment>
     <fragment
         android:id="@+id/aboutFragment"
         android:name="com.jpp.mp.screens.main.about.AboutFragment"

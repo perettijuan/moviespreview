@@ -13,4 +13,8 @@ class CreditsRepositoryImpl(private val creditsApi: CreditsApi,
             }
         }
     }
+
+    override fun flushCreditsData() {
+        creditsDb.clearAllData()
+    }
 }

@@ -17,4 +17,9 @@ interface CreditsDb {
      * Stores the provided [credits] in the local storage of the device.
      */
     fun storeCredits(credits: Credits)
+
+    /**
+     * Clear all stored data.
+     */
+    fun clearAllData()
 }

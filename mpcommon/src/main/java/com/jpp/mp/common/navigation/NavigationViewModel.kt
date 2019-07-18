@@ -37,6 +37,10 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
         _navEvents.value = of(Destination.MPMovieDetails(movieId, movieImageUrl, movieTitle, transitionView))
     }
 
+    fun navigateToMovieCredits(movieId: Double, movieTitle: String) {
+        _navEvents.value = of(Destination.MPCredits(movieId, movieTitle))
+    }
+
     fun navigateToPersonDetails(personId: String, personImageUrl: String, personName: String) {
         _navEvents.value = of(Destination.MPPerson(personId, personImageUrl, personName))
     }

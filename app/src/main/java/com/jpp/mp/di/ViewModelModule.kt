@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.screens.main.MainActivityViewModel
 import com.jpp.mp.screens.main.about.AboutViewModel
-import com.jpp.mp.screens.main.credits.CreditsViewModel
 import com.jpp.mp.screens.main.header.NavigationHeaderViewModel
 import com.jpp.mp.screens.main.licenses.LicensesViewModel
 import com.jpp.mp.screens.main.licenses.content.LicenseContentViewModel
@@ -16,6 +15,7 @@ import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
 import com.jpp.mpaccount.account.UserAccountViewModel
 import com.jpp.mpaccount.account.lists.UserMovieListViewModel
 import com.jpp.mpaccount.login.LoginViewModel
+import com.jpp.mpcredits.CreditsViewModel
 import com.jpp.mpmoviedetails.MovieDetailsActionViewModel
 import com.jpp.mpmoviedetails.MovieDetailsViewModel
 import com.jpp.mpperson.PersonViewModel
@@ -57,11 +57,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MainActivityViewModel::class)
     internal abstract fun postMainActivityViewModel(viewModel: MainActivityViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(CreditsViewModel::class)
-    internal abstract fun postCreditsViewModel(viewModel: CreditsViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -137,5 +132,13 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(PersonViewModel::class)
     internal abstract fun getPersonViewModel(viewModel: PersonViewModel): ViewModel
+
+    /*
+     * Credits feature dependencies
+     */
+    @Binds
+    @IntoMap
+    @ViewModelKey(CreditsViewModel::class)
+    internal abstract fun provideCreditsViewModel(viewModel: CreditsViewModel): ViewModel
 
 }

@@ -61,6 +61,13 @@ sealed class Destination {
                         val personName: String) : Destination()
 
     /*
+     * Destination used to perform inter-module navigation to the credits
+     * module.
+     */
+    data class MPCredits(val movieId: Double,
+                         val movieTitle: String) : Destination()
+
+    /*
      * Represents a Destination that is internal to a module.
      */
     data class InnerDestination(val directions: NavDirections) : Destination()

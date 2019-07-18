@@ -2,6 +2,7 @@ package com.jpp.mpmoviedetails
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.viewstate.HandledViewState
@@ -46,6 +47,7 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
 
 
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<MovieDetailViewState>>() }
+    private val _navEvents by lazy { SingleLiveEvent<MovieDetailsNavigationEvent>() }
     private var movieId: Double = 0.0
     private lateinit var movieTitle: String
 
@@ -80,11 +82,23 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
     }
 
     /**
+     * Called when the user attempts to open the credits section.
+     */
+    fun onMovieCreditsSelected() {
+        _navEvents.value = MovieDetailsNavigationEvent.GoToCredits(movieId, movieTitle)
+    }
+
+    /**
      * Subscribe to this [LiveData] in order to get notified about the different states that
      * the view should render.
      */
     val viewStates: LiveData<HandledViewState<MovieDetailViewState>> get() = _viewStates
 
+    /**
+     * Subscribe to this [LiveData] in order to get notified about navigation steps that
+     * should be performed by the view.
+     */
+    val navEvents: LiveData<MovieDetailsNavigationEvent> get() = _navEvents
 
     private fun executeFetchMovieDetailStep(movieId: Double, movieTitle: String): MovieDetailViewState {
         withMovieDetailsInteractor { fetchMovieDetail(movieId) }

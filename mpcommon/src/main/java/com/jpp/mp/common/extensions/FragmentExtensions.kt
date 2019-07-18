@@ -27,6 +27,15 @@ fun Fragment.getScreenWidthInPixels(): Int {
 }
 
 /**
+ * Retrieves the identifier of a given attribute defined in the Activity's theme.
+ */
+fun Fragment.getResIdFromAttribute(attr: Int): Int {
+    val tp = android.util.TypedValue()
+    activity?.theme?.resolveAttribute(attr, tp, true)
+    return tp.resourceId
+}
+
+/**
  * Extension function to find a ViewModel in the Activity of the Fragment.
  */
 inline fun <reified T : ViewModel> Fragment.getViewModel(viewModelFactory: ViewModelProvider.Factory): T {

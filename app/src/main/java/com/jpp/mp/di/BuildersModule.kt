@@ -2,7 +2,6 @@ package com.jpp.mp.di
 
 import com.jpp.mp.screens.main.MainActivity
 import com.jpp.mp.screens.main.about.AboutFragment
-import com.jpp.mp.screens.main.credits.CreditsFragment
 import com.jpp.mp.screens.main.header.NavigationHeaderFragment
 import com.jpp.mp.screens.main.licenses.LicensesFragment
 import com.jpp.mp.screens.main.licenses.content.LicenseContentFragment
@@ -13,6 +12,7 @@ import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
 import com.jpp.mpaccount.account.UserAccountFragment
 import com.jpp.mpaccount.account.lists.UserMovieListFragment
 import com.jpp.mpaccount.login.LoginFragment
+import com.jpp.mpcredits.CreditsFragment
 import com.jpp.mpmoviedetails.MovieDetailsFragment
 import com.jpp.mpperson.PersonFragment
 import com.jpp.mpsearch.SearchFragment
@@ -40,9 +40,6 @@ abstract class BuildersModule {
     abstract fun bindMovieDetailsFragment(): MovieDetailsFragment
 
     @ContributesAndroidInjector
-    abstract fun bindCreditsFragment(): CreditsFragment
-
-    @ContributesAndroidInjector
     abstract fun bindAboutFragment(): AboutFragment
 
     @ContributesAndroidInjector
@@ -68,4 +65,7 @@ abstract class BuildersModule {
 
     @ContributesAndroidInjector
     abstract fun bindPersonFragment(): PersonFragment
+
+    @ContributesAndroidInjector
+    abstract fun bindCreditsFragment(): CreditsFragment
 }
