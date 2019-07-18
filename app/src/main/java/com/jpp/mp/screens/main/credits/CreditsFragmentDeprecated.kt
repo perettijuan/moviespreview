@@ -6,13 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
-import com.jpp.mp.ext.*
+import com.jpp.mp.ext.inflate
+import com.jpp.mp.ext.loadImageUrlAsCircular
+import com.jpp.mp.ext.setInvisible
+import com.jpp.mp.ext.setVisible
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_credits_deprecated.*
 import kotlinx.android.synthetic.main.list_item_credits_deprecated.view.*
@@ -33,61 +33,6 @@ class CreditsFragmentDeprecated : Fragment() {
         return inflater.inflate(R.layout.fragment_credits_deprecated, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        val args = arguments
-                ?: throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the contentViewState")
-
-        withViewModel {
-//            init(movieId = fromBundle(args).movieId.toDouble(),
-//                    targetImageSize = resources.getDimensionPixelSize(getResIdFromAttribute(R.attr.mpCreditItemImageSize)))
-
-            viewState().observe(this@CreditsFragmentDeprecated.viewLifecycleOwner, Observer { viewState ->
-                when (viewState) {
-                    is CreditsViewState.Loading -> renderLoading()
-                    is CreditsViewState.ErrorUnknown -> {
-                        creditsErrorView.asUnknownError { retry() }
-                        renderError()
-                    }
-                    is CreditsViewState.ErrorNoConnectivity -> {
-                        creditsErrorView.asNoConnectivityError { retry() }
-                        renderError()
-                    }
-                    is CreditsViewState.ShowCredits -> {
-                        creditsRv.apply {
-                            layoutManager = LinearLayoutManager(context)
-                            adapter = CreditsAdapter(viewState.credits) { onCreditItemSelected(it) }
-                            addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
-                        }
-                        renderCredits()
-                    }
-                }
-            })
-
-            navEvents().observe(this@CreditsFragmentDeprecated.viewLifecycleOwner, Observer { navEvent ->
-                when (navEvent) {
-                    is CreditsNavigationEvent.ToPerson -> {
-                        //TODO JPP re-enable navigation once Person module is done
-//                        findNavController().navigate(
-//                                CreditsFragmentDirections.actionCreditsFragmentToPersonFragment(
-//                                        navEvent.personId,
-//                                        navEvent.personImageUrl,
-//                                        navEvent.personName
-//                                )
-//                        )
-                    }
-                }
-            })
-        }
-    }
-
-    /**
-     * Helper function to execute actions with the [CreditsViewModelDeprecated].
-     */
-    private fun withViewModel(action: CreditsViewModelDeprecated.() -> Unit) {
-        getViewModel<CreditsViewModelDeprecated>(viewModelFactory).action()
-    }
 
     private fun renderLoading() {
         creditsErrorView.setInvisible()
