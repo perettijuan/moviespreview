@@ -4,7 +4,6 @@ import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mpdomain.repository.*
 import com.jpp.mpdomain.usecase.about.GetAboutNavigationUrlUseCase
 import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase
-import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
 import com.jpp.mpdomain.usecase.credits.GetCreditsUseCase
 import com.jpp.mpdomain.usecase.licenses.GetAppLicensesUseCase
 import com.jpp.mpdomain.usecase.licenses.GetLicenseUseCase
@@ -40,10 +39,6 @@ class DomainLayerModule {
     fun providesGetCreditsUseCase(creditsRepository: CreditsRepository,
                                   connectivityRepository: ConnectivityRepository)
             : GetCreditsUseCase = GetCreditsUseCase.Impl(creditsRepository, connectivityRepository)
-
-    @Provides
-    fun providesConfigCastCharacterUseCase(configurationRepository: ConfigurationRepository)
-            : ConfigCastCharacterUseCase = ConfigCastCharacterUseCase.Impl(configurationRepository)
 
     @Provides
     fun providesGetAppVersionUseCase(appVersionRepository: AppVersionRepository)

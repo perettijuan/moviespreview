@@ -4,7 +4,6 @@ import com.jpp.mp.screens.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
 import com.jpp.mpdomain.CrewMember
-import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
 import com.jpp.mpdomain.usecase.credits.GetCreditsResult
 import com.jpp.mpdomain.usecase.credits.GetCreditsUseCase
 import com.jpp.mptestutils.InstantTaskExecutorExtension
@@ -24,8 +23,6 @@ class CreditsViewModelTest {
 
     @MockK
     private lateinit var getCreditsUseCase: GetCreditsUseCase
-    @MockK
-    private lateinit var configCastCharacterUseCase: ConfigCastCharacterUseCase
 
     private lateinit var subject: CreditsViewModelDeprecated
     private val movieId = 121.toDouble()
@@ -35,8 +32,7 @@ class CreditsViewModelTest {
     fun setUp() {
         subject = CreditsViewModelDeprecated(
                 TestCoroutineDispatchers(),
-                getCreditsUseCase,
-                configCastCharacterUseCase
+                getCreditsUseCase
         )
     }
 
@@ -51,7 +47,7 @@ class CreditsViewModelTest {
         val expectedUiListSize = cast.size + crew.size
 
         every { getCreditsUseCase.getCreditsForMovie(any()) } returns GetCreditsResult.Success(credits)
-        every { configCastCharacterUseCase.configure(any(), any()) } answers { arg(1) }
+//        every { configCastCharacterUseCase.configure(any(), any()) } answers { arg(1) }
 
         subject.viewState().observeWith { viewStatePosted.add(it) }
 
@@ -82,7 +78,7 @@ class CreditsViewModelTest {
 
         // use cases are executed
         verify(exactly = 1) { getCreditsUseCase.getCreditsForMovie(movieId) }
-        verify(exactly = cast.size) { configCastCharacterUseCase.configure(targetImageSize, any()) }
+//        verify(exactly = cast.size) { configCastCharacterUseCase.configure(targetImageSize, any()) }
     }
 
 
@@ -143,7 +139,7 @@ class CreditsViewModelTest {
         )
 
         every { getCreditsUseCase.getCreditsForMovie(any()) } returns GetCreditsResult.Success(credits)
-        every { configCastCharacterUseCase.configure(any(), any()) } answers { arg(1) }
+//        every { configCastCharacterUseCase.configure(any(), any()) } answers { arg(1) }
 
         subject.init(movieId, targetImageSize)
         subject.retry()

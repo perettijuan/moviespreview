@@ -2,13 +2,12 @@ package com.jpp.mp.screens.main.credits
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.common.extensions.addAllMapping
+import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
-import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
+import com.jpp.mp.common.extensions.addAllMapping
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.CrewMember
-import com.jpp.mpdomain.usecase.credits.ConfigCastCharacterUseCase
 import com.jpp.mpdomain.usecase.credits.GetCreditsResult
 import com.jpp.mpdomain.usecase.credits.GetCreditsUseCase
 import kotlinx.coroutines.launch
@@ -25,8 +24,7 @@ import javax.inject.Inject
  */
 //TODO JPP delete ME
 class CreditsViewModelDeprecated @Inject constructor(dispatchers: CoroutineDispatchers,
-                                                     private val getCreditsUseCase: GetCreditsUseCase,
-                                                     private val configCastCharacterUseCase: ConfigCastCharacterUseCase)
+                                                     private val getCreditsUseCase: GetCreditsUseCase)
     : MPScopedViewModel(dispatchers) {
 
     private val viewStateLiveData by lazy { MutableLiveData<CreditsViewState>() }
@@ -61,7 +59,7 @@ class CreditsViewModelDeprecated @Inject constructor(dispatchers: CoroutineDispa
      * A new state is posted in navEvents() in order to handle the event.
      */
     fun onCreditItemSelected(personItem: CreditPerson) {
-        with (personItem) {
+        with(personItem) {
             navigationEvents.value = CreditsNavigationEvent.ToPerson(personId = id.toString(), personImageUrl = profilePath, personName = subTitle)
         }
     }
@@ -102,7 +100,6 @@ class CreditsViewModelDeprecated @Inject constructor(dispatchers: CoroutineDispa
                         is GetCreditsResult.Success -> {
                             ucResult.credits
                                     .cast
-                                    .map { configCastCharacterUseCase.configure(targetImageSize, it) }
                                     .map { mapCastCharacterToCreditPerson(it) }
                                     .toMutableList()
                                     .addAllMapping { ucResult.credits.crew.map { crewMember -> mapCrewMemberToCreditPerson(crewMember) } }
