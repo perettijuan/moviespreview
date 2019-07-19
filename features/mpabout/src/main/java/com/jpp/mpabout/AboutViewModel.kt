@@ -40,7 +40,6 @@ class AboutViewModel @Inject constructor(coroutineDispatchers: CoroutineDispatch
                         aboutItems = supportedAboutItems))
                 is AboutUrlEvent -> processAboutUrl(event.aboutUrl)
                 is AboutWebStoreUrlEvent -> _navEvents.value = AboutNavEvent.InnerNavigation(event.aboutUrl.url)
-                //TODO JPP AppLanguageChanged and AboutUrlEvent
             }
         }
     }

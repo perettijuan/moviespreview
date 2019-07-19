@@ -18,23 +18,15 @@ import javax.inject.Singleton
  */
 @Singleton
 class AboutInteractor @Inject constructor(private val appVersionRepository: AppVersionRepository,
-                                          private val aboutUrlRepository: AboutUrlRepository,
-                                          languageRepository: LanguageRepository) {
+                                          private val aboutUrlRepository: AboutUrlRepository) {
 
     sealed class AboutEvent {
-        object AppLanguageChanged : AboutEvent()
         data class AppVersionEvent(val appVersion: AppVersion) : AboutEvent()
         data class AboutUrlEvent(val aboutUrl: AboutUrl) : AboutEvent()
         data class AboutWebStoreUrlEvent(val aboutUrl: AboutUrl) : AboutEvent()
     }
 
     private val _events by lazy { MediatorLiveData<AboutEvent>() }
-
-    init {
-        _events.addSource(languageRepository.updates()) {
-            _events.postValue(AppLanguageChanged)
-        }
-    }
 
     /**
      * @return a [LiveData] of [AboutEvent]. Subscribe to this [LiveData]
