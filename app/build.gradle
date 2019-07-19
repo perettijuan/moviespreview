@@ -89,9 +89,6 @@ dependencies {
     implementation deps.androidx.room.runtime
     kapt deps.androidx.room.compiler
 
-    // Custom tabs
-    implementation "androidx.browser:browser:1.0.0"
-
     // Crashlytics
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.9@aar') {
         transitive = true

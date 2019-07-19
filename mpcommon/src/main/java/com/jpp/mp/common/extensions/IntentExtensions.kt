@@ -1,4 +1,4 @@
-package com.jpp.mp.ext
+package com.jpp.mp.common.extensions
 
 import android.content.Intent
 import android.net.Uri

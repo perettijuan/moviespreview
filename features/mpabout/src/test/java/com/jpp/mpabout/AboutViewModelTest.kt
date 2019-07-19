@@ -9,6 +9,7 @@ import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.verify
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -16,6 +17,8 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 
 @ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
 class AboutViewModelTest {
@@ -60,7 +63,58 @@ class AboutViewModelTest {
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
 
         assertEquals(View.VISIBLE, viewStatePosted?.content?.visibility)
-        assertEquals(expectedAppVersion, viewStatePosted?.content?.appVersion)
+        assertEquals(expectedAppVersion, viewStatePosted?.header?.appVersion)
         assertEquals(expectedAboutItems, viewStatePosted?.content?.aboutItems)
+    }
+
+    @ParameterizedTest
+    @MethodSource("executeInteractionTests")
+    fun `Should request proper URL when navigation item selected`(param: AboutInteractorTestParam) {
+
+        subject.onUserSelectedAboutItem(param.selected)
+
+        param.verification.invoke(aboutInteractor)
+    }
+
+    data class AboutInteractorTestParam(
+            val selected: AboutItem,
+            val verification: (AboutInteractor) -> Unit
+    )
+
+    companion object {
+
+        @JvmStatic
+        fun executeInteractionTests() = listOf(
+                AboutInteractorTestParam(
+                        selected = AboutItem.BrowseAppCode,
+                        verification = { interactor ->
+                            verify { interactor.getRepoUrl() }
+                        }
+                ),
+                AboutInteractorTestParam(
+                        selected = AboutItem.TheMovieDbTermsOfUse,
+                        verification = { interactor ->
+                            verify { interactor.getApiTermOfUseUrl() }
+                        }
+                ),
+                AboutInteractorTestParam(
+                        selected = AboutItem.PrivacyPolicy,
+                        verification = { interactor ->
+                            verify { interactor.getPrivacyPolicyUrl() }
+                        }
+                ),
+                AboutInteractorTestParam(
+                        selected = AboutItem.RateApp,
+                        verification = { interactor ->
+                            verify { interactor.getStoreUrl() }
+                        }
+                ),
+                AboutInteractorTestParam(
+                        selected = AboutItem.ShareApp,
+                        verification = { interactor ->
+                            verify { interactor.getShareUrl() }
+                        }
+                )
+        )
     }
 }

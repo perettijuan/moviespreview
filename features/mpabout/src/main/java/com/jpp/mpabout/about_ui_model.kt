@@ -9,33 +9,49 @@ import androidx.annotation.StringRes
  */
 data class AboutViewState(
         val loadingVisibility: Int = View.INVISIBLE,
+        val header: AboutHeader = AboutHeader(),
         val content: AboutContent = AboutContent()) {
 
     companion object {
         fun showLoading() = AboutViewState()
         fun showContent(
                 appVersion: String,
-                aboutItems: List<AboutItem>) = AboutViewState(content = AboutContent.withContent(appVersion, aboutItems))
+                aboutItems: List<AboutItem>) = AboutViewState(header = AboutHeader.withHeader(appVersion), content = AboutContent.withContent(aboutItems))
     }
 
 }
 
 /**
+ * Represents the header section of the about screen.
+ */
+data class AboutHeader(val visibility: Int = View.INVISIBLE,
+                       val icon: Int = R.drawable.ic_launcher_round,
+                       val title: Int = R.string.app_name,
+                       val appVersion: String = "") {
+
+    companion object {
+        fun withHeader(appVersion: String) = AboutHeader(
+                visibility = View.VISIBLE,
+                appVersion = appVersion
+        )
+    }
+
+}
+/**
  * Represents the content of the about screen.
  */
 data class AboutContent(
         val visibility: Int = View.INVISIBLE,
-        val appVersion: String = "",
+        val contentText: Int = R.string.about_content,
         val aboutItems: List<AboutItem> = emptyList()) {
     companion object {
-        fun withContent(appVersion: String,
-                        aboutItems: List<AboutItem>)
+        fun withContent(aboutItems: List<AboutItem>)
                 = AboutContent(
                 visibility = View.VISIBLE,
-                appVersion = appVersion,
                 aboutItems = aboutItems
         )
     }
+
 }
 
 /**
@@ -48,4 +64,15 @@ sealed class AboutItem(@StringRes val title: Int, @DrawableRes val icon: Int) {
     object BrowseAppCode : AboutItem(R.string.about_brows_code_action, R.drawable.ic_github_logo)
     object Licenses : AboutItem(R.string.about_open_source_action, R.drawable.ic_open_source_libraries)
     object TheMovieDbTermsOfUse : AboutItem(R.string.about_the_movie_db_terms_of_use, R.drawable.ic_the_movie_db)
+}
+
+/**
+ * Represents the navigation events that can be routed in the about section.
+ */
+sealed class AboutNavEvent {
+    data class InnerNavigation(val url: String) : AboutNavEvent()
+    data class OpenGooglePlay(val url: String) : AboutNavEvent()
+    data class OpenSharing(val url: String) : AboutNavEvent()
+    data class OuterNavigation(val url: String) : AboutNavEvent()
+    object GoToLicenses : AboutNavEvent()
 }
