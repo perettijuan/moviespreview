@@ -12,6 +12,7 @@ import com.jpp.mp.screens.main.movies.fragments.PlayingMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.PopularMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
+import com.jpp.mpabout.AboutViewModel
 import com.jpp.mpaccount.account.UserAccountViewModel
 import com.jpp.mpaccount.account.lists.UserMovieListViewModel
 import com.jpp.mpaccount.login.LoginViewModel
@@ -61,7 +62,7 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(AboutViewModelDeprecated::class)
-    internal abstract fun postAboutViewModel(viewModel: AboutViewModelDeprecated): ViewModel
+    internal abstract fun postAboutViewModelDeprecated(viewModel: AboutViewModelDeprecated): ViewModel
 
     @Binds
     @IntoMap
@@ -140,5 +141,13 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(CreditsViewModel::class)
     internal abstract fun provideCreditsViewModel(viewModel: CreditsViewModel): ViewModel
+
+    /*
+     * About feature dependencies
+     */
+    @Binds
+    @IntoMap
+    @ViewModelKey(AboutViewModel::class)
+    internal abstract fun postAboutViewModel(viewModel: AboutViewModel): ViewModel
 
 }

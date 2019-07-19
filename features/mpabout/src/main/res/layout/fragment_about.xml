@@ -1,11 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
+    <data>
+
+        <variable
+            name="viewState"
+            type="com.jpp.mpabout.AboutViewState" />
+    </data>
+
+    <ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="ABOUTTTTT"/>
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-</LinearLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.jpp.mpdesign.views.MPImageView
+                android:id="@+id/aboutSectionIv"
+                android:layout_width="?attr/mpAboutIconSize"
+                android:layout_height="?attr/mpAboutIconSize"
+                android:layout_marginTop="?attr/mpAboutIconMarginTop"
+                android:visibility="@{viewState.header.visibility}"
+                app:imageRes="@{viewState.header.icon}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/aboutSectionTitle"
+                style="@style/MPTextViewTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@{viewState.header.title}"
+                android:visibility="@{viewState.header.visibility}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/aboutSectionIv" />
+
+            <TextView
+                android:id="@+id/aboutVersion"
+                style="@style/MPTextViewSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewState.header.appVersion}"
+                android:visibility="@{viewState.header.visibility}"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/aboutSectionTitle"
+                tools:text="v 1.0" />
+
+            <ProgressBar
+                android:id="@+id/aboutLoadingView"
+                style="@style/MPProgressBar"
+                android:visibility="@{viewState.loadingVisibility}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/aboutContent"
+                style="@style/MPTextViewNormal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@{viewState.content.contentText}"
+                android:visibility="@{viewState.header.visibility}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/aboutVersion" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/aboutRv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:visibility="@{viewState.header.visibility}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/aboutContent"
+                tools:listitem="@layout/list_item_about" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</layout>

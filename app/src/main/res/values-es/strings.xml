@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">MoviesPreview</string>
-
     <!-- Main Activity -->
     <string name="main_menu_now_playing">En cines</string>
     <string name="main_menu_popular">Populares</string>
