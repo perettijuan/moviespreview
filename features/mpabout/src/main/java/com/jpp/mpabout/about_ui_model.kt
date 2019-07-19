@@ -65,3 +65,14 @@ sealed class AboutItem(@StringRes val title: Int, @DrawableRes val icon: Int) {
     object Licenses : AboutItem(R.string.about_open_source_action, R.drawable.ic_open_source_libraries)
     object TheMovieDbTermsOfUse : AboutItem(R.string.about_the_movie_db_terms_of_use, R.drawable.ic_the_movie_db)
 }
+
+/**
+ * Represents the navigation events that can be routed in the about section.
+ */
+sealed class AboutNavEvent {
+    data class InnerNavigation(val url: String) : AboutNavEvent()
+    data class OpenGooglePlay(val url: String) : AboutNavEvent()
+    data class OpenSharing(val url: String) : AboutNavEvent()
+    data class OuterNavigation(val url: String) : AboutNavEvent()
+    object GoToLicenses : AboutNavEvent()
+}

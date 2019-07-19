@@ -61,6 +61,9 @@ dependencies {
     // Paging library
     implementation deps.androidx.paging
 
+    // Custom tabs
+    implementation "androidx.browser:browser:1.0.0"
+
     // Junit 5
     testImplementation deps.test.junit5.jupiter.api
     testImplementation deps.test.junit5.jupiter.params

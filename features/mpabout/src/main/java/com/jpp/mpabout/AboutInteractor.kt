@@ -25,6 +25,7 @@ class AboutInteractor @Inject constructor(private val appVersionRepository: AppV
         object AppLanguageChanged : AboutEvent()
         data class AppVersionEvent(val appVersion: AppVersion) : AboutEvent()
         data class AboutUrlEvent(val aboutUrl: AboutUrl) : AboutEvent()
+        data class AboutWebStoreUrlEvent(val aboutUrl: AboutUrl) : AboutEvent()
     }
 
     private val _events by lazy { MediatorLiveData<AboutEvent>() }
@@ -62,7 +63,7 @@ class AboutInteractor @Inject constructor(private val appVersionRepository: AppV
     }
 
     fun getWebStoreUrl() {
-        _events.postValue(AboutUrlEvent(aboutUrlRepository.getGPlayWebUrl()))
+        _events.postValue(AboutWebStoreUrlEvent(aboutUrlRepository.getGPlayWebUrl()))
     }
 
     fun getShareUrl() {

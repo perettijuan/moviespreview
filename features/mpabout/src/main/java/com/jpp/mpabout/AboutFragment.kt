@@ -1,10 +1,14 @@
 package com.jpp.mpabout
 
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -12,8 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jpp.mp.common.extensions.withNavigationViewModel
-import com.jpp.mp.common.extensions.withViewModel
+import com.jpp.mp.common.extensions.*
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpabout.databinding.FragmentAboutBinding
 import com.jpp.mpabout.databinding.ListItemAboutBinding
@@ -48,11 +51,14 @@ class AboutFragment : Fragment() {
                     viewBinding.viewState = viewState
                     aboutRv.apply {
                         layoutManager = LinearLayoutManager(context)
-                        adapter = AboutItemsAdapter(viewState.content.aboutItems) { withViewModel { TODO() } }
+                        adapter = AboutItemsAdapter(viewState.content.aboutItems) { withViewModel { onUserSelectedAboutItem(it) } }
                         addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
                     }
                 }
             })
+
+            navEvents.observe(viewLifecycleOwner, Observer { processNavEvent(it) })
+
             onInit()
         }
 
@@ -63,6 +69,47 @@ class AboutFragment : Fragment() {
      * Helper function to execute actions with the [AboutViewModel].
      */
     private fun withViewModel(action: AboutViewModel.() -> Unit) = withViewModel<AboutViewModel>(viewModelFactory) { action() }
+
+    private fun processNavEvent(navEvent: AboutNavEvent) {
+        when (navEvent) {
+            is AboutNavEvent.InnerNavigation -> navigateInnerBrowser(navEvent.url)
+            is AboutNavEvent.OpenGooglePlay -> goToRateAppScreen(navEvent.url)
+            is AboutNavEvent.OpenSharing -> goToShareAppScreen(navEvent.url)
+            is AboutNavEvent.GoToLicenses -> goToLicensesScreen()
+            is AboutNavEvent.OuterNavigation -> goToWebBrowser(navEvent.url)
+        }
+    }
+
+    private fun goToRateAppScreen(uriString: String) {
+        try {
+            startActivity(Intent().cleanView(uriString))
+        } catch (e: ActivityNotFoundException) {
+            withViewModel { onFailedToOpenPlayStore() }
+        }
+    }
+
+    private fun goToShareAppScreen(uriString: String) {
+        startActivity(Intent().send(getString(R.string.share_app_text, uriString)))
+    }
+
+    private fun goToLicensesScreen() {
+        //TODO JPP findNavController().navigate(AboutFragmentDirections.actionAboutFragmentToLicensesFragment())
+    }
+
+    private fun goToWebBrowser(url: String) {
+        startActivity(Intent().web(url))
+    }
+
+    private fun navigateInnerBrowser(uriString: String) {
+        activity?.let {
+            CustomTabsIntent.Builder().apply {
+                setToolbarColor(resources.getColor(R.color.primaryColor))
+                setStartAnimations(it, R.anim.activity_enter_transition, R.anim.activity_exit_transition)
+                setExitAnimations(it, R.anim.activity_enter_transition, R.anim.activity_exit_transition)
+            }.build().launchUrl(it, Uri.parse(uriString))
+        }
+    }
+
 
     class AboutItemsAdapter(private val items: List<AboutItem>, private val itemSelectionListener: (AboutItem) -> Unit) : RecyclerView.Adapter<AboutItemsAdapter.ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
