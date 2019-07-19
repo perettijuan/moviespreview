@@ -7,4 +7,5 @@
     <!-- End Errors -->
 
     <string name="login_generic">Login</string>
+    <string name="about_generic">About</string>
 </resources>

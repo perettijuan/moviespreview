@@ -7,4 +7,5 @@
     <!-- End Errors -->
 
     <string name="login_generic">Iniciar Sesión</string>
+    <string name="about_generic">Acerca de</string>
 </resources>

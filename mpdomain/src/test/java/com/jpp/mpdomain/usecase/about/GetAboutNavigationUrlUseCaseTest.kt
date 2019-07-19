@@ -1,6 +1,6 @@
 package com.jpp.mpdomain.usecase.about
 
-import com.jpp.mpdomain.repository.AboutNavigationRepository
+import com.jpp.mpdomain.repository.AboutUrlRepository
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource
 class GetAboutNavigationUrlUseCaseTest {
 
     @RelaxedMockK
-    private lateinit var repository: AboutNavigationRepository
+    private lateinit var repository: AboutUrlRepository
 
     private lateinit var subject: GetAboutNavigationUrlUseCase
 
@@ -32,7 +32,7 @@ class GetAboutNavigationUrlUseCaseTest {
 
     data class AboutNavigationUseCaseParams(
             val navigationType: AboutNavigationType,
-            val verification: (AboutNavigationRepository) -> Unit
+            val verification: (AboutUrlRepository) -> Unit
     )
 
     companion object {
