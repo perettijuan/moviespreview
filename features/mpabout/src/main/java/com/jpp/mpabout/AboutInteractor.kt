@@ -30,7 +30,7 @@ class AboutInteractor @Inject constructor(private val appVersionRepository: AppV
 
     sealed class LicensesEvent {
         object UnknownError : LicensesEvent()
-        data class Sucess(val results: Licenses) : LicensesEvent()
+        data class Success(val results: Licenses) : LicensesEvent()
     }
 
     private val _events by lazy { MediatorLiveData<AboutEvent>() }
@@ -83,7 +83,7 @@ class AboutInteractor @Inject constructor(private val appVersionRepository: AppV
     fun fetchAppLicenses() {
         when (val licenses = licensesRepository.loadLicences()) {
             null -> LicensesEvent.UnknownError
-            else -> LicensesEvent.Sucess(licenses)
+            else -> LicensesEvent.Success(licenses)
         }.let {
             _licenseEvents.postValue(it)
         }
