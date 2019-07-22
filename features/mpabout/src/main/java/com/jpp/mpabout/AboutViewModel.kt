@@ -57,15 +57,13 @@ class AboutViewModel @Inject constructor(coroutineDispatchers: CoroutineDispatch
      */
     fun onUserSelectedAboutItem(aboutItem: AboutItem) {
         selectedItem = aboutItem
-        withInteractor {
-            when (aboutItem) {
-                is AboutItem.BrowseAppCode -> getRepoUrl()
-                is AboutItem.TheMovieDbTermsOfUse -> getApiTermOfUseUrl()
-                is AboutItem.PrivacyPolicy -> getPrivacyPolicyUrl()
-                is AboutItem.RateApp -> getStoreUrl()
-                is AboutItem.ShareApp -> getShareUrl()
-                is AboutItem.Licenses -> AboutNavEvent.GoToLicenses
-            }
+        when (aboutItem) {
+            is AboutItem.BrowseAppCode -> withInteractor { getRepoUrl() }
+            is AboutItem.TheMovieDbTermsOfUse -> withInteractor { getApiTermOfUseUrl() }
+            is AboutItem.PrivacyPolicy -> withInteractor { getPrivacyPolicyUrl() }
+            is AboutItem.RateApp -> withInteractor { getStoreUrl() }
+            is AboutItem.ShareApp -> withInteractor { getShareUrl() }
+            is AboutItem.Licenses -> _navEvents.value = AboutNavEvent.GoToLicenses
         }
     }
 

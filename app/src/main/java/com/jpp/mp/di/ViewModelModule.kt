@@ -62,7 +62,7 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(LicensesViewModelDeprecated::class)
-    internal abstract fun postLicensesViewModel(viewModel: LicensesViewModelDeprecated): ViewModel
+    internal abstract fun postLicensesViewModelDeprecated(viewModel: LicensesViewModelDeprecated): ViewModel
 
     @Binds
     @IntoMap

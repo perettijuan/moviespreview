@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
 import com.jpp.mp.ext.*
-import com.jpp.mp.screens.main.licenses.LicensesFragmentDirections.actionLicensesFragmentToLicenseContentFragment
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_licenses_deprecated.*
 import javax.inject.Inject
@@ -66,10 +65,10 @@ class LicensesFragmentDeprecated : Fragment() {
             navEvents().observe(this@LicensesFragmentDeprecated.viewLifecycleOwner, Observer { navEvent ->
                 when (navEvent) {
                     is LicensesNavEvent.ToLicenseContent -> {
-                        findNavController().navigate(actionLicensesFragmentToLicenseContentFragment(
-                                navEvent.licenseId.toString(),
-                                navEvent.licenseName
-                        ))
+//                        findNavController().navigate(actionLicensesFragmentToLicenseContentFragment(
+//                                navEvent.licenseId.toString(),
+//                                navEvent.licenseName
+//                        ))
                     }
                 }
             })

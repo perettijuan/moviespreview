@@ -20,6 +20,7 @@ import com.jpp.mp.common.extensions.*
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpabout.databinding.FragmentAboutBinding
 import com.jpp.mpabout.databinding.ListItemAboutBinding
+import com.jpp.mpdesign.ext.getColor
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_about.*
 import javax.inject.Inject
@@ -93,7 +94,7 @@ class AboutFragment : Fragment() {
     }
 
     private fun goToLicensesScreen() {
-        //TODO JPP findNavController().navigate(AboutFragmentDirections.actionAboutFragmentToLicensesFragment())
+        withNavigationViewModel(viewModelFactory) { performInnerNavigation(AboutFragmentDirections.licensesFragment()) }
     }
 
     private fun goToWebBrowser(url: String) {
@@ -103,7 +104,7 @@ class AboutFragment : Fragment() {
     private fun navigateInnerBrowser(uriString: String) {
         activity?.let {
             CustomTabsIntent.Builder().apply {
-                setToolbarColor(resources.getColor(R.color.primaryColor))
+                setToolbarColor(getColor(R.color.primaryColor))
                 setStartAnimations(it, R.anim.activity_enter_transition, R.anim.activity_exit_transition)
                 setExitAnimations(it, R.anim.activity_enter_transition, R.anim.activity_exit_transition)
             }.build().launchUrl(it, Uri.parse(uriString))

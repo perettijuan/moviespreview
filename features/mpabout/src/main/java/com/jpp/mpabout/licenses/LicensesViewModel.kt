@@ -30,6 +30,9 @@ class LicensesViewModel @Inject constructor(coroutineDispatchers: CoroutineDispa
     }
 
 
+    /**
+     * Called when the view is initialized.
+     */
     fun onInit() {
         pushLoadingAndFetchAppLicenses()
     }
