@@ -4,8 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
-import com.jpp.mpdomain.usecase.about.AboutNavigationType
-import com.jpp.mpdomain.usecase.about.GetAboutNavigationUrlUseCase
 import javax.inject.Inject
 
 /**
@@ -16,7 +14,7 @@ import javax.inject.Inject
  * Note: Untested for simplicity.
  */
 //TODO DELETE ME
-class AboutViewModelDeprecated @Inject constructor(private val getAboutNavigationUrlUseCase: GetAboutNavigationUrlUseCase) : ViewModel() {
+class AboutViewModelDeprecated @Inject constructor() : ViewModel() {
 
     private val viewStateLiveData by lazy { MutableLiveData<AboutViewState>() }
     private val navigationEvents by lazy { SingleLiveEvent<AboutNavEvent>() }
@@ -53,21 +51,14 @@ class AboutViewModelDeprecated @Inject constructor(private val getAboutNavigatio
      * Called when the user has selected an item from the about items section.
      */
     fun onUserSelectedAboutItem(aboutItem: AboutItem) {
-        navigationEvents.value = when (aboutItem) {
-            is AboutItem.BrowseAppCode -> AboutNavEvent.InnerNavigation(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.AppCodeRepo))
-            is AboutItem.TheMovieDbTermsOfUse -> AboutNavEvent.InnerNavigation(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.TheMovieDbTermsOfUse))
-            is AboutItem.PrivacyPolicy -> AboutNavEvent.OuterNavigation(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.PrivacyPolicy))
-            is AboutItem.RateApp -> AboutNavEvent.OpenGooglePlay(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.GooglePlayApp))
-            is AboutItem.ShareApp -> AboutNavEvent.OpenSharing(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.ShareApp))
-            is AboutItem.Licenses -> AboutNavEvent.GoToLicenses
-        }
+
     }
 
     /**
      * Called when the app fails to expanded the Google Play app in the device.
      */
     fun onFailedToOpenPlayStore() {
-        navigationEvents.value = AboutNavEvent.InnerNavigation(getAboutNavigationUrlUseCase.getUrlFor(AboutNavigationType.GooglePlayWeb))
+
     }
 
 }
