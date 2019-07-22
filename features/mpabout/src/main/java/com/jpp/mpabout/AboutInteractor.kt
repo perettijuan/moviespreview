@@ -2,13 +2,14 @@ package com.jpp.mpabout
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import com.jpp.mpabout.AboutInteractor.AboutEvent.*
 import com.jpp.mpdomain.AboutUrl
 import com.jpp.mpdomain.AppVersion
+import com.jpp.mpdomain.Licenses
 import com.jpp.mpdomain.repository.AboutUrlRepository
 import com.jpp.mpdomain.repository.AppVersionRepository
-import com.jpp.mpdomain.repository.LanguageRepository
+import com.jpp.mpdomain.repository.LicensesRepository
 import javax.inject.Inject
-import com.jpp.mpabout.AboutInteractor.AboutEvent.*
 import javax.inject.Singleton
 
 /**
@@ -18,7 +19,8 @@ import javax.inject.Singleton
  */
 @Singleton
 class AboutInteractor @Inject constructor(private val appVersionRepository: AppVersionRepository,
-                                          private val aboutUrlRepository: AboutUrlRepository) {
+                                          private val aboutUrlRepository: AboutUrlRepository,
+                                          private val licensesRepository: LicensesRepository) {
 
     sealed class AboutEvent {
         data class AppVersionEvent(val appVersion: AppVersion) : AboutEvent()
@@ -26,13 +28,25 @@ class AboutInteractor @Inject constructor(private val appVersionRepository: AppV
         data class AboutWebStoreUrlEvent(val aboutUrl: AboutUrl) : AboutEvent()
     }
 
+    sealed class LicensesEvent {
+        object UnknownError : LicensesEvent()
+        data class Sucess(val results: Licenses) : LicensesEvent()
+    }
+
     private val _events by lazy { MediatorLiveData<AboutEvent>() }
+    private val _licenseEvents by lazy { MediatorLiveData<LicensesEvent>() }
 
     /**
      * @return a [LiveData] of [AboutEvent]. Subscribe to this [LiveData]
      * in order to be notified about interactor related events.
      */
     val events: LiveData<AboutEvent> get() = _events
+
+    /**
+     * @return a [LiveData] of [AboutEvent]. Subscribe to this [LiveData]
+     * in order to be notified about interactor related events.
+     */
+    val licenseEvents: LiveData<LicensesEvent> get() = _licenseEvents
 
     /**
      * Fetches the current version of the application. It will post a new event
@@ -64,6 +78,15 @@ class AboutInteractor @Inject constructor(private val appVersionRepository: AppV
 
     fun getPrivacyPolicyUrl() {
         _events.postValue(AboutUrlEvent(aboutUrlRepository.getPrivacyPolicyUrl()))
+    }
+
+    fun fetchAppLicenses() {
+        when (val licenses = licensesRepository.loadLicences()) {
+            null -> LicensesEvent.UnknownError
+            else -> LicensesEvent.Sucess(licenses)
+        }.let {
+            _licenseEvents.postValue(it)
+        }
     }
 
 }
