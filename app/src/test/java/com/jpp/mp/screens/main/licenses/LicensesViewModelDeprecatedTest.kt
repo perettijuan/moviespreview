@@ -18,12 +18,12 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
-class LicensesViewModelTest {
+class LicensesViewModelDeprecatedTest {
 
     @MockK
     private lateinit var getAppLicensesUseCase: GetAppLicensesUseCase
 
-    private lateinit var subject: LicensesViewModel
+    private lateinit var subject: LicensesViewModelDeprecated
 
     private val availableLicenses by lazy {
         listOf(
@@ -40,7 +40,7 @@ class LicensesViewModelTest {
 
     @BeforeEach
     fun setUp() {
-        subject = LicensesViewModel(TestCoroutineDispatchers(), getAppLicensesUseCase)
+        subject = LicensesViewModelDeprecated(TestCoroutineDispatchers(), getAppLicensesUseCase)
     }
 
     @Test

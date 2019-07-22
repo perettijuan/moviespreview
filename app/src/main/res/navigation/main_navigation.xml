@@ -34,8 +34,8 @@
         tools:layout="@layout/fragment_movies"/>
     <fragment
         android:id="@+id/licensesFragment"
-        android:name="com.jpp.mp.screens.main.licenses.LicensesFragment"
-        tools:layout="@layout/fragment_licenses">
+        android:name="com.jpp.mp.screens.main.licenses.LicensesFragmentDeprecated"
+        tools:layout="@layout/fragment_licenses_deprecated">
         <action
             android:id="@+id/action_licensesFragment_to_licenseContentFragment"
             app:destination="@id/licenseContentFragment"

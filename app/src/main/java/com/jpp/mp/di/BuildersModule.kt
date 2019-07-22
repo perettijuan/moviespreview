@@ -2,7 +2,7 @@ package com.jpp.mp.di
 
 import com.jpp.mp.screens.main.MainActivity
 import com.jpp.mp.screens.main.header.NavigationHeaderFragment
-import com.jpp.mp.screens.main.licenses.LicensesFragment
+import com.jpp.mp.screens.main.licenses.LicensesFragmentDeprecated
 import com.jpp.mp.screens.main.licenses.content.LicenseContentFragment
 import com.jpp.mp.screens.main.movies.fragments.PlayingMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.PopularMoviesFragment
@@ -40,7 +40,7 @@ abstract class BuildersModule {
     abstract fun bindMovieDetailsFragment(): MovieDetailsFragment
 
     @ContributesAndroidInjector
-    abstract fun bindLicensesFragment(): LicensesFragment
+    abstract fun bindLicensesFragment(): LicensesFragmentDeprecated
 
     @ContributesAndroidInjector
     abstract fun bindLicensesContentFragment(): LicenseContentFragment

@@ -30,10 +30,10 @@ class LicensesFragmentTest {
     val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java, true, false) {}
 
     private fun launchAndInjectFragment() {
-        activityTestRule.activity.startFragment(LicensesFragment(), this@LicensesFragmentTest::inject)
+        activityTestRule.activity.startFragment(LicensesFragmentDeprecated(), this@LicensesFragmentTest::inject)
     }
 
-    private fun inject(licensesFragment: LicensesFragment) {
+    private fun inject(licensesFragment: LicensesFragmentDeprecated) {
         every { viewModelMock.viewState() } returns viewStateLiveData
         every { viewModelMock.navEvents() } returns navigationEvents
         licensesFragment.viewModelFactory = TestMPViewModelFactory().apply {
@@ -43,7 +43,7 @@ class LicensesFragmentTest {
 
     private val viewStateLiveData = MutableLiveData<LicensesViewState>()
     private val navigationEvents = SingleLiveEvent<LicensesNavEvent>()
-    private val viewModelMock = mockk<LicensesViewModel>(relaxed = true)
+    private val viewModelMock = mockk<LicensesViewModelDeprecated>(relaxed = true)
     private val availableLicenses by lazy {
         listOf(
                 LicenseItem(id = 1, name = "1"),
