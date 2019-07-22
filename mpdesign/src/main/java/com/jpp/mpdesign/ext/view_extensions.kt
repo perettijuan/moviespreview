@@ -3,13 +3,16 @@ package com.jpp.mpdesign.ext
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.annotation.StyleRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.palette.graphics.Palette
@@ -160,4 +163,15 @@ fun RecyclerView.findViewInPositionWithId(position: Int, viewId: Int): View {
             ?.findViewByPosition(position)
             ?.findViewById(viewId)
             ?: throw IllegalStateException("You need to set a LayoutManager first")
+}
+
+/**
+ * Sets the text appearance of the TextView based on the current API level.
+ */
+fun TextView.setTextAppearanceCompat(@StyleRes resId: Int) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        this.setTextAppearance(resId)
+    } else {
+        setTextAppearance(context, resId)
+    }
 }

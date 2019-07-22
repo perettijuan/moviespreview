@@ -25,6 +25,7 @@ import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_about.*
 import javax.inject.Inject
 
+
 class AboutFragment : Fragment() {
 
     @Inject

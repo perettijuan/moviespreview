@@ -116,7 +116,7 @@ class LicensesFragmentDeprecated : Fragment() {
         class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             fun bindLicense(license: LicenseItem, listener: (LicenseItem) -> Unit) {
                 val textView = itemView.findViewById<TextView>(android.R.id.text1)
-                textView.setTextAppearanceCompat(R.style.MPTextViewSmall)
+//                textView.setTextAppearanceCompat(R.style.MPTextViewSmall)
                 textView.text = license.name
                 itemView.setOnClickListener { listener(license) }
             }
