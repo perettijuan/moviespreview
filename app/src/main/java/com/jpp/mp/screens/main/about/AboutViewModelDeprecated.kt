@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mpdomain.usecase.about.AboutNavigationType
 import com.jpp.mpdomain.usecase.about.GetAboutNavigationUrlUseCase
-import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase
 import javax.inject.Inject
 
 /**
@@ -17,8 +16,7 @@ import javax.inject.Inject
  * Note: Untested for simplicity.
  */
 //TODO DELETE ME
-class AboutViewModelDeprecated @Inject constructor(private val appVersionUseCase: GetAppVersionUseCase,
-                                                   private val getAboutNavigationUrlUseCase: GetAboutNavigationUrlUseCase) : ViewModel() {
+class AboutViewModelDeprecated @Inject constructor(private val getAboutNavigationUrlUseCase: GetAboutNavigationUrlUseCase) : ViewModel() {
 
     private val viewStateLiveData by lazy { MutableLiveData<AboutViewState>() }
     private val navigationEvents by lazy { SingleLiveEvent<AboutNavEvent>() }
@@ -37,13 +35,6 @@ class AboutViewModelDeprecated @Inject constructor(private val appVersionUseCase
      * Called on initialization of the AboutFragmentDeprecated.
      */
     fun init() {
-        appVersionUseCase
-                .getCurrentAppVersion()
-                .run {
-                    viewStateLiveData.value = AboutViewState.InitialContent(
-                            appVersion = "v $this",
-                            aboutItems = supportedAboutItems)
-                }
     }
 
     /**

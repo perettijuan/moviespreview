@@ -2,17 +2,13 @@ package com.jpp.mp.screens.main.about
 
 import com.jpp.mpdomain.usecase.about.AboutNavigationType
 import com.jpp.mpdomain.usecase.about.GetAboutNavigationUrlUseCase
-import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
-import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -20,8 +16,7 @@ import org.junit.jupiter.params.provider.MethodSource
 @ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
 class AboutViewModelDeprecatedTest {
 
-    @RelaxedMockK
-    private lateinit var appVersionUseCase: GetAppVersionUseCase
+
     @RelaxedMockK
     private lateinit var getAboutNavigationUrlUseCase: GetAboutNavigationUrlUseCase
 
@@ -29,33 +24,9 @@ class AboutViewModelDeprecatedTest {
 
     @BeforeEach
     fun setUp() {
-        subject = AboutViewModelDeprecated(appVersionUseCase, getAboutNavigationUrlUseCase)
+        subject = AboutViewModelDeprecated(getAboutNavigationUrlUseCase)
     }
 
-    @Test
-    fun `Should post InitialContent on init`() {
-        var postedAboutViewState: AboutViewState? = null
-        val expectedAppVersion = "v appVersion"
-        val expectedAboutItems = listOf(
-                AboutItem.RateApp,
-                AboutItem.ShareApp,
-                AboutItem.PrivacyPolicy,
-                AboutItem.BrowseAppCode,
-                AboutItem.Licenses,
-                AboutItem.TheMovieDbTermsOfUse
-        )
-
-
-        every { appVersionUseCase.getCurrentAppVersion() } returns "appVersion"
-
-        subject.viewState().observeWith { postedAboutViewState = it }
-
-        subject.init()
-
-        assertTrue(postedAboutViewState is AboutViewState.InitialContent)
-        assertEquals(expectedAppVersion, (postedAboutViewState as AboutViewState.InitialContent).appVersion)
-        assertEquals(expectedAboutItems, (postedAboutViewState as AboutViewState.InitialContent).aboutItems)
-    }
 
     @ParameterizedTest
     @MethodSource("executeParameters")

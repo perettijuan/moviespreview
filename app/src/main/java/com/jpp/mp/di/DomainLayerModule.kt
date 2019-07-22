@@ -3,7 +3,6 @@ package com.jpp.mp.di
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mpdomain.repository.*
 import com.jpp.mpdomain.usecase.about.GetAboutNavigationUrlUseCase
-import com.jpp.mpdomain.usecase.appversion.GetAppVersionUseCase
 import com.jpp.mpdomain.usecase.licenses.GetAppLicensesUseCase
 import com.jpp.mpdomain.usecase.licenses.GetLicenseUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
@@ -33,10 +32,6 @@ class DomainLayerModule {
     @Provides
     fun providesConfigMovieUseCase(configurationRepository: ConfigurationRepository)
             : ConfigMovieUseCase = ConfigMovieUseCase.Impl(configurationRepository)
-
-    @Provides
-    fun providesGetAppVersionUseCase(appVersionRepository: AppVersionRepository)
-            : GetAppVersionUseCase = GetAppVersionUseCase.Impl(appVersionRepository)
 
     @Provides
     fun providesGetAboutNavigationUrlUseCase(aboutUrlRepository: AboutUrlRepository)

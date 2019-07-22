@@ -32,20 +32,6 @@
         android:name="com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment"
         android:label="@string/main_menu_top_rated"
         tools:layout="@layout/fragment_movies"/>
-    <!-- TODO delete ME
-    <fragment
-        android:id="@+id/aboutFragment"
-        android:name="com.jpp.mp.screens.main.about.AboutFragmentDeprecated"
-        tools:layout="@layout/fragment_about_depreacted">
-        <action
-            android:id="@+id/action_aboutFragment_to_licensesFragment"
-            app:destination="@id/licensesFragment"
-            app:enterAnim="@anim/fragment_enter_slide_right"
-            app:exitAnim="@anim/fragment_exit_slide_right"
-            app:popEnterAnim="@anim/fragment_enter_slide_left"
-            app:popExitAnim="@anim/fragment_exit_slide_left"/>
-    </fragment>
-    -->
     <fragment
         android:id="@+id/licensesFragment"
         android:name="com.jpp.mp.screens.main.licenses.LicensesFragment"
