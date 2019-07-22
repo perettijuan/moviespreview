@@ -1,6 +1,5 @@
 package com.jpp.mp.screens.main.about
 
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -8,16 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
-import com.jpp.mp.common.extensions.cleanView
 import com.jpp.mp.common.extensions.send
 import com.jpp.mp.common.extensions.web
 import com.jpp.mp.ext.getText
-import com.jpp.mp.ext.getViewModel
 import com.jpp.mp.ext.inflate
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_about_depreacted.*
@@ -34,7 +30,7 @@ class AboutFragmentDeprecated : Fragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val aboutItemSelectionListener: (AboutItem) -> Unit = {
-        withViewModel { onUserSelectedAboutItem(it) }
+
     }
 
     override fun onAttach(context: Context?) {
@@ -46,36 +42,6 @@ class AboutFragmentDeprecated : Fragment() {
         return inflater.inflate(R.layout.fragment_about_depreacted, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        withViewModel {
-            init()
-
-            viewState().observe(this@AboutFragmentDeprecated.viewLifecycleOwner, Observer { viewState ->
-                when (viewState) {
-                    is AboutViewState.InitialContent -> renderContent(viewState.appVersion, viewState.aboutItems)
-                }
-            })
-
-            navEvents().observe(this@AboutFragmentDeprecated.viewLifecycleOwner, Observer { navEvent ->
-                when (navEvent) {
-                    is AboutNavEvent.InnerNavigation -> navigateInnerBrowser(navEvent.url)
-                    is AboutNavEvent.OpenGooglePlay -> goToRateAppScreen(navEvent.url)
-                    is AboutNavEvent.OpenSharing -> goToShareAppScreen(navEvent.url)
-                    is AboutNavEvent.GoToLicenses -> goToLicensesScreen()
-                    is AboutNavEvent.OuterNavigation -> goToWebBrowser(navEvent.url)
-                }
-            })
-        }
-    }
-
-    /**
-     * Helper function to execute actions with the [AboutViewModelDeprecated].
-     */
-    private fun withViewModel(action: AboutViewModelDeprecated.() -> Unit) {
-        getViewModel<AboutViewModelDeprecated>(viewModelFactory).action()
-    }
 
     private fun renderContent(appVersion: String, aboutItems: List<AboutItem>) {
         aboutVersion.text = appVersion
@@ -85,13 +51,6 @@ class AboutFragmentDeprecated : Fragment() {
         }
     }
 
-    private fun goToRateAppScreen(uriString: String) {
-        try {
-            startActivity(Intent().cleanView(uriString))
-        } catch (e: ActivityNotFoundException) {
-            withViewModel { onFailedToOpenPlayStore() }
-        }
-    }
 
     private fun goToShareAppScreen(uriString: String) {
         startActivity(Intent().send(getString(R.string.share_app_text, uriString)))
