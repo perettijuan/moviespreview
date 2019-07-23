@@ -2,14 +2,10 @@ package com.jpp.mp.screens.main.licenses
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
-import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mpdomain.License
-import com.jpp.mpdomain.usecase.licenses.GetAppLicensesUseCase
-import com.jpp.mpdomain.usecase.licenses.GetLicensesResult
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -21,8 +17,7 @@ import javax.inject.Inject
  * as any new state is identified by the ViewModel.
  */
 //TODO delete ME
-class LicensesViewModelDeprecated @Inject constructor(dispatchers: CoroutineDispatchers,
-                                                      private val getAppLicensesUseCase: GetAppLicensesUseCase)
+class LicensesViewModelDeprecated @Inject constructor(dispatchers: CoroutineDispatchers)
     : MPScopedViewModel(dispatchers) {
 
     private val viewStateLiveData by lazy { MutableLiveData<LicensesViewState>() }
@@ -68,27 +63,6 @@ class LicensesViewModelDeprecated @Inject constructor(dispatchers: CoroutineDisp
      */
     private fun pushLoadingAndFetchLicenses() {
         viewStateLiveData.value = LicensesViewState.Loading
-        launch {
-            viewStateLiveData.value = fetchAppLicenses()
-        }
-    }
-
-    /**
-     * Fetches the results list used by the application.
-     * @return a [LicensesViewState] that is posted in viewState in order
-     * to update the UI.
-     */
-    private suspend fun fetchAppLicenses(): LicensesViewState = withContext(dispatchers.default()) {
-        getAppLicensesUseCase
-                .getAppLicences()
-                .let { ucResult ->
-                    when (ucResult) {
-                        is GetLicensesResult.ErrorUnknown -> LicensesViewState.ErrorUnknown
-                        is GetLicensesResult.Success -> {
-                            LicensesViewState.Loaded(ucResult.results.licenses.map { mapLicense(it) })
-                        }
-                    }
-                }
     }
 
 

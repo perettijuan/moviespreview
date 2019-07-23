@@ -2,7 +2,6 @@ package com.jpp.mp.di
 
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mpdomain.repository.*
-import com.jpp.mpdomain.usecase.licenses.GetAppLicensesUseCase
 import com.jpp.mpdomain.usecase.licenses.GetLicenseUseCase
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
@@ -31,10 +30,6 @@ class DomainLayerModule {
     @Provides
     fun providesConfigMovieUseCase(configurationRepository: ConfigurationRepository)
             : ConfigMovieUseCase = ConfigMovieUseCase.Impl(configurationRepository)
-
-    @Provides
-    fun providesGetAppLicensesUseCase(licensesRepository: LicensesRepository)
-            : GetAppLicensesUseCase = GetAppLicensesUseCase.Impl(licensesRepository)
 
     @Provides
     fun providesGetLicenseUseCase(licensesRepository: LicensesRepository)
