@@ -1,4 +1,4 @@
-package com.jpp.mpabout.licenses
+package com.jpp.mpabout.licenses.content
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
@@ -14,20 +14,21 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
-class LicensesViewModelTest {
+class LicenseContentViewModelTest {
 
     @RelaxedMockK
     private lateinit var aboutInteractor: AboutInteractor
 
     private val lvInteractorEvents = MutableLiveData<AboutInteractor.LicensesEvent>()
 
-    private lateinit var subject: LicensesViewModel
+    private lateinit var subject: LicenseContentViewModel
 
     @BeforeEach
     fun setUp() {
@@ -38,16 +39,17 @@ class LicensesViewModelTest {
             override fun default(): CoroutineDispatcher = Dispatchers.Unconfined
         }
 
-        subject = LicensesViewModel(dispatchers, aboutInteractor)
+        subject = LicenseContentViewModel(dispatchers, aboutInteractor)
     }
+
 
     @Test
     fun `Should post loading and fetch licences in onInit`() {
-        var viewStatePosted: LicensesViewState? = null
+        var viewStatePosted: LicenseContentViewState? = null
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
-        subject.onInit()
+        subject.onInit(5)
 
         assertNotNull(viewStatePosted)
 
@@ -59,24 +61,14 @@ class LicensesViewModelTest {
         verify { aboutInteractor.fetchAppLicenses() }
     }
 
+
     @Test
-    fun `Should map licenses and show content when licenses are available`() {
-        var viewStatePosted: LicensesViewState? = null
-        val expectedLicenses by lazy {
-            listOf(
-                    LicenseItem(id = 1, name = "1"),
-                    LicenseItem(id = 2, name = "2"),
-                    LicenseItem(id = 3, name = "3"),
-                    LicenseItem(id = 4, name = "4"),
-                    LicenseItem(id = 5, name = "5"),
-                    LicenseItem(id = 6, name = "6"),
-                    LicenseItem(id = 7, name = "7"),
-                    LicenseItem(id = 8, name = "8")
-            )
-        }
+    fun `Should map show content with url for selected license`() {
+        var viewStatePosted: LicenseContentViewState? = null
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
+        subject.onInit(5)
         lvInteractorEvents.postValue(AboutInteractor.LicensesEvent.Success(Licenses(availableLicenses)))
 
         assertNotNull(viewStatePosted)
@@ -85,12 +77,13 @@ class LicensesViewModelTest {
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
 
         assertEquals(View.VISIBLE, viewStatePosted?.content?.visibility)
-        assertEquals(expectedLicenses, viewStatePosted?.content?.licenseItems)
+        assertEquals("u5", viewStatePosted?.content?.licenseUrl)
     }
+
 
     @Test
     fun `Should retry to fetch licenses when error is detected and retry is taped`() {
-        var viewStatePosted: LicensesViewState? = null
+        var viewStatePosted: LicenseContentViewState? = null
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 

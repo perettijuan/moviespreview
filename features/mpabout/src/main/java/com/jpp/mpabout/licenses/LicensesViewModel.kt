@@ -2,6 +2,7 @@ package com.jpp.mpabout.licenses
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.viewstate.HandledViewState
@@ -19,6 +20,7 @@ class LicensesViewModel @Inject constructor(coroutineDispatchers: CoroutineDispa
 
 
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<LicensesViewState>>() }
+    private val _navEvents by lazy { SingleLiveEvent<GoToLicenseContentEvent>() }
 
     init {
         _viewStates.addSource(aboutInteractor.licenseEvents) { event ->
@@ -38,10 +40,24 @@ class LicensesViewModel @Inject constructor(coroutineDispatchers: CoroutineDispa
     }
 
     /**
+     * Called when an item is selected in the list of licenses.
+     * A new state is posted in navEvents() in order to handle the event.
+     */
+    fun onLicenseSelected(item: LicenseItem) {
+        _navEvents.value = GoToLicenseContentEvent(item.id)
+    }
+
+    /**
      * Subscribe to this [LiveData] in order to get notified about the different states that
      * the view should render.
      */
     val viewStates: LiveData<HandledViewState<LicensesViewState>> get() = _viewStates
+
+    /**
+     * Subscribe to this [LiveData] in order to get notified about navigation steps that
+     * should be performed by the view.
+     */
+    val navEvents: LiveData<GoToLicenseContentEvent> get() = _navEvents
 
 
     private fun withInteractor(action: AboutInteractor.() -> Unit) {

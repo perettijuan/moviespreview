@@ -57,3 +57,9 @@ data class LicensesContent(
  */
 data class LicenseItem(val id: Int,
                        val name: String)
+
+/**
+ * Represents the navigation event to redirect the user to the license
+ * content details.
+ */
+data class GoToLicenseContentEvent(val licenseId: Int)

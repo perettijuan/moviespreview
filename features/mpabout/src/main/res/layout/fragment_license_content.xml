@@ -5,7 +5,7 @@
 
         <variable
             name="viewState"
-            type="com.jpp.mpabout.licenses.LicensesViewState" />
+            type="com.jpp.mpabout.licenses.content.LicenseContentViewState" />
     </data>
 
 
@@ -15,18 +15,18 @@
         android:animateLayoutChanges="true">
 
         <com.jpp.mpdesign.views.MPErrorView
-            android:id="@+id/licensesErrorView"
+            android:id="@+id/licenseContentErrorView"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:visibility="@{viewState.errorViewState.visibility}"
-            app:onRetry="@{viewState.errorViewState.errorHandler}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:onRetry="@{viewState.errorViewState.errorHandler}" />
 
         <ProgressBar
-            android:id="@+id/licensesLoadingView"
+            android:id="@+id/licenseContentLoadingView"
             style="@style/MPProgressBar"
             android:visibility="@{viewState.loadingVisibility}"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -34,17 +34,21 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/licensesRv"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="@{viewState.content.visibility}"
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <WebView
+                android:id="@+id/licenseContentWV"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{viewState.content.visibility}"
+                app:loadUrl="@{viewState.content.licenseUrl}" />
+        </androidx.core.widget.NestedScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </layout>

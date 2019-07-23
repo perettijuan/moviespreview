@@ -1,8 +1,10 @@
 package com.jpp.mp.di
 
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
-import com.jpp.mpdomain.repository.*
-import com.jpp.mpdomain.usecase.licenses.GetLicenseUseCase
+import com.jpp.mpdomain.repository.ConfigurationRepository
+import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.LanguageRepository
+import com.jpp.mpdomain.repository.MoviePageRepository
 import com.jpp.mpdomain.usecase.movies.ConfigMovieUseCase
 import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase
 import dagger.Module
@@ -30,10 +32,6 @@ class DomainLayerModule {
     @Provides
     fun providesConfigMovieUseCase(configurationRepository: ConfigurationRepository)
             : ConfigMovieUseCase = ConfigMovieUseCase.Impl(configurationRepository)
-
-    @Provides
-    fun providesGetLicenseUseCase(licensesRepository: LicensesRepository)
-            : GetLicenseUseCase = GetLicenseUseCase.Impl(licensesRepository)
 
     @Provides
     fun providesImagesPathInteractor(configurationRepository: ConfigurationRepository)
