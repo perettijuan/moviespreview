@@ -5,49 +5,37 @@
     android:id="@+id/main_navigation"
     app:startDestination="@id/playingMoviesFragment">
 
-    <include app:graph="@navigation/user_account_nav"/>
-    <include app:graph="@navigation/movie_details_nav"/>
-    <include app:graph="@navigation/search_nav"/>
-    <include app:graph="@navigation/person_nav"/>
-    <include app:graph="@navigation/credits_nav"/>
-    <include app:graph="@navigation/about_nav"/>
+    <include app:graph="@navigation/user_account_nav" />
+    <include app:graph="@navigation/movie_details_nav" />
+    <include app:graph="@navigation/search_nav" />
+    <include app:graph="@navigation/person_nav" />
+    <include app:graph="@navigation/credits_nav" />
+    <include app:graph="@navigation/about_nav" />
 
     <fragment
         android:id="@+id/playingMoviesFragment"
         android:name="com.jpp.mp.screens.main.movies.fragments.PlayingMoviesFragment"
         android:label="@string/main_menu_now_playing"
-        tools:layout="@layout/fragment_movies"/>
+        tools:layout="@layout/fragment_movies" />
     <fragment
         android:id="@+id/popularMoviesFragment"
         android:name="com.jpp.mp.screens.main.movies.fragments.PopularMoviesFragment"
         android:label="@string/main_menu_popular"
-        tools:layout="@layout/fragment_movies"/>
+        tools:layout="@layout/fragment_movies" />
     <fragment
         android:id="@+id/upcomingMoviesFragment"
         android:name="com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment"
         android:label="@string/main_menu_upcoming"
-        tools:layout="@layout/fragment_movies"/>
+        tools:layout="@layout/fragment_movies" />
     <fragment
         android:id="@+id/topRatedMoviesFragment"
         android:name="com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment"
         android:label="@string/main_menu_top_rated"
-        tools:layout="@layout/fragment_movies"/>
-    <fragment
-        android:id="@+id/licensesFragment"
-        android:name="com.jpp.mp.screens.main.licenses.LicensesFragmentDeprecated"
-        tools:layout="@layout/fragment_licenses_deprecated">
-        <action
-            android:id="@+id/action_licensesFragment_to_licenseContentFragment"
-            app:destination="@id/licenseContentFragment"
-            app:enterAnim="@anim/fragment_enter_slide_right"
-            app:exitAnim="@anim/fragment_exit_slide_right"
-            app:popEnterAnim="@anim/fragment_enter_slide_left"
-            app:popExitAnim="@anim/fragment_exit_slide_left"/>
-    </fragment>
+        tools:layout="@layout/fragment_movies" />
     <fragment
         android:id="@+id/licenseContentFragment"
         android:name="com.jpp.mp.screens.main.licenses.content.LicenseContentFragment"
-        tools:layout="@layout/fragment_license_content" >
+        tools:layout="@layout/fragment_license_content">
         <argument
             android:name="licenseId"
             app:argType="string" />
