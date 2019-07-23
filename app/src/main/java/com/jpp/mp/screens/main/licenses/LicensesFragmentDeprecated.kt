@@ -15,15 +15,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
 import com.jpp.mp.ext.*
-import com.jpp.mp.screens.main.licenses.LicensesFragmentDirections.actionLicensesFragmentToLicenseContentFragment
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_licenses.*
+import kotlinx.android.synthetic.main.fragment_licenses_deprecated.*
 import javax.inject.Inject
 
 /**
  * Shows the list of Licenses that are used by the application.
  */
-class LicensesFragment : Fragment() {
+//TODO delete ME
+class LicensesFragmentDeprecated : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -34,7 +34,7 @@ class LicensesFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_licenses, container, false)
+        return inflater.inflate(R.layout.fragment_licenses_deprecated, container, false)
     }
 
 
@@ -43,7 +43,7 @@ class LicensesFragment : Fragment() {
         withViewModel {
             init()
 
-            viewState().observe(this@LicensesFragment.viewLifecycleOwner, Observer { viewState ->
+            viewState().observe(this@LicensesFragmentDeprecated.viewLifecycleOwner, Observer { viewState ->
                 when (viewState) {
                     is LicensesViewState.Loading -> renderLoading()
                     is LicensesViewState.ErrorUnknown -> {
@@ -62,13 +62,13 @@ class LicensesFragment : Fragment() {
             })
 
 
-            navEvents().observe(this@LicensesFragment.viewLifecycleOwner, Observer { navEvent ->
+            navEvents().observe(this@LicensesFragmentDeprecated.viewLifecycleOwner, Observer { navEvent ->
                 when (navEvent) {
                     is LicensesNavEvent.ToLicenseContent -> {
-                        findNavController().navigate(actionLicensesFragmentToLicenseContentFragment(
-                                navEvent.licenseId.toString(),
-                                navEvent.licenseName
-                        ))
+//                        findNavController().navigate(actionLicensesFragmentToLicenseContentFragment(
+//                                navEvent.licenseId.toString(),
+//                                navEvent.licenseName
+//                        ))
                     }
                 }
             })
@@ -77,10 +77,10 @@ class LicensesFragment : Fragment() {
 
 
     /**
-     * Helper function to execute actions with the [LicensesViewModel].
+     * Helper function to execute actions with the [LicensesViewModelDeprecated].
      */
-    private fun withViewModel(action: LicensesViewModel.() -> Unit) {
-        getViewModel<LicensesViewModel>(viewModelFactory).action()
+    private fun withViewModel(action: LicensesViewModelDeprecated.() -> Unit) {
+        getViewModel<LicensesViewModelDeprecated>(viewModelFactory).action()
     }
 
     private fun renderLoading() {
@@ -116,7 +116,7 @@ class LicensesFragment : Fragment() {
         class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             fun bindLicense(license: LicenseItem, listener: (LicenseItem) -> Unit) {
                 val textView = itemView.findViewById<TextView>(android.R.id.text1)
-                textView.setTextAppearanceCompat(R.style.MPTextViewSmall)
+//                textView.setTextAppearanceCompat(R.style.MPTextViewSmall)
                 textView.text = license.name
                 itemView.setOnClickListener { listener(license) }
             }

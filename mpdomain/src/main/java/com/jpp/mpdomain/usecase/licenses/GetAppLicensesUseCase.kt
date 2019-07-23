@@ -7,6 +7,7 @@ import com.jpp.mpdomain.repository.LicensesRepository
  * UseCase definition: fetch the license list from the data storage and expose it to the upper
  * layer. If an error is detected, notify the client about it.
  */
+//TODO delete ME
 interface GetAppLicensesUseCase {
     /**
      * Retrieves the license list that can be shown.

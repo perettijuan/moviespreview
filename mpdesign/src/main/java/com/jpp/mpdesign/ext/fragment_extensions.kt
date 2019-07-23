@@ -65,3 +65,8 @@ fun Fragment.snackBarNoAction(contentView: View,
         }.show()
     }
 }
+
+/**
+ * Retrieves a color from the provided [colorRes].
+ */
+fun Fragment.getColor(@ColorRes colorRes: Int) = ContextCompat.getColor(requireContext(), colorRes)
