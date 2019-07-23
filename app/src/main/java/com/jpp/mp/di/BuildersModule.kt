@@ -9,6 +9,7 @@ import com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
 import com.jpp.mpabout.AboutFragment
 import com.jpp.mpabout.licenses.LicensesFragment
+import com.jpp.mpabout.licenses.content.LicenseContentFragment
 import com.jpp.mpaccount.account.UserAccountFragment
 import com.jpp.mpaccount.account.lists.UserMovieListFragment
 import com.jpp.mpaccount.login.LoginFragment
@@ -68,4 +69,7 @@ abstract class BuildersModule {
 
     @ContributesAndroidInjector
     abstract fun bindLicensesFragment(): LicensesFragment
+
+    @ContributesAndroidInjector
+    abstract fun bindLicenseContentFragment(): LicenseContentFragment
 }

@@ -73,7 +73,7 @@ class LicensesFragment : Fragment() {
 
 
     private fun showLicenseContent(licenseId: Int) {
-        LicenseContentFragment().show(fragmentManager, "tag")
+        LicenseContentFragment.newInstance(licenseId).show(fragmentManager, "tag")
     }
 
     class LicensesAdapter(private val items: List<LicenseItem>, private val selectionListener: (LicenseItem) -> Unit) : RecyclerView.Adapter<LicensesAdapter.ViewHolder>() {
