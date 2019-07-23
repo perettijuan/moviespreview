@@ -14,13 +14,14 @@ import com.jpp.mp.ext.setInvisible
 import com.jpp.mp.ext.setVisible
 import com.jpp.mp.screens.main.licenses.content.LicenseContentFragmentArgs.fromBundle
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_license_content.*
+import kotlinx.android.synthetic.main.fragment_license_content_deprecated.*
 import javax.inject.Inject
 
 /**
  * Shows the contentViewState of a particular license.
  */
-class LicenseContentFragment : Fragment() {
+//TODO JPP delete me
+class LicenseContentFragmentDeprecated : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -31,19 +32,19 @@ class LicenseContentFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_license_content, container, false)
+        return inflater.inflate(R.layout.fragment_license_content_deprecated, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         val args = arguments
-                ?: throw IllegalStateException("You need to pass arguments to LicenseContentFragment in order to show the contentViewState")
+                ?: throw IllegalStateException("You need to pass arguments to LicenseContentFragmentDeprecated in order to show the contentViewState")
 
         withViewModel {
             init(fromBundle(args).licenseId.toInt())
 
-            viewState().observe(this@LicenseContentFragment.viewLifecycleOwner, Observer { viewState ->
+            viewState().observe(this@LicenseContentFragmentDeprecated.viewLifecycleOwner, Observer { viewState ->
                 when (viewState) {
                     is LicenseViewState.Loading -> {
                         renderLoading()
@@ -62,10 +63,10 @@ class LicenseContentFragment : Fragment() {
     }
 
     /**
-     * Helper function to execute actions with the [LicenseContentViewModel].
+     * Helper function to execute actions with the [LicenseContentViewModelDeprecated].
      */
-    private fun withViewModel(action: LicenseContentViewModel.() -> Unit) {
-        getViewModel<LicenseContentViewModel>(viewModelFactory).action()
+    private fun withViewModel(action: LicenseContentViewModelDeprecated.() -> Unit) {
+        getViewModel<LicenseContentViewModelDeprecated>(viewModelFactory).action()
     }
 
     private fun renderLoading() {

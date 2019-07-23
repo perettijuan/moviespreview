@@ -34,8 +34,8 @@
         tools:layout="@layout/fragment_movies" />
     <fragment
         android:id="@+id/licenseContentFragment"
-        android:name="com.jpp.mp.screens.main.licenses.content.LicenseContentFragment"
-        tools:layout="@layout/fragment_license_content">
+        android:name="com.jpp.mp.screens.main.licenses.content.LicenseContentFragmentDeprecated"
+        tools:layout="@layout/fragment_license_content_deprecated">
         <argument
             android:name="licenseId"
             app:argType="string" />

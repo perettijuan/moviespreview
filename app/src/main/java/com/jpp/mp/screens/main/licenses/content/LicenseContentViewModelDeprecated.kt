@@ -11,15 +11,16 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * [MPScopedViewModel] to handle the state of the LicenseContentFragment. It is a coroutine-scoped
+ * [MPScopedViewModel] to handle the state of the LicenseContentFragmentDeprecated. It is a coroutine-scoped
  * ViewModel, which indicates that some work will be executed in a background context and synced
  * to the main context when over.
  *
  * It exposes a single output in a LiveData object that receives [LicenseViewState] updates as soon
  * as any new state is identified by the ViewModel.
  */
-class LicenseContentViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                                  private val getLicenseUseCase: GetLicenseUseCase)
+//TODO delete ME
+class LicenseContentViewModelDeprecated @Inject constructor(dispatchers: CoroutineDispatchers,
+                                                            private val getLicenseUseCase: GetLicenseUseCase)
     : MPScopedViewModel(dispatchers) {
 
     private val viewStateLiveData by lazy { MutableLiveData<LicenseViewState>() }
