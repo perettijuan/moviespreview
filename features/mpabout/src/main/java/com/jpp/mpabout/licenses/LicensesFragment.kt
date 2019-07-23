@@ -18,6 +18,7 @@ import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpabout.R
 import com.jpp.mpabout.databinding.FragmentLicensesBinding
+import com.jpp.mpabout.licenses.content.LicenseContentFragment
 import com.jpp.mpdesign.ext.inflate
 import com.jpp.mpdesign.ext.setTextAppearanceCompat
 import dagger.android.support.AndroidSupportInjection
@@ -50,11 +51,14 @@ class LicensesFragment : Fragment() {
                     viewBinding.viewState = viewState
                     licensesRv.apply {
                         layoutManager = LinearLayoutManager(context)
-                        adapter = LicensesAdapter(viewState.content.licenseItems) { withViewModel { TODO() } }
+                        adapter = LicensesAdapter(viewState.content.licenseItems) { withViewModel { onLicenseSelected(it) } }
                         addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
                     }
                 }
             })
+
+            navEvents.observe(viewLifecycleOwner, Observer { showLicenseContent(it.licenseId) })
+
             onInit()
         }
 
@@ -66,6 +70,11 @@ class LicensesFragment : Fragment() {
      * Helper function to execute actions with the [LicensesViewModel].
      */
     private fun withViewModel(action: LicensesViewModel.() -> Unit) = withViewModel<LicensesViewModel>(viewModelFactory) { action() }
+
+
+    private fun showLicenseContent(licenseId: Int) {
+        LicenseContentFragment().show(fragmentManager, "tag")
+    }
 
     class LicensesAdapter(private val items: List<LicenseItem>, private val selectionListener: (LicenseItem) -> Unit) : RecyclerView.Adapter<LicensesAdapter.ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent.inflate(android.R.layout.simple_list_item_1))

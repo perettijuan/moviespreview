@@ -12,7 +12,7 @@ import com.jpp.mp.R
 import com.jpp.mp.ext.getViewModel
 import com.jpp.mp.ext.setInvisible
 import com.jpp.mp.ext.setVisible
-import com.jpp.mp.screens.main.licenses.content.LicenseContentFragmentArgs.fromBundle
+import com.jpp.mp.screens.main.licenses.content.LicenseContentFragmentDeprecatedArgs.fromBundle
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_license_content_deprecated.*
 import javax.inject.Inject
