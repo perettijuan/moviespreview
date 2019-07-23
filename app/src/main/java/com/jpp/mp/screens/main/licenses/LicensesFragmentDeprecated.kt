@@ -7,14 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
-import com.jpp.mp.ext.*
+import com.jpp.mp.ext.inflate
+import com.jpp.mp.ext.setInvisible
+import com.jpp.mp.ext.setVisible
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_licenses_deprecated.*
 import javax.inject.Inject
@@ -40,48 +38,9 @@ class LicensesFragmentDeprecated : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        withViewModel {
-            init()
 
-            viewState().observe(this@LicensesFragmentDeprecated.viewLifecycleOwner, Observer { viewState ->
-                when (viewState) {
-                    is LicensesViewState.Loading -> renderLoading()
-                    is LicensesViewState.ErrorUnknown -> {
-                        licensesErrorView.asUnknownError { retry() }
-                        renderError()
-                    }
-                    is LicensesViewState.Loaded -> {
-                        licensesRv.apply {
-                            layoutManager = LinearLayoutManager(context)
-                            adapter = LicensesAdapter(viewState.licenses) { onUserSelectedLicense(it) }
-                            addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
-                        }
-                        renderLicenses()
-                    }
-                }
-            })
-
-
-            navEvents().observe(this@LicensesFragmentDeprecated.viewLifecycleOwner, Observer { navEvent ->
-                when (navEvent) {
-                    is LicensesNavEvent.ToLicenseContent -> {
-//                        findNavController().navigate(actionLicensesFragmentToLicenseContentFragment(
-//                                navEvent.licenseId.toString(),
-//                                navEvent.licenseName
-//                        ))
-                    }
-                }
-            })
-        }
     }
 
-
-    /**
-     * Helper function to execute actions with the [LicensesViewModelDeprecated].
-     */
-    private fun withViewModel(action: LicensesViewModelDeprecated.() -> Unit) {
-        getViewModel<LicensesViewModelDeprecated>(viewModelFactory).action()
-    }
 
     private fun renderLoading() {
         licensesErrorView.setInvisible()
