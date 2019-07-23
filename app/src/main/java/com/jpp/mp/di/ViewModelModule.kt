@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.screens.main.MainActivityViewModel
 import com.jpp.mp.screens.main.header.NavigationHeaderViewModel
-import com.jpp.mp.screens.main.licenses.content.LicenseContentViewModelDeprecated
 import com.jpp.mp.screens.main.movies.fragments.PlayingMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.PopularMoviesFragment
 import com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment
@@ -58,11 +57,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MainActivityViewModel::class)
     internal abstract fun postMainActivityViewModel(viewModel: MainActivityViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(LicenseContentViewModelDeprecated::class)
-    internal abstract fun postLicenseContentViewModelDeprecated(viewModel: LicenseContentViewModelDeprecated): ViewModel
 
     @Binds
     @IntoMap

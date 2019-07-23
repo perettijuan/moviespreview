@@ -6,13 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.R
-import com.jpp.mp.ext.getViewModel
 import com.jpp.mp.ext.setInvisible
 import com.jpp.mp.ext.setVisible
-import com.jpp.mp.screens.main.licenses.content.LicenseContentFragmentDeprecatedArgs.fromBundle
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_license_content_deprecated.*
 import javax.inject.Inject
@@ -40,34 +37,8 @@ class LicenseContentFragmentDeprecated : Fragment() {
 
         val args = arguments
                 ?: throw IllegalStateException("You need to pass arguments to LicenseContentFragmentDeprecated in order to show the contentViewState")
-
-        withViewModel {
-            init(fromBundle(args).licenseId.toInt())
-
-            viewState().observe(this@LicenseContentFragmentDeprecated.viewLifecycleOwner, Observer { viewState ->
-                when (viewState) {
-                    is LicenseViewState.Loading -> {
-                        renderLoading()
-                    }
-                    is LicenseViewState.ErrorUnknown -> {
-                        licenseContentErrorView.asUnknownError { retry() }
-                        renderError()
-                    }
-                    is LicenseViewState.Loaded -> {
-                        licenseContentWV.loadUrl(viewState.contentUrl)
-                        renderContent()
-                    }
-                }
-            })
-        }
     }
 
-    /**
-     * Helper function to execute actions with the [LicenseContentViewModelDeprecated].
-     */
-    private fun withViewModel(action: LicenseContentViewModelDeprecated.() -> Unit) {
-        getViewModel<LicenseContentViewModelDeprecated>(viewModelFactory).action()
-    }
 
     private fun renderLoading() {
         licenseContentErrorView.setInvisible()
