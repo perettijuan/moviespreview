@@ -9,6 +9,16 @@ sealed class Connectivity {
 }
 
 /**
+ * Represents the current version of the application.
+ */
+data class AppVersion(val version: String)
+
+/**
+ * Represents a URL for the about section.
+ */
+data class AboutUrl(val url: String)
+
+/**
  * Represents the general configuration of the application. Some elements of the API require some
  * knowledge of this configuration data in order to, for instance, crete the URLs that points to
  * the images stored by the API.

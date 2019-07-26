@@ -1,11 +1,13 @@
 package com.jpp.mpdomain.repository
 
+import com.jpp.mpdomain.AppVersion
+
 /**
  * Repository definition to fetch the current app version.
  */
 interface AppVersionRepository {
     /**
-     * @return a String object that represents the current version of the application.
+     * @return the [AppVersion] that represents the current version of the application.
      */
-    fun getCurrentAppVersion(): String
+    fun getCurrentAppVersion(): AppVersion
 }

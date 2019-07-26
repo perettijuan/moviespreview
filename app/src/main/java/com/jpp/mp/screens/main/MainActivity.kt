@@ -18,7 +18,6 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.*
 import com.jpp.mp.R
-import com.jpp.mp.common.extensions.getStringOrDefault
 import com.jpp.mp.common.extensions.navigate
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.navigation.Destination.*
@@ -157,7 +156,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 return true
             }
             R.id.about_menu -> {
-                interModuleNavigationTo(R.id.aboutFragment)
+                interModuleNavigationTo(R.id.about_nav)
                 return true
             }
             else -> super.onOptionsItemSelected(item)
@@ -200,9 +199,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 R.id.popularMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
                 R.id.upcomingMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
                 R.id.topRatedMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
-                R.id.aboutFragment -> withMainViewModel { userNavigatesToAbout(getString(R.string.about_top_bar_title)) }
-                R.id.licensesFragment -> withMainViewModel { userNavigatesToLicenses(getString(R.string.about_open_source_action)) }
-                R.id.licenseContentFragment -> withMainViewModel { userNavigatesToLicenseContent(arguments.getStringOrDefault("licenseTitle", destination.label.toString())) }
             }
         }
 
@@ -248,12 +244,14 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         when (reachedDestination) {
             is ReachedDestination -> withMainViewModel { userNavigatesWithinFeature(reachedDestination.destinationTitle) }
             is MPSearch -> withMainViewModel { userNavigatesToSearch() }
-            is MPCredits ->  withMainViewModel { userNavigatesToCredits(reachedDestination.movieTitle) }
+            is MPCredits -> withMainViewModel { userNavigatesToCredits(reachedDestination.movieTitle) }
         }
     }
 
     private fun interModuleNavigationTo(@IdRes resId: Int) {
-        withNavController { navigate(resId) }
+        withNavController {
+            navigate(resId, null, buildAnimationNavOptions())
+        }
     }
 
     private fun innerNavigateTo(directions: NavDirections) {
@@ -268,12 +266,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         withNavController {
             navigate(moduleNavId,
                     extras,
-                    NavOptions.Builder()
-                            .setEnterAnim(R.anim.fragment_enter_slide_right)
-                            .setExitAnim(R.anim.fragment_exit_slide_right)
-                            .setPopEnterAnim(R.anim.fragment_enter_slide_left)
-                            .setPopExitAnim(R.anim.fragment_exit_slide_left)
-                            .build()
+                    buildAnimationNavOptions()
             )
         }
     }
@@ -285,14 +278,16 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                         override fun getArguments() = Bundle()
                         override fun getActionId() = R.id.search_nav
                     },
-                    NavOptions.Builder()
-                            .setEnterAnim(R.anim.fragment_enter_slide_right)
-                            .setExitAnim(R.anim.fragment_exit_slide_right)
-                            .setPopEnterAnim(R.anim.fragment_enter_slide_left)
-                            .setPopExitAnim(R.anim.fragment_exit_slide_left)
-                            .build())
+                    buildAnimationNavOptions())
         }
     }
+
+    private fun buildAnimationNavOptions() = NavOptions.Builder()
+            .setEnterAnim(R.anim.fragment_enter_slide_right)
+            .setExitAnim(R.anim.fragment_exit_slide_right)
+            .setPopEnterAnim(R.anim.fragment_enter_slide_left)
+            .setPopExitAnim(R.anim.fragment_exit_slide_left)
+            .build()
 
 
     private fun withMainViewModel(action: MainActivityViewModel.() -> Unit) = withViewModel<MainActivityViewModel>(viewModelFactory) { action() }

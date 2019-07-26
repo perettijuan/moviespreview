@@ -1,26 +1,12 @@
 <resources>
-    <string name="app_name">MoviesPreview</string>
-
     <!-- Main Activity -->
     <string name="main_menu_now_playing">En cines</string>
     <string name="main_menu_popular">Populares</string>
     <string name="main_menu_top_rated">Mejor rankeadas</string>
     <string name="main_menu_upcoming">Por estrenar</string>
     <string name="main_activity_search_menu_title">Buscar</string>
-    <string name="about_menu_item">Acerca de</string>
+    <string name="about_menu_item">@string/about_generic</string>
     <!-- End Main Activity -->
-
-    <!-- About -->
-    <string name="about_rate_app_action">Calificar app</string>
-    <string name="about_share_app_action">Compartir app</string>
-    <string name="about_brows_code_action">Navegar código fuente</string>
-    <string name="about_privacy_policy_action">Políticas de privacidad</string>
-    <string name="about_open_source_action">Licencias</string>
-    <string name="about_the_movie_db_terms_of_use">Términos de uso de The Movie DB</string>
-    <string name="about_content">Movies Preview es una aplicación desarrollada para verificar algunas ideas de implementaciones y para tener una base de código de ejemplo de cómo desarrollar una aplicación en Android.\n
-        Permite al usuario acceder a la información disponible en The Movie DB. </string>
-    <string name="share_app_text">Mira esta grandiosa app: %1$s </string>
-    <!-- End About -->
 
     <!-- Nav Header -->
     <string name="nav_header_login">Iniciar Sesión</string>

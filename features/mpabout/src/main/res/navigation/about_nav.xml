@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/about_nav"
+    app:startDestination="@id/aboutFragment">
+
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.jpp.mpabout.AboutFragment" >
+        <action
+            android:id="@+id/licensesFragment"
+            app:destination="@id/licensesFragment"
+            app:enterAnim="@anim/fragment_enter_slide_right"
+            app:exitAnim="@anim/fragment_exit_slide_right"
+            app:popEnterAnim="@anim/fragment_enter_slide_left"
+            app:popExitAnim="@anim/fragment_exit_slide_left" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/licensesFragment"
+        android:name="com.jpp.mpabout.licenses.LicensesFragment" />
+
+</navigation>

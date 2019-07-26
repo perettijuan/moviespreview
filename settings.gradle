@@ -1,1 +1,1 @@
-include ':app', ':mpcommon', ':mpdomain', ':mpdata', ':mpdesign', ':mptestutils', 'features:mpaccount', 'features:mpmoviedetails', 'features:mpsearch', 'features:mpperson', 'features:mpcredits'
+include ':app', ':mpcommon', ':mpdomain', ':mpdata', ':mpdesign', ':mptestutils', 'features:mpaccount', 'features:mpmoviedetails', 'features:mpsearch', 'features:mpperson', 'features:mpcredits', 'features:mpabout'

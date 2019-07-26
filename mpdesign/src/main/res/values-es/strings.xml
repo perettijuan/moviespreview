@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">MoviesPreview</string>
+
     <!-- Errors -->
     <string name="error_no_network_connection_message">Verifique su conexion a Internet e intente nuevamente.</string>
     <string name="error_unexpected_error_message">Un error inesperado ha ocurrido. Por favor, intent enuevamente luego.</string>
@@ -7,4 +9,5 @@
     <!-- End Errors -->
 
     <string name="login_generic">Iniciar Sesión</string>
+    <string name="about_generic">Acerca de</string>
 </resources>

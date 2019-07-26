@@ -12,7 +12,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Interactor to support the credits screen. This interactor takes care of accessing the
+ * Interactor to support the credits section. This interactor takes care of accessing the
  * repository layer to perform the inner state updates needed to provide functionality to the
  * view layer.
  */

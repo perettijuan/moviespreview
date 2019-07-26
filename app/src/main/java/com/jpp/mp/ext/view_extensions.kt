@@ -166,16 +166,7 @@ fun View.getText(@StringRes textRes: Int): CharSequence {
     return resources.getText(textRes)
 }
 
-/**
- * Sets the text appearance of the TextView based on the current API level.
- */
-fun TextView.setTextAppearanceCompat(@StyleRes resId: Int) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        this.setTextAppearance(resId)
-    } else {
-        setTextAppearance(context, resId)
-    }
-}
+
 
 /**
  * Closes the drawer if it is expanded (using the START margin to determinate if is expanded).

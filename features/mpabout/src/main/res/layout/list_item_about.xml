@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="viewState"
+            type="com.jpp.mpabout.AboutItem" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:paddingTop="?attr/mpAboutItemVerticalSpacing"
+        android:paddingBottom="?attr/mpAboutItemVerticalSpacing">
+
+        <com.jpp.mpdesign.views.MPImageView
+            android:id="@+id/aboutItemIcon"
+            android:layout_width="?attr/mpAboutItemIconSize"
+            android:layout_height="?attr/mpAboutItemIconSize"
+            app:imageRes="@{viewState.icon}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/aboutItemTitle"
+            style="@style/MPTextViewNormal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{viewState.title}"
+            app:layout_constraintBottom_toBottomOf="@+id/aboutItemIcon"
+            app:layout_constraintEnd_toStartOf="@+id/aboutItemChevron"
+            app:layout_constraintStart_toEndOf="@+id/aboutItemIcon"
+            app:layout_constraintTop_toTopOf="@+id/aboutItemIcon" />
+
+        <ImageView
+            android:id="@+id/aboutItemChevron"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_chevron_right_black" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
