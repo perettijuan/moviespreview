@@ -13,6 +13,7 @@ import com.jpp.mpdomain.repository.MoviePageRepository
  * not connected). If connected, fetch the movies for the provided section.
  * If not connected, return an error that indicates such state.
  */
+//TODO delete ME
 interface GetMoviesUseCase {
 
     /**
