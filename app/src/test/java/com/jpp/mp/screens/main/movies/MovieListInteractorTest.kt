@@ -51,7 +51,7 @@ class MovieListInteractorTest {
     fun `Should notify when user changes language`() {
         var eventPosted: MovieListInteractor.MovieListEvent? = null
 
-        subject.movieListEvents.observeWith { eventPosted = it }
+        subject.events.observeWith { eventPosted = it }
 
         languageRepositoryLiveData.postValue(SupportedLanguage.Spanish)
 
@@ -65,7 +65,7 @@ class MovieListInteractorTest {
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
-        subject.movieListEvents.observeWith { eventPosted = it }
+        subject.events.observeWith { eventPosted = it }
 
         whenAction.invoke(subject)
 
@@ -82,7 +82,7 @@ class MovieListInteractorTest {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { moviePageRepository.getMoviePageForSection(any(), any(), any()) } returns null
 
-        subject.movieListEvents.observeWith { eventPosted = it }
+        subject.events.observeWith { eventPosted = it }
 
         whenAction.invoke(subject)
 

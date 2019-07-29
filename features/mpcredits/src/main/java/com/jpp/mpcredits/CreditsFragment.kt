@@ -27,7 +27,7 @@ class CreditsFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    lateinit var viewBinding: CreditsFragmentBinding
+    private lateinit var viewBinding: CreditsFragmentBinding
 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)

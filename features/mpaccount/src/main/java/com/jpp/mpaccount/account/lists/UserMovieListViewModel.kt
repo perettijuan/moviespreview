@@ -129,8 +129,13 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     }
 
     /**
-     * Creates the [LiveData] of [PagedList] that will be pushed to the view layer to render each movie
-     * as a [UserMovieItem].
+     * Creates a [LiveData] object of the [PagedList] that is used to wire up the Android Paging Library
+     * with the interactor in order to fetch a new page of movies each time the user scrolls down in
+     * the list of movies.
+     * [dataSourceFactoryCreator] is a factory method that provides a mechanism used to instantiate
+     * the proper [MPPagingDataSourceFactory] instance based on the movies fetching strategy required
+     * for the section being shown to the user. Check the documentation in [createPagingFactory] in
+     * order to fully understand how this behaves.
      */
     private fun createPagedList(dataSourceFactoryCreator: () -> MPPagingDataSourceFactory<Movie>): LiveData<PagedList<UserMovieItem>> {
         return dataSourceFactoryCreator()
@@ -146,7 +151,13 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     }
 
     /**
-     * Creates a [MPPagingDataSourceFactory] instance that will be used to show the list of movies.
+     * Creates an instance of [MPPagingDataSourceFactory] that is used to retrieve new pages of movies
+     * every time the user reaches the end of current page being used. It is basically a method to
+     * support the usage of the Android Paging Library.
+     * [fetchStrategy] provides a mechanism to execute the proper method in the [UserMovieListInteractor]
+     * to fetch the movies for the section being shown, since this VM supports 4 different types of
+     * movie sections (Playing, Popular, TopRated and Upcoming).
+     *
      *
      * IMPORTANT:
      * The lambda created as parameter of the factory executes it work in a background thread.
@@ -154,7 +165,9 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
      *  1 - Produces a List of Movies from the [userMovieListInteractor].
      *  2 - Configures the images path of each Movie in the list with the [imagesPathInteractor].
      */
-    private fun createPagingFactory(moviePosterSize: Int, movieBackdropSize: Int, fetchStrategy: (Int, (List<Movie>) -> Unit) -> Unit): MPPagingDataSourceFactory<Movie> {
+    private fun createPagingFactory(moviePosterSize: Int,
+                                    movieBackdropSize: Int,
+                                    fetchStrategy: (Int, (List<Movie>) -> Unit) -> Unit): MPPagingDataSourceFactory<Movie> {
         return MPPagingDataSourceFactory { page, callback ->
             fetchStrategy(page) { movieList ->
                 when (movieList.isNotEmpty()) {

@@ -1,8 +1,9 @@
 package com.jpp.mp.screens.main.movies
 
-import com.jpp.mpdomain.Movie as DomainMovie
-
+import android.view.View
 import androidx.paging.PagedList
+import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
+import com.jpp.mpdomain.Movie as DomainMovie
 
 /**
  * Represents the view state of the movies view (MoviesFragment).
@@ -18,6 +19,32 @@ sealed class MoviesViewState {
     object ErrorUnknownWithItems : MoviesViewState()
     data class InitialPageLoaded(val pagedList: PagedList<MovieItem>) : MoviesViewState()
 }
+
+/**
+ * Represents the view state of the movies list screen. This indicates that the view
+ * can only render the view states modeled in this class.
+ */
+data class MovieListViewState(
+        val loadingVisibility: Int = View.INVISIBLE,
+        val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
+        val contentViewState: MovieListContentViewState = MovieListContentViewState()
+) {
+    companion object {
+        fun showLoading() = MovieListViewState(loadingVisibility = View.VISIBLE)
+        fun showUnknownError(errorHandler: () -> Unit) = MovieListViewState(errorViewState = ErrorViewState.asUnknownError(errorHandler))
+        fun showNoConnectivityError(errorHandler: () -> Unit) = MovieListViewState(errorViewState = ErrorViewState.asConnectivity(errorHandler))
+        fun showMovieList(pagedList: PagedList<MovieItem>) = MovieListViewState(contentViewState = MovieListContentViewState(visibility = View.VISIBLE, movieList = pagedList))
+    }
+}
+
+/**
+ * Represents the view state of the content shown in the movie list view.
+ */
+data class MovieListContentViewState(
+        val visibility: Int = View.INVISIBLE,
+        val movieList: PagedList<MovieItem>? = null
+)
+
 
 /**
  * Represents the navigation events that can be routed through the onSearch section.
