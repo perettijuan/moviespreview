@@ -37,6 +37,7 @@ import javax.inject.Inject
  * It uses the Paging Library to allow infinite scrolling in the list of movies.
  */
 //TODO JPP modularize this. When modularize, remember that this guy needs to be language aware.
+//TODO JPP remove me
 abstract class MoviesFragment : Fragment() {
 
     @Inject
