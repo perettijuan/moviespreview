@@ -22,6 +22,7 @@ import com.jpp.mpdomain.usecase.movies.GetMoviesUseCase.GetMoviesResult.*
  * - Exposes a second output in a LiveData object that receives [MoviesViewNavigationEvent] updates
  * as soon as a new navigation event is detected from the UI.
  */
+//TODO JPP remove me
 abstract class MoviesFragmentViewModel(private val getMoviesUseCase: GetMoviesUseCase,
                                        private val configMovieUseCase: ConfigMovieUseCase,
                                        private val networkExecutor: Executor) : ViewModel() {
