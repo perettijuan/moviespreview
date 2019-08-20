@@ -15,7 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
+import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.databinding.ListItemMovieBinding
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movie_list.*
@@ -54,6 +56,8 @@ abstract class MovieListFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+
+
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -81,6 +85,10 @@ abstract class MovieListFragment : Fragment() {
                     movieList.visibility = viewState.contentViewState.visibility
                     withRecyclerViewAdapter { submitList(viewState.contentViewState.movieList) }
                 }
+            })
+
+            screenTitle.observe(viewLifecycleOwner, Observer { screenTitle ->
+                withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(getString(screenTitle.title))) }
             })
 
             initViewModel(

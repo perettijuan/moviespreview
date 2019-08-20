@@ -2,6 +2,7 @@ package com.jpp.mp.screens.main.movies
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
@@ -26,6 +27,9 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
     private val _viewStates = MediatorLiveData<HandledViewState<MovieListViewState>>()
     val viewStates: LiveData<HandledViewState<MovieListViewState>> get() = _viewStates
+
+    private val _screenTitle = MutableLiveData<MovieListSectionTitle>()
+    val screenTitle: LiveData<MovieListSectionTitle> get() = _screenTitle
 
     private val _navEvents = SingleLiveEvent<MoviesViewNavigationEvent>()
     val navEvents: LiveData<MoviesViewNavigationEvent> get() = _navEvents
@@ -53,6 +57,7 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             }
         }
         pushLoadingAndInitializePagedList(dsFactoryCreator)
+        _screenTitle.postValue(MovieListSectionTitle.PLAYING)
     }
 
     /**
@@ -65,6 +70,7 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             }
         }
         pushLoadingAndInitializePagedList(dsFactoryCreator)
+        _screenTitle.postValue(MovieListSectionTitle.POPULAR)
     }
 
     /**
@@ -77,6 +83,7 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             }
         }
         pushLoadingAndInitializePagedList(dsFactoryCreator)
+        _screenTitle.postValue(MovieListSectionTitle.TOP_RATED)
     }
 
     /**
@@ -89,6 +96,7 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             }
         }
         pushLoadingAndInitializePagedList(dsFactoryCreator)
+        _screenTitle.postValue(MovieListSectionTitle.UPCOMING)
     }
 
 
