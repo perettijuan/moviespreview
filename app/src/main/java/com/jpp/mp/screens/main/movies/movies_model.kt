@@ -1,7 +1,9 @@
 package com.jpp.mp.screens.main.movies
 
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.paging.PagedList
+import com.jpp.mp.R
 import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 import com.jpp.mpdomain.Movie as DomainMovie
 
@@ -45,14 +47,6 @@ data class MovieListContentViewState(
         val movieList: PagedList<MovieItem>? = null
 )
 
-
-/**
- * Represents the navigation events that can be routed through the onSearch section.
- */
-sealed class MoviesViewNavigationEvent {
-    data class ToMovieDetails(val movieId: String, val movieImageUrl: String, val movieTitle: String, var positionInList: Int) : MoviesViewNavigationEvent()
-}
-
 /**
  * Represents an item in the list of Movies shown in the initial screen of the application.
  */
@@ -64,3 +58,20 @@ data class MovieItem(
         val popularity: String,
         val voteCount: String
 )
+
+/**
+ * Represents the navigation events that can be routed through the onSearch section.
+ */
+sealed class MoviesViewNavigationEvent {
+    data class ToMovieDetails(val movieId: String, val movieImageUrl: String, val movieTitle: String, var positionInList: Int) : MoviesViewNavigationEvent()
+}
+
+/**
+ * Represents the title of the screen.
+ */
+enum class MovieListSectionTitle(@StringRes val title: Int) {
+    PLAYING(R.string.main_menu_now_playing),
+    POPULAR(R.string.main_menu_popular),
+    UPCOMING(R.string.main_menu_upcoming),
+    TOP_RATED(R.string.main_menu_top_rated)
+}
