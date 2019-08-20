@@ -81,6 +81,8 @@ abstract class MovieListFragment : Fragment() {
             viewStates.observe(viewLifecycleOwner, Observer {
                 it.actionIfNotHandled { viewState ->
                     movieListErrorView.visibility = viewState.errorViewState.visibility
+                    movieListErrorView.asConnectivity(viewState.errorViewState.isConnectivity)
+                    movieListErrorView.onRetry(viewState.errorViewState.errorHandler)
                     moviesLoadingView.visibility = viewState.loadingVisibility
                     movieList.visibility = viewState.contentViewState.visibility
                     withRecyclerViewAdapter { submitList(viewState.contentViewState.movieList) }

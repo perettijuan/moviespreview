@@ -108,7 +108,11 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private fun pushLoadingAndInitializePagedList(dataSourceFactoryCreator: () -> MPPagingDataSourceFactory<Movie>) {
         with(_viewStates) {
             value = of(MovieListViewState.showLoading())
-            addSource(createPagedList(dataSourceFactoryCreator)) { pagedList -> value = of(MovieListViewState.showMovieList(pagedList)) }
+            addSource(createPagedList(dataSourceFactoryCreator)) { pagedList ->
+                if (pagedList.isNotEmpty()) {
+                    value = of(MovieListViewState.showMovieList(pagedList))
+                }
+            }
         }
     }
 
