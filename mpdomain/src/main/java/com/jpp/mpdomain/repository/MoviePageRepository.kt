@@ -15,6 +15,11 @@ interface MoviePageRepository {
     fun getMoviePageForSection(page: Int, section: MovieSection, language: SupportedLanguage): MoviePage?
 
     /**
+     * Flushes out any [MoviePage] data stored locally
+     */
+    fun flushMoviePagesForSection(section: MovieSection)
+
+    /**
      * Retrieves a [MoviePage] with the favorite movies that the user has.
      * @return a [MoviePage] indicated by [page] only if the user has movies as favorites.
      */

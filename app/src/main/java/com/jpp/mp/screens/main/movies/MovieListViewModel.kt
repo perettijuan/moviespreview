@@ -2,26 +2,39 @@ package com.jpp.mp.screens.main.movies
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPScopedViewModel
-import com.jpp.mp.common.extensions.and
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
 import com.jpp.mp.common.viewstate.HandledViewState
 import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
-import com.jpp.mp.screens.main.movies.MovieListInteractor.MovieListEvent.NotConnectedToNetwork
-import com.jpp.mp.screens.main.movies.MovieListInteractor.MovieListEvent.UnknownError
+import com.jpp.mp.screens.main.movies.MovieListInteractor.MovieListEvent.*
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * ViewModel used to support the movie list section of the application.
+ * ViewModel used to support the movie list section of the application. This ViewModel is shared by
+ * the Fragments that show the movies listed in each category that can be displayed. Every time the
+ * user selects a section, this VM is refreshed and triggers a new fetching to the underlying layers
+ * of the application.
+ * Produces different [MoviesViewState] that represents the entire configuration of the screen at any
+ * given moment.
+ *
+ * This the UI is using the Android Paging Library, the VM needs a way to map the data retrieved from
+ * the [MovieListInteractor] to a [PagedList] that can be used by the library. That process is done
+ * using the [MPPagingDataSourceFactory] that creates the DataSource and produces a [LiveData] object
+ * that is combined with the [viewStates] in order to properly map the data into a [MoviesViewState].
+ *
+ * This VM is also language aware, meaning that when the user changes the language of the device, the
+ * VM is notified about such event and executes a refresh of both: the data stored by the application
+ * and the view state being shown to the user.
  */
 class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                              private val movieListInteractor: MovieListInteractor,
@@ -42,7 +55,7 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             when (event) {
                 is NotConnectedToNetwork -> _viewStates.value = of(MovieListViewState.showNoConnectivityError(sectionTitle, retry))
                 is UnknownError -> _viewStates.value = of(MovieListViewState.showUnknownError(sectionTitle, retry))
-                //TODO JPP UserChangedLanguage
+                is UserChangedLanguage -> refreshData()
             }
         }
     }
@@ -96,7 +109,8 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                     _viewStates.value = of(MovieListViewState.showMovieList(sectionTitle, pagedList))
                 }
             }
-        }.also {// invoke the function in order to actually push the loading state and fetch the data when this method is called.
+        }.also {
+            // invoke the function in order to actually push the loading state and fetch the data when this method is called.
             it.invoke()
         }
     }
@@ -135,6 +149,24 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             movieListInteractor.fetchMoviePageForSection(page, section) { movieList ->
                 callback(movieList.map { imagesPathInteractor.configurePathMovie(moviePosterSize, movieBackdropSize, it) })
             }
+        }
+    }
+
+    /**
+     * Ask the interactor to flush any data that might be locally cached and re-fetch the
+     * movie list for the current section being shown.
+     */
+    private fun refreshData() {
+        launch {
+            withContext(dispatchers.default()) {
+                with(movieListInteractor) {
+                    flushMoviePagesForSection(MovieSection.Playing)
+                    flushMoviePagesForSection(MovieSection.Popular)
+                    flushMoviePagesForSection(MovieSection.Upcoming)
+                    flushMoviePagesForSection(MovieSection.TopRated)
+                }
+            }
+            retry.invoke()
         }
     }
 

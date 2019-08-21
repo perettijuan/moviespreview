@@ -55,7 +55,6 @@ class MovieListInteractor @Inject constructor(private val moviePageRepository: M
      * the Android Paging Library. This is why this interactor has basically two points
      * of outputs: [events] and the provided [callback].
      */
-
     fun fetchMoviePageForSection(page: Int, section: MovieSection, callback: (List<Movie>) -> Unit) {
         when (connectivityRepository.getCurrentConnectivity()) {
             is Connectivity.Disconnected -> _movieListEvents.postValue(NotConnectedToNetwork)
@@ -66,5 +65,12 @@ class MovieListInteractor @Inject constructor(private val moviePageRepository: M
                         languageRepository.getCurrentAppLanguage()
                 )?.let { callback(it.results) } ?: _movieListEvents.postValue(UnknownError)
         }
+    }
+
+    /**
+     * Flushes out all data related to the section provided.
+     */
+    fun flushMoviePagesForSection(section: MovieSection) {
+        moviePageRepository.flushMoviePagesForSection(section)
     }
 }

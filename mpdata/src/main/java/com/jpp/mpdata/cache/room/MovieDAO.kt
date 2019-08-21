@@ -18,4 +18,7 @@ interface MovieDAO {
 
     @Query("select * from movies where page_id = :pageId")
     fun getMoviesFromPage(pageId: Int) : List<DBMovie>?
+
+    @Query("DELETE FROM movie_pages where section = :section")
+    fun deleteAllPagesInSection(section: String)
 }
