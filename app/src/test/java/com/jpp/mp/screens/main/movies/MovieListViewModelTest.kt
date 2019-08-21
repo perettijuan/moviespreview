@@ -4,6 +4,7 @@ import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mpdomain.Movie
+import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
@@ -55,6 +56,8 @@ class MovieListViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
+        subject.onInitWithPlayingSection(10, 10)
+
         lvInteractorEvents.postValue(MovieListInteractor.MovieListEvent.NotConnectedToNetwork)
 
         assertNotNull(viewStatePosted)
@@ -76,7 +79,7 @@ class MovieListViewModelTest {
 
         viewStatePosted?.let {
             it.errorViewState.errorHandler?.invoke()
-            verify(exactly = 2) { movieListInteractor.fetchPlayingMoviePage(1, any()) }
+            verify(exactly = 2) { movieListInteractor.fetchMoviePageForSection(1, MovieSection.Playing, any()) }
         } ?: fail()
     }
 
@@ -85,6 +88,8 @@ class MovieListViewModelTest {
         var viewStatePosted: MovieListViewState? = null
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+
+        subject.onInitWithPlayingSection(10, 10)
 
         lvInteractorEvents.postValue(MovieListInteractor.MovieListEvent.UnknownError)
 
@@ -107,7 +112,7 @@ class MovieListViewModelTest {
 
         viewStatePosted?.let {
             it.errorViewState.errorHandler?.invoke()
-            verify(exactly = 2) { movieListInteractor.fetchPlayingMoviePage(1, any()) }
+            verify(exactly = 2) { movieListInteractor.fetchMoviePageForSection(1, MovieSection.Playing, any()) }
         } ?: fail()
     }
 
@@ -118,7 +123,7 @@ class MovieListViewModelTest {
         val slot = slot<(List<Movie>) -> Unit>()
 
         every { imagesPathInteractor.configurePathMovie(any(), any(), any()) } answers { arg(2) }
-        every { movieListInteractor.fetchPlayingMoviePage(any(), capture(slot)) } answers { slot.captured.invoke(mockedList) }
+        every { movieListInteractor.fetchMoviePageForSection(any(), any(), capture(slot)) } answers { slot.captured.invoke(mockedList) }
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
@@ -131,7 +136,7 @@ class MovieListViewModelTest {
         assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.visibility)
         assertEquals(mockedList.size, viewStatePosted?.contentViewState?.movieList?.size)
 
-        verify { movieListInteractor.fetchPlayingMoviePage(1, any()) }
+        verify { movieListInteractor.fetchMoviePageForSection(1, MovieSection.Playing, any()) }
         verify(exactly = mockedList.size) { imagesPathInteractor.configurePathMovie(10, 10, any()) }
     }
 

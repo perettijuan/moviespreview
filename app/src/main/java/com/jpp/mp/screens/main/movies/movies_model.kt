@@ -27,15 +27,16 @@ sealed class MoviesViewState {
  * can only render the view states modeled in this class.
  */
 data class MovieListViewState(
+        val screenTitle: MovieListSectionTitle,
         val loadingVisibility: Int = View.INVISIBLE,
         val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
         val contentViewState: MovieListContentViewState = MovieListContentViewState()
 ) {
     companion object {
-        fun showLoading() = MovieListViewState(loadingVisibility = View.VISIBLE)
-        fun showUnknownError(errorHandler: () -> Unit) = MovieListViewState(errorViewState = ErrorViewState.asUnknownError(errorHandler))
-        fun showNoConnectivityError(errorHandler: () -> Unit) = MovieListViewState(errorViewState = ErrorViewState.asConnectivity(errorHandler))
-        fun showMovieList(pagedList: PagedList<MovieItem>) = MovieListViewState(contentViewState = MovieListContentViewState(visibility = View.VISIBLE, movieList = pagedList))
+        fun showLoading(screenTitle: MovieListSectionTitle) = MovieListViewState(screenTitle = screenTitle, loadingVisibility = View.VISIBLE)
+        fun showUnknownError(screenTitle: MovieListSectionTitle, errorHandler: () -> Unit) = MovieListViewState(screenTitle = screenTitle, errorViewState = ErrorViewState.asUnknownError(errorHandler))
+        fun showNoConnectivityError(screenTitle: MovieListSectionTitle, errorHandler: () -> Unit) = MovieListViewState(screenTitle = screenTitle, errorViewState = ErrorViewState.asConnectivity(errorHandler))
+        fun showMovieList(screenTitle: MovieListSectionTitle, pagedList: PagedList<MovieItem>) = MovieListViewState(screenTitle = screenTitle, contentViewState = MovieListContentViewState(visibility = View.VISIBLE, movieList = pagedList))
     }
 }
 

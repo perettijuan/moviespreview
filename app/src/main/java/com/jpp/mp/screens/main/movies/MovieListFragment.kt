@@ -86,12 +86,11 @@ abstract class MovieListFragment : Fragment() {
                     moviesLoadingView.visibility = viewState.loadingVisibility
                     movieList.visibility = viewState.contentViewState.visibility
                     withRecyclerViewAdapter { submitList(viewState.contentViewState.movieList) }
+
+                    withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(getString(viewState.screenTitle.title))) }
                 }
             })
 
-            screenTitle.observe(viewLifecycleOwner, Observer { screenTitle ->
-                withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(getString(screenTitle.title))) }
-            })
 
             initViewModel(
                     getScreenWidthInPixels(),

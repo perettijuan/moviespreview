@@ -13,6 +13,10 @@ class MoviePageRepositoryImpl(private val moviesApi: MoviesApi,
                 ?: getFromApi(page, section, language)?.also { moviesDb.saveMoviePageForSection(it, section) }
     }
 
+    override fun flushMoviePagesForSection(section: MovieSection) {
+        moviesDb.flushAllPagesInSection(section)
+    }
+
     override fun getFavoriteMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
         return moviesDb.getFavoriteMovies(page)
                 ?: moviesApi.getFavoriteMoviePage(page, userAccount, session, language)?.also { moviesDb.saveFavoriteMoviesPage(page, it) }

@@ -30,6 +30,10 @@ class MoviesCache(private val roomDatabase: MPRoomDataBase,
         }
     }
 
+    override fun flushAllPagesInSection(section: MovieSection) {
+        withMovieDao { deleteAllPagesInSection(section.name) }
+    }
+
     override fun saveMoviePageForSection(moviePage: MoviePage, section: MovieSection) {
         withMovieDao {
             insertMoviePage(transformWithAdapter {

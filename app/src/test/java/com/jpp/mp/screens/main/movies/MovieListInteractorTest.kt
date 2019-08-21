@@ -123,33 +123,33 @@ class MovieListInteractorTest {
 
         @JvmStatic
         fun errorCasesParams() = listOf<(MovieListInteractor) -> Unit>(
-                { it.fetchPlayingMoviePage(1, mockk()) },
-                { it.fetchPopularMoviePage(1, mockk()) },
-                { it.fetchTopRatedMoviePage(1, mockk()) },
-                { it.fetchUpcomingMoviePage(1, mockk()) }
+                { it.fetchMoviePageForSection(1, MovieSection.Playing, mockk()) },
+                { it.fetchMoviePageForSection(1, MovieSection.Popular, mockk()) },
+                { it.fetchMoviePageForSection(1, MovieSection.Upcoming, mockk()) },
+                { it.fetchMoviePageForSection(1, MovieSection.TopRated, mockk()) }
         )
 
         @JvmStatic
         fun successCasesParams() = listOf(
                 MovieListTestParam(
-                        whenAction = { it.fetchPlayingMoviePage(1, callbackMock) },
+                        whenAction = { it.fetchMoviePageForSection(1, MovieSection.Playing, callbackMock) },
                         mockCallback = callbackMock,
                         movieSection = MovieSection.Playing
                 ),
                 MovieListTestParam(
-                        whenAction = { it.fetchPopularMoviePage(1, callbackMock) },
+                        whenAction = { it.fetchMoviePageForSection(1, MovieSection.Popular, callbackMock) },
                         mockCallback = callbackMock,
                         movieSection = MovieSection.Popular
                 ),
                 MovieListTestParam(
-                        whenAction = { it.fetchTopRatedMoviePage(1, callbackMock) },
-                        mockCallback = callbackMock,
-                        movieSection = MovieSection.TopRated
-                ),
-                MovieListTestParam(
-                        whenAction = { it.fetchUpcomingMoviePage(1, callbackMock) },
+                        whenAction = { it.fetchMoviePageForSection(1, MovieSection.Upcoming, callbackMock) },
                         mockCallback = callbackMock,
                         movieSection = MovieSection.Upcoming
+                ),
+                MovieListTestParam(
+                        whenAction = { it.fetchMoviePageForSection(1, MovieSection.TopRated, callbackMock) },
+                        mockCallback = callbackMock,
+                        movieSection = MovieSection.TopRated
                 )
         )
 
