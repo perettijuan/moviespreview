@@ -19,6 +19,7 @@ import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.databinding.ListItemMovieBinding
+import com.jpp.mpdesign.ext.findViewInPositionWithId
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movie_list.*
 import kotlinx.android.synthetic.main.list_item_movie.view.*
@@ -71,7 +72,7 @@ abstract class MovieListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         movieList.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = MoviesAdapter { item, position -> TODO() }
+            adapter = MoviesAdapter { item, position -> withViewModel { onMovieSelected(item, position) } }
         }
     }
 
@@ -91,6 +92,13 @@ abstract class MovieListFragment : Fragment() {
                 }
             })
 
+            navEvents.observe(viewLifecycleOwner, Observer {
+                when (it) {
+                    is MoviesViewNavigationEvent.ToMovieDetails -> {
+                        navigateToMovieDetails(it)
+                    }
+                }
+            })
 
             initViewModel(
                     getScreenWidthInPixels(),
@@ -103,6 +111,13 @@ abstract class MovieListFragment : Fragment() {
     private fun withViewModel(action: MovieListViewModel.() -> Unit) = withViewModel<MovieListViewModel>(viewModelFactory) { action() }
     private fun withRecyclerViewAdapter(action: MoviesAdapter.() -> Unit) {
         (movieList.adapter as MoviesAdapter).action()
+    }
+
+    private fun navigateToMovieDetails(event: MoviesViewNavigationEvent.ToMovieDetails) {
+        with(event) {
+            val view = movieList.findViewInPositionWithId(positionInList, R.id.movieItemImage)
+            withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(movieId, movieImageUrl, movieTitle, view) }
+        }
     }
 
 

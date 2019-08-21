@@ -88,6 +88,20 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         pushLoadingAndInitializePagedList(posterSize, backdropSize, MovieSection.Upcoming)
     }
 
+    /**
+     * Called when an item is selected in the list of movies.
+     * A new state is posted in navEvents() in order to handle the event.
+     */
+    fun onMovieSelected(movieItem: MovieItem, positionInList: Int) {
+        with(movieItem) {
+            _navEvents.value = MoviesViewNavigationEvent.ToMovieDetails(
+                    movieId = movieId.toString(),
+                    movieImageUrl = contentImageUrl,
+                    movieTitle = title,
+                    positionInList = positionInList)
+        }
+    }
+
 
     /**
      * Pushes the Loading view state into the view layer and creates the [PagedList]
