@@ -51,19 +51,19 @@ class AboutFragmentTest {
 //        onAboutRv().assertItemCount(supportedAboutItems.size)
 //
 //        onView(withViewInRecyclerView(R.id.aboutRv, 0, R.id.aboutItemTitle))
-//                .check(matches(withText(AboutItem.RateApp.title)))
+//                .check(matches(withText(AboutItem.RateApp.titleRes)))
 //
 //        onView(withViewInRecyclerView(R.id.aboutRv, 1, R.id.aboutItemTitle))
-//                .check(matches(withText(AboutItem.ShareApp.title)))
+//                .check(matches(withText(AboutItem.ShareApp.titleRes)))
 //
 //        onView(withViewInRecyclerView(R.id.aboutRv, 2, R.id.aboutItemTitle))
-//                .check(matches(withText(AboutItem.BrowseAppCode.title)))
+//                .check(matches(withText(AboutItem.BrowseAppCode.titleRes)))
 //
 //        onView(withViewInRecyclerView(R.id.aboutRv, 3, R.id.aboutItemTitle))
-//                .check(matches(withText(AboutItem.Licenses.title)))
+//                .check(matches(withText(AboutItem.Licenses.titleRes)))
 //
 //        onView(withViewInRecyclerView(R.id.aboutRv, 4, R.id.aboutItemTitle))
-//                .check(matches(withText(AboutItem.TheMovieDbTermsOfUse.title)))
+//                .check(matches(withText(AboutItem.TheMovieDbTermsOfUse.titleRes)))
 //    }
 //
 //    @Test

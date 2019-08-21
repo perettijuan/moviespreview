@@ -147,7 +147,7 @@ class MovieListViewModelTest {
                 add(
                         Movie(
                                 id = i.toDouble(),
-                                title = "title$i",
+                                title = "titleRes$i",
                                 original_language = "oTitle$i",
                                 overview = "overview$i",
                                 release_date = "releaseDate$i",
