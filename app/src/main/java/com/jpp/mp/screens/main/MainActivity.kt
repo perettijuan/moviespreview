@@ -83,8 +83,10 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
         withMainViewModel {
             onInit()
-            viewState().observe(this@MainActivity, Observer { viewState ->
-                renderViewState(viewState)
+            viewState().observe(this@MainActivity, Observer {
+                it.actionIfNotHandled { viewState ->
+                    renderViewState(viewState)
+                }
             })
         }
 
@@ -142,7 +144,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
          */
         withMainViewModel {
             for (i in 0 until menu.size()) {
-                menu.getItem(i).isVisible = viewState().value?.menuBarEnabled ?: true
+                menu.getItem(i).isVisible = viewState().value?.peekContent()?.menuBarEnabled ?: true
             }
         }
 
@@ -188,20 +190,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                         mainDrawerLayout)
         )
 
-
-        /*
-         * Make sure we update the ViewModel every time a new destination
-         * is selected.
-         */
-        navController.addOnDestinationChangedListener { _, destination, arguments ->
-            when (destination.id) {
-                R.id.playingMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
-                R.id.popularMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
-                R.id.upcomingMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
-                R.id.topRatedMoviesFragment -> withMainViewModel { userNavigatesToMovieListSection(destination.label.toString()) }
-            }
-        }
-
         setupWithNavController(mainNavigationView, navController)
     }
 
@@ -244,7 +232,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         when (reachedDestination) {
             is ReachedDestination -> withMainViewModel { userNavigatesWithinFeature(reachedDestination.destinationTitle) }
             is MPSearch -> withMainViewModel { userNavigatesToSearch() }
-            is MPCredits -> withMainViewModel { userNavigatesToCredits(reachedDestination.movieTitle) }
+            is MPCredits -> withMainViewModel { userNavigatesWithinFeature(reachedDestination.movieTitle) }
         }
     }
 

@@ -33,7 +33,7 @@ class MainActivityViewModelTest {
     @ParameterizedTest
     @MethodSource("navigationEvents")
     fun `Should post navigation event`(param: NavigationEventsParams) {
-        subject.viewState().observeWith { assertEquals(param.expected, it) }
+        subject.viewState().observeWith { assertEquals(param.expected, it.peekContent()) }
         param.action.invoke(subject)
     }
 
@@ -62,40 +62,8 @@ class MainActivityViewModelTest {
         @JvmStatic
         fun navigationEvents() = listOf(
                 NavigationEventsParams(
-                        MainActivityViewState(sectionTitle = "aSection", menuBarEnabled = true, searchEnabled = false),
-                        action = { it.userNavigatesToMovieListSection("aSection") }
-                ),
-                NavigationEventsParams(
-                        MainActivityViewState(sectionTitle = "aSection", menuBarEnabled = false, searchEnabled = false),
-                        action = { it.userNavigatesToMovieDetails("aSection") }
-                ),
-                NavigationEventsParams(
                         MainActivityViewState(sectionTitle = "", menuBarEnabled = false, searchEnabled = true),
                         action = { it.userNavigatesToSearch() }
-                ),
-                NavigationEventsParams(
-                        MainActivityViewState(sectionTitle = "aSection", menuBarEnabled = false, searchEnabled = false),
-                        action = { it.userNavigatesToCredits("aSection") }
-                ),
-                NavigationEventsParams(
-                        MainActivityViewState(sectionTitle = "aSection", menuBarEnabled = false, searchEnabled = false),
-                        action = { it.userNavigatesToPerson("aSection") }
-                ),
-                NavigationEventsParams(
-                        MainActivityViewState(sectionTitle = "aSection", menuBarEnabled = false, searchEnabled = false),
-                        action = { it.userNavigatesToAbout("aSection") }
-                ),
-                NavigationEventsParams(
-                        MainActivityViewState(sectionTitle = "aSection", menuBarEnabled = false, searchEnabled = false),
-                        action = { it.userNavigatesToLicenses("aSection") }
-                ),
-                NavigationEventsParams(
-                        MainActivityViewState(sectionTitle = "aSection", menuBarEnabled = false, searchEnabled = false),
-                        action = { it.userNavigatesToLicenseContent("aSection") }
-                ),
-                NavigationEventsParams(
-                        MainActivityViewState(sectionTitle = "aSection", menuBarEnabled = false, searchEnabled = false),
-                        action = { it.userNavigatesToAccountDetails("aSection") }
                 )
         )
     }

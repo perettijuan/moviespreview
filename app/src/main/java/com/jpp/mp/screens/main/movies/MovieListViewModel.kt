@@ -45,7 +45,7 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _viewStates = MediatorLiveData<HandledViewState<MovieListViewState>>()
     val viewStates: LiveData<HandledViewState<MovieListViewState>> get() = _viewStates
 
-    private val _screenTitle = SingleLiveEvent<MovieListSectionTitle>()
+    private val _screenTitle = MutableLiveData<MovieListSectionTitle>()
     val screenTitle: LiveData<MovieListSectionTitle> get() = _screenTitle
 
     private val _navEvents = SingleLiveEvent<MoviesViewNavigationEvent>()
