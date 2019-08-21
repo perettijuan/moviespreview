@@ -2,13 +2,13 @@ package com.jpp.mp.screens.main.movies
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import com.jpp.mp.screens.main.movies.MovieListInteractor.MovieListEvent.*
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.MoviePageRepository
-import com.jpp.mp.screens.main.movies.MovieListInteractor.MovieListEvent.*
 import javax.inject.Inject
 
 /**
@@ -46,8 +46,8 @@ class MovieListInteractor @Inject constructor(private val moviePageRepository: M
     }
 
     /**
-     * Fetches a page of movies (indicated by [page]) that corresponds to the playing
-     * movies section from the repository. If the page can be successfully retrieved,
+     * Fetches a page of movies (indicated by [page]) that corresponds to the movies section
+     * from the repository. If the page can be successfully retrieved,
      * the list of [Movie]s that corresponds to the page will be posted to [callback].
      * If an error is detected, then the proper event will be posted to [events].
      *
@@ -55,46 +55,16 @@ class MovieListInteractor @Inject constructor(private val moviePageRepository: M
      * the Android Paging Library. This is why this interactor has basically two points
      * of outputs: [events] and the provided [callback].
      */
-    fun fetchPlayingMoviePage(page: Int, callback: (List<Movie>) -> Unit) {
-        fetchPageFromRepository(page, MovieSection.Playing, callback)
-    }
 
-    /**
-     * Check [fetchPlayingMoviePage].
-     */
-    fun fetchPopularMoviePage(page: Int, callback: (List<Movie>) -> Unit) {
-        fetchPageFromRepository(page, MovieSection.Popular, callback)
-    }
-
-    /**
-     * Check [fetchPlayingMoviePage]
-     */
-    fun fetchTopRatedMoviePage(page: Int, callback: (List<Movie>) -> Unit) {
-        fetchPageFromRepository(page, MovieSection.TopRated, callback)
-    }
-
-    /**
-     * Check [fetchPlayingMoviePage]
-     */
-    fun fetchUpcomingMoviePage(page: Int, callback: (List<Movie>) -> Unit) {
-        fetchPageFromRepository(page, MovieSection.Upcoming, callback)
-    }
-
-
-    private fun fetchPageFromRepository(page: Int,
-                                        movieSection: MovieSection,
-                                        callback: (List<Movie>) -> Unit) {
-
+    fun fetchMoviePageForSection(page: Int, section: MovieSection, callback: (List<Movie>) -> Unit) {
         when (connectivityRepository.getCurrentConnectivity()) {
             is Connectivity.Disconnected -> _movieListEvents.postValue(NotConnectedToNetwork)
             is Connectivity.Connected ->
                 moviePageRepository.getMoviePageForSection(
                         page,
-                        movieSection,
+                        section,
                         languageRepository.getCurrentAppLanguage()
                 )?.let { callback(it.results) } ?: _movieListEvents.postValue(UnknownError)
         }
-
     }
-
 }
