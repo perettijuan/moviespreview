@@ -3,6 +3,7 @@ package com.jpp.mpdesign.views
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
+import com.jpp.mpdesign.ext.loadImageUrl
 import com.jpp.mpdesign.ext.loadImageUrlAsCircular
 
 /**
@@ -16,6 +17,10 @@ class MPImageView : AppCompatImageView {
 
     fun circularUrl(url: String) {
         loadImageUrlAsCircular(url)
+    }
+
+    fun imageUrl(url: String) {
+        loadImageUrl(url)
     }
 
     fun imageRes(imageRes: Int) {

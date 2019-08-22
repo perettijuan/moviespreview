@@ -20,6 +20,11 @@ interface MoviesDb {
     fun saveMoviePageForSection(moviePage: MoviePage, section: MovieSection)
 
     /**
+     * Flushes out all [MoviePage] data stored in the provided [section].
+     */
+    fun flushAllPagesInSection(section: MovieSection)
+
+    /**
      * @return a [MoviePage] from the favorite list.
      */
     fun getFavoriteMovies(page: Int): MoviePage?

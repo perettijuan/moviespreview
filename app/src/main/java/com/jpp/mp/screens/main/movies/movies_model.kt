@@ -1,8 +1,11 @@
 package com.jpp.mp.screens.main.movies
 
-import com.jpp.mpdomain.Movie as DomainMovie
-
+import android.view.View
+import androidx.annotation.StringRes
 import androidx.paging.PagedList
+import com.jpp.mp.R
+import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
+import com.jpp.mpdomain.Movie as DomainMovie
 
 /**
  * Represents the view state of the movies view (MoviesFragment).
@@ -20,11 +23,29 @@ sealed class MoviesViewState {
 }
 
 /**
- * Represents the navigation events that can be routed through the onSearch section.
+ * Represents the view state of the movies list screen. This indicates that the view
+ * can only render the view states modeled in this class.
  */
-sealed class MoviesViewNavigationEvent {
-    data class ToMovieDetails(val movieId: String, val movieImageUrl: String, val movieTitle: String, var positionInList: Int) : MoviesViewNavigationEvent()
+data class MovieListViewState(
+        val loadingVisibility: Int = View.INVISIBLE,
+        val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
+        val contentViewState: MovieListContentViewState = MovieListContentViewState()
+) {
+    companion object {
+        fun showLoading() = MovieListViewState(loadingVisibility = View.VISIBLE)
+        fun showUnknownError(errorHandler: () -> Unit) = MovieListViewState(errorViewState = ErrorViewState.asUnknownError(errorHandler))
+        fun showNoConnectivityError(errorHandler: () -> Unit) = MovieListViewState(errorViewState = ErrorViewState.asConnectivity(errorHandler))
+        fun showMovieList(pagedList: PagedList<MovieItem>) = MovieListViewState(contentViewState = MovieListContentViewState(visibility = View.VISIBLE, movieList = pagedList))
+    }
 }
+
+/**
+ * Represents the view state of the content shown in the movie list view.
+ */
+data class MovieListContentViewState(
+        val visibility: Int = View.INVISIBLE,
+        val movieList: PagedList<MovieItem>? = null
+)
 
 /**
  * Represents an item in the list of Movies shown in the initial screen of the application.
@@ -37,3 +58,22 @@ data class MovieItem(
         val popularity: String,
         val voteCount: String
 )
+
+/**
+ * Represents the navigation events that can be routed through the onSearch section.
+ */
+sealed class MoviesViewNavigationEvent {
+    data class ToMovieDetails(val movieId: String, val movieImageUrl: String, val movieTitle: String, var positionInList: Int) : MoviesViewNavigationEvent()
+}
+
+/**
+ * Represents the title of the screen. Note that this is not part of the view
+ * state since the title of the screen does not belongs to the view hierarchy of the
+ * Fragment - the screen title is in the Toolbar that belongs to the Activity hierarchy.
+ */
+enum class MovieListSectionTitle(@StringRes val titleRes: Int) {
+    PLAYING(R.string.main_menu_now_playing),
+    POPULAR(R.string.main_menu_popular),
+    UPCOMING(R.string.main_menu_upcoming),
+    TOP_RATED(R.string.main_menu_top_rated)
+}

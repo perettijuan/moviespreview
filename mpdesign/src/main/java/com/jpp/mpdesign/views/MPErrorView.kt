@@ -2,6 +2,7 @@ package com.jpp.mpdesign.views
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -90,6 +91,34 @@ class MPErrorView : ConstraintLayout {
         errorTitleTextView.apply { text = getStringFromResources(errorTitle) }
         errorActionButton.apply {
             text = getStringFromResources(errorButton)
+        }
+    }
+
+    /**
+     * Generic class that represents the state of the [MPErrorView] instances used in the application.
+     * It is used to represent the three possible states that can this view can render:
+     * 1 - No error (meaning that the view is hidden).
+     * 2 - Connectivity error, that is rendered when [asConnectivity] is called and shows the view
+     *     configured to show this error.
+     * 3 - Generic unknown error, that is rendered when [asUnknownError] is called and shows the
+     *     view configured to show this type of error.
+     */
+    data class ErrorViewState(val visibility: Int = View.INVISIBLE,
+                              val isConnectivity: Boolean = false,
+                              val errorHandler: (() -> Unit)? = null) {
+
+        companion object {
+            fun asNotVisible() = ErrorViewState()
+
+            fun asConnectivity(handler: () -> Unit) = ErrorViewState(
+                    visibility = View.VISIBLE,
+                    isConnectivity = true,
+                    errorHandler = handler)
+
+            fun asUnknownError(handler: () -> Unit) = ErrorViewState(
+                    visibility = View.VISIBLE,
+                    isConnectivity = false,
+                    errorHandler = handler)
         }
     }
 }

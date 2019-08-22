@@ -88,13 +88,13 @@ class CreditsFragmentTest {
 //        onContentView().assertItemCount(personList.size)
 //
 //        onView(withViewInRecyclerView(R.id.creditsRv, 0, R.id.creditsItemTitle))
-//                .check(matches(ViewMatchers.withText(personList[0].title)))
+//                .check(matches(ViewMatchers.withText(personList[0].titleRes)))
 //
 //        onView(withViewInRecyclerView(R.id.creditsRv, 0, R.id.creditsItemSubTitle))
 //                .check(matches(ViewMatchers.withText(personList[0].subTitle)))
 //
 //        onView(withViewInRecyclerView(R.id.creditsRv, 1, R.id.creditsItemTitle))
-//                .check(matches(ViewMatchers.withText(personList[1].title)))
+//                .check(matches(ViewMatchers.withText(personList[1].titleRes)))
 //
 //        onView(withViewInRecyclerView(R.id.creditsRv, 1, R.id.creditsItemSubTitle))
 //                .check(matches(ViewMatchers.withText(personList[1].subTitle)))
@@ -110,7 +110,7 @@ class CreditsFragmentTest {
 //        for (i in 0..19) {
 //            list.add(CreditPerson(id = i.toDouble(),
 //                    profilePath = "aPath$i",
-//                    title = "aTitle$i",
+//                    titleRes = "aTitle$i",
 //                    subTitle = "aSubtitle$i"))
 //        }
 //        return list

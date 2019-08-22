@@ -5,10 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.screens.main.MainActivityViewModel
 import com.jpp.mp.screens.main.header.NavigationHeaderViewModel
-import com.jpp.mp.screens.main.movies.fragments.PlayingMoviesFragment
-import com.jpp.mp.screens.main.movies.fragments.PopularMoviesFragment
-import com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment
-import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
+import com.jpp.mp.screens.main.movies.MovieListViewModel
 import com.jpp.mpabout.AboutViewModel
 import com.jpp.mpabout.licenses.LicensesViewModel
 import com.jpp.mpabout.licenses.content.LicenseContentViewModel
@@ -33,26 +30,9 @@ abstract class ViewModelModule {
     @Binds
     internal abstract fun bindViewModelFactory(factory: MPViewModelFactory): ViewModelProvider.Factory
 
-    @Binds
-    @IntoMap
-    @ViewModelKey(PlayingMoviesFragment.PlayingMoviesFragmentViewModel::class)
-    internal abstract fun postPlayingMoviesFragmentViewModel(viewModel: PlayingMoviesFragment.PlayingMoviesFragmentViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(PopularMoviesFragment.PopularMoviesFragmentViewModel::class)
-    internal abstract fun postPopularMoviesFragmentViewModel(viewModel: PopularMoviesFragment.PopularMoviesFragmentViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(TopRatedMoviesFragment.TopRatedMoviesFragmentViewModel::class)
-    internal abstract fun postTopRatedMoviesFragmentViewModel(viewModel: TopRatedMoviesFragment.TopRatedMoviesFragmentViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(UpcomingMoviesFragment.UpcomingMoviesFragmentViewModel::class)
-    internal abstract fun postUpcomingMoviesFragmentViewModel(viewModel: UpcomingMoviesFragment.UpcomingMoviesFragmentViewModel): ViewModel
-
+    /*
+     * Main module dependencies.
+     */
     @Binds
     @IntoMap
     @ViewModelKey(MainActivityViewModel::class)
@@ -62,6 +42,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(NavigationHeaderViewModel::class)
     internal abstract fun postNavigationHeaderViewModel(viewModel: NavigationHeaderViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MovieListViewModel::class)
+    internal abstract fun postMovieListViewModel(viewModel: MovieListViewModel): ViewModel
 
     /*
      * User account feature dependencies.

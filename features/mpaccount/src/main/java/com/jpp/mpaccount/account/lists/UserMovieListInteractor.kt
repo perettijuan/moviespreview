@@ -11,8 +11,8 @@ import javax.inject.Inject
  * Interactor to support the list of movies that the user has in the account (either favorites,
  * rated or watchlist).
  * Since this interactor is used with the paging library, it provides two ways to communicate the
- * responses obtained from the data layer (via repositories):
- *  - One way, is a [LiveData] object that publishes events of status obtained in error
+ * responses obtained from the data layer:
+ *  - One way, is a [LiveData] object that publishes status events obtained in error
  *    scenarios ([UserMovieListEvent]).
  *  - The other way is using a callback. This is defined this way because of the limitation
  *    in the paging library, where a callback needs to be provided - instead of using
