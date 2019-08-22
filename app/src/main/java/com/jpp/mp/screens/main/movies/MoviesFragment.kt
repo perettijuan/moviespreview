@@ -83,13 +83,7 @@ abstract class MoviesFragment : Fragment() {
                 renderViewState(fragmentViewState)
             })
 
-            navEvents().observe(this@MoviesFragment.viewLifecycleOwner, Observer {
-                when (it) {
-                    is MoviesViewNavigationEvent.ToMovieDetails -> {
-                        navigateToMovieDetails(it)
-                    }
-                }
-            })
+
 
             init(moviePosterSize = getScreenSizeInPixels().x,
                     movieBackdropSize = getScreenSizeInPixels().x)
@@ -133,12 +127,7 @@ abstract class MoviesFragment : Fragment() {
         }
     }
 
-    private fun navigateToMovieDetails(event: MoviesViewNavigationEvent.ToMovieDetails) {
-        with(event) {
-            val view = moviesList.findViewInPositionWithId(positionInList, R.id.movieListItemImage)
-            withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(movieId, movieImageUrl, movieTitle, view) }
-        }
-    }
+
 
     /**
      * Helper function to execute actions with the [MoviesFragmentViewModel].

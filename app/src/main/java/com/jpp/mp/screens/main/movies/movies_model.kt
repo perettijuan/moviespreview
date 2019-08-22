@@ -27,16 +27,15 @@ sealed class MoviesViewState {
  * can only render the view states modeled in this class.
  */
 data class MovieListViewState(
-        val screenTitle: MovieListSectionTitle,
         val loadingVisibility: Int = View.INVISIBLE,
         val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
         val contentViewState: MovieListContentViewState = MovieListContentViewState()
 ) {
     companion object {
-        fun showLoading(screenTitle: MovieListSectionTitle) = MovieListViewState(screenTitle = screenTitle, loadingVisibility = View.VISIBLE)
-        fun showUnknownError(screenTitle: MovieListSectionTitle, errorHandler: () -> Unit) = MovieListViewState(screenTitle = screenTitle, errorViewState = ErrorViewState.asUnknownError(errorHandler))
-        fun showNoConnectivityError(screenTitle: MovieListSectionTitle, errorHandler: () -> Unit) = MovieListViewState(screenTitle = screenTitle, errorViewState = ErrorViewState.asConnectivity(errorHandler))
-        fun showMovieList(screenTitle: MovieListSectionTitle, pagedList: PagedList<MovieItem>) = MovieListViewState(screenTitle = screenTitle, contentViewState = MovieListContentViewState(visibility = View.VISIBLE, movieList = pagedList))
+        fun showLoading() = MovieListViewState(loadingVisibility = View.VISIBLE)
+        fun showUnknownError(errorHandler: () -> Unit) = MovieListViewState(errorViewState = ErrorViewState.asUnknownError(errorHandler))
+        fun showNoConnectivityError(errorHandler: () -> Unit) = MovieListViewState(errorViewState = ErrorViewState.asConnectivity(errorHandler))
+        fun showMovieList(pagedList: PagedList<MovieItem>) = MovieListViewState(contentViewState = MovieListContentViewState(visibility = View.VISIBLE, movieList = pagedList))
     }
 }
 
@@ -68,9 +67,11 @@ sealed class MoviesViewNavigationEvent {
 }
 
 /**
- * Represents the title of the screen.
+ * Represents the title of the screen. Note that this is not part of the view
+ * state since the title of the screen does not belongs to the view hierarchy of the
+ * Fragment - the screen title is in the Toolbar that belongs to the Activity hierarchy.
  */
-enum class MovieListSectionTitle(@StringRes val title: Int) {
+enum class MovieListSectionTitle(@StringRes val titleRes: Int) {
     PLAYING(R.string.main_menu_now_playing),
     POPULAR(R.string.main_menu_popular),
     UPCOMING(R.string.main_menu_upcoming),

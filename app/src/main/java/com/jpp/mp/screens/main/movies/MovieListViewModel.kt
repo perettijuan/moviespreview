@@ -2,6 +2,7 @@ package com.jpp.mp.screens.main.movies
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
@@ -44,17 +45,19 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _viewStates = MediatorLiveData<HandledViewState<MovieListViewState>>()
     val viewStates: LiveData<HandledViewState<MovieListViewState>> get() = _viewStates
 
+    private val _screenTitle = MutableLiveData<MovieListSectionTitle>()
+    val screenTitle: LiveData<MovieListSectionTitle> get() = _screenTitle
+
     private val _navEvents = SingleLiveEvent<MoviesViewNavigationEvent>()
     val navEvents: LiveData<MoviesViewNavigationEvent> get() = _navEvents
 
     private lateinit var retry: () -> Unit
-    private lateinit var sectionTitle: MovieListSectionTitle
 
     init {
         _viewStates.addSource(movieListInteractor.events) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewStates.value = of(MovieListViewState.showNoConnectivityError(sectionTitle, retry))
-                is UnknownError -> _viewStates.value = of(MovieListViewState.showUnknownError(sectionTitle, retry))
+                is NotConnectedToNetwork -> _viewStates.value = of(MovieListViewState.showNoConnectivityError(retry))
+                is UnknownError -> _viewStates.value = of(MovieListViewState.showUnknownError(retry))
                 is UserChangedLanguage -> refreshData()
             }
         }
@@ -88,13 +91,27 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         pushLoadingAndInitializePagedList(posterSize, backdropSize, MovieSection.Upcoming)
     }
 
+    /**
+     * Called when an item is selected in the list of movies.
+     * A new state is posted in navEvents() in order to handle the event.
+     */
+    fun onMovieSelected(movieItem: MovieItem, positionInList: Int) {
+        with(movieItem) {
+            _navEvents.value = MoviesViewNavigationEvent.ToMovieDetails(
+                    movieId = movieId.toString(),
+                    movieImageUrl = contentImageUrl,
+                    movieTitle = title,
+                    positionInList = positionInList)
+        }
+    }
+
 
     /**
      * Pushes the Loading view state into the view layer and creates the [PagedList]
      * of [MovieItem] that will be rendered by the view layer.
      */
     private fun pushLoadingAndInitializePagedList(posterSize: Int, backdropSize: Int, section: MovieSection) {
-        sectionTitle = when (section) {
+        _screenTitle.value = when (section) {
             MovieSection.Playing -> MovieListSectionTitle.PLAYING
             MovieSection.Popular -> MovieListSectionTitle.POPULAR
             MovieSection.TopRated -> MovieListSectionTitle.TOP_RATED
@@ -103,10 +120,10 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
         //On every retry, we want to show the loading screen and then fetch the data and show it.
         retry = {
-            _viewStates.value = of(MovieListViewState.showLoading(sectionTitle))
+            _viewStates.value = of(MovieListViewState.showLoading())
             _viewStates.addSource(createPagedList(posterSize, backdropSize, section)) { pagedList ->
                 if (pagedList.isNotEmpty()) {
-                    _viewStates.value = of(MovieListViewState.showMovieList(sectionTitle, pagedList))
+                    _viewStates.value = of(MovieListViewState.showMovieList(pagedList))
                 }
             }
         }.also {
