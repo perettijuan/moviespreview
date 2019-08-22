@@ -28,7 +28,11 @@ open class MPApp : Application(), HasActivityInjector {
                 .inject(this)
 
         Fabric.with(this, Crashlytics())
-        launchCanary()
+        /*
+         * Use canary only on demand, since it is becoming too verbose.
+         * UPDATE 08/22/2019 ---> executed a canary session and all seems to work OK.
+         * launchCanary()
+         */
     }
 
     private fun launchCanary() {
