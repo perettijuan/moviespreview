@@ -231,6 +231,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     private fun onDestinationReached(reachedDestination: Destination) {
         when (reachedDestination) {
             is ReachedDestination -> withMainViewModel { userNavigatesWithinFeature(reachedDestination.destinationTitle) }
+            is MovieListReached -> withMainViewModel { userNavigatesToMoviesList(reachedDestination.title)  }
             is MPSearch -> withMainViewModel { userNavigatesToSearch() }
             is MPCredits -> withMainViewModel { userNavigatesWithinFeature(reachedDestination.movieTitle) }
         }

@@ -56,6 +56,14 @@ class MainActivityViewModel @Inject constructor(private val languageMonitor: Lan
         navigateToSimpleDestination(sectionName)
     }
 
+    fun userNavigatesToMoviesList(sectionName: String) {
+        viewState.value = of(MainActivityViewState(
+                sectionTitle = sectionName,
+                menuBarEnabled = true,
+                searchEnabled = false
+        ))
+    }
+
     /**
      * Update view state when it is navigating to a destination without animation
      * and without menu enabled.
