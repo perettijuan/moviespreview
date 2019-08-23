@@ -19,19 +19,19 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * ViewModel used to support the movie list section of the application. This ViewModel is shared by
+ * [MPScopedViewModel] used to support the movie list section of the application. This ViewModel is shared by
  * the Fragments that show the movies listed in each category that can be displayed. Every time the
  * user selects a section, this VM is refreshed and triggers a new fetching to the underlying layers
  * of the application.
  * Produces different [MovieListViewState] that represents the entire configuration of the screen at any
  * given moment.
  *
- * This the UI is using the Android Paging Library, the VM needs a way to map the data retrieved from
+ * Since the UI is using the Android Paging Library, the VM needs a way to map the data retrieved from
  * the [MovieListInteractor] to a [PagedList] that can be used by the library. That process is done
  * using the [MPPagingDataSourceFactory] that creates the DataSource and produces a [LiveData] object
  * that is combined with the [viewStates] in order to properly map the data into a [MovieListViewState].
  *
- * This VM is also language aware, meaning that when the user changes the language of the device, the
+ * This VM is language aware, meaning that when the user changes the language of the device, the
  * VM is notified about such event and executes a refresh of both: the data stored by the application
  * and the view state being shown to the user.
  */

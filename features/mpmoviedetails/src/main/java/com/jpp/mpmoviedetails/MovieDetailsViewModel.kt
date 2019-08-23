@@ -34,12 +34,15 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * [MPScopedViewModel] to handle the state of the [MovieDetailsFragment]. It is a coroutine-scoped
- * ViewModel, which indicates that some work will be executed in a background context and synced
- * to the main context when over.
+ * [MPScopedViewModel] that supports the movie details section (only the static data, not the actions
+ * that the user can perform - for the actions, check [MovieDetailsActionViewModel]). The VM retrieves
+ * the data from the underlying layers using the provided [MovieDetailsInteractor] and maps the business
+ * data to UI data, producing a [MovieDetailViewState] that represents the configuration of the view
+ * at any given moment.
  *
- * It consumes data coming from the lower layers - exposed by interactors -
- * and maps that data to view logic.
+ * This VM is language aware, meaning that when the user changes the language of the device, the
+ * VM is notified about such event and executes a refresh of both: the data stored by the application
+ * and the view state being shown to the user.
  */
 class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                                 private val movieDetailsInteractor: MovieDetailsInteractor)
@@ -47,7 +50,11 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
 
 
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<MovieDetailViewState>>() }
-    private val _navEvents by lazy { SingleLiveEvent<MovieDetailsNavigationEvent>() }
+    val viewStates: LiveData<HandledViewState<MovieDetailViewState>> get() = _viewStates
+
+    private val _navEvents by lazy { SingleLiveEvent<NavigateToCreditsEvent>() }
+    val navEvents: LiveData<NavigateToCreditsEvent> get() = _navEvents
+
     private var movieId: Double = 0.0
     private lateinit var movieTitle: String
 
@@ -85,20 +92,9 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
      * Called when the user attempts to open the credits section.
      */
     fun onMovieCreditsSelected() {
-        _navEvents.value = MovieDetailsNavigationEvent.GoToCredits(movieId, movieTitle)
+        _navEvents.value = NavigateToCreditsEvent(movieId, movieTitle)
     }
 
-    /**
-     * Subscribe to this [LiveData] in order to get notified about the different states that
-     * the view should render.
-     */
-    val viewStates: LiveData<HandledViewState<MovieDetailViewState>> get() = _viewStates
-
-    /**
-     * Subscribe to this [LiveData] in order to get notified about navigation steps that
-     * should be performed by the view.
-     */
-    val navEvents: LiveData<MovieDetailsNavigationEvent> get() = _navEvents
 
     private fun executeFetchMovieDetailStep(movieId: Double, movieTitle: String): MovieDetailViewState {
         withMovieDetailsInteractor { fetchMovieDetail(movieId) }

@@ -63,7 +63,11 @@ class MovieDetailsFragment : Fragment() {
 
         withViewModel {
             viewStates.observe(viewLifecycleOwner, Observer { it.actionIfNotHandled { viewState -> renderViewState(viewState) } })
-            navEvents.observe(viewLifecycleOwner, Observer { reactToNavEvent(it) })
+
+            navEvents.observe(viewLifecycleOwner, Observer { navEvent ->
+                withNavigationViewModel(viewModelFactory) { navigateToMovieCredits(navEvent.movieId, navEvent.movieTitle) }
+            })
+
             onInit(movieId(arguments).toDouble(), movieTitle(arguments))
         }
 
@@ -94,13 +98,6 @@ class MovieDetailsFragment : Fragment() {
             is ShowError -> renderUnknownError()
             is ShowNotConnected -> renderConnectivityError()
             is ShowDetail -> renderDetail(viewState)
-        }
-    }
-
-    private fun reactToNavEvent(navEvent: MovieDetailsNavigationEvent) {
-        when (navEvent) {
-            is MovieDetailsNavigationEvent.GoToCredits ->
-                withNavigationViewModel(viewModelFactory) { navigateToMovieCredits(navEvent.movieId, navEvent.movieTitle) }
         }
     }
 
