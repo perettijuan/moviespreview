@@ -82,4 +82,10 @@ sealed class Destination {
      * update the Toolbar title.
      */
     data class ReachedDestination(val destinationTitle: String) : Destination()
+
+    /*
+     * Represents a Destination reached in the movie list section (the home of
+     * the application)
+     */
+    data class MovieListReached(val title: String) : Destination()
 }

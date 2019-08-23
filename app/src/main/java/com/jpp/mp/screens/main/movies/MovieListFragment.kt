@@ -92,7 +92,7 @@ abstract class MovieListFragment : Fragment() {
 
             screenTitle.observe(viewLifecycleOwner, Observer {sectionTitle ->
                 withNavigationViewModel(viewModelFactory) {
-                    destinationReached(Destination.ReachedDestination(getString(sectionTitle.titleRes)))
+                    destinationReached(Destination.MovieListReached(getString(sectionTitle.titleRes)))
                 }
             })
 
