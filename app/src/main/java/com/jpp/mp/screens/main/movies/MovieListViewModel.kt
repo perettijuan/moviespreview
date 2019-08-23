@@ -52,13 +52,16 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private lateinit var currentParam: MovieListParam
 
     private val retry: () -> Unit = {
-        pushLoadingAndInitializePagedList(
+        postLoadingAndInitializePagedList(
                 currentParam.posterSize,
                 currentParam.backdropSize,
                 currentParam.section
         )
     }
 
+    /*
+   * Map the business logic coming from the interactor into view layer logic.
+   */
     init {
         _viewStates.addSource(movieListInteractor.events) { event ->
             when (event) {
@@ -76,19 +79,21 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * on it.
      */
     fun onInit(param: MovieListParam) {
-        if (!::currentParam.isInitialized || param != currentParam) {
-            currentParam = param
-            pushLoadingAndInitializePagedList(
-                    currentParam.posterSize,
-                    currentParam.backdropSize,
-                    currentParam.section
-            )
+        if (::currentParam.isInitialized && param == currentParam) {
+            return
         }
+
+        currentParam = param
+        postLoadingAndInitializePagedList(
+                currentParam.posterSize,
+                currentParam.backdropSize,
+                currentParam.section
+        )
     }
 
     /**
      * Called when an item is selected in the list of movies.
-     * A new state is posted in navEvents() in order to handle the event.
+     * A new state is posted in [navEvents] in order to handle the event.
      */
     fun onMovieSelected(movieListItem: MovieListItem, positionInList: Int) {
         with(movieListItem) {
@@ -105,7 +110,7 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Pushes the Loading view state into the view layer and creates the [PagedList]
      * of [MovieListItem] that will be rendered by the view layer.
      */
-    private fun pushLoadingAndInitializePagedList(posterSize: Int, backdropSize: Int, section: MovieSection) {
+    private fun postLoadingAndInitializePagedList(posterSize: Int, backdropSize: Int, section: MovieSection) {
         _screenTitle.value = when (section) {
             MovieSection.Playing -> MovieListSectionTitle.PLAYING
             MovieSection.Popular -> MovieListSectionTitle.POPULAR
@@ -172,7 +177,7 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                     flushMoviePagesForSection(MovieSection.TopRated)
                 }
             }
-            pushLoadingAndInitializePagedList(
+            postLoadingAndInitializePagedList(
                     currentParam.posterSize,
                     currentParam.backdropSize,
                     currentParam.section

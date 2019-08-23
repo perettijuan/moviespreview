@@ -68,7 +68,7 @@ class MovieDetailsFragment : Fragment() {
                 withNavigationViewModel(viewModelFactory) { navigateToMovieCredits(navEvent.movieId, navEvent.movieTitle) }
             })
 
-            onInit(movieId(arguments).toDouble(), movieTitle(arguments))
+            onInit(MovieDetailsParam.fromArguments(arguments))
         }
 
         withActionsViewModel {
