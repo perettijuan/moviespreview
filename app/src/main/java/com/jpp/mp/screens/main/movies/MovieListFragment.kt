@@ -79,17 +79,15 @@ abstract class MovieListFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         withViewModel {
-            viewStates.observe(viewLifecycleOwner, Observer {
-                it.actionIfNotHandled { viewState ->
-                    movieListErrorView.visibility = viewState.errorViewState.visibility
-                    movieListErrorView.asConnectivity(viewState.errorViewState.isConnectivity)
-                    movieListErrorView.onRetry(viewState.errorViewState.errorHandler)
+            viewStates.observe(viewLifecycleOwner, Observer { viewState ->
+                movieListErrorView.visibility = viewState.errorViewState.visibility
+                movieListErrorView.asConnectivity(viewState.errorViewState.isConnectivity)
+                movieListErrorView.onRetry(viewState.errorViewState.errorHandler)
 
-                    moviesLoadingView.visibility = viewState.loadingVisibility
+                moviesLoadingView.visibility = viewState.loadingVisibility
 
-                    movieList.visibility = viewState.contentViewState.visibility
-                    withRecyclerViewAdapter { submitList(viewState.contentViewState.movieList) }
-                }
+                movieList.visibility = viewState.contentViewState.visibility
+                withRecyclerViewAdapter { submitList(viewState.contentViewState.movieList) }
             })
 
             screenTitle.observe(viewLifecycleOwner, Observer { sectionTitle ->

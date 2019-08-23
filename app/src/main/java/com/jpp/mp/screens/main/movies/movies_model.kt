@@ -5,6 +5,7 @@ import androidx.annotation.StringRes
 import androidx.paging.PagedList
 import com.jpp.mp.R
 import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
+import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.Movie as DomainMovie
 
 /**
@@ -59,4 +60,21 @@ enum class MovieListSectionTitle(@StringRes val titleRes: Int) {
     POPULAR(R.string.main_menu_popular),
     UPCOMING(R.string.main_menu_upcoming),
     TOP_RATED(R.string.main_menu_top_rated)
+}
+
+/**
+ * The initialization parameter used for
+ * MovieListViewModel initialization.
+ */
+data class MovieListParam(
+        val section: MovieSection,
+        val posterSize: Int,
+        val backdropSize: Int
+) {
+    companion object {
+        fun playing(posterSize: Int, backdropSize: Int) = MovieListParam(MovieSection.Playing, posterSize, backdropSize)
+        fun popular(posterSize: Int, backdropSize: Int) = MovieListParam(MovieSection.Popular, posterSize, backdropSize)
+        fun upcoming(posterSize: Int, backdropSize: Int) = MovieListParam(MovieSection.Upcoming, posterSize, backdropSize)
+        fun topRated(posterSize: Int, backdropSize: Int) = MovieListParam(MovieSection.TopRated, posterSize, backdropSize)
+    }
 }
