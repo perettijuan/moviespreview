@@ -16,8 +16,8 @@ import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.Destination.ReachedDestination
 import com.jpp.mpdesign.ext.*
 import com.jpp.mpmoviedetails.MovieDetailViewState.*
-import com.jpp.mpmoviedetails.NavigationMovieDetails.movieImageUrl
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieId
+import com.jpp.mpmoviedetails.NavigationMovieDetails.movieImageUrl
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieTitle
 import com.jpp.mpmoviedetails.NavigationMovieDetails.transition
 import dagger.android.support.AndroidSupportInjection
@@ -72,7 +72,7 @@ class MovieDetailsFragment : Fragment() {
         }
 
         withActionsViewModel {
-            viewStates.observe(this@MovieDetailsFragment, Observer { it.actionIfNotHandled { viewState -> renderActionViewState(viewState) } })
+            viewStates.observe(viewLifecycleOwner, Observer { viewState -> renderActionViewState(viewState) })
             onInit(movieId(arguments).toDouble())
         }
 

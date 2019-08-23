@@ -60,8 +60,8 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     }
 
     /*
-   * Map the business logic coming from the interactor into view layer logic.
-   */
+     * Map the business logic coming from the interactor into view layer logic.
+     */
     init {
         _viewStates.addSource(movieListInteractor.events) { event ->
             when (event) {
@@ -79,6 +79,12 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * on it.
      */
     fun onInit(param: MovieListParam) {
+        /*
+         * Even though the movies list data is being stored in the local database,
+         * i'm forced to do this because the loading spinner is shown for a brief
+         * period of time when fetching that from the local DB.
+         * Maybe it has to do with the paging library? Not sure.
+         */
         if (::currentParam.isInitialized && param == currentParam) {
             return
         }
