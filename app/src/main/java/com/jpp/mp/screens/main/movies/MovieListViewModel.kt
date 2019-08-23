@@ -49,8 +49,15 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _navEvents = SingleLiveEvent<NavigateToDetailsEvent>()
     val navEvents: LiveData<NavigateToDetailsEvent> get() = _navEvents
 
-    private lateinit var retry: () -> Unit
     private lateinit var currentParam: MovieListParam
+
+    private val retry: () -> Unit = {
+        pushLoadingAndInitializePagedList(
+                currentParam.posterSize,
+                currentParam.backdropSize,
+                currentParam.section
+        )
+    }
 
     init {
         _viewStates.addSource(movieListInteractor.events) { event ->
@@ -106,17 +113,11 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             MovieSection.Upcoming -> MovieListSectionTitle.UPCOMING
         }
 
-        //On every retry, we want to show the loading screen and then fetch the data and show it.
-        retry = {
-            _viewStates.value = MovieListViewState.showLoading()
-            _viewStates.addSource(createPagedList(posterSize, backdropSize, section)) { pagedList ->
-                if (pagedList.isNotEmpty()) {
-                    _viewStates.value = MovieListViewState.showMovieList(pagedList)
-                }
+        _viewStates.value = MovieListViewState.showLoading()
+        _viewStates.addSource(createPagedList(posterSize, backdropSize, section)) { pagedList ->
+            if (pagedList.isNotEmpty()) {
+                _viewStates.value = MovieListViewState.showMovieList(pagedList)
             }
-        }.also {
-            // invoke the function in order to actually push the loading state and fetch the data when this method is called.
-            it.invoke()
         }
     }
 
@@ -171,7 +172,11 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                     flushMoviePagesForSection(MovieSection.TopRated)
                 }
             }
-            retry.invoke()
+            pushLoadingAndInitializePagedList(
+                    currentParam.posterSize,
+                    currentParam.backdropSize,
+                    currentParam.section
+            )
         }
     }
 
