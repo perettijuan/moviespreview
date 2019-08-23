@@ -8,21 +8,6 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 import com.jpp.mpdomain.Movie as DomainMovie
 
 /**
- * Represents the view state of the movies view (MoviesFragment).
- * Each subclass of this sealed class represents a particular state that the fragment
- * can assume.
- */
-sealed class MoviesViewState {
-    object Loading : MoviesViewState()
-    object Refreshing : MoviesViewState()
-    object ErrorNoConnectivity : MoviesViewState()
-    object ErrorNoConnectivityWithItems : MoviesViewState()
-    object ErrorUnknown : MoviesViewState()
-    object ErrorUnknownWithItems : MoviesViewState()
-    data class InitialPageLoaded(val pagedList: PagedList<MovieItem>) : MoviesViewState()
-}
-
-/**
  * Represents the view state of the movies list screen. This indicates that the view
  * can only render the view states modeled in this class.
  */
@@ -35,7 +20,7 @@ data class MovieListViewState(
         fun showLoading() = MovieListViewState(loadingVisibility = View.VISIBLE)
         fun showUnknownError(errorHandler: () -> Unit) = MovieListViewState(errorViewState = ErrorViewState.asUnknownError(errorHandler))
         fun showNoConnectivityError(errorHandler: () -> Unit) = MovieListViewState(errorViewState = ErrorViewState.asConnectivity(errorHandler))
-        fun showMovieList(pagedList: PagedList<MovieItem>) = MovieListViewState(contentViewState = MovieListContentViewState(visibility = View.VISIBLE, movieList = pagedList))
+        fun showMovieList(pagedList: PagedList<MovieListItem>) = MovieListViewState(contentViewState = MovieListContentViewState(visibility = View.VISIBLE, movieList = pagedList))
     }
 }
 
@@ -44,13 +29,13 @@ data class MovieListViewState(
  */
 data class MovieListContentViewState(
         val visibility: Int = View.INVISIBLE,
-        val movieList: PagedList<MovieItem>? = null
+        val movieList: PagedList<MovieListItem>? = null
 )
 
 /**
- * Represents an item in the list of Movies shown in the initial screen of the application.
+ * Represents an item in the list of Movies.
  */
-data class MovieItem(
+data class MovieListItem(
         val movieId: Double,
         val headerImageUrl: String,
         val title: String,
@@ -60,11 +45,9 @@ data class MovieItem(
 )
 
 /**
- * Represents the navigation events that can be routed through the onSearch section.
+ * Represents the event that is triggered when the user selects a movie to see the detail.
  */
-sealed class MoviesViewNavigationEvent {
-    data class ToMovieDetails(val movieId: String, val movieImageUrl: String, val movieTitle: String, var positionInList: Int) : MoviesViewNavigationEvent()
-}
+data class NavigateToDetailsEvent(val movieId: String, val movieImageUrl: String, val movieTitle: String, var positionInList: Int)
 
 /**
  * Represents the title of the screen. Note that this is not part of the view

@@ -19,6 +19,7 @@ import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.databinding.ListItemMovieBinding
+import com.jpp.mp.screens.main.movies.MovieListFragment.MoviesAdapter
 import com.jpp.mpdesign.ext.findViewInPositionWithId
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movie_list.*
@@ -58,7 +59,6 @@ abstract class MovieListFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
 
-
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -84,23 +84,24 @@ abstract class MovieListFragment : Fragment() {
                     movieListErrorView.visibility = viewState.errorViewState.visibility
                     movieListErrorView.asConnectivity(viewState.errorViewState.isConnectivity)
                     movieListErrorView.onRetry(viewState.errorViewState.errorHandler)
+
                     moviesLoadingView.visibility = viewState.loadingVisibility
+
                     movieList.visibility = viewState.contentViewState.visibility
                     withRecyclerViewAdapter { submitList(viewState.contentViewState.movieList) }
                 }
             })
 
-            screenTitle.observe(viewLifecycleOwner, Observer {sectionTitle ->
+            screenTitle.observe(viewLifecycleOwner, Observer { sectionTitle ->
                 withNavigationViewModel(viewModelFactory) {
                     destinationReached(Destination.MovieListReached(getString(sectionTitle.titleRes)))
                 }
             })
 
-            navEvents.observe(viewLifecycleOwner, Observer {
-                when (it) {
-                    is MoviesViewNavigationEvent.ToMovieDetails -> {
-                        navigateToMovieDetails(it)
-                    }
+            navEvents.observe(viewLifecycleOwner, Observer { event ->
+                with(event) {
+                    val view = movieList.findViewInPositionWithId(positionInList, R.id.movieItemImage)
+                    withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(movieId, movieImageUrl, movieTitle, view) }
                 }
             })
 
@@ -117,21 +118,13 @@ abstract class MovieListFragment : Fragment() {
         (movieList.adapter as MoviesAdapter).action()
     }
 
-    private fun navigateToMovieDetails(event: MoviesViewNavigationEvent.ToMovieDetails) {
-        with(event) {
-            val view = movieList.findViewInPositionWithId(positionInList, R.id.movieItemImage)
-            withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(movieId, movieImageUrl, movieTitle, view) }
-        }
-    }
-
-
     /**
      * Internal [PagedListAdapter] to render the list of movies. The fact that this class is a
      * [PagedListAdapter] indicates that the paging library is being used. Another important
      * aspect of this class is that it uses Data Binding to update the UI, which differs from the
      * containing class.
      */
-    class MoviesAdapter(private val movieSelectionListener: (MovieItem, Int) -> Unit) : PagedListAdapter<MovieItem, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {
+    class MoviesAdapter(private val movieSelectionListener: (MovieListItem, Int) -> Unit) : PagedListAdapter<MovieListItem, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -152,25 +145,25 @@ abstract class MovieListFragment : Fragment() {
         }
 
         class ViewHolder(private val itemBinding: ListItemMovieBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-            fun bindMovie(movie: MovieItem, movieSelectionListener: (MovieItem, Int) -> Unit) {
+            fun bindMovie(movieList: MovieListItem, movieSelectionListener: (MovieListItem, Int) -> Unit) {
                 with(itemView) {
-                    itemBinding.viewState = movie
+                    itemBinding.viewState = movieList
                     itemBinding.executePendingBindings()
                     movieItemImage.transitionName = "MovieImageAt$adapterPosition"
-                    setOnClickListener { movieSelectionListener(movie, adapterPosition) }
+                    setOnClickListener { movieSelectionListener(movieList, adapterPosition) }
                 }
             }
         }
     }
 
 
-    class MovieDiffCallback : DiffUtil.ItemCallback<MovieItem>() {
+    class MovieDiffCallback : DiffUtil.ItemCallback<MovieListItem>() {
 
-        override fun areItemsTheSame(oldItem: MovieItem, newItem: MovieItem): Boolean {
+        override fun areItemsTheSame(oldItem: MovieListItem, newItem: MovieListItem): Boolean {
             return oldItem.title == newItem.title
         }
 
-        override fun areContentsTheSame(oldItem: MovieItem, newItem: MovieItem): Boolean {
+        override fun areContentsTheSame(oldItem: MovieListItem, newItem: MovieListItem): Boolean {
             return oldItem.title == newItem.title
         }
     }

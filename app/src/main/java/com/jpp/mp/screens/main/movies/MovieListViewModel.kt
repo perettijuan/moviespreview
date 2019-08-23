@@ -48,8 +48,8 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _screenTitle = MutableLiveData<MovieListSectionTitle>()
     val screenTitle: LiveData<MovieListSectionTitle> get() = _screenTitle
 
-    private val _navEvents = SingleLiveEvent<MoviesViewNavigationEvent>()
-    val navEvents: LiveData<MoviesViewNavigationEvent> get() = _navEvents
+    private val _navEvents = SingleLiveEvent<NavigateToDetailsEvent>()
+    val navEvents: LiveData<NavigateToDetailsEvent> get() = _navEvents
 
     private lateinit var retry: () -> Unit
 
@@ -95,9 +95,9 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Called when an item is selected in the list of movies.
      * A new state is posted in navEvents() in order to handle the event.
      */
-    fun onMovieSelected(movieItem: MovieItem, positionInList: Int) {
-        with(movieItem) {
-            _navEvents.value = MoviesViewNavigationEvent.ToMovieDetails(
+    fun onMovieSelected(movieListItem: MovieListItem, positionInList: Int) {
+        with(movieListItem) {
+            _navEvents.value = NavigateToDetailsEvent(
                     movieId = movieId.toString(),
                     movieImageUrl = contentImageUrl,
                     movieTitle = title,
@@ -108,7 +108,7 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
     /**
      * Pushes the Loading view state into the view layer and creates the [PagedList]
-     * of [MovieItem] that will be rendered by the view layer.
+     * of [MovieListItem] that will be rendered by the view layer.
      */
     private fun pushLoadingAndInitializePagedList(posterSize: Int, backdropSize: Int, section: MovieSection) {
         _screenTitle.value = when (section) {
@@ -137,7 +137,7 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * with the interactor in order to fetch a new page of movies each time the user scrolls down in
      * the list of movies.
      */
-    private fun createPagedList(posterSize: Int, backdropSize: Int, section: MovieSection): LiveData<PagedList<MovieItem>> {
+    private fun createPagedList(posterSize: Int, backdropSize: Int, section: MovieSection): LiveData<PagedList<MovieListItem>> {
         return createPagingFactory(posterSize, backdropSize, section)
                 .map { mapDomainMovie(it) }
                 .let {
@@ -188,7 +188,7 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     }
 
     private fun mapDomainMovie(domainMovie: Movie) = with(domainMovie) {
-        MovieItem(
+        MovieListItem(
                 movieId = id,
                 headerImageUrl = backdrop_path ?: "emptyPath",
                 title = title,
