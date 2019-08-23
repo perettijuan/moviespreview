@@ -10,8 +10,6 @@ import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
-import com.jpp.mp.common.viewstate.HandledViewState
-import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
 import com.jpp.mp.screens.main.movies.MovieListInteractor.MovieListEvent.*
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
@@ -25,13 +23,13 @@ import javax.inject.Inject
  * the Fragments that show the movies listed in each category that can be displayed. Every time the
  * user selects a section, this VM is refreshed and triggers a new fetching to the underlying layers
  * of the application.
- * Produces different [MoviesViewState] that represents the entire configuration of the screen at any
+ * Produces different [MovieListViewState] that represents the entire configuration of the screen at any
  * given moment.
  *
  * This the UI is using the Android Paging Library, the VM needs a way to map the data retrieved from
  * the [MovieListInteractor] to a [PagedList] that can be used by the library. That process is done
  * using the [MPPagingDataSourceFactory] that creates the DataSource and produces a [LiveData] object
- * that is combined with the [viewStates] in order to properly map the data into a [MoviesViewState].
+ * that is combined with the [viewStates] in order to properly map the data into a [MovieListViewState].
  *
  * This VM is also language aware, meaning that when the user changes the language of the device, the
  * VM is notified about such event and executes a refresh of both: the data stored by the application
@@ -42,62 +40,59 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                              private val imagesPathInteractor: ImagesPathInteractor)
     : MPScopedViewModel(dispatchers) {
 
-    private val _viewStates = MediatorLiveData<HandledViewState<MovieListViewState>>()
-    val viewStates: LiveData<HandledViewState<MovieListViewState>> get() = _viewStates
+    private val _viewStates = MediatorLiveData<MovieListViewState>()
+    val viewStates: LiveData<MovieListViewState> get() = _viewStates
 
     private val _screenTitle = MutableLiveData<MovieListSectionTitle>()
     val screenTitle: LiveData<MovieListSectionTitle> get() = _screenTitle
 
-    private val _navEvents = SingleLiveEvent<MoviesViewNavigationEvent>()
-    val navEvents: LiveData<MoviesViewNavigationEvent> get() = _navEvents
+    private val _navEvents = SingleLiveEvent<NavigateToDetailsEvent>()
+    val navEvents: LiveData<NavigateToDetailsEvent> get() = _navEvents
 
-    private lateinit var retry: () -> Unit
+    private lateinit var currentParam: MovieListParam
+
+    private val retry: () -> Unit = {
+        pushLoadingAndInitializePagedList(
+                currentParam.posterSize,
+                currentParam.backdropSize,
+                currentParam.section
+        )
+    }
 
     init {
         _viewStates.addSource(movieListInteractor.events) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewStates.value = of(MovieListViewState.showNoConnectivityError(retry))
-                is UnknownError -> _viewStates.value = of(MovieListViewState.showUnknownError(retry))
+                is NotConnectedToNetwork -> _viewStates.value = MovieListViewState.showNoConnectivityError(retry)
+                is UnknownError -> _viewStates.value = MovieListViewState.showUnknownError(retry)
                 is UserChangedLanguage -> refreshData()
             }
         }
     }
 
     /**
-     * Called when the playing movies section is initialized.
+     * Called on VM initialization. The View (Fragment) should call this method to
+     * indicate that it is ready to start rendering. When the method is called, the VM
+     * internally verifies the state of the application and updates the view state based
+     * on it.
      */
-    fun onInitWithPlayingSection(posterSize: Int, backdropSize: Int) {
-        pushLoadingAndInitializePagedList(posterSize, backdropSize, MovieSection.Playing)
-    }
-
-    /**
-     * Called when the popular movies section is initialized.
-     */
-    fun onInitWithPopularSection(posterSize: Int, backdropSize: Int) {
-        pushLoadingAndInitializePagedList(posterSize, backdropSize, MovieSection.Popular)
-    }
-
-    /**
-     * Called when the top rated movies section is initialized.
-     */
-    fun onInitWithTopRatedSection(posterSize: Int, backdropSize: Int) {
-        pushLoadingAndInitializePagedList(posterSize, backdropSize, MovieSection.TopRated)
-    }
-
-    /**
-     * Called when the upcoming movies section is initialized.
-     */
-    fun onInitWithUpcomingSection(posterSize: Int, backdropSize: Int) {
-        pushLoadingAndInitializePagedList(posterSize, backdropSize, MovieSection.Upcoming)
+    fun onInit(param: MovieListParam) {
+        if (!::currentParam.isInitialized || param != currentParam) {
+            currentParam = param
+            pushLoadingAndInitializePagedList(
+                    currentParam.posterSize,
+                    currentParam.backdropSize,
+                    currentParam.section
+            )
+        }
     }
 
     /**
      * Called when an item is selected in the list of movies.
      * A new state is posted in navEvents() in order to handle the event.
      */
-    fun onMovieSelected(movieItem: MovieItem, positionInList: Int) {
-        with(movieItem) {
-            _navEvents.value = MoviesViewNavigationEvent.ToMovieDetails(
+    fun onMovieSelected(movieListItem: MovieListItem, positionInList: Int) {
+        with(movieListItem) {
+            _navEvents.value = NavigateToDetailsEvent(
                     movieId = movieId.toString(),
                     movieImageUrl = contentImageUrl,
                     movieTitle = title,
@@ -108,7 +103,7 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
     /**
      * Pushes the Loading view state into the view layer and creates the [PagedList]
-     * of [MovieItem] that will be rendered by the view layer.
+     * of [MovieListItem] that will be rendered by the view layer.
      */
     private fun pushLoadingAndInitializePagedList(posterSize: Int, backdropSize: Int, section: MovieSection) {
         _screenTitle.value = when (section) {
@@ -118,17 +113,11 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             MovieSection.Upcoming -> MovieListSectionTitle.UPCOMING
         }
 
-        //On every retry, we want to show the loading screen and then fetch the data and show it.
-        retry = {
-            _viewStates.value = of(MovieListViewState.showLoading())
-            _viewStates.addSource(createPagedList(posterSize, backdropSize, section)) { pagedList ->
-                if (pagedList.isNotEmpty()) {
-                    _viewStates.value = of(MovieListViewState.showMovieList(pagedList))
-                }
+        _viewStates.value = MovieListViewState.showLoading()
+        _viewStates.addSource(createPagedList(posterSize, backdropSize, section)) { pagedList ->
+            if (pagedList.isNotEmpty()) {
+                _viewStates.value = MovieListViewState.showMovieList(pagedList)
             }
-        }.also {
-            // invoke the function in order to actually push the loading state and fetch the data when this method is called.
-            it.invoke()
         }
     }
 
@@ -137,7 +126,7 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * with the interactor in order to fetch a new page of movies each time the user scrolls down in
      * the list of movies.
      */
-    private fun createPagedList(posterSize: Int, backdropSize: Int, section: MovieSection): LiveData<PagedList<MovieItem>> {
+    private fun createPagedList(posterSize: Int, backdropSize: Int, section: MovieSection): LiveData<PagedList<MovieListItem>> {
         return createPagingFactory(posterSize, backdropSize, section)
                 .map { mapDomainMovie(it) }
                 .let {
@@ -183,12 +172,16 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                     flushMoviePagesForSection(MovieSection.TopRated)
                 }
             }
-            retry.invoke()
+            pushLoadingAndInitializePagedList(
+                    currentParam.posterSize,
+                    currentParam.backdropSize,
+                    currentParam.section
+            )
         }
     }
 
     private fun mapDomainMovie(domainMovie: Movie) = with(domainMovie) {
-        MovieItem(
+        MovieListItem(
                 movieId = id,
                 headerImageUrl = backdrop_path ?: "emptyPath",
                 title = title,
