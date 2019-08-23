@@ -1,10 +1,13 @@
 package com.jpp.mpmoviedetails
 
+import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import com.jpp.mpmoviedetails.NavigationMovieDetails.movieId
+import com.jpp.mpmoviedetails.NavigationMovieDetails.movieTitle
 
 /*
- * Contains the definitions for the entire model used in the movie detail feature.
+ * This file contains the definitions for the entire model used in the movie detail feature.
  */
 
 /**
@@ -48,10 +51,12 @@ sealed class MovieDetailActionViewState(val animate: Boolean, val expanded: Bool
      * Shows the loading state in the actions section.
      */
     object ShowLoading : MovieDetailActionViewState(animate = false, expanded = false)
+
     /*
      * Shows the error state in the actions sections.
      */
     object ShowError : MovieDetailActionViewState(animate = false, expanded = false)
+
     /*
      * Shows the view state when there's no movie state to render. i.e.: the user is
      * not logged.
@@ -59,12 +64,14 @@ sealed class MovieDetailActionViewState(val animate: Boolean, val expanded: Bool
     data class ShowNoMovieState(val showActionsExpanded: Boolean,
                                 val animateActionsExpanded: Boolean)
         : MovieDetailActionViewState(animate = animateActionsExpanded, expanded = showActionsExpanded)
+
     /*
      * Shows the user not logged view state.
      */
     data class ShowUserNotLogged(val showActionsExpanded: Boolean,
                                  val animateActionsExpanded: Boolean)
         : MovieDetailActionViewState(animate = animateActionsExpanded, expanded = showActionsExpanded)
+
     /*
      * Renders the movie state with the provided data.
      */
@@ -85,12 +92,10 @@ sealed class ActionButtonState {
     object ShowAsLoading : ActionButtonState()
 }
 
-sealed class MovieDetailsNavigationEvent {
-    /*
-     * Redirects the user to the credits of the movie being shown.
-     */
-    data class GoToCredits(val movieId: Double, val movieTitle: String) : MovieDetailsNavigationEvent()
-}
+/**
+ * Event triggered when the user attempts to go to the credits section.
+ */
+data class NavigateToCreditsEvent(val movieId: Double, val movieTitle: String)
 
 /**
  * All the supported genres.
@@ -115,4 +120,14 @@ sealed class MovieGenreItem(@DrawableRes val icon: Int, @StringRes val name: Int
     object War : MovieGenreItem(R.drawable.ic_war, R.string.war_genre)
     object Western : MovieGenreItem(R.drawable.ic_western, R.string.western_genre)
     object Generic : MovieGenreItem(R.drawable.ic_generic, R.string.generic_genre)
+}
+
+/**
+ * The initialization parameter for the [MovieDetailsViewModel.onInit] method.
+ */
+data class MovieDetailsParam(val movieId: Double,
+                             val movieTitle: String) {
+    companion object {
+        fun fromArguments(arguments: Bundle?) = MovieDetailsParam(movieId(arguments).toDouble(), movieTitle(arguments))
+    }
 }

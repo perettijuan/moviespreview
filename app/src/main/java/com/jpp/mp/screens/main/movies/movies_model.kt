@@ -8,6 +8,10 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.Movie as DomainMovie
 
+/*
+ * This file contains the definitions for the entire model used in the movies list feature.
+ */
+
 /**
  * Represents the view state of the movies list screen. This indicates that the view
  * can only render the view states modeled in this class.

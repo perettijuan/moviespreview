@@ -34,12 +34,15 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * [MPScopedViewModel] to handle the state of the [MovieDetailsFragment]. It is a coroutine-scoped
- * ViewModel, which indicates that some work will be executed in a background context and synced
- * to the main context when over.
+ * [MPScopedViewModel] that supports the movie details section (only the static data, not the actions
+ * that the user can perform - for the actions, check [MovieDetailsActionViewModel]). The VM retrieves
+ * the data from the underlying layers using the provided [MovieDetailsInteractor] and maps the business
+ * data to UI data, producing a [MovieDetailViewState] that represents the configuration of the view
+ * at any given moment.
  *
- * It consumes data coming from the lower layers - exposed by interactors -
- * and maps that data to view logic.
+ * This VM is language aware, meaning that when the user changes the language of the device, the
+ * VM is notified about such event and executes a refresh of both: the data stored by the application
+ * and the view state being shown to the user.
  */
 class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                                 private val movieDetailsInteractor: MovieDetailsInteractor)
@@ -47,9 +50,12 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
 
 
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<MovieDetailViewState>>() }
-    private val _navEvents by lazy { SingleLiveEvent<MovieDetailsNavigationEvent>() }
-    private var movieId: Double = 0.0
-    private lateinit var movieTitle: String
+    val viewStates: LiveData<HandledViewState<MovieDetailViewState>> get() = _viewStates
+
+    private val _navEvents by lazy { SingleLiveEvent<NavigateToCreditsEvent>() }
+    val navEvents: LiveData<NavigateToCreditsEvent> get() = _navEvents
+
+    private lateinit var currentParam: MovieDetailsParam
 
     /*
      * Map the business logic coming from the interactor into view layer logic.
@@ -60,65 +66,74 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
                 is NotConnectedToNetwork -> _viewStates.value = of(ShowNotConnected)
                 is UnknownError -> _viewStates.value = of(ShowError)
                 is Success -> mapMovieDetails(event.data)
-                is AppLanguageChanged -> _viewStates.value = of(refreshDetailsData(movieId, movieTitle))
+                is AppLanguageChanged -> refreshDetailsData(currentParam.movieId, currentParam.movieTitle)
             }
         }
     }
 
     /**
-     * Called when the view is initialized.
+     * Called on VM initialization. The View (Fragment) should call this method to
+     * indicate that it is ready to start rendering. When the method is called, the VM
+     * internally verifies the state of the application and updates the view state based
+     * on it.
      */
-    fun onInit(movieId: Double, movieTitle: String) {
-        this.movieId = movieId
-        this.movieTitle = movieTitle
-        _viewStates.value = of(executeFetchMovieDetailStep(movieId, movieTitle))
+    fun onInit(param: MovieDetailsParam) {
+        // No need to verify if params are different since the app is already caching the data in the DB.
+        currentParam = param
+        fetchMovieDetails(currentParam.movieId, currentParam.movieTitle)
     }
 
     /**
-     * Called when the user retries after an error.
+     * Called when a retry action needs to be executed. When called, the VM
+     * will check the internal state of the application and update the view state
+     * based on that internal state.
      */
     fun onRetry() {
-        _viewStates.value = of(executeFetchMovieDetailStep(movieId, movieTitle))
+        fetchMovieDetails(currentParam.movieId, currentParam.movieTitle)
     }
 
     /**
-     * Called when the user attempts to open the credits section.
+     * Called when the user wants to navigate to the movie credits section.
+     * A new state is posted in [navEvents] in order to handle the event.
      */
     fun onMovieCreditsSelected() {
-        _navEvents.value = MovieDetailsNavigationEvent.GoToCredits(movieId, movieTitle)
+        _navEvents.value = NavigateToCreditsEvent(currentParam.movieId, currentParam.movieTitle)
     }
 
     /**
-     * Subscribe to this [LiveData] in order to get notified about the different states that
-     * the view should render.
+     * When called, this method will push the loading view state and will fetch the details
+     * of the movie being shown. When the fetching process is done, the view state will be updated
+     * based on the result posted by the interactor.
      */
-    val viewStates: LiveData<HandledViewState<MovieDetailViewState>> get() = _viewStates
-
-    /**
-     * Subscribe to this [LiveData] in order to get notified about navigation steps that
-     * should be performed by the view.
-     */
-    val navEvents: LiveData<MovieDetailsNavigationEvent> get() = _navEvents
-
-    private fun executeFetchMovieDetailStep(movieId: Double, movieTitle: String): MovieDetailViewState {
+    private fun fetchMovieDetails(movieId: Double, movieTitle: String) {
         withMovieDetailsInteractor { fetchMovieDetail(movieId) }
-        return ShowLoading(movieTitle)
+        _viewStates.value = of(ShowLoading(movieTitle))
     }
 
-    private fun refreshDetailsData(movieId: Double, movieTitle: String): MovieDetailViewState {
+    /**
+     * Starts a refresh data process by indicating to the interactor that new data needs
+     * to be fetched for the movie details being shown. This is executed in a background
+     * task while the view state is updated with the loading state.
+     */
+    private fun refreshDetailsData(movieId: Double, movieTitle: String) {
         withMovieDetailsInteractor {
             flushMovieDetailsData()
             fetchMovieDetail(movieId)
         }
-        return ShowLoading(movieTitle)
+        _viewStates.value = of(ShowLoading(movieTitle))
     }
 
+    /**
+     * Helper function to execute an [action] in the [movieDetailsInteractor] instance
+     * on a background task.
+     */
     private fun withMovieDetailsInteractor(action: MovieDetailsInteractor.() -> Unit) {
         launch { withContext(dispatchers.default()) { action(movieDetailsInteractor) } }
     }
 
     /**
-     * Maps a domain [MovieDetail] into a UI [MovieDetailViewState.ShowDetail].
+     * Maps a domain [MovieDetail] into a UI [MovieDetailViewState.ShowDetail] and updates
+     * the state of the UI to show the details of the movie.
      */
     private fun mapMovieDetails(domainDetail: MovieDetail) {
         launch {

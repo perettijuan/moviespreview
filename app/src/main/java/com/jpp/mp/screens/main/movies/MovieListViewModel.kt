@@ -19,19 +19,19 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * ViewModel used to support the movie list section of the application. This ViewModel is shared by
+ * [MPScopedViewModel] used to support the movie list section of the application. This ViewModel is shared by
  * the Fragments that show the movies listed in each category that can be displayed. Every time the
  * user selects a section, this VM is refreshed and triggers a new fetching to the underlying layers
  * of the application.
  * Produces different [MovieListViewState] that represents the entire configuration of the screen at any
  * given moment.
  *
- * This the UI is using the Android Paging Library, the VM needs a way to map the data retrieved from
+ * Since the UI is using the Android Paging Library, the VM needs a way to map the data retrieved from
  * the [MovieListInteractor] to a [PagedList] that can be used by the library. That process is done
  * using the [MPPagingDataSourceFactory] that creates the DataSource and produces a [LiveData] object
  * that is combined with the [viewStates] in order to properly map the data into a [MovieListViewState].
  *
- * This VM is also language aware, meaning that when the user changes the language of the device, the
+ * This VM is language aware, meaning that when the user changes the language of the device, the
  * VM is notified about such event and executes a refresh of both: the data stored by the application
  * and the view state being shown to the user.
  */
@@ -52,13 +52,16 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private lateinit var currentParam: MovieListParam
 
     private val retry: () -> Unit = {
-        pushLoadingAndInitializePagedList(
+        postLoadingAndInitializePagedList(
                 currentParam.posterSize,
                 currentParam.backdropSize,
                 currentParam.section
         )
     }
 
+    /*
+     * Map the business logic coming from the interactor into view layer logic.
+     */
     init {
         _viewStates.addSource(movieListInteractor.events) { event ->
             when (event) {
@@ -76,19 +79,27 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * on it.
      */
     fun onInit(param: MovieListParam) {
-        if (!::currentParam.isInitialized || param != currentParam) {
-            currentParam = param
-            pushLoadingAndInitializePagedList(
-                    currentParam.posterSize,
-                    currentParam.backdropSize,
-                    currentParam.section
-            )
+        /*
+         * Even though the movies list data is being stored in the local database,
+         * i'm forced to do this because the loading spinner is shown for a brief
+         * period of time when fetching that from the local DB.
+         * Maybe it has to do with the paging library? Not sure.
+         */
+        if (::currentParam.isInitialized && param == currentParam) {
+            return
         }
+
+        currentParam = param
+        postLoadingAndInitializePagedList(
+                currentParam.posterSize,
+                currentParam.backdropSize,
+                currentParam.section
+        )
     }
 
     /**
      * Called when an item is selected in the list of movies.
-     * A new state is posted in navEvents() in order to handle the event.
+     * A new state is posted in [navEvents] in order to handle the event.
      */
     fun onMovieSelected(movieListItem: MovieListItem, positionInList: Int) {
         with(movieListItem) {
@@ -105,7 +116,7 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Pushes the Loading view state into the view layer and creates the [PagedList]
      * of [MovieListItem] that will be rendered by the view layer.
      */
-    private fun pushLoadingAndInitializePagedList(posterSize: Int, backdropSize: Int, section: MovieSection) {
+    private fun postLoadingAndInitializePagedList(posterSize: Int, backdropSize: Int, section: MovieSection) {
         _screenTitle.value = when (section) {
             MovieSection.Playing -> MovieListSectionTitle.PLAYING
             MovieSection.Popular -> MovieListSectionTitle.POPULAR
@@ -172,7 +183,7 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                     flushMoviePagesForSection(MovieSection.TopRated)
                 }
             }
-            pushLoadingAndInitializePagedList(
+            postLoadingAndInitializePagedList(
                     currentParam.posterSize,
                     currentParam.backdropSize,
                     currentParam.section

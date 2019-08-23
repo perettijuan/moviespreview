@@ -61,7 +61,7 @@ class MovieDetailsViewModelTest {
         val expected = MovieDetailViewState.ShowLoading("aMovie")
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
-        subject.onInit(10.0, "aMovie")
+        subject.onInit(MovieDetailsParam(10.0, "aMovie"))
 
         verify { interactor.fetchMovieDetail(10.0) }
         assertEquals(expected, viewStatePosted)

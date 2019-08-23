@@ -16,8 +16,8 @@ import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.Destination.ReachedDestination
 import com.jpp.mpdesign.ext.*
 import com.jpp.mpmoviedetails.MovieDetailViewState.*
-import com.jpp.mpmoviedetails.NavigationMovieDetails.movieImageUrl
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieId
+import com.jpp.mpmoviedetails.NavigationMovieDetails.movieImageUrl
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieTitle
 import com.jpp.mpmoviedetails.NavigationMovieDetails.transition
 import dagger.android.support.AndroidSupportInjection
@@ -63,12 +63,16 @@ class MovieDetailsFragment : Fragment() {
 
         withViewModel {
             viewStates.observe(viewLifecycleOwner, Observer { it.actionIfNotHandled { viewState -> renderViewState(viewState) } })
-            navEvents.observe(viewLifecycleOwner, Observer { reactToNavEvent(it) })
-            onInit(movieId(arguments).toDouble(), movieTitle(arguments))
+
+            navEvents.observe(viewLifecycleOwner, Observer { navEvent ->
+                withNavigationViewModel(viewModelFactory) { navigateToMovieCredits(navEvent.movieId, navEvent.movieTitle) }
+            })
+
+            onInit(MovieDetailsParam.fromArguments(arguments))
         }
 
         withActionsViewModel {
-            viewStates.observe(this@MovieDetailsFragment, Observer { it.actionIfNotHandled { viewState -> renderActionViewState(viewState) } })
+            viewStates.observe(viewLifecycleOwner, Observer { viewState -> renderActionViewState(viewState) })
             onInit(movieId(arguments).toDouble())
         }
 
@@ -94,13 +98,6 @@ class MovieDetailsFragment : Fragment() {
             is ShowError -> renderUnknownError()
             is ShowNotConnected -> renderConnectivityError()
             is ShowDetail -> renderDetail(viewState)
-        }
-    }
-
-    private fun reactToNavEvent(navEvent: MovieDetailsNavigationEvent) {
-        when (navEvent) {
-            is MovieDetailsNavigationEvent.GoToCredits ->
-                withNavigationViewModel(viewModelFactory) { navigateToMovieCredits(navEvent.movieId, navEvent.movieTitle) }
         }
     }
 
