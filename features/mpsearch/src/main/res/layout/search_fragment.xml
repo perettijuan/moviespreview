@@ -1,75 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragmentSearchRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
 
-    <data>
+    <ImageView
+        android:id="@+id/searchPlaceHolderIv"
+        android:layout_width="?attr/mpSearchImageSize"
+        android:layout_height="?attr/mpSearchImageSize"
+        android:alpha="0.3"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <variable
-            name="viewState"
-            type="com.jpp.mpsearch.SearchViewState" />
-    </data>
+    <TextView
+        android:id="@+id/emptySearch"
+        style="@style/MPTextViewTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchPlaceHolderIv"
+        tools:text="No result for your search" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/fragmentSearchRoot"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:animateLayoutChanges="true">
+    <com.jpp.mpdesign.views.MPErrorView
+        android:id="@+id/searchErrorView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <com.jpp.mpdesign.views.MPImageView
-            android:id="@+id/searchPlaceHolderIv"
-            android:layout_width="?attr/mpSearchImageSize"
-            android:layout_height="?attr/mpSearchImageSize"
-            android:alpha="0.3"
-            android:visibility="@{viewState.placeHolderViewState.visibility}"
-            app:imageRes="@{viewState.placeHolderViewState.icon}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <ProgressBar
+        android:id="@+id/searchLoadingView"
+        style="@style/MPProgressBar"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/emptySearch"
-            style="@style/MPTextViewTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="@{viewState.contentViewState.emptySearchTextRes}"
-            android:visibility="@{viewState.contentViewState.emptySearchResultsVisibility}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/searchPlaceHolderIv" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/searchResultRv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layoutAnimation="@anim/list_fall_down"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/list_item_search" />
 
-        <com.jpp.mpdesign.views.MPErrorView
-            android:id="@+id/searchErrorView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="@{viewState.errorViewState.visibility}"
-            app:asConnectivity="@{viewState.errorViewState.isConnectivity}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:onRetry="@{viewState.errorViewState.errorHandler}" />
-
-        <ProgressBar
-            android:id="@+id/searchLoadingView"
-            style="@style/MPProgressBar"
-            android:visibility="@{viewState.loadingVisibility}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/searchResultRv"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layoutAnimation="@anim/list_fall_down"
-            android:visibility="@{viewState.contentViewState.searchResultsVisibility}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@layout/list_item_search" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>

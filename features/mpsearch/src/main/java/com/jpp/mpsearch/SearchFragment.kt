@@ -33,16 +33,13 @@ class SearchFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var viewBinding: SearchFragmentBinding
-
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewBinding = DataBindingUtil.inflate(inflater, R.layout.search_fragment, container, false)
-        return viewBinding.root
+        return inflater.inflate(R.layout.search_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,10 +62,24 @@ class SearchFragment : Fragment() {
         withViewModel {
             viewStates.observe(this@SearchFragment.viewLifecycleOwner, Observer {
                 it.actionIfNotHandled { viewState ->
-                    viewBinding.viewState = viewState
+                    searchPlaceHolderIv.visibility = viewState.placeHolderViewState.visibility
+                    searchPlaceHolderIv.setImageResource(viewState.placeHolderViewState.icon)
 
+                    emptySearch.visibility = viewState.contentViewState.emptySearchResultsVisibility
+                    emptySearch.setText(viewState.contentViewState.emptySearchTextRes)
+
+                    searchErrorView.visibility = viewState.errorViewState.visibility
+                    searchErrorView.asConnectivity(viewState.errorViewState.isConnectivity)
+                    searchErrorView.onRetry(viewState.errorViewState.errorHandler)
+
+                    searchLoadingView.visibility = viewState.loadingVisibility
+
+                    searchResultRv.visibility = viewState.contentViewState.searchResultsVisibility
                     withRecyclerViewAdapter { submitList(viewState.contentViewState.searchResultList) }
-                    withSearchView { setQuery(viewState.searchQuery, false) }
+                    withSearchView {
+                        setQuery(viewState.searchQuery, false)
+                        clearFocus() // hide keyboard
+                    }
                 }
             })
             navEvents.observe(this@SearchFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
@@ -91,15 +102,8 @@ class SearchFragment : Fragment() {
     }
 
     private fun withViewModel(action: SearchViewModel.() -> Unit) = withViewModel<SearchViewModel>(viewModelFactory) { action() }
-    private fun withRecyclerViewAdapter(action: SearchItemAdapter.() -> Unit) {
-        withRecyclerView { (adapter as SearchItemAdapter).action() }
-    }
-
-    private fun withSearchView(action: SearchView.() -> Unit) {
-        findSearchView(requireActivity().window.decorView as ViewGroup).action()
-    }
-
-    private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.searchResultRv)?.let(action)
+    private fun withRecyclerViewAdapter(action: SearchItemAdapter.() -> Unit) { (searchResultRv.adapter as SearchItemAdapter).action() }
+    private fun withSearchView(action: SearchView.() -> Unit) { findSearchView(requireActivity().window.decorView as ViewGroup).action() }
 
     private fun setUpSearchView() {
         /*

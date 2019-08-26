@@ -6,9 +6,8 @@ import androidx.paging.PagedList
 import com.jpp.mpdesign.views.MPErrorView
 
 /*
- * Contains the definitions for the entire model used in the user account feature.
+ * This file contains the definitions for the entire model used in the search feature.
  */
-
 
 
 /**
