@@ -170,7 +170,7 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     }
 
     /**
-     * Ask the interactor to flush any data that might be locally cached and re-fetch the
+     * Asks the interactor to flush any data that might be locally cached and re-fetch the
      * movie list for the current section being shown.
      */
     private fun refreshData() {

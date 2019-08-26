@@ -45,7 +45,7 @@ import javax.inject.Inject
  * VM instead of a VM per Fragment is based only in the simplification over the complication that
  * could represent having a hierarchy of VM to provide the functionality to this view.
  *
- * Another important aspect of this Fragment is that it doesn't used Data Binding to render the view
+ * Another important aspect of this Fragment is that it doesn't uses Data Binding to render the view
  * state ([MoviesAdapter] on the other hand is using DB). This is because there is an issue with the
  * approach taken in which the state of the views is not updated immediately when the VM performs an
  * action. I honestly didn't have the time to verify if this is an issue in my approach or there's a

@@ -28,6 +28,22 @@ import kotlinx.android.synthetic.main.list_item_search.view.*
 import kotlinx.android.synthetic.main.search_fragment.*
 import javax.inject.Inject
 
+/**
+ * Fragment used to provide search functionality to the application.
+ * The user can perform a search on this Fragment in order to find either movies or characters/actors.
+ *
+ * This Fragment interacts with [SearchViewModel] in order to retrieve and show the results of a
+ * search performed by the user. The ViewModel will perform the search, update the
+ * UI states represented by [SearchViewState] and the Fragment will render those state updates.
+ *
+ * The Fragment doesn't uses Data Binding to render the view
+ * state ([SearchItemAdapter] on the other hand is using DB). This is because there is an issue with the
+ * approach taken in which the state of the views is not updated immediately when the VM performs an
+ * action. I honestly didn't have the time to verify if this is an issue in my approach or there's a
+ * deeper reason for it. But I think that the approach taken in this Fragment is pretty similar to
+ * using DB, since the ViewState rendering code is entirely declarative and it has no imperative code.
+ * Take a look to [onActivityCreated] to have a clear understanding.
+ */
 class SearchFragment : Fragment() {
 
     @Inject
@@ -107,7 +123,7 @@ class SearchFragment : Fragment() {
 
     private fun setUpSearchView() {
         /*
-        * The [SearchView] used to present a onSearch option to the user belongs to the Activity
+        * The [SearchView] used to present a search option to the user belongs to the Activity
         * that contains this Fragment for a variety of reasons:
         * 1 - In order to provide back and forth navigation with the Android Architecture Components,
         * the application has only one Activity with different Fragments that are rendered in it.
@@ -174,7 +190,9 @@ class SearchFragment : Fragment() {
 
     /**
      * Internal [PagedListAdapter] to render the list of search results. The fact that this class is a
-     * [PagedListAdapter] indicates that the paging library is being used.
+     * [PagedListAdapter] indicates that the paging library is being used. Another important
+     * aspect of this class is that it uses Data Binding to update the UI, which differs from the
+     * containing class.
      */
     class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem, Int) -> Unit) : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
 

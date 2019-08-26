@@ -14,11 +14,23 @@ import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * [MPScopedViewModel] implementation to serve the search feature of the application.
- * It uses the Paging Library in order to provide infinite scroll.
+ * [MPScopedViewModel] used to support the search section of the application.
+ * Produces different [SearchViewState] that represents the entire configuration of the screen at any
+ * given moment.
+ *
+ * Since the UI is using the Android Paging Library, the VM needs a way to map the data retrieved from
+ * the [SearchInteractor] to a [PagedList] that can be used by the library. That process is done
+ * using the [MPPagingDataSourceFactory] that creates the DataSource and produces a [LiveData] object
+ * that is combined with the [viewStates] in order to properly map the data into a [SearchViewState].
+ *
+ * This VM is language aware, meaning that when the user changes the language of the device, the
+ * VM is notified about such event and executes a refresh of both: the data stored by the application
+ * and the view state being shown to the user.
  */
 class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                           private val searchInteractor: SearchInteractor,
@@ -26,16 +38,16 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     : MPScopedViewModel(dispatchers) {
 
 
-    private val _viewStates by lazy { MediatorLiveData<HandledViewState<SearchViewState>>() }
+    private val _viewStates = MediatorLiveData<HandledViewState<SearchViewState>>()
     val viewStates: LiveData<HandledViewState<SearchViewState>> = _viewStates
 
-    private val _navEvents by lazy { SingleLiveEvent<SearchNavigationEvent>() }
+    private val _navEvents = SingleLiveEvent<SearchNavigationEvent>()
     val navEvents: LiveData<SearchNavigationEvent> get() = _navEvents
-
-    private var retryFunc = { pushLoadingAndPerformSearch(searchQuery) }
 
     private var targetImageSize: Int = -1
     private lateinit var searchQuery: String
+
+    private var retryFunc = { postLoadingAndPerformSearch(searchQuery) }
 
     init {
         _viewStates.addSource(searchInteractor.searchEvents) { event ->
@@ -48,9 +60,10 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     }
 
     /**
-     * Called on initialization to prepare the internal state of the ViewModel.
-     * [imageSize] represents the size of the images that will be shown in the view
-     * that is served by this ViewModel.
+     * Called on VM initialization. The View (Fragment) should call this method to
+     * indicate that it is ready to start rendering. When the method is called, the VM
+     * internally verifies the state of the application and updates the view state based
+     * on it.
      */
     fun onInit(imageSize: Int) {
         targetImageSize = imageSize
@@ -61,7 +74,10 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     }
 
     /**
-     * Perform the actual onSearch of the provided [query].
+     * Called when the user performs a search. The VM will verify the inner state
+     * of the application and will perform a search of the provided [query]. Once
+     * a result is obtained from the [searchInteractor] a new view state will be
+     * posted to [viewStates].
      */
     fun onSearch(query: String) {
         if (::searchQuery.isInitialized && query == searchQuery) {
@@ -69,11 +85,13 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         }
 
         searchQuery = query
-        pushLoadingAndPerformSearch(query)
+        postLoadingAndPerformSearch(query)
     }
 
     /**
-     * Clears the view current search state.
+     * Called when the user clears the state of the last search performed.
+     * The VM clears the inner state and the view state, in order to allow
+     * a new search to be done.
      */
     fun onClearSearch() {
         searchQuery = ""
@@ -82,7 +100,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
     /**
      * Called when an item is selected in the list of search results.
-     * A new state is posted in navEvents() in order to handle the event.
+     * A new state is posted in [navEvents] in order to handle the event.
      */
     fun onItemSelected(item: SearchResultItem, positionInList: Int) {
         when (item.isMovieType()) {
@@ -104,7 +122,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Pushes the Loading view state into the view layer and creates the [PagedList]
      * of [SearchResultItem] that will be rendered by the view layer.
      */
-    private fun pushLoadingAndPerformSearch(query: String) {
+    private fun postLoadingAndPerformSearch(query: String) {
         with(_viewStates) {
             value = of(SearchViewState.showSearching(query))
             addSource(createPagedListForSearch(query)) { pagedList -> if (pagedList.size > 0) value = of(SearchViewState.showSearchResult(query, pagedList)) }
@@ -112,11 +130,14 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     }
 
     /**
-     * Refreshes any internal app state related to a search.
+     * Asks the interactor to flush any data that might be locally cached and re-fetch the
+     * movie list for the current section being shown.
      */
     private fun refreshData() {
-        searchInteractor.flushCurrentSearch()
-        retryFunc.invoke()
+        launch {
+            withContext(dispatchers.default()) { searchInteractor.flushCurrentSearch() }
+            postLoadingAndPerformSearch(searchQuery)
+        }
     }
 
     /**
