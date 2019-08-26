@@ -1,64 +1,83 @@
 package com.jpp.mpsearch
 
+import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.paging.PagedList
+import com.jpp.mpdesign.views.MPErrorView
 
 /*
  * Contains the definitions for the entire model used in the user account feature.
  */
 
-sealed class SearchViewState {
-    /*
-     * Shows the onSearch view to provide a onSearch option to the user.
-     */
-    object ShowSearchView : SearchViewState()
-
-    /*
-     * Shows the not connected to network state.
-     */
-    object ShowNotConnected : SearchViewState()
-
-    /*
-     * Shows the loading state when the VM is searching.
-     */
-    object ShowSearching : SearchViewState()
-
-    /*
-     * Shows the generic error screen.
-     */
-    object ShowError : SearchViewState()
-
-    /*
-     * Shows the empty onSearch status on screen.
-     */
-    data class ShowEmptySearch(val searchText: String) : SearchViewState()
-
-    /*
-     * Shows the list of onSearch results.
-     */
-    data class ShowSearchResults(val pagedList: PagedList<SearchResultItem>) : SearchViewState()
-}
-
-sealed class SearchNavigationEvent {
-    /*
-     * Redirects the user to the details of the selected movie.
-     */
-    data class GoToMovieDetails(val movieId: String, val movieImageUrl: String, val movieTitle: String, var positionInList: Int) : SearchNavigationEvent()
-    /*
-     * Redirects the user to the details of the person selected.
-     */
-    data class GoToPerson(val personId: String, val personImageUrl: String, val personName: String) : SearchNavigationEvent()
-}
 
 
 /**
- * Represents an item in the list of onSearch results.
+ * Represents the view state that the search view ([SearchFragment]) can assume at any given point.
+ */
+data class SearchViewState(
+        val searchQuery: String = "",
+        val loadingVisibility: Int = View.INVISIBLE,
+        val placeHolderViewState: SearchPlaceHolderViewState = SearchPlaceHolderViewState(),
+        val errorViewState: MPErrorView.ErrorViewState = MPErrorView.ErrorViewState.asNotVisible(),
+        val contentViewState: SearchResultContentViewState = SearchResultContentViewState()
+) {
+    companion object {
+        fun showCleanState() = SearchViewState(searchQuery = "", placeHolderViewState = SearchPlaceHolderViewState(visibility = View.VISIBLE))
+        fun showSearching(query: String) = SearchViewState(searchQuery = query, loadingVisibility = View.VISIBLE)
+        fun showUnknownError(query: String, errorHandler: () -> Unit) = SearchViewState(searchQuery = query, errorViewState = MPErrorView.ErrorViewState.asUnknownError(errorHandler))
+        fun showNoConnectivityError(query: String, errorHandler: () -> Unit) = SearchViewState(searchQuery = query, errorViewState = MPErrorView.ErrorViewState.asConnectivity(errorHandler))
+        fun showSearchResult(query: String, searchResultList: PagedList<SearchResultItem>) = SearchViewState(searchQuery = query, contentViewState = SearchResultContentViewState.showResults(searchResultList))
+        fun showNoResults(query: String) = SearchViewState(searchQuery = query, contentViewState = SearchResultContentViewState.showNoResults())
+    }
+}
+
+/**
+ * Represents the view state of the search placeholder view.
+ */
+data class SearchPlaceHolderViewState(
+        val visibility: Int = View.INVISIBLE,
+        val icon: Int = R.drawable.ic_app_icon_black
+)
+
+/**
+ * Represents the view state of the content shown in the search section.
+ */
+data class SearchResultContentViewState(
+        val searchResultsVisibility: Int = View.INVISIBLE,
+        val searchResultList: PagedList<SearchResultItem>? = null,
+        val emptySearchResultsVisibility: Int = View.INVISIBLE,
+        val emptySearchTextRes: Int = R.string.empty_search){
+
+    companion object {
+        fun showResults(results: PagedList<SearchResultItem>) = SearchResultContentViewState(searchResultsVisibility = View.VISIBLE, searchResultList = results)
+        fun showNoResults() = SearchResultContentViewState(emptySearchResultsVisibility = View.VISIBLE)
+    }
+
+}
+
+/**
+ * Represents an item in the list of search results.
  */
 data class SearchResultItem(val id: Double,
                             val imagePath: String,
                             val name: String,
                             val icon: SearchResultTypeIcon) {
     fun isMovieType() = icon == SearchResultTypeIcon.Movie
+}
+
+
+sealed class SearchNavigationEvent {
+    /*
+     * Redirects the user to the details of the selected movie.
+     */
+    data class GoToMovieDetails(val movieId: String, val movieImageUrl: String, val movieTitle: String, var positionInList: Int) : SearchNavigationEvent()
+
+    /*
+     * Redirects the user to the details of the person selected.
+     */
+    data class GoToPerson(val personId: String, val personImageUrl: String, val personName: String) : SearchNavigationEvent()
+
+
 }
 
 /**

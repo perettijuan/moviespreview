@@ -14,7 +14,6 @@ import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.*
-import com.jpp.mpsearch.SearchViewState.*
 import javax.inject.Inject
 
 /**
@@ -36,13 +35,13 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private var retryFunc = { pushLoadingAndPerformSearch(searchQuery) }
 
     private var targetImageSize: Int = -1
-    private var searchQuery: String = ""
+    private lateinit var searchQuery: String
 
     init {
         _viewStates.addSource(searchInteractor.searchEvents) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewStates.value = of(ShowNotConnected)
-                is UnknownError -> _viewStates.value = of(ShowError)
+                is NotConnectedToNetwork -> _viewStates.value = of(SearchViewState.showNoConnectivityError(searchQuery, retryFunc))
+                is UnknownError -> _viewStates.value = of(SearchViewState.showUnknownError(searchQuery, retryFunc))
                 is AppLanguageChanged -> refreshData()
             }
         }
@@ -56,7 +55,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     fun onInit(imageSize: Int) {
         targetImageSize = imageSize
         when (val currentState = _viewStates.value) {
-            null -> _viewStates.value = of(ShowSearchView)
+            null -> _viewStates.value = of(SearchViewState.showCleanState())
             else -> _viewStates.value = of(currentState.peekContent())
         }
     }
@@ -65,7 +64,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Perform the actual onSearch of the provided [query].
      */
     fun onSearch(query: String) {
-        if (query == searchQuery) {
+        if (::searchQuery.isInitialized && query == searchQuery) {
             return
         }
 
@@ -78,14 +77,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun onClearSearch() {
         searchQuery = ""
-        _viewStates.value = of(ShowSearchView)
-    }
-
-    /**
-     * Retries the last search.
-     */
-    fun onRetry() {
-        retryFunc.invoke()
+        _viewStates.value = of(SearchViewState.showCleanState())
     }
 
     /**
@@ -114,8 +106,8 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     private fun pushLoadingAndPerformSearch(query: String) {
         with(_viewStates) {
-            value = of(ShowSearching)
-            addSource(createPagedListForSearch(query)) { pagedList -> if (pagedList.size > 0) value = of(ShowSearchResults(pagedList)) }
+            value = of(SearchViewState.showSearching(query))
+            addSource(createPagedListForSearch(query)) { pagedList -> if (pagedList.size > 0) value = of(SearchViewState.showSearchResult(query, pagedList)) }
         }
     }
 
@@ -124,7 +116,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     private fun refreshData() {
         searchInteractor.flushCurrentSearch()
-        retryFunc?.invoke()
+        retryFunc.invoke()
     }
 
     /**
@@ -136,7 +128,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             searchInteractor.performSearchForPage(query, page) { searchResultList ->
                 when (searchResultList.isNotEmpty()) {
                     true -> callback(searchResultList.filter { it.isMovie() || it.isPerson() }.map { imagesPathInteractor.configureSearchResult(targetImageSize, it) })
-                    false -> if (page == 1) _viewStates.postValue(of(ShowEmptySearch(query)))
+                    false -> if (page == 1) _viewStates.postValue(of(SearchViewState.showNoResults(query)))
                 }
             }
         }.map { mapSearchResult(it) }

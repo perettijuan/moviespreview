@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -20,10 +21,8 @@ import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.Destination.MPSearch
 import com.jpp.mpdesign.ext.findViewInPositionWithId
-import com.jpp.mpdesign.ext.loadImageUrlAsCircular
-import com.jpp.mpdesign.ext.setInvisible
-import com.jpp.mpdesign.ext.setVisible
-import com.jpp.mpsearch.SearchViewState.*
+import com.jpp.mpsearch.databinding.ListItemSearchBinding
+import com.jpp.mpsearch.databinding.SearchFragmentBinding
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.list_item_search.view.*
 import kotlinx.android.synthetic.main.search_fragment.*
@@ -34,13 +33,16 @@ class SearchFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private lateinit var viewBinding: SearchFragmentBinding
+
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.search_fragment, container, false)
+        viewBinding = DataBindingUtil.inflate(inflater, R.layout.search_fragment, container, false)
+        return viewBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,7 +63,14 @@ class SearchFragment : Fragment() {
          * shared transitions.
          */
         withViewModel {
-            viewStates.observe(this@SearchFragment.viewLifecycleOwner, Observer { it.actionIfNotHandled { viewState -> renderViewState(viewState) } })
+            viewStates.observe(this@SearchFragment.viewLifecycleOwner, Observer {
+                it.actionIfNotHandled { viewState ->
+                    viewBinding.viewState = viewState
+
+                    withRecyclerViewAdapter { submitList(viewState.contentViewState.searchResultList) }
+                    withSearchView { setQuery(viewState.searchQuery, false) }
+                }
+            })
             navEvents.observe(this@SearchFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
             onInit(getScreenWidthInPixels())
         }
@@ -70,32 +79,6 @@ class SearchFragment : Fragment() {
         withNavigationViewModel(viewModelFactory) { destinationReached(MPSearch) }
     }
 
-    private fun renderViewState(searchViewState: SearchViewState) {
-        when (searchViewState) {
-            is ShowSearchView -> {
-                withSearchView { setQuery("", false) }
-                withRecyclerViewAdapter { clear() }
-                renderClearState()
-            }
-            is ShowSearching -> renderSearching()
-            is ShowError -> {
-                renderError()
-                searchErrorView.asUnknownError { withViewModel { onRetry() } }
-            }
-            is ShowNotConnected -> {
-                renderError()
-                searchErrorView.asNoConnectivityError { withViewModel { onRetry() } }
-            }
-            is ShowEmptySearch -> {
-                emptySearch.text = String.format(getString(R.string.empty_search), searchViewState.searchText)
-                renderEmptySearch()
-            }
-            is ShowSearchResults -> {
-                withRecyclerViewAdapter { submitList(searchViewState.pagedList) }
-                renderDoneSearching()
-            }
-        }
-    }
 
     private fun reactToNavEvent(navEvent: SearchNavigationEvent) {
         when (navEvent) {
@@ -109,59 +92,14 @@ class SearchFragment : Fragment() {
 
     private fun withViewModel(action: SearchViewModel.() -> Unit) = withViewModel<SearchViewModel>(viewModelFactory) { action() }
     private fun withRecyclerViewAdapter(action: SearchItemAdapter.() -> Unit) {
-        (searchResultRv.adapter as SearchItemAdapter).action()
+        withRecyclerView { (adapter as SearchItemAdapter).action() }
     }
 
     private fun withSearchView(action: SearchView.() -> Unit) {
         findSearchView(requireActivity().window.decorView as ViewGroup).action()
     }
 
-    private fun renderSearching() {
-        searchPlaceHolderIv.setInvisible()
-        emptySearch.setInvisible()
-        searchErrorView.setInvisible()
-        searchResultRv.setInvisible()
-
-        searchLoadingView.setVisible()
-        withSearchView { clearFocus() } //hide keyboard
-    }
-
-    private fun renderError() {
-        searchPlaceHolderIv.setInvisible()
-        emptySearch.setInvisible()
-        searchLoadingView.setInvisible()
-        searchResultRv.setInvisible()
-
-        searchErrorView.setVisible()
-    }
-
-    private fun renderEmptySearch() {
-        searchPlaceHolderIv.setInvisible()
-        searchErrorView.setInvisible()
-        searchLoadingView.setInvisible()
-        searchResultRv.setInvisible()
-
-        emptySearch.setVisible()
-    }
-
-    private fun renderDoneSearching() {
-        searchPlaceHolderIv.setInvisible()
-        emptySearch.setInvisible()
-        searchErrorView.setInvisible()
-        searchLoadingView.setInvisible()
-
-        searchResultRv.setVisible()
-        searchResultRv.scheduleLayoutAnimation()
-    }
-
-    private fun renderClearState() {
-        emptySearch.setInvisible()
-        searchErrorView.setInvisible()
-        searchLoadingView.setInvisible()
-        searchResultRv.setInvisible()
-
-        searchPlaceHolderIv.setVisible()
-    }
+    private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.searchResultRv)?.let(action)
 
     private fun setUpSearchView() {
         /*
@@ -231,11 +169,21 @@ class SearchFragment : Fragment() {
     }
 
     /**
-     * [PagedListAdapter] implementation to show the list of searchPage results.
+     * Internal [PagedListAdapter] to render the list of search results. The fact that this class is a
+     * [PagedListAdapter] indicates that the paging library is being used.
      */
     class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem, Int) -> Unit) : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_search, parent, false))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            return ViewHolder(
+                    DataBindingUtil.inflate(
+                            LayoutInflater.from(parent.context),
+                            R.layout.list_item_search,
+                            parent,
+                            false
+                    )
+            )
+        }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             getItem(position)?.let {
@@ -243,23 +191,17 @@ class SearchFragment : Fragment() {
             }
         }
 
-        fun clear() {
-            //Submitting a null paged list causes the adapter to remove all items in the RecyclerView
-            submitList(null)
-        }
-
-        class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
-
+        class ViewHolder(private val itemBinding: ListItemSearchBinding) : RecyclerView.ViewHolder(itemBinding.root) {
             fun bindSearchItem(searchItem: SearchResultItem, selectionListener: (SearchResultItem, Int) -> Unit) {
+                with(itemBinding) {
+                    viewState = searchItem
+                    executePendingBindings()
+                }
                 with(itemView) {
-                    searchItemIv.loadImageUrlAsCircular(searchItem.imagePath)
                     searchItemIv.transitionName = "MovieImageAt$adapterPosition"
-                    searchItemTitleTxt.text = searchItem.name
-                    searchItemTypeIv.setImageResource(searchItem.icon.iconRes)
                     setOnClickListener { selectionListener(searchItem, adapterPosition) }
                 }
             }
-
         }
 
         class SearchResultDiffCallback : DiffUtil.ItemCallback<SearchResultItem>() {

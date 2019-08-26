@@ -144,9 +144,11 @@ abstract class MovieListFragment : Fragment() {
 
         class ViewHolder(private val itemBinding: ListItemMovieBinding) : RecyclerView.ViewHolder(itemBinding.root) {
             fun bindMovie(movieList: MovieListItem, movieSelectionListener: (MovieListItem, Int) -> Unit) {
+                with(itemBinding) {
+                    viewState = movieList
+                    executePendingBindings()
+                }
                 with(itemView) {
-                    itemBinding.viewState = movieList
-                    itemBinding.executePendingBindings()
                     movieItemImage.transitionName = "MovieImageAt$adapterPosition"
                     setOnClickListener { movieSelectionListener(movieList, adapterPosition) }
                 }
