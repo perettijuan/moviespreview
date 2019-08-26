@@ -21,6 +21,17 @@ import com.jpp.mpcredits.databinding.ListItemCreditsBinding
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
+/**
+ * Fragment used to show the list of credits that belongs to a particular movie selected by the user.
+ *
+ * When instantiated, this fragment invokes the [CreditsViewModel] methods in order to retrieve
+ * and show the credits of the movie that has been selected by the user. The VM will perform the
+ * fetch and will update the UI states represented by [CreditsViewState] and this Fragment will
+ * render those updates.
+ *
+ * Pre-condition: in order to instantiate this Fragment, a movie ID must be provided in the arguments
+ * of the Fragment.
+ */
 class CreditsFragment : Fragment() {
 
     @Inject
@@ -83,6 +94,9 @@ class CreditsFragment : Fragment() {
     private fun withViewModel(action: CreditsViewModel.() -> Unit) = withViewModel<CreditsViewModel>(viewModelFactory) { action() }
     private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.creditsRv)?.let(action)
 
+    /**
+     * Internal [RecyclerView.Adapter] to render the credit list.
+     */
     class CreditsAdapter(private val credits: List<CreditPerson>, private val selectionListener: (CreditPerson) -> Unit) : RecyclerView.Adapter<CreditsAdapter.ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
