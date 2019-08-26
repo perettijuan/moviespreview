@@ -13,9 +13,7 @@ import com.jpp.mp.common.viewstate.HandledViewState
 import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
-import com.jpp.mpsearch.SearchInteractor.SearchEvent.NotConnectedToNetwork
-import com.jpp.mpsearch.SearchInteractor.SearchEvent.UnknownError
-import com.jpp.mpsearch.SearchInteractor.SearchEvent.AppLanguageChanged
+import com.jpp.mpsearch.SearchInteractor.SearchEvent.*
 import com.jpp.mpsearch.SearchViewState.*
 import javax.inject.Inject
 
@@ -29,10 +27,16 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     : MPScopedViewModel(dispatchers) {
 
 
-    private var targetImageSize: Int = -1
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<SearchViewState>>() }
+    val viewStates: LiveData<HandledViewState<SearchViewState>> = _viewStates
+
     private val _navEvents by lazy { SingleLiveEvent<SearchNavigationEvent>() }
-    private var retryFunc: (() -> Unit)? = null
+    val navEvents: LiveData<SearchNavigationEvent> get() = _navEvents
+
+    private var retryFunc = { pushLoadingAndPerformSearch(searchQuery) }
+
+    private var targetImageSize: Int = -1
+    private var searchQuery: String = ""
 
     init {
         _viewStates.addSource(searchInteractor.searchEvents) { event ->
@@ -52,7 +56,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     fun onInit(imageSize: Int) {
         targetImageSize = imageSize
         when (val currentState = _viewStates.value) {
-            null ->_viewStates.value = of(ShowSearchView)
+            null -> _viewStates.value = of(ShowSearchView)
             else -> _viewStates.value = of(currentState.peekContent())
         }
     }
@@ -61,7 +65,11 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Perform the actual onSearch of the provided [query].
      */
     fun onSearch(query: String) {
-        retryFunc = { pushLoadingAndPerformSearch(query) }
+        if (query == searchQuery) {
+            return
+        }
+
+        searchQuery = query
         pushLoadingAndPerformSearch(query)
     }
 
@@ -69,7 +77,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Clears the view current search state.
      */
     fun onClearSearch() {
-        retryFunc = null
+        searchQuery = ""
         _viewStates.value = of(ShowSearchView)
     }
 
@@ -77,7 +85,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Retries the last search.
      */
     fun onRetry() {
-        retryFunc?.invoke()
+        retryFunc.invoke()
     }
 
     /**
@@ -99,17 +107,6 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         }
     }
 
-    /**
-     * Subscribe to this [LiveData] in order to get notified about the different states that
-     * the view should render.
-     */
-    val viewStates: LiveData<HandledViewState<SearchViewState>> = _viewStates
-
-    /**
-     * Subscribe to this [LiveData] in order to get notified about navigation steps that
-     * should be performed by the view.
-     */
-    val navEvents: LiveData<SearchNavigationEvent> get() = _navEvents
 
     /**
      * Pushes the Loading view state into the view layer and creates the [PagedList]
