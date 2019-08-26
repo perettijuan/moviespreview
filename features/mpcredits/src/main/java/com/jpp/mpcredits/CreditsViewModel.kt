@@ -46,7 +46,10 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     fun onInit(movieId: Double, targetImageSize: Int) {
         this.movieId = movieId
         this.targetImageSize = targetImageSize
-        _viewStates.value = of(executeFetchCreditsStep(movieId))
+        when (val currentState = _viewStates.value) {
+            null ->_viewStates.value = of(executeFetchCreditsStep(movieId))
+            else -> _viewStates.value = of(currentState.peekContent())
+        }
     }
 
     /**
