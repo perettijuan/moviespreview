@@ -74,7 +74,7 @@ class CreditsViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
-        subject.onInit(10.0, 12)
+        subject.onInit(CreditsInitParam(10.0, 12))
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.NotConnectedToNetwork)
 
         viewStatePosted?.let {
@@ -106,7 +106,7 @@ class CreditsViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
-        subject.onInit(10.0, 12)
+        subject.onInit(CreditsInitParam(10.0, 12))
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.UnknownError)
 
         viewStatePosted?.let {
@@ -121,7 +121,7 @@ class CreditsViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
-        subject.onInit(10.0, 12)
+        subject.onInit(CreditsInitParam(10.0, 12))
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.AppLanguageChanged)
 
         assertNotNull(viewStatePosted)
@@ -144,7 +144,7 @@ class CreditsViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
-        subject.onInit(10.0, 12)
+        subject.onInit(CreditsInitParam(10.0, 12))
 
         assertNotNull(viewStatePosted)
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
@@ -193,6 +193,7 @@ class CreditsViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
+        subject.onInit(CreditsInitParam(10.0, 12))
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.Success(credits))
 
 

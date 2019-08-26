@@ -52,7 +52,12 @@ data class MovieListItem(
 /**
  * Represents the event that is triggered when the user selects a movie to see the detail.
  */
-data class NavigateToDetailsEvent(val movieId: String, val movieImageUrl: String, val movieTitle: String, var positionInList: Int)
+data class NavigateToDetailsEvent(
+        val movieId: String,
+        val movieImageUrl: String,
+        val movieTitle: String,
+        var positionInList: Int
+)
 
 /**
  * Represents the title of the screen. Note that this is not part of the view

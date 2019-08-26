@@ -11,19 +11,20 @@
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
 
         <com.jpp.mpdesign.views.MPErrorView
             android:id="@+id/creditsErrorView"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:visibility="@{viewState.errorViewState.visibility}"
-            app:onRetry="@{viewState.errorViewState.errorHandler}"
             app:asConnectivity="@{viewState.errorViewState.isConnectivity}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:onRetry="@{viewState.errorViewState.errorHandler}" />
 
         <ProgressBar
             android:id="@+id/creditsLoadingView"
