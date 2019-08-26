@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jpp.mp.common.extensions.getResIdFromAttribute
 import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.Destination

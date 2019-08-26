@@ -1,7 +1,5 @@
 package com.jpp.mpcredits
 
-import android.content.res.Resources
-import android.os.Bundle
 import android.view.View
 import com.jpp.mp.common.extensions.getResIdFromAttribute
 import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
