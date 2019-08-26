@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -20,15 +21,28 @@ import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.Destination.MPSearch
 import com.jpp.mpdesign.ext.findViewInPositionWithId
-import com.jpp.mpdesign.ext.loadImageUrlAsCircular
-import com.jpp.mpdesign.ext.setInvisible
-import com.jpp.mpdesign.ext.setVisible
-import com.jpp.mpsearch.SearchViewState.*
+import com.jpp.mpsearch.databinding.ListItemSearchBinding
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.list_item_search.view.*
 import kotlinx.android.synthetic.main.search_fragment.*
 import javax.inject.Inject
 
+/**
+ * Fragment used to provide search functionality to the application.
+ * The user can perform a search on this Fragment in order to find either movies or characters/actors.
+ *
+ * This Fragment interacts with [SearchViewModel] in order to retrieve and show the results of a
+ * search performed by the user. The ViewModel will perform the search, update the
+ * UI states represented by [SearchViewState] and the Fragment will render those state updates.
+ *
+ * The Fragment doesn't uses Data Binding to render the view
+ * state ([SearchItemAdapter] on the other hand is using DB). This is because there is an issue with the
+ * approach taken in which the state of the views is not updated immediately when the VM performs an
+ * action. I honestly didn't have the time to verify if this is an issue in my approach or there's a
+ * deeper reason for it. But I think that the approach taken in this Fragment is pretty similar to
+ * using DB, since the ViewState rendering code is entirely declarative and it has no imperative code.
+ * Take a look to [onActivityCreated] to have a clear understanding.
+ */
 class SearchFragment : Fragment() {
 
     @Inject
@@ -61,7 +75,28 @@ class SearchFragment : Fragment() {
          * shared transitions.
          */
         withViewModel {
-            viewStates.observe(this@SearchFragment.viewLifecycleOwner, Observer { it.actionIfNotHandled { viewState -> renderViewState(viewState) } })
+            viewStates.observe(this@SearchFragment.viewLifecycleOwner, Observer {
+                it.actionIfNotHandled { viewState ->
+                    searchPlaceHolderIv.visibility = viewState.placeHolderViewState.visibility
+                    searchPlaceHolderIv.setImageResource(viewState.placeHolderViewState.icon)
+
+                    emptySearch.visibility = viewState.contentViewState.emptySearchResultsVisibility
+                    emptySearch.setText(viewState.contentViewState.emptySearchTextRes)
+
+                    searchErrorView.visibility = viewState.errorViewState.visibility
+                    searchErrorView.asConnectivity(viewState.errorViewState.isConnectivity)
+                    searchErrorView.onRetry(viewState.errorViewState.errorHandler)
+
+                    searchLoadingView.visibility = viewState.loadingVisibility
+
+                    searchResultRv.visibility = viewState.contentViewState.searchResultsVisibility
+                    withRecyclerViewAdapter { submitList(viewState.contentViewState.searchResultList) }
+                    withSearchView {
+                        setQuery(viewState.searchQuery, false)
+                        clearFocus() // hide keyboard
+                    }
+                }
+            })
             navEvents.observe(this@SearchFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
             onInit(getScreenWidthInPixels())
         }
@@ -70,32 +105,6 @@ class SearchFragment : Fragment() {
         withNavigationViewModel(viewModelFactory) { destinationReached(MPSearch) }
     }
 
-    private fun renderViewState(searchViewState: SearchViewState) {
-        when (searchViewState) {
-            is ShowSearchView -> {
-                withSearchView { setQuery("", false) }
-                withRecyclerViewAdapter { clear() }
-                renderClearState()
-            }
-            is ShowSearching -> renderSearching()
-            is ShowError -> {
-                renderError()
-                searchErrorView.asUnknownError { withViewModel { onRetry() } }
-            }
-            is ShowNotConnected -> {
-                renderError()
-                searchErrorView.asNoConnectivityError { withViewModel { onRetry() } }
-            }
-            is ShowEmptySearch -> {
-                emptySearch.text = String.format(getString(R.string.empty_search), searchViewState.searchText)
-                renderEmptySearch()
-            }
-            is ShowSearchResults -> {
-                withRecyclerViewAdapter { submitList(searchViewState.pagedList) }
-                renderDoneSearching()
-            }
-        }
-    }
 
     private fun reactToNavEvent(navEvent: SearchNavigationEvent) {
         when (navEvent) {
@@ -108,64 +117,12 @@ class SearchFragment : Fragment() {
     }
 
     private fun withViewModel(action: SearchViewModel.() -> Unit) = withViewModel<SearchViewModel>(viewModelFactory) { action() }
-    private fun withRecyclerViewAdapter(action: SearchItemAdapter.() -> Unit) {
-        (searchResultRv.adapter as SearchItemAdapter).action()
-    }
-
-    private fun withSearchView(action: SearchView.() -> Unit) {
-        findSearchView(requireActivity().window.decorView as ViewGroup).action()
-    }
-
-    private fun renderSearching() {
-        searchPlaceHolderIv.setInvisible()
-        emptySearch.setInvisible()
-        searchErrorView.setInvisible()
-        searchResultRv.setInvisible()
-
-        searchLoadingView.setVisible()
-        withSearchView { clearFocus() } //hide keyboard
-    }
-
-    private fun renderError() {
-        searchPlaceHolderIv.setInvisible()
-        emptySearch.setInvisible()
-        searchLoadingView.setInvisible()
-        searchResultRv.setInvisible()
-
-        searchErrorView.setVisible()
-    }
-
-    private fun renderEmptySearch() {
-        searchPlaceHolderIv.setInvisible()
-        searchErrorView.setInvisible()
-        searchLoadingView.setInvisible()
-        searchResultRv.setInvisible()
-
-        emptySearch.setVisible()
-    }
-
-    private fun renderDoneSearching() {
-        searchPlaceHolderIv.setInvisible()
-        emptySearch.setInvisible()
-        searchErrorView.setInvisible()
-        searchLoadingView.setInvisible()
-
-        searchResultRv.setVisible()
-        searchResultRv.scheduleLayoutAnimation()
-    }
-
-    private fun renderClearState() {
-        emptySearch.setInvisible()
-        searchErrorView.setInvisible()
-        searchLoadingView.setInvisible()
-        searchResultRv.setInvisible()
-
-        searchPlaceHolderIv.setVisible()
-    }
+    private fun withRecyclerViewAdapter(action: SearchItemAdapter.() -> Unit) { (searchResultRv.adapter as SearchItemAdapter).action() }
+    private fun withSearchView(action: SearchView.() -> Unit) { findSearchView(requireActivity().window.decorView as ViewGroup).action() }
 
     private fun setUpSearchView() {
         /*
-        * The [SearchView] used to present a onSearch option to the user belongs to the Activity
+        * The [SearchView] used to present a search option to the user belongs to the Activity
         * that contains this Fragment for a variety of reasons:
         * 1 - In order to provide back and forth navigation with the Android Architecture Components,
         * the application has only one Activity with different Fragments that are rendered in it.
@@ -231,11 +188,23 @@ class SearchFragment : Fragment() {
     }
 
     /**
-     * [PagedListAdapter] implementation to show the list of searchPage results.
+     * Internal [PagedListAdapter] to render the list of search results. The fact that this class is a
+     * [PagedListAdapter] indicates that the paging library is being used. Another important
+     * aspect of this class is that it uses Data Binding to update the UI, which differs from the
+     * containing class.
      */
     class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem, Int) -> Unit) : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_search, parent, false))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            return ViewHolder(
+                    DataBindingUtil.inflate(
+                            LayoutInflater.from(parent.context),
+                            R.layout.list_item_search,
+                            parent,
+                            false
+                    )
+            )
+        }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             getItem(position)?.let {
@@ -243,23 +212,17 @@ class SearchFragment : Fragment() {
             }
         }
 
-        fun clear() {
-            //Submitting a null paged list causes the adapter to remove all items in the RecyclerView
-            submitList(null)
-        }
-
-        class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
-
+        class ViewHolder(private val itemBinding: ListItemSearchBinding) : RecyclerView.ViewHolder(itemBinding.root) {
             fun bindSearchItem(searchItem: SearchResultItem, selectionListener: (SearchResultItem, Int) -> Unit) {
+                with(itemBinding) {
+                    viewState = searchItem
+                    executePendingBindings()
+                }
                 with(itemView) {
-                    searchItemIv.loadImageUrlAsCircular(searchItem.imagePath)
                     searchItemIv.transitionName = "MovieImageAt$adapterPosition"
-                    searchItemTitleTxt.text = searchItem.name
-                    searchItemTypeIv.setImageResource(searchItem.icon.iconRes)
                     setOnClickListener { selectionListener(searchItem, adapterPosition) }
                 }
             }
-
         }
 
         class SearchResultDiffCallback : DiffUtil.ItemCallback<SearchResultItem>() {
