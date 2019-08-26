@@ -61,7 +61,9 @@ class CreditsFragment : Fragment() {
                 }
             })
 
-            navEvents.observe(viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
+            navEvents.observe(viewLifecycleOwner, Observer { navEvent ->
+                withNavigationViewModel(viewModelFactory) { navigateToPersonDetails(navEvent.personId, navEvent.personImageUrl, navEvent.personName) }
+            })
 
             onInit(
                     movieId = NavigationCredits.movieId(arguments),
@@ -84,14 +86,6 @@ class CreditsFragment : Fragment() {
 
     private fun withViewModel(action: CreditsViewModel.() -> Unit) = withViewModel<CreditsViewModel>(viewModelFactory) { action() }
     private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.creditsRv)?.let(action)
-
-
-    private fun reactToNavEvent(navEvent: CreditsNavigationEvent) {
-        when (navEvent) {
-            is CreditsNavigationEvent.ToPerson -> withNavigationViewModel(viewModelFactory) { navigateToPersonDetails(navEvent.personId, navEvent.personImageUrl, navEvent.personName) }
-        }
-    }
-
 
     class CreditsAdapter(private val credits: List<CreditPerson>, private val selectionListener: (CreditPerson) -> Unit) : RecyclerView.Adapter<CreditsAdapter.ViewHolder>() {
 
