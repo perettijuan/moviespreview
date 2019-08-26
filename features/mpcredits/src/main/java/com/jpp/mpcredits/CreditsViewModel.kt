@@ -66,11 +66,9 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * on it.
      */
     fun onInit(param: CreditsInitParam) {
+        // No need to verify if params are different since the app is already caching the data in the DB.
         currentParam = param
-        when (val currentState = _viewStates.value) {
-            null -> fetchMovieCredits(currentParam.movieId)
-            else -> _viewStates.value = of(currentState.peekContent())
-        }
+        fetchMovieCredits(currentParam.movieId)
     }
 
     /**
