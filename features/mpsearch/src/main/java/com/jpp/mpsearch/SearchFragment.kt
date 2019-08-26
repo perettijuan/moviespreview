@@ -22,7 +22,6 @@ import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.Destination.MPSearch
 import com.jpp.mpdesign.ext.findViewInPositionWithId
 import com.jpp.mpsearch.databinding.ListItemSearchBinding
-import com.jpp.mpsearch.databinding.SearchFragmentBinding
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.list_item_search.view.*
 import kotlinx.android.synthetic.main.search_fragment.*
