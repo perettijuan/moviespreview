@@ -1,6 +1,9 @@
 package com.jpp.mpcredits
 
+import android.content.res.Resources
+import android.os.Bundle
 import android.view.View
+import com.jpp.mp.common.extensions.getResIdFromAttribute
 import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 
 /*
@@ -71,3 +74,20 @@ data class NavigateToPersonEvent(
         val personImageUrl: String,
         val personName: String
 )
+
+/**
+ * The initialization parameter used for
+ * CreditsViewModel initialization.
+ */
+data class CreditsInitParam(
+        val movieId: Double,
+        val targetImageSize: Int
+) {
+    companion object {
+        fun create(fragment: CreditsFragment) =
+                CreditsInitParam(
+                        movieId = NavigationCredits.movieId(fragment.arguments),
+                        targetImageSize = fragment.resources.getDimensionPixelSize(fragment.getResIdFromAttribute(R.attr.mpCreditItemImageSize))
+                )
+    }
+}

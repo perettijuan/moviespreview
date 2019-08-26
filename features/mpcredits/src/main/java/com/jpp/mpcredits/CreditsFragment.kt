@@ -65,10 +65,7 @@ class CreditsFragment : Fragment() {
                 withNavigationViewModel(viewModelFactory) { navigateToPersonDetails(navEvent.personId, navEvent.personImageUrl, navEvent.personName) }
             })
 
-            onInit(
-                    movieId = NavigationCredits.movieId(arguments),
-                    targetImageSize = resources.getDimensionPixelSize(getResIdFromAttribute(R.attr.mpCreditItemImageSize))
-            )
+            onInit(CreditsInitParam.create(this@CreditsFragment))
         }
 
         withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(NavigationCredits.movieTitle(arguments))) }

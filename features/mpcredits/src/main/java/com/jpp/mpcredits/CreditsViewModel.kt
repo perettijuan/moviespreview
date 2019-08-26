@@ -29,9 +29,9 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _navEvents by lazy { SingleLiveEvent<NavigateToPersonEvent>() }
     val navEvents: LiveData<NavigateToPersonEvent> get() = _navEvents
 
-    private val retry: () -> Unit = { executeFetchCreditsStep(movieId) }
-    private var movieId: Double = 0.0
-    private var targetImageSize: Int = -1
+    private lateinit var currentParam: CreditsInitParam
+
+    private val retry: () -> Unit = { executeFetchCreditsStep(currentParam.movieId) }
 
     init {
         _viewStates.addSource(creditsInteractor.events) { event ->
@@ -39,7 +39,7 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                 is NotConnectedToNetwork -> _viewStates.value = of(CreditsViewState.showNoConnectivityError(retry))
                 is UnknownError -> _viewStates.value = of(CreditsViewState.showUnknownError(retry))
                 is Success -> mapCreditsAndPushViewState(event.credits)
-                is AppLanguageChanged -> _viewStates.value = of(executeRefreshDataStep(movieId))
+                is AppLanguageChanged -> _viewStates.value = of(executeRefreshDataStep(currentParam.movieId))
             }
         }
     }
@@ -47,11 +47,10 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     /**
      * Called when the view is initialized.
      */
-    fun onInit(movieId: Double, targetImageSize: Int) {
-        this.movieId = movieId
-        this.targetImageSize = targetImageSize
+    fun onInit(param: CreditsInitParam) {
+        currentParam = param
         when (val currentState = _viewStates.value) {
-            null ->_viewStates.value = of(executeFetchCreditsStep(movieId))
+            null ->_viewStates.value = of(executeFetchCreditsStep(currentParam.movieId))
             else -> _viewStates.value = of(currentState.peekContent())
         }
     }
@@ -95,7 +94,7 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                     withContext(dispatchers.default()) {
                         CreditsViewState.showCredits(
                                 credits.cast
-                                        .map { imagesPathInteractor.configureCastCharacter(targetImageSize, it) }
+                                        .map { imagesPathInteractor.configureCastCharacter(currentParam.targetImageSize, it) }
                                         .map { mapCastCharacterToCreditPerson(it) }
                                         .toMutableList()
                                         .addAllMapping { credits.crew.map { crewMember -> mapCrewMemberToCreditPerson(crewMember) } }
