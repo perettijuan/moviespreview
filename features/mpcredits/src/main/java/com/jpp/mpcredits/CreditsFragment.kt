@@ -61,6 +61,7 @@ class CreditsFragment : Fragment() {
             viewStates.observe(viewLifecycleOwner, Observer {
                 it.actionIfNotHandled { viewState ->
                     viewBinding.viewState = viewState
+                    viewBinding.executePendingBindings()
 
                     withRecyclerView {
                         layoutManager = LinearLayoutManager(context)

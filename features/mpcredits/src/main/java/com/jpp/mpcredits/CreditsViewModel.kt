@@ -67,10 +67,7 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun onInit(param: CreditsInitParam) {
         currentParam = param
-        when (val currentState = _viewStates.value) {
-            null -> fetchMovieCredits(currentParam.movieId)
-            else -> _viewStates.value = of(currentState.peekContent())
-        }
+        fetchMovieCredits(currentParam.movieId)
     }
 
     /**
