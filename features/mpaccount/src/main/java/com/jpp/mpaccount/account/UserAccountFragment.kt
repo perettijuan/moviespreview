@@ -20,6 +20,7 @@ import com.jpp.mpaccount.account.UserAccountFragmentDirections.userMovieListFrag
 import com.jpp.mpaccount.account.UserAccountNavigationEvent.*
 import com.jpp.mpaccount.account.UserAccountViewState.*
 import com.jpp.mpaccount.account.lists.UserMovieListFragment
+import com.jpp.mpaccount.account.lists.UserMovieListType
 import com.jpp.mpdesign.ext.*
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_user_account.*
@@ -115,9 +116,9 @@ class UserAccountFragment : Fragment() {
     private fun reactToNavEvent(navEvent: UserAccountNavigationEvent) {
         when (navEvent) {
             is GoToPrevious -> withNavigationViewModel { toPrevious() }
-            is GoToFavorites -> withNavigationViewModel { performInnerNavigation(userMovieListFragment(UserMovieListFragment.UserMovieListType.FAVORITE_LIST)) }
-            is GoToRated -> withNavigationViewModel { performInnerNavigation(userMovieListFragment(UserMovieListFragment.UserMovieListType.RATED_LIST)) }
-            is GoToWatchlist -> withNavigationViewModel { performInnerNavigation(userMovieListFragment(UserMovieListFragment.UserMovieListType.WATCH_LIST)) }
+            is GoToFavorites -> withNavigationViewModel { performInnerNavigation(userMovieListFragment(UserMovieListType.FAVORITE_LIST)) }
+            is GoToRated -> withNavigationViewModel { performInnerNavigation(userMovieListFragment(UserMovieListType.RATED_LIST)) }
+            is GoToWatchlist -> withNavigationViewModel { performInnerNavigation(userMovieListFragment(UserMovieListType.WATCH_LIST)) }
         }
     }
 

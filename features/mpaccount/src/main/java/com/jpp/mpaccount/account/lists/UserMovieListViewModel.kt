@@ -9,11 +9,8 @@ import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
-import com.jpp.mp.common.viewstate.HandledViewState
-import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
 import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.*
 import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToUserAccount
-import com.jpp.mpaccount.account.lists.UserMovieListViewState.*
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import javax.inject.Inject
@@ -28,22 +25,23 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     : MPScopedViewModel(dispatchers) {
 
 
-    private val _viewStates = MediatorLiveData<HandledViewState<UserMovieListViewState>>()
-    val viewStates: LiveData<HandledViewState<UserMovieListViewState>> get() = _viewStates
+    private val _viewStates = MediatorLiveData<UserMovieListViewState>()
+    val viewStates: LiveData<UserMovieListViewState> get() = _viewStates
 
     private val _navEvents = SingleLiveEvent<UserMovieListNavigationEvent>()
     val navEvents: LiveData<UserMovieListNavigationEvent> get() = _navEvents
 
-    private lateinit var currentParam: UserMovieListParam
+    private lateinit var dsFactoryCreator: (() -> MPPagingDataSourceFactory<Movie>)
 
-    /*
-     * Map the business logic coming from the interactor into view layer logic.
-     */
+    private val retry: () -> Unit = {
+        pushLoadingAndInitializePagedList(dsFactoryCreator)
+    }
+
     init {
         _viewStates.addSource(userMovieListInteractor.userAccountEvents) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewStates.value = of(ShowNotConnected)
-                is UnknownError -> _viewStates.value = of(ShowError)
+                is NotConnectedToNetwork -> _viewStates.value = UserMovieListViewState.showNoConnectivityError(retry)
+                is UnknownError -> _viewStates.value = UserMovieListViewState.showUnknownError(retry)
                 is UserNotLogged -> _navEvents.value = GoToUserAccount
                 is UserChangedLanguage -> refreshMovieListData()
             }
@@ -53,18 +51,38 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     /**
      * Called when the view is initialized with the favorite movies.
      */
-    fun onInit(param: UserMovieListParam) {
+    fun onInitWithFavorites(posterSize: Int, backdropSize: Int) {
         dsFactoryCreator = {
             createPagingFactory(posterSize, backdropSize) { page, callback ->
                 userMovieListInteractor.fetchFavoriteMovies(page, callback)
             }
         }
-
-        currentParam = param
-
         pushLoadingAndInitializePagedList(dsFactoryCreator)
     }
 
+    /**
+     * Called when the view is initialized with the rated movies.
+     */
+    fun onInitWithRated(posterSize: Int, backdropSize: Int) {
+        dsFactoryCreator = {
+            createPagingFactory(posterSize, backdropSize) { page, callback ->
+                userMovieListInteractor.fetchRatedMovies(page, callback)
+            }
+        }
+        pushLoadingAndInitializePagedList(dsFactoryCreator)
+    }
+
+    /**
+     * Called when the view is initialized with the watchlist movies.
+     */
+    fun onInitWithWatchlist(posterSize: Int, backdropSize: Int) {
+        dsFactoryCreator = {
+            createPagingFactory(posterSize, backdropSize) { page, callback ->
+                userMovieListInteractor.fetchWatchlist(page, callback)
+            }
+        }
+        pushLoadingAndInitializePagedList(dsFactoryCreator)
+    }
 
     /**
      * Called when an item is selected in the list of movies.
@@ -80,13 +98,6 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
         }
     }
 
-    /**
-     * Called when the user retries after an error.
-     */
-    fun onRetry() {
-        pushLoadingAndInitializePagedList(dsFactoryCreator)
-    }
-
 
     /**
      * Pushes the Loading view state into the view layer and creates the [PagedList]
@@ -94,8 +105,8 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
      */
     private fun pushLoadingAndInitializePagedList(dataSourceFactoryCreator: () -> MPPagingDataSourceFactory<Movie>) {
         with(_viewStates) {
-            value = of(ShowLoading)
-            addSource(createPagedList(dataSourceFactoryCreator)) { pagedList -> value = of(ShowMovieList(pagedList)) }
+            value = UserMovieListViewState.showLoading()
+            addSource(createPagedList(dataSourceFactoryCreator)) { pagedList -> value = UserMovieListViewState.showMovieList(pagedList) }
         }
     }
 
@@ -143,7 +154,7 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
      */
     private fun createPagingFactory(moviePosterSize: Int,
                                     movieBackdropSize: Int,
-                                    type: UserMovieListParam): MPPagingDataSourceFactory<Movie> {
+                                    fetchStrategy: (Int, (List<Movie>) -> Unit) -> Unit): MPPagingDataSourceFactory<Movie> {
         return MPPagingDataSourceFactory { page, callback ->
             fetchStrategy(page) { movieList ->
                 when (movieList.isNotEmpty()) {
