@@ -28,10 +28,17 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     : MPScopedViewModel(dispatchers) {
 
 
-    private val _viewStates by lazy { MediatorLiveData<HandledViewState<UserMovieListViewState>>() }
-    private val _navEvents by lazy { SingleLiveEvent<UserMovieListNavigationEvent>() }
-    private lateinit var dsFactoryCreator: (() -> MPPagingDataSourceFactory<Movie>)
+    private val _viewStates = MediatorLiveData<HandledViewState<UserMovieListViewState>>()
+    val viewStates: LiveData<HandledViewState<UserMovieListViewState>> get() = _viewStates
 
+    private val _navEvents = SingleLiveEvent<UserMovieListNavigationEvent>()
+    val navEvents: LiveData<UserMovieListNavigationEvent> get() = _navEvents
+
+    private lateinit var currentParam: UserMovieListParam
+
+    /*
+     * Map the business logic coming from the interactor into view layer logic.
+     */
     init {
         _viewStates.addSource(userMovieListInteractor.userAccountEvents) { event ->
             when (event) {
@@ -46,38 +53,18 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     /**
      * Called when the view is initialized with the favorite movies.
      */
-    fun onInitWithFavorites(posterSize: Int, backdropSize: Int) {
+    fun onInit(param: UserMovieListParam) {
         dsFactoryCreator = {
             createPagingFactory(posterSize, backdropSize) { page, callback ->
                 userMovieListInteractor.fetchFavoriteMovies(page, callback)
             }
         }
+
+        currentParam = param
+
         pushLoadingAndInitializePagedList(dsFactoryCreator)
     }
 
-    /**
-     * Called when the view is initialized with the rated movies.
-     */
-    fun onInitWithRated(posterSize: Int, backdropSize: Int) {
-        dsFactoryCreator = {
-            createPagingFactory(posterSize, backdropSize) { page, callback ->
-                userMovieListInteractor.fetchRatedMovies(page, callback)
-            }
-        }
-        pushLoadingAndInitializePagedList(dsFactoryCreator)
-    }
-
-    /**
-     * Called when the view is initialized with the watchlist movies.
-     */
-    fun onInitWithWatchlist(posterSize: Int, backdropSize: Int) {
-        dsFactoryCreator = {
-            createPagingFactory(posterSize, backdropSize) { page, callback ->
-                userMovieListInteractor.fetchWatchlist(page, callback)
-            }
-        }
-        pushLoadingAndInitializePagedList(dsFactoryCreator)
-    }
 
     /**
      * Called when an item is selected in the list of movies.
@@ -100,17 +87,6 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
         pushLoadingAndInitializePagedList(dsFactoryCreator)
     }
 
-    /**
-     * Subscribe to this [LiveData] in order to get notified about the different states that
-     * the view should render.
-     */
-    val viewStates: LiveData<HandledViewState<UserMovieListViewState>> get() = _viewStates
-
-    /**
-     * Subscribe to this [LiveData] in order to get notified about navigation steps that
-     * should be performed by the view.
-     */
-    val navEvents: LiveData<UserMovieListNavigationEvent> get() = _navEvents
 
     /**
      * Pushes the Loading view state into the view layer and creates the [PagedList]
@@ -167,7 +143,7 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
      */
     private fun createPagingFactory(moviePosterSize: Int,
                                     movieBackdropSize: Int,
-                                    fetchStrategy: (Int, (List<Movie>) -> Unit) -> Unit): MPPagingDataSourceFactory<Movie> {
+                                    type: UserMovieListParam): MPPagingDataSourceFactory<Movie> {
         return MPPagingDataSourceFactory { page, callback ->
             fetchStrategy(page) { movieList ->
                 when (movieList.isNotEmpty()) {

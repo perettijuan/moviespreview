@@ -73,7 +73,7 @@ enum class MovieListSectionTitle(@StringRes val titleRes: Int) {
 
 /**
  * The initialization parameter used for
- * MovieListViewModel initialization.
+ * [MovieListViewModel].
  */
 data class MovieListParam(
         val section: MovieSection,

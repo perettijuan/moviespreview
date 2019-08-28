@@ -1,6 +1,8 @@
 package com.jpp.mpaccount.account.lists
 
+import androidx.annotation.StringRes
 import androidx.paging.PagedList
+import com.jpp.mpaccount.R
 
 /*
  * Contains the definitions for the entire model used in the user account feature.
@@ -49,3 +51,29 @@ data class UserMovieItem(
         val title: String,
         val contentImageUrl: String
 )
+
+/**
+ * Represents the type of user movie list that the application can
+ * show.
+ */
+enum class UserMovieListType(@StringRes val titleRes: Int) {
+    FAVORITE_LIST(R.string.user_account_favorite_title),
+    RATED_LIST(R.string.user_account_rated_title),
+    WATCH_LIST(R.string.user_account_watchlist_title)
+}
+
+/**
+ * The initialization parameter used for
+ * [UserMovieListViewModel].
+ */
+data class UserMovieListParam(
+        val section: UserMovieListType,
+        val posterSize: Int,
+        val backdropSize: Int
+) {
+    companion object {
+        fun favorite(posterSize: Int, backdropSize: Int) = UserMovieListParam(UserMovieListType.FAVORITE_LIST, posterSize, backdropSize)
+        fun rated(posterSize: Int, backdropSize: Int) = UserMovieListParam(UserMovieListType.RATED_LIST, posterSize, backdropSize)
+        fun watchlist(posterSize: Int, backdropSize: Int) = UserMovieListParam(UserMovieListType.WATCH_LIST, posterSize, backdropSize)
+    }
+}

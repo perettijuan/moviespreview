@@ -29,11 +29,7 @@ import javax.inject.Inject
 
 class UserMovieListFragment : Fragment() {
 
-    enum class UserMovieListType(@StringRes val titleRes: Int) {
-        FAVORITE_LIST(R.string.user_account_favorite_title),
-        RATED_LIST(R.string.user_account_rated_title),
-        WATCH_LIST(R.string.user_account_watchlist_title)
-    }
+
 
 
     @Inject
