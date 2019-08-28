@@ -2,6 +2,7 @@ package com.jpp.mpaccount.account.lists
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
@@ -40,6 +41,9 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     private val _viewStates = MediatorLiveData<UserMovieListViewState>()
     val viewStates: LiveData<UserMovieListViewState> get() = _viewStates
 
+    private val _currentSection = MutableLiveData<UserMovieListType>()
+    val currentSection: LiveData<UserMovieListType> get() = _currentSection
+
     private val _navEvents = SingleLiveEvent<UserMovieListNavigationEvent>()
     val navEvents: LiveData<UserMovieListNavigationEvent> get() = _navEvents
 
@@ -75,6 +79,7 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
      */
     fun onInit(param: UserMovieListParam) {
         currentParam = param
+        _currentSection.value = currentParam.section
         postLoadingAndInitializePagedList(
                 currentParam.posterSize,
                 currentParam.backdropSize,

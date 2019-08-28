@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.getViewModel
 import com.jpp.mp.common.extensions.withNavigationViewModel
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.navigation.Destination.ReachedDestination
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToMovieDetails
@@ -67,11 +68,16 @@ class UserMovieListFragment : Fragment() {
                     submitList(viewState.contentViewState.movieList)
                 }
             })
+
             navEvents.observe(this@UserMovieListFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
 
-            onInit(UserMovieListParam.fromArguments(arguments, getScreenWidthInPixels(), getScreenWidthInPixels()))
+            currentSection.observe(viewLifecycleOwner, Observer { currentSection ->
+                withNavigationViewModel(viewModelFactory) {
+                    destinationReached(ReachedDestination(getString(currentSection.titleRes)))
+                }
+            })
 
-            // TODO withNavigationViewModel(viewModelFactory) { destinationReached(ReachedDestination(getString(it.titleRes))) }
+            onInit(UserMovieListParam.fromArguments(arguments, getScreenWidthInPixels(), getScreenWidthInPixels()))
         }
     }
 
