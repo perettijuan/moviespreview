@@ -68,23 +68,11 @@ class UserMovieListFragment : Fragment() {
                 }
             })
             navEvents.observe(this@UserMovieListFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
-            withUserMovieListType {
-                when (it) {
-                    UserMovieListType.FAVORITE_LIST -> onInitWithFavorites(getScreenWidthInPixels(), getScreenWidthInPixels())
-                    UserMovieListType.RATED_LIST -> onInitWithRated(getScreenWidthInPixels(), getScreenWidthInPixels())
-                    UserMovieListType.WATCH_LIST -> onInitWithWatchlist(getScreenWidthInPixels(), getScreenWidthInPixels())
-                }
-                // sync app bar title
-                withNavigationViewModel(viewModelFactory) { destinationReached(ReachedDestination(getString(it.titleRes))) }
-            }
+
+            onInit(UserMovieListParam.fromArguments(arguments, getScreenWidthInPixels(), getScreenWidthInPixels()))
+
+            // TODO withNavigationViewModel(viewModelFactory) { destinationReached(ReachedDestination(getString(it.titleRes))) }
         }
-    }
-
-    private fun withUserMovieListType(action: (UserMovieListType) -> Unit) {
-        val args = arguments
-                ?: throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the content")
-
-        action(args.get("listType") as UserMovieListType)
     }
 
 

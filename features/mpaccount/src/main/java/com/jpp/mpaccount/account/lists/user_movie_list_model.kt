@@ -1,5 +1,6 @@
 package com.jpp.mpaccount.account.lists
 
+import android.os.Bundle
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.paging.PagedList
@@ -92,8 +93,15 @@ data class UserMovieListParam(
         val backdropSize: Int
 ) {
     companion object {
-        fun favorite(posterSize: Int, backdropSize: Int) = UserMovieListParam(UserMovieListType.FAVORITE_LIST, posterSize, backdropSize)
-        fun rated(posterSize: Int, backdropSize: Int) = UserMovieListParam(UserMovieListType.RATED_LIST, posterSize, backdropSize)
-        fun watchlist(posterSize: Int, backdropSize: Int) = UserMovieListParam(UserMovieListType.WATCH_LIST, posterSize, backdropSize)
+        fun fromArguments(
+                arguments: Bundle?,
+                posterSize: Int,
+                backdropSize: Int
+        ): UserMovieListParam {
+            return when (val type = arguments?.get("listType") as UserMovieListType) {
+                null -> throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the content")
+                else -> UserMovieListParam(type, posterSize, backdropSize)
+            }
+        }
     }
 }
