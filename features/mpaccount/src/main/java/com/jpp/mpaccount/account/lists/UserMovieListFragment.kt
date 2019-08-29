@@ -2,6 +2,7 @@ package com.jpp.mpaccount.account.lists
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.getViewModel
 import com.jpp.mp.common.extensions.withNavigationViewModel
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.navigation.Destination.ReachedDestination
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToMovieDetails
@@ -29,12 +29,25 @@ import kotlinx.android.synthetic.main.fragment_user_movie_list.*
 import kotlinx.android.synthetic.main.list_item_user_movie.view.*
 import javax.inject.Inject
 
+/**
+ * Base fragment used to show the list of movies that are related to the user's account.
+ * The application can show movies related to user's account in three categories:
+ * - Favorite
+ * - Rated
+ * - In Watchlist
+ *
+ * This Fragment shows the movies list based on the configuration that is sent as parameter when
+ * created. It can show all three categories, based on such parameters.
+ */
 class UserMovieListFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var viewBinding: FragmentUserMovieListBinding
+
+    // used to restore the position of the RecyclerView on view re-creation
+    private var rvState: Parcelable? = null
 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
@@ -46,26 +59,21 @@ class UserMovieListFragment : Fragment() {
         return viewBinding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        withRecyclerView {
-            layoutManager = LinearLayoutManager(requireActivity())
-            adapter = UserMoviesAdapter { item, position ->
-                withViewModel { onMovieSelected(item, position) }
-            }
-        }
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        rvState = savedInstanceState?.getParcelable(USER_MOVIES_RV_STATE_KEY) ?: rvState
+
         withViewModel {
             viewStates.observe(this@UserMovieListFragment.viewLifecycleOwner, Observer { viewState ->
                 viewBinding.viewState = viewState
                 viewBinding.executePendingBindings()
 
-                withRecyclerViewAdapter {
-                    submitList(viewState.contentViewState.movieList)
+                withRecyclerView {
+                    layoutManager = LinearLayoutManager(requireActivity()).apply { onRestoreInstanceState(rvState) }
+                    adapter = UserMoviesAdapter { item, position ->
+                        withViewModel { onMovieSelected(item, position) }
+                    }.apply { submitList(viewState.contentViewState.movieList) }
                 }
             })
 
@@ -81,9 +89,18 @@ class UserMovieListFragment : Fragment() {
         }
     }
 
+    override fun onPause() {
+        withRecyclerView { rvState = layoutManager?.onSaveInstanceState() }
+        super.onPause()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        withRecyclerView { outState.putParcelable(USER_MOVIES_RV_STATE_KEY, layoutManager?.onSaveInstanceState()) }
+        super.onSaveInstanceState(outState)
+    }
+
 
     private fun withViewModel(action: UserMovieListViewModel.() -> Unit) = getViewModel<UserMovieListViewModel>(viewModelFactory).action()
-    private fun withRecyclerViewAdapter(action: UserMoviesAdapter.() -> Unit) = withRecyclerView { (adapter as UserMoviesAdapter).action() }
     private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.userMoviesList)?.let(action)
 
     /**
@@ -142,5 +159,9 @@ class UserMovieListFragment : Fragment() {
         override fun areContentsTheSame(oldItem: UserMovieItem, newItem: UserMovieItem): Boolean {
             return oldItem.title == newItem.title
         }
+    }
+
+    private companion object {
+        const val USER_MOVIES_RV_STATE_KEY = "userMoviesRvStateKey"
     }
 }

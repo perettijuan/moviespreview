@@ -34,7 +34,7 @@ import javax.inject.Inject
  * - Upcoming
  * - TopRated
  *
- * This Fragment as the basic glue to render the view state provided by the ViewModel. There is an
+ * This Fragment is the basic glue to render the view state provided by the ViewModel. There is an
  * implementation of this Fragment per each section listed before. This Fragment contains the base
  * code to update the UI and the child classes are providing the initialization method over the
  * SINGLE [MovieListViewModel] instance used.
@@ -57,7 +57,6 @@ abstract class MovieListFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
