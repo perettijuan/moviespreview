@@ -37,6 +37,6 @@
         tools:layout="@layout/fragment_user_movie_list">
         <argument
             android:name="listType"
-            app:argType="com.jpp.mpaccount.account.lists.UserMovieListFragment$UserMovieListType" />
+            app:argType="com.jpp.mpaccount.account.lists.UserMovieListType" />
     </fragment>
 </navigation>

@@ -12,6 +12,10 @@ import com.jpp.mpdomain.Movie as DomainMovie
  * This file contains the definitions for the entire model used in the movies list feature.
  */
 
+/**************************************************************************************************
+ *************************************** VIEW STATES **********************************************
+ **************************************************************************************************/
+
 /**
  * Represents the view state of the movies list screen. This indicates that the view
  * can only render the view states modeled in this class.
@@ -49,6 +53,10 @@ data class MovieListItem(
         val voteCount: String
 )
 
+/**************************************************************************************************
+ *************************************** NAVIGATION ***********************************************
+ **************************************************************************************************/
+
 /**
  * Represents the event that is triggered when the user selects a movie to see the detail.
  */
@@ -58,6 +66,10 @@ data class NavigateToDetailsEvent(
         val movieTitle: String,
         var positionInList: Int
 )
+
+/**************************************************************************************************
+ *************************************** VM PARAMS ************************************************
+ **************************************************************************************************/
 
 /**
  * Represents the title of the screen. Note that this is not part of the view
@@ -73,7 +85,7 @@ enum class MovieListSectionTitle(@StringRes val titleRes: Int) {
 
 /**
  * The initialization parameter used for
- * MovieListViewModel initialization.
+ * [MovieListViewModel].
  */
 data class MovieListParam(
         val section: MovieSection,

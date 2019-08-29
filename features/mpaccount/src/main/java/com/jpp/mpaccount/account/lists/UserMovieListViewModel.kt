@@ -2,6 +2,7 @@ package com.jpp.mpaccount.account.lists
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
@@ -9,18 +10,27 @@ import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
-import com.jpp.mp.common.viewstate.HandledViewState
-import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
 import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.*
 import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToUserAccount
-import com.jpp.mpaccount.account.lists.UserMovieListViewState.*
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * ViewModel implementation for the user movies list section. It allows to fetch all types of
- * listing that the user might have.
+ * [MPScopedViewModel] used to support the user's movie list section of the application.
+ * Produces different [UserMovieListViewState] that represents the entire configuration of the screen at any
+ * given moment.
+ *
+ * Since the UI is using the Android Paging Library, the VM needs a way to map the data retrieved from
+ * the [UserMovieListInteractor] to a [PagedList] that can be used by the library. That process is done
+ * using the [MPPagingDataSourceFactory] that creates the DataSource and produces a [LiveData] object
+ * that is combined with the [viewStates] in order to properly map the data into a [UserMovieListViewState].
+ *
+ * This VM is language aware, meaning that when the user changes the language of the device, the
+ * VM is notified about such event and executes a refresh of both: the data stored by the application
+ * and the view state being shown to the user.
  */
 class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                                  private val userMovieListInteractor: UserMovieListInteractor,
@@ -28,56 +38,55 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     : MPScopedViewModel(dispatchers) {
 
 
-    private val _viewStates by lazy { MediatorLiveData<HandledViewState<UserMovieListViewState>>() }
-    private val _navEvents by lazy { SingleLiveEvent<UserMovieListNavigationEvent>() }
-    private lateinit var dsFactoryCreator: (() -> MPPagingDataSourceFactory<Movie>)
+    private val _viewStates = MediatorLiveData<UserMovieListViewState>()
+    val viewStates: LiveData<UserMovieListViewState> get() = _viewStates
 
+    private val _currentSection = MutableLiveData<UserMovieListType>()
+    val currentSection: LiveData<UserMovieListType> get() = _currentSection
+
+    private val _navEvents = SingleLiveEvent<UserMovieListNavigationEvent>()
+    val navEvents: LiveData<UserMovieListNavigationEvent> get() = _navEvents
+
+    private lateinit var currentParam: UserMovieListParam
+
+    private val retry: () -> Unit = {
+        postLoadingAndInitializePagedList(
+                currentParam.posterSize,
+                currentParam.backdropSize,
+                currentParam.section
+        )
+    }
+
+    /*
+     * Map the business logic coming from the interactor into view layer logic.
+     */
     init {
         _viewStates.addSource(userMovieListInteractor.userAccountEvents) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewStates.value = of(ShowNotConnected)
-                is UnknownError -> _viewStates.value = of(ShowError)
+                is NotConnectedToNetwork -> _viewStates.value = UserMovieListViewState.showNoConnectivityError(retry)
+                is UnknownError -> _viewStates.value = UserMovieListViewState.showUnknownError(retry)
                 is UserNotLogged -> _navEvents.value = GoToUserAccount
-                is UserChangedLanguage -> refreshMovieListData()
+                is UserChangedLanguage -> refreshData()
             }
         }
     }
 
     /**
-     * Called when the view is initialized with the favorite movies.
+     * Called on VM initialization. The View (Fragment) should call this method to
+     * indicate that it is ready to start rendering. When the method is called, the VM
+     * internally verifies the state of the application and updates the view state based
+     * on it.
      */
-    fun onInitWithFavorites(posterSize: Int, backdropSize: Int) {
-        dsFactoryCreator = {
-            createPagingFactory(posterSize, backdropSize) { page, callback ->
-                userMovieListInteractor.fetchFavoriteMovies(page, callback)
-            }
-        }
-        pushLoadingAndInitializePagedList(dsFactoryCreator)
+    fun onInit(param: UserMovieListParam) {
+        currentParam = param
+        _currentSection.value = currentParam.section
+        postLoadingAndInitializePagedList(
+                currentParam.posterSize,
+                currentParam.backdropSize,
+                currentParam.section
+        )
     }
 
-    /**
-     * Called when the view is initialized with the rated movies.
-     */
-    fun onInitWithRated(posterSize: Int, backdropSize: Int) {
-        dsFactoryCreator = {
-            createPagingFactory(posterSize, backdropSize) { page, callback ->
-                userMovieListInteractor.fetchRatedMovies(page, callback)
-            }
-        }
-        pushLoadingAndInitializePagedList(dsFactoryCreator)
-    }
-
-    /**
-     * Called when the view is initialized with the watchlist movies.
-     */
-    fun onInitWithWatchlist(posterSize: Int, backdropSize: Int) {
-        dsFactoryCreator = {
-            createPagingFactory(posterSize, backdropSize) { page, callback ->
-                userMovieListInteractor.fetchWatchlist(page, callback)
-            }
-        }
-        pushLoadingAndInitializePagedList(dsFactoryCreator)
-    }
 
     /**
      * Called when an item is selected in the list of movies.
@@ -93,52 +102,31 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
         }
     }
 
-    /**
-     * Called when the user retries after an error.
-     */
-    fun onRetry() {
-        pushLoadingAndInitializePagedList(dsFactoryCreator)
-    }
-
-    /**
-     * Subscribe to this [LiveData] in order to get notified about the different states that
-     * the view should render.
-     */
-    val viewStates: LiveData<HandledViewState<UserMovieListViewState>> get() = _viewStates
-
-    /**
-     * Subscribe to this [LiveData] in order to get notified about navigation steps that
-     * should be performed by the view.
-     */
-    val navEvents: LiveData<UserMovieListNavigationEvent> get() = _navEvents
 
     /**
      * Pushes the Loading view state into the view layer and creates the [PagedList]
      * of [UserMovieItem] that will be rendered by the view layer.
      */
-    private fun pushLoadingAndInitializePagedList(dataSourceFactoryCreator: () -> MPPagingDataSourceFactory<Movie>) {
-        with(_viewStates) {
-            value = of(ShowLoading)
-            addSource(createPagedList(dataSourceFactoryCreator)) { pagedList -> value = of(ShowMovieList(pagedList)) }
+    private fun postLoadingAndInitializePagedList(posterSize: Int,
+                                                  backdropSize: Int,
+                                                  listType: UserMovieListType) {
+        _viewStates.value = UserMovieListViewState.showLoading()
+        _viewStates.addSource(createPagedList(posterSize, backdropSize, listType)) { pagedList ->
+            if (pagedList.isNotEmpty()) {
+                _viewStates.value = UserMovieListViewState.showMovieList(pagedList)
+            }
         }
-    }
-
-    private fun refreshMovieListData() {
-        userMovieListInteractor.refreshUserMoviesData()
-        pushLoadingAndInitializePagedList(dsFactoryCreator)
     }
 
     /**
      * Creates a [LiveData] object of the [PagedList] that is used to wire up the Android Paging Library
      * with the interactor in order to fetch a new page of movies each time the user scrolls down in
      * the list of movies.
-     * [dataSourceFactoryCreator] is a factory method that provides a mechanism used to instantiate
-     * the proper [MPPagingDataSourceFactory] instance based on the movies fetching strategy required
-     * for the section being shown to the user. Check the documentation in [createPagingFactory] in
-     * order to fully understand how this behaves.
      */
-    private fun createPagedList(dataSourceFactoryCreator: () -> MPPagingDataSourceFactory<Movie>): LiveData<PagedList<UserMovieItem>> {
-        return dataSourceFactoryCreator()
+    private fun createPagedList(moviePosterSize: Int,
+                                movieBackdropSize: Int,
+                                listType: UserMovieListType): LiveData<PagedList<UserMovieItem>> {
+        return createPagingFactory(moviePosterSize, movieBackdropSize, listType)
                 .map { mapDomainMovie(it) }
                 .let {
                     val config = PagedList.Config.Builder()
@@ -152,11 +140,7 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
 
     /**
      * Creates an instance of [MPPagingDataSourceFactory] that is used to retrieve new pages of movies
-     * every time the user reaches the end of current page being used. It is basically a method to
-     * support the usage of the Android Paging Library.
-     * [fetchStrategy] provides a mechanism to execute the proper method in the [UserMovieListInteractor]
-     * to fetch the movies for the section being shown, since this VM supports 4 different types of
-     * movie sections (Playing, Popular, TopRated and Upcoming).
+     * every time the user reaches the end of current page.
      *
      *
      * IMPORTANT:
@@ -167,14 +151,35 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
      */
     private fun createPagingFactory(moviePosterSize: Int,
                                     movieBackdropSize: Int,
-                                    fetchStrategy: (Int, (List<Movie>) -> Unit) -> Unit): MPPagingDataSourceFactory<Movie> {
+                                    listType: UserMovieListType): MPPagingDataSourceFactory<Movie> {
         return MPPagingDataSourceFactory { page, callback ->
-            fetchStrategy(page) { movieList ->
+            val movieListProcessor: (List<Movie>) -> Unit = { movieList ->
                 when (movieList.isNotEmpty()) {
                     true -> callback(movieList.map { imagesPathInteractor.configurePathMovie(moviePosterSize, movieBackdropSize, it) })
                     false -> if (page == 1) _navEvents.postValue(GoToUserAccount)
                 }
             }
+
+            when (listType) {
+                UserMovieListType.FAVORITE_LIST -> userMovieListInteractor.fetchFavoriteMovies(page, movieListProcessor)
+                UserMovieListType.RATED_LIST -> userMovieListInteractor.fetchRatedMovies(page, movieListProcessor)
+                UserMovieListType.WATCH_LIST -> userMovieListInteractor.fetchWatchlist(page, movieListProcessor)
+            }
+        }
+    }
+
+    /**
+     * Asks the interactor to flush any data that might be locally cached and re-fetch the
+     * movie list for the current section being shown.
+     */
+    private fun refreshData() {
+        launch {
+            withContext(dispatchers.default()) { userMovieListInteractor.refreshUserMoviesData() }
+            postLoadingAndInitializePagedList(
+                    currentParam.posterSize,
+                    currentParam.backdropSize,
+                    currentParam.section
+            )
         }
     }
 
