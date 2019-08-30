@@ -19,7 +19,6 @@ import com.jpp.mpdesign.ext.setVisible
 import com.jpp.mpdesign.ext.snackBar
 import com.jpp.mpdesign.ext.snackBarNoAction
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieId
-import com.jpp.mpmoviedetails.NavigationMovieDetails.movieTitle
 import com.jpp.mpmoviedetails.databinding.FragmentMovieDetailsBinding
 import com.jpp.mpmoviedetails.databinding.ListItemMovieDetailGenreBinding
 import dagger.android.support.AndroidSupportInjection
@@ -64,8 +63,6 @@ class MovieDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        withNavigationViewModel(viewModelFactory) { destinationReached(ReachedDestination(movieTitle(arguments))) }
-
         withViewModel {
             viewStates.observe(viewLifecycleOwner, Observer {
                 it.actionIfNotHandled { viewState ->
@@ -79,6 +76,10 @@ class MovieDetailsFragment : Fragment() {
 
             navEvents.observe(viewLifecycleOwner, Observer { navEvent ->
                 withNavigationViewModel(viewModelFactory) { navigateToMovieCredits(navEvent.movieId, navEvent.movieTitle) }
+            })
+
+            screenTitle.observe(viewLifecycleOwner, Observer {
+                withNavigationViewModel(viewModelFactory) { destinationReached(ReachedDestination(it)) }
             })
 
             onInit(MovieDetailsParam.fromArguments(arguments))
