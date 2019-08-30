@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,10 +19,10 @@ import com.jpp.mpmoviedetails.MovieDetailViewState.*
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieId
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieImageUrl
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieTitle
+import com.jpp.mpmoviedetails.databinding.ListItemMovieDetailGenreBinding
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movie_details.*
 import kotlinx.android.synthetic.main.layout_movie_detail_content.*
-import kotlinx.android.synthetic.main.list_item_movie_detail_genre.view.*
 import javax.inject.Inject
 
 /**
@@ -228,21 +229,27 @@ class MovieDetailsFragment : Fragment() {
 
     class MovieDetailsGenreAdapter(private val genres: List<MovieGenreItem>) : RecyclerView.Adapter<MovieDetailsGenreAdapter.ViewHolder>() {
 
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            return ViewHolder(
+                    DataBindingUtil.inflate(
+                            LayoutInflater.from(parent.context),
+                            R.layout.list_item_movie_detail_genre,
+                            parent,
+                            false
+                    )
+            )
+        }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(genres[position])
 
         override fun getItemCount() = genres.size
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent.inflate(R.layout.list_item_movie_detail_genre))
 
-
-        class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        class ViewHolder(private val itemBinding: ListItemMovieDetailGenreBinding) : RecyclerView.ViewHolder(itemBinding.root) {
 
             fun bind(genre: MovieGenreItem) {
-                with(genre) {
-                    itemView.genreListItemIv.setImageResource(icon)
-                    itemView.genreListItemTxt.text = itemView.getStringFromResources(name)
-                }
+                itemBinding.viewState = genre
+                itemBinding.executePendingBindings()
             }
 
         }
