@@ -1,9 +1,12 @@
 package com.jpp.mpmoviedetails
 
 import android.os.Bundle
+import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieId
+import com.jpp.mpmoviedetails.NavigationMovieDetails.movieImageUrl
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieTitle
 
 /*
@@ -17,32 +20,57 @@ import com.jpp.mpmoviedetails.NavigationMovieDetails.movieTitle
 /**
  * Represents the view states that the movie detail view can assume.
  */
-sealed class MovieDetailViewState {
-    /*
-     * Shows the not connected to network state
-     */
-    object ShowNotConnected : MovieDetailViewState()
+data class MovieDetailViewState(
+        val loadingVisibility: Int = View.INVISIBLE,
+        val movieImageUrl: String = "emptyUrl",
+        val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
+        val contentViewState: MovieDetailContentViewState = MovieDetailContentViewState()) {
 
-    /*
-     * Shows the generic error screen.
-     */
-    object ShowError : MovieDetailViewState()
+    companion object {
+        fun showLoading(movieImageUrl: String) = MovieDetailViewState(loadingVisibility = View.VISIBLE, movieImageUrl = movieImageUrl)
+        fun showUnknownError(errorHandler: () -> Unit) = MovieDetailViewState(errorViewState = ErrorViewState.asUnknownError(errorHandler))
+        fun showNoConnectivityError(errorHandler: () -> Unit) = MovieDetailViewState(errorViewState = ErrorViewState.asConnectivity(errorHandler))
+        fun showDetails(movieImageUrl: String,
+                        overview: String,
+                        genres: List<MovieGenreItem>,
+                        popularity: String,
+                        voteCount: String,
+                        releaseDate: String) = MovieDetailViewState(movieImageUrl = movieImageUrl, contentViewState = MovieDetailContentViewState.buildVisible(overview, genres, popularity, voteCount, releaseDate))
+    }
+}
 
-    /*
-     * Shows when the VM indicates that a work is in progress.
-     */
-    data class ShowLoading(val title: String) : MovieDetailViewState()
 
-    /*
-     * Shows the data of the movie detail.
-     */
-    data class ShowDetail(val title: String,
-                          val overview: String,
-                          val releaseDate: String,
-                          val voteCount: String,
-                          val voteAverage: String,
-                          val popularity: String,
-                          val genres: List<MovieGenreItem>) : MovieDetailViewState()
+/**
+ * Represents the view state of the details content.
+ */
+data class MovieDetailContentViewState(
+        val visibility: Int = View.INVISIBLE,
+        @StringRes val overviewTitle: Int = R.string.overview_title,
+        val overview: String = "",
+        @StringRes val genresTitle: Int = R.string.genres_title,
+        val genres: List<MovieGenreItem> = emptyList(),
+        @StringRes val popularityTitle: Int = R.string.popularity_title,
+        val popularity: String = "",
+        @StringRes val voteCountTitle: Int = R.string.vote_count_title,
+        val voteCount: String = "",
+        @StringRes val releaseDateTitle: Int = R.string.release_date_title,
+        val releaseDate: String = "",
+        @StringRes val creditsTitle: Int = R.string.movie_credits_title
+) {
+    companion object {
+        fun buildVisible(overview: String,
+                         genres: List<MovieGenreItem>,
+                         popularity: String,
+                         voteCount: String,
+                         releaseDate: String) = MovieDetailContentViewState(
+                visibility = View.VISIBLE,
+                overview = overview,
+                genres = genres,
+                popularity = popularity,
+                voteCount = voteCount,
+                releaseDate = releaseDate
+        )
+    }
 }
 
 
@@ -80,9 +108,14 @@ enum class MovieGenreItem(@DrawableRes val icon: Int, @StringRes val nameRes: In
  * The initialization parameter for the [MovieDetailsViewModel.onInit] method.
  */
 data class MovieDetailsParam(val movieId: Double,
-                             val movieTitle: String) {
+                             val movieTitle: String,
+                             val movieImageUrl: String) {
     companion object {
-        fun fromArguments(arguments: Bundle?) = MovieDetailsParam(movieId(arguments).toDouble(), movieTitle(arguments))
+        fun fromArguments(arguments: Bundle?) = MovieDetailsParam(
+                movieId(arguments).toDouble(),
+                movieTitle(arguments),
+                movieImageUrl(arguments)
+        )
     }
 }
 
