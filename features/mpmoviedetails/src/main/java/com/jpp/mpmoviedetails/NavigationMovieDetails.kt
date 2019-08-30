@@ -12,16 +12,14 @@ object NavigationMovieDetails {
     /**
      * Create the navigation arguments needed to navigate to the movie details.
      */
-    fun navArgs(movieId: String, movieImageUrl: String, movieTitle: String, transitionName: String) = Bundle()
+    fun navArgs(movieId: String, movieImageUrl: String, movieTitle: String) = Bundle()
             .apply {
                 putString("movieId", movieId)
                 putString("movieImageUrl", movieImageUrl)
                 putString("movieTitle", movieTitle)
-                putString("transitionName", transitionName)
             }
 
     fun movieId(args: Bundle?) = args.getStringOrFail("movieId")
     fun movieImageUrl(args: Bundle?) = args.getStringOrFail("movieImageUrl")
     fun movieTitle(args: Bundle?) = args.getStringOrFail("movieTitle")
-    fun transition(args: Bundle?) = args.getStringOrFail("transitionName")
 }

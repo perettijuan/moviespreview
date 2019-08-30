@@ -20,10 +20,9 @@ import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.Destination.MPSearch
-import com.jpp.mpdesign.ext.findViewInPositionWithId
+import com.jpp.mpsearch.SearchFragment.SearchItemAdapter
 import com.jpp.mpsearch.databinding.ListItemSearchBinding
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.list_item_search.view.*
 import kotlinx.android.synthetic.main.search_fragment.*
 import javax.inject.Inject
 
@@ -108,17 +107,19 @@ class SearchFragment : Fragment() {
 
     private fun reactToNavEvent(navEvent: SearchNavigationEvent) {
         when (navEvent) {
-            is SearchNavigationEvent.GoToMovieDetails -> {
-                val view = searchResultRv.findViewInPositionWithId(navEvent.positionInList, R.id.searchItemIv)
-                withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(navEvent.movieId, navEvent.movieImageUrl, navEvent.movieTitle, view) }
-            }
+            is SearchNavigationEvent.GoToMovieDetails -> withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(navEvent.movieId, navEvent.movieImageUrl, navEvent.movieTitle) }
             is SearchNavigationEvent.GoToPerson -> withNavigationViewModel(viewModelFactory) { navigateToPersonDetails(navEvent.personId, navEvent.personImageUrl, navEvent.personName) }
         }
     }
 
     private fun withViewModel(action: SearchViewModel.() -> Unit) = withViewModel<SearchViewModel>(viewModelFactory) { action() }
-    private fun withRecyclerViewAdapter(action: SearchItemAdapter.() -> Unit) { (searchResultRv.adapter as SearchItemAdapter).action() }
-    private fun withSearchView(action: SearchView.() -> Unit) { findSearchView(requireActivity().window.decorView as ViewGroup).action() }
+    private fun withRecyclerViewAdapter(action: SearchItemAdapter.() -> Unit) {
+        (searchResultRv.adapter as SearchItemAdapter).action()
+    }
+
+    private fun withSearchView(action: SearchView.() -> Unit) {
+        findSearchView(requireActivity().window.decorView as ViewGroup).action()
+    }
 
     private fun setUpSearchView() {
         /*
@@ -218,10 +219,7 @@ class SearchFragment : Fragment() {
                     viewState = searchItem
                     executePendingBindings()
                 }
-                with(itemView) {
-                    searchItemIv.transitionName = "MovieImageAt$adapterPosition"
-                    setOnClickListener { selectionListener(searchItem, adapterPosition) }
-                }
+                itemView.setOnClickListener { selectionListener(searchItem, adapterPosition) }
             }
         }
 

@@ -197,12 +197,14 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         when (destination) {
             is MPAccount -> interModuleNavigationTo(R.id.user_account_nav)
             is MPMovieDetails -> {
-                withNavController {
-                    navigate(R.id.movie_details_nav,
-                            NavigationMovieDetails.navArgs(destination.movieId, destination.movieImageUrl, destination.movieTitle, destination.transitionView.transitionName),
-                            FragmentNavigatorExtras(destination.transitionView to destination.transitionView.transitionName)
-                    )
-                }
+                navigateToModuleWithExtras(
+                        R.id.movie_details_nav,
+                        NavigationMovieDetails.navArgs(
+                                destination.movieId,
+                                destination.movieImageUrl,
+                                destination.movieTitle
+                        )
+                )
             }
             is MPPerson -> {
                 navigateToModuleWithExtras(
@@ -210,7 +212,8 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                         NavigationPerson.navArgs(
                                 destination.personId,
                                 destination.personImageUrl,
-                                destination.personName)
+                                destination.personName
+                        )
                 )
             }
             is MPCredits -> {

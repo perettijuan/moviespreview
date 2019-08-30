@@ -20,10 +20,8 @@ import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.databinding.ListItemMovieBinding
 import com.jpp.mp.screens.main.movies.MovieListFragment.MoviesAdapter
-import com.jpp.mpdesign.ext.findViewInPositionWithId
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movie_list.*
-import kotlinx.android.synthetic.main.list_item_movie.view.*
 import javax.inject.Inject
 
 /**
@@ -96,10 +94,7 @@ abstract class MovieListFragment : Fragment() {
             })
 
             navEvents.observe(viewLifecycleOwner, Observer { event ->
-                with(event) {
-                    val view = movieList.findViewInPositionWithId(positionInList, R.id.movieItemImage)
-                    withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(movieId, movieImageUrl, movieTitle, view) }
-                }
+                with(event) { withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(movieId, movieImageUrl, movieTitle) } }
             })
 
             initViewModel(
@@ -147,10 +142,7 @@ abstract class MovieListFragment : Fragment() {
                     viewState = movieList
                     executePendingBindings()
                 }
-                with(itemView) {
-                    movieItemImage.transitionName = "MovieImageAt$adapterPosition"
-                    setOnClickListener { movieSelectionListener(movieList, adapterPosition) }
-                }
+                itemView.setOnClickListener { movieSelectionListener(movieList, adapterPosition) }
             }
         }
     }
