@@ -29,9 +29,19 @@ import javax.inject.Inject
 
 /**
  * Fragment used to show the details of a particular movie selected by the user.
- * This Fragment in particular uses two ViewModels:
- *   - [MovieDetailsViewModel] to fetch the details of the movie.
- *   - [MovieDetailsActionViewModel] to allow the user to add to favorites, add to watchlist and/or rate the movie.
+ *
+ * VIEW RENDERING:
+ * This Fragment render two different view states in the same hierarchy:
+ *   1 - Movie Details View State ([MovieDetailViewState]): this view state its referred to the content
+ *       of the movie details (image, title and details of the content). It is rendered using Data Binding
+ *       based on the states posted by [MovieDetailsViewModel]. This might be considered as the static
+ *       portion of the view.
+ *   2 - The actions view state ([MovieDetailActionViewState]): this view state refers to the state
+ *       of the actions that the user can perform on the particular movie being shown (rate, like, add
+ *       to watchlist). It is based in the view states posted by [MovieDetailsActionViewModel] and it
+ *       doesn't uses DataBinding since it is too complex to render the animations state in a static
+ *       manner.
+ *
  */
 class MovieDetailsFragment : Fragment() {
 
