@@ -1,45 +1,128 @@
 package com.jpp.mpmoviedetails
 
 import android.os.Bundle
+import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieId
+import com.jpp.mpmoviedetails.NavigationMovieDetails.movieImageUrl
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieTitle
 
 /*
  * This file contains the definitions for the entire model used in the movie detail feature.
  */
 
+/***************************************************************************************************
+ ****************************** MOVIE DETAILS MODEL ************************************************
+ ***************************************************************************************************/
+
 /**
  * Represents the view states that the movie detail view can assume.
  */
-sealed class MovieDetailViewState {
-    /*
-     * Shows the not connected to network state
-     */
-    object ShowNotConnected : MovieDetailViewState()
+data class MovieDetailViewState(
+        val loadingVisibility: Int = View.INVISIBLE,
+        val movieImageUrl: String = "emptyUrl",
+        val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
+        val contentViewState: MovieDetailContentViewState = MovieDetailContentViewState()) {
 
-    /*
-     * Shows the generic error screen.
-     */
-    object ShowError : MovieDetailViewState()
-
-    /*
-     * Shows when the VM indicates that a work is in progress.
-     */
-    data class ShowLoading(val title: String) : MovieDetailViewState()
-
-    /*
-     * Shows the data of the movie detail.
-     */
-    data class ShowDetail(val title: String,
-                          val overview: String,
-                          val releaseDate: String,
-                          val voteCount: String,
-                          val voteAverage: String,
-                          val popularity: String,
-                          val genres: List<MovieGenreItem>) : MovieDetailViewState()
+    companion object {
+        fun showLoading(movieImageUrl: String) = MovieDetailViewState(loadingVisibility = View.VISIBLE, movieImageUrl = movieImageUrl)
+        fun showUnknownError(errorHandler: () -> Unit) = MovieDetailViewState(errorViewState = ErrorViewState.asUnknownError(errorHandler))
+        fun showNoConnectivityError(errorHandler: () -> Unit) = MovieDetailViewState(errorViewState = ErrorViewState.asConnectivity(errorHandler))
+        fun showDetails(movieImageUrl: String,
+                        overview: String,
+                        genres: List<MovieGenreItem>,
+                        popularity: String,
+                        voteCount: String,
+                        releaseDate: String) = MovieDetailViewState(movieImageUrl = movieImageUrl, contentViewState = MovieDetailContentViewState.buildVisible(overview, genres, popularity, voteCount, releaseDate))
+    }
 }
+
+
+/**
+ * Represents the view state of the details content.
+ */
+data class MovieDetailContentViewState(
+        val visibility: Int = View.INVISIBLE,
+        @StringRes val overviewTitle: Int = R.string.overview_title,
+        val overview: String = "",
+        @StringRes val genresTitle: Int = R.string.genres_title,
+        val genres: List<MovieGenreItem> = emptyList(),
+        @StringRes val popularityTitle: Int = R.string.popularity_title,
+        val popularity: String = "",
+        @StringRes val voteCountTitle: Int = R.string.vote_count_title,
+        val voteCount: String = "",
+        @StringRes val releaseDateTitle: Int = R.string.release_date_title,
+        val releaseDate: String = "",
+        @StringRes val creditsTitle: Int = R.string.movie_credits_title
+) {
+    companion object {
+        fun buildVisible(overview: String,
+                         genres: List<MovieGenreItem>,
+                         popularity: String,
+                         voteCount: String,
+                         releaseDate: String) = MovieDetailContentViewState(
+                visibility = View.VISIBLE,
+                overview = overview,
+                genres = genres,
+                popularity = popularity,
+                voteCount = voteCount,
+                releaseDate = releaseDate
+        )
+    }
+}
+
+
+/**
+ * Event triggered when the user attempts to go to the credits section.
+ */
+data class NavigateToCreditsEvent(val movieId: Double, val movieTitle: String)
+
+/**
+ * Represents an item in the list of genres that a movie can belong to.
+ */
+enum class MovieGenreItem(@DrawableRes val icon: Int, @StringRes val nameRes: Int) {
+    Action(R.drawable.ic_action, R.string.action_genre),
+    Adventure(R.drawable.ic_adventure, R.string.adventure_genre),
+    Animation(R.drawable.ic_animation, R.string.animation_genre),
+    Comedy(R.drawable.ic_comedy, R.string.comedy_genre),
+    Crime(R.drawable.ic_crime, R.string.crime_genre),
+    Documentary(R.drawable.ic_documentary, R.string.documentary_genre),
+    Drama(R.drawable.ic_drama, R.string.drama_genre),
+    Family(R.drawable.ic_family, R.string.familiy_genre),
+    Fantasy(R.drawable.ic_fantasy, R.string.fantasy_genre),
+    History(R.drawable.ic_history, R.string.history_genre),
+    Horror(R.drawable.ic_horror, R.string.horror_genre),
+    Music(R.drawable.ic_music, R.string.music_genre),
+    Mystery(R.drawable.ic_mystery, R.string.mystery_genre),
+    SciFi(R.drawable.ic_science_ficcion, R.string.sci_fi_genre),
+    TvMovie(R.drawable.ic_tv_movie, R.string.tv_movie_genre),
+    Thriller(R.drawable.ic_thriller, R.string.thriller_genre),
+    War(R.drawable.ic_war, R.string.war_genre),
+    Western(R.drawable.ic_western, R.string.western_genre),
+    Generic(R.drawable.ic_generic, R.string.generic_genre)
+}
+
+/**
+ * The initialization parameter for the [MovieDetailsViewModel.onInit] method.
+ */
+data class MovieDetailsParam(val movieId: Double,
+                             val movieTitle: String,
+                             val movieImageUrl: String) {
+    companion object {
+        fun fromArguments(arguments: Bundle?) = MovieDetailsParam(
+                movieId(arguments).toDouble(),
+                movieTitle(arguments),
+                movieImageUrl(arguments)
+        )
+    }
+}
+
+/***************************************************************************************************
+ ****************************** MOVIE ACTIONS MODEL ************************************************
+ ***************************************************************************************************/
+
 
 /**
  * Represents the view state that the action item in the movie detail can assume.
@@ -90,44 +173,4 @@ sealed class ActionButtonState {
     object ShowAsFilled : ActionButtonState()
     object ShowAsEmpty : ActionButtonState()
     object ShowAsLoading : ActionButtonState()
-}
-
-/**
- * Event triggered when the user attempts to go to the credits section.
- */
-data class NavigateToCreditsEvent(val movieId: Double, val movieTitle: String)
-
-/**
- * All the supported genres.
- */
-sealed class MovieGenreItem(@DrawableRes val icon: Int, @StringRes val name: Int) {
-    object Action : MovieGenreItem(R.drawable.ic_action, R.string.action_genre)
-    object Adventure : MovieGenreItem(R.drawable.ic_adventure, R.string.adventure_genre)
-    object Animation : MovieGenreItem(R.drawable.ic_animation, R.string.animation_genre)
-    object Comedy : MovieGenreItem(R.drawable.ic_comedy, R.string.comedy_genre)
-    object Crime : MovieGenreItem(R.drawable.ic_crime, R.string.crime_genre)
-    object Documentary : MovieGenreItem(R.drawable.ic_documentary, R.string.documentary_genre)
-    object Drama : MovieGenreItem(R.drawable.ic_drama, R.string.drama_genre)
-    object Family : MovieGenreItem(R.drawable.ic_family, R.string.familiy_genre)
-    object Fantasy : MovieGenreItem(R.drawable.ic_fantasy, R.string.fantasy_genre)
-    object History : MovieGenreItem(R.drawable.ic_history, R.string.history_genre)
-    object Horror : MovieGenreItem(R.drawable.ic_horror, R.string.horror_genre)
-    object Music : MovieGenreItem(R.drawable.ic_music, R.string.music_genre)
-    object Mystery : MovieGenreItem(R.drawable.ic_mystery, R.string.mystery_genre)
-    object SciFi : MovieGenreItem(R.drawable.ic_science_ficcion, R.string.sci_fi_genre)
-    object TvMovie : MovieGenreItem(R.drawable.ic_tv_movie, R.string.tv_movie_genre)
-    object Thriller : MovieGenreItem(R.drawable.ic_thriller, R.string.thriller_genre)
-    object War : MovieGenreItem(R.drawable.ic_war, R.string.war_genre)
-    object Western : MovieGenreItem(R.drawable.ic_western, R.string.western_genre)
-    object Generic : MovieGenreItem(R.drawable.ic_generic, R.string.generic_genre)
-}
-
-/**
- * The initialization parameter for the [MovieDetailsViewModel.onInit] method.
- */
-data class MovieDetailsParam(val movieId: Double,
-                             val movieTitle: String) {
-    companion object {
-        fun fromArguments(arguments: Bundle?) = MovieDetailsParam(movieId(arguments).toDouble(), movieTitle(arguments))
-    }
 }

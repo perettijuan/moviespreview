@@ -23,10 +23,7 @@ import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToMovieDet
 import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToUserAccount
 import com.jpp.mpaccount.databinding.FragmentUserMovieListBinding
 import com.jpp.mpaccount.databinding.ListItemUserMovieBinding
-import com.jpp.mpdesign.ext.findViewInPositionWithId
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_user_movie_list.*
-import kotlinx.android.synthetic.main.list_item_user_movie.view.*
 import javax.inject.Inject
 
 /**
@@ -109,10 +106,7 @@ class UserMovieListFragment : Fragment() {
     private fun reactToNavEvent(navEvent: UserMovieListNavigationEvent) {
         when (navEvent) {
             is GoToUserAccount -> withNavigationViewModel(viewModelFactory) { toPrevious() }
-            is GoToMovieDetails -> {
-                val view = userMoviesList.findViewInPositionWithId(navEvent.positionInList, R.id.listItemUserMovieMainImage)
-                withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(navEvent.movieId, navEvent.movieImageUrl, navEvent.movieTitle, view) }
-            }
+            is GoToMovieDetails -> withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(navEvent.movieId, navEvent.movieImageUrl, navEvent.movieTitle) }
         }
     }
 
@@ -142,10 +136,7 @@ class UserMovieListFragment : Fragment() {
                     viewState = item
                     executePendingBindings()
                 }
-                with(itemView) {
-                    listItemUserMovieMainImage.transitionName = "MovieImageAt$adapterPosition"
-                    setOnClickListener { itemSelectionListener(item, adapterPosition) }
-                }
+                itemView.setOnClickListener { itemSelectionListener(item, adapterPosition) }
             }
         }
     }

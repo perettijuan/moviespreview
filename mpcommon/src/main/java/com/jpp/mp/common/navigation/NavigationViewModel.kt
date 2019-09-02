@@ -1,6 +1,5 @@
 package com.jpp.mp.common.navigation
 
-import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -33,8 +32,8 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
         _navEvents.value = of(Destination.MPAccount)
     }
 
-    fun navigateToMovieDetails(movieId: String, movieImageUrl: String, movieTitle: String, transitionView: View) {
-        _navEvents.value = of(Destination.MPMovieDetails(movieId, movieImageUrl, movieTitle, transitionView))
+    fun navigateToMovieDetails(movieId: String, movieImageUrl: String, movieTitle: String) {
+        _navEvents.value = of(Destination.MPMovieDetails(movieId, movieImageUrl, movieTitle))
     }
 
     fun navigateToMovieCredits(movieId: Double, movieTitle: String) {

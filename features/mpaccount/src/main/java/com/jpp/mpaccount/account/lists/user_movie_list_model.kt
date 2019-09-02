@@ -98,10 +98,7 @@ data class UserMovieListParam(
                 posterSize: Int,
                 backdropSize: Int
         ): UserMovieListParam {
-            return when (val type = arguments?.get("listType") as UserMovieListType) {
-                null -> throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the content")
-                else -> UserMovieListParam(type, posterSize, backdropSize)
-            }
+            return UserMovieListParam(arguments?.get("listType") as UserMovieListType, posterSize, backdropSize)
         }
     }
 }
