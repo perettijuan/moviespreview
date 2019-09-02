@@ -2,6 +2,7 @@ package com.jpp.mp.screens.main.movies
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,10 +19,9 @@ import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.Destination
+import com.jpp.mp.databinding.FragmentMovieListBinding
 import com.jpp.mp.databinding.ListItemMovieBinding
-import com.jpp.mp.screens.main.movies.MovieListFragment.MoviesAdapter
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_movie_list.*
 import javax.inject.Inject
 
 /**
@@ -42,19 +42,16 @@ import javax.inject.Inject
  * by the framework (The ViewModelProvider plus the Factory) and the decision of using a single
  * VM instead of a VM per Fragment is based only in the simplification over the complication that
  * could represent having a hierarchy of VM to provide the functionality to this view.
- *
- * Another important aspect of this Fragment is that it doesn't uses Data Binding to render the view
- * state ([MoviesAdapter] on the other hand is using DB). This is because there is an issue with the
- * approach taken in which the state of the views is not updated immediately when the VM performs an
- * action. I honestly didn't have the time to verify if this is an issue in my approach or there's a
- * deeper reason for it. But I think that the approach taken in this Fragment is pretty similar to
- * using DB, since the ViewState rendering code is entirely declarative and it has no imperative code.
- * Take a look to [onActivityCreated] to have a clear understanding.
  */
 abstract class MovieListFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private lateinit var viewBinding: FragmentMovieListBinding
+
+    // used to restore the position of the RecyclerView on view re-creation
+    private var rvState: Parcelable? = null
 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
@@ -62,12 +59,13 @@ abstract class MovieListFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_movie_list, container, false)
+        viewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie_list, container, false)
+        return viewBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        movieList.apply {
+        withRecyclerView {
             layoutManager = LinearLayoutManager(context)
             adapter = MoviesAdapter { item, position -> withViewModel { onMovieSelected(item, position) } }
         }
@@ -75,16 +73,17 @@ abstract class MovieListFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        rvState = savedInstanceState?.getParcelable(MOVIES_RV_STATE_KEY) ?: rvState
+
         withViewModel {
             viewStates.observe(viewLifecycleOwner, Observer { viewState ->
-                movieListErrorView.visibility = viewState.errorViewState.visibility
-                movieListErrorView.asConnectivity(viewState.errorViewState.isConnectivity)
-                movieListErrorView.onRetry(viewState.errorViewState.errorHandler)
+                viewBinding.viewState = viewState
 
-                moviesLoadingView.visibility = viewState.loadingVisibility
-
-                movieList.visibility = viewState.contentViewState.visibility
-                withRecyclerViewAdapter { submitList(viewState.contentViewState.movieList) }
+                withRecyclerView {
+                    (adapter as MoviesAdapter).submitList(viewState.contentViewState.movieList)
+                    layoutManager?.onRestoreInstanceState(rvState)
+                }
             })
 
             screenTitle.observe(viewLifecycleOwner, Observer { sectionTitle ->
@@ -104,11 +103,19 @@ abstract class MovieListFragment : Fragment() {
         }
     }
 
+    override fun onPause() {
+        withRecyclerView { rvState = layoutManager?.onSaveInstanceState() }
+        super.onPause()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        withRecyclerView { outState.putParcelable(MOVIES_RV_STATE_KEY, layoutManager?.onSaveInstanceState()) }
+        super.onSaveInstanceState(outState)
+    }
+
     abstract fun initViewModel(posterSize: Int, backdropSize: Int, vm: MovieListViewModel)
     private fun withViewModel(action: MovieListViewModel.() -> Unit) = withViewModel<MovieListViewModel>(viewModelFactory) { action() }
-    private fun withRecyclerViewAdapter(action: MoviesAdapter.() -> Unit) {
-        (movieList.adapter as MoviesAdapter).action()
-    }
+    private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.movieList)?.let(action)
 
     /**
      * Internal [PagedListAdapter] to render the list of movies. The fact that this class is a
@@ -157,5 +164,9 @@ abstract class MovieListFragment : Fragment() {
         override fun areContentsTheSame(oldItem: MovieListItem, newItem: MovieListItem): Boolean {
             return oldItem.title == newItem.title
         }
+    }
+
+    private companion object {
+        const val MOVIES_RV_STATE_KEY = "moviesRvStateKey"
     }
 }

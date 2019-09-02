@@ -38,7 +38,6 @@
             android:id="@+id/creditsRv"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layoutAnimation="@anim/list_fall_down"
             android:visibility="@{viewState.creditsViewState.visibility}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
