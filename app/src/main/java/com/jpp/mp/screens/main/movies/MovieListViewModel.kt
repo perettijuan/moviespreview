@@ -2,7 +2,6 @@ package com.jpp.mp.screens.main.movies
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
@@ -43,9 +42,6 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _viewStates = MediatorLiveData<MovieListViewState>()
     val viewStates: LiveData<MovieListViewState> get() = _viewStates
 
-    private val _screenTitle = MutableLiveData<MovieListSectionTitle>()
-    val screenTitle: LiveData<MovieListSectionTitle> get() = _screenTitle
-
     private val _navEvents = SingleLiveEvent<NavigateToDetailsEvent>()
     val navEvents: LiveData<NavigateToDetailsEvent> get() = _navEvents
 
@@ -65,8 +61,8 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     init {
         _viewStates.addSource(movieListInteractor.events) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewStates.value = MovieListViewState.showNoConnectivityError(retry)
-                is UnknownError -> _viewStates.value = MovieListViewState.showUnknownError(retry)
+                is NotConnectedToNetwork -> _viewStates.value = MovieListViewState.showNoConnectivityError(currentParam.titleRes, retry)
+                is UnknownError -> _viewStates.value = MovieListViewState.showUnknownError(currentParam.titleRes, retry)
                 is UserChangedLanguage -> refreshData()
             }
         }
@@ -79,16 +75,6 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * on it.
      */
     fun onInit(param: MovieListParam) {
-        /*
-         * Even though the movies list data is being stored in the local database,
-         * i'm forced to do this because the loading spinner is shown for a brief
-         * period of time when fetching that from the local DB.
-         * Maybe it has to do with the paging library? Not sure.
-         */
-        if (::currentParam.isInitialized && param == currentParam) {
-            return
-        }
-
         currentParam = param
         postLoadingAndInitializePagedList(
                 currentParam.posterSize,
@@ -117,17 +103,10 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * of [MovieListItem] that will be rendered by the view layer.
      */
     private fun postLoadingAndInitializePagedList(posterSize: Int, backdropSize: Int, section: MovieSection) {
-        _screenTitle.value = when (section) {
-            MovieSection.Playing -> MovieListSectionTitle.PLAYING
-            MovieSection.Popular -> MovieListSectionTitle.POPULAR
-            MovieSection.TopRated -> MovieListSectionTitle.TOP_RATED
-            MovieSection.Upcoming -> MovieListSectionTitle.UPCOMING
-        }
-
-        _viewStates.value = MovieListViewState.showLoading()
+        _viewStates.value = MovieListViewState.showLoading(currentParam.titleRes)
         _viewStates.addSource(createPagedList(posterSize, backdropSize, section)) { pagedList ->
             if (pagedList.isNotEmpty()) {
-                _viewStates.value = MovieListViewState.showMovieList(pagedList)
+                _viewStates.value = MovieListViewState.showMovieList(currentParam.titleRes, pagedList)
             }
         }
     }

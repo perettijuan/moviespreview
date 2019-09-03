@@ -80,17 +80,16 @@ abstract class MovieListFragment : Fragment() {
             viewStates.observe(viewLifecycleOwner, Observer { viewState ->
                 viewBinding.viewState = viewState
 
+                withNavigationViewModel(viewModelFactory) {
+                    destinationReached(Destination.MovieListReached(getString(viewState.screenTitle)))
+                }
+
                 withRecyclerView {
                     (adapter as MoviesAdapter).submitList(viewState.contentViewState.movieList)
                     layoutManager?.onRestoreInstanceState(rvState)
                 }
             })
 
-            screenTitle.observe(viewLifecycleOwner, Observer { sectionTitle ->
-                withNavigationViewModel(viewModelFactory) {
-                    destinationReached(Destination.MovieListReached(getString(sectionTitle.titleRes)))
-                }
-            })
 
             navEvents.observe(viewLifecycleOwner, Observer { event ->
                 with(event) { withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(movieId, movieImageUrl, movieTitle) } }

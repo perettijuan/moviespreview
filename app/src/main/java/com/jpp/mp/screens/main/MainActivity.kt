@@ -1,7 +1,6 @@
 package com.jpp.mp.screens.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.annotation.IdRes
@@ -15,12 +14,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation.findNavController
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.NavigationUI.*
 import com.jpp.mp.R
-import com.jpp.mp.common.extensions.navigate
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.navigation.Destination.*
 import com.jpp.mp.common.navigation.NavigationViewModel
@@ -166,10 +162,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 appBarConfiguration
         )
 
-        navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            Log.d("JPP LOG", "destination reached => ${destination.id}")
-        }
-
         setupWithNavController(mainNavigationView, navController)
     }
 
@@ -214,7 +206,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     private fun onDestinationReached(reachedDestination: Destination) {
         when (reachedDestination) {
             is ReachedDestination -> withMainViewModel { userNavigatesWithinFeature(reachedDestination.destinationTitle) }
-            is MovieListReached -> withMainViewModel { userNavigatesToMoviesList(reachedDestination.title)  }
+            is MovieListReached -> withMainViewModel { userNavigatesToMoviesList(reachedDestination.title) }
             is MPSearch -> withMainViewModel { userNavigatesToSearch() }
             is MPCredits -> withMainViewModel { userNavigatesWithinFeature(reachedDestination.movieTitle) }
         }
