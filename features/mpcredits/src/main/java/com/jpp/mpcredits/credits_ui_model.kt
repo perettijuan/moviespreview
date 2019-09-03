@@ -8,21 +8,26 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
  * This file contains the definitions for the entire model used in the credits feature.
  */
 
+/**************************************************************************************************
+ *************************************** VIEW STATES **********************************************
+ **************************************************************************************************/
+
 /**
  * Represents the view state of the credits screen.
  */
 data class CreditsViewState(
+        val screenTitle: String,
         val loadingVisibility: Int = View.INVISIBLE,
         val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
         val creditsViewState: CreditsContentViewState = CreditsContentViewState(),
         val noCreditsViewState: NoCreditsAvailableViewState = NoCreditsAvailableViewState()) {
 
     companion object {
-        fun showLoading() = CreditsViewState(loadingVisibility = View.VISIBLE)
-        fun showUnknownError(errorHandler: () -> Unit) = CreditsViewState(errorViewState = ErrorViewState.asUnknownError(errorHandler))
-        fun showNoConnectivityError(errorHandler: () -> Unit) = CreditsViewState(errorViewState = ErrorViewState.asConnectivity(errorHandler))
-        fun showCredits(creditItems: List<CreditPerson>) = CreditsViewState(creditsViewState = CreditsContentViewState.creditList(creditItems))
-        fun showNoCreditsAvailable() = CreditsViewState(noCreditsViewState = NoCreditsAvailableViewState.noDataAvailable())
+        fun showLoading(screenTitle: String) = CreditsViewState(screenTitle = screenTitle, loadingVisibility = View.VISIBLE)
+        fun showUnknownError(screenTitle: String, errorHandler: () -> Unit) = CreditsViewState(screenTitle = screenTitle, errorViewState = ErrorViewState.asUnknownError(errorHandler))
+        fun showNoConnectivityError(screenTitle: String, errorHandler: () -> Unit) = CreditsViewState(screenTitle = screenTitle, errorViewState = ErrorViewState.asConnectivity(errorHandler))
+        fun showCredits(screenTitle: String, creditItems: List<CreditPerson>) = CreditsViewState(screenTitle = screenTitle, creditsViewState = CreditsContentViewState.creditList(creditItems))
+        fun showNoCreditsAvailable(screenTitle: String) = CreditsViewState(screenTitle = screenTitle, noCreditsViewState = NoCreditsAvailableViewState.noDataAvailable())
     }
 
 }
@@ -63,6 +68,11 @@ data class CreditPerson(val id: Double,
                         val title: String,
                         val subTitle: String)
 
+
+/**************************************************************************************************
+ *************************************** NAVIGATION ***********************************************
+ **************************************************************************************************/
+
 /**
  * Represents the event that is triggered when the user selects a credit to see
  * the details of that item.
@@ -73,17 +83,23 @@ data class NavigateToPersonEvent(
         val personName: String
 )
 
+/**************************************************************************************************
+ *************************************** VM PARAMS ************************************************
+ **************************************************************************************************/
+
 /**
  * The initialization parameter used for
  * CreditsViewModel initialization.
  */
 data class CreditsInitParam(
+        val movieTitle: String,
         val movieId: Double,
         val targetImageSize: Int
 ) {
     companion object {
         fun create(fragment: CreditsFragment) =
                 CreditsInitParam(
+                        movieTitle = NavigationCredits.movieTitle(fragment.arguments),
                         movieId = NavigationCredits.movieId(fragment.arguments),
                         targetImageSize = fragment.resources.getDimensionPixelSize(fragment.getResIdFromAttribute(R.attr.mpCreditItemImageSize))
                 )
