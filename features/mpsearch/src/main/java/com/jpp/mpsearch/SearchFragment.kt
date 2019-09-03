@@ -20,10 +20,9 @@ import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.Destination.MPSearch
-import com.jpp.mpsearch.SearchFragment.SearchItemAdapter
 import com.jpp.mpsearch.databinding.ListItemSearchBinding
+import com.jpp.mpsearch.databinding.SearchFragmentBinding
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.search_fragment.*
 import javax.inject.Inject
 
 /**
@@ -33,19 +32,13 @@ import javax.inject.Inject
  * This Fragment interacts with [SearchViewModel] in order to retrieve and show the results of a
  * search performed by the user. The ViewModel will perform the search, update the
  * UI states represented by [SearchViewState] and the Fragment will render those state updates.
- *
- * The Fragment doesn't uses Data Binding to render the view
- * state ([SearchItemAdapter] on the other hand is using DB). This is because there is an issue with the
- * approach taken in which the state of the views is not updated immediately when the VM performs an
- * action. I honestly didn't have the time to verify if this is an issue in my approach or there's a
- * deeper reason for it. But I think that the approach taken in this Fragment is pretty similar to
- * using DB, since the ViewState rendering code is entirely declarative and it has no imperative code.
- * Take a look to [onActivityCreated] to have a clear understanding.
  */
 class SearchFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private lateinit var viewBinding: SearchFragmentBinding
 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
@@ -53,12 +46,13 @@ class SearchFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.search_fragment, container, false)
+        viewBinding = DataBindingUtil.inflate(inflater, R.layout.search_fragment, container, false)
+        return viewBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        searchResultRv.apply {
+        withRecyclerView {
             layoutManager = LinearLayoutManager(activity)
             adapter = SearchItemAdapter { item, position ->
                 withViewModel { onItemSelected(item, position) }
@@ -69,27 +63,14 @@ class SearchFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        /*
-         * Init with full screen width in order to provide proper
-         * shared transitions.
-         */
+
         withViewModel {
             viewStates.observe(this@SearchFragment.viewLifecycleOwner, Observer {
                 it.actionIfNotHandled { viewState ->
-                    searchPlaceHolderIv.visibility = viewState.placeHolderViewState.visibility
-                    searchPlaceHolderIv.setImageResource(viewState.placeHolderViewState.icon)
+                    viewBinding.viewState = viewState
 
-                    emptySearch.visibility = viewState.contentViewState.emptySearchResultsVisibility
-                    emptySearch.setText(viewState.contentViewState.emptySearchTextRes)
+                    withRecyclerView { (adapter as SearchItemAdapter).submitList(viewState.contentViewState.searchResultList) }
 
-                    searchErrorView.visibility = viewState.errorViewState.visibility
-                    searchErrorView.asConnectivity(viewState.errorViewState.isConnectivity)
-                    searchErrorView.onRetry(viewState.errorViewState.errorHandler)
-
-                    searchLoadingView.visibility = viewState.loadingVisibility
-
-                    searchResultRv.visibility = viewState.contentViewState.searchResultsVisibility
-                    withRecyclerViewAdapter { submitList(viewState.contentViewState.searchResultList) }
                     withSearchView {
                         setQuery(viewState.searchQuery, false)
                         clearFocus() // hide keyboard
@@ -113,9 +94,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun withViewModel(action: SearchViewModel.() -> Unit) = withViewModel<SearchViewModel>(viewModelFactory) { action() }
-    private fun withRecyclerViewAdapter(action: SearchItemAdapter.() -> Unit) {
-        (searchResultRv.adapter as SearchItemAdapter).action()
-    }
+    private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.searchResultRv)?.let(action)
 
     private fun withSearchView(action: SearchView.() -> Unit) {
         findSearchView(requireActivity().window.decorView as ViewGroup).action()
