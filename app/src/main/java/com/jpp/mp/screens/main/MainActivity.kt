@@ -1,6 +1,7 @@
 package com.jpp.mp.screens.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.annotation.IdRes
@@ -16,6 +17,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.NavigationUI.*
 import com.jpp.mp.R
 import com.jpp.mp.common.extensions.navigate
@@ -67,12 +69,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     private lateinit var mpToolbarManager: MPToolbarManager
 
-    private val topLevelDestinations = listOf(
-            R.id.playingMoviesFragment,
-            R.id.popularMoviesFragment,
-            R.id.upcomingMoviesFragment,
-            R.id.topRatedMoviesFragment
-    )
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -95,35 +92,19 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             reachedDestinations.observe(this@MainActivity, Observer { onDestinationReached(it) })
         }
 
+        appBarConfiguration = AppBarConfiguration(setOf(
+                R.id.playingMoviesFragment,
+                R.id.popularMoviesFragment,
+                R.id.upcomingMoviesFragment,
+                R.id.topRatedMoviesFragment),
+                mainDrawerLayout)
+
         setSupportActionBar(mainToolbar)
         setupNavigation()
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        /*
-         * 12/26/2018 - Navigation Library 1.0.0-alpha07
-         * 01/18/2019 - Navigation Library 1.0.0-alpha09
-         *
-         * Manage inner navigation: since we have multiple home destinations (all the fragments that
-         * are sub-classes of MoviesFragment) we need to manage the ActionBar button click for some cases (the
-         * burger or the arrow). If we fail to do so, the navigation library is assuming we're trying to
-         * expanded the navigate drawer from the current destination.
-         * The logic here determinate if the current destination is one of the non-home destination fragments
-         * (the ones that are deeper in the navigation structure) and if it is the case asks the navigate controller
-         * to navigate one step up.
-         * If it is a home destination, it opens the drawer and asks the navigate controller to manage the navigation
-         * as usual.
-         */
-        if (topLevelDestinations.contains(findNavController(this, R.id.mainNavHostFragment).currentDestination?.id)) {
-            if (!mainDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                // this ensures that we support multiple top level fragments
-                mainDrawerLayout.openDrawer(GravityCompat.START)
-                return true
-            }
-        }
-
-        // this ensures that the menu items in the Nav Drawer stay in sync with the navigation graph
-        return navigateUp(findNavController(this, R.id.mainNavHostFragment), mainDrawerLayout)
+        return navigateUp(findNavController(this, R.id.mainNavHostFragment), appBarConfiguration)
     }
 
     override fun onBackPressed() {
@@ -182,13 +163,12 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
          */
         setupActionBarWithNavController(this,
                 navController,
-                AppBarConfiguration(setOf(
-                        R.id.playingMoviesFragment,
-                        R.id.popularMoviesFragment,
-                        R.id.upcomingMoviesFragment,
-                        R.id.topRatedMoviesFragment),
-                        mainDrawerLayout)
+                appBarConfiguration
         )
+
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            Log.d("JPP LOG", "destination reached => ${destination.id}")
+        }
 
         setupWithNavController(mainNavigationView, navController)
     }
