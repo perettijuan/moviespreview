@@ -1,23 +1,33 @@
 package com.jpp.mpperson
 
+import android.os.Bundle
 import android.view.View
 import com.jpp.mpperson.PersonErrorViewState.Companion.asConnectivity
 import com.jpp.mpperson.PersonErrorViewState.Companion.asUnknownError
+
+/*
+ * This file contains the definitions for the entire model used in the person details feature.
+ */
+
+/**************************************************************************************************
+ *************************************** VIEW STATES **********************************************
+ **************************************************************************************************/
 
 /**
  * Represents the view state of the profile person screen.
  */
 data class PersonViewState(
+        val screenTitle: String,
         val loadingVisibility: Int = View.INVISIBLE,
         val errorViewState: PersonErrorViewState = PersonErrorViewState(),
         val contentViewState: PersonContentViewState = PersonContentViewState()) {
 
     companion object {
-        fun showLoading() = PersonViewState(loadingVisibility = View.VISIBLE)
-        fun showUnknownError(errorHandler: () -> Unit) = PersonViewState(errorViewState = asUnknownError(errorHandler))
-        fun showNoConnectivityError(errorHandler: () -> Unit) = PersonViewState(errorViewState = asConnectivity(errorHandler))
-        fun showPerson(contentViewStateValue: PersonContentViewState) = PersonViewState(contentViewState = contentViewStateValue)
-        fun showNoDataAvailable() = PersonViewState(contentViewState = PersonContentViewState(dataAvailable = PersonRowViewState.noDataAvailableRow()))
+        fun showLoading(screenTitle: String) = PersonViewState(screenTitle = screenTitle, loadingVisibility = View.VISIBLE)
+        fun showUnknownError(screenTitle: String, errorHandler: () -> Unit) = PersonViewState(screenTitle = screenTitle, errorViewState = asUnknownError(errorHandler))
+        fun showNoConnectivityError(screenTitle: String, errorHandler: () -> Unit) = PersonViewState(screenTitle = screenTitle, errorViewState = asConnectivity(errorHandler))
+        fun showPerson(screenTitle: String, contentViewStateValue: PersonContentViewState) = PersonViewState(screenTitle = screenTitle, contentViewState = contentViewStateValue)
+        fun showNoDataAvailable(screenTitle: String) = PersonViewState(screenTitle = screenTitle, contentViewState = PersonContentViewState(dataAvailable = PersonRowViewState.noDataAvailableRow()))
     }
 }
 
@@ -92,6 +102,23 @@ data class PersonRowViewState(val visibility: Int = View.INVISIBLE,
                 visibility = View.VISIBLE,
                 titleRes = R.string.person_bio_title,
                 value = bioContent
+        )
+    }
+}
+
+/**************************************************************************************************
+ *************************************** VM PARAMS ************************************************
+ **************************************************************************************************/
+
+/**
+ * The initialization parameter for the [PersonViewModel.onInit] method.
+ */
+data class PersonParam(val personId: Double,
+                       val personName: String) {
+    companion object {
+        fun fromArguments(arguments: Bundle?) = PersonParam(
+                NavigationPerson.personId(arguments).toDouble(),
+                NavigationPerson.personName(arguments)
         )
     }
 }

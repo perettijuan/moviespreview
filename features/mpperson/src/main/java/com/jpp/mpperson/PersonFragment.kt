@@ -18,6 +18,17 @@ import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.layout_person_header.*
 import javax.inject.Inject
 
+/**
+ * Fragment used to show details of a particular actor or cast member.
+ *
+ * When instantiated, this fragment invokes the [PersonViewModel] methods in order to retrieve
+ * and show the details of the person. The VM will perform the
+ * fetch and will update the UI states represented by [PersonViewState] and this Fragment will
+ * render those updates.
+ *
+ * Pre-condition: in order to instantiate this Fragment, a person ID must be provided in the arguments
+ * of the Fragment.
+ */
 class PersonFragment : Fragment() {
 
     @Inject
@@ -38,11 +49,18 @@ class PersonFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         withViewModel {
-            viewStates.observe(this@PersonFragment.viewLifecycleOwner, Observer { it.actionIfNotHandled { viewState -> viewBinding.viewState = viewState } })
-            onInit(NavigationPerson.personId(arguments).toDouble())
+            viewStates.observe(this@PersonFragment.viewLifecycleOwner, Observer {
+                it.actionIfNotHandled { viewState ->
+                    viewBinding.viewState = viewState
+                    withNavigationViewModel(viewModelFactory) {
+                        destinationReached(Destination.ReachedDestination(viewState.screenTitle))
+                    }
+                }
+            })
+
+            onInit(PersonParam.fromArguments(arguments))
         }
 
-        withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(NavigationPerson.personName(arguments))) }
         /*
          * To be absolutely pure with the approach of data binding, this
          * should be implemented in a different way.

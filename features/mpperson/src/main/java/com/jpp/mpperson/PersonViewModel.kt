@@ -33,9 +33,9 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<PersonViewState>>() }
     val viewStates: LiveData<HandledViewState<PersonViewState>> get() = _viewStates
 
-    private var currentPersonId: Double = 0.0
+    private lateinit var currentParam: PersonParam
 
-    private val retry: () -> Unit = { fetchPersonData(currentPersonId) }
+    private val retry: () -> Unit = { fetchPersonData(currentParam.personName, currentParam.personId) }
 
     /*
      * Map the business logic coming from the interactor into view layer logic.
@@ -43,10 +43,10 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     init {
         _viewStates.addSource(personInteractor.events) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewStates.value = of(PersonViewState.showNoConnectivityError(retry))
-                is UnknownError -> _viewStates.value = of(PersonViewState.showUnknownError(retry))
-                is Success -> _viewStates.value = of(getViewStateFromPersonData(event.person))
-                is AppLanguageChanged -> refreshPersonData(currentPersonId)
+                is NotConnectedToNetwork -> _viewStates.value = of(PersonViewState.showNoConnectivityError(currentParam.personName, retry))
+                is UnknownError -> _viewStates.value = of(PersonViewState.showUnknownError(currentParam.personName, retry))
+                is Success -> _viewStates.value = of(getViewStateFromPersonData(currentParam.personName, event.person))
+                is AppLanguageChanged -> refreshPersonData(currentParam.personName, currentParam.personId)
             }
         }
     }
@@ -57,9 +57,9 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit(personId: Double) {
-        currentPersonId = personId
-        fetchPersonData(personId)
+    fun onInit(param: PersonParam) {
+        currentParam = param
+        fetchPersonData(currentParam.personName, currentParam.personId)
     }
 
     /**
@@ -67,9 +67,9 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * of the person identified by [personId]. When the fetching process is done, the view state will be updated
      * based on the result posted by the interactor.
      */
-    private fun fetchPersonData(personId: Double) {
+    private fun fetchPersonData(personName: String, personId: Double) {
         withInteractor { fetchPerson(personId) }
-        _viewStates.value = of(PersonViewState.showLoading())
+        _viewStates.value = of(PersonViewState.showLoading(personName))
     }
 
     /**
@@ -77,12 +77,12 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * to be fetched for the person being shown. This is executed in a background
      * task while the view state is updated with the loading state.
      */
-    private fun refreshPersonData(personId: Double) {
+    private fun refreshPersonData(personName: String, personId: Double) {
         withInteractor {
             flushPersonData()
             fetchPerson(personId)
         }
-        _viewStates.value = of(PersonViewState.showLoading())
+        _viewStates.value = of(PersonViewState.showLoading(personName))
     }
 
     /**
@@ -97,10 +97,10 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Creates a [PersonViewState] that represents the data to show from the provided
      * [person].
      */
-    private fun getViewStateFromPersonData(person: Person): PersonViewState {
+    private fun getViewStateFromPersonData(personName: String, person: Person): PersonViewState {
         return when (person.isEmpty()) {
-            true -> PersonViewState.showNoDataAvailable()
-            else -> PersonViewState.showPerson(mapPersonData(person))
+            true -> PersonViewState.showNoDataAvailable(personName)
+            else -> PersonViewState.showPerson(personName, mapPersonData(person))
         }
     }
 

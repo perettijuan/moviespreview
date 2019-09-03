@@ -39,10 +39,12 @@ class PersonViewModelTest {
         var viewStatePosted: PersonViewState? = null
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.onInit(PersonParam(10.0, "aPerson"))
 
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.NotConnectedToNetwork)
 
         assertNotNull(viewStatePosted)
+        assertEquals("aPerson", viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.birthday?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.placeOfBirth?.visibility)
@@ -60,7 +62,7 @@ class PersonViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
-        subject.onInit(10.0)
+        subject.onInit(PersonParam(10.0, "aPerson"))
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.NotConnectedToNetwork)
 
         viewStatePosted?.let {
@@ -74,10 +76,12 @@ class PersonViewModelTest {
         var viewStatePosted: PersonViewState? = null
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.onInit(PersonParam(10.0, "aPerson"))
 
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.UnknownError)
 
         assertNotNull(viewStatePosted)
+        assertEquals("aPerson", viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.birthday?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.placeOfBirth?.visibility)
@@ -95,7 +99,7 @@ class PersonViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
-        subject.onInit(10.0)
+        subject.onInit(PersonParam(10.0, "aPerson"))
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.UnknownError)
 
         viewStatePosted?.let {
@@ -111,9 +115,10 @@ class PersonViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
-        subject.onInit(10.0)
+        subject.onInit(PersonParam(10.0, "aPerson"))
 
         assertNotNull(viewStatePosted)
+        assertEquals("aPerson", viewStatePosted?.screenTitle)
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
 
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.birthday?.visibility)
@@ -132,10 +137,11 @@ class PersonViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
-        subject.onInit(10.0)
+        subject.onInit(PersonParam(10.0, "aPerson"))
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.AppLanguageChanged)
 
         assertNotNull(viewStatePosted)
+        assertEquals("aPerson", viewStatePosted?.screenTitle)
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
 
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.birthday?.visibility)
@@ -165,10 +171,12 @@ class PersonViewModelTest {
         )
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.onInit(PersonParam(10.0, "aPerson"))
 
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.Success(person))
 
         assertNotNull(viewStatePosted)
+        assertEquals("aPerson", viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.birthday?.visibility)
@@ -193,10 +201,12 @@ class PersonViewModelTest {
         )
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.onInit(PersonParam(10.0, "aPerson"))
 
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.Success(person))
 
         assertNotNull(viewStatePosted)
+        assertEquals("aPerson", viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.dataAvailable?.visibility)
