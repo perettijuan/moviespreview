@@ -42,7 +42,7 @@ class MovieDetailsActionViewModelTest {
     fun `Map interactor events to view state`(expected: MovieDetailActionViewState, pushed: MovieStateEvent) {
         var viewStatePosted: MovieDetailActionViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
 
         lvInteractorEvents.postValue(pushed)
 
@@ -54,7 +54,7 @@ class MovieDetailsActionViewModelTest {
         var viewStatePosted: MovieDetailActionViewState? = null
         val expected = MovieDetailActionViewState.ShowUserNotLogged(false, false)
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
 
         lvInteractorEvents.postValue(MovieStateEvent.UserNotLogged)
 

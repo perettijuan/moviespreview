@@ -5,70 +5,88 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.TransitionInflater
 import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.Destination.ReachedDestination
-import com.jpp.mpdesign.ext.*
-import com.jpp.mpmoviedetails.MovieDetailViewState.*
-import com.jpp.mpmoviedetails.NavigationMovieDetails.movieImageUrl
+import com.jpp.mpdesign.ext.setInvisible
+import com.jpp.mpdesign.ext.setVisible
+import com.jpp.mpdesign.ext.snackBar
+import com.jpp.mpdesign.ext.snackBarNoAction
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieId
-import com.jpp.mpmoviedetails.NavigationMovieDetails.movieTitle
-import com.jpp.mpmoviedetails.NavigationMovieDetails.transition
+import com.jpp.mpmoviedetails.databinding.FragmentMovieDetailsBinding
+import com.jpp.mpmoviedetails.databinding.ListItemMovieDetailGenreBinding
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movie_details.*
 import kotlinx.android.synthetic.main.layout_movie_detail_content.*
-import kotlinx.android.synthetic.main.list_item_movie_detail_genre.view.*
 import javax.inject.Inject
 
 /**
  * Fragment used to show the details of a particular movie selected by the user.
- * This Fragment in particular uses two ViewModels:
- *   - [MovieDetailsViewModel] to fetch the details of the movie.
- *   - [MovieDetailsActionViewModel] to allow the user to add to favorites, add to watchlist and/or rate the movie.
+ *
+ * VIEW RENDERING:
+ * This Fragment render two different view states in the same hierarchy:
+ *   1 - Movie Details View State ([MovieDetailViewState]): this view state its referred to the content
+ *       of the movie details (image, title and details of the content). It is rendered using Data Binding
+ *       based on the states posted by [MovieDetailsViewModel]. This might be considered as the static
+ *       portion of the view.
+ *   2 - The actions view state ([MovieDetailActionViewState]): this view state refers to the state
+ *       of the actions that the user can perform on the particular movie being shown (rate, like, add
+ *       to watchlist). It is based in the view states posted by [MovieDetailsActionViewModel] and it
+ *       doesn't uses DataBinding since it is too complex to render the animations state in a static
+ *       manner.
+ *
  */
 class MovieDetailsFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private lateinit var viewBinding: FragmentMovieDetailsBinding
+
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_movie_details, container, false)
+        viewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie_details, container, false)
+        return viewBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        with(movieDetailImageView) {
-            transitionName = transition(arguments)
-            loadImageUrl(movieImageUrl(arguments))
-        }
-
-        withNavigationViewModel(viewModelFactory) { destinationReached(ReachedDestination(movieTitle(arguments))) }
 
         withViewModel {
-            viewStates.observe(viewLifecycleOwner, Observer { it.actionIfNotHandled { viewState -> renderViewState(viewState) } })
-            navEvents.observe(viewLifecycleOwner, Observer { reactToNavEvent(it) })
-            onInit(movieId(arguments).toDouble(), movieTitle(arguments))
+            viewStates.observe(viewLifecycleOwner, Observer {
+                it.actionIfNotHandled { viewState ->
+                    viewBinding.viewState = viewState
+                    viewBinding.executePendingBindings()
+
+                    detailGenresRv.layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
+                    detailGenresRv.adapter = MovieDetailsGenreAdapter(viewState.contentViewState.genres)
+                }
+            })
+
+            navEvents.observe(viewLifecycleOwner, Observer { navEvent ->
+                withNavigationViewModel(viewModelFactory) { navigateToMovieCredits(navEvent.movieId, navEvent.movieTitle) }
+            })
+
+            screenTitle.observe(viewLifecycleOwner, Observer {
+                withNavigationViewModel(viewModelFactory) { destinationReached(ReachedDestination(it)) }
+            })
+
+            onInit(MovieDetailsParam.fromArguments(arguments))
         }
 
         withActionsViewModel {
-            viewStates.observe(this@MovieDetailsFragment, Observer { it.actionIfNotHandled { viewState -> renderActionViewState(viewState) } })
+            viewStates.observe(viewLifecycleOwner, Observer { viewState -> renderActionViewState(viewState) })
             onInit(movieId(arguments).toDouble())
         }
 
@@ -78,76 +96,9 @@ class MovieDetailsFragment : Fragment() {
         detailCreditsSelectionView.setOnClickListener { withViewModel { onMovieCreditsSelected() } }
     }
 
-    /**
-     * Helper function to execute actions with the [MovieDetailsViewModel].
-     */
+
     private fun withViewModel(action: MovieDetailsViewModel.() -> Unit) = withViewModel<MovieDetailsViewModel>(viewModelFactory) { action() }
-
-    /**
-     * Helper function to execute actions with the [MovieDetailsActionViewModel].
-     */
     private fun withActionsViewModel(action: MovieDetailsActionViewModel.() -> Unit) = withViewModel<MovieDetailsActionViewModel>(viewModelFactory) { action() }
-
-    private fun renderViewState(viewState: MovieDetailViewState) {
-        when (viewState) {
-            is ShowLoading -> renderLoading()
-            is ShowError -> renderUnknownError()
-            is ShowNotConnected -> renderConnectivityError()
-            is ShowDetail -> renderDetail(viewState)
-        }
-    }
-
-    private fun reactToNavEvent(navEvent: MovieDetailsNavigationEvent) {
-        when (navEvent) {
-            is MovieDetailsNavigationEvent.GoToCredits ->
-                withNavigationViewModel(viewModelFactory) { navigateToMovieCredits(navEvent.movieId, navEvent.movieTitle) }
-        }
-    }
-
-    private fun renderDetail(detail: ShowDetail) {
-        with(detail) {
-            detailOverviewContentTxt.text = overview
-            detailPopularityContentTxt.text = popularity
-            detailVoteCountContentTxt.text = voteCount
-            detailReleaseDateContentTxt.text = releaseDate
-
-            val layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
-            detailGenresRv.layoutManager = layoutManager
-            detailGenresRv.adapter = MovieDetailsGenreAdapter(genres)
-        }
-
-        movieDetailErrorView.setInvisible()
-        movieDetailLoadingView.setInvisible()
-        movieDetailContent.setVisible()
-    }
-
-    private fun renderLoading() {
-        movieDetailErrorView.setInvisible()
-        movieDetailContent.setInvisible()
-        movieDetailLoadingView.setVisible()
-    }
-
-    private fun renderUnknownError() {
-        movieDetailContent.setInvisible()
-        movieDetailLoadingView.setInvisible()
-
-        movieDetailErrorView.asUnknownError {
-            withViewModel { onRetry() }
-            withActionsViewModel { onRetry() }
-        }
-        movieDetailErrorView.setVisible()
-    }
-
-    private fun renderConnectivityError() {
-        movieDetailContent.setInvisible()
-        movieDetailLoadingView.setInvisible()
-
-        movieDetailErrorView.asNoConnectivityError {
-            withViewModel { onRetry() }
-            withActionsViewModel { onRetry() }
-        }
-        movieDetailErrorView.setVisible()
-    }
 
 
     private fun renderActionViewState(actionViewState: MovieDetailActionViewState) {
@@ -239,21 +190,27 @@ class MovieDetailsFragment : Fragment() {
 
     class MovieDetailsGenreAdapter(private val genres: List<MovieGenreItem>) : RecyclerView.Adapter<MovieDetailsGenreAdapter.ViewHolder>() {
 
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            return ViewHolder(
+                    DataBindingUtil.inflate(
+                            LayoutInflater.from(parent.context),
+                            R.layout.list_item_movie_detail_genre,
+                            parent,
+                            false
+                    )
+            )
+        }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(genres[position])
 
         override fun getItemCount() = genres.size
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent.inflate(R.layout.list_item_movie_detail_genre))
 
-
-        class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        class ViewHolder(private val itemBinding: ListItemMovieDetailGenreBinding) : RecyclerView.ViewHolder(itemBinding.root) {
 
             fun bind(genre: MovieGenreItem) {
-                with(genre) {
-                    itemView.genreListItemIv.setImageResource(icon)
-                    itemView.genreListItemTxt.text = itemView.getStringFromResources(name)
-                }
+                itemBinding.viewState = genre
+                itemBinding.executePendingBindings()
             }
 
         }

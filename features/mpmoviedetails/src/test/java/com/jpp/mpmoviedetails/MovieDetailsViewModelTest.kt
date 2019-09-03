@@ -1,5 +1,6 @@
 package com.jpp.mpmoviedetails
 
+import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
@@ -10,6 +11,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -41,7 +43,12 @@ class MovieDetailsViewModelTest {
 
         lvInteractorEvents.postValue(MovieDetailsInteractor.MovieDetailEvent.NotConnectedToNetwork)
 
-        assertEquals(MovieDetailViewState.ShowNotConnected, viewStatePosted)
+        assertNotNull(viewStatePosted)
+        assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
+        assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
+
+        assertEquals(View.VISIBLE, viewStatePosted?.errorViewState?.visibility)
+        assertEquals(true, viewStatePosted?.errorViewState?.isConnectivity)
     }
 
     @Test
@@ -52,19 +59,27 @@ class MovieDetailsViewModelTest {
 
         lvInteractorEvents.postValue(MovieDetailsInteractor.MovieDetailEvent.UnknownError)
 
-        assertEquals(MovieDetailViewState.ShowError, viewStatePosted)
+        assertNotNull(viewStatePosted)
+        assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
+        assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
+
+        assertEquals(View.VISIBLE, viewStatePosted?.errorViewState?.visibility)
+        assertEquals(false, viewStatePosted?.errorViewState?.isConnectivity)
     }
 
     @Test
     fun `Should post loading and fetch movie details onInit`() {
         var viewStatePosted: MovieDetailViewState? = null
-        val expected = MovieDetailViewState.ShowLoading("aMovie")
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
-        subject.onInit(10.0, "aMovie")
+        subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
 
+        assertNotNull(viewStatePosted)
+        assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
+
+        assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
+        assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
         verify { interactor.fetchMovieDetail(10.0) }
-        assertEquals(expected, viewStatePosted)
     }
 
     @Test
@@ -87,12 +102,11 @@ class MovieDetailsViewModelTest {
                 )
         )
 
-        val expected = MovieDetailViewState.ShowDetail(
-                title = domainDetail.title,
+        val expected = MovieDetailViewState.showDetails(
+                movieImageUrl = "aUrl",
                 overview = domainDetail.overview,
                 releaseDate = domainDetail.release_date,
                 voteCount = domainDetail.vote_count.toString(),
-                voteAverage = domainDetail.vote_average.toString(),
                 popularity = domainDetail.popularity.toString(),
                 genres = listOf(
                         MovieGenreItem.Action,
@@ -101,6 +115,7 @@ class MovieDetailsViewModelTest {
         )
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
 
         lvInteractorEvents.postValue(MovieDetailsInteractor.MovieDetailEvent.Success(domainDetail))
 

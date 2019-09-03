@@ -2,10 +2,11 @@ package com.jpp.mpaccount.account.lists
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.StringRes
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -20,24 +21,30 @@ import com.jpp.mp.common.navigation.Destination.ReachedDestination
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToMovieDetails
 import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToUserAccount
-import com.jpp.mpaccount.account.lists.UserMovieListViewState.*
-import com.jpp.mpdesign.ext.*
+import com.jpp.mpaccount.databinding.FragmentUserMovieListBinding
+import com.jpp.mpaccount.databinding.ListItemUserMovieBinding
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_user_movie_list.*
-import kotlinx.android.synthetic.main.list_item_user_movie.view.*
 import javax.inject.Inject
 
+/**
+ * Base fragment used to show the list of movies that are related to the user's account.
+ * The application can show movies related to user's account in three categories:
+ * - Favorite
+ * - Rated
+ * - In Watchlist
+ *
+ * This Fragment shows the movies list based on the configuration that is sent as parameter when
+ * created. It can show all three categories, based on such parameters.
+ */
 class UserMovieListFragment : Fragment() {
-
-    enum class UserMovieListType(@StringRes val titleRes: Int) {
-        FAVORITE_LIST(R.string.user_account_favorite_title),
-        RATED_LIST(R.string.user_account_rated_title),
-        WATCH_LIST(R.string.user_account_watchlist_title)
-    }
-
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private lateinit var viewBinding: FragmentUserMovieListBinding
+
+    // used to restore the position of the RecyclerView on view re-creation
+    private var rvState: Parcelable? = null
 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
@@ -45,51 +52,53 @@ class UserMovieListFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_user_movie_list, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        userMoviesList.apply {
-            layoutManager = LinearLayoutManager(requireActivity())
-            adapter = UserMoviesAdapter { item, position ->
-                withViewModel { onMovieSelected(item, position) }
-            }
-        }
+        viewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_user_movie_list, container, false)
+        return viewBinding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        rvState = savedInstanceState?.getParcelable(USER_MOVIES_RV_STATE_KEY) ?: rvState
+
         withViewModel {
-            viewStates.observe(this@UserMovieListFragment.viewLifecycleOwner, Observer { viewState -> viewState.actionIfNotHandled { renderViewState(it) } })
-            navEvents.observe(this@UserMovieListFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
-            withUserMovieListType {
-                when (it) {
-                    UserMovieListType.FAVORITE_LIST -> onInitWithFavorites(getScreenWidthInPixels(), getScreenWidthInPixels())
-                    UserMovieListType.RATED_LIST -> onInitWithRated(getScreenWidthInPixels(), getScreenWidthInPixels())
-                    UserMovieListType.WATCH_LIST -> onInitWithWatchlist(getScreenWidthInPixels(), getScreenWidthInPixels())
+            viewStates.observe(this@UserMovieListFragment.viewLifecycleOwner, Observer { viewState ->
+                viewBinding.viewState = viewState
+                viewBinding.executePendingBindings()
+
+                withRecyclerView {
+                    layoutManager = LinearLayoutManager(requireActivity()).apply { onRestoreInstanceState(rvState) }
+                    adapter = UserMoviesAdapter { item, position ->
+                        withViewModel { onMovieSelected(item, position) }
+                    }.apply { submitList(viewState.contentViewState.movieList) }
                 }
-                // sync app bar title
-                withNavigationViewModel(viewModelFactory) { destinationReached(ReachedDestination(getString(it.titleRes))) }
-            }
+            })
+
+            navEvents.observe(this@UserMovieListFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
+
+            currentSection.observe(viewLifecycleOwner, Observer { currentSection ->
+                withNavigationViewModel(viewModelFactory) {
+                    destinationReached(ReachedDestination(getString(currentSection.titleRes)))
+                }
+            })
+
+            onInit(UserMovieListParam.fromArguments(arguments, getScreenWidthInPixels(), getScreenWidthInPixels()))
         }
     }
 
-    private fun withUserMovieListType(action: (UserMovieListType) -> Unit) {
-        val args = arguments
-                ?: throw IllegalStateException("You need to pass arguments to MovieDetailsFragment in order to show the content")
+    override fun onPause() {
+        withRecyclerView { rvState = layoutManager?.onSaveInstanceState() }
+        super.onPause()
+    }
 
-        action(args.get("listType") as UserMovieListType)
+    override fun onSaveInstanceState(outState: Bundle) {
+        withRecyclerView { outState.putParcelable(USER_MOVIES_RV_STATE_KEY, layoutManager?.onSaveInstanceState()) }
+        super.onSaveInstanceState(outState)
     }
 
 
-    /**
-     * Helper function to execute methods over the [UserMovieListViewModel].
-     */
     private fun withViewModel(action: UserMovieListViewModel.() -> Unit) = getViewModel<UserMovieListViewModel>(viewModelFactory).action()
-
-    private fun withRecyclerViewAdapter(action: UserMoviesAdapter.() -> Unit) = (userMoviesList.adapter as UserMoviesAdapter).action()
+    private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.userMoviesList)?.let(action)
 
     /**
      * Reacts to the navigation event provided.
@@ -97,62 +106,23 @@ class UserMovieListFragment : Fragment() {
     private fun reactToNavEvent(navEvent: UserMovieListNavigationEvent) {
         when (navEvent) {
             is GoToUserAccount -> withNavigationViewModel(viewModelFactory) { toPrevious() }
-            is GoToMovieDetails -> {
-                val view = userMoviesList.findViewInPositionWithId(navEvent.positionInList, R.id.listItemUserMovieMainImage)
-                withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(navEvent.movieId, navEvent.movieImageUrl, navEvent.movieTitle, view) }
-            }
+            is GoToMovieDetails -> withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(navEvent.movieId, navEvent.movieImageUrl, navEvent.movieTitle) }
         }
-    }
-
-    /**
-     * Performs the branching to render the proper views given then [viewState].
-     */
-    private fun renderViewState(viewState: UserMovieListViewState) {
-        when (viewState) {
-            is ShowNotConnected -> renderNotConnectedToNetwork()
-            is ShowLoading -> renderLoading()
-            is ShowError -> renderUnknownError()
-            is ShowMovieList -> {
-                withRecyclerViewAdapter { submitList(viewState.pagedList) }
-                renderContent()
-            }
-        }
-    }
-
-    private fun renderLoading() {
-        userMoviesList.setInvisible()
-        userMoviesErrorView.setInvisible()
-
-        userMoviesLoadingView.setVisible()
-    }
-
-    private fun renderNotConnectedToNetwork() {
-        userMoviesList.setInvisible()
-        userMoviesLoadingView.setInvisible()
-
-        userMoviesErrorView.asNoConnectivityError { withViewModel { onRetry() } }
-        userMoviesErrorView.setVisible()
-    }
-
-    private fun renderUnknownError() {
-        userMoviesList.setInvisible()
-        userMoviesLoadingView.setInvisible()
-
-        userMoviesErrorView.asUnknownError { withViewModel { onRetry() } }
-        userMoviesErrorView.setVisible()
-    }
-
-    private fun renderContent() {
-        userMoviesLoadingView.setInvisible()
-        userMoviesErrorView.setInvisible()
-
-        userMoviesList.setVisible()
     }
 
 
     class UserMoviesAdapter(private val itemSelectionListener: (UserMovieItem, Int) -> Unit) : PagedListAdapter<UserMovieItem, UserMoviesAdapter.ViewHolder>(UserMovieDiffCallback()) {
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent.inflate(R.layout.list_item_user_movie))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            return ViewHolder(
+                    DataBindingUtil.inflate(
+                            LayoutInflater.from(parent.context),
+                            R.layout.list_item_user_movie,
+                            parent,
+                            false
+                    )
+            )
+        }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             getItem(position)?.let {
@@ -160,15 +130,13 @@ class UserMovieListFragment : Fragment() {
             }
         }
 
-        class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
+        class ViewHolder(private val itemBinding: ListItemUserMovieBinding) : RecyclerView.ViewHolder(itemBinding.root) {
             fun bindMovieItem(item: UserMovieItem, itemSelectionListener: (UserMovieItem, Int) -> Unit) {
-                with(itemView) {
-                    listItemUserMovieHeaderImage.loadImageUrlAsCircular(item.headerImageUrl)
-                    listItemUserMovieTitle.text = item.title
-                    listItemUserMovieMainImage.loadImageUrl(item.contentImageUrl)
-                    listItemUserMovieMainImage.transitionName = "MovieImageAt$adapterPosition"
-                    setOnClickListener { itemSelectionListener(item, adapterPosition) }
+                with(itemBinding) {
+                    viewState = item
+                    executePendingBindings()
                 }
+                itemView.setOnClickListener { itemSelectionListener(item, adapterPosition) }
             }
         }
     }
@@ -182,5 +150,9 @@ class UserMovieListFragment : Fragment() {
         override fun areContentsTheSame(oldItem: UserMovieItem, newItem: UserMovieItem): Boolean {
             return oldItem.title == newItem.title
         }
+    }
+
+    private companion object {
+        const val USER_MOVIES_RV_STATE_KEY = "userMoviesRvStateKey"
     }
 }

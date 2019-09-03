@@ -4,7 +4,6 @@ import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mpdomain.Movie
-import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
@@ -18,8 +17,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments.arguments
+import org.junit.jupiter.params.provider.MethodSource
 
 @ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
 class MovieListViewModelTest {
@@ -50,13 +51,14 @@ class MovieListViewModelTest {
         )
     }
 
-    @Test
-    fun `Should post no connectivity error when disconnected`() {
+    @ParameterizedTest
+    @MethodSource("movieListTestParams")
+    fun `Should post no connectivity error when disconnected`(param: MovieListParam) {
         var viewStatePosted: MovieListViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInitWithPlayingSection(10, 10)
+        subject.onInit(param)
 
         lvInteractorEvents.postValue(MovieListInteractor.MovieListEvent.NotConnectedToNetwork)
 
@@ -68,28 +70,30 @@ class MovieListViewModelTest {
         assertEquals(true, viewStatePosted?.errorViewState?.isConnectivity)
     }
 
-    @Test
-    fun `Should retry to fetch data when not connected and retry is executed`() {
+    @ParameterizedTest
+    @MethodSource("movieListTestParams")
+    fun `Should retry to fetch data when not connected and retry is executed`(param: MovieListParam) {
         var viewStatePosted: MovieListViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInitWithPlayingSection(10, 12)
+        subject.onInit(param)
         lvInteractorEvents.postValue(MovieListInteractor.MovieListEvent.NotConnectedToNetwork)
 
         viewStatePosted?.let {
             it.errorViewState.errorHandler?.invoke()
-            verify(exactly = 2) { movieListInteractor.fetchMoviePageForSection(1, MovieSection.Playing, any()) }
+            verify(exactly = 2) { movieListInteractor.fetchMoviePageForSection(1, param.section, any()) }
         } ?: fail()
     }
 
-    @Test
-    fun `Should post error when failing to fetch movies`() {
+    @ParameterizedTest
+    @MethodSource("movieListTestParams")
+    fun `Should post error when failing to fetch movies`(param: MovieListParam) {
         var viewStatePosted: MovieListViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInitWithPlayingSection(10, 10)
+        subject.onInit(param)
 
         lvInteractorEvents.postValue(MovieListInteractor.MovieListEvent.UnknownError)
 
@@ -101,23 +105,25 @@ class MovieListViewModelTest {
         assertEquals(false, viewStatePosted?.errorViewState?.isConnectivity)
     }
 
-    @Test
-    fun `Should retry to fetch data when error unknown and retry is executed`() {
+    @ParameterizedTest
+    @MethodSource("movieListTestParams")
+    fun `Should retry to fetch data when error unknown and retry is executed`(param: MovieListParam) {
         var viewStatePosted: MovieListViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInitWithPlayingSection(10, 12)
+        subject.onInit(param)
         lvInteractorEvents.postValue(MovieListInteractor.MovieListEvent.UnknownError)
 
         viewStatePosted?.let {
             it.errorViewState.errorHandler?.invoke()
-            verify(exactly = 2) { movieListInteractor.fetchMoviePageForSection(1, MovieSection.Playing, any()) }
+            verify(exactly = 2) { movieListInteractor.fetchMoviePageForSection(1, param.section, any()) }
         } ?: fail()
     }
 
-    @Test
-    fun `Should fetch movies, adapt result to UI and post value`() {
+    @ParameterizedTest
+    @MethodSource("movieListTestParams")
+    fun `Should fetch movies, adapt result to UI and post value`(param: MovieListParam) {
         var viewStatePosted: MovieListViewState? = null
         val mockedList = getMockedMovies()
         val slot = slot<(List<Movie>) -> Unit>()
@@ -125,9 +131,9 @@ class MovieListViewModelTest {
         every { imagesPathInteractor.configurePathMovie(any(), any(), any()) } answers { arg(2) }
         every { movieListInteractor.fetchMoviePageForSection(any(), any(), capture(slot)) } answers { slot.captured.invoke(mockedList) }
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInitWithPlayingSection(10, 10)
+        subject.onInit(param)
 
         assertNotNull(viewStatePosted)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
@@ -136,8 +142,25 @@ class MovieListViewModelTest {
         assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.visibility)
         assertEquals(mockedList.size, viewStatePosted?.contentViewState?.movieList?.size)
 
-        verify { movieListInteractor.fetchMoviePageForSection(1, MovieSection.Playing, any()) }
+        verify { movieListInteractor.fetchMoviePageForSection(1, param.section, any()) }
         verify(exactly = mockedList.size) { imagesPathInteractor.configurePathMovie(10, 10, any()) }
+    }
+
+    @ParameterizedTest
+    @MethodSource("movieListTestParams")
+    fun `Should not fetch movies if initialized twice with same parameter`(param: MovieListParam) {
+        val mockedList = getMockedMovies()
+        val slot = slot<(List<Movie>) -> Unit>()
+
+        every { imagesPathInteractor.configurePathMovie(any(), any(), any()) } answers { arg(2) }
+        every { movieListInteractor.fetchMoviePageForSection(any(), any(), capture(slot)) } answers { slot.captured.invoke(mockedList) }
+
+        subject.viewStates.observeForever { }
+
+        subject.onInit(param)
+        subject.onInit(param)
+
+        verify(exactly = 1) { movieListInteractor.fetchMoviePageForSection(1, param.section, any()) }
     }
 
 
@@ -161,6 +184,17 @@ class MovieListViewModelTest {
                 )
             }
         }
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun movieListTestParams() = listOf(
+                arguments(MovieListParam.playing(10, 10)),
+                arguments(MovieListParam.popular(10, 10)),
+                arguments(MovieListParam.upcoming(10, 10)),
+                arguments(MovieListParam.topRated(10, 10))
+        )
     }
 
 }

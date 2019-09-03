@@ -17,60 +17,87 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+/**
+ * [MPScopedViewModel] that supports the credits section. The VM retrieves
+ * the data from the underlying layers using the provided [PersonInteractor] and maps the business
+ * data to UI data, producing a [PersonViewState] that represents the configuration of the view.
+ *
+ * This VM is language aware, meaning that when the user changes the language of the device, the
+ * VM is notified about such event and executes a refresh of both: the data stored by the application
+ * and the view state being shown to the user.
+ */
 class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                           private val personInteractor: PersonInteractor)
     : MPScopedViewModel(dispatchers) {
 
-    private val retry: () -> Unit = { executeFetchPersonStep(personId) }
     private val _viewStates by lazy { MediatorLiveData<HandledViewState<PersonViewState>>() }
-    private var personId: Double = 0.0
+    val viewStates: LiveData<HandledViewState<PersonViewState>> get() = _viewStates
 
+    private var currentPersonId: Double = 0.0
+
+    private val retry: () -> Unit = { fetchPersonData(currentPersonId) }
+
+    /*
+     * Map the business logic coming from the interactor into view layer logic.
+     */
     init {
         _viewStates.addSource(personInteractor.events) { event ->
             when (event) {
-                is NotConnectedToNetwork -> of(PersonViewState.showNoConnectivityError(retry))
-                is UnknownError -> of(PersonViewState.showUnknownError(retry))
-                is Success -> of(getViewStateFromPerson(event.person))
-                is AppLanguageChanged -> of(executeRefreshDataStep(personId))
-            }.let {
-                _viewStates.value = it
+                is NotConnectedToNetwork -> _viewStates.value = of(PersonViewState.showNoConnectivityError(retry))
+                is UnknownError -> _viewStates.value = of(PersonViewState.showUnknownError(retry))
+                is Success -> _viewStates.value = of(getViewStateFromPersonData(event.person))
+                is AppLanguageChanged -> refreshPersonData(currentPersonId)
             }
         }
     }
 
     /**
-     * Called when the view is initialized.
+     * Called on VM initialization. The View (Fragment) should call this method to
+     * indicate that it is ready to start rendering. When the method is called, the VM
+     * internally verifies the state of the application and updates the view state based
+     * on it.
      */
     fun onInit(personId: Double) {
-        this.personId = personId
-        _viewStates.value = of(executeFetchPersonStep(personId))
+        currentPersonId = personId
+        fetchPersonData(personId)
     }
 
     /**
-     * Subscribe to this [LiveData] in order to get notified about the different states that
-     * the view should render.
+     * When called, this method will push the loading view state and will fetch the data
+     * of the person identified by [personId]. When the fetching process is done, the view state will be updated
+     * based on the result posted by the interactor.
      */
-    val viewStates: LiveData<HandledViewState<PersonViewState>> get() = _viewStates
-
-
-    private fun executeFetchPersonStep(personId: Double): PersonViewState {
+    private fun fetchPersonData(personId: Double) {
         withInteractor { fetchPerson(personId) }
-        return PersonViewState.showLoading()
+        _viewStates.value = of(PersonViewState.showLoading())
     }
 
-    private fun executeRefreshDataStep(personId: Double): PersonViewState {
+    /**
+     * Starts a refresh data process by indicating to the interactor that new data needs
+     * to be fetched for the person being shown. This is executed in a background
+     * task while the view state is updated with the loading state.
+     */
+    private fun refreshPersonData(personId: Double) {
         withInteractor {
             flushPersonData()
             fetchPerson(personId)
         }
-        return PersonViewState.showLoading()
+        _viewStates.value = of(PersonViewState.showLoading())
     }
 
+    /**
+     * Helper function to execute an [action] in the [personInteractor] instance
+     * on a background task.
+     */
     private fun withInteractor(action: PersonInteractor.() -> Unit) {
         launch { withContext(dispatchers.default()) { action(personInteractor) } }
     }
 
-    private fun getViewStateFromPerson(person: Person): PersonViewState {
+    /**
+     * Creates a [PersonViewState] that represents the data to show from the provided
+     * [person].
+     */
+    private fun getViewStateFromPersonData(person: Person): PersonViewState {
         return when (person.isEmpty()) {
             true -> PersonViewState.showNoDataAvailable()
             else -> PersonViewState.showPerson(mapPersonData(person))

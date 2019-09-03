@@ -2,6 +2,7 @@ package com.jpp.mpdesign.views
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.jpp.mpdesign.R
 import kotlinx.android.synthetic.main.layout_item_selection.view.*
@@ -26,5 +27,9 @@ class MPSimpleItemSelectionView : ConstraintLayout {
     private fun init(context: Context) {
         inflate(context, R.layout.layout_item_selection, this)
         isClickable = true
+    }
+
+    fun itemText(@StringRes text: Int) {
+        itemSelectionViewTitle.setText(text)
     }
 }

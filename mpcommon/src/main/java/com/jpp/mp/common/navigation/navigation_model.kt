@@ -1,6 +1,5 @@
 package com.jpp.mp.common.navigation
 
-import android.view.View
 import androidx.navigation.NavDirections
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -49,8 +48,7 @@ sealed class Destination {
      */
     data class MPMovieDetails(val movieId: String,
                               val movieImageUrl: String,
-                              val movieTitle: String,
-                              val transitionView: View) : Destination()
+                              val movieTitle: String) : Destination()
 
     /*
      * Destination used to perform inter-module navigation to the persons
