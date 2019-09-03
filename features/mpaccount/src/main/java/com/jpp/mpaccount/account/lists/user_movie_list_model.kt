@@ -20,15 +20,16 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
  * can only render the view states modeled in this class.
  */
 data class UserMovieListViewState(
+        @StringRes val screenTitle: Int,
         val loadingVisibility: Int = View.INVISIBLE,
         val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
         val contentViewState: UserMovieListContentViewState = UserMovieListContentViewState()
 ) {
     companion object {
-        fun showLoading() = UserMovieListViewState(loadingVisibility = View.VISIBLE)
-        fun showUnknownError(errorHandler: () -> Unit) = UserMovieListViewState(errorViewState = ErrorViewState.asUnknownError(errorHandler))
-        fun showNoConnectivityError(errorHandler: () -> Unit) = UserMovieListViewState(errorViewState = ErrorViewState.asConnectivity(errorHandler))
-        fun showMovieList(pagedList: PagedList<UserMovieItem>) = UserMovieListViewState(contentViewState = UserMovieListContentViewState(visibility = View.VISIBLE, movieList = pagedList))
+        fun showLoading(screenTitle: Int) = UserMovieListViewState(screenTitle = screenTitle, loadingVisibility = View.VISIBLE)
+        fun showUnknownError(screenTitle: Int, errorHandler: () -> Unit) = UserMovieListViewState(screenTitle = screenTitle, errorViewState = ErrorViewState.asUnknownError(errorHandler))
+        fun showNoConnectivityError(screenTitle: Int, errorHandler: () -> Unit) = UserMovieListViewState(screenTitle = screenTitle, errorViewState = ErrorViewState.asConnectivity(errorHandler))
+        fun showMovieList(screenTitle: Int, pagedList: PagedList<UserMovieItem>) = UserMovieListViewState(screenTitle = screenTitle, contentViewState = UserMovieListContentViewState(visibility = View.VISIBLE, movieList = pagedList))
     }
 }
 

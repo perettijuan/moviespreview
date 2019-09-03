@@ -52,15 +52,18 @@ class UserMovieListViewModelTest {
         subject.viewStates.observeForever { }
     }
 
-    @Test
-    fun `Should post no connectivity error when disconnected`() {
+    @ParameterizedTest
+    @MethodSource("userMovieListTestParams")
+    fun `Should post no connectivity error when disconnected`(param: UserMovieListParam) {
         var viewStatePosted: UserMovieListViewState? = null
 
         subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.onInit(param)
 
         lvInteractorEvents.postValue(UserMovieListEvent.NotConnectedToNetwork)
 
         assertNotNull(viewStatePosted)
+        assertEquals(param.section.titleRes, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
 
@@ -88,15 +91,18 @@ class UserMovieListViewModelTest {
         } ?: fail()
     }
 
-    @Test
-    fun `Should post error when failing to fetch user account data`() {
+    @ParameterizedTest
+    @MethodSource("userMovieListTestParams")
+    fun `Should post error when failing to fetch user account data`(param: UserMovieListParam) {
         var viewStatePosted: UserMovieListViewState? = null
 
         subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.onInit(param)
 
         lvInteractorEvents.postValue(UserMovieListEvent.UnknownError)
 
         assertNotNull(viewStatePosted)
+        assertEquals(param.section.titleRes, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
 
@@ -110,10 +116,11 @@ class UserMovieListViewModelTest {
         var viewStatePosted: UserMovieListViewState? = null
 
         subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
-
         subject.onInit(param)
+
         lvInteractorEvents.postValue(UserMovieListEvent.UnknownError)
 
+        assertEquals(param.section.titleRes, viewStatePosted?.screenTitle)
         viewStatePosted?.let {
             it.errorViewState.errorHandler?.invoke()
             when (param.section) {
@@ -154,6 +161,7 @@ class UserMovieListViewModelTest {
         subject.onInit(param)
 
         assertNotNull(viewStatePosted)
+        assertEquals(param.section.titleRes, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
 

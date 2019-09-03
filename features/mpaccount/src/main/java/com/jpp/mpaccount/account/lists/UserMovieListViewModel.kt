@@ -2,7 +2,6 @@ package com.jpp.mpaccount.account.lists
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
@@ -41,9 +40,6 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     private val _viewStates = MediatorLiveData<UserMovieListViewState>()
     val viewStates: LiveData<UserMovieListViewState> get() = _viewStates
 
-    private val _currentSection = MutableLiveData<UserMovieListType>()
-    val currentSection: LiveData<UserMovieListType> get() = _currentSection
-
     private val _navEvents = SingleLiveEvent<UserMovieListNavigationEvent>()
     val navEvents: LiveData<UserMovieListNavigationEvent> get() = _navEvents
 
@@ -63,8 +59,8 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     init {
         _viewStates.addSource(userMovieListInteractor.userAccountEvents) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewStates.value = UserMovieListViewState.showNoConnectivityError(retry)
-                is UnknownError -> _viewStates.value = UserMovieListViewState.showUnknownError(retry)
+                is NotConnectedToNetwork -> _viewStates.value = UserMovieListViewState.showNoConnectivityError(currentParam.section.titleRes, retry)
+                is UnknownError -> _viewStates.value = UserMovieListViewState.showUnknownError(currentParam.section.titleRes, retry)
                 is UserNotLogged -> _navEvents.value = GoToUserAccount
                 is UserChangedLanguage -> refreshData()
             }
@@ -79,7 +75,6 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
      */
     fun onInit(param: UserMovieListParam) {
         currentParam = param
-        _currentSection.value = currentParam.section
         postLoadingAndInitializePagedList(
                 currentParam.posterSize,
                 currentParam.backdropSize,
@@ -110,10 +105,10 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     private fun postLoadingAndInitializePagedList(posterSize: Int,
                                                   backdropSize: Int,
                                                   listType: UserMovieListType) {
-        _viewStates.value = UserMovieListViewState.showLoading()
+        _viewStates.value = UserMovieListViewState.showLoading(listType.titleRes)
         _viewStates.addSource(createPagedList(posterSize, backdropSize, listType)) { pagedList ->
             if (pagedList.isNotEmpty()) {
-                _viewStates.value = UserMovieListViewState.showMovieList(pagedList)
+                _viewStates.value = UserMovieListViewState.showMovieList(listType.titleRes, pagedList)
             }
         }
     }
