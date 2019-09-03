@@ -17,25 +17,34 @@ import com.jpp.mpmoviedetails.NavigationMovieDetails.movieTitle
  ****************************** MOVIE DETAILS MODEL ************************************************
  ***************************************************************************************************/
 
+/**************************************************************************************************
+ *************************************** VIEW STATES **********************************************
+ **************************************************************************************************/
+
 /**
  * Represents the view states that the movie detail view can assume.
  */
 data class MovieDetailViewState(
+        val screenTitle: String,
         val loadingVisibility: Int = View.INVISIBLE,
         val movieImageUrl: String = "emptyUrl",
         val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
         val contentViewState: MovieDetailContentViewState = MovieDetailContentViewState()) {
 
     companion object {
-        fun showLoading(movieImageUrl: String) = MovieDetailViewState(loadingVisibility = View.VISIBLE, movieImageUrl = movieImageUrl)
-        fun showUnknownError(errorHandler: () -> Unit) = MovieDetailViewState(errorViewState = ErrorViewState.asUnknownError(errorHandler))
-        fun showNoConnectivityError(errorHandler: () -> Unit) = MovieDetailViewState(errorViewState = ErrorViewState.asConnectivity(errorHandler))
-        fun showDetails(movieImageUrl: String,
+        fun showLoading(screenTitle: String, movieImageUrl: String) = MovieDetailViewState(screenTitle = screenTitle, loadingVisibility = View.VISIBLE, movieImageUrl = movieImageUrl)
+        fun showUnknownError(screenTitle: String, errorHandler: () -> Unit) = MovieDetailViewState(screenTitle = screenTitle, errorViewState = ErrorViewState.asUnknownError(errorHandler))
+        fun showNoConnectivityError(screenTitle: String, errorHandler: () -> Unit) = MovieDetailViewState(screenTitle = screenTitle, errorViewState = ErrorViewState.asConnectivity(errorHandler))
+        fun showDetails(screenTitle: String,
+                        movieImageUrl: String,
                         overview: String,
                         genres: List<MovieGenreItem>,
                         popularity: String,
                         voteCount: String,
-                        releaseDate: String) = MovieDetailViewState(movieImageUrl = movieImageUrl, contentViewState = MovieDetailContentViewState.buildVisible(overview, genres, popularity, voteCount, releaseDate))
+                        releaseDate: String) = MovieDetailViewState(
+                screenTitle = screenTitle,
+                movieImageUrl = movieImageUrl,
+                contentViewState = MovieDetailContentViewState.buildVisible(overview, genres, popularity, voteCount, releaseDate))
     }
 }
 
@@ -75,11 +84,6 @@ data class MovieDetailContentViewState(
 
 
 /**
- * Event triggered when the user attempts to go to the credits section.
- */
-data class NavigateToCreditsEvent(val movieId: Double, val movieTitle: String)
-
-/**
  * Represents an item in the list of genres that a movie can belong to.
  */
 enum class MovieGenreItem(@DrawableRes val icon: Int, @StringRes val nameRes: Int) {
@@ -103,6 +107,19 @@ enum class MovieGenreItem(@DrawableRes val icon: Int, @StringRes val nameRes: In
     Western(R.drawable.ic_western, R.string.western_genre),
     Generic(R.drawable.ic_generic, R.string.generic_genre)
 }
+
+/**************************************************************************************************
+ *************************************** NAVIGATION ***********************************************
+ **************************************************************************************************/
+
+/**
+ * Event triggered when the user attempts to go to the credits section.
+ */
+data class NavigateToCreditsEvent(val movieId: Double, val movieTitle: String)
+
+/**************************************************************************************************
+ *************************************** VM PARAMS ************************************************
+ **************************************************************************************************/
 
 /**
  * The initialization parameter for the [MovieDetailsViewModel.onInit] method.
