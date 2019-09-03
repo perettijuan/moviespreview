@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * [MPScopedViewModel] that supports the credits section. The VM retrieves
+ * [MPScopedViewModel] that supports the person section. The VM retrieves
  * the data from the underlying layers using the provided [PersonInteractor] and maps the business
  * data to UI data, producing a [PersonViewState] that represents the configuration of the view.
  *

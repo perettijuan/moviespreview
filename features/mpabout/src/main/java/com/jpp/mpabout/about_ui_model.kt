@@ -4,10 +4,19 @@ import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 
+/*
+ * This file contains the definitions for the entire model used in the about feature.
+ */
+
+/**************************************************************************************************
+ *************************************** VIEW STATES **********************************************
+ **************************************************************************************************/
+
 /**
  * Represents the view state of the about fragment.
  */
 data class AboutViewState(
+        @StringRes val screenTitle: Int = R.string.about_top_bar_title,
         val loadingVisibility: Int = View.INVISIBLE,
         val header: AboutHeader = AboutHeader(),
         val content: AboutContent = AboutContent()) {
@@ -65,6 +74,10 @@ sealed class AboutItem(@StringRes val title: Int, @DrawableRes val icon: Int) {
     object Licenses : AboutItem(R.string.about_open_source_action, R.drawable.ic_open_source_libraries)
     object TheMovieDbTermsOfUse : AboutItem(R.string.about_the_movie_db_terms_of_use, R.drawable.ic_the_movie_db)
 }
+
+/**************************************************************************************************
+ *************************************** NAVIGATION ***********************************************
+ **************************************************************************************************/
 
 /**
  * Represents the navigation events that can be routed in the about section.
