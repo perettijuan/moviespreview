@@ -25,7 +25,14 @@ import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_about.*
 import javax.inject.Inject
 
-
+/**
+ * Fragment used to show details of a particular actor or cast member.
+ *
+ * When instantiated, this fragment invokes the [AboutViewModel] methods in order to retrieve
+ * and show the about section. The VM will perform the
+ * fetch and will update the UI states represented by [AboutViewState] and this Fragment will
+ * render those updates.
+ */
 class AboutFragment : Fragment() {
 
     @Inject
@@ -56,6 +63,8 @@ class AboutFragment : Fragment() {
                         adapter = AboutItemsAdapter(viewState.content.aboutItems) { withViewModel { onUserSelectedAboutItem(it) } }
                         addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
                     }
+
+                    withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(getString(viewState.screenTitle))) }
                 }
             })
 
@@ -63,8 +72,6 @@ class AboutFragment : Fragment() {
 
             onInit()
         }
-
-        withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(getString(R.string.about_top_bar_title))) }
     }
 
     /**

@@ -71,15 +71,13 @@ class MovieDetailsFragment : Fragment() {
 
                     detailGenresRv.layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
                     detailGenresRv.adapter = MovieDetailsGenreAdapter(viewState.contentViewState.genres)
+
+                    withNavigationViewModel(viewModelFactory) { destinationReached(ReachedDestination(viewState.screenTitle)) }
                 }
             })
 
             navEvents.observe(viewLifecycleOwner, Observer { navEvent ->
                 withNavigationViewModel(viewModelFactory) { navigateToMovieCredits(navEvent.movieId, navEvent.movieTitle) }
-            })
-
-            screenTitle.observe(viewLifecycleOwner, Observer {
-                withNavigationViewModel(viewModelFactory) { destinationReached(ReachedDestination(it)) }
             })
 
             onInit(MovieDetailsParam.fromArguments(arguments))

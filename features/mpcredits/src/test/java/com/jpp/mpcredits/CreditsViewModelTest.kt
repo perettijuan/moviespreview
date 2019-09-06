@@ -56,6 +56,7 @@ class CreditsViewModelTest {
         var viewStatePosted: CreditsViewState? = null
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
 
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.NotConnectedToNetwork)
 
@@ -74,7 +75,7 @@ class CreditsViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
-        subject.onInit(CreditsInitParam(10.0, 12))
+        subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.NotConnectedToNetwork)
 
         viewStatePosted?.let {
@@ -88,6 +89,7 @@ class CreditsViewModelTest {
         var viewStatePosted: CreditsViewState? = null
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
 
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.UnknownError)
 
@@ -106,7 +108,7 @@ class CreditsViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
-        subject.onInit(CreditsInitParam(10.0, 12))
+        subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.UnknownError)
 
         viewStatePosted?.let {
@@ -121,10 +123,11 @@ class CreditsViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
-        subject.onInit(CreditsInitParam(10.0, 12))
+        subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.AppLanguageChanged)
 
         assertNotNull(viewStatePosted)
+        assertEquals("aMovie", viewStatePosted?.screenTitle)
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
 
         assertEquals(View.INVISIBLE, viewStatePosted?.noCreditsViewState?.visibility)
@@ -144,9 +147,10 @@ class CreditsViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
-        subject.onInit(CreditsInitParam(10.0, 12))
+        subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
 
         assertNotNull(viewStatePosted)
+        assertEquals("aMovie", viewStatePosted?.screenTitle)
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
 
         assertEquals(View.INVISIBLE, viewStatePosted?.noCreditsViewState?.visibility)
@@ -166,6 +170,7 @@ class CreditsViewModelTest {
         )
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
 
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.Success(credits))
 
@@ -193,11 +198,12 @@ class CreditsViewModelTest {
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
-        subject.onInit(CreditsInitParam(10.0, 12))
+        subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.Success(credits))
 
 
         assertNotNull(viewStatePosted)
+        assertEquals("aMovie", viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.noCreditsViewState?.visibility)

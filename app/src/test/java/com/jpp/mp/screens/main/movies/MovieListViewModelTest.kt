@@ -63,6 +63,7 @@ class MovieListViewModelTest {
         lvInteractorEvents.postValue(MovieListInteractor.MovieListEvent.NotConnectedToNetwork)
 
         assertNotNull(viewStatePosted)
+        assertEquals(param.titleRes, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
 
@@ -98,6 +99,7 @@ class MovieListViewModelTest {
         lvInteractorEvents.postValue(MovieListInteractor.MovieListEvent.UnknownError)
 
         assertNotNull(viewStatePosted)
+        assertEquals(param.titleRes, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
 
@@ -136,6 +138,7 @@ class MovieListViewModelTest {
         subject.onInit(param)
 
         assertNotNull(viewStatePosted)
+        assertEquals(param.titleRes, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
 
@@ -144,23 +147,6 @@ class MovieListViewModelTest {
 
         verify { movieListInteractor.fetchMoviePageForSection(1, param.section, any()) }
         verify(exactly = mockedList.size) { imagesPathInteractor.configurePathMovie(10, 10, any()) }
-    }
-
-    @ParameterizedTest
-    @MethodSource("movieListTestParams")
-    fun `Should not fetch movies if initialized twice with same parameter`(param: MovieListParam) {
-        val mockedList = getMockedMovies()
-        val slot = slot<(List<Movie>) -> Unit>()
-
-        every { imagesPathInteractor.configurePathMovie(any(), any(), any()) } answers { arg(2) }
-        every { movieListInteractor.fetchMoviePageForSection(any(), any(), capture(slot)) } answers { slot.captured.invoke(mockedList) }
-
-        subject.viewStates.observeForever { }
-
-        subject.onInit(param)
-        subject.onInit(param)
-
-        verify(exactly = 1) { movieListInteractor.fetchMoviePageForSection(1, param.section, any()) }
     }
 
 

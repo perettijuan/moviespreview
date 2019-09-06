@@ -60,6 +60,7 @@ class AboutViewModelTest {
         lvInteractorEvents.postValue(AboutInteractor.AboutEvent.AppVersionEvent(AppVersion("appVersion")))
 
         assertNotNull(viewStatePosted)
+        assertEquals(R.string.about_top_bar_title, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
 
         assertEquals(View.VISIBLE, viewStatePosted?.content?.visibility)

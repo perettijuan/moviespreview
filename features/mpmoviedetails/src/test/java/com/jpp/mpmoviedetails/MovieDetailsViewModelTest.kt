@@ -40,10 +40,12 @@ class MovieDetailsViewModelTest {
         var viewStatePosted: MovieDetailViewState? = null
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
 
         lvInteractorEvents.postValue(MovieDetailsInteractor.MovieDetailEvent.NotConnectedToNetwork)
 
         assertNotNull(viewStatePosted)
+        assertEquals("aMovie", viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
 
@@ -56,10 +58,12 @@ class MovieDetailsViewModelTest {
         var viewStatePosted: MovieDetailViewState? = null
 
         subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
 
         lvInteractorEvents.postValue(MovieDetailsInteractor.MovieDetailEvent.UnknownError)
 
         assertNotNull(viewStatePosted)
+        assertEquals("aMovie", viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
 
@@ -75,6 +79,7 @@ class MovieDetailsViewModelTest {
         subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
 
         assertNotNull(viewStatePosted)
+        assertEquals("aMovie", viewStatePosted?.screenTitle)
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
 
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
@@ -103,6 +108,7 @@ class MovieDetailsViewModelTest {
         )
 
         val expected = MovieDetailViewState.showDetails(
+                screenTitle = "aMovie",
                 movieImageUrl = "aUrl",
                 overview = domainDetail.overview,
                 releaseDate = domainDetail.release_date,

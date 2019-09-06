@@ -43,7 +43,7 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
     private lateinit var currentParam: CreditsInitParam
 
-    private val retry: () -> Unit = { fetchMovieCredits(currentParam.movieId) }
+    private val retry: () -> Unit = { fetchMovieCredits(currentParam.movieTitle, currentParam.movieId) }
 
     /*
      * Map the business logic coming from the interactor into view layer logic.
@@ -51,10 +51,10 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     init {
         _viewStates.addSource(creditsInteractor.events) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewStates.value = of(CreditsViewState.showNoConnectivityError(retry))
-                is UnknownError -> _viewStates.value = of(CreditsViewState.showUnknownError(retry))
-                is Success -> mapCreditsAndPushViewState(event.credits)
-                is AppLanguageChanged -> refreshCreditsData(currentParam.movieId)
+                is NotConnectedToNetwork -> _viewStates.value = of(CreditsViewState.showNoConnectivityError(currentParam.movieTitle, retry))
+                is UnknownError -> _viewStates.value = of(CreditsViewState.showUnknownError(currentParam.movieTitle, retry))
+                is Success -> mapCreditsAndPushViewState(currentParam.movieTitle, event.credits)
+                is AppLanguageChanged -> refreshCreditsData(currentParam.movieTitle, currentParam.movieId)
             }
         }
     }
@@ -67,7 +67,7 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun onInit(param: CreditsInitParam) {
         currentParam = param
-        fetchMovieCredits(currentParam.movieId)
+        fetchMovieCredits(currentParam.movieTitle, currentParam.movieId)
     }
 
     /**
@@ -89,9 +89,9 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * of the movie being shown. When the fetching process is done, the view state will be updated
      * based on the result posted by the interactor.
      */
-    private fun fetchMovieCredits(movieId: Double) {
+    private fun fetchMovieCredits(movieTitle: String, movieId: Double) {
         withInteractor { fetchCreditsForMovie(movieId) }
-        _viewStates.value = of(CreditsViewState.showLoading())
+        _viewStates.value = of(CreditsViewState.showLoading(movieTitle))
     }
 
     /**
@@ -99,12 +99,12 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * to be fetched for the credits being shown. This is executed in a background
      * task while the view state is updated with the loading state.
      */
-    private fun refreshCreditsData(creditsId: Double) {
+    private fun refreshCreditsData(movieTitle: String, creditsId: Double) {
         withInteractor {
             flushCreditsData()
             fetchCreditsForMovie(creditsId)
         }
-        _viewStates.value = of(CreditsViewState.showLoading())
+        _viewStates.value = of(CreditsViewState.showLoading(movieTitle))
     }
 
     /**
@@ -120,13 +120,14 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * a new view state that is pushed to the view to show the result of the credits
      * fetching process.
      */
-    private fun mapCreditsAndPushViewState(credits: Credits) {
+    private fun mapCreditsAndPushViewState(movieTitle: String, credits: Credits) {
         when (credits.cast.isEmpty() && credits.crew.isEmpty()) {
-            true -> _viewStates.value = of(CreditsViewState.showNoCreditsAvailable())
+            true -> _viewStates.value = of(CreditsViewState.showNoCreditsAvailable(movieTitle))
             false -> {
                 launch {
                     withContext(dispatchers.default()) {
                         CreditsViewState.showCredits(
+                                movieTitle,
                                 credits.cast
                                         .map { imagesPathInteractor.configureCastCharacter(currentParam.targetImageSize, it) }
                                         .map { mapCastCharacterToCreditPerson(it) }

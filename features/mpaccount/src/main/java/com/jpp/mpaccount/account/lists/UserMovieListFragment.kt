@@ -72,15 +72,13 @@ class UserMovieListFragment : Fragment() {
                         withViewModel { onMovieSelected(item, position) }
                     }.apply { submitList(viewState.contentViewState.movieList) }
                 }
+
+                withNavigationViewModel(viewModelFactory) {
+                    destinationReached(ReachedDestination(getString(viewState.screenTitle)))
+                }
             })
 
             navEvents.observe(this@UserMovieListFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
-
-            currentSection.observe(viewLifecycleOwner, Observer { currentSection ->
-                withNavigationViewModel(viewModelFactory) {
-                    destinationReached(ReachedDestination(getString(currentSection.titleRes)))
-                }
-            })
 
             onInit(UserMovieListParam.fromArguments(arguments, getScreenWidthInPixels(), getScreenWidthInPixels()))
         }

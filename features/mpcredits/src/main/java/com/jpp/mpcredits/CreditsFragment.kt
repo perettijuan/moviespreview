@@ -69,6 +69,8 @@ class CreditsFragment : Fragment() {
                         layoutManager?.onRestoreInstanceState(rvState)
                         addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
                     }
+
+                    withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(viewState.screenTitle)) }
                 }
             })
 
@@ -78,8 +80,6 @@ class CreditsFragment : Fragment() {
 
             onInit(CreditsInitParam.create(this@CreditsFragment))
         }
-
-        withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(NavigationCredits.movieTitle(arguments))) }
     }
 
     override fun onPause() {

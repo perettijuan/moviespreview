@@ -21,15 +21,16 @@ import com.jpp.mpdomain.Movie as DomainMovie
  * can only render the view states modeled in this class.
  */
 data class MovieListViewState(
+        @StringRes val screenTitle: Int,
         val loadingVisibility: Int = View.INVISIBLE,
         val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
         val contentViewState: MovieListContentViewState = MovieListContentViewState()
 ) {
     companion object {
-        fun showLoading() = MovieListViewState(loadingVisibility = View.VISIBLE)
-        fun showUnknownError(errorHandler: () -> Unit) = MovieListViewState(errorViewState = ErrorViewState.asUnknownError(errorHandler))
-        fun showNoConnectivityError(errorHandler: () -> Unit) = MovieListViewState(errorViewState = ErrorViewState.asConnectivity(errorHandler))
-        fun showMovieList(pagedList: PagedList<MovieListItem>) = MovieListViewState(contentViewState = MovieListContentViewState(visibility = View.VISIBLE, movieList = pagedList))
+        fun showLoading(@StringRes screenTitle: Int) = MovieListViewState(screenTitle = screenTitle, loadingVisibility = View.VISIBLE)
+        fun showUnknownError(@StringRes screenTitle: Int, errorHandler: () -> Unit) = MovieListViewState(screenTitle = screenTitle, errorViewState = ErrorViewState.asUnknownError(errorHandler))
+        fun showNoConnectivityError(@StringRes screenTitle: Int, errorHandler: () -> Unit) = MovieListViewState(screenTitle = screenTitle, errorViewState = ErrorViewState.asConnectivity(errorHandler))
+        fun showMovieList(@StringRes screenTitle: Int, pagedList: PagedList<MovieListItem>) = MovieListViewState(screenTitle = screenTitle, contentViewState = MovieListContentViewState(visibility = View.VISIBLE, movieList = pagedList))
     }
 }
 
@@ -72,30 +73,19 @@ data class NavigateToDetailsEvent(
  **************************************************************************************************/
 
 /**
- * Represents the title of the screen. Note that this is not part of the view
- * state since the title of the screen does not belongs to the view hierarchy of the
- * Fragment - the screen title is in the Toolbar that belongs to the Activity hierarchy.
- */
-enum class MovieListSectionTitle(@StringRes val titleRes: Int) {
-    PLAYING(R.string.main_menu_now_playing),
-    POPULAR(R.string.main_menu_popular),
-    UPCOMING(R.string.main_menu_upcoming),
-    TOP_RATED(R.string.main_menu_top_rated)
-}
-
-/**
  * The initialization parameter used for
  * [MovieListViewModel].
  */
 data class MovieListParam(
         val section: MovieSection,
+        @StringRes val titleRes: Int,
         val posterSize: Int,
         val backdropSize: Int
 ) {
     companion object {
-        fun playing(posterSize: Int, backdropSize: Int) = MovieListParam(MovieSection.Playing, posterSize, backdropSize)
-        fun popular(posterSize: Int, backdropSize: Int) = MovieListParam(MovieSection.Popular, posterSize, backdropSize)
-        fun upcoming(posterSize: Int, backdropSize: Int) = MovieListParam(MovieSection.Upcoming, posterSize, backdropSize)
-        fun topRated(posterSize: Int, backdropSize: Int) = MovieListParam(MovieSection.TopRated, posterSize, backdropSize)
+        fun playing(posterSize: Int, backdropSize: Int) = MovieListParam(MovieSection.Playing, R.string.main_menu_now_playing, posterSize, backdropSize)
+        fun popular(posterSize: Int, backdropSize: Int) = MovieListParam(MovieSection.Popular, R.string.main_menu_popular, posterSize, backdropSize)
+        fun upcoming(posterSize: Int, backdropSize: Int) = MovieListParam(MovieSection.Upcoming, R.string.main_menu_upcoming, posterSize, backdropSize)
+        fun topRated(posterSize: Int, backdropSize: Int) = MovieListParam(MovieSection.TopRated, R.string.main_menu_top_rated, posterSize, backdropSize)
     }
 }
