@@ -17,17 +17,12 @@ import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.*
 import com.jpp.mp.R
-import com.jpp.mp.common.navigation.Destination
-import com.jpp.mp.common.navigation.Destination.*
 import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.ext.closeDrawerIfOpen
 import com.jpp.mp.ext.setActionBarTitle
 import com.jpp.mp.ext.withViewModel
-import com.jpp.mpcredits.NavigationCredits
 import com.jpp.mpdesign.ext.setGone
 import com.jpp.mpdesign.ext.setVisible
-import com.jpp.mpmoviedetails.NavigationMovieDetails
-import com.jpp.mpperson.NavigationPerson
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -37,14 +32,14 @@ import javax.inject.Inject
 
 
 /**
- * Main entry point of the appModule.
+ * Main entry point of the app.
  *
  * Navigation: shows a DrawerLayout with the different items that the user can select in order
- * to be redirected to a particular destination of the appModule. Uses Navigation Component
+ * to be redirected to a particular destination of the application. Uses Navigation Component
  * in order to delegate the navigation logic to the Architecture Components.
  *
  * Multi-top-level fragments navigation: the navigation guidelines described in the Android
- * support site states that the appModule should have only one entry point, meaning only
+ * support site states that the app should have only one entry point, meaning only
  * one top-level fragment per navigation graph. Now, when we're using a DrawerLayout (the menu
  * with the 'burger' icon), we need more than one top-level fragment, since we want to
  * show the burger icon in every fragment that the user can select from the drawer.
@@ -76,16 +71,26 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
         withMainViewModel {
             onInit()
-            viewState().observe(this@MainActivity, Observer {
+
+            viewStates.observe(this@MainActivity, Observer {
                 it.actionIfNotHandled { viewState ->
                     renderViewState(viewState)
+                }
+            })
+
+            moduleNavEvents.observe(this@MainActivity, Observer { navEvent ->
+                when (navEvent) {
+                    is ModuleNavigationEvent.NavigateToNodeWithDirections -> innerNavigateTo(navEvent.directions)
+                    is ModuleNavigationEvent.NavigateToNodeWithId -> interModuleNavigationTo(navEvent.nodeId)
+                    is ModuleNavigationEvent.NavigateToNodeWithExtras -> navigateToModuleWithExtras(navEvent.nodeId, navEvent.extras)
+                    is ModuleNavigationEvent.NavigateToPrevious -> withNavController { popBackStack() }
                 }
             })
         }
 
         withNavigationViewModel {
-            navEvents.observe(this@MainActivity, Observer { it.actionIfNotHandled { destination -> navigateToDestination(destination) } })
-            reachedDestinations.observe(this@MainActivity, Observer { onDestinationReached(it) })
+            navEvents.observe(this@MainActivity, Observer { it.actionIfNotHandled { destination -> withMainViewModel { onRequestToNavigateToDestination(destination) } } })
+            reachedDestinations.observe(this@MainActivity, Observer { withMainViewModel { onDestinationReached(it) } })
         }
 
         appBarConfiguration = AppBarConfiguration(setOf(
@@ -121,7 +126,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
          */
         withMainViewModel {
             for (i in 0 until menu.size()) {
-                menu.getItem(i).isVisible = viewState().value?.peekContent()?.menuBarEnabled ?: true
+                menu.getItem(i).isVisible = viewStates.value?.peekContent()?.menuBarEnabled ?: true
             }
         }
 
@@ -151,64 +156,17 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
      * the view state that the ViewModel is showing.
      */
     private fun setupNavigation() {
-        val navController = findNavController(this, R.id.mainNavHostFragment)
-
-        /*
-         * We want several top-level destinations since we're showing the
-         * navigation drawer.
-         */
-        setupActionBarWithNavController(this,
-                navController,
-                appBarConfiguration
-        )
-
-        setupWithNavController(mainNavigationView, navController)
-    }
-
-    private fun navigateToDestination(destination: Destination) {
-        when (destination) {
-            is MPAccount -> interModuleNavigationTo(R.id.user_account_nav)
-            is MPMovieDetails -> {
-                navigateToModuleWithExtras(
-                        R.id.movie_details_nav,
-                        NavigationMovieDetails.navArgs(
-                                destination.movieId,
-                                destination.movieImageUrl,
-                                destination.movieTitle
-                        )
-                )
-            }
-            is MPPerson -> {
-                navigateToModuleWithExtras(
-                        R.id.person_nav,
-                        NavigationPerson.navArgs(
-                                destination.personId,
-                                destination.personImageUrl,
-                                destination.personName
-                        )
-                )
-            }
-            is MPCredits -> {
-                navigateToModuleWithExtras(
-                        R.id.credits_nav,
-                        NavigationCredits.navArgs(
-                                destination.movieId,
-                                destination.movieTitle
-                        )
-                )
-
-            }
-            is PreviousDestination -> withNavController { popBackStack() }
-            is InnerDestination -> innerNavigateTo(destination.directions)
-        }
-    }
-
-    private fun onDestinationReached(reachedDestination: Destination) {
-        when (reachedDestination) {
-            is ReachedDestination -> withMainViewModel { userNavigatesWithinFeature(reachedDestination.destinationTitle) }
-            is MovieListReached -> withMainViewModel { userNavigatesToMoviesList(reachedDestination.title) }
-            is MPSearch -> withMainViewModel { userNavigatesToSearch() }
-            is MPCredits -> withMainViewModel { userNavigatesWithinFeature(reachedDestination.movieTitle) }
+        findNavController(this, R.id.mainNavHostFragment).let { navController ->
+            /*
+             * We want several top-level destinations since we're showing the
+             * navigation drawer.
+             */
+            setupActionBarWithNavController(
+                    this,
+                    navController,
+                    appBarConfiguration
+            )
+            setupWithNavController(mainNavigationView, navController)
         }
     }
 
