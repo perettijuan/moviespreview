@@ -9,6 +9,14 @@ import com.jpp.mpcredits.NavigationCredits
 import com.jpp.mpmoviedetails.NavigationMovieDetails
 import com.jpp.mpperson.NavigationPerson
 
+/*
+ * This file contains the definitions for the entire model used in the main activity.
+ */
+
+/**************************************************************************************************
+ *************************************** VIEW STATES **********************************************
+ **************************************************************************************************/
+
 /**
  * Represents the view state that the MainActivity can show at any given time.
  */
@@ -17,6 +25,10 @@ data class MainActivityViewState(
         val menuBarEnabled: Boolean,
         val searchEnabled: Boolean
 )
+
+/**************************************************************************************************
+ *************************************** NAVIGATION ***********************************************
+ **************************************************************************************************/
 
 /**
  * Represents a navigation event that needs to be processed by the navigation architecture

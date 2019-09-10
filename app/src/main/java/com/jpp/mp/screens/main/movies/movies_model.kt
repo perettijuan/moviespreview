@@ -6,7 +6,6 @@ import androidx.paging.PagedList
 import com.jpp.mp.R
 import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 import com.jpp.mpdomain.MovieSection
-import com.jpp.mpdomain.Movie as DomainMovie
 
 /*
  * This file contains the definitions for the entire model used in the movies list feature.

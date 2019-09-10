@@ -12,8 +12,11 @@ import com.crashlytics.android.Crashlytics
 import com.squareup.leakcanary.LeakCanary
 import io.fabric.sdk.android.Fabric
 
-
-
+/**
+ * [Application] definition for Movies Preview.
+ * Implements [HasActivityInjector] in order to provide a mechanism to inject dependencies
+ * into the MainActivity and the Fragments that the activity uses.
+ */
 open class MPApp : Application(), HasActivityInjector {
 
     @Inject
