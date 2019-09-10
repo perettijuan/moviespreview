@@ -52,6 +52,7 @@ sealed class ModuleNavigationEvent {
      */
     data class NavigateToNodeWithExtras(@IdRes val nodeId: Int, val extras: Bundle) : ModuleNavigationEvent() {
 
+
         companion object {
             fun toMovieDetails(destination: Destination.MPMovieDetails) = NavigateToNodeWithExtras(R.id.movie_details_nav,
                     NavigationMovieDetails.navArgs(
@@ -75,6 +76,21 @@ sealed class ModuleNavigationEvent {
                             destination.movieTitle
                     )
             )
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as NavigateToNodeWithExtras
+
+            if (nodeId != other.nodeId) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return nodeId
         }
     }
 

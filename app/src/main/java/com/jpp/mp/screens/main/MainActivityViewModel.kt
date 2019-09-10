@@ -73,10 +73,11 @@ class MainActivityViewModel @Inject constructor(private val languageMonitor: Lan
      */
     fun onDestinationReached(reachedDestination: Destination) {
         when (reachedDestination) {
-            is ReachedDestination -> userNavigatesWithinFeature(reachedDestination.destinationTitle)
-            is MovieListReached -> userNavigatesToMoviesList(reachedDestination.title)
-            is MPSearch -> userNavigatesToSearch()
-            is MPCredits -> userNavigatesWithinFeature(reachedDestination.movieTitle)
+            is ReachedDestination -> renderFeatureViewState(reachedDestination.destinationTitle)
+            is MovieListReached -> renderMovieListViewState(reachedDestination.title)
+            is MPSearch -> renderSearchViewState()
+            is MPCredits -> renderFeatureViewState(reachedDestination.movieTitle)
+            else -> throw IllegalStateException("Unknown navigation requested $reachedDestination")
         }
     }
 
@@ -85,7 +86,7 @@ class MainActivityViewModel @Inject constructor(private val languageMonitor: Lan
      * When called, this method will post a new [MainActivityViewState]
      * to update the search bar state.
      */
-    private fun userNavigatesToSearch() {
+    private fun renderSearchViewState() {
         _viewStates.value = of(MainActivityViewState(
                 sectionTitle = "",
                 menuBarEnabled = false,
@@ -98,8 +99,12 @@ class MainActivityViewModel @Inject constructor(private val languageMonitor: Lan
      * When called, this method will post a new [MainActivityViewState] that
      * contains the title of the feature being navigated.
      */
-    private fun userNavigatesWithinFeature(sectionName: String) {
-        navigateToSimpleDestination(sectionName)
+    private fun renderFeatureViewState(sectionName: String) {
+        _viewStates.value = of(MainActivityViewState(
+                sectionTitle = sectionName,
+                menuBarEnabled = false,
+                searchEnabled = false
+        ))
     }
 
     /**
@@ -107,22 +112,10 @@ class MainActivityViewModel @Inject constructor(private val languageMonitor: Lan
      * When called, it will post a new [MainActivityViewState] that contains
      * the name of the section being shown.
      */
-    private fun userNavigatesToMoviesList(sectionName: String) {
+    private fun renderMovieListViewState(sectionName: String) {
         _viewStates.value = of(MainActivityViewState(
                 sectionTitle = sectionName,
                 menuBarEnabled = true,
-                searchEnabled = false
-        ))
-    }
-
-    /**
-     * Update view state when it is navigating to a destination without animation
-     * and without menu enabled.
-     */
-    private fun navigateToSimpleDestination(sectionName: String) {
-        _viewStates.value = of(MainActivityViewState(
-                sectionTitle = sectionName,
-                menuBarEnabled = false,
                 searchEnabled = false
         ))
     }
