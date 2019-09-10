@@ -3,6 +3,9 @@ package com.jpp.mpdomain.repository
 import androidx.lifecycle.LiveData
 import com.jpp.mpdomain.SupportedLanguage
 
+/**
+ * Repository definition to handle data access to [SupportedLanguage].
+ */
 interface LanguageRepository {
     /**
      * Subscribe to the [LiveData] whenever you need to update the state based on the data
