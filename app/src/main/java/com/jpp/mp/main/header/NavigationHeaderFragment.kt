@@ -51,7 +51,7 @@ class NavigationHeaderFragment : Fragment() {
         }
 
         withViewModel {
-            viewStates.observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { viewState -> viewBinding.viewState = viewState })
+            viewState.observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { viewState -> viewBinding.viewState = viewState })
             navEvents.observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { withNavigationViewModel(viewModelFactory) { navigateToUserAccount() } })
             onInit()
         }

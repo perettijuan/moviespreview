@@ -3,9 +3,6 @@ package com.jpp.mp.main.header
 import android.view.View
 import androidx.lifecycle.MediatorLiveData
 import com.jpp.mp.R
-import com.jpp.mp.main.header.HeaderViewState
-import com.jpp.mp.main.header.NavigationHeaderInteractor
-import com.jpp.mp.main.header.NavigationHeaderViewModel
 import com.jpp.mp.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
@@ -16,7 +13,6 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -42,7 +38,7 @@ class NavigationHeaderViewModelTest {
     fun `Should post login state when user not logged`() {
         var viewStatePosted: HeaderViewState? = null
 
-        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         interactorEvents.postValue(NavigationHeaderInteractor.HeaderDataEvent.UserNotLogged)
 
@@ -59,7 +55,7 @@ class NavigationHeaderViewModelTest {
     fun `Should post login state when error detected`() {
         var viewStatePosted: HeaderViewState? = null
 
-        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         interactorEvents.postValue(NavigationHeaderInteractor.HeaderDataEvent.UserNotLogged)
 
@@ -84,7 +80,7 @@ class NavigationHeaderViewModelTest {
                 username = "anAccount"
         )
 
-        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         interactorEvents.postValue(NavigationHeaderInteractor.HeaderDataEvent.Success(userAccount))
 
@@ -112,7 +108,7 @@ class NavigationHeaderViewModelTest {
                 username = "anAccount"
         )
 
-        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         interactorEvents.postValue(NavigationHeaderInteractor.HeaderDataEvent.Success(userAccount))
 
@@ -139,7 +135,7 @@ class NavigationHeaderViewModelTest {
     fun `Should post loading and get account info in onInit`() {
         var viewStatePosted: HeaderViewState? = null
 
-        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit()
 

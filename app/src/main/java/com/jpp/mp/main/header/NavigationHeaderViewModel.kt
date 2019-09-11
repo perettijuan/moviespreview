@@ -21,8 +21,8 @@ class NavigationHeaderViewModel @Inject constructor(dispatchers: CoroutineDispat
                                                     private val interactor: NavigationHeaderInteractor)
     : MPScopedViewModel(dispatchers) {
 
-    private val _viewStates by lazy { MediatorLiveData<HeaderViewState>() }
-    val viewStates: LiveData<HeaderViewState> get() = _viewStates
+    private val _viewState by lazy { MediatorLiveData<HeaderViewState>() }
+    val viewState: LiveData<HeaderViewState> get() = _viewState
 
     private val _navEvents by lazy { SingleLiveEvent<HeaderNavigationEvent>() }
     val navEvents: LiveData<HeaderNavigationEvent> get() = _navEvents
@@ -31,11 +31,11 @@ class NavigationHeaderViewModel @Inject constructor(dispatchers: CoroutineDispat
      * Map the business logic coming from the interactor into view layer logic.
      */
     init {
-        _viewStates.addSource(interactor.userAccountEvents) { event ->
+        _viewState.addSource(interactor.userAccountEvents) { event ->
             when (event) {
-                is UserNotLogged -> _viewStates.value = HeaderViewState.showLogin()
-                is UnknownError -> _viewStates.value = HeaderViewState.showLogin()
-                is Success -> _viewStates.value = mapAccountInfo(event.data)
+                is UserNotLogged -> _viewState.value = HeaderViewState.showLogin()
+                is UnknownError -> _viewState.value = HeaderViewState.showLogin()
+                is Success -> _viewState.value = mapAccountInfo(event.data)
             }
         }
     }
@@ -48,7 +48,7 @@ class NavigationHeaderViewModel @Inject constructor(dispatchers: CoroutineDispat
      */
     fun onInit() {
         launch { withContext(dispatchers.default()) { interactor.getUserAccountData() } }
-        _viewStates.value = HeaderViewState.showLoading()
+        _viewState.value = HeaderViewState.showLoading()
     }
 
     /**
@@ -85,7 +85,7 @@ class NavigationHeaderViewModel @Inject constructor(dispatchers: CoroutineDispat
      * instead of the user's avatar.
      */
     private fun mapAccountInfoWithoutAvatar(userAccount: UserAccount) {
-        _viewStates.value = HeaderViewState.showAccountWithLetter(
+        _viewState.value = HeaderViewState.showAccountWithLetter(
                 userName = if (userAccount.name.isEmpty()) userAccount.username else userAccount.name,
                 accountName = userAccount.username,
                 defaultLetter = (if (userAccount.name.isEmpty()) userAccount.username.first().toString() else userAccount.name.first().toString()).toUpperCase()
