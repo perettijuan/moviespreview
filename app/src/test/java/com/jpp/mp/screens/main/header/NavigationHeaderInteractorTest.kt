@@ -72,7 +72,7 @@ class NavigationHeaderInteractorTest {
         every { sessionRepository.getCurrentSession() } returns null
         subject.userAccountEvents.observeWith { eventPosted = it }
 
-        subject.fetchUserData()
+        subject.getUserAccountData()
 
         assertEquals(UserNotLogged, eventPosted)
     }
@@ -88,7 +88,7 @@ class NavigationHeaderInteractorTest {
 
         subject.userAccountEvents.observeWith { eventPosted = it }
 
-        subject.fetchUserData()
+        subject.getUserAccountData()
 
         assertTrue(eventPosted is Success)
         verify { accountRepository.getUserAccount(session) }
@@ -104,7 +104,7 @@ class NavigationHeaderInteractorTest {
 
         subject.userAccountEvents.observeWith { eventPosted = it }
 
-        subject.fetchUserData()
+        subject.getUserAccountData()
 
         assertEquals(UnknownError, eventPosted)
     }

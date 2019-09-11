@@ -8,12 +8,10 @@ import com.jpp.mpdomain.UserAvatar
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -115,6 +113,6 @@ class NavigationHeaderViewModelTest {
         subject.onInit()
 
         assertEquals(postedViewState, HeaderViewState.ShowLoading)
-        verify { interactor.fetchUserData() }
+        verify { interactor.getUserAccountData() }
     }
 }

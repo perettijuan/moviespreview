@@ -11,13 +11,11 @@ import javax.inject.Inject
 
 /**
  * Interactor to support the navigation header section of the main screen.
- * This interactor takes care of accessing the
- * repository layer to perform the inner state updates needed to provide functionality in the
- * header section of the navigation view.
+ * Takes care of accessing the repository layer to perform the inner state updates needed to
+ * provide functionality in the header section of the navigation view.
  */
 class NavigationHeaderInteractor @Inject constructor(private val sessionRepository: SessionRepository,
                                                      private val accountRepository: AccountRepository) {
-
 
     /**
      * Represents the events that this interactor can route to the upper layers.
@@ -28,7 +26,7 @@ class NavigationHeaderInteractor @Inject constructor(private val sessionReposito
         data class Success(val data: UserAccount) : HeaderDataEvent()
     }
 
-    private val _events by lazy { MediatorLiveData<HeaderDataEvent>() }
+    private val _events = MediatorLiveData<HeaderDataEvent>()
 
     init {
         _events.addSource(sessionRepository.sessionStateUpdates()) { session ->
@@ -48,16 +46,19 @@ class NavigationHeaderInteractor @Inject constructor(private val sessionReposito
      */
     val userAccountEvents: LiveData<HeaderDataEvent> get() = _events
 
-    fun fetchUserData() {
+    /**
+     * Retrieves the user account data from the repository layers.
+     */
+    fun getUserAccountData() {
         when (val session = sessionRepository.getCurrentSession()) {
             null -> UserNotLogged
-            else -> getUserAccount(session)
+            else -> retrieveUserAccountWhenUserLogged(session)
         }.let {
             _events.postValue(it)
         }
     }
 
-    private fun getUserAccount(session: Session): HeaderDataEvent {
+    private fun retrieveUserAccountWhenUserLogged(session: Session): HeaderDataEvent {
         return accountRepository.getUserAccount(session)?.let {
             Success(data = it)
         } ?: UnknownError
