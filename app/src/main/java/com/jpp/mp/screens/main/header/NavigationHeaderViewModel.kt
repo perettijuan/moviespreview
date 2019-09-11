@@ -88,7 +88,7 @@ class NavigationHeaderViewModel @Inject constructor(dispatchers: CoroutineDispat
         _viewStates.value = HeaderViewState.showAccountWithLetter(
                 userName = if (userAccount.name.isEmpty()) userAccount.username else userAccount.name,
                 accountName = userAccount.username,
-                defaultLetter = if (userAccount.name.isEmpty()) userAccount.username.first().toString() else userAccount.name.first().toString()
+                defaultLetter = (if (userAccount.name.isEmpty()) userAccount.username.first().toString() else userAccount.name.first().toString()).toUpperCase()
         )
     }
 }
