@@ -77,7 +77,7 @@ abstract class MovieListFragment : Fragment() {
         rvState = savedInstanceState?.getParcelable(MOVIES_RV_STATE_KEY) ?: rvState
 
         withViewModel {
-            viewStates.observe(viewLifecycleOwner, Observer { viewState ->
+            viewState.observe(viewLifecycleOwner, Observer { viewState ->
                 viewBinding.viewState = viewState
 
                 withNavigationViewModel(viewModelFactory) {

@@ -3,10 +3,6 @@ package com.jpp.mp.main.movies
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
-import com.jpp.mp.main.movies.MovieListInteractor
-import com.jpp.mp.main.movies.MovieListParam
-import com.jpp.mp.main.movies.MovieListViewModel
-import com.jpp.mp.main.movies.MovieListViewState
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mptestutils.InstantTaskExecutorExtension
@@ -60,7 +56,7 @@ class MovieListViewModelTest {
     fun `Should post no connectivity error when disconnected`(param: MovieListParam) {
         var viewStatePosted: MovieListViewState? = null
 
-        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(param)
 
@@ -80,7 +76,7 @@ class MovieListViewModelTest {
     fun `Should retry to fetch data when not connected and retry is executed`(param: MovieListParam) {
         var viewStatePosted: MovieListViewState? = null
 
-        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(param)
         lvInteractorEvents.postValue(MovieListInteractor.MovieListEvent.NotConnectedToNetwork)
@@ -96,7 +92,7 @@ class MovieListViewModelTest {
     fun `Should post error when failing to fetch movies`(param: MovieListParam) {
         var viewStatePosted: MovieListViewState? = null
 
-        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(param)
 
@@ -116,7 +112,7 @@ class MovieListViewModelTest {
     fun `Should retry to fetch data when error unknown and retry is executed`(param: MovieListParam) {
         var viewStatePosted: MovieListViewState? = null
 
-        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(param)
         lvInteractorEvents.postValue(MovieListInteractor.MovieListEvent.UnknownError)
@@ -137,7 +133,7 @@ class MovieListViewModelTest {
         every { imagesPathInteractor.configurePathMovie(any(), any(), any()) } answers { arg(2) }
         every { movieListInteractor.fetchMoviePageForSection(any(), any(), capture(slot)) } answers { slot.captured.invoke(mockedList) }
 
-        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(param)
 

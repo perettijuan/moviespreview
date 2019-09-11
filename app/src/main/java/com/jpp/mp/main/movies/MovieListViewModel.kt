@@ -28,7 +28,7 @@ import javax.inject.Inject
  * Since the UI is using the Android Paging Library, the VM needs a way to map the data retrieved from
  * the [MovieListInteractor] to a [PagedList] that can be used by the library. That process is done
  * using the [MPPagingDataSourceFactory] that creates the DataSource and produces a [LiveData] object
- * that is combined with the [viewStates] in order to properly map the data into a [MovieListViewState].
+ * that is combined with the [viewState] in order to properly map the data into a [MovieListViewState].
  *
  * This VM is language aware, meaning that when the user changes the language of the device, the
  * VM is notified about such event and executes a refresh of both: the data stored by the application
@@ -39,8 +39,8 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                              private val imagesPathInteractor: ImagesPathInteractor)
     : MPScopedViewModel(dispatchers) {
 
-    private val _viewStates = MediatorLiveData<MovieListViewState>()
-    val viewStates: LiveData<MovieListViewState> get() = _viewStates
+    private val _viewState = MediatorLiveData<MovieListViewState>()
+    val viewState: LiveData<MovieListViewState> get() = _viewState
 
     private val _navEvents = SingleLiveEvent<NavigateToDetailsEvent>()
     val navEvents: LiveData<NavigateToDetailsEvent> get() = _navEvents
@@ -59,10 +59,10 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Map the business logic coming from the interactor into view layer logic.
      */
     init {
-        _viewStates.addSource(movieListInteractor.events) { event ->
+        _viewState.addSource(movieListInteractor.events) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewStates.value = MovieListViewState.showNoConnectivityError(currentParam.titleRes, retry)
-                is UnknownError -> _viewStates.value = MovieListViewState.showUnknownError(currentParam.titleRes, retry)
+                is NotConnectedToNetwork -> _viewState.value = MovieListViewState.showNoConnectivityError(currentParam.titleRes, retry)
+                is UnknownError -> _viewState.value = MovieListViewState.showUnknownError(currentParam.titleRes, retry)
                 is UserChangedLanguage -> refreshData()
             }
         }
@@ -103,10 +103,10 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * of [MovieListItem] that will be rendered by the view layer.
      */
     private fun postLoadingAndInitializePagedList(posterSize: Int, backdropSize: Int, section: MovieSection) {
-        _viewStates.value = MovieListViewState.showLoading(currentParam.titleRes)
-        _viewStates.addSource(createPagedList(posterSize, backdropSize, section)) { pagedList ->
+        _viewState.value = MovieListViewState.showLoading(currentParam.titleRes)
+        _viewState.addSource(createPagedList(posterSize, backdropSize, section)) { pagedList ->
             if (pagedList.isNotEmpty()) {
-                _viewStates.value = MovieListViewState.showMovieList(currentParam.titleRes, pagedList)
+                _viewState.value = MovieListViewState.showMovieList(currentParam.titleRes, pagedList)
             }
         }
     }
