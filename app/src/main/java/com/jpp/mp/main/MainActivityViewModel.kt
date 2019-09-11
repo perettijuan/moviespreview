@@ -1,4 +1,4 @@
-package com.jpp.mp.screens.main
+package com.jpp.mp.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

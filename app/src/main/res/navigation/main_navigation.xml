@@ -14,18 +14,18 @@
 
     <fragment
         android:id="@+id/playingMoviesFragment"
-        android:name="com.jpp.mp.screens.main.movies.fragments.PlayingMoviesFragment"
+        android:name="com.jpp.mp.main.movies.fragments.PlayingMoviesFragment"
         tools:layout="@layout/fragment_movie_list" />
     <fragment
         android:id="@+id/popularMoviesFragment"
-        android:name="com.jpp.mp.screens.main.movies.fragments.PopularMoviesFragment"
+        android:name="com.jpp.mp.main.movies.fragments.PopularMoviesFragment"
         tools:layout="@layout/fragment_movie_list" />
     <fragment
         android:id="@+id/upcomingMoviesFragment"
-        android:name="com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment"
+        android:name="com.jpp.mp.main.movies.fragments.UpcomingMoviesFragment"
         tools:layout="@layout/fragment_movie_list"/>
     <fragment
         android:id="@+id/topRatedMoviesFragment"
-        android:name="com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment"
+        android:name="com.jpp.mp.main.movies.fragments.TopRatedMoviesFragment"
         tools:layout="@layout/fragment_movie_list"/>
 </navigation>

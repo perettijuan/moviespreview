@@ -1,8 +1,8 @@
-package com.jpp.mp.screens.main.movies
+package com.jpp.mp.main.movies
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.screens.main.movies.MovieListInteractor.MovieListEvent.*
+import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.*
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection

@@ -1,8 +1,11 @@
-package com.jpp.mp.screens.main
+package com.jpp.mp.main
 
 import android.os.Bundle
 import com.jpp.mp.R
 import com.jpp.mp.common.navigation.Destination
+import com.jpp.mp.main.MainActivityViewModel
+import com.jpp.mp.main.MainActivityViewState
+import com.jpp.mp.main.ModuleNavigationEvent
 import com.jpp.mpdata.datasources.language.LanguageMonitor
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mptestutils.InstantTaskExecutorExtension

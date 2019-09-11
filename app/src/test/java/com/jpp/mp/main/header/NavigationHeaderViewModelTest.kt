@@ -1,9 +1,12 @@
-package com.jpp.mp.screens.main.header
+package com.jpp.mp.main.header
 
 import android.view.View
 import androidx.lifecycle.MediatorLiveData
 import com.jpp.mp.R
-import com.jpp.mp.screens.main.TestCoroutineDispatchers
+import com.jpp.mp.main.header.HeaderViewState
+import com.jpp.mp.main.header.NavigationHeaderInteractor
+import com.jpp.mp.main.header.NavigationHeaderViewModel
+import com.jpp.mp.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.UserAvatar

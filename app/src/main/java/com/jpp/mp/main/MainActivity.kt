@@ -1,4 +1,4 @@
-package com.jpp.mp.screens.main
+package com.jpp.mp.main
 
 import android.os.Bundle
 import android.view.Menu

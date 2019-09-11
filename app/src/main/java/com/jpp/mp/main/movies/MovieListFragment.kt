@@ -1,4 +1,4 @@
-package com.jpp.mp.screens.main.movies
+package com.jpp.mp.main.movies
 
 import android.content.Context
 import android.os.Bundle

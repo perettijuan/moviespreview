@@ -1,8 +1,12 @@
-package com.jpp.mp.screens.main.movies
+package com.jpp.mp.main.movies
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
+import com.jpp.mp.main.movies.MovieListInteractor
+import com.jpp.mp.main.movies.MovieListParam
+import com.jpp.mp.main.movies.MovieListViewModel
+import com.jpp.mp.main.movies.MovieListViewState
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mptestutils.InstantTaskExecutorExtension

@@ -1,4 +1,4 @@
-package com.jpp.mp.screens.main.header
+package com.jpp.mp.main.header
 
 import android.view.View
 import androidx.annotation.StringRes

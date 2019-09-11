@@ -2,7 +2,7 @@ package com.jpp.mp.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.jpp.mp.screens.main.MainActivityViewModel
+import com.jpp.mp.main.MainActivityViewModel
 import io.mockk.mockk
 
 @Suppress("UNCHECKED_CAST")

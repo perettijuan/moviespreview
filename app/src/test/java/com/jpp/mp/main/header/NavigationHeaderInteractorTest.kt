@@ -1,8 +1,9 @@
-package com.jpp.mp.screens.main.header
+package com.jpp.mp.main.header
 
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.screens.main.header.NavigationHeaderInteractor.HeaderDataEvent
-import com.jpp.mp.screens.main.header.NavigationHeaderInteractor.HeaderDataEvent.*
+import com.jpp.mp.main.header.NavigationHeaderInteractor
+import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent
+import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.*
 import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.repository.AccountRepository
