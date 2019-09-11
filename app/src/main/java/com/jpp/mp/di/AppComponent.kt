@@ -5,6 +5,10 @@ import dagger.Component
 import dagger.android.AndroidInjectionModule
 import javax.inject.Singleton
 
+/**
+ * Dagger AppComponent interface that defines all the modules that are involved on the
+ * dependency injection of the application.
+ */
 @Singleton
 @Component(modules = [
     AppModule::class,

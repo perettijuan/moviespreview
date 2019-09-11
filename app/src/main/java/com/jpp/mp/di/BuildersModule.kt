@@ -19,6 +19,10 @@ import com.jpp.mpsearch.SearchFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
+/**
+ * Dagger module used to bind the [MainActivity] and all the Fragments in the application
+ * with the dependencies they need.
+ */
 @Module
 abstract class BuildersModule {
     @ContributesAndroidInjector
