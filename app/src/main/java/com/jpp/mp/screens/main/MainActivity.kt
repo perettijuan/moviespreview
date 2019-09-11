@@ -17,10 +17,9 @@ import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.*
 import com.jpp.mp.R
+import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.NavigationViewModel
-import com.jpp.mp.ext.closeDrawerIfOpen
-import com.jpp.mp.ext.setActionBarTitle
-import com.jpp.mp.ext.withViewModel
+import com.jpp.mpdesign.ext.closeDrawerIfOpen
 import com.jpp.mpdesign.ext.setGone
 import com.jpp.mpdesign.ext.setVisible
 import dagger.android.AndroidInjection
@@ -216,7 +215,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     private fun withNavigationViewModel(action: NavigationViewModel.() -> Unit) = withViewModel<NavigationViewModel>(viewModelFactory) { action() }
 
     private fun renderViewState(viewState: MainActivityViewState) {
-        setActionBarTitle(viewState.sectionTitle)
+        supportActionBar?.title = viewState.sectionTitle
         when (viewState.searchEnabled) {
             true -> {
                 mainSearchView.setVisible()

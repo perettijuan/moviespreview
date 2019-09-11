@@ -15,6 +15,8 @@ import androidx.annotation.StringRes
 import androidx.annotation.StyleRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mpdesign.R
@@ -41,13 +43,6 @@ fun View.setVisible() {
     this.visibility = View.VISIBLE
 }
 
-/**
- * Extension function for the View class to make a View visible when [condition] is true.
- * If [condition] is false, the [defVisibility] is applied.
- */
-fun View.setVisibleWhen(condition: Boolean, defVisibility: Int = View.GONE) {
-    this.visibility = if (condition) View.VISIBLE else defVisibility
-}
 
 /**
  * Extension function for the View class to make a View gone
@@ -152,18 +147,15 @@ private fun Palette.withMostPopulous(callback: (Palette.Swatch) -> Unit) {
     mostPopulous?.let(callback)
 }
 
-
 /**
- * Finds a particular view identified with [viewId] in the provided [position]
- * of the Adapter that backs the [RecyclerView].
- * Pre-condition: the [RecyclerView] needs to have a [LayoutManager] set.
+ * Closes the drawer if it is expanded (using the START margin to determinate if is expanded).
  */
-fun RecyclerView.findViewInPositionWithId(position: Int, viewId: Int): View {
-    return layoutManager
-            ?.findViewByPosition(position)
-            ?.findViewById(viewId)
-            ?: throw IllegalStateException("You need to set a LayoutManager first")
+fun DrawerLayout.closeDrawerIfOpen() {
+    if (isDrawerOpen(GravityCompat.START)) {
+        closeDrawer(GravityCompat.START)
+    }
 }
+
 
 /**
  * Sets the text appearance of the TextView based on the current API level.
