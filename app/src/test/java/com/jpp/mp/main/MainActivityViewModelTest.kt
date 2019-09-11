@@ -3,9 +3,6 @@ package com.jpp.mp.main
 import android.os.Bundle
 import com.jpp.mp.R
 import com.jpp.mp.common.navigation.Destination
-import com.jpp.mp.main.MainActivityViewModel
-import com.jpp.mp.main.MainActivityViewState
-import com.jpp.mp.main.ModuleNavigationEvent
 import com.jpp.mpdata.datasources.language.LanguageMonitor
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mptestutils.InstantTaskExecutorExtension
@@ -54,7 +51,7 @@ class MainActivityViewModelTest {
     fun `Should post view state when destination reached`(destination: Destination, expectedViewState: MainActivityViewState) {
         var postedViewState: MainActivityViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> postedViewState = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> postedViewState = viewState } }
 
         subject.onDestinationReached(destination)
 

@@ -30,8 +30,8 @@ import javax.inject.Inject
 class MainActivityViewModel @Inject constructor(private val languageMonitor: LanguageMonitor,
                                                 private val languageRepository: LanguageRepository) : ViewModel() {
 
-    private val _viewStates = MutableLiveData<HandledViewState<MainActivityViewState>>()
-    val viewStates: LiveData<HandledViewState<MainActivityViewState>> get() = _viewStates
+    private val _viewState = MutableLiveData<HandledViewState<MainActivityViewState>>()
+    val viewState: LiveData<HandledViewState<MainActivityViewState>> get() = _viewState
 
     private val _moduleNavEvents = SingleLiveEvent<ModuleNavigationEvent>()
     val moduleNavEvents: LiveData<ModuleNavigationEvent> get() = _moduleNavEvents
@@ -87,7 +87,7 @@ class MainActivityViewModel @Inject constructor(private val languageMonitor: Lan
      * to update the search bar state.
      */
     private fun renderSearchViewState() {
-        _viewStates.value = of(MainActivityViewState(
+        _viewState.value = of(MainActivityViewState(
                 sectionTitle = "",
                 menuBarEnabled = false,
                 searchEnabled = true
@@ -100,7 +100,7 @@ class MainActivityViewModel @Inject constructor(private val languageMonitor: Lan
      * contains the title of the feature being navigated.
      */
     private fun renderFeatureViewState(sectionName: String) {
-        _viewStates.value = of(MainActivityViewState(
+        _viewState.value = of(MainActivityViewState(
                 sectionTitle = sectionName,
                 menuBarEnabled = false,
                 searchEnabled = false
@@ -113,7 +113,7 @@ class MainActivityViewModel @Inject constructor(private val languageMonitor: Lan
      * the name of the section being shown.
      */
     private fun renderMovieListViewState(sectionName: String) {
-        _viewStates.value = of(MainActivityViewState(
+        _viewState.value = of(MainActivityViewState(
                 sectionTitle = sectionName,
                 menuBarEnabled = true,
                 searchEnabled = false
