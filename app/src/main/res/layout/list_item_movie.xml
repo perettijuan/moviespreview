@@ -5,7 +5,7 @@
 
         <variable
             name="viewState"
-            type="com.jpp.mp.screens.main.movies.MovieListItem" />
+            type="com.jpp.mp.main.movies.MovieListItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"

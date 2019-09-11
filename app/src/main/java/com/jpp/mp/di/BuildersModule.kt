@@ -1,11 +1,11 @@
 package com.jpp.mp.di
 
-import com.jpp.mp.screens.main.MainActivity
-import com.jpp.mp.screens.main.header.NavigationHeaderFragment
-import com.jpp.mp.screens.main.movies.fragments.PlayingMoviesFragment
-import com.jpp.mp.screens.main.movies.fragments.PopularMoviesFragment
-import com.jpp.mp.screens.main.movies.fragments.TopRatedMoviesFragment
-import com.jpp.mp.screens.main.movies.fragments.UpcomingMoviesFragment
+import com.jpp.mp.main.MainActivity
+import com.jpp.mp.main.header.NavigationHeaderFragment
+import com.jpp.mp.main.movies.fragments.PlayingMoviesFragment
+import com.jpp.mp.main.movies.fragments.PopularMoviesFragment
+import com.jpp.mp.main.movies.fragments.TopRatedMoviesFragment
+import com.jpp.mp.main.movies.fragments.UpcomingMoviesFragment
 import com.jpp.mpabout.AboutFragment
 import com.jpp.mpabout.licenses.LicensesFragment
 import com.jpp.mpabout.licenses.content.LicenseContentFragment
@@ -19,6 +19,10 @@ import com.jpp.mpsearch.SearchFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
+/**
+ * Dagger module used to bind the [MainActivity] and all the Fragments in the application
+ * with the dependencies they need.
+ */
 @Module
 abstract class BuildersModule {
     @ContributesAndroidInjector

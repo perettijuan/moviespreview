@@ -9,7 +9,7 @@ import dagger.Provides
 import javax.inject.Singleton
 
 /**
- * Provides appModule scoped dependencies.
+ * Provides general purpose dependencies.
  */
 @Module
 class AppModule(private val appInstance: MPApp) {

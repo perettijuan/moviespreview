@@ -3,9 +3,9 @@ package com.jpp.mp.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.common.navigation.NavigationViewModel
-import com.jpp.mp.screens.main.MainActivityViewModel
-import com.jpp.mp.screens.main.header.NavigationHeaderViewModel
-import com.jpp.mp.screens.main.movies.MovieListViewModel
+import com.jpp.mp.main.MainActivityViewModel
+import com.jpp.mp.main.header.NavigationHeaderViewModel
+import com.jpp.mp.main.movies.MovieListViewModel
 import com.jpp.mpabout.AboutViewModel
 import com.jpp.mpabout.licenses.LicensesViewModel
 import com.jpp.mpabout.licenses.content.LicenseContentViewModel
