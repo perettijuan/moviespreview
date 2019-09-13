@@ -58,14 +58,6 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
         fetchMovieState(movieId)
     }
 
-
-    /**
-     * Called when the user retries after an error.
-     */
-    fun onRetry() {
-        fetchMovieState(currentMovieId)
-    }
-
     /**
      * Called when the user selects the main action. This will
      * start the animation to show/hide the possible actions the
