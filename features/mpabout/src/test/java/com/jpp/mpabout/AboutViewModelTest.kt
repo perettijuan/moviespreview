@@ -55,7 +55,7 @@ class AboutViewModelTest {
                 AboutItem.TheMovieDbTermsOfUse
         )
 
-        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         lvInteractorEvents.postValue(AboutInteractor.AboutEvent.AppVersionEvent(AppVersion("appVersion")))
 

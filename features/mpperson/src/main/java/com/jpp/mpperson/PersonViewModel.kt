@@ -30,8 +30,8 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                           private val personInteractor: PersonInteractor)
     : MPScopedViewModel(dispatchers) {
 
-    private val _viewStates = MediatorLiveData<HandledViewState<PersonViewState>>()
-    val viewStates: LiveData<HandledViewState<PersonViewState>> get() = _viewStates
+    private val _viewState = MediatorLiveData<HandledViewState<PersonViewState>>()
+    val viewState: LiveData<HandledViewState<PersonViewState>> get() = _viewState
 
     private lateinit var currentParam: PersonParam
 
@@ -41,11 +41,11 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Map the business logic coming from the interactor into view layer logic.
      */
     init {
-        _viewStates.addSource(personInteractor.events) { event ->
+        _viewState.addSource(personInteractor.events) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewStates.value = of(PersonViewState.showNoConnectivityError(currentParam.personName, retry))
-                is UnknownError -> _viewStates.value = of(PersonViewState.showUnknownError(currentParam.personName, retry))
-                is Success -> _viewStates.value = of(getViewStateFromPersonData(currentParam.personName, event.person))
+                is NotConnectedToNetwork -> _viewState.value = of(PersonViewState.showNoConnectivityError(currentParam.personName, retry))
+                is UnknownError -> _viewState.value = of(PersonViewState.showUnknownError(currentParam.personName, retry))
+                is Success -> _viewState.value = of(getViewStateFromPersonData(currentParam.personName, event.person))
                 is AppLanguageChanged -> refreshPersonData(currentParam.personName, currentParam.personId)
             }
         }
@@ -69,7 +69,7 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     private fun fetchPersonData(personName: String, personId: Double) {
         withInteractor { fetchPerson(personId) }
-        _viewStates.value = of(PersonViewState.showLoading(personName))
+        _viewState.value = of(PersonViewState.showLoading(personName))
     }
 
     /**
@@ -82,7 +82,7 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             flushPersonData()
             fetchPerson(personId)
         }
-        _viewStates.value = of(PersonViewState.showLoading(personName))
+        _viewState.value = of(PersonViewState.showLoading(personName))
     }
 
     /**

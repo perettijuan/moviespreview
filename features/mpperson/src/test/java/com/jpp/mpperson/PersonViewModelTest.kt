@@ -38,7 +38,7 @@ class PersonViewModelTest {
     fun `Should post no connectivity error when disconnected`() {
         var viewStatePosted: PersonViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
         subject.onInit(PersonParam(10.0, "aPerson"))
 
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.NotConnectedToNetwork)
@@ -60,7 +60,7 @@ class PersonViewModelTest {
     fun `Should retry to fetch data when not connected and retry is executed`() {
         var viewStatePosted: PersonViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
         subject.onInit(PersonParam(10.0, "aPerson"))
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.NotConnectedToNetwork)
@@ -75,7 +75,7 @@ class PersonViewModelTest {
     fun `Should post error when failing to fetch user account data`() {
         var viewStatePosted: PersonViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
         subject.onInit(PersonParam(10.0, "aPerson"))
 
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.UnknownError)
@@ -97,7 +97,7 @@ class PersonViewModelTest {
     fun `Should retry to fetch data when error unknown and retry is executed`() {
         var viewStatePosted: PersonViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
         subject.onInit(PersonParam(10.0, "aPerson"))
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.UnknownError)
@@ -113,7 +113,7 @@ class PersonViewModelTest {
     fun `Should post loading and fetch person data onInit`() {
         var viewStatePosted: PersonViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
         subject.onInit(PersonParam(10.0, "aPerson"))
 
@@ -135,7 +135,7 @@ class PersonViewModelTest {
     fun `Should post loading, clear data and fetch person data on language changed `() {
         var viewStatePosted: PersonViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
         subject.onInit(PersonParam(10.0, "aPerson"))
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.AppLanguageChanged)
@@ -170,7 +170,7 @@ class PersonViewModelTest {
                 place_of_birth = null
         )
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
         subject.onInit(PersonParam(10.0, "aPerson"))
 
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.Success(person))
@@ -200,7 +200,7 @@ class PersonViewModelTest {
                 place_of_birth = "aPlaceOfBirth"
         )
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
         subject.onInit(PersonParam(10.0, "aPerson"))
 
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.Success(person))

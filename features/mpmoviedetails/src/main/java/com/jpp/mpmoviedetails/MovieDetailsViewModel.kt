@@ -48,8 +48,8 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
     : MPScopedViewModel(dispatchers) {
 
 
-    private val _viewStates = MediatorLiveData<HandledViewState<MovieDetailViewState>>()
-    val viewStates: LiveData<HandledViewState<MovieDetailViewState>> get() = _viewStates
+    private val _viewState = MediatorLiveData<HandledViewState<MovieDetailViewState>>()
+    val viewState: LiveData<HandledViewState<MovieDetailViewState>> get() = _viewState
 
     private val _navEvents = SingleLiveEvent<NavigateToCreditsEvent>()
     val navEvents: LiveData<NavigateToCreditsEvent> get() = _navEvents
@@ -62,10 +62,10 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
      * Map the business logic coming from the interactor into view layer logic.
      */
     init {
-        _viewStates.addSource(movieDetailsInteractor.movieDetailEvents) { event ->
+        _viewState.addSource(movieDetailsInteractor.movieDetailEvents) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewStates.value = of(MovieDetailViewState.showNoConnectivityError(currentParam.movieTitle, retry))
-                is UnknownError -> _viewStates.value = of(MovieDetailViewState.showUnknownError(currentParam.movieTitle, retry))
+                is NotConnectedToNetwork -> _viewState.value = of(MovieDetailViewState.showNoConnectivityError(currentParam.movieTitle, retry))
+                is UnknownError -> _viewState.value = of(MovieDetailViewState.showUnknownError(currentParam.movieTitle, retry))
                 is Success -> mapMovieDetails(event.data, currentParam.movieTitle, currentParam.movieImageUrl)
                 is AppLanguageChanged -> refreshDetailsData(currentParam.movieTitle, currentParam.movieId, currentParam.movieTitle)
             }
@@ -106,7 +106,7 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
      */
     private fun fetchMovieDetails(movieTitle: String, movieId: Double, movieImageUrl: String) {
         withMovieDetailsInteractor { fetchMovieDetail(movieId) }
-        _viewStates.value = of(MovieDetailViewState.showLoading(movieTitle, movieImageUrl))
+        _viewState.value = of(MovieDetailViewState.showLoading(movieTitle, movieImageUrl))
     }
 
     /**
@@ -119,7 +119,7 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
             flushMovieDetailsData()
             fetchMovieDetail(movieId)
         }
-        _viewStates.value = of(MovieDetailViewState.showLoading(movieTitle, movieImageUrl))
+        _viewState.value = of(MovieDetailViewState.showLoading(movieTitle, movieImageUrl))
     }
 
     /**
@@ -148,7 +148,7 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
                             genres = genres.map { genre -> mapGenreToIcon(genre) }
                     )
                 }
-            }.let { _viewStates.value = of(it) }
+            }.let { _viewState.value = of(it) }
         }
     }
 

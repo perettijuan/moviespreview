@@ -39,7 +39,7 @@ class LicensesFragment : MPFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         withViewModel {
-            viewStates.observe(viewLifecycleOwner, Observer { viewState ->
+            viewState.observe(viewLifecycleOwner, Observer { viewState ->
                 viewBinding.viewState = viewState
                 licensesRv.apply {
                     layoutManager = LinearLayoutManager(context)

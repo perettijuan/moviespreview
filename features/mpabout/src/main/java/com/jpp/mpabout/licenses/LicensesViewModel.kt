@@ -22,7 +22,7 @@ class LicensesViewModel @Inject constructor(coroutineDispatchers: CoroutineDispa
     : MPScopedViewModel(coroutineDispatchers) {
 
     private val _viewState = MediatorLiveData<LicensesViewState>()
-    val viewStates: LiveData<LicensesViewState> get() = _viewState
+    val viewState: LiveData<LicensesViewState> get() = _viewState
 
     private val _navEvents = SingleLiveEvent<GoToLicenseContentEvent>()
     val navEvents: LiveData<GoToLicenseContentEvent> get() = _navEvents

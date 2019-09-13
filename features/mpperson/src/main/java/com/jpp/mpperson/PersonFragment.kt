@@ -49,7 +49,7 @@ class PersonFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         withViewModel {
-            viewStates.observe(this@PersonFragment.viewLifecycleOwner, Observer {
+            viewState.observe(this@PersonFragment.viewLifecycleOwner, Observer {
                 it.actionIfNotHandled { viewState ->
                     viewBinding.viewState = viewState
                     withNavigationViewModel(viewModelFactory) {

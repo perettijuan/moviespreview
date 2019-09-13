@@ -45,7 +45,7 @@ class LicensesViewModelTest {
     fun `Should post loading and fetch licences in onInit`() {
         var viewStatePosted: LicensesViewState? = null
 
-        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit()
 
@@ -73,7 +73,7 @@ class LicensesViewModelTest {
                 LicenseItem(id = 8, name = "8")
         )
 
-        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         lvInteractorEvents.postValue(AboutInteractor.LicensesEvent.Success(Licenses(availableLicenses)))
 
@@ -90,7 +90,7 @@ class LicensesViewModelTest {
     fun `Should retry to fetch licenses when error is detected and retry is taped`() {
         var viewStatePosted: LicensesViewState? = null
 
-        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         lvInteractorEvents.postValue(AboutInteractor.LicensesEvent.UnknownError)
 

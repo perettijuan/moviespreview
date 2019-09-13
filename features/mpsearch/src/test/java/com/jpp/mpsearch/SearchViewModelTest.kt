@@ -54,14 +54,14 @@ class SearchViewModelTest {
          * an observer on the view states attached all the time in order
          * to get notifications.
          */
-        subject.viewStates.observeForever { }
+        subject.viewState.observeForever { }
     }
 
     @Test
     fun `Should post clear state on init`() {
         var viewStatePosted: SearchViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
         subject.onInit(10)
 
@@ -79,7 +79,7 @@ class SearchViewModelTest {
     fun `Should post no connectivity error when disconnected`() {
         var viewStatePosted: SearchViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
         subject.onSearch("aSearch")
         lvInteractorEvents.postValue(NotConnectedToNetwork)
@@ -100,7 +100,7 @@ class SearchViewModelTest {
     fun `Should post error when failing to fetch user account data`() {
         var viewStatePosted: SearchViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
         subject.onSearch("aSearch")
         lvInteractorEvents.postValue(UnknownError)

@@ -51,7 +51,7 @@ class MovieDetailsFragment : MPFragment() {
 
 
         withViewModel {
-            viewStates.observe(viewLifecycleOwner, Observer {
+            viewState.observe(viewLifecycleOwner, Observer {
                 it.actionIfNotHandled { viewState ->
                     viewBinding.viewState = viewState
                     viewBinding.executePendingBindings()
@@ -71,7 +71,7 @@ class MovieDetailsFragment : MPFragment() {
         }
 
         withActionsViewModel {
-            viewStates.observe(viewLifecycleOwner, Observer { viewState -> renderActionViewState(viewState) })
+            viewState.observe(viewLifecycleOwner, Observer { viewState -> renderActionViewState(viewState) })
             onInit(movieId(arguments).toDouble())
         }
 

@@ -21,7 +21,7 @@ class AboutViewModel @Inject constructor(coroutineDispatchers: CoroutineDispatch
     : MPScopedViewModel(coroutineDispatchers) {
 
     private val _viewState = MediatorLiveData<AboutViewState>()
-    val viewStates: LiveData<AboutViewState> get() = _viewState
+    val viewState: LiveData<AboutViewState> get() = _viewState
 
     private val _navEvents = SingleLiveEvent<AboutNavEvent>()
     val navEvents: LiveData<AboutNavEvent> get() = _navEvents

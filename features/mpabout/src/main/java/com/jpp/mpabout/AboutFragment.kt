@@ -1,7 +1,6 @@
 package com.jpp.mpabout
 
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -11,7 +10,6 @@ import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,9 +19,7 @@ import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpabout.databinding.FragmentAboutBinding
 import com.jpp.mpabout.databinding.ListItemAboutBinding
 import com.jpp.mpdesign.ext.getColor
-import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_about.*
-import javax.inject.Inject
 
 /**
  * Fragment used to show the about section oof the application.
@@ -44,7 +40,7 @@ class AboutFragment : MPFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         withViewModel {
-            viewStates.observe(viewLifecycleOwner, Observer { viewState ->
+            viewState.observe(viewLifecycleOwner, Observer { viewState ->
                 viewBinding.viewState = viewState
                 aboutRv.apply {
                     layoutManager = LinearLayoutManager(context)
