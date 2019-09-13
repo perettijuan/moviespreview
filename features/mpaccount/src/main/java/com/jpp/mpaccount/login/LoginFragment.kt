@@ -34,6 +34,9 @@ import javax.inject.Inject
  * Following that model, this Fragment provides a WebView that renders the web content needed to perform
  * the login and captures any redirection performed by the web site, delegating the responsibility
  * of performing the actual login to a ViewModel that supports this Fragment.
+ *
+ * The Fragment does not uses DataBinding in order to simplify the URL loading and interception
+ * when the login page needs to be shown.
  */
 class LoginFragment : Fragment() {
 
@@ -52,7 +55,7 @@ class LoginFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         withViewModel {
-            viewStates.observe(this@LoginFragment.viewLifecycleOwner, Observer { viewState -> viewState.actionIfNotHandled { renderViewState(it) } })
+            viewState.observe(this@LoginFragment.viewLifecycleOwner, Observer { viewState -> renderViewState(viewState) })
             navEvents.observe(this@LoginFragment.viewLifecycleOwner, Observer { continueToUserAccount() })
             onInit()
         }

@@ -5,8 +5,6 @@ import androidx.lifecycle.MediatorLiveData
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
-import com.jpp.mp.common.viewstate.HandledViewState
-import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
 import com.jpp.mpaccount.login.LoginInteractor.LoginEvent
 import com.jpp.mpaccount.login.LoginInteractor.OauthEvent
 import com.jpp.mpaccount.login.LoginViewState.*
@@ -16,47 +14,55 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * ViewModel used to support the login process.
- * Contains the view layer logic defined to provide the user the steps needed to login to
- * the system.
+ * [MPScopedViewModel] that supports the login process. The login implementation is implemented using
+ * Oauth - therefore, this VM takes care of updating the view state of the [LoginFragment] in order
+ * to properly render the view state needed to support Oauth.
  */
 class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                          private val loginInteractor: LoginInteractor)
     : MPScopedViewModel(dispatchers) {
 
-    private val _viewStates by lazy { MediatorLiveData<HandledViewState<LoginViewState>>() }
-    private val _navEvents by lazy { SingleLiveEvent<LoginNavigationEvent>() }
+    private val _viewState = MediatorLiveData<LoginViewState>()
+    val viewState: LiveData<LoginViewState> get() = _viewState
+
+    private val _navEvents = SingleLiveEvent<ContinueToUserAccount>()
+    val navEvents: LiveData<ContinueToUserAccount> get() = _navEvents
+
     private var loginAccessToken: AccessToken? = null
 
     /*
      * Map the business logic coming from the interactor into view layer logic.
      */
     init {
-        _viewStates.addSource(loginInteractor.loginEvents) { loginEvent ->
+        _viewState.addSource(loginInteractor.loginEvents) { loginEvent ->
             when (loginEvent) {
-                is LoginEvent.NotConnectedToNetwork -> _viewStates.value = of(ShowNotConnected)
-                is LoginEvent.LoginSuccessful -> _navEvents.value = LoginNavigationEvent.ContinueToUserAccount
-                is LoginEvent.LoginError -> _viewStates.value = of(ShowLoginError)
-                is LoginEvent.UserAlreadyLogged -> _navEvents.value = LoginNavigationEvent.ContinueToUserAccount
-                is LoginEvent.ReadyToLogin -> _viewStates.value = of(executeOauth())
+                is LoginEvent.NotConnectedToNetwork -> _viewState.value = ShowNotConnected
+                is LoginEvent.LoginSuccessful -> _navEvents.value = ContinueToUserAccount
+                is LoginEvent.LoginError -> _viewState.value = ShowLoginError
+                is LoginEvent.UserAlreadyLogged -> _navEvents.value = ContinueToUserAccount
+                is LoginEvent.ReadyToLogin -> executeOauth()
             }
         }
 
-        _viewStates.addSource(loginInteractor.oauthEvents) { oauthEvent ->
+        _viewState.addSource(loginInteractor.oauthEvents) { oauthEvent ->
             when (oauthEvent) {
-                is OauthEvent.NotConnectedToNetwork -> _viewStates.value = of(ShowNotConnected)
-                is OauthEvent.OauthSuccessful -> _viewStates.value = of(createOauthViewState(oauthEvent))
-                is OauthEvent.OauthError -> _viewStates.value = of(ShowLoginError)
+                is OauthEvent.NotConnectedToNetwork -> _viewState.value = ShowNotConnected
+                is OauthEvent.OauthSuccessful -> _viewState.value = createOauthViewState(oauthEvent)
+                is OauthEvent.OauthError -> _viewState.value = ShowLoginError
             }
         }
     }
 
     /**
-     * Called when the view is initialized.
+     * Called on VM initialization. The View (Fragment) should call this method to
+     * indicate that it is ready to start rendering. When the method is called, the VM
+     * internally verifies the state of the application and updates the view state based
+     * on it.
      */
     fun onInit() {
-        clearState()
-        _viewStates.value = of(verifyUserLoggedIn())
+        loginAccessToken = null
+        withLoginInteractor { verifyUserLogged() }
+        _viewState.value = ShowLoading
     }
 
     /**
@@ -64,9 +70,9 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun onUserRedirectedToUrl(redirectUrl: String) {
         when {
-            redirectUrl.contains("approved=true") -> _viewStates.value = of(loginUser())
-            redirectUrl.contains("denied=true") -> _viewStates.value = of(executeOauth())
-            else -> _viewStates.value = of(ShowLoginError)
+            redirectUrl.contains("approved=true") -> loginUser()
+            redirectUrl.contains("denied=true") -> executeOauth()
+            else -> _viewState.value = ShowLoginError
         }
     }
 
@@ -74,37 +80,16 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Called when the user retries the login.
      */
     fun onUserRetry() {
-        _viewStates.value = of(executeOauth())
+        executeOauth()
     }
 
-    /**
-     * Subscribe to this [LiveData] in order to get notified about the different states that
-     * the view should render.
-     */
-    val viewStates: LiveData<HandledViewState<LoginViewState>> get() = _viewStates
-
-    /**
-     * Subscribe to this [LiveData] in order to get notified about navigation steps that
-     * should be performed by the view.
-     */
-    val navEvents: LiveData<LoginNavigationEvent> get() = _navEvents
-
-    private fun clearState() {
-        loginAccessToken = null
-    }
-
-    private fun executeOauth(): LoginViewState {
+    private fun executeOauth() {
         withLoginInteractor { fetchOauthData() }
-        return ShowLoading
+        _viewState.value = ShowLoading
     }
 
-    private fun verifyUserLoggedIn(): LoginViewState {
-        withLoginInteractor { verifyUserLogged() }
-        return ShowLoading
-    }
-
-    private fun loginUser(): LoginViewState {
-        return loginAccessToken?.let {
+    private fun loginUser() {
+        _viewState.value = loginAccessToken?.let {
             withLoginInteractor { loginUser(it) }
             ShowLoading
         } ?: ShowLoginError

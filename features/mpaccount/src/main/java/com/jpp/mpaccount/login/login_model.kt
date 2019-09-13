@@ -1,9 +1,12 @@
 package com.jpp.mpaccount.login
 
 /*
- * Contains the definitions for the entire model used in the login feature.
+ * This file contains the definitions for the entire model used in the login section.
  */
 
+/**************************************************************************************************
+ *************************************** VIEW STATES **********************************************
+ **************************************************************************************************/
 /**
  * Represents the view states that the login view can assume.
  */
@@ -31,13 +34,12 @@ sealed class LoginViewState {
                          val reminder: Boolean = false) : LoginViewState()
 }
 
+/**************************************************************************************************
+ *************************************** NAVIGATION ***********************************************
+ **************************************************************************************************/
+
 /**
- * Represents all the navigation events that the login view will response to.
+ * Event used when the user is logged in to dismiss the login view and go to user
+ * account section.
  */
-sealed class LoginNavigationEvent {
-    /*
-     * Used when the user is logged in to dismiss the login view and go to user
-     * account section.
-     */
-    object ContinueToUserAccount : LoginNavigationEvent()
-}
+object ContinueToUserAccount

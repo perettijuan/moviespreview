@@ -88,7 +88,6 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
         )
     }
 
-
     /**
      * Called when the user wants to navigate to the movie credits section.
      * A new state is posted in [navEvents] in order to handle the event.

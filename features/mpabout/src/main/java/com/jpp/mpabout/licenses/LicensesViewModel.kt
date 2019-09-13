@@ -40,7 +40,10 @@ class LicensesViewModel @Inject constructor(coroutineDispatchers: CoroutineDispa
     }
 
     /**
-     * Called when the view is initialized.
+     * Called on VM initialization. The View (Fragment) should call this method to
+     * indicate that it is ready to start rendering. When the method is called, the VM
+     * internally verifies the state of the application and updates the view state based
+     * on it.
      */
     fun onInit() {
         pushLoadingAndFetchAppLicenses()
