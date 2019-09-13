@@ -28,7 +28,7 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     val navEvents: LiveData<ContinueToUserAccount> get() = _navEvents
 
     private var loginAccessToken: AccessToken? = null
-    private val retry: () -> Unit = { executeOauth() }
+    private val retry: () -> Unit = { onInit() }
 
     /*
      * Map the business logic coming from the interactor into view layer logic.
