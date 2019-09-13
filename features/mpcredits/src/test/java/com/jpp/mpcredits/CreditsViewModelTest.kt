@@ -55,7 +55,7 @@ class CreditsViewModelTest {
     fun `Should post no connectivity error when disconnected`() {
         var viewStatePosted: CreditsViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
 
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.NotConnectedToNetwork)
@@ -73,7 +73,7 @@ class CreditsViewModelTest {
     fun `Should retry to fetch data when not connected and retry is executed`() {
         var viewStatePosted: CreditsViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.NotConnectedToNetwork)
@@ -88,7 +88,7 @@ class CreditsViewModelTest {
     fun `Should post error when failing to fetch credits`() {
         var viewStatePosted: CreditsViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
 
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.UnknownError)
@@ -106,7 +106,7 @@ class CreditsViewModelTest {
     fun `Should retry to fetch data when error unknown and retry is executed`() {
         var viewStatePosted: CreditsViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.UnknownError)
@@ -121,7 +121,7 @@ class CreditsViewModelTest {
     fun `Should post loading, clear data and fetch credits on language changed `() {
         var viewStatePosted: CreditsViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.AppLanguageChanged)
@@ -145,7 +145,7 @@ class CreditsViewModelTest {
     fun `Should post loading and fetch person data onInit`() {
         var viewStatePosted: CreditsViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
 
@@ -169,7 +169,7 @@ class CreditsViewModelTest {
                 crew = listOf()
         )
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
 
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.Success(credits))
@@ -196,7 +196,7 @@ class CreditsViewModelTest {
 
         every { imagesPathInteractor.configureCastCharacter(any(), any()) } answers { arg(1) }
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.Success(credits))

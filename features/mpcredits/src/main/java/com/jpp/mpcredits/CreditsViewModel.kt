@@ -6,8 +6,6 @@ import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.extensions.addAllMapping
-import com.jpp.mp.common.viewstate.HandledViewState
-import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
 import com.jpp.mpcredits.CreditsInteractor.CreditsEvent.*
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
@@ -35,10 +33,10 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     : MPScopedViewModel(dispatchers) {
 
 
-    private val _viewStates by lazy { MediatorLiveData<HandledViewState<CreditsViewState>>() }
-    val viewStates: LiveData<HandledViewState<CreditsViewState>> get() = _viewStates
+    private val _viewState = MediatorLiveData<CreditsViewState>()
+    val viewState: LiveData<CreditsViewState> get() = _viewState
 
-    private val _navEvents by lazy { SingleLiveEvent<NavigateToPersonEvent>() }
+    private val _navEvents = SingleLiveEvent<NavigateToPersonEvent>()
     val navEvents: LiveData<NavigateToPersonEvent> get() = _navEvents
 
     private lateinit var currentParam: CreditsInitParam
@@ -49,10 +47,10 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Map the business logic coming from the interactor into view layer logic.
      */
     init {
-        _viewStates.addSource(creditsInteractor.events) { event ->
+        _viewState.addSource(creditsInteractor.events) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewStates.value = of(CreditsViewState.showNoConnectivityError(currentParam.movieTitle, retry))
-                is UnknownError -> _viewStates.value = of(CreditsViewState.showUnknownError(currentParam.movieTitle, retry))
+                is NotConnectedToNetwork -> _viewState.value = CreditsViewState.showNoConnectivityError(currentParam.movieTitle, retry)
+                is UnknownError -> _viewState.value = CreditsViewState.showUnknownError(currentParam.movieTitle, retry)
                 is Success -> mapCreditsAndPushViewState(currentParam.movieTitle, event.credits)
                 is AppLanguageChanged -> refreshCreditsData(currentParam.movieTitle, currentParam.movieId)
             }
@@ -91,7 +89,7 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     private fun fetchMovieCredits(movieTitle: String, movieId: Double) {
         withInteractor { fetchCreditsForMovie(movieId) }
-        _viewStates.value = of(CreditsViewState.showLoading(movieTitle))
+        _viewState.value = CreditsViewState.showLoading(movieTitle)
     }
 
     /**
@@ -104,7 +102,7 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             flushCreditsData()
             fetchCreditsForMovie(creditsId)
         }
-        _viewStates.value = of(CreditsViewState.showLoading(movieTitle))
+        _viewState.value = CreditsViewState.showLoading(movieTitle)
     }
 
     /**
@@ -122,7 +120,7 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     private fun mapCreditsAndPushViewState(movieTitle: String, credits: Credits) {
         when (credits.cast.isEmpty() && credits.crew.isEmpty()) {
-            true -> _viewStates.value = of(CreditsViewState.showNoCreditsAvailable(movieTitle))
+            true -> _viewState.value = CreditsViewState.showNoCreditsAvailable(movieTitle)
             false -> {
                 launch {
                     withContext(dispatchers.default()) {
@@ -134,7 +132,7 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                         .toMutableList()
                                         .addAllMapping { credits.crew.map { crewMember -> mapCrewMemberToCreditPerson(crewMember) } }
                         )
-                    }.let { _viewStates.value = of(it) }
+                    }.let { _viewState.value = it }
                 }
             }
         }
