@@ -10,13 +10,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.*
+import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpabout.databinding.FragmentAboutBinding
 import com.jpp.mpabout.databinding.ListItemAboutBinding
@@ -32,17 +32,9 @@ import javax.inject.Inject
  * and show the about data. The VM will perform the fetch and will update the UI states
  * represented by [AboutViewState] and this Fragment will render those updates.
  */
-class AboutFragment : Fragment() {
+class AboutFragment : MPFragment() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    lateinit var viewBinding: FragmentAboutBinding
-
-    override fun onAttach(context: Context?) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
-    }
+    private lateinit var viewBinding: FragmentAboutBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_about, container, false)

@@ -16,6 +16,7 @@ import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.databinding.FragmentMovieListBinding
 import com.jpp.mp.databinding.ListItemMovieBinding
 
@@ -66,7 +67,10 @@ abstract class MovieListFragment : MPFragment() {
         withViewModel {
             viewState.observe(viewLifecycleOwner, Observer { viewState ->
                 viewBinding.viewState = viewState
-                updateScreenTitle(viewState.screenTitle)
+
+                withNavigationViewModel(viewModelFactory) {
+                    destinationReached(Destination.MovieListReached(getString(viewState.screenTitle)))
+                }
 
                 withRecyclerView {
                     (adapter as MoviesAdapter).submitList(viewState.contentViewState.movieList)
