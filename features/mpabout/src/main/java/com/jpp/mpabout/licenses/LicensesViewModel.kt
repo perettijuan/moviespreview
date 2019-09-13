@@ -14,23 +14,30 @@ import javax.inject.Inject
 import  com.jpp.mpabout.AboutInteractor.LicensesEvent.*
 import com.jpp.mpdomain.License
 
+/**
+ * [MPScopedViewModel] that supports the list of [License]s that the application uses.
+ */
 class LicensesViewModel @Inject constructor(coroutineDispatchers: CoroutineDispatchers,
                                             private val aboutInteractor: AboutInteractor)
     : MPScopedViewModel(coroutineDispatchers) {
 
+    private val _viewState = MediatorLiveData<LicensesViewState>()
+    val viewStates: LiveData<LicensesViewState> get() = _viewState
 
-    private val _viewStates by lazy { MediatorLiveData<HandledViewState<LicensesViewState>>() }
-    private val _navEvents by lazy { SingleLiveEvent<GoToLicenseContentEvent>() }
+    private val _navEvents = SingleLiveEvent<GoToLicenseContentEvent>()
+    val navEvents: LiveData<GoToLicenseContentEvent> get() = _navEvents
 
+    /*
+     * Map the business logic coming from the interactor into view layer logic.
+     */
     init {
-        _viewStates.addSource(aboutInteractor.licenseEvents) { event ->
+        _viewState.addSource(aboutInteractor.licenseEvents) { event ->
             when (event) {
                 is UnknownError -> LicensesViewState.showError { pushLoadingAndFetchAppLicenses() }
                 is Success -> LicensesViewState.showContent(event.results.licenses.map { mapLicense(it) })
-            }.let { _viewStates.value = of(it) }
+            }.let { _viewState.value = it }
         }
     }
-
 
     /**
      * Called when the view is initialized.
@@ -48,25 +55,20 @@ class LicensesViewModel @Inject constructor(coroutineDispatchers: CoroutineDispa
     }
 
     /**
-     * Subscribe to this [LiveData] in order to get notified about the different states that
-     * the view should render.
+     * Helper function to perform an action with the [aboutInteractor] in a background
+     * thread.
      */
-    val viewStates: LiveData<HandledViewState<LicensesViewState>> get() = _viewStates
-
-    /**
-     * Subscribe to this [LiveData] in order to get notified about navigation steps that
-     * should be performed by the view.
-     */
-    val navEvents: LiveData<GoToLicenseContentEvent> get() = _navEvents
-
-
     private fun withInteractor(action: AboutInteractor.() -> Unit) {
         launch { withContext(dispatchers.default()) { action(aboutInteractor) } }
     }
 
+    /**
+     * Push the loading view state and fetch the application licenses in a
+     * background thread.
+     */
     private fun pushLoadingAndFetchAppLicenses() {
         withInteractor { fetchAppLicenses() }
-        _viewStates.value = of(LicensesViewState.showLoading())
+        _viewState.value = LicensesViewState.showLoading()
     }
 
     private fun mapLicense(license: License): LicenseItem = with(license) { LicenseItem(id = id, name = name) }

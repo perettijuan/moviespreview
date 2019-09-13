@@ -33,8 +33,8 @@ class AboutInteractor @Inject constructor(private val appVersionRepository: AppV
         data class Success(val results: Licenses) : LicensesEvent()
     }
 
-    private val _events by lazy { MediatorLiveData<AboutEvent>() }
-    private val _licenseEvents by lazy { MediatorLiveData<LicensesEvent>() }
+    private val _events = MediatorLiveData<AboutEvent>()
+    private val _licenseEvents = MediatorLiveData<LicensesEvent>()
 
     /**
      * @return a [LiveData] of [AboutEvent]. Subscribe to this [LiveData]

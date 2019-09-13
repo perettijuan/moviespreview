@@ -14,7 +14,6 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -47,7 +46,7 @@ class LicenseContentViewModelTest {
     fun `Should post loading and fetch licences in onInit`() {
         var viewStatePosted: LicenseContentViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(5)
 
@@ -66,7 +65,7 @@ class LicenseContentViewModelTest {
     fun `Should map show content with url for selected license`() {
         var viewStatePosted: LicenseContentViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(5)
         lvInteractorEvents.postValue(AboutInteractor.LicensesEvent.Success(Licenses(availableLicenses)))
@@ -85,7 +84,7 @@ class LicenseContentViewModelTest {
     fun `Should retry to fetch licenses when error is detected and retry is taped`() {
         var viewStatePosted: LicenseContentViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         lvInteractorEvents.postValue(AboutInteractor.LicensesEvent.UnknownError)
 
@@ -96,17 +95,15 @@ class LicenseContentViewModelTest {
     }
 
     private companion object {
-        private val availableLicenses by lazy {
-            listOf(
-                    License(id = 1, name = "1", url = "u1"),
-                    License(id = 2, name = "2", url = "u2"),
-                    License(id = 3, name = "3", url = "u3"),
-                    License(id = 4, name = "4", url = "u4"),
-                    License(id = 5, name = "5", url = "u5"),
-                    License(id = 6, name = "6", url = "u6"),
-                    License(id = 7, name = "7", url = "u7"),
-                    License(id = 8, name = "8", url = "u8")
-            )
-        }
+        private val availableLicenses = listOf(
+                License(id = 1, name = "1", url = "u1"),
+                License(id = 2, name = "2", url = "u2"),
+                License(id = 3, name = "3", url = "u3"),
+                License(id = 4, name = "4", url = "u4"),
+                License(id = 5, name = "5", url = "u5"),
+                License(id = 6, name = "6", url = "u6"),
+                License(id = 7, name = "7", url = "u7"),
+                License(id = 8, name = "8", url = "u8")
+        )
     }
 }

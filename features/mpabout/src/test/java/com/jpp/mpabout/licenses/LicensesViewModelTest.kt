@@ -45,7 +45,7 @@ class LicensesViewModelTest {
     fun `Should post loading and fetch licences in onInit`() {
         var viewStatePosted: LicensesViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit()
 
@@ -62,20 +62,18 @@ class LicensesViewModelTest {
     @Test
     fun `Should map licenses and show content when licenses are available`() {
         var viewStatePosted: LicensesViewState? = null
-        val expectedLicenses by lazy {
-            listOf(
-                    LicenseItem(id = 1, name = "1"),
-                    LicenseItem(id = 2, name = "2"),
-                    LicenseItem(id = 3, name = "3"),
-                    LicenseItem(id = 4, name = "4"),
-                    LicenseItem(id = 5, name = "5"),
-                    LicenseItem(id = 6, name = "6"),
-                    LicenseItem(id = 7, name = "7"),
-                    LicenseItem(id = 8, name = "8")
-            )
-        }
+        val expectedLicenses = listOf(
+                LicenseItem(id = 1, name = "1"),
+                LicenseItem(id = 2, name = "2"),
+                LicenseItem(id = 3, name = "3"),
+                LicenseItem(id = 4, name = "4"),
+                LicenseItem(id = 5, name = "5"),
+                LicenseItem(id = 6, name = "6"),
+                LicenseItem(id = 7, name = "7"),
+                LicenseItem(id = 8, name = "8")
+        )
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
 
         lvInteractorEvents.postValue(AboutInteractor.LicensesEvent.Success(Licenses(availableLicenses)))
 
@@ -92,7 +90,7 @@ class LicensesViewModelTest {
     fun `Should retry to fetch licenses when error is detected and retry is taped`() {
         var viewStatePosted: LicensesViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
 
         lvInteractorEvents.postValue(AboutInteractor.LicensesEvent.UnknownError)
 
@@ -103,17 +101,15 @@ class LicensesViewModelTest {
     }
 
     private companion object {
-        private val availableLicenses by lazy {
-            listOf(
-                    License(id = 1, name = "1", url = "u1"),
-                    License(id = 2, name = "2", url = "u2"),
-                    License(id = 3, name = "3", url = "u3"),
-                    License(id = 4, name = "4", url = "u4"),
-                    License(id = 5, name = "5", url = "u5"),
-                    License(id = 6, name = "6", url = "u6"),
-                    License(id = 7, name = "7", url = "u7"),
-                    License(id = 8, name = "8", url = "u8")
-            )
-        }
+        private val availableLicenses = listOf(
+                License(id = 1, name = "1", url = "u1"),
+                License(id = 2, name = "2", url = "u2"),
+                License(id = 3, name = "3", url = "u3"),
+                License(id = 4, name = "4", url = "u4"),
+                License(id = 5, name = "5", url = "u5"),
+                License(id = 6, name = "6", url = "u6"),
+                License(id = 7, name = "7", url = "u7"),
+                License(id = 8, name = "8", url = "u8")
+        )
     }
 }

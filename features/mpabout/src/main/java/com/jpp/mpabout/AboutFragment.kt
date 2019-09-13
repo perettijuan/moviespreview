@@ -26,12 +26,11 @@ import kotlinx.android.synthetic.main.fragment_about.*
 import javax.inject.Inject
 
 /**
- * Fragment used to show details of a particular actor or cast member.
+ * Fragment used to show the about section oof the application.
  *
  * When instantiated, this fragment invokes the [AboutViewModel] methods in order to retrieve
- * and show the about section. The VM will perform the
- * fetch and will update the UI states represented by [AboutViewState] and this Fragment will
- * render those updates.
+ * and show the about data. The VM will perform the fetch and will update the UI states
+ * represented by [AboutViewState] and this Fragment will render those updates.
  */
 class AboutFragment : Fragment() {
 
@@ -39,7 +38,6 @@ class AboutFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     lateinit var viewBinding: FragmentAboutBinding
-
 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
@@ -51,21 +49,18 @@ class AboutFragment : Fragment() {
         return viewBinding.root
     }
 
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         withViewModel {
-            viewStates.observe(viewLifecycleOwner, Observer {
-                it.actionIfNotHandled { viewState ->
-                    viewBinding.viewState = viewState
-                    aboutRv.apply {
-                        layoutManager = LinearLayoutManager(context)
-                        adapter = AboutItemsAdapter(viewState.content.aboutItems) { withViewModel { onUserSelectedAboutItem(it) } }
-                        addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
-                    }
-
-                    withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(getString(viewState.screenTitle))) }
+            viewStates.observe(viewLifecycleOwner, Observer { viewState ->
+                viewBinding.viewState = viewState
+                aboutRv.apply {
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = AboutItemsAdapter(viewState.content.aboutItems) { withViewModel { onUserSelectedAboutItem(it) } }
+                    addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
                 }
+
+                withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(getString(viewState.screenTitle))) }
             })
 
             navEvents.observe(viewLifecycleOwner, Observer { processNavEvent(it) })

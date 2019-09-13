@@ -25,13 +25,18 @@ import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_licenses.*
 import javax.inject.Inject
 
+/**
+ * Fragment used to show the the list of licenses that the application is using.
+ *
+ * The Fragment interacts with [LicensesViewModel] in order to render the [LicensesViewState]
+ * that the VM detects that is needed.
+ */
 class LicensesFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     lateinit var viewBinding: FragmentLicensesBinding
-
 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
@@ -46,29 +51,23 @@ class LicensesFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         withViewModel {
-            viewStates.observe(viewLifecycleOwner, Observer {
-                it.actionIfNotHandled { viewState ->
-                    viewBinding.viewState = viewState
-                    licensesRv.apply {
-                        layoutManager = LinearLayoutManager(context)
-                        adapter = LicensesAdapter(viewState.content.licenseItems) { withViewModel { onLicenseSelected(it) } }
-                        addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
-                    }
+            viewStates.observe(viewLifecycleOwner, Observer { viewState ->
+                viewBinding.viewState = viewState
+                licensesRv.apply {
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = LicensesAdapter(viewState.content.licenseItems) { withViewModel { onLicenseSelected(it) } }
+                    addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
                 }
+
+                withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(getString(viewState.screenTitle))) }
             })
 
             navEvents.observe(viewLifecycleOwner, Observer { showLicenseContent(it.licenseId) })
 
             onInit()
         }
-
-        // sync app bar title
-        withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(getString(R.string.about_open_source_action))) }
     }
 
-    /**
-     * Helper function to execute actions with the [LicensesViewModel].
-     */
     private fun withViewModel(action: LicensesViewModel.() -> Unit) = withViewModel<LicensesViewModel>(viewModelFactory) { action() }
 
 
