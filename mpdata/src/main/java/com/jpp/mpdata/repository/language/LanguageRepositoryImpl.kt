@@ -18,7 +18,7 @@ class LanguageRepositoryImpl(private val languageDb: LanguageDb,
                              languageMonitor: LanguageMonitor,
                              private val locale: LocaleWrapper = LocaleWrapper()) : LanguageRepository {
 
-    private val stateUpdates by lazy { MutableLiveData<SupportedLanguage>() }
+    private val stateUpdates = MutableLiveData<SupportedLanguage>()
 
     init {
         languageMonitor.addListener {

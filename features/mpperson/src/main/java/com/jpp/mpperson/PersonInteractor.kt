@@ -28,7 +28,7 @@ class PersonInteractor @Inject constructor(private val connectivityRepository: C
         data class Success(val person: Person) : PersonEvent()
     }
 
-    private val _events by lazy { MediatorLiveData<PersonEvent>() }
+    private val _events = MediatorLiveData<PersonEvent>()
 
     init {
         _events.addSource(languageRepository.updates()) {

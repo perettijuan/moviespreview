@@ -26,7 +26,7 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
                                                       private val movieDetailsInteractor: MovieDetailsInteractor)
     : MPScopedViewModel(dispatchers) {
 
-    private val _viewStates by lazy { MediatorLiveData<MovieDetailActionViewState>() }
+    private val _viewStates = MediatorLiveData<MovieDetailActionViewState>()
     val viewStates: LiveData<MovieDetailActionViewState> get() = _viewStates
 
     private var currentMovieId: Double = 0.0

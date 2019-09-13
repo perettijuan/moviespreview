@@ -30,7 +30,7 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                           private val personInteractor: PersonInteractor)
     : MPScopedViewModel(dispatchers) {
 
-    private val _viewStates by lazy { MediatorLiveData<HandledViewState<PersonViewState>>() }
+    private val _viewStates = MediatorLiveData<HandledViewState<PersonViewState>>()
     val viewStates: LiveData<HandledViewState<PersonViewState>> get() = _viewStates
 
     private lateinit var currentParam: PersonParam

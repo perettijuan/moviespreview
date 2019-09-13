@@ -11,7 +11,7 @@ import com.jpp.mpdomain.repository.AccountRepository
 class AccountRepositoryImpl(private val accountApi: AccountApi,
                             private val accountDb: AccountDb) : AccountRepository {
 
-    private val accountUpdates by lazy { MutableLiveData<UserAccount>() }
+    private val accountUpdates = MutableLiveData<UserAccount>()
 
     override fun userAccountUpdates(): LiveData<UserAccount> = accountUpdates
 

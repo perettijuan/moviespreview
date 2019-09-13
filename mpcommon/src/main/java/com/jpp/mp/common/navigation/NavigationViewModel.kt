@@ -15,9 +15,8 @@ import javax.inject.Inject
  */
 class NavigationViewModel @Inject constructor() : ViewModel() {
 
-    private val _navEvents by lazy { MutableLiveData<InterModuleNavigationEvent>() }
-    private val _reachedDestinations by lazy { MutableLiveData<Destination>() }
-
+    private val _navEvents = MutableLiveData<InterModuleNavigationEvent>()
+    private val _reachedDestinations = MutableLiveData<Destination>()
 
     /**
      * Subscribe to this [LiveData] in order to get notified about inter-module navigation

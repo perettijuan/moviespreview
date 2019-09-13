@@ -29,7 +29,7 @@ class CreditsInteractorTest {
     @MockK
     private lateinit var languageRepository: LanguageRepository
 
-    private val languageUpdates by lazy { MutableLiveData<SupportedLanguage>() }
+    private val languageUpdates = MutableLiveData<SupportedLanguage>()
 
     private lateinit var subject: CreditsInteractor
 

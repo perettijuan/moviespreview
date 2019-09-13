@@ -25,7 +25,7 @@ class SearchInteractor @Inject constructor(private val connectivityRepository: C
         object UnknownError : SearchEvent()
     }
 
-    private val _searchEvents by lazy { MediatorLiveData<SearchEvent>() }
+    private val _searchEvents = MediatorLiveData<SearchEvent>()
 
     init {
         _searchEvents.addSource(languageRepository.updates()) { _searchEvents.postValue(AppLanguageChanged) }

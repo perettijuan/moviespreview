@@ -1,7 +1,6 @@
 package com.jpp.mp.main.header
 
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.main.header.NavigationHeaderInteractor
 import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent
 import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.*
 import com.jpp.mpdomain.Session
@@ -30,8 +29,8 @@ class NavigationHeaderInteractorTest {
     @MockK
     private lateinit var accountRepository: AccountRepository
 
-    private val sessionUpdates by lazy { MutableLiveData<Session?>() }
-    private val accountUpdates by lazy { MutableLiveData<UserAccount>() }
+    private val sessionUpdates = MutableLiveData<Session?>()
+    private val accountUpdates = MutableLiveData<UserAccount>()
 
     private lateinit var subject: NavigationHeaderInteractor
 
