@@ -1,40 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/accountContent"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:animateLayoutChanges="true">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/tools">
 
-    <com.jpp.mpdesign.views.MPErrorView
-        android:id="@+id/userAccountErrorView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <data>
+        <variable
+            name="viewState"
+            type="com.jpp.mpaccount.account.UserAccountViewState" />
+    </data>
 
-    <ProgressBar
-        android:id="@+id/userAccountLoadingView"
-        style="@style/MPProgressBar"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/accountContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
 
-    <include
-        android:id="@+id/userAccountContentView"
-        layout="@layout/layout_user_account_content"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ProgressBar
+            android:id="@+id/userAccountLoadingView"
+            style="@style/MPProgressBar"
+            android:visibility="@{viewState.loadingVisibility}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <com.jpp.mpdesign.views.MPErrorView
+            android:id="@+id/userAccountErrorView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="@{viewState.errorViewState.visibility}"
+            app:asConnectivity="@{viewState.errorViewState.isConnectivity}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:onRetry="@{viewState.errorViewState.errorHandler}"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <include
+            android:id="@+id/userAccountContentView"
+            layout="@layout/layout_user_account_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="@{viewState.contentViewState.visibility}"
+            bind:viewState="@{viewState.contentViewState}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

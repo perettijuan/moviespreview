@@ -26,7 +26,9 @@ class MPImageView : AppCompatImageView {
      */
     fun circularUrl(url: String?) {
         if (url == null) return
-        loadImageUrlAsCircular(url, circularURLErrorCallback)
+        loadImageUrlAsCircular(url, {
+            circularURLErrorCallback?.invoke()
+        })
     }
 
     /**

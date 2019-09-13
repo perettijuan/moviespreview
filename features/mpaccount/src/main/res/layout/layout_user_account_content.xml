@@ -1,48 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <data>
+
+        <variable
+            name="viewState"
+            type="com.jpp.mpaccount.account.UserAccountContentViewState" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="?attr/mpUserAccountContentPadding">
+        android:layout_height="match_parent">
 
         <include
+            android:id="@+id/layout_user_account_header"
             layout="@layout/layout_user_account_header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <com.jpp.mpaccount.account.UserAccountMoviesView
-            android:id="@+id/userAccountFavoriteMovies"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:accountMoviesTitleText="@string/user_account_favorite_title" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            bind:viewState="@{viewState}"/>
 
-        <com.jpp.mpaccount.account.UserAccountMoviesView
-            android:id="@+id/userAccountRatedMovies"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:accountMoviesTitleText="@string/user_account_rated_title" />
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_user_account_header"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.jpp.mpaccount.account.UserAccountMoviesView
-            android:id="@+id/userAccountWatchlist"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:accountMoviesTitleText="@string/user_account_watchlist_title" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="?attr/mpUserAccountContentPadding">
 
-        <Button
-            android:id="@+id/userAccountLogoutBtn"
-            style="@style/MPTextViewNormal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/bg_login_button"
-            android:text="@string/user_account_logout" />
+                <com.jpp.mpaccount.account.UserAccountMoviesView
+                    android:id="@+id/userAccountFavoriteMovies"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:items="@{viewState.favoriteMovieState.items}"
+                    app:errorMessage="@{viewState.favoriteMovieState.errorText}"
+                    app:accountMoviesTitleText="@string/user_account_favorite_title" />
 
-    </LinearLayout>
+                <com.jpp.mpaccount.account.UserAccountMoviesView
+                    android:id="@+id/userAccountRatedMovies"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:items="@{viewState.ratedMovieState.items}"
+                    app:errorMessage="@{viewState.ratedMovieState.errorText}"
+                    app:accountMoviesTitleText="@string/user_account_rated_title" />
 
-</ScrollView>
+                <com.jpp.mpaccount.account.UserAccountMoviesView
+                    android:id="@+id/userAccountWatchlist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:items="@{viewState.watchListState.items}"
+                    app:errorMessage="@{viewState.watchListState.errorText}"
+                    app:accountMoviesTitleText="@string/user_account_watchlist_title" />
+
+                <Button
+                    android:id="@+id/userAccountLogoutBtn"
+                    style="@style/MPTextViewNormal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/bg_login_button"
+                    android:text="@string/user_account_logout" />
+
+            </LinearLayout>
+
+        </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

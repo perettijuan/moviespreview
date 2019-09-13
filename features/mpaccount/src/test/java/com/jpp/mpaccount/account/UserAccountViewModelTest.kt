@@ -48,14 +48,14 @@ class UserAccountViewModelTest {
          * an observer on the view states attached all the time in order
          * to get notifications.
          */
-        subject.viewStates.observeForever { }
+        subject.viewState.observeForever { }
     }
 
     @Test
     fun `Should post no connectivity error when disconnected`() {
         var viewStatePosted: UserAccountViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.NotConnectedToNetwork)
 
@@ -66,7 +66,7 @@ class UserAccountViewModelTest {
     fun `Should post error when failing to fetch user account data`() {
         var viewStatePosted: UserAccountViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.UnknownError)
 
@@ -116,7 +116,7 @@ class UserAccountViewModelTest {
         )
         var actual: UserAccountViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> actual = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> actual = viewState } }
 
         lvInteractorEvents.postValue(
                 UserAccountInteractor.UserAccountEvent.Success(
@@ -149,7 +149,7 @@ class UserAccountViewModelTest {
         )
         var actual: UserAccountViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> actual = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> actual = viewState } }
 
         lvInteractorEvents.postValue(
                 UserAccountInteractor.UserAccountEvent.Success(
@@ -195,7 +195,7 @@ class UserAccountViewModelTest {
 
         every { imagesPathInteractor.configurePathMovie(any(), any(), any()) } returns mockk(relaxed = true)
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> actual = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> actual = viewState } }
 
         lvInteractorEvents.postValue(
                 UserAccountInteractor.UserAccountEvent.Success(
@@ -230,7 +230,7 @@ class UserAccountViewModelTest {
     fun `Should post loading and fetch user account onInit`() {
         var viewStatePosted: UserAccountViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
         subject.onInit(10)
 
         verify { accountInteractor.fetchUserAccountData() }
@@ -241,7 +241,7 @@ class UserAccountViewModelTest {
     fun `Should post loading and clear user data onLogout`() {
         var viewStatePosted: UserAccountViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
         subject.onLogout()
 
         verify { accountInteractor.clearUserAccountData() }
@@ -252,7 +252,7 @@ class UserAccountViewModelTest {
     fun `Should post loading and refresh user data when language changed`() {
         var viewStatePosted: UserAccountViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.UserChangedLanguage)
 
         verify { accountInteractor.refreshUserAccountData() }
