@@ -49,7 +49,7 @@ class UserMovieListViewModelTest {
          * an observer on the view states attached all the time in order
          * to get notifications.
          */
-        subject.viewStates.observeForever { }
+        subject.viewState.observeForever { }
     }
 
     @ParameterizedTest
@@ -57,7 +57,7 @@ class UserMovieListViewModelTest {
     fun `Should post no connectivity error when disconnected`(param: UserMovieListParam) {
         var viewStatePosted: UserMovieListViewState? = null
 
-        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onInit(param)
 
         lvInteractorEvents.postValue(UserMovieListEvent.NotConnectedToNetwork)
@@ -76,7 +76,7 @@ class UserMovieListViewModelTest {
     fun `Should retry to fetch data when not connected and retry is executed`(param: UserMovieListParam) {
         var viewStatePosted: UserMovieListViewState? = null
 
-        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(param)
         lvInteractorEvents.postValue(UserMovieListEvent.NotConnectedToNetwork)
@@ -96,7 +96,7 @@ class UserMovieListViewModelTest {
     fun `Should post error when failing to fetch user account data`(param: UserMovieListParam) {
         var viewStatePosted: UserMovieListViewState? = null
 
-        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onInit(param)
 
         lvInteractorEvents.postValue(UserMovieListEvent.UnknownError)
@@ -115,7 +115,7 @@ class UserMovieListViewModelTest {
     fun `Should retry to fetch data when error unknown and retry is executed`(param: UserMovieListParam) {
         var viewStatePosted: UserMovieListViewState? = null
 
-        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onInit(param)
 
         lvInteractorEvents.postValue(UserMovieListEvent.UnknownError)
@@ -156,7 +156,7 @@ class UserMovieListViewModelTest {
         }
         every { imagesPathInteractor.configurePathMovie(any(), any(), any()) } answers { arg(2) }
 
-        subject.viewStates.observeWith { viewState -> viewStatePosted = viewState }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(param)
 

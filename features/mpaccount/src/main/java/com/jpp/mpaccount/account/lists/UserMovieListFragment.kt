@@ -1,15 +1,12 @@
 package com.jpp.mpaccount.account.lists
 
-import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,14 +14,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.getViewModel
 import com.jpp.mp.common.extensions.withNavigationViewModel
-import com.jpp.mp.common.navigation.Destination.ReachedDestination
+import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToMovieDetails
 import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToUserAccount
 import com.jpp.mpaccount.databinding.FragmentUserMovieListBinding
 import com.jpp.mpaccount.databinding.ListItemUserMovieBinding
-import dagger.android.support.AndroidSupportInjection
-import javax.inject.Inject
 
 /**
  * Base fragment used to show the list of movies that are related to the user's account.
@@ -36,20 +31,12 @@ import javax.inject.Inject
  * This Fragment shows the movies list based on the configuration that is sent as parameter when
  * created. It can show all three categories, based on such parameters.
  */
-class UserMovieListFragment : Fragment() {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+class UserMovieListFragment : MPFragment() {
 
     private lateinit var viewBinding: FragmentUserMovieListBinding
 
     // used to restore the position of the RecyclerView on view re-creation
     private var rvState: Parcelable? = null
-
-    override fun onAttach(context: Context?) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_user_movie_list, container, false)
@@ -62,7 +49,7 @@ class UserMovieListFragment : Fragment() {
         rvState = savedInstanceState?.getParcelable(USER_MOVIES_RV_STATE_KEY) ?: rvState
 
         withViewModel {
-            viewStates.observe(this@UserMovieListFragment.viewLifecycleOwner, Observer { viewState ->
+            viewState.observe(this@UserMovieListFragment.viewLifecycleOwner, Observer { viewState ->
                 viewBinding.viewState = viewState
                 viewBinding.executePendingBindings()
 
@@ -72,10 +59,7 @@ class UserMovieListFragment : Fragment() {
                         withViewModel { onMovieSelected(item, position) }
                     }.apply { submitList(viewState.contentViewState.movieList) }
                 }
-
-                withNavigationViewModel(viewModelFactory) {
-                    destinationReached(ReachedDestination(getString(viewState.screenTitle)))
-                }
+                updateScreenTitle(viewState.screenTitle)
             })
 
             navEvents.observe(this@UserMovieListFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })

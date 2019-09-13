@@ -3,7 +3,6 @@ package com.jpp.mp.common.fragments
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavDirections
 import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.navigation.Destination
 import dagger.android.support.AndroidSupportInjection
@@ -37,13 +36,5 @@ abstract class MPFragment : Fragment() {
      */
     fun updateScreenTitle(screenTitle: Int) {
         updateScreenTitle(getString(screenTitle))
-    }
-
-    /**
-     * Performs the navigation using the information provided in
-     * [directions].
-     */
-    fun navigateTo(directions: NavDirections) {
-        withNavigationViewModel(viewModelFactory) { performInnerNavigation(directions) }
     }
 }

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mpaccount.R
@@ -45,7 +46,7 @@ class LoginFragment : MPFragment() {
                 }
             })
             navEvents.observe(this@LoginFragment.viewLifecycleOwner, Observer {
-                navigateTo(toAccountFragment())
+                withNavigationViewModel(viewModelFactory) { performInnerNavigation(toAccountFragment()) }
             })
             onInit()
         }
