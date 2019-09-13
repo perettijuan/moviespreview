@@ -1,5 +1,10 @@
 package com.jpp.mpaccount.login
 
+import android.view.View
+import androidx.annotation.StringRes
+import com.jpp.mpaccount.R
+import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
+
 /*
  * This file contains the definitions for the entire model used in the login section.
  */
@@ -7,32 +12,50 @@ package com.jpp.mpaccount.login
 /**************************************************************************************************
  *************************************** VIEW STATES **********************************************
  **************************************************************************************************/
+
 /**
- * Represents the view states that the login view can assume.
+ * Represents the view state of the login screen.
  */
-sealed class LoginViewState {
-    /*
-     * Shows the not connected to network state
-     */
-    object ShowNotConnected : LoginViewState()
+data class LoginViewState(
+        @StringRes val screenTitle: Int = R.string.login_generic,
+        val loadingVisibility: Int = View.INVISIBLE,
+        val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
+        val oauthViewState: OauthViewState = OauthViewState()
+) {
+    companion object {
+        fun showLoading() = LoginViewState(loadingVisibility = View.VISIBLE)
+        fun showNoConnectivityError(errorHandler: () -> Unit) = LoginViewState(
+                errorViewState = ErrorViewState.asConnectivity(errorHandler)
+        )
 
-    /*
-     * Shown when the VM indicates that a work is in progress.
-     */
-    object ShowLoading : LoginViewState()
+        fun showUnknownError(errorHandler: () -> Unit) = LoginViewState(
+                errorViewState = ErrorViewState.asUnknownError(errorHandler)
+        )
 
-    /*
-     * Shows a message indicating that it is impossible to login at this moment.
-     */
-    object ShowLoginError : LoginViewState()
-
-    /*
-     * Starts the oauth2 process to show the login UI to the user.
-     */
-    data class ShowOauth(val url: String,
-                         val interceptUrl: String,
-                         val reminder: Boolean = false) : LoginViewState()
+        fun showOauth(url: String,
+                      interceptUrl: String,
+                      reminder: Boolean,
+                      redirectListener: (String) -> Unit) = LoginViewState(
+                oauthViewState = OauthViewState(
+                        visibility = View.VISIBLE,
+                        url = url,
+                        interceptUrl = interceptUrl,
+                        reminder = reminder,
+                        redirectListener = redirectListener
+                )
+        )
+    }
 }
+/**
+ * Represents the view state of the Oauth section of the login screen.
+ */
+data class OauthViewState(
+        val visibility: Int = View.INVISIBLE,
+        val url: String? = null,
+        val interceptUrl: String? = null,
+        val redirectListener: ((String) -> Unit)? = null,
+        val reminder: Boolean = false
+)
 
 /**************************************************************************************************
  *************************************** NAVIGATION ***********************************************

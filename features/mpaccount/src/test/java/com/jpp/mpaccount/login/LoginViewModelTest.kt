@@ -47,13 +47,13 @@ class LoginViewModelTest {
 
     @Test
     fun `Should show not connected when disconnection detected during login`() {
-        var viewStatePosted: LoginViewState? = null
+        var viewStatePosted: LoginViewStateD? = null
 
         subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
         lvLoginEvent.postValue(LoginInteractor.LoginEvent.NotConnectedToNetwork)
 
-        assertEquals(LoginViewState.ShowNotConnected, viewStatePosted)
+        assertEquals(LoginViewStateD.ShowNotConnected, viewStatePosted)
     }
 
     @Test
@@ -69,30 +69,30 @@ class LoginViewModelTest {
 
     @Test
     fun `Should show login error when error detected during login`() {
-        var viewStatePosted: LoginViewState? = null
+        var viewStatePosted: LoginViewStateD? = null
 
         subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
         lvLoginEvent.postValue(LoginInteractor.LoginEvent.LoginError)
 
-        assertEquals(LoginViewState.ShowLoginError, viewStatePosted)
+        assertEquals(LoginViewStateD.ShowLoginError, viewStatePosted)
     }
 
 
     @Test
     fun `Should show not connected when disconnection detected during oauth`() {
-        var viewStatePosted: LoginViewState? = null
+        var viewStatePosted: LoginViewStateD? = null
 
         subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
         lvOauthEvent.postValue(LoginInteractor.OauthEvent.NotConnectedToNetwork)
 
-        assertEquals(LoginViewState.ShowNotConnected, viewStatePosted)
+        assertEquals(LoginViewStateD.ShowNotConnected, viewStatePosted)
     }
 
     @Test
     fun `Should show oauth state when oauth data becomes available`() {
-        var viewStatePosted: LoginViewState? = null
+        var viewStatePosted: LoginViewStateD? = null
 
         val oauthEvent = LoginInteractor.OauthEvent.OauthSuccessful(
                 url = "aUrl",
@@ -100,7 +100,7 @@ class LoginViewModelTest {
                 accessToken = mockk()
         )
 
-        val expected = LoginViewState.ShowOauth(
+        val expected = LoginViewStateD.ShowOauth(
                 url = "aUrl",
                 interceptUrl = "anInterceptUrl",
                 reminder = false
@@ -115,7 +115,7 @@ class LoginViewModelTest {
 
     @Test
     fun `Should show oauth state as reminder when new oauth data becomes available`() {
-        var viewStatePosted = mutableListOf<LoginViewState>()
+        var viewStatePosted = mutableListOf<LoginViewStateD>()
 
         val firstOauthEvent = LoginInteractor.OauthEvent.OauthSuccessful(
                 url = "aFirstUrl",
@@ -129,13 +129,13 @@ class LoginViewModelTest {
                 accessToken = mockk()
         )
 
-        val expectedFirst = LoginViewState.ShowOauth(
+        val expectedFirst = LoginViewStateD.ShowOauth(
                 url = "aFirstUrl",
                 interceptUrl = "aFirstInterceptUrl",
                 reminder = false
         )
 
-        val expectedSecond = LoginViewState.ShowOauth(
+        val expectedSecond = LoginViewStateD.ShowOauth(
                 url = "aSecondUrl",
                 interceptUrl = "aSecondInterceptUrl",
                 reminder = true
@@ -154,41 +154,41 @@ class LoginViewModelTest {
 
     @Test
     fun `Should show login error when error detected during oauth`() {
-        var viewStatePosted: LoginViewState? = null
+        var viewStatePosted: LoginViewStateD? = null
 
         subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
         lvOauthEvent.postValue(LoginInteractor.OauthEvent.OauthError)
 
-        assertEquals(LoginViewState.ShowLoginError, viewStatePosted)
+        assertEquals(LoginViewStateD.ShowLoginError, viewStatePosted)
     }
 
     @Test
     fun `Should verify user logged in and push loading state in onInit`() {
-        var viewStatePosted: LoginViewState? = null
+        var viewStatePosted: LoginViewStateD? = null
 
         subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
         subject.onInit()
 
-        assertEquals(LoginViewState.ShowLoading, viewStatePosted)
+        assertEquals(LoginViewStateD.ShowLoading, viewStatePosted)
         verify { loginInteractor.verifyUserLogged() }
     }
 
     @Test
     fun `Should fetch oauth data when user is ready to login`() {
-        var viewStatePosted: LoginViewState? = null
+        var viewStatePosted: LoginViewStateD? = null
 
         subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
         lvLoginEvent.postValue(LoginInteractor.LoginEvent.ReadyToLogin)
 
-        assertEquals(LoginViewState.ShowLoading, viewStatePosted)
+        assertEquals(LoginViewStateD.ShowLoading, viewStatePosted)
     }
 
     @Test
     fun `Should ask interactor to perform login and push loading state when user approved redirected URL`() {
-        var viewStatePosted: LoginViewState? = null
+        var viewStatePosted: LoginViewStateD? = null
 
         subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
@@ -204,41 +204,41 @@ class LoginViewModelTest {
 
         subject.onUserRedirectedToUrl("http://someUrl?approved=true")
 
-        assertEquals(LoginViewState.ShowLoading, viewStatePosted)
+        assertEquals(LoginViewStateD.ShowLoading, viewStatePosted)
         verify { loginInteractor.loginUser(accessToken) }
     }
 
     @Test
     fun `Should push error state when user approved redirected URL without access token`() {
-        var viewStatePosted: LoginViewState? = null
+        var viewStatePosted: LoginViewStateD? = null
 
         subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
         subject.onUserRedirectedToUrl("http://someUrl?approved=true")
 
-        assertEquals(LoginViewState.ShowLoginError, viewStatePosted)
+        assertEquals(LoginViewStateD.ShowLoginError, viewStatePosted)
     }
 
     @Test
     fun `Should fetch new Oauth data when user rejected access token `() {
-        var viewStatePosted: LoginViewState? = null
+        var viewStatePosted: LoginViewStateD? = null
 
         subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
         subject.onUserRedirectedToUrl("http://someUrl?denied=true")
 
-        assertEquals(LoginViewState.ShowLoading, viewStatePosted)
+        assertEquals(LoginViewStateD.ShowLoading, viewStatePosted)
         verify { loginInteractor.fetchOauthData() }
     }
 
     @Test
     fun `Should push error state when user redirected to invalid URL`() {
-        var viewStatePosted: LoginViewState? = null
+        var viewStatePosted: LoginViewStateD? = null
 
         subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
 
         subject.onUserRedirectedToUrl("http://someUrlInvalid")
 
-        assertEquals(LoginViewState.ShowLoginError, viewStatePosted)
+        assertEquals(LoginViewStateD.ShowLoginError, viewStatePosted)
     }
 }

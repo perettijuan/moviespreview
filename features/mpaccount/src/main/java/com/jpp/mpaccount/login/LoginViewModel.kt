@@ -7,7 +7,6 @@ import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mpaccount.login.LoginInteractor.LoginEvent
 import com.jpp.mpaccount.login.LoginInteractor.OauthEvent
-import com.jpp.mpaccount.login.LoginViewState.*
 import com.jpp.mpdomain.AccessToken
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -29,6 +28,7 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     val navEvents: LiveData<ContinueToUserAccount> get() = _navEvents
 
     private var loginAccessToken: AccessToken? = null
+    private val retry: () -> Unit = { executeOauth() }
 
     /*
      * Map the business logic coming from the interactor into view layer logic.
@@ -36,9 +36,9 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     init {
         _viewState.addSource(loginInteractor.loginEvents) { loginEvent ->
             when (loginEvent) {
-                is LoginEvent.NotConnectedToNetwork -> _viewState.value = ShowNotConnected
+                is LoginEvent.NotConnectedToNetwork -> _viewState.value = LoginViewState.showNoConnectivityError(retry)
                 is LoginEvent.LoginSuccessful -> _navEvents.value = ContinueToUserAccount
-                is LoginEvent.LoginError -> _viewState.value = ShowLoginError
+                is LoginEvent.LoginError -> _viewState.value = LoginViewState.showUnknownError(retry)
                 is LoginEvent.UserAlreadyLogged -> _navEvents.value = ContinueToUserAccount
                 is LoginEvent.ReadyToLogin -> executeOauth()
             }
@@ -46,9 +46,9 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
         _viewState.addSource(loginInteractor.oauthEvents) { oauthEvent ->
             when (oauthEvent) {
-                is OauthEvent.NotConnectedToNetwork -> _viewState.value = ShowNotConnected
+                is OauthEvent.NotConnectedToNetwork -> _viewState.value = LoginViewState.showNoConnectivityError(retry)
                 is OauthEvent.OauthSuccessful -> _viewState.value = createOauthViewState(oauthEvent)
-                is OauthEvent.OauthError -> _viewState.value = ShowLoginError
+                is OauthEvent.OauthError -> _viewState.value = LoginViewState.showUnknownError(retry)
             }
         }
     }
@@ -62,37 +62,30 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     fun onInit() {
         loginAccessToken = null
         withLoginInteractor { verifyUserLogged() }
-        _viewState.value = ShowLoading
+        _viewState.value = LoginViewState.showLoading()
     }
 
     /**
      * Called when the user is redirected toa new URL in the Oauth step.
      */
-    fun onUserRedirectedToUrl(redirectUrl: String) {
+    private fun onUserRedirectedToUrl(redirectUrl: String) {
         when {
             redirectUrl.contains("approved=true") -> loginUser()
             redirectUrl.contains("denied=true") -> executeOauth()
-            else -> _viewState.value = ShowLoginError
+            else -> _viewState.value = LoginViewState.showUnknownError(retry)
         }
-    }
-
-    /**
-     * Called when the user retries the login.
-     */
-    fun onUserRetry() {
-        executeOauth()
     }
 
     private fun executeOauth() {
         withLoginInteractor { fetchOauthData() }
-        _viewState.value = ShowLoading
+        _viewState.value = LoginViewState.showLoading()
     }
 
     private fun loginUser() {
         _viewState.value = loginAccessToken?.let {
             withLoginInteractor { loginUser(it) }
-            ShowLoading
-        } ?: ShowLoginError
+            LoginViewState.showLoading()
+        } ?: LoginViewState.showUnknownError(retry)
     }
 
     private fun withLoginInteractor(action: LoginInteractor.() -> Unit) {
@@ -102,10 +95,11 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private fun createOauthViewState(oauthEvent: OauthEvent.OauthSuccessful): LoginViewState {
         val asReminder = loginAccessToken != null
         loginAccessToken = oauthEvent.accessToken
-        return ShowOauth(
+        return LoginViewState.showOauth(
                 url = oauthEvent.url,
                 interceptUrl = oauthEvent.interceptUrl,
-                reminder = asReminder
+                reminder = asReminder,
+                redirectListener = { onUserRedirectedToUrl(it) }
         )
     }
 }

@@ -48,10 +48,10 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
     : MPScopedViewModel(dispatchers) {
 
 
-    private val _viewStates by lazy { MediatorLiveData<HandledViewState<MovieDetailViewState>>() }
+    private val _viewStates = MediatorLiveData<HandledViewState<MovieDetailViewState>>()
     val viewStates: LiveData<HandledViewState<MovieDetailViewState>> get() = _viewStates
 
-    private val _navEvents by lazy { SingleLiveEvent<NavigateToCreditsEvent>() }
+    private val _navEvents = SingleLiveEvent<NavigateToCreditsEvent>()
     val navEvents: LiveData<NavigateToCreditsEvent> get() = _navEvents
 
     private lateinit var currentParam: MovieDetailsParam
@@ -66,7 +66,7 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
             when (event) {
                 is NotConnectedToNetwork -> _viewStates.value = of(MovieDetailViewState.showNoConnectivityError(currentParam.movieTitle, retry))
                 is UnknownError -> _viewStates.value = of(MovieDetailViewState.showUnknownError(currentParam.movieTitle, retry))
-                is Success -> mapMovieDetails(event.data, currentParam.movieTitle,  currentParam.movieImageUrl)
+                is Success -> mapMovieDetails(event.data, currentParam.movieTitle, currentParam.movieImageUrl)
                 is AppLanguageChanged -> refreshDetailsData(currentParam.movieTitle, currentParam.movieId, currentParam.movieTitle)
             }
         }
