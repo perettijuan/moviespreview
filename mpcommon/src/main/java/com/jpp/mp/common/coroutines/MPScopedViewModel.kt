@@ -31,9 +31,6 @@ import kotlin.coroutines.CoroutineContext
  *
  * Example of CoroutineScope = https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/index.html
  */
-/*
- * TODO JPP would be nice to remove the CoroutineScope inheritance: https://proandroiddev.com/why-your-class-probably-shouldnt-implement-coroutinescope-eb34f722e510
- */
 abstract class MPScopedViewModel(val dispatchers: CoroutineDispatchers) : ViewModel(), CoroutineScope {
 
     /*
