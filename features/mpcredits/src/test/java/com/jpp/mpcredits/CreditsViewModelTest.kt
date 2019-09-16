@@ -55,7 +55,7 @@ class CreditsViewModelTest {
     fun `Should post no connectivity error when disconnected`() {
         var viewStatePosted: CreditsViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
 
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.NotConnectedToNetwork)
@@ -73,7 +73,7 @@ class CreditsViewModelTest {
     fun `Should retry to fetch data when not connected and retry is executed`() {
         var viewStatePosted: CreditsViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.NotConnectedToNetwork)
@@ -88,7 +88,7 @@ class CreditsViewModelTest {
     fun `Should post error when failing to fetch credits`() {
         var viewStatePosted: CreditsViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
 
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.UnknownError)
@@ -106,7 +106,7 @@ class CreditsViewModelTest {
     fun `Should retry to fetch data when error unknown and retry is executed`() {
         var viewStatePosted: CreditsViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.UnknownError)
@@ -121,7 +121,7 @@ class CreditsViewModelTest {
     fun `Should post loading, clear data and fetch credits on language changed `() {
         var viewStatePosted: CreditsViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.AppLanguageChanged)
@@ -145,7 +145,7 @@ class CreditsViewModelTest {
     fun `Should post loading and fetch person data onInit`() {
         var viewStatePosted: CreditsViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
 
@@ -169,7 +169,7 @@ class CreditsViewModelTest {
                 crew = listOf()
         )
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
 
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.Success(credits))
@@ -196,7 +196,7 @@ class CreditsViewModelTest {
 
         every { imagesPathInteractor.configureCastCharacter(any(), any()) } answers { arg(1) }
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.Success(credits))
@@ -230,89 +230,86 @@ class CreditsViewModelTest {
     }
 
 
-    private val cast by lazy {
-        listOf(
-                CastCharacter(
-                        cast_id = 12.toDouble(),
-                        character = "aCharacter1",
-                        credit_id = "aCredit1",
-                        gender = 1,
-                        id = 1.toDouble(),
-                        name = "aName1",
-                        order = 1,
-                        profile_path = "aProfilePath1"
-                ),
-                CastCharacter(
-                        cast_id = 12.toDouble(),
-                        character = "aCharacter2",
-                        credit_id = "aCredit2",
-                        gender = 2,
-                        id = 2.toDouble(),
-                        name = "aName2",
-                        order = 2,
-                        profile_path = "aProfilePath2"
-                ),
-                CastCharacter(
-                        cast_id = 12.toDouble(),
-                        character = "aCharacter3",
-                        credit_id = "aCredit3",
-                        gender = 3,
-                        id = 3.toDouble(),
-                        name = "aName3",
-                        order = 3,
-                        profile_path = "aProfilePath3"
-                ),
-                CastCharacter(
-                        cast_id = 12.toDouble(),
-                        character = "aCharacter4",
-                        credit_id = "aCredit4",
-                        gender = 4,
-                        id = 4.toDouble(),
-                        name = "aName4",
-                        order = 4,
-                        profile_path = "aProfilePath4"
-                )
-        )
-    }
+    private val cast = listOf(
+            CastCharacter(
+                    cast_id = 12.toDouble(),
+                    character = "aCharacter1",
+                    credit_id = "aCredit1",
+                    gender = 1,
+                    id = 1.toDouble(),
+                    name = "aName1",
+                    order = 1,
+                    profile_path = "aProfilePath1"
+            ),
+            CastCharacter(
+                    cast_id = 12.toDouble(),
+                    character = "aCharacter2",
+                    credit_id = "aCredit2",
+                    gender = 2,
+                    id = 2.toDouble(),
+                    name = "aName2",
+                    order = 2,
+                    profile_path = "aProfilePath2"
+            ),
+            CastCharacter(
+                    cast_id = 12.toDouble(),
+                    character = "aCharacter3",
+                    credit_id = "aCredit3",
+                    gender = 3,
+                    id = 3.toDouble(),
+                    name = "aName3",
+                    order = 3,
+                    profile_path = "aProfilePath3"
+            ),
+            CastCharacter(
+                    cast_id = 12.toDouble(),
+                    character = "aCharacter4",
+                    credit_id = "aCredit4",
+                    gender = 4,
+                    id = 4.toDouble(),
+                    name = "aName4",
+                    order = 4,
+                    profile_path = "aProfilePath4"
+            )
+    )
 
-    private val crew by lazy {
-        listOf(
-                CrewMember(
-                        credit_id = "aCreditId1",
-                        department = "aDepartment1",
-                        gender = 1,
-                        id = 1.toDouble(),
-                        job = "aJob1",
-                        name = "aName1",
-                        profile_path = "aProfilePath1"
-                ),
-                CrewMember(
-                        credit_id = "aCreditId2",
-                        department = "aDepartment2",
-                        gender = 2,
-                        id = 2.toDouble(),
-                        job = "aJob2",
-                        name = "aName2",
-                        profile_path = "aProfilePath2"
-                ),
-                CrewMember(
-                        credit_id = "aCreditId3",
-                        department = "aDepartment3",
-                        gender = 3,
-                        id = 3.toDouble(),
-                        job = "aJob3",
-                        name = "aName3",
-                        profile_path = "aProfilePath3"
-                ),
-                CrewMember(
-                        credit_id = "aCreditId4",
-                        department = "aDepartment4",
-                        gender = 4,
-                        id = 4.toDouble(),
-                        job = "aJob4",
-                        name = "aName4",
-                        profile_path = "aProfilePath4"
-                )
-        )
-    }
+
+    private val crew = listOf(
+            CrewMember(
+                    credit_id = "aCreditId1",
+                    department = "aDepartment1",
+                    gender = 1,
+                    id = 1.toDouble(),
+                    job = "aJob1",
+                    name = "aName1",
+                    profile_path = "aProfilePath1"
+            ),
+            CrewMember(
+                    credit_id = "aCreditId2",
+                    department = "aDepartment2",
+                    gender = 2,
+                    id = 2.toDouble(),
+                    job = "aJob2",
+                    name = "aName2",
+                    profile_path = "aProfilePath2"
+            ),
+            CrewMember(
+                    credit_id = "aCreditId3",
+                    department = "aDepartment3",
+                    gender = 3,
+                    id = 3.toDouble(),
+                    job = "aJob3",
+                    name = "aName3",
+                    profile_path = "aProfilePath3"
+            ),
+            CrewMember(
+                    credit_id = "aCreditId4",
+                    department = "aDepartment4",
+                    gender = 4,
+                    id = 4.toDouble(),
+                    job = "aJob4",
+                    name = "aName4",
+                    profile_path = "aProfilePath4"
+            )
+    )
 }

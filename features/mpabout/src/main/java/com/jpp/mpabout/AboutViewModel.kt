@@ -5,9 +5,6 @@ import androidx.lifecycle.MediatorLiveData
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
-import com.jpp.mp.common.viewstate.HandledViewState
-import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
-import com.jpp.mpabout.AboutInteractor.AboutEvent.AboutUrlEvent
 import com.jpp.mpabout.AboutInteractor.AboutEvent.*
 import com.jpp.mpdomain.AboutUrl
 import kotlinx.coroutines.launch
@@ -23,26 +20,31 @@ class AboutViewModel @Inject constructor(coroutineDispatchers: CoroutineDispatch
                                          private val aboutInteractor: AboutInteractor)
     : MPScopedViewModel(coroutineDispatchers) {
 
-    private lateinit var selectedItem: AboutItem
-    private val _viewStates by lazy { MediatorLiveData<HandledViewState<AboutViewState>>() }
-    private val _navEvents by lazy { SingleLiveEvent<AboutNavEvent>() }
-    private val supportedAboutItems by lazy {
-        listOf(
-                AboutItem.RateApp,
-                AboutItem.ShareApp,
-                AboutItem.PrivacyPolicy,
-                AboutItem.BrowseAppCode,
-                AboutItem.Licenses,
-                AboutItem.TheMovieDbTermsOfUse
-        )
-    }
+    private val _viewState = MediatorLiveData<AboutViewState>()
+    val viewState: LiveData<AboutViewState> get() = _viewState
 
+    private val _navEvents = SingleLiveEvent<AboutNavEvent>()
+    val navEvents: LiveData<AboutNavEvent> get() = _navEvents
+
+    private lateinit var selectedItem: AboutItem
+    private val supportedAboutItems = listOf(
+            AboutItem.RateApp,
+            AboutItem.ShareApp,
+            AboutItem.PrivacyPolicy,
+            AboutItem.BrowseAppCode,
+            AboutItem.Licenses,
+            AboutItem.TheMovieDbTermsOfUse
+    )
+
+    /*
+     * Map the business logic coming from the interactor into view layer logic.
+     */
     init {
-        _viewStates.addSource(aboutInteractor.events) { event ->
+        _viewState.addSource(aboutInteractor.events) { event ->
             when (event) {
-                is AppVersionEvent -> _viewStates.value = of(AboutViewState.showContent(
+                is AppVersionEvent -> _viewState.value = AboutViewState.showContent(
                         appVersion = "v ${event.appVersion.version}",
-                        aboutItems = supportedAboutItems))
+                        aboutItems = supportedAboutItems)
                 is AboutUrlEvent -> processAboutUrl(event.aboutUrl)
                 is AboutWebStoreUrlEvent -> _navEvents.value = AboutNavEvent.InnerNavigation(event.aboutUrl.url)
             }
@@ -50,10 +52,13 @@ class AboutViewModel @Inject constructor(coroutineDispatchers: CoroutineDispatch
     }
 
     /**
-     * Called when the view is initialized.
+     * Called on VM initialization. The View (Fragment) should call this method to
+     * indicate that it is ready to start rendering. When the method is called, the VM
+     * internally verifies the state of the application and updates the view state based
+     * on it.
      */
     fun onInit() {
-        _viewStates.value = of(AboutViewState.showLoading())
+        _viewState.value = AboutViewState.showLoading()
         withInteractor { fetchAppVersion() }
     }
 
@@ -78,18 +83,6 @@ class AboutViewModel @Inject constructor(coroutineDispatchers: CoroutineDispatch
     fun onFailedToOpenPlayStore() {
         withInteractor { getWebStoreUrl() }
     }
-
-    /**
-     * Subscribe to this [LiveData] in order to get notified about the different states that
-     * the view should render.
-     */
-    val viewStates: LiveData<HandledViewState<AboutViewState>> get() = _viewStates
-
-    /**
-     * Subscribe to this [LiveData] in order to get notified about navigation steps that
-     * should be performed by the view.
-     */
-    val navEvents: LiveData<AboutNavEvent> get() = _navEvents
 
     private fun withInteractor(action: AboutInteractor.() -> Unit) {
         launch { withContext(dispatchers.default()) { action(aboutInteractor) } }

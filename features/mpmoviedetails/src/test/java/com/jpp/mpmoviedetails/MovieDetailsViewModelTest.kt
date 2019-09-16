@@ -39,7 +39,7 @@ class MovieDetailsViewModelTest {
     fun `Should post no connectivity error when disconnected`() {
         var viewStatePosted: MovieDetailViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
         subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
 
         lvInteractorEvents.postValue(MovieDetailsInteractor.MovieDetailEvent.NotConnectedToNetwork)
@@ -57,7 +57,7 @@ class MovieDetailsViewModelTest {
     fun `Should post error when failing to fetch user account data`() {
         var viewStatePosted: MovieDetailViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
         subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
 
         lvInteractorEvents.postValue(MovieDetailsInteractor.MovieDetailEvent.UnknownError)
@@ -75,7 +75,7 @@ class MovieDetailsViewModelTest {
     fun `Should post loading and fetch movie details onInit`() {
         var viewStatePosted: MovieDetailViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
         subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
 
         assertNotNull(viewStatePosted)
@@ -120,7 +120,7 @@ class MovieDetailsViewModelTest {
                 )
         )
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
         subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
 
         lvInteractorEvents.postValue(MovieDetailsInteractor.MovieDetailEvent.Success(domainDetail))

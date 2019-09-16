@@ -40,8 +40,8 @@ class LoginInteractor @Inject constructor(private val connectivityRepository: Co
     }
 
 
-    private val _loginEvents by lazy { MutableLiveData<LoginEvent>() }
-    private val _oauthEvents by lazy { MutableLiveData<OauthEvent>() }
+    private val _loginEvents = MutableLiveData<LoginEvent>()
+    private val _oauthEvents = MutableLiveData<OauthEvent>()
 
     /**
      * @return a [LiveData] of [LoginEvent]. Subscribe to this [LiveData]

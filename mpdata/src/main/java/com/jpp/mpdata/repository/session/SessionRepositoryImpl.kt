@@ -11,7 +11,7 @@ import com.jpp.mpdomain.repository.SessionRepository
 class SessionRepositoryImpl(private val sessionApi: SessionApi,
                             private val sessionDb: SessionDb) : SessionRepository {
 
-    private val sessionUpdates by lazy { MutableLiveData<Session?>() }
+    private val sessionUpdates = MutableLiveData<Session?>()
 
     override fun sessionStateUpdates(): LiveData<Session?> = sessionUpdates
 

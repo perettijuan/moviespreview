@@ -45,10 +45,9 @@ class UserAccountMoviesView : ConstraintLayout {
         userAccountMoviesTitle.text = title
     }
 
-    fun showMovies(movies: List<UserAccountMovieItem>, moreAction: () -> Unit) {
-        userAccountMoviesMoreIv.apply {
-            setVisible()
-            setOnClickListener { moreAction.invoke() }
+    fun items(movies: List<UserAccountMovieItem>?) {
+        if (movies == null) {
+            return
         }
 
         userAccountMoviesList.apply {
@@ -60,12 +59,16 @@ class UserAccountMoviesView : ConstraintLayout {
         userAccountMoviesError.setInvisible()
     }
 
-    fun showErrorMessage(message: String) {
+    fun errorMessage(message: Int) {
+        if (message == 0) {
+            return
+        }
+
         userAccountMoviesMoreIv.setInvisible()
         userAccountMoviesList.setInvisible()
 
         userAccountMoviesError.apply {
-            text = message
+            setText(message)
             setVisible()
         }
     }

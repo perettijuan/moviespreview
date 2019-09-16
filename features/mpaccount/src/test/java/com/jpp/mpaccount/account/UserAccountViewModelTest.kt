@@ -1,6 +1,8 @@
 package com.jpp.mpaccount.account
 
+import android.view.View
 import androidx.lifecycle.MutableLiveData
+import com.jpp.mpaccount.R
 import com.jpp.mpaccount.TestAccountCoroutineDispatchers
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.MoviePage
@@ -14,8 +16,8 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -48,29 +50,41 @@ class UserAccountViewModelTest {
          * an observer on the view states attached all the time in order
          * to get notifications.
          */
-        subject.viewStates.observeForever { }
+        subject.viewState.observeForever { }
     }
 
     @Test
     fun `Should post no connectivity error when disconnected`() {
         var viewStatePosted: UserAccountViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.NotConnectedToNetwork)
 
-        assertEquals(UserAccountViewState.ShowNotConnected, viewStatePosted)
+        assertNotNull(viewStatePosted)
+        assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
+        assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
+        assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
+
+        assertEquals(View.VISIBLE, viewStatePosted?.errorViewState?.visibility)
+        assertEquals(true, viewStatePosted?.errorViewState?.isConnectivity)
     }
 
     @Test
     fun `Should post error when failing to fetch user account data`() {
         var viewStatePosted: UserAccountViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.UnknownError)
 
-        assertEquals(UserAccountViewState.ShowError, viewStatePosted)
+        assertNotNull(viewStatePosted)
+        assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
+        assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
+        assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
+
+        assertEquals(View.VISIBLE, viewStatePosted?.errorViewState?.visibility)
+        assertEquals(false, viewStatePosted?.errorViewState?.isConnectivity)
     }
 
     @Test
@@ -105,18 +119,9 @@ class UserAccountViewModelTest {
                 name = "aName",
                 username = "aUserName"
         )
-        val expected = UserAccountViewState.ShowUserAccountData(
-                avatarUrl = Gravatar.BASE_URL + "someHash" + Gravatar.REDIRECT,
-                userName = "aName",
-                accountName = "aUserName",
-                defaultLetter = 'a',
-                favoriteMovieState = UserMoviesViewState.ShowError,
-                ratedMovieState = UserMoviesViewState.ShowError,
-                watchListState = UserMoviesViewState.ShowError
-        )
-        var actual: UserAccountViewState? = null
+        var viewStatePosted: UserAccountViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> actual = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         lvInteractorEvents.postValue(
                 UserAccountInteractor.UserAccountEvent.Success(
@@ -126,7 +131,18 @@ class UserAccountViewModelTest {
                         UserAccountInteractor.UserMoviesState.UnknownError)
         )
 
-        assertEquals(expected, actual)
+        assertNotNull(viewStatePosted)
+        assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
+        assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
+        assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
+
+        assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.visibility)
+        assertEquals("aName", viewStatePosted?.contentViewState?.userName)
+        assertEquals("aUserName", viewStatePosted?.contentViewState?.accountName)
+        assertEquals(Gravatar.BASE_URL + "someHash" + Gravatar.REDIRECT, viewStatePosted?.contentViewState?.avatarViewState?.avatarUrl)
+        assertEquals(R.string.user_account_favorite_movies_error, viewStatePosted?.contentViewState?.favoriteMovieState?.errorText)
+        assertEquals(R.string.user_account_favorite_movies_error, viewStatePosted?.contentViewState?.ratedMovieState?.errorText)
+        assertEquals(R.string.user_account_favorite_movies_error, viewStatePosted?.contentViewState?.watchListState?.errorText)
     }
 
     @Test
@@ -138,18 +154,10 @@ class UserAccountViewModelTest {
                 name = "",
                 username = "UserName"
         )
-        val expected = UserAccountViewState.ShowUserAccountData(
-                avatarUrl = Gravatar.BASE_URL + "someHash" + Gravatar.REDIRECT,
-                userName = "UserName",
-                accountName = "UserName",
-                defaultLetter = 'U',
-                favoriteMovieState = UserMoviesViewState.ShowError,
-                ratedMovieState = UserMoviesViewState.ShowError,
-                watchListState = UserMoviesViewState.ShowError
-        )
-        var actual: UserAccountViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> actual = viewState } }
+        var viewStatePosted: UserAccountViewState? = null
+
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         lvInteractorEvents.postValue(
                 UserAccountInteractor.UserAccountEvent.Success(
@@ -159,7 +167,18 @@ class UserAccountViewModelTest {
                         UserAccountInteractor.UserMoviesState.UnknownError)
         )
 
-        assertEquals(expected, actual)
+        assertNotNull(viewStatePosted)
+        assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
+        assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
+        assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
+
+        assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.visibility)
+        assertEquals("UserName", viewStatePosted?.contentViewState?.userName)
+        assertEquals("UserName", viewStatePosted?.contentViewState?.accountName)
+        assertEquals(Gravatar.BASE_URL + "someHash" + Gravatar.REDIRECT, viewStatePosted?.contentViewState?.avatarViewState?.avatarUrl)
+        assertEquals(R.string.user_account_favorite_movies_error, viewStatePosted?.contentViewState?.favoriteMovieState?.errorText)
+        assertEquals(R.string.user_account_favorite_movies_error, viewStatePosted?.contentViewState?.ratedMovieState?.errorText)
+        assertEquals(R.string.user_account_favorite_movies_error, viewStatePosted?.contentViewState?.watchListState?.errorText)
     }
 
     @Test
@@ -171,7 +190,7 @@ class UserAccountViewModelTest {
                 name = "",
                 username = "UserName"
         )
-        var actual: UserAccountViewState? = null
+        var viewStatePosted: UserAccountViewState? = null
         val favMoviePage = MoviePage(
                 page = 1,
                 results = mutableListOf(mockk(), mockk(), mockk(), mockk(), mockk()),
@@ -195,7 +214,7 @@ class UserAccountViewModelTest {
 
         every { imagesPathInteractor.configurePathMovie(any(), any(), any()) } returns mockk(relaxed = true)
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> actual = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         lvInteractorEvents.postValue(
                 UserAccountInteractor.UserAccountEvent.Success(
@@ -206,23 +225,16 @@ class UserAccountViewModelTest {
                 )
         )
 
-        assertTrue(actual is UserAccountViewState.ShowUserAccountData)
-        with(actual as UserAccountViewState.ShowUserAccountData) {
-            assertTrue(this.favoriteMovieState is UserMoviesViewState.ShowUserMovies)
-            with(this.favoriteMovieState as UserMoviesViewState.ShowUserMovies) {
-                assertEquals(5, this.items.size)
-            }
+        assertNotNull(viewStatePosted)
+        assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
+        assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
+        assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
 
-            assertTrue(this.ratedMovieState is UserMoviesViewState.ShowUserMovies)
-            with(this.ratedMovieState as UserMoviesViewState.ShowUserMovies) {
-                assertEquals(4, this.items.size)
-            }
+        assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.visibility)
+        assertEquals(5, viewStatePosted?.contentViewState?.favoriteMovieState?.items?.size)
+        assertEquals(4, viewStatePosted?.contentViewState?.ratedMovieState?.items?.size)
+        assertEquals(3, viewStatePosted?.contentViewState?.watchListState?.items?.size)
 
-            assertTrue(this.watchListState is UserMoviesViewState.ShowUserMovies)
-            with(this.watchListState as UserMoviesViewState.ShowUserMovies) {
-                assertEquals(3, this.items.size)
-            }
-        }
         verify(exactly = 12) { imagesPathInteractor.configurePathMovie(any(), any(), any()) }
     }
 
@@ -230,32 +242,47 @@ class UserAccountViewModelTest {
     fun `Should post loading and fetch user account onInit`() {
         var viewStatePosted: UserAccountViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onInit(10)
 
+        assertNotNull(viewStatePosted)
+        assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
+        assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
+        assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
+        assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
+
         verify { accountInteractor.fetchUserAccountData() }
-        assertEquals(UserAccountViewState.ShowLoading, viewStatePosted)
     }
 
     @Test
     fun `Should post loading and clear user data onLogout`() {
         var viewStatePosted: UserAccountViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onLogout()
 
+        assertNotNull(viewStatePosted)
+        assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
+        assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
+        assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
+        assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
+
         verify { accountInteractor.clearUserAccountData() }
-        assertEquals(UserAccountViewState.ShowLoading, viewStatePosted)
     }
 
     @Test
     fun `Should post loading and refresh user data when language changed`() {
         var viewStatePosted: UserAccountViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.UserChangedLanguage)
 
+        assertNotNull(viewStatePosted)
+        assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
+        assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
+        assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
+        assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
+
         verify { accountInteractor.refreshUserAccountData() }
-        assertEquals(UserAccountViewState.ShowLoading, viewStatePosted)
     }
 }

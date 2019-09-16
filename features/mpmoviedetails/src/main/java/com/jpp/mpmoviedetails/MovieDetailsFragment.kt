@@ -1,19 +1,16 @@
 package com.jpp.mpmoviedetails
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
-import com.jpp.mp.common.navigation.Destination.ReachedDestination
+import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mpdesign.ext.setInvisible
 import com.jpp.mpdesign.ext.setVisible
 import com.jpp.mpdesign.ext.snackBar
@@ -21,10 +18,8 @@ import com.jpp.mpdesign.ext.snackBarNoAction
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieId
 import com.jpp.mpmoviedetails.databinding.FragmentMovieDetailsBinding
 import com.jpp.mpmoviedetails.databinding.ListItemMovieDetailGenreBinding
-import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_movie_details.*
 import kotlinx.android.synthetic.main.layout_movie_detail_content.*
-import javax.inject.Inject
 
 /**
  * Fragment used to show the details of a particular movie selected by the user.
@@ -42,17 +37,9 @@ import javax.inject.Inject
  *       manner.
  *
  */
-class MovieDetailsFragment : Fragment() {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+class MovieDetailsFragment : MPFragment() {
 
     private lateinit var viewBinding: FragmentMovieDetailsBinding
-
-    override fun onAttach(context: Context?) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie_details, container, false)
@@ -64,7 +51,7 @@ class MovieDetailsFragment : Fragment() {
 
 
         withViewModel {
-            viewStates.observe(viewLifecycleOwner, Observer {
+            viewState.observe(viewLifecycleOwner, Observer {
                 it.actionIfNotHandled { viewState ->
                     viewBinding.viewState = viewState
                     viewBinding.executePendingBindings()
@@ -72,7 +59,7 @@ class MovieDetailsFragment : Fragment() {
                     detailGenresRv.layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
                     detailGenresRv.adapter = MovieDetailsGenreAdapter(viewState.contentViewState.genres)
 
-                    withNavigationViewModel(viewModelFactory) { destinationReached(ReachedDestination(viewState.screenTitle)) }
+                    updateScreenTitle(viewState.screenTitle)
                 }
             })
 
@@ -84,7 +71,7 @@ class MovieDetailsFragment : Fragment() {
         }
 
         withActionsViewModel {
-            viewStates.observe(viewLifecycleOwner, Observer { viewState -> renderActionViewState(viewState) })
+            viewState.observe(viewLifecycleOwner, Observer { viewState -> renderActionViewState(viewState) })
             onInit(movieId(arguments).toDouble())
         }
 

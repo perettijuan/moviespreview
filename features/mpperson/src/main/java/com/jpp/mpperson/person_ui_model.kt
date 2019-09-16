@@ -2,8 +2,7 @@ package com.jpp.mpperson
 
 import android.os.Bundle
 import android.view.View
-import com.jpp.mpperson.PersonErrorViewState.Companion.asConnectivity
-import com.jpp.mpperson.PersonErrorViewState.Companion.asUnknownError
+import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 
 /*
  * This file contains the definitions for the entire model used in the person details feature.
@@ -18,16 +17,40 @@ import com.jpp.mpperson.PersonErrorViewState.Companion.asUnknownError
  */
 data class PersonViewState(
         val screenTitle: String,
+        val personImageUrl: String = "emptyUrl",
         val loadingVisibility: Int = View.INVISIBLE,
-        val errorViewState: PersonErrorViewState = PersonErrorViewState(),
+        val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
         val contentViewState: PersonContentViewState = PersonContentViewState()) {
 
     companion object {
-        fun showLoading(screenTitle: String) = PersonViewState(screenTitle = screenTitle, loadingVisibility = View.VISIBLE)
-        fun showUnknownError(screenTitle: String, errorHandler: () -> Unit) = PersonViewState(screenTitle = screenTitle, errorViewState = asUnknownError(errorHandler))
-        fun showNoConnectivityError(screenTitle: String, errorHandler: () -> Unit) = PersonViewState(screenTitle = screenTitle, errorViewState = asConnectivity(errorHandler))
-        fun showPerson(screenTitle: String, contentViewStateValue: PersonContentViewState) = PersonViewState(screenTitle = screenTitle, contentViewState = contentViewStateValue)
-        fun showNoDataAvailable(screenTitle: String) = PersonViewState(screenTitle = screenTitle, contentViewState = PersonContentViewState(dataAvailable = PersonRowViewState.noDataAvailableRow()))
+        fun showLoading(screenTitle: String, imageUrl: String) = PersonViewState(
+                screenTitle = screenTitle,
+                personImageUrl = imageUrl,
+                loadingVisibility = View.VISIBLE
+        )
+
+        fun showUnknownError(screenTitle: String, errorHandler: () -> Unit) = PersonViewState(
+                screenTitle = screenTitle,
+                errorViewState = ErrorViewState.asUnknownError(errorHandler)
+        )
+
+        fun showNoConnectivityError(screenTitle: String, errorHandler: () -> Unit) = PersonViewState(
+                screenTitle = screenTitle,
+                errorViewState = ErrorViewState.asConnectivity(errorHandler)
+        )
+
+        fun showPerson(screenTitle: String, imageUrl: String, contentViewStateValue: PersonContentViewState) = PersonViewState(
+                screenTitle = screenTitle,
+                personImageUrl = imageUrl,
+                contentViewState = contentViewStateValue
+        )
+
+        fun showNoDataAvailable(screenTitle: String, imageUrl: String) = PersonViewState(
+                screenTitle = screenTitle,
+                personImageUrl = imageUrl,
+                contentViewState = PersonContentViewState(
+                        dataAvailable = PersonRowViewState.noDataAvailableRow())
+        )
     }
 }
 
@@ -41,26 +64,6 @@ data class PersonContentViewState(
         val bio: PersonRowViewState = PersonRowViewState.emptyRow(),
         val dataAvailable: PersonRowViewState = PersonRowViewState.emptyRow()
 )
-
-/**
- * Represents the state of the error view.
- */
-data class PersonErrorViewState(val visibility: Int = View.INVISIBLE,
-                                val isConnectivity: Boolean = false,
-                                val errorHandler: (() -> Unit)? = null) {
-
-    companion object {
-        fun asConnectivity(handler: () -> Unit) = PersonErrorViewState(
-                visibility = View.VISIBLE,
-                isConnectivity = true,
-                errorHandler = handler)
-
-        fun asUnknownError(handler: () -> Unit) = PersonErrorViewState(
-                visibility = View.VISIBLE,
-                isConnectivity = false,
-                errorHandler = handler)
-    }
-}
 
 /**
  * Represents the view state of the rows that are shown in the person's layout.
@@ -114,11 +117,13 @@ data class PersonRowViewState(val visibility: Int = View.INVISIBLE,
  * The initialization parameter for the [PersonViewModel.onInit] method.
  */
 data class PersonParam(val personId: Double,
-                       val personName: String) {
+                       val personName: String,
+                       val imageUrl: String) {
     companion object {
         fun fromArguments(arguments: Bundle?) = PersonParam(
                 NavigationPerson.personId(arguments).toDouble(),
-                NavigationPerson.personName(arguments)
+                NavigationPerson.personName(arguments),
+                NavigationPerson.personImageUrl(arguments)
         )
     }
 }

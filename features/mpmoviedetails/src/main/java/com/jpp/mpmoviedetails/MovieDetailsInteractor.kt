@@ -52,8 +52,8 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
         data class FetchSuccess(val data: MovieState) : MovieStateEvent()
     }
 
-    private val _movieDetailEvents by lazy { MediatorLiveData<MovieDetailEvent>() }
-    private val _movieStateEvents by lazy { MutableLiveData<MovieStateEvent>() }
+    private val _movieDetailEvents = MediatorLiveData<MovieDetailEvent>()
+    private val _movieStateEvents = MutableLiveData<MovieStateEvent>()
 
     init {
         _movieDetailEvents.addSource(languageRepository.updates()) {

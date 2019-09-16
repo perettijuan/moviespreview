@@ -26,7 +26,7 @@ class NavigationHeaderViewModelTest {
 
     private lateinit var subject: NavigationHeaderViewModel
 
-    private val interactorEvents by lazy { MediatorLiveData<NavigationHeaderInteractor.HeaderDataEvent>() }
+    private val interactorEvents = MediatorLiveData<NavigationHeaderInteractor.HeaderDataEvent>()
 
     @BeforeEach
     fun setUp() {

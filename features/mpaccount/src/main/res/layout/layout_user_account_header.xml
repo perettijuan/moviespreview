@@ -1,60 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:animateLayoutChanges="true"
-    android:padding="12dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ImageView
-        android:id="@+id/userAccountHeaderIv"
-        android:layout_width="?attr/mpAccountAvatarSize"
-        android:layout_height="?attr/mpAccountAvatarSize"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_person_black" />
+    <data>
+        <variable
+            name="viewState"
+            type="com.jpp.mpaccount.account.UserAccountContentViewState" />
+    </data>
 
-    <TextView
-        android:id="@+id/userAccountHeaderUserNameTv"
-        style="@style/MPTextViewTitle"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:ellipsize="end"
-        android:gravity="center_horizontal"
-        android:maxLines="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userAccountHeaderIv"
-        tools:text="User Name" />
+        android:animateLayoutChanges="true"
+        android:background="@drawable/bg_account_content">
 
-    <TextView
-        android:id="@+id/userAccountHeaderAccountNameTv"
-        style="@style/MPTextViewSmall"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:gravity="center_horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userAccountHeaderUserNameTv"
-        tools:text="User Account" />
+        <com.jpp.mpdesign.views.MPImageView
+            android:id="@+id/userAccountHeaderIv"
+            android:layout_width="?attr/mpAccountAvatarSize"
+            android:layout_height="?attr/mpAccountAvatarSize"
+            android:visibility="@{viewState.avatarViewState.avatarVisibility}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:circularUrl="@{viewState.avatarViewState.avatarUrl}"
+            app:circularUrlErrorCallback="@{viewState.avatarViewState.avatarErrorCallback}"/>
 
-    <TextView
-        android:id="@+id/userAccountNameInitialTv"
-        style="@style/MPSingleCharacter"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/bg_account_initial"
-        android:gravity="center"
-        android:textSize="62sp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/userAccountHeaderIv"
-        app:layout_constraintEnd_toEndOf="@+id/userAccountHeaderIv"
-        app:layout_constraintStart_toStartOf="@+id/userAccountHeaderIv"
-        app:layout_constraintTop_toTopOf="@+id/userAccountHeaderIv"
-        tools:text="J" />
+        <TextView
+            android:id="@+id/userAccountHeaderUserNameTv"
+            style="@style/MPTextViewTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:maxLines="1"
+            android:text="@{viewState.userName}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/userAccountHeaderIv"
+            tools:text="User Name" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/userAccountHeaderAccountNameTv"
+            style="@style/MPTextViewSmall"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@{viewState.accountName}"
+            android:gravity="center_horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/userAccountHeaderUserNameTv"
+            tools:text="User Account" />
+
+        <TextView
+            android:id="@+id/userAccountNameInitialTv"
+            style="@style/MPSingleCharacter"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_account_initial"
+            android:gravity="center"
+            android:textSize="62sp"
+            android:text="@{viewState.avatarViewState.defaultLetter}"
+            android:visibility="@{viewState.avatarViewState.defaultLetterVisibility}"
+            app:layout_constraintBottom_toBottomOf="@+id/userAccountHeaderIv"
+            app:layout_constraintEnd_toEndOf="@+id/userAccountHeaderIv"
+            app:layout_constraintStart_toStartOf="@+id/userAccountHeaderIv"
+            app:layout_constraintTop_toTopOf="@+id/userAccountHeaderIv"
+            tools:text="J" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

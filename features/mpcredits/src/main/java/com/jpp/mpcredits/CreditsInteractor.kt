@@ -29,7 +29,7 @@ class CreditsInteractor @Inject constructor(private val connectivityRepository: 
         data class Success(val credits: Credits) : CreditsEvent()
     }
 
-    private val _events by lazy { MediatorLiveData<CreditsEvent>() }
+    private val _events = MediatorLiveData<CreditsEvent>()
 
     init {
         _events.addSource(languageRepository.updates()) {

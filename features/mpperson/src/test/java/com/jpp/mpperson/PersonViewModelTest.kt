@@ -38,13 +38,14 @@ class PersonViewModelTest {
     fun `Should post no connectivity error when disconnected`() {
         var viewStatePosted: PersonViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
-        subject.onInit(PersonParam(10.0, "aPerson"))
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+        subject.onInit(PersonParam(10.0, "aPerson", "aUrl"))
 
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.NotConnectedToNetwork)
 
         assertNotNull(viewStatePosted)
         assertEquals("aPerson", viewStatePosted?.screenTitle)
+        assertEquals("emptyUrl", viewStatePosted?.personImageUrl)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.birthday?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.placeOfBirth?.visibility)
@@ -60,9 +61,9 @@ class PersonViewModelTest {
     fun `Should retry to fetch data when not connected and retry is executed`() {
         var viewStatePosted: PersonViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInit(PersonParam(10.0, "aPerson"))
+        subject.onInit(PersonParam(10.0, "aPerson", "aUrl"))
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.NotConnectedToNetwork)
 
         viewStatePosted?.let {
@@ -75,13 +76,14 @@ class PersonViewModelTest {
     fun `Should post error when failing to fetch user account data`() {
         var viewStatePosted: PersonViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
-        subject.onInit(PersonParam(10.0, "aPerson"))
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+        subject.onInit(PersonParam(10.0, "aPerson", "aUrl"))
 
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.UnknownError)
 
         assertNotNull(viewStatePosted)
         assertEquals("aPerson", viewStatePosted?.screenTitle)
+        assertEquals("emptyUrl", viewStatePosted?.personImageUrl)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.birthday?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.placeOfBirth?.visibility)
@@ -97,9 +99,9 @@ class PersonViewModelTest {
     fun `Should retry to fetch data when error unknown and retry is executed`() {
         var viewStatePosted: PersonViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInit(PersonParam(10.0, "aPerson"))
+        subject.onInit(PersonParam(10.0, "aPerson", "aUrl"))
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.UnknownError)
 
         viewStatePosted?.let {
@@ -113,12 +115,13 @@ class PersonViewModelTest {
     fun `Should post loading and fetch person data onInit`() {
         var viewStatePosted: PersonViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInit(PersonParam(10.0, "aPerson"))
+        subject.onInit(PersonParam(10.0, "aPerson", "aUrl"))
 
         assertNotNull(viewStatePosted)
         assertEquals("aPerson", viewStatePosted?.screenTitle)
+        assertEquals("aUrl", viewStatePosted?.personImageUrl)
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
 
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.birthday?.visibility)
@@ -135,13 +138,14 @@ class PersonViewModelTest {
     fun `Should post loading, clear data and fetch person data on language changed `() {
         var viewStatePosted: PersonViewState? = null
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInit(PersonParam(10.0, "aPerson"))
+        subject.onInit(PersonParam(10.0, "aPerson", "aUrl"))
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.AppLanguageChanged)
 
         assertNotNull(viewStatePosted)
         assertEquals("aPerson", viewStatePosted?.screenTitle)
+        assertEquals("aUrl", viewStatePosted?.personImageUrl)
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
 
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.birthday?.visibility)
@@ -170,13 +174,14 @@ class PersonViewModelTest {
                 place_of_birth = null
         )
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
-        subject.onInit(PersonParam(10.0, "aPerson"))
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+        subject.onInit(PersonParam(10.0, "aPerson", "aUrl"))
 
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.Success(person))
 
         assertNotNull(viewStatePosted)
         assertEquals("aPerson", viewStatePosted?.screenTitle)
+        assertEquals("aUrl", viewStatePosted?.personImageUrl)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.birthday?.visibility)
@@ -200,13 +205,14 @@ class PersonViewModelTest {
                 place_of_birth = "aPlaceOfBirth"
         )
 
-        subject.viewStates.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
-        subject.onInit(PersonParam(10.0, "aPerson"))
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+        subject.onInit(PersonParam(10.0, "aPerson", "aUrl"))
 
         lvInteractorEvents.postValue(PersonInteractor.PersonEvent.Success(person))
 
         assertNotNull(viewStatePosted)
         assertEquals("aPerson", viewStatePosted?.screenTitle)
+        assertEquals("aUrl", viewStatePosted?.personImageUrl)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.dataAvailable?.visibility)

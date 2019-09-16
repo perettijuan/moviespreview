@@ -39,7 +39,7 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
         data class Success(val data: MoviePage) : UserMoviesState()
     }
 
-    private val _userAccountEvents by lazy { MediatorLiveData<UserAccountEvent>() }
+    private val _userAccountEvents = MediatorLiveData<UserAccountEvent>()
 
     init {
         _userAccountEvents.addSource(languageRepository.updates()) { _userAccountEvents.postValue(UserChangedLanguage) }

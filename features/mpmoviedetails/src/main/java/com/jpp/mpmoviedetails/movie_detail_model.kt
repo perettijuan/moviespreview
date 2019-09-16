@@ -32,9 +32,17 @@ data class MovieDetailViewState(
         val contentViewState: MovieDetailContentViewState = MovieDetailContentViewState()) {
 
     companion object {
-        fun showLoading(screenTitle: String, movieImageUrl: String) = MovieDetailViewState(screenTitle = screenTitle, loadingVisibility = View.VISIBLE, movieImageUrl = movieImageUrl)
-        fun showUnknownError(screenTitle: String, errorHandler: () -> Unit) = MovieDetailViewState(screenTitle = screenTitle, errorViewState = ErrorViewState.asUnknownError(errorHandler))
-        fun showNoConnectivityError(screenTitle: String, errorHandler: () -> Unit) = MovieDetailViewState(screenTitle = screenTitle, errorViewState = ErrorViewState.asConnectivity(errorHandler))
+        fun showLoading(screenTitle: String, movieImageUrl: String) = MovieDetailViewState(
+                screenTitle = screenTitle,
+                loadingVisibility =
+                View.VISIBLE,
+                movieImageUrl = movieImageUrl)
+        fun showUnknownError(screenTitle: String, errorHandler: () -> Unit) = MovieDetailViewState(
+                screenTitle = screenTitle,
+                errorViewState = ErrorViewState.asUnknownError(errorHandler))
+        fun showNoConnectivityError(screenTitle: String, errorHandler: () -> Unit) = MovieDetailViewState(
+                screenTitle = screenTitle,
+                errorViewState = ErrorViewState.asConnectivity(errorHandler))
         fun showDetails(screenTitle: String,
                         movieImageUrl: String,
                         overview: String,

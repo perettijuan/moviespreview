@@ -1,15 +1,12 @@
 package com.jpp.mp.main.movies
 
-import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,11 +15,10 @@ import com.jpp.mp.R
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
+import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.databinding.FragmentMovieListBinding
 import com.jpp.mp.databinding.ListItemMovieBinding
-import dagger.android.support.AndroidSupportInjection
-import javax.inject.Inject
 
 /**
  * Base fragment used to show the list of movies that are present in a particular section.
@@ -43,20 +39,12 @@ import javax.inject.Inject
  * VM instead of a VM per Fragment is based only in the simplification over the complication that
  * could represent having a hierarchy of VM to provide the functionality to this view.
  */
-abstract class MovieListFragment : Fragment() {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+abstract class MovieListFragment : MPFragment() {
 
     private lateinit var viewBinding: FragmentMovieListBinding
 
     // used to restore the position of the RecyclerView on view re-creation
     private var rvState: Parcelable? = null
-
-    override fun onAttach(context: Context?) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie_list, container, false)

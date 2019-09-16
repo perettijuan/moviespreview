@@ -20,7 +20,10 @@ import com.jpp.mpabout.databinding.FragmentLicenseContentBinding
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
-
+/**
+ * [BottomSheetDialogFragment] used to spawn the content of a particular license when it is selected
+ * from the list.
+ */
 class LicenseContentFragment : BottomSheetDialogFragment() {
 
     @Inject
@@ -42,21 +45,14 @@ class LicenseContentFragment : BottomSheetDialogFragment() {
         super.onActivityCreated(savedInstanceState)
 
         arguments?.let {
-            withViewModel {
-                viewStates.observe(viewLifecycleOwner, Observer {
-                    it.actionIfNotHandled { viewState ->
-                        viewBinding.viewState = viewState
-                    }
+            withViewModel<LicenseContentViewModel>(viewModelFactory) {
+                viewState.observe(viewLifecycleOwner, Observer { viewState ->
+                    viewBinding.viewState = viewState
                 })
                 onInit(it.getInt("licenseIdKey"))
             }
         }
     }
-
-    /**
-     * Helper function to execute actions with the [LicensesViewModel].
-     */
-    private fun withViewModel(action: LicenseContentViewModel.() -> Unit) = withViewModel<LicenseContentViewModel>(viewModelFactory) { action() }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         /*

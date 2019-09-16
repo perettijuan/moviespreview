@@ -31,10 +31,10 @@ class UserMovieListInteractor @Inject constructor(private val connectivityReposi
     }
 
 
-    private val _userMovieListEvents by lazy { MediatorLiveData<UserMovieListEvent>() }
+    private val _userMovieListEvents = MediatorLiveData<UserMovieListEvent>()
 
     init {
-        _userMovieListEvents.addSource(languageRepository.updates()) { _userMovieListEvents.postValue(UserChangedLanguage)}
+        _userMovieListEvents.addSource(languageRepository.updates()) { _userMovieListEvents.postValue(UserChangedLanguage) }
     }
 
     /**
@@ -103,7 +103,8 @@ class UserMovieListInteractor @Inject constructor(private val connectivityReposi
                     Connectivity.Disconnected -> _userMovieListEvents.postValue(NotConnectedToNetwork)
                     Connectivity.Connected -> {
                         fetch(account, session, languageRepository.getCurrentAppLanguage())
-                                ?.let { callback(it.results) } ?: _userMovieListEvents.postValue(UnknownError)
+                                ?.let { callback(it.results) }
+                                ?: _userMovieListEvents.postValue(UnknownError)
                     }
                 }
             }

@@ -65,7 +65,7 @@ class SearchFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         withViewModel {
-            viewStates.observe(this@SearchFragment.viewLifecycleOwner, Observer {
+            viewState.observe(this@SearchFragment.viewLifecycleOwner, Observer {
                 it.actionIfNotHandled { viewState ->
                     viewBinding.viewState = viewState
 

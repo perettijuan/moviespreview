@@ -37,7 +37,7 @@ class MovieDetailsInteractorTest {
     @RelaxedMockK
     private lateinit var moviePageRepository: MoviePageRepository
 
-    private val languageUpdates by lazy { MutableLiveData<SupportedLanguage>() }
+    private val languageUpdates = MutableLiveData<SupportedLanguage>()
 
     private lateinit var subject: MovieDetailsInteractor
 
@@ -58,7 +58,7 @@ class MovieDetailsInteractorTest {
          * an observer on the view states attached all the time in order
          * to get notifications.
          */
-        subject.movieDetailEvents.observeForever {  }
+        subject.movieDetailEvents.observeForever { }
     }
 
     @Test

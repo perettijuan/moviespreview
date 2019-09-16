@@ -26,22 +26,22 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
                                                       private val movieDetailsInteractor: MovieDetailsInteractor)
     : MPScopedViewModel(dispatchers) {
 
-    private val _viewStates by lazy { MediatorLiveData<MovieDetailActionViewState>() }
-    val viewStates: LiveData<MovieDetailActionViewState> get() = _viewStates
+    private val _viewState = MediatorLiveData<MovieDetailActionViewState>()
+    val viewState: LiveData<MovieDetailActionViewState> get() = _viewState
 
     private var currentMovieId: Double = 0.0
     private lateinit var currentMovieState: MovieState
 
     init {
-        _viewStates.addSource(movieDetailsInteractor.movieStateEvents) { event ->
+        _viewState.addSource(movieDetailsInteractor.movieStateEvents) { event ->
             when (event) {
-                is NoStateFound -> _viewStates.value = ShowNoMovieState(false, false)
-                is NotConnectedToNetwork -> _viewStates.value = ShowError
-                is UserNotLogged -> _viewStates.value = processUserNotLogged()
-                is UnknownError -> _viewStates.value = ShowError
-                is FetchSuccess -> _viewStates.value = processMovieStateUpdate(event.data)
-                is UpdateFavorite -> _viewStates.value = processUpdateFavorite(event)
-                is UpdateWatchlist -> _viewStates.value = processUpdateWatchlist(event)
+                is NoStateFound -> _viewState.value = ShowNoMovieState(false, false)
+                is NotConnectedToNetwork -> _viewState.value = ShowError
+                is UserNotLogged -> _viewState.value = processUserNotLogged()
+                is UnknownError -> _viewState.value = ShowError
+                is FetchSuccess -> _viewState.value = processMovieStateUpdate(event.data)
+                is UpdateFavorite -> _viewState.value = processUpdateFavorite(event)
+                is UpdateWatchlist -> _viewState.value = processUpdateWatchlist(event)
             }
         }
     }
@@ -58,22 +58,14 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
         fetchMovieState(movieId)
     }
 
-
-    /**
-     * Called when the user retries after an error.
-     */
-    fun onRetry() {
-        fetchMovieState(currentMovieId)
-    }
-
     /**
      * Called when the user selects the main action. This will
      * start the animation to show/hide the possible actions the
      * user can take.
      */
     fun onMainActionSelected() {
-        viewStates.value?.let { currentViewState ->
-            _viewStates.value = when (currentViewState) {
+        viewState.value?.let { currentViewState ->
+            _viewState.value = when (currentViewState) {
                 is ShowError -> ShowError
                 is ShowLoading -> ShowLoading
                 is ShowNoMovieState -> currentViewState.copy(
@@ -123,7 +115,7 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
      */
     private fun fetchMovieState(movieId: Double) {
         withMovieDetailsInteractor { fetchMovieState(movieId) }
-        _viewStates.value = ShowLoading
+        _viewState.value = ShowLoading
     }
 
     /**
@@ -168,7 +160,7 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
     }
 
     private fun processUserNotLogged(): MovieDetailActionViewState {
-        return viewStates.value?.let {
+        return viewState.value?.let {
             ShowUserNotLogged(showActionsExpanded = it.expanded, animateActionsExpanded = it.animate)
         } ?: ShowUserNotLogged(false, false)
     }
@@ -195,15 +187,15 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
      */
     private fun executeMovieStateUpdate(stateUpdateFunction: MovieDetailsInteractor.() -> Unit,
                                         copyLoadingStateFunction: (ShowMovieState) -> ShowMovieState) {
-        when (val currentState = viewStates.value) {
+        when (val currentState = viewState.value) {
             is ShowMovieState -> {
-                _viewStates.value = copyLoadingStateFunction(currentState)
+                _viewState.value = copyLoadingStateFunction(currentState)
                 withMovieDetailsInteractor { stateUpdateFunction() }
             }
             is ShowNoMovieState -> {
-                _viewStates.value = ShowUserNotLogged(showActionsExpanded = currentState.expanded, animateActionsExpanded = false)
+                _viewState.value = ShowUserNotLogged(showActionsExpanded = currentState.expanded, animateActionsExpanded = false)
             }
-            is ShowUserNotLogged -> _viewStates.value = currentState
+            is ShowUserNotLogged -> _viewState.value = currentState
         }
     }
 }

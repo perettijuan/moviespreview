@@ -21,10 +21,10 @@ class NavigationHeaderViewModel @Inject constructor(dispatchers: CoroutineDispat
                                                     private val interactor: NavigationHeaderInteractor)
     : MPScopedViewModel(dispatchers) {
 
-    private val _viewState by lazy { MediatorLiveData<HeaderViewState>() }
+    private val _viewState = MediatorLiveData<HeaderViewState>()
     val viewState: LiveData<HeaderViewState> get() = _viewState
 
-    private val _navEvents by lazy { SingleLiveEvent<HeaderNavigationEvent>() }
+    private val _navEvents = SingleLiveEvent<HeaderNavigationEvent>()
     val navEvents: LiveData<HeaderNavigationEvent> get() = _navEvents
 
     /*

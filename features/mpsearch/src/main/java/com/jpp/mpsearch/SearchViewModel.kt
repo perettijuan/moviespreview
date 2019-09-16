@@ -26,7 +26,7 @@ import javax.inject.Inject
  * Since the UI is using the Android Paging Library, the VM needs a way to map the data retrieved from
  * the [SearchInteractor] to a [PagedList] that can be used by the library. That process is done
  * using the [MPPagingDataSourceFactory] that creates the DataSource and produces a [LiveData] object
- * that is combined with the [viewStates] in order to properly map the data into a [SearchViewState].
+ * that is combined with the [viewState] in order to properly map the data into a [SearchViewState].
  *
  * This VM is language aware, meaning that when the user changes the language of the device, the
  * VM is notified about such event and executes a refresh of both: the data stored by the application
@@ -38,8 +38,8 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     : MPScopedViewModel(dispatchers) {
 
 
-    private val _viewStates = MediatorLiveData<HandledViewState<SearchViewState>>()
-    val viewStates: LiveData<HandledViewState<SearchViewState>> = _viewStates
+    private val _viewState = MediatorLiveData<HandledViewState<SearchViewState>>()
+    val viewState: LiveData<HandledViewState<SearchViewState>> = _viewState
 
     private val _navEvents = SingleLiveEvent<SearchNavigationEvent>()
     val navEvents: LiveData<SearchNavigationEvent> get() = _navEvents
@@ -50,10 +50,10 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private var retryFunc = { postLoadingAndPerformSearch(searchQuery) }
 
     init {
-        _viewStates.addSource(searchInteractor.searchEvents) { event ->
+        _viewState.addSource(searchInteractor.searchEvents) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewStates.value = of(SearchViewState.showNoConnectivityError(searchQuery, retryFunc))
-                is UnknownError -> _viewStates.value = of(SearchViewState.showUnknownError(searchQuery, retryFunc))
+                is NotConnectedToNetwork -> _viewState.value = of(SearchViewState.showNoConnectivityError(searchQuery, retryFunc))
+                is UnknownError -> _viewState.value = of(SearchViewState.showUnknownError(searchQuery, retryFunc))
                 is AppLanguageChanged -> refreshData()
             }
         }
@@ -67,9 +67,9 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun onInit(imageSize: Int) {
         targetImageSize = imageSize
-        when (val currentState = _viewStates.value) {
-            null -> _viewStates.value = of(SearchViewState.showCleanState())
-            else -> _viewStates.value = of(currentState.peekContent())
+        when (val currentState = _viewState.value) {
+            null -> _viewState.value = of(SearchViewState.showCleanState())
+            else -> _viewState.value = of(currentState.peekContent())
         }
     }
 
@@ -77,7 +77,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Called when the user performs a search. The VM will verify the inner state
      * of the application and will perform a search of the provided [query]. Once
      * a result is obtained from the [searchInteractor] a new view state will be
-     * posted to [viewStates].
+     * posted to [viewState].
      */
     fun onSearch(query: String) {
         if (::searchQuery.isInitialized && query == searchQuery) {
@@ -95,7 +95,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun onClearSearch() {
         searchQuery = ""
-        _viewStates.value = of(SearchViewState.showCleanState())
+        _viewState.value = of(SearchViewState.showCleanState())
     }
 
     /**
@@ -123,7 +123,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * of [SearchResultItem] that will be rendered by the view layer.
      */
     private fun postLoadingAndPerformSearch(query: String) {
-        with(_viewStates) {
+        with(_viewState) {
             value = of(SearchViewState.showSearching(query))
             addSource(createPagedListForSearch(query)) { pagedList -> if (pagedList.size > 0) value = of(SearchViewState.showSearchResult(query, pagedList)) }
         }
@@ -149,7 +149,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             searchInteractor.performSearchForPage(query, page) { searchResultList ->
                 when (searchResultList.isNotEmpty()) {
                     true -> callback(searchResultList.filter { it.isMovie() || it.isPerson() }.map { imagesPathInteractor.configureSearchResult(targetImageSize, it) })
-                    false -> if (page == 1) _viewStates.postValue(of(SearchViewState.showNoResults(query)))
+                    false -> if (page == 1) _viewState.postValue(of(SearchViewState.showNoResults(query)))
                 }
             }
         }.map { mapSearchResult(it) }
