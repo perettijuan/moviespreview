@@ -6,7 +6,9 @@ import com.jpp.mpaccount.TestAccountCoroutineDispatchers
 import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import com.jpp.mptestutils.CoroutineTestExtention
 import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.blockUntilCoroutinesAreDone
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -22,7 +24,11 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
-@ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
+@ExtendWith(
+        MockKExtension::class,
+        InstantTaskExecutorExtension::class,
+        CoroutineTestExtention::class
+)
 class UserMovieListViewModelTest {
 
     @RelaxedMockK
@@ -159,6 +165,8 @@ class UserMovieListViewModelTest {
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(param)
+
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
 
         assertNotNull(viewStatePosted)
         assertEquals(param.section.titleRes, viewStatePosted?.screenTitle)

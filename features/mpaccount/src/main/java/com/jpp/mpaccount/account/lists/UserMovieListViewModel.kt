@@ -13,6 +13,7 @@ import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEven
 import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToUserAccount
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -128,7 +129,7 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
                             .setPrefetchDistance(2)
                             .build()
                     LivePagedListBuilder(it, config)
-                            .setFetchExecutor(CoroutineExecutor(this, dispatchers.default()))
+                            .setFetchExecutor(CoroutineExecutor(this, Dispatchers.Default))
                             .build()
                 }
     }
@@ -169,7 +170,7 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
      */
     private fun refreshData() {
         launch {
-            withContext(dispatchers.default()) { userMovieListInteractor.refreshUserMoviesData() }
+            withContext(Dispatchers.Default) { userMovieListInteractor.refreshUserMoviesData() }
             postLoadingAndInitializePagedList(
                     currentParam.posterSize,
                     currentParam.backdropSize,
