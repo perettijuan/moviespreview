@@ -8,6 +8,7 @@ import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.*
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -47,7 +48,7 @@ class NavigationHeaderViewModel @Inject constructor(dispatchers: CoroutineDispat
      * on it.
      */
     fun onInit() {
-        launch { withContext(dispatchers.default()) { interactor.getUserAccountData() } }
+        launch { withContext(Dispatchers.Default) { interactor.getUserAccountData() } }
         _viewState.value = HeaderViewState.showLoading()
     }
 
