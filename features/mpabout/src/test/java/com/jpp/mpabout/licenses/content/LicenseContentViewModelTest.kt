@@ -6,6 +6,7 @@ import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mpabout.AboutInteractor
 import com.jpp.mpdomain.License
 import com.jpp.mpdomain.Licenses
+import com.jpp.mptestutils.CoroutineTestExtention
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
@@ -19,7 +20,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
+@ExtendWith(
+        MockKExtension::class,
+        InstantTaskExecutorExtension::class,
+        CoroutineTestExtention::class
+)
 class LicenseContentViewModelTest {
 
     @RelaxedMockK

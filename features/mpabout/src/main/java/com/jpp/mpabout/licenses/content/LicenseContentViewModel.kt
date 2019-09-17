@@ -7,6 +7,7 @@ import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mpabout.AboutInteractor
 import com.jpp.mpabout.AboutInteractor.LicensesEvent.Success
 import com.jpp.mpabout.AboutInteractor.LicensesEvent.UnknownError
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -49,7 +50,7 @@ class LicenseContentViewModel @Inject constructor(coroutineDispatchers: Coroutin
 
 
     private fun withInteractor(action: AboutInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(aboutInteractor) } }
+        launch { withContext(Dispatchers.Default) { action(aboutInteractor) } }
     }
 
     private fun pushLoadingAndFetchAppLicenses() {
