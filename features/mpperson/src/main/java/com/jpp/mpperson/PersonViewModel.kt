@@ -11,6 +11,7 @@ import com.jpp.mpperson.PersonRowViewState.Companion.birthdayRow
 import com.jpp.mpperson.PersonRowViewState.Companion.deathDayRow
 import com.jpp.mpperson.PersonRowViewState.Companion.emptyRow
 import com.jpp.mpperson.PersonRowViewState.Companion.placeOfBirthRow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -88,7 +89,7 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * on a background task.
      */
     private fun withInteractor(action: PersonInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(personInteractor) } }
+        launch { withContext(Dispatchers.Default) { action(personInteractor) } }
     }
 
     /**

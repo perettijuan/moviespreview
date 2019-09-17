@@ -3,6 +3,7 @@ package com.jpp.mpperson
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mpdomain.Person
+import com.jpp.mptestutils.CoroutineTestExtention
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
@@ -15,7 +16,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
+@ExtendWith(
+        MockKExtension::class,
+        InstantTaskExecutorExtension::class,
+        CoroutineTestExtention::class
+)
 class PersonViewModelTest {
 
     @RelaxedMockK
