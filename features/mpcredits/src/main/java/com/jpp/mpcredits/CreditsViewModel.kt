@@ -11,6 +11,7 @@ import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
 import com.jpp.mpdomain.CrewMember
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -110,7 +111,7 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * on a background task.
      */
     private fun withInteractor(action: CreditsInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(creditsInteractor) } }
+        launch { withContext(Dispatchers.Default) { action(creditsInteractor) } }
     }
 
     /**
@@ -123,7 +124,7 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             true -> _viewState.value = CreditsViewState.showNoCreditsAvailable(movieTitle)
             false -> {
                 launch {
-                    withContext(dispatchers.default()) {
+                    withContext(Dispatchers.Default) {
                         CreditsViewState.showCredits(
                                 movieTitle,
                                 credits.cast

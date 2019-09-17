@@ -7,6 +7,7 @@ import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mptestutils.CoroutineTestExtention
 import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.blockUntilCoroutinesAreDone
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -16,8 +17,6 @@ import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
@@ -144,13 +143,7 @@ class MovieListViewModelTest {
 
         subject.onInit(param)
 
-        /*
-         * Block the test until all coroutine child are over.
-         * Credits: https://stackoverflow.com/questions/53271646/how-to-unit-test-coroutine-when-it-contains-coroutine-delay/53335224#53335224
-         */
-        runBlocking {
-            subject.coroutineContext[Job]!!.children.forEach { it.join() }
-        }
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
 
         assertNotNull(viewStatePosted)
         assertEquals(param.titleRes, viewStatePosted?.screenTitle)

@@ -7,7 +7,9 @@ import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
 import com.jpp.mpdomain.CrewMember
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import com.jpp.mptestutils.CoroutineTestExtention
 import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.blockUntilCoroutinesAreDone
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -22,7 +24,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
+@ExtendWith(
+        MockKExtension::class,
+        InstantTaskExecutorExtension::class,
+        CoroutineTestExtention::class
+)
 class CreditsViewModelTest {
 
     @RelaxedMockK
@@ -201,6 +207,7 @@ class CreditsViewModelTest {
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.Success(credits))
 
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
 
         assertNotNull(viewStatePosted)
         assertEquals("aMovie", viewStatePosted?.screenTitle)

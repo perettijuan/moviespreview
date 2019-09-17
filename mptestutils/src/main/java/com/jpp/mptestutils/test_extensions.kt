@@ -8,6 +8,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.runBlocking
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @return a [LifecycleOwner] that is already resumed. Utility
@@ -32,4 +35,15 @@ fun <T> LiveData<T>.observeWith(observer: (T) -> Unit) {
     observe(resumedLifecycleOwner(), Observer {
         observer(it)
     })
+}
+
+/**
+ * Block the test execution until all coroutine child of [context] are done.
+ * Credits: https://stackoverflow.com/questions/53271646/how-to-unit-test-coroutine-when-it-contains-coroutine-delay/53335224#53335224
+ */
+@RestrictTo(RestrictTo.Scope.TESTS)
+fun blockUntilCoroutinesAreDone(context: CoroutineContext) {
+    runBlocking {
+        context[Job]!!.children.forEach { it.join() }
+    }
 }
