@@ -7,6 +7,7 @@ import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mpabout.AboutInteractor.AboutEvent.*
 import com.jpp.mpdomain.AboutUrl
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -85,7 +86,7 @@ class AboutViewModel @Inject constructor(coroutineDispatchers: CoroutineDispatch
     }
 
     private fun withInteractor(action: AboutInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(aboutInteractor) } }
+        launch { withContext(Dispatchers.Default) { action(aboutInteractor) } }
     }
 
     private fun processAboutUrl(aboutUrl: AboutUrl) {
