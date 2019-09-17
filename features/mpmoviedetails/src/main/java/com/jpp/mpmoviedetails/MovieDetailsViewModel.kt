@@ -28,6 +28,7 @@ import com.jpp.mpdomain.MovieGenre.GenresId.TV_MOVIE_GENRE_ID
 import com.jpp.mpdomain.MovieGenre.GenresId.WAR_GENRE_ID
 import com.jpp.mpdomain.MovieGenre.GenresId.WESTERN_GENRE_ID
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -127,7 +128,7 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
      * on a background task.
      */
     private fun withMovieDetailsInteractor(action: MovieDetailsInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(movieDetailsInteractor) } }
+        launch { withContext(Dispatchers.Default) { action(movieDetailsInteractor) } }
     }
 
     /**
@@ -136,7 +137,7 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
      */
     private fun mapMovieDetails(domainDetail: MovieDetail, movieTitle: String, imageUrl: String) {
         launch {
-            withContext(dispatchers.default()) {
+            withContext(Dispatchers.Default) {
                 with(domainDetail) {
                     MovieDetailViewState.showDetails(
                             screenTitle = movieTitle,

@@ -4,7 +4,9 @@ import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
+import com.jpp.mptestutils.CoroutineTestExtention
 import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.blockUntilCoroutinesAreDone
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -16,7 +18,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
+@ExtendWith(
+        MockKExtension::class,
+        InstantTaskExecutorExtension::class,
+        CoroutineTestExtention::class
+)
 class MovieDetailsViewModelTest {
 
     @RelaxedMockK
@@ -124,6 +130,8 @@ class MovieDetailsViewModelTest {
         subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
 
         lvInteractorEvents.postValue(MovieDetailsInteractor.MovieDetailEvent.Success(domainDetail))
+
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
 
         assertEquals(expected, viewStatePosted)
     }
