@@ -14,6 +14,7 @@ import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -135,7 +136,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     private fun refreshData() {
         launch {
-            withContext(dispatchers.default()) { searchInteractor.flushCurrentSearch() }
+            withContext(Dispatchers.Default) { searchInteractor.flushCurrentSearch() }
             postLoadingAndPerformSearch(searchQuery)
         }
     }
@@ -158,7 +159,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                             .setPrefetchDistance(2)
                             .build()
                     LivePagedListBuilder(it, config)
-                            .setFetchExecutor(CoroutineExecutor(this, dispatchers.default()))
+                            .setFetchExecutor(CoroutineExecutor(this, Dispatchers.Default))
                             .build()
                 }
     }
