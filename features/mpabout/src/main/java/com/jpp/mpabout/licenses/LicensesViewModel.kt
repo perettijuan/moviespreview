@@ -13,6 +13,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import  com.jpp.mpabout.AboutInteractor.LicensesEvent.*
 import com.jpp.mpdomain.License
+import kotlinx.coroutines.Dispatchers
 
 /**
  * [MPScopedViewModel] that supports the list of [License]s that the application uses.
@@ -62,7 +63,7 @@ class LicensesViewModel @Inject constructor(coroutineDispatchers: CoroutineDispa
      * thread.
      */
     private fun withInteractor(action: AboutInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(aboutInteractor) } }
+        launch { withContext(Dispatchers.Default) { action(aboutInteractor) } }
     }
 
     /**
