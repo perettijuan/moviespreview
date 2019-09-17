@@ -8,6 +8,7 @@ import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mpaccount.login.LoginInteractor.LoginEvent
 import com.jpp.mpaccount.login.LoginInteractor.OauthEvent
 import com.jpp.mpdomain.AccessToken
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -89,7 +90,7 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     }
 
     private fun withLoginInteractor(action: LoginInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(loginInteractor) } }
+        launch { withContext(Dispatchers.Default) { action(loginInteractor) } }
     }
 
     private fun createOauthViewState(oauthEvent: OauthEvent.OauthSuccessful): LoginViewState {
