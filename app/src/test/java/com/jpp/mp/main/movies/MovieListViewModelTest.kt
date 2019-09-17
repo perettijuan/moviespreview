@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import com.jpp.mptestutils.CoroutineTestExtention
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
@@ -15,6 +16,8 @@ import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
@@ -22,7 +25,11 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments.arguments
 import org.junit.jupiter.params.provider.MethodSource
 
-@ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
+@ExtendWith(
+        MockKExtension::class,
+        InstantTaskExecutorExtension::class,
+        CoroutineTestExtention::class
+)
 class MovieListViewModelTest {
 
     @RelaxedMockK
@@ -136,6 +143,14 @@ class MovieListViewModelTest {
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(param)
+
+        /*
+         * Block the test until all coroutine child are over.
+         * Credits: https://stackoverflow.com/questions/53271646/how-to-unit-test-coroutine-when-it-contains-coroutine-delay/53335224#53335224
+         */
+        runBlocking {
+            subject.coroutineContext[Job]!!.children.forEach { it.join() }
+        }
 
         assertNotNull(viewStatePosted)
         assertEquals(param.titleRes, viewStatePosted?.screenTitle)

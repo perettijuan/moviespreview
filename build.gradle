@@ -3,80 +3,81 @@
 buildscript {
 
     ext.versions = [
-            'kotlin'   : '1.3.20',
-            'junit5'   : [
+            'kotlin'       : '1.3.20',
+            'junit5'       : [
                     'jupiter' : '5.3.1',
                     'platform': '1.3.1'
             ],
-            'hamcrest' : '1.3',
-            'pagingLib': '2.1.0-rc01',
-            'navigationLib' : '2.0.0',
-            'dagger' : '2.16',
-            'room' : '2.0.0',
-            'mockk' : '1.8.13.kotlin13',
-            'canary' : '1.6.3',
-            'lifecycle': '2.0.0',
-            'appCompat': '1.0.2',
-            'coroutines' : '1.1.1'
+            'hamcrest'     : '1.3',
+            'pagingLib'    : '2.1.0-rc01',
+            'navigationLib': '2.0.0',
+            'dagger'       : '2.16',
+            'room'         : '2.0.0',
+            'mockk'        : '1.8.13.kotlin13',
+            'canary'       : '1.6.3',
+            'lifecycle'    : '2.0.0',
+            'appCompat'    : '1.0.2',
+            'coroutines'   : '1.3.0'
     ]
 
     ext.deps = [
-            'android' : [
+            'android'   : [
                     'plugin': 'com.android.tools.build:gradle:3.2.0',
-                    'arch' : [
-                            'navigation' : [
-                                    'safeargs' : "androidx.navigation:navigation-safe-args-gradle-plugin:${versions.navigationLib}",
-                                    'fragment' : "androidx.navigation:navigation-fragment-ktx:${versions.navigationLib}",
-                                    'ui' : "androidx.navigation:navigation-ui-ktx:${versions.navigationLib}"
+                    'arch'  : [
+                            'navigation': [
+                                    'safeargs': "androidx.navigation:navigation-safe-args-gradle-plugin:${versions.navigationLib}",
+                                    'fragment': "androidx.navigation:navigation-fragment-ktx:${versions.navigationLib}",
+                                    'ui'      : "androidx.navigation:navigation-ui-ktx:${versions.navigationLib}"
                             ]
                     ]
             ],
-            'androidx': [
-                    'paging': "androidx.paging:paging-runtime-ktx:${versions.pagingLib}",
-                    'room': [
+            'androidx'  : [
+                    'paging'   : "androidx.paging:paging-runtime-ktx:${versions.pagingLib}",
+                    'room'     : [
                             'runtime' : "androidx.room:room-runtime:${versions.room}",
-                            'compiler' : "androidx.room:room-compiler:${versions.room}"
+                            'compiler': "androidx.room:room-compiler:${versions.room}"
                     ],
                     'lifecycle': [
                             'extensions': "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}",
-                            'compiler' : "androidx.lifecycle:lifecycle-compiler:${versions.lifecycle}"
+                            'compiler'  : "androidx.lifecycle:lifecycle-compiler:${versions.lifecycle}"
                     ],
-                    'appcompat' : "androidx.appcompat:appcompat:${versions.appCompat}"
+                    'appcompat': "androidx.appcompat:appcompat:${versions.appCompat}"
             ],
-            'kotlin'  : [
+            'kotlin'    : [
                     'plugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
                     'stdlib': "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
             ],
-            'dagger' : [
-                    'dagger' : "com.google.dagger:dagger:${versions.dagger}",
-                    'android' : "com.google.dagger:dagger-android-support:${versions.dagger}",
+            'dagger'    : [
+                    'dagger'   : "com.google.dagger:dagger:${versions.dagger}",
+                    'android'  : "com.google.dagger:dagger-android-support:${versions.dagger}",
                     'compiler' : "com.google.dagger:dagger-compiler:${versions.dagger}",
-                    'processor' : "com.google.dagger:dagger-android-processor:${versions.dagger}"
+                    'processor': "com.google.dagger:dagger-android-processor:${versions.dagger}"
             ],
             'coroutines': [
-                    'core' : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}",
-                    'android' : "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
+                    'core'   : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}",
+                    'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
             ],
-            'test'    : [
-                    'junit5'  : [
+            'test'      : [
+                    'junit5'    : [
                             'jupiter': [
                                     'api'   : "org.junit.jupiter:junit-jupiter-api:${versions.junit5.jupiter}",
                                     'engine': "org.junit.jupiter:junit-jupiter-engine:${versions.junit5.jupiter}",
                                     'params': "org.junit.jupiter:junit-jupiter-params:${versions.junit5.jupiter}"
                             ]
                     ],
-                    'hamcrest': [
+                    'hamcrest'  : [
                             'integration': "org.hamcrest:hamcrest-integration:${versions.hamcrest}"
                     ],
-                    'mockk'   : [
-                            'unit' : "io.mockk:mockk:${versions.mockk}",
-                            'android' : "io.mockk:mockk-android:${versions.mockk}"
-                    ]
+                    'mockk'     : [
+                            'unit'   : "io.mockk:mockk:${versions.mockk}",
+                            'android': "io.mockk:mockk-android:${versions.mockk}"
+                    ],
+                    'coroutines': "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}"
             ],
-            'canary' : [
-                    'debug': "com.squareup.leakcanary:leakcanary-android:${versions.canary}",
-                    'release' : "com.squareup.leakcanary:leakcanary-android-no-op:${versions.canary}",
-                    'fragments' : "com.squareup.leakcanary:leakcanary-support-fragment:${versions.canary}"
+            'canary'    : [
+                    'debug'    : "com.squareup.leakcanary:leakcanary-android:${versions.canary}",
+                    'release'  : "com.squareup.leakcanary:leakcanary-android-no-op:${versions.canary}",
+                    'fragments': "com.squareup.leakcanary:leakcanary-support-fragment:${versions.canary}"
             ]
     ]
 

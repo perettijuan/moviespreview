@@ -13,6 +13,7 @@ import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.*
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -124,7 +125,7 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                             .setPrefetchDistance(2)
                             .build()
                     LivePagedListBuilder(it, config)
-                            .setFetchExecutor(CoroutineExecutor(this, dispatchers.default()))
+                            .setFetchExecutor(CoroutineExecutor(this, Dispatchers.Default))
                             .build()
                 }
     }
@@ -154,7 +155,7 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     private fun refreshData() {
         launch {
-            withContext(dispatchers.default()) {
+            withContext(Dispatchers.Default) {
                 with(movieListInteractor) {
                     flushMoviePagesForSection(MovieSection.Playing)
                     flushMoviePagesForSection(MovieSection.Popular)

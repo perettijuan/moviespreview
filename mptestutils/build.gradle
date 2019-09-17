@@ -41,4 +41,6 @@ dependencies {
     implementation deps.test.junit5.jupiter.api
     // MockK
     implementation deps.test.mockk.unit
+    // Coroutines
+    implementation deps.test.coroutines
 }

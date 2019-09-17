@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.isActive
 import kotlin.coroutines.CoroutineContext
@@ -56,7 +57,7 @@ abstract class MPScopedViewModel(val dispatchers: CoroutineDispatchers) : ViewMo
     * What is the plus (+) operator? -> https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/plus.html
     */
     override val coroutineContext: CoroutineContext
-        get() = currentJob + dispatchers.main()
+        get() = currentJob + Dispatchers.Main
 
     override fun onCleared() {
         currentJob.cancel()
