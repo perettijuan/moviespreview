@@ -11,6 +11,7 @@ import com.jpp.mpaccount.account.UserAccountNavigationEvent.*
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -150,12 +151,12 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
 
 
     private fun withAccountInteractor(action: UserAccountInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(accountInteractor) } }
+        launch { withContext(Dispatchers.Default) { action(accountInteractor) } }
     }
 
 
     private suspend fun getUserMoviesViewState(userMovieState: UserMoviesState,
-                                               emptyCreator: () -> UserMoviesViewState) = withContext(dispatchers.default()) {
+                                               emptyCreator: () -> UserMoviesViewState) = withContext(Dispatchers.Default) {
         when (userMovieState) {
             is UserMoviesState.UnknownError -> UserMoviesViewState.createError()
             is UserMoviesState.Success -> {

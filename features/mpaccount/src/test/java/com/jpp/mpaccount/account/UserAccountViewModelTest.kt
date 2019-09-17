@@ -9,7 +9,9 @@ import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.UserAvatar
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import com.jpp.mptestutils.CoroutineTestExtention
 import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.blockUntilCoroutinesAreDone
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -22,7 +24,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
+@ExtendWith(
+        MockKExtension::class,
+        InstantTaskExecutorExtension::class,
+        CoroutineTestExtention::class
+)
 class UserAccountViewModelTest {
 
     @RelaxedMockK
@@ -95,6 +101,8 @@ class UserAccountViewModelTest {
 
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.UserNotLogged)
 
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
+
         assertEquals(UserAccountNavigationEvent.GoToPrevious, eventPosted)
     }
 
@@ -131,6 +139,8 @@ class UserAccountViewModelTest {
                         UserAccountInteractor.UserMoviesState.UnknownError)
         )
 
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
+
         assertNotNull(viewStatePosted)
         assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
@@ -166,6 +176,8 @@ class UserAccountViewModelTest {
                         UserAccountInteractor.UserMoviesState.UnknownError,
                         UserAccountInteractor.UserMoviesState.UnknownError)
         )
+
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
 
         assertNotNull(viewStatePosted)
         assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
@@ -224,6 +236,8 @@ class UserAccountViewModelTest {
                         UserAccountInteractor.UserMoviesState.Success(watchListMoviePage)
                 )
         )
+
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
 
         assertNotNull(viewStatePosted)
         assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
