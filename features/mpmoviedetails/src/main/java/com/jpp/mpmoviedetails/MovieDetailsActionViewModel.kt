@@ -7,6 +7,7 @@ import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpmoviedetails.MovieDetailActionViewState.*
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -170,7 +171,7 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
      * on a background task.
      */
     private fun withMovieDetailsInteractor(action: MovieDetailsInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(movieDetailsInteractor) } }
+        launch { withContext(Dispatchers.Default) { action(movieDetailsInteractor) } }
     }
 
     /**
