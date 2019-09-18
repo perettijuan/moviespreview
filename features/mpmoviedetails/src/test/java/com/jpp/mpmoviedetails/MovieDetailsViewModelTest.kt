@@ -82,6 +82,8 @@ class MovieDetailsViewModelTest {
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
 
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
+
         assertNotNull(viewStatePosted)
         assertEquals("aMovie", viewStatePosted?.screenTitle)
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)

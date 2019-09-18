@@ -7,6 +7,7 @@ import com.jpp.mpdomain.License
 import com.jpp.mpdomain.Licenses
 import com.jpp.mptestutils.CoroutineTestExtention
 import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.blockUntilCoroutinesAreDone
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -46,6 +47,8 @@ class LicenseContentViewModelTest {
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit(5)
+
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
 
         assertNotNull(viewStatePosted)
 
@@ -87,6 +90,7 @@ class LicenseContentViewModelTest {
 
         viewStatePosted?.let {
             it.errorViewState.errorHandler?.invoke()
+            blockUntilCoroutinesAreDone(subject.coroutineContext)
             verify { aboutInteractor.fetchAppLicenses() }
         } ?: fail()
     }
