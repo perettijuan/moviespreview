@@ -96,6 +96,7 @@ class LicensesViewModelTest {
 
         viewStatePosted?.let {
             it.errorViewState.errorHandler?.invoke()
+            blockUntilCoroutinesAreDone(subject.coroutineContext)
             verify { aboutInteractor.fetchAppLicenses() }
         } ?: fail()
     }
