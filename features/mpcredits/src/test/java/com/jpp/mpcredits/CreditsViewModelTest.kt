@@ -131,6 +131,8 @@ class CreditsViewModelTest {
         assertEquals(View.INVISIBLE, viewStatePosted?.creditsViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
 
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
+
         verifyOrder {
             creditsInteractor.fetchCreditsForMovie(10.0)
             creditsInteractor.flushCreditsData()
@@ -153,6 +155,8 @@ class CreditsViewModelTest {
         assertEquals(View.INVISIBLE, viewStatePosted?.noCreditsViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.creditsViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
+
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
 
         verify { creditsInteractor.fetchCreditsForMovie(10.0) }
     }
