@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.jpp.mpdomain.AppVersion
 import com.jpp.mptestutils.CoroutineTestExtention
 import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.blockUntilCoroutinesAreDone
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -69,6 +70,8 @@ class AboutViewModelTest {
     fun `Should request proper URL when navigation item selected`(param: AboutInteractorTestParam) {
 
         subject.onUserSelectedAboutItem(param.selected)
+
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
 
         param.verification.invoke(aboutInteractor)
     }
