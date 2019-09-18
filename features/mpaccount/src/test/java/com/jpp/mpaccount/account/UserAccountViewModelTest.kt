@@ -256,6 +256,8 @@ class UserAccountViewModelTest {
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onInit(10)
 
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
+
         assertNotNull(viewStatePosted)
         assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)

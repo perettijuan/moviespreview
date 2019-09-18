@@ -80,6 +80,7 @@ class MovieListViewModelTest {
 
         viewStatePosted?.let {
             it.errorViewState.errorHandler?.invoke()
+            blockUntilCoroutinesAreDone(subject.coroutineContext)
             verify(exactly = 2) { movieListInteractor.fetchMoviePageForSection(1, param.section, any()) }
         } ?: fail()
     }
@@ -116,6 +117,7 @@ class MovieListViewModelTest {
 
         viewStatePosted?.let {
             it.errorViewState.errorHandler?.invoke()
+            blockUntilCoroutinesAreDone(subject.coroutineContext)
             verify(exactly = 2) { movieListInteractor.fetchMoviePageForSection(1, param.section, any()) }
         } ?: fail()
     }

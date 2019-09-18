@@ -15,6 +15,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.slot
 import io.mockk.verify
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -85,6 +86,8 @@ class UserMovieListViewModelTest {
         subject.onInit(param)
         lvInteractorEvents.postValue(UserMovieListEvent.NotConnectedToNetwork)
 
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
+
         viewStatePosted?.let {
             it.errorViewState.errorHandler?.invoke()
             when (param.section) {
@@ -124,11 +127,10 @@ class UserMovieListViewModelTest {
 
         lvInteractorEvents.postValue(UserMovieListEvent.UnknownError)
 
-        blockUntilCoroutinesAreDone(subject.coroutineContext)
-
         assertEquals(param.section.titleRes, viewStatePosted?.screenTitle)
         viewStatePosted?.let {
             it.errorViewState.errorHandler?.invoke()
+            blockUntilCoroutinesAreDone(subject.coroutineContext)
             when (param.section) {
                 UserMovieListType.FAVORITE_LIST -> verify(exactly = 2) { userMovieListInteractor.fetchFavoriteMovies(any(), any()) }
                 UserMovieListType.RATED_LIST -> verify(exactly = 2) { userMovieListInteractor.fetchRatedMovies(any(), any()) }
@@ -212,6 +214,7 @@ class UserMovieListViewModelTest {
 
         @JvmStatic
         fun userMovieListTestParams() = listOf(
+                Arguments.arguments(UserMovieListParam(UserMovieListType.FAVORITE_LIST, 10, 10)),
                 Arguments.arguments(UserMovieListParam(UserMovieListType.RATED_LIST, 10, 10)),
                 Arguments.arguments(UserMovieListParam(UserMovieListType.WATCH_LIST, 10, 10))
         )

@@ -8,6 +8,7 @@ import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.UserAvatar
 import com.jpp.mptestutils.CoroutineTestExtention
 import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.blockUntilCoroutinesAreDone
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -142,6 +143,8 @@ class NavigationHeaderViewModelTest {
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit()
+
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
 
         assertNotNull(viewStatePosted)
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
