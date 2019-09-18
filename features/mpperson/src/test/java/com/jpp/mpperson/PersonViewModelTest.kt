@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.jpp.mpdomain.Person
 import com.jpp.mptestutils.CoroutineTestExtention
 import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.blockUntilCoroutinesAreDone
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -133,6 +134,8 @@ class PersonViewModelTest {
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.bio?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.dataAvailable?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
+
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
 
         verify { interactor.fetchPerson(10.0) }
     }
