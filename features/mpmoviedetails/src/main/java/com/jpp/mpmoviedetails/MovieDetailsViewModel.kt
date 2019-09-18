@@ -3,7 +3,6 @@ package com.jpp.mpmoviedetails
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.viewstate.HandledViewState
 import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
@@ -44,9 +43,8 @@ import javax.inject.Inject
  * VM is notified about such event and executes a refresh of both: the data stored by the application
  * and the view state being shown to the user.
  */
-class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                                private val movieDetailsInteractor: MovieDetailsInteractor)
-    : MPScopedViewModel(dispatchers) {
+class MovieDetailsViewModel @Inject constructor(private val movieDetailsInteractor: MovieDetailsInteractor)
+    : MPScopedViewModel() {
 
 
     private val _viewState = MediatorLiveData<HandledViewState<MovieDetailViewState>>()

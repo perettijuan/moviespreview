@@ -3,7 +3,6 @@ package com.jpp.mpcredits
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.extensions.addAllMapping
 import com.jpp.mpcredits.CreditsInteractor.CreditsEvent.*
@@ -28,10 +27,9 @@ import javax.inject.Inject
  * VM is notified about such event and executes a refresh of both: the data stored by the application
  * and the view state being shown to the user.
  */
-class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                           private val creditsInteractor: CreditsInteractor,
+class CreditsViewModel @Inject constructor(private val creditsInteractor: CreditsInteractor,
                                            private val imagesPathInteractor: ImagesPathInteractor)
-    : MPScopedViewModel(dispatchers) {
+    : MPScopedViewModel() {
 
 
     private val _viewState = MediatorLiveData<CreditsViewState>()

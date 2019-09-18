@@ -2,7 +2,6 @@ package com.jpp.mpaccount.account.lists
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mpaccount.TestAccountCoroutineDispatchers
 import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
@@ -45,7 +44,6 @@ class UserMovieListViewModelTest {
         every { userMovieListInteractor.userAccountEvents } returns lvInteractorEvents
 
         subject = UserMovieListViewModel(
-                TestAccountCoroutineDispatchers(),
                 userMovieListInteractor,
                 imagesPathInteractor
         )
@@ -125,6 +123,8 @@ class UserMovieListViewModelTest {
         subject.onInit(param)
 
         lvInteractorEvents.postValue(UserMovieListEvent.UnknownError)
+
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
 
         assertEquals(param.section.titleRes, viewStatePosted?.screenTitle)
         viewStatePosted?.let {
@@ -212,7 +212,6 @@ class UserMovieListViewModelTest {
 
         @JvmStatic
         fun userMovieListTestParams() = listOf(
-                Arguments.arguments(UserMovieListParam(UserMovieListType.FAVORITE_LIST, 10, 10)),
                 Arguments.arguments(UserMovieListParam(UserMovieListType.RATED_LIST, 10, 10)),
                 Arguments.arguments(UserMovieListParam(UserMovieListType.WATCH_LIST, 10, 10))
         )

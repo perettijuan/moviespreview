@@ -2,7 +2,6 @@ package com.jpp.mp.main.movies
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mptestutils.CoroutineTestExtention
@@ -15,8 +14,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.slot
 import io.mockk.verify
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
@@ -45,13 +42,7 @@ class MovieListViewModelTest {
     fun setUp() {
         every { movieListInteractor.events } returns lvInteractorEvents
 
-        val dispatchers = object : CoroutineDispatchers {
-            override fun main(): CoroutineDispatcher = Dispatchers.Unconfined
-            override fun default(): CoroutineDispatcher = Dispatchers.Unconfined
-        }
-
         subject = MovieListViewModel(
-                dispatchers,
                 movieListInteractor,
                 imagesPathInteractor
         )

@@ -5,7 +5,6 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
@@ -33,10 +32,9 @@ import javax.inject.Inject
  * VM is notified about such event and executes a refresh of both: the data stored by the application
  * and the view state being shown to the user.
  */
-class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                          private val searchInteractor: SearchInteractor,
+class SearchViewModel @Inject constructor(private val searchInteractor: SearchInteractor,
                                           private val imagesPathInteractor: ImagesPathInteractor)
-    : MPScopedViewModel(dispatchers) {
+    : MPScopedViewModel() {
 
 
     private val _viewState = MediatorLiveData<HandledViewState<SearchViewState>>()

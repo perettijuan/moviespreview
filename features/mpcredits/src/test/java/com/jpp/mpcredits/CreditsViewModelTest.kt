@@ -2,7 +2,6 @@ package com.jpp.mpcredits
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
 import com.jpp.mpdomain.CrewMember
@@ -17,8 +16,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import io.mockk.verifyOrder
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -45,13 +42,7 @@ class CreditsViewModelTest {
     fun setUp() {
         every { creditsInteractor.events } returns lvInteractorEvents
 
-        val dispatchers = object : CoroutineDispatchers {
-            override fun main(): CoroutineDispatcher = Dispatchers.Unconfined
-            override fun default(): CoroutineDispatcher = Dispatchers.Unconfined
-        }
-
         subject = CreditsViewModel(
-                dispatchers,
                 creditsInteractor,
                 imagesPathInteractor
         )

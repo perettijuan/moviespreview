@@ -36,9 +36,7 @@ class MovieDetailsViewModelTest {
     fun setUp() {
         every { interactor.movieDetailEvents } returns lvInteractorEvents
 
-        subject = MovieDetailsViewModel(
-                TestMovieDetailCoroutineDispatchers(),
-                interactor)
+        subject = MovieDetailsViewModel(interactor)
     }
 
     @Test

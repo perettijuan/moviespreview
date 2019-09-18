@@ -2,7 +2,6 @@ package com.jpp.mpabout.licenses
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mpabout.AboutInteractor
 import com.jpp.mpdomain.License
 import com.jpp.mpdomain.Licenses
@@ -13,8 +12,6 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -38,12 +35,7 @@ class LicensesViewModelTest {
     fun setUp() {
         every { aboutInteractor.licenseEvents } returns lvInteractorEvents
 
-        val dispatchers = object : CoroutineDispatchers {
-            override fun main(): CoroutineDispatcher = Dispatchers.Unconfined
-            override fun default(): CoroutineDispatcher = Dispatchers.Unconfined
-        }
-
-        subject = LicensesViewModel(dispatchers, aboutInteractor)
+        subject = LicensesViewModel(aboutInteractor)
     }
 
     @Test

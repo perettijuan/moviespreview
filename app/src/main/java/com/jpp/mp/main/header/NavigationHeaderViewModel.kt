@@ -3,7 +3,6 @@ package com.jpp.mp.main.header
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.*
 import com.jpp.mpdomain.Gravatar
@@ -18,9 +17,8 @@ import javax.inject.Inject
  * user account data and state using the provided [NavigationHeaderInteractor] and updates the view
  * state that the Fragment takes care of rendering.
  */
-class NavigationHeaderViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                                    private val interactor: NavigationHeaderInteractor)
-    : MPScopedViewModel(dispatchers) {
+class NavigationHeaderViewModel @Inject constructor(private val interactor: NavigationHeaderInteractor)
+    : MPScopedViewModel() {
 
     private val _viewState = MediatorLiveData<HeaderViewState>()
     val viewState: LiveData<HeaderViewState> get() = _viewState

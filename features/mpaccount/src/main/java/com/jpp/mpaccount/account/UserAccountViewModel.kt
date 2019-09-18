@@ -3,7 +3,6 @@ package com.jpp.mpaccount.account
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent
 import com.jpp.mpaccount.account.UserAccountInteractor.UserMoviesState
@@ -27,11 +26,10 @@ import javax.inject.Inject
  * This VM consumes data from two interactors - [UserAccountInteractor] and [ImagesPathInteractor] -
  * because it needs to map the URL of the movies to be shown before rendering the data.
  */
-class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                               private val accountInteractor: UserAccountInteractor,
+class UserAccountViewModel @Inject constructor(private val accountInteractor: UserAccountInteractor,
                                                private val imagesPathInteractor: ImagesPathInteractor)
 
-    : MPScopedViewModel(dispatchers) {
+    : MPScopedViewModel() {
 
     private val _viewState = MediatorLiveData<UserAccountViewState>()
     val viewState: LiveData<UserAccountViewState> get() = _viewState

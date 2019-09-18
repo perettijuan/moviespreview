@@ -34,9 +34,7 @@ class PersonViewModelTest {
     fun setUp() {
         every { interactor.events } returns lvInteractorEvents
 
-        subject = PersonViewModel(
-                TestPersonCoroutineDispatchers(),
-                interactor)
+        subject = PersonViewModel(interactor)
     }
 
     @Test

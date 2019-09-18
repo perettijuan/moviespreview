@@ -2,7 +2,6 @@ package com.jpp.mpperson
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mpdomain.Person
 import com.jpp.mpperson.PersonInteractor.PersonEvent.*
@@ -25,9 +24,8 @@ import javax.inject.Inject
  * VM is notified about such event and executes a refresh of both: the data stored by the application
  * and the view state being shown to the user.
  */
-class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                          private val personInteractor: PersonInteractor)
-    : MPScopedViewModel(dispatchers) {
+class PersonViewModel @Inject constructor(private val personInteractor: PersonInteractor)
+    : MPScopedViewModel() {
 
     private val _viewState = MediatorLiveData<PersonViewState>()
     val viewState: LiveData<PersonViewState> get() = _viewState

@@ -2,7 +2,6 @@ package com.jpp.mp.common.coroutines
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -26,13 +25,10 @@ import kotlin.coroutines.CoroutineContext
  * Every time that this ViewModel is stopped (onCleared() is called), the CoroutineContext is killed, which
  * causes that any code being executed in the scope of the CoroutineContext is killed automatically.
  *
- * In order to facilitate unit testing of any subclass, the MPScopedViewModel defines a constructor that
- * receives an instance of [CoroutineDispatchers] that can be overridden in order to provide single-threaded
- * behavior.
  *
  * Example of CoroutineScope = https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/index.html
  */
-abstract class MPScopedViewModel(val dispatchers: CoroutineDispatchers) : ViewModel(), CoroutineScope {
+abstract class MPScopedViewModel() : ViewModel(), CoroutineScope {
 
     /*
      * This Job represents the work that it is being done in the

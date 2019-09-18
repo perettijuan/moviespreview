@@ -36,10 +36,7 @@ class MovieDetailsActionViewModelTest {
     fun setUp() {
         every { movieDetailsInteractor.movieStateEvents } returns lvInteractorEvents
 
-        subject = MovieDetailsActionViewModel(
-                TestMovieDetailCoroutineDispatchers(),
-                movieDetailsInteractor
-        )
+        subject = MovieDetailsActionViewModel(movieDetailsInteractor)
     }
 
     @ParameterizedTest

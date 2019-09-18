@@ -3,7 +3,6 @@ package com.jpp.mp.main.header
 import android.view.View
 import androidx.lifecycle.MediatorLiveData
 import com.jpp.mp.R
-import com.jpp.mp.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.UserAvatar
@@ -36,7 +35,7 @@ class NavigationHeaderViewModelTest {
     @BeforeEach
     fun setUp() {
         every { interactor.userAccountEvents } returns interactorEvents
-        subject = NavigationHeaderViewModel(TestCoroutineDispatchers(), interactor)
+        subject = NavigationHeaderViewModel(interactor)
     }
 
     @Test

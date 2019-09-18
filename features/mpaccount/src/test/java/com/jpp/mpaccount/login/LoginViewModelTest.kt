@@ -3,7 +3,6 @@ package com.jpp.mpaccount.login
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mpaccount.R
-import com.jpp.mpaccount.TestAccountCoroutineDispatchers
 import com.jpp.mptestutils.CoroutineTestExtention
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
@@ -38,10 +37,7 @@ class LoginViewModelTest {
         every { loginInteractor.loginEvents } returns lvLoginEvent
         every { loginInteractor.oauthEvents } returns lvOauthEvent
 
-        subject = LoginViewModel(
-                TestAccountCoroutineDispatchers(),
-                loginInteractor
-        )
+        subject = LoginViewModel(loginInteractor)
 
         /*
          * Since the ViewModel uses a MediatorLiveData, we need to have

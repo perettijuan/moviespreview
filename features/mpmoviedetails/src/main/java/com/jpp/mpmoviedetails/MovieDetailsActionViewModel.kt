@@ -2,7 +2,6 @@ package com.jpp.mpmoviedetails
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpmoviedetails.MovieDetailActionViewState.*
@@ -23,9 +22,8 @@ import javax.inject.Inject
  * of the movie internally and in the server side and updates the view layer according to the new
  * state of the business layer.
  */
-class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                                      private val movieDetailsInteractor: MovieDetailsInteractor)
-    : MPScopedViewModel(dispatchers) {
+class MovieDetailsActionViewModel @Inject constructor(private val movieDetailsInteractor: MovieDetailsInteractor)
+    : MPScopedViewModel() {
 
     private val _viewState = MediatorLiveData<MovieDetailActionViewState>()
     val viewState: LiveData<MovieDetailActionViewState> get() = _viewState

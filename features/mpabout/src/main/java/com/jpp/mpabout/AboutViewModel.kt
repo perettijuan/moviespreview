@@ -3,7 +3,6 @@ package com.jpp.mpabout
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mpabout.AboutInteractor.AboutEvent.*
 import com.jpp.mpdomain.AboutUrl
@@ -17,9 +16,8 @@ import javax.inject.Inject
  * the data from the underlying layers using the provided [AboutInteractor] and maps the business
  * data to UI data, producing a [AboutViewState] that represents the configuration of the view.
  */
-class AboutViewModel @Inject constructor(coroutineDispatchers: CoroutineDispatchers,
-                                         private val aboutInteractor: AboutInteractor)
-    : MPScopedViewModel(coroutineDispatchers) {
+class AboutViewModel @Inject constructor(private val aboutInteractor: AboutInteractor)
+    : MPScopedViewModel() {
 
     private val _viewState = MediatorLiveData<AboutViewState>()
     val viewState: LiveData<AboutViewState> get() = _viewState

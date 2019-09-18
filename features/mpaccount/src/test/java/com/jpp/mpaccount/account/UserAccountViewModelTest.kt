@@ -3,7 +3,6 @@ package com.jpp.mpaccount.account
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mpaccount.R
-import com.jpp.mpaccount.TestAccountCoroutineDispatchers
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.UserAccount
@@ -18,7 +17,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -46,7 +44,6 @@ class UserAccountViewModelTest {
         every { accountInteractor.userAccountEvents } returns lvInteractorEvents
 
         subject = UserAccountViewModel(
-                TestAccountCoroutineDispatchers(),
                 accountInteractor,
                 imagesPathInteractor
         )
