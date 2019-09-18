@@ -8,6 +8,7 @@ import com.jpp.mpsearch.SearchInteractor.SearchEvent.NotConnectedToNetwork
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.UnknownError
 import com.jpp.mptestutils.CoroutineTestExtention
 import com.jpp.mptestutils.InstantTaskExecutorExtension
+import com.jpp.mptestutils.blockUntilCoroutinesAreDone
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -117,6 +118,7 @@ class SearchViewModelTest {
     fun `Should refresh data when no search has been performed and language changes`() {
         subject.onSearch("aSearch")
         lvInteractorEvents.value = SearchEvent.AppLanguageChanged
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
         verify { searchInteractor.flushCurrentSearch() }
     }
 }
