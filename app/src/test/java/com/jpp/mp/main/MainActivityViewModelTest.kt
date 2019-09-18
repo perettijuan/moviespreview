@@ -51,7 +51,7 @@ class MainActivityViewModelTest {
     fun `Should post view state when destination reached`(destination: Destination, expectedViewState: MainActivityViewState) {
         var postedViewState: MainActivityViewState? = null
 
-        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> postedViewState = viewState } }
+        subject.viewState.observeWith { viewState -> postedViewState = viewState }
 
         subject.onDestinationReached(destination)
 

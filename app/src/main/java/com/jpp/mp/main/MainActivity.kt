@@ -71,10 +71,8 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         withMainViewModel {
             onInit()
 
-            viewState.observe(this@MainActivity, Observer {
-                it.actionIfNotHandled { viewState ->
-                    renderViewState(viewState)
-                }
+            viewState.observe(this@MainActivity, Observer { viewState ->
+                renderViewState(viewState)
             })
 
             moduleNavEvents.observe(this@MainActivity, Observer { navEvent ->
@@ -125,7 +123,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
          */
         withMainViewModel {
             for (i in 0 until menu.size()) {
-                menu.getItem(i).isVisible = viewState.value?.peekContent()?.menuBarEnabled ?: true
+                menu.getItem(i).isVisible = viewState.value?.menuBarEnabled ?: true
             }
         }
 
