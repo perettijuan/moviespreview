@@ -123,6 +123,8 @@ class CreditsViewModelTest {
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.AppLanguageChanged)
 
+        blockUntilCoroutinesAreDone(subject.coroutineContext)
+        
         assertNotNull(viewStatePosted)
         assertEquals("aMovie", viewStatePosted?.screenTitle)
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
@@ -130,8 +132,6 @@ class CreditsViewModelTest {
         assertEquals(View.INVISIBLE, viewStatePosted?.noCreditsViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.creditsViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
-
-        blockUntilCoroutinesAreDone(subject.coroutineContext)
 
         verifyOrder {
             creditsInteractor.fetchCreditsForMovie(10.0)
