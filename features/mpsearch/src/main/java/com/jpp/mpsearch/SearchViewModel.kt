@@ -2,12 +2,14 @@ package com.jpp.mpsearch
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.livedata.HandledEvent
+import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
@@ -39,8 +41,8 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _viewState = MediatorLiveData<SearchViewState>()
     val viewState: LiveData<SearchViewState> = _viewState
 
-    private val _navEvents = SingleLiveEvent<SearchNavigationEvent>()
-    val navEvents: LiveData<SearchNavigationEvent> get() = _navEvents
+    private val _navEvents = MutableLiveData<HandledEvent<SearchNavigationEvent>>()
+    val navEvents: LiveData<HandledEvent<SearchNavigationEvent>> get() = _navEvents
 
     private var targetImageSize: Int = -1
     private lateinit var searchQuery: String
@@ -102,16 +104,16 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun onItemSelected(item: SearchResultItem, positionInList: Int) {
         when (item.isMovieType()) {
-            true -> _navEvents.value = SearchNavigationEvent.GoToMovieDetails(
+            true -> _navEvents.value = of(SearchNavigationEvent.GoToMovieDetails(
                     movieId = item.id.toString(),
                     movieImageUrl = item.imagePath,
                     movieTitle = item.name,
-                    positionInList = positionInList)
-            false -> _navEvents.value = SearchNavigationEvent.GoToPerson(
+                    positionInList = positionInList))
+            false -> _navEvents.value = of(SearchNavigationEvent.GoToPerson(
                     personId = item.id.toString(),
                     personImageUrl = item.imagePath,
                     personName = item.name
-            )
+            ))
         }
     }
 

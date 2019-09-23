@@ -75,7 +75,7 @@ class SearchFragment : Fragment() {
                     clearFocus() // hide keyboard
                 }
             })
-            navEvents.observe(this@SearchFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
+            navEvents.observe(this@SearchFragment.viewLifecycleOwner, Observer { it.actionIfNotHandled { navEvent -> reactToNavEvent(navEvent) } })
             onInit(getScreenWidthInPixels())
         }
 
