@@ -16,8 +16,8 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -91,7 +91,7 @@ class UserAccountViewModelTest {
     fun `Should redirect when user not logged in`() {
         var eventPosted: UserAccountNavigationEvent? = null
 
-        subject.navEvents.observeWith { eventPosted = it }
+        subject.navEvents.observeWith { it.actionIfNotHandled { navEvent -> eventPosted = navEvent } }
 
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.UserNotLogged)
 
@@ -102,7 +102,7 @@ class UserAccountViewModelTest {
     fun `Should redirect to main when user data cleared`() {
         var eventPosted: UserAccountNavigationEvent? = null
 
-        subject.navEvents.observeWith { eventPosted = it }
+        subject.navEvents.observeWith { it.actionIfNotHandled { navEvent -> eventPosted = navEvent } }
 
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.UserDataCleared)
 

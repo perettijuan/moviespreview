@@ -40,7 +40,7 @@ class UserAccountFragment : MPFragment() {
                 viewBinding.viewState = viewState
                 updateScreenTitle(viewState.screenTitle)
             })
-            navEvents.observe(this@UserAccountFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
+            navEvents.observe(this@UserAccountFragment.viewLifecycleOwner, Observer { it.actionIfNotHandled { navEvent -> reactToNavEvent(navEvent) } })
             onInit(getScreenWidthInPixels())
         }
 
