@@ -9,8 +9,6 @@ import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
-import com.jpp.mp.common.viewstate.HandledViewState
-import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.*
@@ -38,8 +36,8 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     : MPScopedViewModel(dispatchers) {
 
 
-    private val _viewState = MediatorLiveData<HandledViewState<SearchViewState>>()
-    val viewState: LiveData<HandledViewState<SearchViewState>> = _viewState
+    private val _viewState = MediatorLiveData<SearchViewState>()
+    val viewState: LiveData<SearchViewState> = _viewState
 
     private val _navEvents = SingleLiveEvent<SearchNavigationEvent>()
     val navEvents: LiveData<SearchNavigationEvent> get() = _navEvents
@@ -52,8 +50,8 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     init {
         _viewState.addSource(searchInteractor.searchEvents) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewState.value = of(SearchViewState.showNoConnectivityError(searchQuery, retryFunc))
-                is UnknownError -> _viewState.value = of(SearchViewState.showUnknownError(searchQuery, retryFunc))
+                is NotConnectedToNetwork -> _viewState.value = SearchViewState.showNoConnectivityError(searchQuery, retryFunc)
+                is UnknownError -> _viewState.value = SearchViewState.showUnknownError(searchQuery, retryFunc)
                 is AppLanguageChanged -> refreshData()
             }
         }
@@ -68,8 +66,8 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     fun onInit(imageSize: Int) {
         targetImageSize = imageSize
         when (val currentState = _viewState.value) {
-            null -> _viewState.value = of(SearchViewState.showCleanState())
-            else -> _viewState.value = of(currentState.peekContent())
+            null -> _viewState.value = SearchViewState.showCleanState()
+            else -> _viewState.value = currentState
         }
     }
 
@@ -95,7 +93,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun onClearSearch() {
         searchQuery = ""
-        _viewState.value = of(SearchViewState.showCleanState())
+        _viewState.value = SearchViewState.showCleanState()
     }
 
     /**
@@ -124,8 +122,8 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     private fun postLoadingAndPerformSearch(query: String) {
         with(_viewState) {
-            value = of(SearchViewState.showSearching(query))
-            addSource(createPagedListForSearch(query)) { pagedList -> if (pagedList.size > 0) value = of(SearchViewState.showSearchResult(query, pagedList)) }
+            value = SearchViewState.showSearching(query)
+            addSource(createPagedListForSearch(query)) { pagedList -> if (pagedList.size > 0) value = SearchViewState.showSearchResult(query, pagedList) }
         }
     }
 
@@ -149,7 +147,7 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             searchInteractor.performSearchForPage(query, page) { searchResultList ->
                 when (searchResultList.isNotEmpty()) {
                     true -> callback(searchResultList.filter { it.isMovie() || it.isPerson() }.map { imagesPathInteractor.configureSearchResult(targetImageSize, it) })
-                    false -> if (page == 1) _viewState.postValue(of(SearchViewState.showNoResults(query)))
+                    false -> if (page == 1) _viewState.postValue(SearchViewState.showNoResults(query))
                 }
             }
         }.map { mapSearchResult(it) }
