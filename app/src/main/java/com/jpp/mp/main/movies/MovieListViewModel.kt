@@ -2,12 +2,14 @@ package com.jpp.mp.main.movies
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.livedata.HandledEvent
+import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
 import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.*
 import com.jpp.mpdomain.Movie
@@ -42,8 +44,8 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _viewState = MediatorLiveData<MovieListViewState>()
     val viewState: LiveData<MovieListViewState> get() = _viewState
 
-    private val _navEvents = SingleLiveEvent<NavigateToDetailsEvent>()
-    val navEvents: LiveData<NavigateToDetailsEvent> get() = _navEvents
+    private val _navEvents = MutableLiveData<HandledEvent<NavigateToDetailsEvent>>()
+    val navEvents: LiveData<HandledEvent<NavigateToDetailsEvent>> get() = _navEvents
 
     private lateinit var currentParam: MovieListParam
 
@@ -89,11 +91,12 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun onMovieSelected(movieListItem: MovieListItem, positionInList: Int) {
         with(movieListItem) {
-            _navEvents.value = NavigateToDetailsEvent(
+            _navEvents.value = of(NavigateToDetailsEvent(
                     movieId = movieId.toString(),
                     movieImageUrl = contentImageUrl,
                     movieTitle = title,
-                    positionInList = positionInList)
+                    positionInList = positionInList
+            ))
         }
     }
 

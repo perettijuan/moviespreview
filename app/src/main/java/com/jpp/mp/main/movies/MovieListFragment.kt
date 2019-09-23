@@ -79,8 +79,10 @@ abstract class MovieListFragment : MPFragment() {
             })
 
 
-            navEvents.observe(viewLifecycleOwner, Observer { event ->
-                with(event) { withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(movieId, movieImageUrl, movieTitle) } }
+            navEvents.observe(viewLifecycleOwner, Observer {
+                it.actionIfNotHandled { event ->
+                    with(event) { withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(movieId, movieImageUrl, movieTitle) } }
+                }
             })
 
             initViewModel(
