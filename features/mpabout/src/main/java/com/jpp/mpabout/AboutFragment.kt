@@ -51,7 +51,7 @@ class AboutFragment : MPFragment() {
                 withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(getString(viewState.screenTitle))) }
             })
 
-            navEvents.observe(viewLifecycleOwner, Observer { processNavEvent(it) })
+            navEvents.observe(viewLifecycleOwner, Observer { it.actionIfNotHandled { navEvent -> processNavEvent(navEvent) } })
 
             onInit()
         }
