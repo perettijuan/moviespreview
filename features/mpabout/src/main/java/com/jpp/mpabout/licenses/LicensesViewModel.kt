@@ -2,9 +2,11 @@ package com.jpp.mpabout.licenses
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
+import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.livedata.HandledEvent
+import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mpabout.AboutInteractor
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,8 +24,8 @@ class LicensesViewModel @Inject constructor(coroutineDispatchers: CoroutineDispa
     private val _viewState = MediatorLiveData<LicensesViewState>()
     val viewState: LiveData<LicensesViewState> get() = _viewState
 
-    private val _navEvents = SingleLiveEvent<GoToLicenseContentEvent>()
-    val navEvents: LiveData<GoToLicenseContentEvent> get() = _navEvents
+    private val _navEvents = MutableLiveData<HandledEvent<GoToLicenseContentEvent>>()
+    val navEvents: LiveData<HandledEvent<GoToLicenseContentEvent>> get() = _navEvents
 
     /*
      * Map the business logic coming from the interactor into view layer logic.
@@ -52,7 +54,7 @@ class LicensesViewModel @Inject constructor(coroutineDispatchers: CoroutineDispa
      * A new state is posted in navEvents() in order to handle the event.
      */
     fun onLicenseSelected(item: LicenseItem) {
-        _navEvents.value = GoToLicenseContentEvent(item.id)
+        _navEvents.value = of(GoToLicenseContentEvent(item.id))
     }
 
     /**

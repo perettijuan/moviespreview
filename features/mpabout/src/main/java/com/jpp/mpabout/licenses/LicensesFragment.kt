@@ -50,7 +50,7 @@ class LicensesFragment : MPFragment() {
                 withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(getString(viewState.screenTitle))) }
             })
 
-            navEvents.observe(viewLifecycleOwner, Observer { showLicenseContent(it.licenseId) })
+            navEvents.observe(viewLifecycleOwner, Observer { it.actionIfNotHandled { event -> showLicenseContent(event.licenseId) } })
 
             onInit()
         }
