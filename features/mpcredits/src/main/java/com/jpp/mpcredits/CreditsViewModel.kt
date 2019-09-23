@@ -2,10 +2,12 @@ package com.jpp.mpcredits
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
+import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.extensions.addAllMapping
+import com.jpp.mp.common.livedata.HandledEvent
+import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mpcredits.CreditsInteractor.CreditsEvent.*
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
@@ -36,8 +38,8 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _viewState = MediatorLiveData<CreditsViewState>()
     val viewState: LiveData<CreditsViewState> get() = _viewState
 
-    private val _navEvents = SingleLiveEvent<NavigateToPersonEvent>()
-    val navEvents: LiveData<NavigateToPersonEvent> get() = _navEvents
+    private val _navEvents = MutableLiveData<HandledEvent<NavigateToPersonEvent>>()
+    val navEvents: LiveData<HandledEvent<NavigateToPersonEvent>> get() = _navEvents
 
     private lateinit var currentParam: CreditsInitParam
 
@@ -74,11 +76,11 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun onCreditItemSelected(personItem: CreditPerson) {
         with(personItem) {
-            _navEvents.value = NavigateToPersonEvent(
+            _navEvents.value = of(NavigateToPersonEvent(
                     personId = id.toString(),
                     personImageUrl = profilePath,
                     personName = subTitle
-            )
+            ))
         }
     }
 

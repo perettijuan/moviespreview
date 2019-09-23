@@ -60,8 +60,10 @@ class CreditsFragment : MPFragment() {
                 withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(viewState.screenTitle)) }
             })
 
-            navEvents.observe(viewLifecycleOwner, Observer { navEvent ->
-                withNavigationViewModel(viewModelFactory) { navigateToPersonDetails(navEvent.personId, navEvent.personImageUrl, navEvent.personName) }
+            navEvents.observe(viewLifecycleOwner, Observer {
+                it.actionIfNotHandled { navEvent ->
+                    withNavigationViewModel(viewModelFactory) { navigateToPersonDetails(navEvent.personId, navEvent.personImageUrl, navEvent.personName) }
+                }
             })
 
             onInit(CreditsInitParam.create(this@CreditsFragment))
