@@ -2,12 +2,14 @@ package com.jpp.mpaccount.account.lists
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.livedata.HandledEvent
+import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
 import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.*
 import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToUserAccount
@@ -40,8 +42,8 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     private val _viewState = MediatorLiveData<UserMovieListViewState>()
     val viewState: LiveData<UserMovieListViewState> get() = _viewState
 
-    private val _navEvents = SingleLiveEvent<UserMovieListNavigationEvent>()
-    val navEvents: LiveData<UserMovieListNavigationEvent> get() = _navEvents
+    private val _navEvents = MutableLiveData<HandledEvent<UserMovieListNavigationEvent>>()
+    val navEvents: LiveData<HandledEvent<UserMovieListNavigationEvent>> get() = _navEvents
 
     private lateinit var currentParam: UserMovieListParam
 
@@ -61,7 +63,7 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
             when (event) {
                 is NotConnectedToNetwork -> _viewState.value = UserMovieListViewState.showNoConnectivityError(currentParam.section.titleRes, retry)
                 is UnknownError -> _viewState.value = UserMovieListViewState.showUnknownError(currentParam.section.titleRes, retry)
-                is UserNotLogged -> _navEvents.value = GoToUserAccount
+                is UserNotLogged -> _navEvents.value = of(GoToUserAccount)
                 is UserChangedLanguage -> refreshData()
             }
         }
@@ -89,11 +91,12 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
      */
     fun onMovieSelected(movieItem: UserMovieItem, positionInList: Int) {
         with(movieItem) {
-            _navEvents.value = UserMovieListNavigationEvent.GoToMovieDetails(
+            _navEvents.value = of(UserMovieListNavigationEvent.GoToMovieDetails(
                     movieId = movieId.toString(),
                     movieImageUrl = contentImageUrl,
                     movieTitle = title,
-                    positionInList = positionInList)
+                    positionInList = positionInList
+            ))
         }
     }
 
@@ -151,7 +154,7 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
             val movieListProcessor: (List<Movie>) -> Unit = { movieList ->
                 when (movieList.isNotEmpty()) {
                     true -> callback(movieList.map { imagesPathInteractor.configurePathMovie(moviePosterSize, movieBackdropSize, it) })
-                    false -> if (page == 1) _navEvents.postValue(GoToUserAccount)
+                    false -> if (page == 1) _navEvents.postValue(of(GoToUserAccount))
                 }
             }
 

@@ -62,7 +62,7 @@ class UserMovieListFragment : MPFragment() {
                 updateScreenTitle(viewState.screenTitle)
             })
 
-            navEvents.observe(this@UserMovieListFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
+            navEvents.observe(this@UserMovieListFragment.viewLifecycleOwner, Observer { it.actionIfNotHandled { navEvent -> reactToNavEvent(navEvent) } })
 
             onInit(UserMovieListParam.fromArguments(arguments, getScreenWidthInPixels(), getScreenWidthInPixels()))
         }

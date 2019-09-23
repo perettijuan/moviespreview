@@ -135,7 +135,7 @@ class UserMovieListViewModelTest {
     fun `Should redirect when user not logged in`() {
         var eventPosted: UserMovieListNavigationEvent? = null
 
-        subject.navEvents.observeWith { eventPosted = it }
+        subject.navEvents.observeWith { it.actionIfNotHandled { naveEvent -> eventPosted = naveEvent } }
 
         lvInteractorEvents.postValue(UserMovieListEvent.UserNotLogged)
 
