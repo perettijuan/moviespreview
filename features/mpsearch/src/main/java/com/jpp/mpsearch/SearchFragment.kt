@@ -65,16 +65,14 @@ class SearchFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         withViewModel {
-            viewState.observe(this@SearchFragment.viewLifecycleOwner, Observer {
-                it.actionIfNotHandled { viewState ->
-                    viewBinding.viewState = viewState
+            viewState.observe(this@SearchFragment.viewLifecycleOwner, Observer { viewState ->
+                viewBinding.viewState = viewState
 
-                    withRecyclerView { (adapter as SearchItemAdapter).submitList(viewState.contentViewState.searchResultList) }
+                withRecyclerView { (adapter as SearchItemAdapter).submitList(viewState.contentViewState.searchResultList) }
 
-                    withSearchView {
-                        setQuery(viewState.searchQuery, false)
-                        clearFocus() // hide keyboard
-                    }
+                withSearchView {
+                    setQuery(viewState.searchQuery, false)
+                    clearFocus() // hide keyboard
                 }
             })
             navEvents.observe(this@SearchFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })

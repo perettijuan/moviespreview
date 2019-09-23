@@ -51,16 +51,14 @@ class MovieDetailsFragment : MPFragment() {
 
 
         withViewModel {
-            viewState.observe(viewLifecycleOwner, Observer {
-                it.actionIfNotHandled { viewState ->
-                    viewBinding.viewState = viewState
-                    viewBinding.executePendingBindings()
+            viewState.observe(viewLifecycleOwner, Observer { viewState ->
+                viewBinding.viewState = viewState
+                viewBinding.executePendingBindings()
 
-                    detailGenresRv.layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
-                    detailGenresRv.adapter = MovieDetailsGenreAdapter(viewState.contentViewState.genres)
+                detailGenresRv.layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
+                detailGenresRv.adapter = MovieDetailsGenreAdapter(viewState.contentViewState.genres)
 
-                    updateScreenTitle(viewState.screenTitle)
-                }
+                updateScreenTitle(viewState.screenTitle)
             })
 
             navEvents.observe(viewLifecycleOwner, Observer { navEvent ->
