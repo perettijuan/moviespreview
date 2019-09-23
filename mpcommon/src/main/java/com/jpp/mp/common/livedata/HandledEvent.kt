@@ -1,4 +1,4 @@
-package com.jpp.mp.common.viewstate
+package com.jpp.mp.common.livedata
 
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  *
  * Source: https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150
  */
-class HandledViewState<out T>(private val viewState: T) {
+class HandledEvent<out T>(private val viewState: T) {
 
     private var neverHandled = AtomicBoolean(true)
 
@@ -31,6 +31,6 @@ class HandledViewState<out T>(private val viewState: T) {
     fun peekContent(): T = viewState
 
     companion object {
-        fun <T> of(viewState: T) : HandledViewState<T> = HandledViewState(viewState)
+        fun <T> of(viewState: T) : HandledEvent<T> = HandledEvent(viewState)
     }
 }
