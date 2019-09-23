@@ -39,7 +39,7 @@ class MainActivityViewModelTest {
     fun `Should post navigation event`(destination: Destination, expectedEvent: ModuleNavigationEvent) {
         var postedEvent: ModuleNavigationEvent? = null
 
-        subject.moduleNavEvents.observeWith { event -> postedEvent = event }
+        subject.moduleNavEvents.observeWith {it.actionIfNotHandled {  event -> postedEvent = event } }
 
         subject.onRequestToNavigateToDestination(destination)
 

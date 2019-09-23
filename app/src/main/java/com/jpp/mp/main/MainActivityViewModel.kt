@@ -3,7 +3,8 @@ package com.jpp.mp.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
+import com.jpp.mp.common.livedata.HandledEvent
+import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.navigation.Destination.*
 import com.jpp.mpdata.datasources.language.LanguageMonitor
@@ -31,8 +32,8 @@ class MainActivityViewModel @Inject constructor(private val languageMonitor: Lan
     private val _viewState = MutableLiveData<MainActivityViewState>()
     val viewState: LiveData<MainActivityViewState> get() = _viewState
 
-    private val _moduleNavEvents = SingleLiveEvent<ModuleNavigationEvent>()
-    val moduleNavEvents: LiveData<ModuleNavigationEvent> get() = _moduleNavEvents
+    private val _moduleNavEvents = MutableLiveData<HandledEvent<ModuleNavigationEvent>>()
+    val moduleNavEvents: LiveData<HandledEvent<ModuleNavigationEvent>> get() = _moduleNavEvents
 
     /**
      * Called on application startup. When called, the VM takes care of initializing
@@ -55,7 +56,7 @@ class MainActivityViewModel @Inject constructor(private val languageMonitor: Lan
      * Called when the user requests to navigate to a particular [destination].
      */
     fun onRequestToNavigateToDestination(destination: Destination) {
-        _moduleNavEvents.value = when (destination) {
+        when (destination) {
             is MPAccount -> ModuleNavigationEvent.NavigateToNodeWithId.toUserAccount()
             is MPMovieDetails -> ModuleNavigationEvent.NavigateToNodeWithExtras.toMovieDetails(destination)
             is MPPerson -> ModuleNavigationEvent.NavigateToNodeWithExtras.toPerson(destination)
@@ -63,6 +64,8 @@ class MainActivityViewModel @Inject constructor(private val languageMonitor: Lan
             is PreviousDestination -> ModuleNavigationEvent.NavigateToPrevious
             is InnerDestination -> ModuleNavigationEvent.NavigateToNodeWithDirections(destination.directions)
             else -> throw IllegalStateException("Unknown navigation requested $destination")
+        }.let {
+            _moduleNavEvents.value = of(it)
         }
     }
 

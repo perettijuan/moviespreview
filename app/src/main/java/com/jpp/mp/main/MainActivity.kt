@@ -73,12 +73,14 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
             viewState.observe(this@MainActivity, Observer { viewState -> renderViewState(viewState) })
 
-            moduleNavEvents.observe(this@MainActivity, Observer { navEvent ->
-                when (navEvent) {
-                    is ModuleNavigationEvent.NavigateToNodeWithDirections -> innerNavigateTo(navEvent.directions)
-                    is ModuleNavigationEvent.NavigateToNodeWithId -> interModuleNavigationTo(navEvent.nodeId)
-                    is ModuleNavigationEvent.NavigateToNodeWithExtras -> navigateToModuleWithExtras(navEvent.nodeId, navEvent.extras)
-                    is ModuleNavigationEvent.NavigateToPrevious -> withNavController { popBackStack() }
+            moduleNavEvents.observe(this@MainActivity, Observer {
+                it.actionIfNotHandled { navEvent ->
+                    when (navEvent) {
+                        is ModuleNavigationEvent.NavigateToNodeWithDirections -> innerNavigateTo(navEvent.directions)
+                        is ModuleNavigationEvent.NavigateToNodeWithId -> interModuleNavigationTo(navEvent.nodeId)
+                        is ModuleNavigationEvent.NavigateToNodeWithExtras -> navigateToModuleWithExtras(navEvent.nodeId, navEvent.extras)
+                        is ModuleNavigationEvent.NavigateToPrevious -> withNavController { popBackStack() }
+                    }
                 }
             })
         }
