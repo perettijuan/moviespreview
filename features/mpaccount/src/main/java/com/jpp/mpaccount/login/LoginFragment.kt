@@ -46,7 +46,10 @@ class LoginFragment : MPFragment() {
                 }
             })
             navEvents.observe(this@LoginFragment.viewLifecycleOwner, Observer {
-                withNavigationViewModel(viewModelFactory) { performInnerNavigation(toAccountFragment()) }
+                it.actionIfNotHandled {
+                    withNavigationViewModel(viewModelFactory) { performInnerNavigation(toAccountFragment()) }
+                }
+
             })
             onInit()
         }

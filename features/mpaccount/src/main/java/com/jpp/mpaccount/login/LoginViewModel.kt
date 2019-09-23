@@ -2,9 +2,11 @@ package com.jpp.mpaccount.login
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
+import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.livedata.HandledEvent
+import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mpaccount.login.LoginInteractor.LoginEvent
 import com.jpp.mpaccount.login.LoginInteractor.OauthEvent
 import com.jpp.mpdomain.AccessToken
@@ -24,8 +26,8 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _viewState = MediatorLiveData<LoginViewState>()
     val viewState: LiveData<LoginViewState> get() = _viewState
 
-    private val _navEvents = SingleLiveEvent<ContinueToUserAccount>()
-    val navEvents: LiveData<ContinueToUserAccount> get() = _navEvents
+    private val _navEvents = MutableLiveData<HandledEvent<ContinueToUserAccount>>()
+    val navEvents: LiveData<HandledEvent<ContinueToUserAccount>> get() = _navEvents
 
     private var loginAccessToken: AccessToken? = null
     private val retry: () -> Unit = { onInit() }
@@ -37,9 +39,9 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         _viewState.addSource(loginInteractor.loginEvents) { loginEvent ->
             when (loginEvent) {
                 is LoginEvent.NotConnectedToNetwork -> _viewState.value = LoginViewState.showNoConnectivityError(retry)
-                is LoginEvent.LoginSuccessful -> _navEvents.value = ContinueToUserAccount
+                is LoginEvent.LoginSuccessful -> _navEvents.value = of(ContinueToUserAccount)
                 is LoginEvent.LoginError -> _viewState.value = LoginViewState.showUnknownError(retry)
-                is LoginEvent.UserAlreadyLogged -> _navEvents.value = ContinueToUserAccount
+                is LoginEvent.UserAlreadyLogged -> _navEvents.value = of(ContinueToUserAccount)
                 is LoginEvent.ReadyToLogin -> executeOauth()
             }
         }

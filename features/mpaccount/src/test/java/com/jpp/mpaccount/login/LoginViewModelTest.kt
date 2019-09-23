@@ -81,7 +81,7 @@ class LoginViewModelTest {
     fun `Should navigate to user account screen when login is successful`() {
         var eventPosted: ContinueToUserAccount? = null
 
-        subject.navEvents.observeWith { eventPosted = it }
+        subject.navEvents.observeWith { it.actionIfNotHandled { navEvent -> eventPosted = navEvent } }
 
         lvLoginEvent.postValue(LoginInteractor.LoginEvent.LoginSuccessful)
 
