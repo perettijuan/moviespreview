@@ -5,8 +5,6 @@ import androidx.lifecycle.MediatorLiveData
 import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
-import com.jpp.mp.common.viewstate.HandledViewState
-import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
 import com.jpp.mpabout.AboutInteractor
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
