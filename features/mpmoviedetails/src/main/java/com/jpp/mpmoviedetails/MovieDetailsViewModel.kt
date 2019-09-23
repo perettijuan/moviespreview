@@ -2,9 +2,11 @@ package com.jpp.mpmoviedetails
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
+import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.livedata.HandledEvent
+import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.MovieGenre.GenresId.ACTION_GENRE_ID
@@ -49,8 +51,8 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
     private val _viewState = MediatorLiveData<MovieDetailViewState>()
     val viewState: LiveData<MovieDetailViewState> get() = _viewState
 
-    private val _navEvents = SingleLiveEvent<NavigateToCreditsEvent>()
-    val navEvents: LiveData<NavigateToCreditsEvent> get() = _navEvents
+    private val _navEvents = MutableLiveData<HandledEvent<NavigateToCreditsEvent>>()
+    val navEvents: LiveData<HandledEvent<NavigateToCreditsEvent>> get() = _navEvents
 
     private lateinit var currentParam: MovieDetailsParam
 
@@ -91,10 +93,10 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
      * A new state is posted in [navEvents] in order to handle the event.
      */
     fun onMovieCreditsSelected() {
-        _navEvents.value = NavigateToCreditsEvent(
+        _navEvents.value = of(NavigateToCreditsEvent(
                 currentParam.movieId,
                 currentParam.movieTitle
-        )
+        ))
     }
 
     /**

@@ -61,8 +61,10 @@ class MovieDetailsFragment : MPFragment() {
                 updateScreenTitle(viewState.screenTitle)
             })
 
-            navEvents.observe(viewLifecycleOwner, Observer { navEvent ->
-                withNavigationViewModel(viewModelFactory) { navigateToMovieCredits(navEvent.movieId, navEvent.movieTitle) }
+            navEvents.observe(viewLifecycleOwner, Observer {
+                it.actionIfNotHandled { navEvent ->
+                    withNavigationViewModel(viewModelFactory) { navigateToMovieCredits(navEvent.movieId, navEvent.movieTitle) }
+                }
             })
 
             onInit(MovieDetailsParam.fromArguments(arguments))
