@@ -12,12 +12,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
-import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mpaccount.R
-import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToMovieDetails
-import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToUserAccount
 import com.jpp.mpaccount.databinding.FragmentUserMovieListBinding
 import com.jpp.mpaccount.databinding.ListItemUserMovieBinding
 
@@ -55,16 +52,18 @@ class UserMovieListFragment : MPFragment<UserMovieListViewModel>() {
 
                 withRecyclerView {
                     layoutManager = LinearLayoutManager(requireActivity()).apply { onRestoreInstanceState(rvState) }
-                    adapter = UserMoviesAdapter { item, position ->
-                        withViewModel { onMovieSelected(item, position) }
+                    adapter = UserMoviesAdapter { item ->
+                        withViewModel { onMovieSelected(item) }
                     }.apply { submitList(viewState.contentViewState.movieList) }
                 }
-                updateScreenTitle(viewState.screenTitle)
             })
 
-            navEvents.observe(this@UserMovieListFragment.viewLifecycleOwner, Observer { it.actionIfNotHandled { navEvent -> reactToNavEvent(navEvent) } })
-
-            onInit(UserMovieListParam.fromArguments(arguments, getScreenWidthInPixels(), getScreenWidthInPixels()))
+            onInit(UserMovieListParam.fromArguments(
+                    arguments,
+                    resources,
+                    getScreenWidthInPixels(),
+                    getScreenWidthInPixels())
+            )
         }
     }
 
@@ -83,18 +82,8 @@ class UserMovieListFragment : MPFragment<UserMovieListViewModel>() {
 
     private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.userMoviesList)?.let(action)
 
-    /**
-     * Reacts to the navigation event provided.
-     */
-    private fun reactToNavEvent(navEvent: UserMovieListNavigationEvent) {
-        when (navEvent) {
-            is GoToUserAccount -> withNavigationViewModel(viewModelFactory) { toPrevious() }
-            is GoToMovieDetails -> withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(navEvent.movieId, navEvent.movieImageUrl, navEvent.movieTitle) }
-        }
-    }
 
-
-    class UserMoviesAdapter(private val itemSelectionListener: (UserMovieItem, Int) -> Unit) : PagedListAdapter<UserMovieItem, UserMoviesAdapter.ViewHolder>(UserMovieDiffCallback()) {
+    class UserMoviesAdapter(private val itemSelectionListener: (UserMovieItem) -> Unit) : PagedListAdapter<UserMovieItem, UserMoviesAdapter.ViewHolder>(UserMovieDiffCallback()) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
@@ -114,12 +103,12 @@ class UserMovieListFragment : MPFragment<UserMovieListViewModel>() {
         }
 
         class ViewHolder(private val itemBinding: ListItemUserMovieBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-            fun bindMovieItem(item: UserMovieItem, itemSelectionListener: (UserMovieItem, Int) -> Unit) {
+            fun bindMovieItem(item: UserMovieItem, itemSelectionListener: (UserMovieItem) -> Unit) {
                 with(itemBinding) {
                     viewState = item
                     executePendingBindings()
                 }
-                itemView.setOnClickListener { itemSelectionListener(item, adapterPosition) }
+                itemView.setOnClickListener { itemSelectionListener(item) }
             }
         }
     }

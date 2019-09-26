@@ -26,20 +26,17 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
 
     val reachedDestinations: LiveData<Destination> = _reachedDestinations
 
-
+    @Deprecated("User new arch instead")
     fun navigateToUserAccount() {
         _navEvents.value = of(Destination.MPAccount)
     }
 
     @Deprecated("User new arch instead")
-    fun navigateToMovieDetails(movieId: String, movieImageUrl: String, movieTitle: String) {
-        _navEvents.value = of(Destination.MPMovieDetails(movieId, movieImageUrl, movieTitle))
-    }
-
     fun navigateToMovieCredits(movieId: Double, movieTitle: String) {
         _navEvents.value = of(Destination.MPCredits(movieId, movieTitle))
     }
 
+    @Deprecated("User new arch instead")
     fun toPrevious() {
         _navEvents.value = of(Destination.PreviousDestination)
     }

@@ -55,10 +55,6 @@ class NavigationViewModelTest {
                         expected = Destination.MPAccount
                 ),
                 NavigationViewModelTestParam(
-                        whenAction = { it.navigateToMovieDetails("anId", "aUrl", "aTitle") },
-                        expected = Destination.MPMovieDetails("anId", "aUrl", "aTitle")
-                ),
-                NavigationViewModelTestParam(
                         whenAction = { it.toPrevious() },
                         expected = Destination.PreviousDestination
                 ),
