@@ -2,14 +2,11 @@ package com.jpp.mpsearch
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPScopedViewModel
-import com.jpp.mp.common.livedata.HandledEvent
-import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
 import com.jpp.mpdomain.SearchResult
@@ -41,9 +38,6 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
     private val _viewState = MediatorLiveData<SearchViewState>()
     val viewState: LiveData<SearchViewState> = _viewState
-
-    private val _navEvents = MutableLiveData<HandledEvent<SearchNavigationEvent>>()
-    val navEvents: LiveData<HandledEvent<SearchNavigationEvent>> get() = _navEvents
 
     private var targetImageSize: Int = -1
     private lateinit var searchQuery: String
@@ -105,13 +99,12 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Called when an item is selected in the list of search results.
      * A new state is posted in [navEvents] in order to handle the event.
      */
-    fun onItemSelected(item: SearchResultItem, positionInList: Int) {
+    fun onItemSelected(item: SearchResultItem) {
         when (item.isMovieType()) {
-            true -> _navEvents.value = of(SearchNavigationEvent.GoToMovieDetails(
+            true -> navigateTo(Destination.MPMovieDetails(
                     movieId = item.id.toString(),
                     movieImageUrl = item.imagePath,
-                    movieTitle = item.name,
-                    positionInList = positionInList))
+                    movieTitle = item.name))
             false -> navigateTo(Destination.MPPerson(
                     personId = item.id.toString(),
                     personImageUrl = item.imagePath,
@@ -119,7 +112,6 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             )
         }
     }
-
 
     /**
      * Pushes the Loading view state into the view layer and creates the [PagedList]

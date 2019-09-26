@@ -154,7 +154,29 @@ class SearchViewModelTest {
         var requestedDestination: Destination? = null
 
         subject.navigationEvents.observeWith { it.actionIfNotHandled { dest -> requestedDestination = dest } }
-        subject.onItemSelected(personItem, 10)
+        subject.onItemSelected(personItem)
+
+        assertEquals(expectedDestination, requestedDestination)
+    }
+
+    @Test
+    fun `Should request navigation to movie details when onItemSelected with movie item`() {
+        val personItem = SearchResultItem(
+                id = 10.0,
+                imagePath = "aPath",
+                name = "aName",
+                icon = SearchResultTypeIcon.Movie
+        )
+
+        val expectedDestination = Destination.MPMovieDetails(
+                movieId = "10.0",
+                movieImageUrl = "aPath",
+                movieTitle = "aName")
+
+        var requestedDestination: Destination? = null
+
+        subject.navigationEvents.observeWith { it.actionIfNotHandled { dest -> requestedDestination = dest } }
+        subject.onItemSelected(personItem)
 
         assertEquals(expectedDestination, requestedDestination)
     }

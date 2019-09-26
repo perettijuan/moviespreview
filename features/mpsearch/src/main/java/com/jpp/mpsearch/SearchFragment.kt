@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
-import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mpsearch.databinding.ListItemSearchBinding
@@ -41,8 +40,8 @@ class SearchFragment : MPFragment<SearchViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         withRecyclerView {
             layoutManager = LinearLayoutManager(activity)
-            adapter = SearchItemAdapter { item, position ->
-                withViewModel { onItemSelected(item, position) }
+            adapter = SearchItemAdapter { item ->
+                withViewModel { onItemSelected(item) }
             }
         }
         setUpSearchView()
@@ -62,15 +61,7 @@ class SearchFragment : MPFragment<SearchViewModel>() {
                     clearFocus() // hide keyboard
                 }
             })
-            navEvents.observe(this@SearchFragment.viewLifecycleOwner, Observer { it.actionIfNotHandled { navEvent -> reactToNavEvent(navEvent) } })
             onInit(getScreenWidthInPixels())
-        }
-    }
-
-
-    private fun reactToNavEvent(navEvent: SearchNavigationEvent) {
-        when (navEvent) {
-            is SearchNavigationEvent.GoToMovieDetails -> withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(navEvent.movieId, navEvent.movieImageUrl, navEvent.movieTitle) }
         }
     }
 
@@ -154,7 +145,7 @@ class SearchFragment : MPFragment<SearchViewModel>() {
      * aspect of this class is that it uses Data Binding to update the UI, which differs from the
      * containing class.
      */
-    class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem, Int) -> Unit) : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
+    class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem) -> Unit) : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
@@ -174,12 +165,12 @@ class SearchFragment : MPFragment<SearchViewModel>() {
         }
 
         class ViewHolder(private val itemBinding: ListItemSearchBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-            fun bindSearchItem(searchItem: SearchResultItem, selectionListener: (SearchResultItem, Int) -> Unit) {
+            fun bindSearchItem(searchItem: SearchResultItem, selectionListener: (SearchResultItem) -> Unit) {
                 with(itemBinding) {
                     viewState = searchItem
                     executePendingBindings()
                 }
-                itemView.setOnClickListener { selectionListener(searchItem, adapterPosition) }
+                itemView.setOnClickListener { selectionListener(searchItem) }
             }
         }
 
