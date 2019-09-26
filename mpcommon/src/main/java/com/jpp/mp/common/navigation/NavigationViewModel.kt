@@ -31,17 +31,13 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
         _navEvents.value = of(Destination.MPAccount)
     }
 
+    @Deprecated("User new arch instead")
     fun navigateToMovieDetails(movieId: String, movieImageUrl: String, movieTitle: String) {
         _navEvents.value = of(Destination.MPMovieDetails(movieId, movieImageUrl, movieTitle))
     }
 
     fun navigateToMovieCredits(movieId: Double, movieTitle: String) {
         _navEvents.value = of(Destination.MPCredits(movieId, movieTitle))
-    }
-
-    @Deprecated("use navigateTo instead of this method")
-    fun navigateToPersonDetails(personId: String, personImageUrl: String, personName: String) {
-        _navEvents.value = of(Destination.MPPerson(personId, personImageUrl, personName))
     }
 
     fun toPrevious() {

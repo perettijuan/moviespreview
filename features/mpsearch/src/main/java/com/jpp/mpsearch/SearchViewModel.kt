@@ -10,6 +10,7 @@ import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
@@ -67,6 +68,8 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun onInit(imageSize: Int) {
         targetImageSize = imageSize
+        updateCurrentDestination(Destination.MPSearch)
+
         when (val currentState = _viewState.value) {
             null -> _viewState.value = SearchViewState.showCleanState()
             else -> _viewState.value = currentState
@@ -109,11 +112,11 @@ class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                     movieImageUrl = item.imagePath,
                     movieTitle = item.name,
                     positionInList = positionInList))
-            false -> _navEvents.value = of(SearchNavigationEvent.GoToPerson(
+            false -> navigateTo(Destination.MPPerson(
                     personId = item.id.toString(),
                     personImageUrl = item.imagePath,
-                    personName = item.name
-            ))
+                    personName = item.name)
+            )
         }
     }
 

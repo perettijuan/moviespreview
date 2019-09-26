@@ -67,10 +67,6 @@ class NavigationViewModelTest {
                         expected = Destination.InnerDestination(navDirectionsMock)
                 ),
                 NavigationViewModelTestParam(
-                        whenAction = { it.navigateToPersonDetails("anId", "aUrl", "aTitle") },
-                        expected = Destination.MPPerson("anId", "aUrl", "aTitle")
-                ),
-                NavigationViewModelTestParam(
                         whenAction = { it.navigateToMovieCredits(10.0, "aTitle") },
                         expected = Destination.MPCredits(10.0, "aTitle")
                 )
