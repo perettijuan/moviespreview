@@ -7,6 +7,6 @@ import com.jpp.mp.main.movies.MovieListViewModel
 class UpcomingMoviesFragment : MovieListFragment() {
 
     override fun initViewModel(posterSize: Int, backdropSize: Int, vm: MovieListViewModel) {
-        vm.onInit(MovieListParam.upcoming(posterSize, backdropSize))
+        vm.onInit(MovieListParam.upcoming(resources, posterSize, backdropSize))
     }
 }

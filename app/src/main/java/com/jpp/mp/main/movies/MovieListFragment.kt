@@ -13,10 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
-import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.databinding.FragmentMovieListBinding
 import com.jpp.mp.databinding.ListItemMovieBinding
 
@@ -55,7 +53,7 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         withRecyclerView {
             layoutManager = LinearLayoutManager(context)
-            adapter = MoviesAdapter { item, position -> withViewModel { onMovieSelected(item, position) } }
+            adapter = MoviesAdapter { item -> withViewModel { onMovieSelected(item) } }
         }
     }
 
@@ -68,20 +66,9 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
             viewState.observe(viewLifecycleOwner, Observer { viewState ->
                 viewBinding.viewState = viewState
 
-                withNavigationViewModel(viewModelFactory) {
-                    destinationReached(Destination.MovieListReached(getString(viewState.screenTitle)))
-                }
-
                 withRecyclerView {
                     (adapter as MoviesAdapter).submitList(viewState.contentViewState.movieList)
                     layoutManager?.onRestoreInstanceState(rvState)
-                }
-            })
-
-
-            navEvents.observe(viewLifecycleOwner, Observer {
-                it.actionIfNotHandled { event ->
-                    with(event) { withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(movieId, movieImageUrl, movieTitle) } }
                 }
             })
 
@@ -114,7 +101,7 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
      * aspect of this class is that it uses Data Binding to update the UI, which differs from the
      * containing class.
      */
-    class MoviesAdapter(private val movieSelectionListener: (MovieListItem, Int) -> Unit) : PagedListAdapter<MovieListItem, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {
+    class MoviesAdapter(private val movieSelectionListener: (MovieListItem) -> Unit) : PagedListAdapter<MovieListItem, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -135,12 +122,12 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
         }
 
         class ViewHolder(private val itemBinding: ListItemMovieBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-            fun bindMovie(movieList: MovieListItem, movieSelectionListener: (MovieListItem, Int) -> Unit) {
+            fun bindMovie(movieList: MovieListItem, movieSelectionListener: (MovieListItem) -> Unit) {
                 with(itemBinding) {
                     viewState = movieList
                     executePendingBindings()
                 }
-                itemView.setOnClickListener { movieSelectionListener(movieList, adapterPosition) }
+                itemView.setOnClickListener { movieSelectionListener(movieList) }
             }
         }
     }
