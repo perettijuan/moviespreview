@@ -28,8 +28,7 @@ import kotlinx.android.synthetic.main.fragment_about.*
  * and show the about data. The VM will perform the fetch and will update the UI states
  * represented by [AboutViewState] and this Fragment will render those updates.
  */
-class AboutFragment : MPFragment() {
-
+class AboutFragment : MPFragment<AboutViewModel>() {
     private lateinit var viewBinding: FragmentAboutBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -57,11 +56,6 @@ class AboutFragment : MPFragment() {
         }
     }
 
-    /**
-     * Helper function to execute actions with the [AboutViewModel].
-     */
-    private fun withViewModel(action: AboutViewModel.() -> Unit) = withViewModel<AboutViewModel>(viewModelFactory) { action() }
-
     private fun processNavEvent(navEvent: AboutNavEvent) {
         when (navEvent) {
             is AboutNavEvent.InnerNavigation -> navigateInnerBrowser(navEvent.url)
@@ -72,6 +66,8 @@ class AboutFragment : MPFragment() {
         }
     }
 
+
+
     private fun goToRateAppScreen(uriString: String) {
         try {
             startActivity(Intent().cleanView(uriString))
@@ -79,6 +75,8 @@ class AboutFragment : MPFragment() {
             withViewModel { onFailedToOpenPlayStore() }
         }
     }
+
+    override fun withViewModel(action: AboutViewModel.() -> Unit) = withViewModel<AboutViewModel>(viewModelFactory) { action() }
 
     private fun goToShareAppScreen(uriString: String) {
         startActivity(Intent().send(getString(R.string.share_app_text, uriString)))

@@ -39,7 +39,7 @@ import com.jpp.mp.databinding.ListItemMovieBinding
  * VM instead of a VM per Fragment is based only in the simplification over the complication that
  * could represent having a hierarchy of VM to provide the functionality to this view.
  */
-abstract class MovieListFragment : MPFragment() {
+abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
 
     private lateinit var viewBinding: FragmentMovieListBinding
 
@@ -102,8 +102,10 @@ abstract class MovieListFragment : MPFragment() {
         super.onSaveInstanceState(outState)
     }
 
+    override fun withViewModel(action: MovieListViewModel.() -> Unit) = withViewModel<MovieListViewModel>(viewModelFactory) { action() }
+
+
     abstract fun initViewModel(posterSize: Int, backdropSize: Int, vm: MovieListViewModel)
-    private fun withViewModel(action: MovieListViewModel.() -> Unit) = withViewModel<MovieListViewModel>(viewModelFactory) { action() }
     private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.movieList)?.let(action)
 
     /**

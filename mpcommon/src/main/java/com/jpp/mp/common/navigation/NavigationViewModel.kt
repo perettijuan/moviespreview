@@ -39,6 +39,7 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
         _navEvents.value = of(Destination.MPCredits(movieId, movieTitle))
     }
 
+    @Deprecated("use navigateTo instead of this method")
     fun navigateToPersonDetails(personId: String, personImageUrl: String, personName: String) {
         _navEvents.value = of(Destination.MPPerson(personId, personImageUrl, personName))
     }
@@ -49,6 +50,10 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
 
     fun performInnerNavigation(directions: NavDirections) {
         _navEvents.value = of(Destination.InnerDestination(directions))
+    }
+
+    fun navigateTo(destination: Destination) {
+        _navEvents.value = of(destination)
     }
 
     fun destinationReached(destination: Destination) {

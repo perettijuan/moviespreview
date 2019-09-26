@@ -37,7 +37,7 @@ import kotlinx.android.synthetic.main.layout_movie_detail_content.*
  *       manner.
  *
  */
-class MovieDetailsFragment : MPFragment() {
+class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
 
     private lateinit var viewBinding: FragmentMovieDetailsBinding
 
@@ -82,7 +82,8 @@ class MovieDetailsFragment : MPFragment() {
     }
 
 
-    private fun withViewModel(action: MovieDetailsViewModel.() -> Unit) = withViewModel<MovieDetailsViewModel>(viewModelFactory) { action() }
+    override fun withViewModel(action: MovieDetailsViewModel.() -> Unit) = withViewModel<MovieDetailsViewModel>(viewModelFactory) { action() }
+
     private fun withActionsViewModel(action: MovieDetailsActionViewModel.() -> Unit) = withViewModel<MovieDetailsActionViewModel>(viewModelFactory) { action() }
 
 

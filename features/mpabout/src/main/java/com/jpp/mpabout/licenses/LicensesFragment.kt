@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.fragment_licenses.*
  * The Fragment interacts with [LicensesViewModel] in order to render the [LicensesViewState]
  * that the VM detects that is needed.
  */
-class LicensesFragment : MPFragment() {
+class LicensesFragment : MPFragment<LicensesViewModel>() {
 
     private lateinit var viewBinding: FragmentLicensesBinding
 
@@ -56,8 +56,7 @@ class LicensesFragment : MPFragment() {
         }
     }
 
-    private fun withViewModel(action: LicensesViewModel.() -> Unit) = withViewModel<LicensesViewModel>(viewModelFactory) { action() }
-
+    override fun withViewModel(action: LicensesViewModel.() -> Unit) = withViewModel<LicensesViewModel>(viewModelFactory) { action() }
 
     private fun showLicenseContent(licenseId: Int) {
         LicenseContentFragment.newInstance(licenseId).show(fragmentManager, "tag")

@@ -10,10 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpcredits.databinding.CreditsFragmentBinding
 import com.jpp.mpcredits.databinding.ListItemCreditsBinding
 
@@ -28,7 +26,7 @@ import com.jpp.mpcredits.databinding.ListItemCreditsBinding
  * Pre-condition: in order to instantiate this Fragment, a movie ID must be provided in the arguments
  * of the Fragment.
  */
-class CreditsFragment : MPFragment() {
+class CreditsFragment : MPFragment<CreditsViewModel>() {
 
     private lateinit var viewBinding: CreditsFragmentBinding
 
@@ -56,16 +54,7 @@ class CreditsFragment : MPFragment() {
                     layoutManager?.onRestoreInstanceState(rvState)
                     addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
                 }
-
-                withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(viewState.screenTitle)) }
             })
-
-            navEvents.observe(viewLifecycleOwner, Observer {
-                it.actionIfNotHandled { navEvent ->
-                    withNavigationViewModel(viewModelFactory) { navigateToPersonDetails(navEvent.personId, navEvent.personImageUrl, navEvent.personName) }
-                }
-            })
-
             onInit(CreditsInitParam.create(this@CreditsFragment))
         }
     }
@@ -80,7 +69,9 @@ class CreditsFragment : MPFragment() {
         super.onSaveInstanceState(outState)
     }
 
-    private fun withViewModel(action: CreditsViewModel.() -> Unit) = withViewModel<CreditsViewModel>(viewModelFactory) { action() }
+    override fun withViewModel(action: CreditsViewModel.() -> Unit) = withViewModel<CreditsViewModel>(viewModelFactory) { action() }
+
+
     private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.creditsRv)?.let(action)
 
     /**

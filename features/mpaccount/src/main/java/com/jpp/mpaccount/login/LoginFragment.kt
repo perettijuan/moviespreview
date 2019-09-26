@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_login.*
  * The Fragment does not uses DataBinding in order to simplify the URL loading and interception
  * when the login page needs to be shown.
  */
-class LoginFragment : MPFragment() {
+class LoginFragment : MPFragment<LoginViewModel>() {
 
     private lateinit var viewBinding: FragmentLoginBinding
 
@@ -36,7 +36,7 @@ class LoginFragment : MPFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        withViewModel<LoginViewModel>(viewModelFactory) {
+        withViewModel {
             viewState.observe(this@LoginFragment.viewLifecycleOwner, Observer { viewState ->
                 viewBinding.viewState = viewState
                 updateScreenTitle(viewState.screenTitle)
@@ -54,4 +54,6 @@ class LoginFragment : MPFragment() {
             onInit()
         }
     }
+
+    override fun withViewModel(action: LoginViewModel.() -> Unit) = withViewModel<LoginViewModel>(viewModelFactory) { action() }
 }

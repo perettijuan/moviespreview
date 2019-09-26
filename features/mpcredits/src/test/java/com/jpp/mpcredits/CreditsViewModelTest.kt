@@ -3,6 +3,7 @@ package com.jpp.mpcredits
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
 import com.jpp.mpdomain.CrewMember
@@ -127,7 +128,6 @@ class CreditsViewModelTest {
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.AppLanguageChanged)
 
         assertNotNull(viewStatePosted)
-        assertEquals("aMovie", viewStatePosted?.screenTitle)
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
 
         assertEquals(View.INVISIBLE, viewStatePosted?.noCreditsViewState?.visibility)
@@ -150,7 +150,6 @@ class CreditsViewModelTest {
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
 
         assertNotNull(viewStatePosted)
-        assertEquals("aMovie", viewStatePosted?.screenTitle)
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
 
         assertEquals(View.INVISIBLE, viewStatePosted?.noCreditsViewState?.visibility)
@@ -203,7 +202,6 @@ class CreditsViewModelTest {
 
 
         assertNotNull(viewStatePosted)
-        assertEquals("aMovie", viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.noCreditsViewState?.visibility)
@@ -227,6 +225,40 @@ class CreditsViewModelTest {
                 assertEquals(crew[i - 4].department, uiCredits[i].subTitle)
             }
         } ?: fail()
+    }
+
+    @Test
+    fun `Should update reached destination in onInit`() {
+        var destinationReached: Destination? = null
+        val expected = Destination.ReachedDestination("aMovie")
+
+        subject.destinationEvents.observeWith { destinationReached = it }
+
+        subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
+
+        assertEquals(expected, destinationReached)
+    }
+
+    @Test
+    fun `Should request navigation to person details when credit item selected`() {
+        val personItem = CreditPerson(
+                id = 10.0,
+                profilePath = "aProfile",
+                title = "aTitle",
+                subTitle = "aSubtitle"
+        )
+
+        val expectedDestination = Destination.MPPerson(
+                personId = "10.0",
+                personImageUrl = "aProfile",
+                personName = "aSubtitle")
+
+        var requestedDestination: Destination? = null
+
+        subject.navigationEvents.observeWith { it.actionIfNotHandled { dest -> requestedDestination = dest } }
+        subject.onCreditItemSelected(personItem)
+
+        assertEquals(expectedDestination, requestedDestination)
     }
 
 

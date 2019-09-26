@@ -46,4 +46,5 @@ inline fun <reified T : ViewModel> Fragment.withViewModel(viewModelFactory: View
 /**
  * Extension function to execute a particular action with the [NavigationViewModel].
  */
+@Deprecated("Use MPFragment instead")
 fun Fragment.withNavigationViewModel(viewModelFactory: ViewModelProvider.Factory, action: NavigationViewModel.() -> Unit) = getViewModel<NavigationViewModel>(viewModelFactory).action()

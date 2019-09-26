@@ -7,10 +7,7 @@ import android.view.ViewGroup
 import android.webkit.CookieManager
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import com.jpp.mp.common.extensions.clearAllCookies
-import com.jpp.mp.common.extensions.getScreenWidthInPixels
-import com.jpp.mp.common.extensions.getViewModel
-import com.jpp.mp.common.extensions.withNavigationViewModel
+import com.jpp.mp.common.extensions.*
 import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mpaccount.R
@@ -24,7 +21,7 @@ import kotlinx.android.synthetic.main.layout_user_account_content.*
  * Fragment used to show the user's account data. It provides the user the ability to logout of the
  * application and to see the list of favorite, rated and to watch movies.
  */
-class UserAccountFragment : MPFragment() {
+class UserAccountFragment : MPFragment<UserAccountViewModel>() {
 
     private lateinit var viewBinding: FragmentUserAccountBinding
 
@@ -62,7 +59,8 @@ class UserAccountFragment : MPFragment() {
         }
     }
 
-    private fun withViewModel(action: UserAccountViewModel.() -> Unit) = getViewModel<UserAccountViewModel>(viewModelFactory).action()
+    override fun withViewModel(action: UserAccountViewModel.() -> Unit) = withViewModel<UserAccountViewModel>(viewModelFactory) { action() }
+
     private fun withNavigationViewModel(action: NavigationViewModel.() -> Unit) = withNavigationViewModel(viewModelFactory) { action() }
 
     /**

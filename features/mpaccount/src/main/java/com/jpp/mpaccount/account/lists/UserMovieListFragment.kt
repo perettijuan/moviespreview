@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
-import com.jpp.mp.common.extensions.getViewModel
 import com.jpp.mp.common.extensions.withNavigationViewModel
+import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToMovieDetails
@@ -31,7 +31,7 @@ import com.jpp.mpaccount.databinding.ListItemUserMovieBinding
  * This Fragment shows the movies list based on the configuration that is sent as parameter when
  * created. It can show all three categories, based on such parameters.
  */
-class UserMovieListFragment : MPFragment() {
+class UserMovieListFragment : MPFragment<UserMovieListViewModel>() {
 
     private lateinit var viewBinding: FragmentUserMovieListBinding
 
@@ -79,7 +79,8 @@ class UserMovieListFragment : MPFragment() {
     }
 
 
-    private fun withViewModel(action: UserMovieListViewModel.() -> Unit) = getViewModel<UserMovieListViewModel>(viewModelFactory).action()
+    override fun withViewModel(action: UserMovieListViewModel.() -> Unit) = withViewModel<UserMovieListViewModel>(viewModelFactory) { action() }
+
     private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.userMoviesList)?.let(action)
 
     /**

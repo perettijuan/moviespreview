@@ -2,12 +2,10 @@ package com.jpp.mpcredits
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.extensions.addAllMapping
-import com.jpp.mp.common.livedata.HandledEvent
-import com.jpp.mp.common.livedata.HandledEvent.Companion.of
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpcredits.CreditsInteractor.CreditsEvent.*
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
@@ -38,12 +36,9 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _viewState = MediatorLiveData<CreditsViewState>()
     val viewState: LiveData<CreditsViewState> get() = _viewState
 
-    private val _navEvents = MutableLiveData<HandledEvent<NavigateToPersonEvent>>()
-    val navEvents: LiveData<HandledEvent<NavigateToPersonEvent>> get() = _navEvents
-
     private lateinit var currentParam: CreditsInitParam
 
-    private val retry: () -> Unit = { fetchMovieCredits(currentParam.movieTitle, currentParam.movieId) }
+    private val retry: () -> Unit = { fetchMovieCredits(currentParam.movieId) }
 
     /*
      * Map the business logic coming from the interactor into view layer logic.
@@ -51,10 +46,10 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     init {
         _viewState.addSource(creditsInteractor.events) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewState.value = CreditsViewState.showNoConnectivityError(currentParam.movieTitle, retry)
-                is UnknownError -> _viewState.value = CreditsViewState.showUnknownError(currentParam.movieTitle, retry)
-                is Success -> mapCreditsAndPushViewState(currentParam.movieTitle, event.credits)
-                is AppLanguageChanged -> refreshCreditsData(currentParam.movieTitle, currentParam.movieId)
+                is NotConnectedToNetwork -> _viewState.value = CreditsViewState.showNoConnectivityError(retry)
+                is UnknownError -> _viewState.value = CreditsViewState.showUnknownError(retry)
+                is Success -> mapCreditsAndPushViewState(event.credits)
+                is AppLanguageChanged -> refreshCreditsData(currentParam.movieId)
             }
         }
     }
@@ -67,20 +62,21 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun onInit(param: CreditsInitParam) {
         currentParam = param
-        fetchMovieCredits(currentParam.movieTitle, currentParam.movieId)
+        updateCurrentDestination(Destination.ReachedDestination(currentParam.movieTitle))
+
+        fetchMovieCredits(currentParam.movieId)
     }
 
     /**
      * Called when an item is selected in the list of credit persons.
-     * A new state is posted in [navEvents] in order to handle the event.
      */
     fun onCreditItemSelected(personItem: CreditPerson) {
         with(personItem) {
-            _navEvents.value = of(NavigateToPersonEvent(
+            navigateTo(Destination.MPPerson(
                     personId = id.toString(),
                     personImageUrl = profilePath,
-                    personName = subTitle
-            ))
+                    personName = subTitle)
+            )
         }
     }
 
@@ -89,9 +85,9 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * of the movie being shown. When the fetching process is done, the view state will be updated
      * based on the result posted by the interactor.
      */
-    private fun fetchMovieCredits(movieTitle: String, movieId: Double) {
+    private fun fetchMovieCredits(movieId: Double) {
         withInteractor { fetchCreditsForMovie(movieId) }
-        _viewState.value = CreditsViewState.showLoading(movieTitle)
+        _viewState.value = CreditsViewState.showLoading()
     }
 
     /**
@@ -99,12 +95,12 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * to be fetched for the credits being shown. This is executed in a background
      * task while the view state is updated with the loading state.
      */
-    private fun refreshCreditsData(movieTitle: String, creditsId: Double) {
+    private fun refreshCreditsData(creditsId: Double) {
         withInteractor {
             flushCreditsData()
             fetchCreditsForMovie(creditsId)
         }
-        _viewState.value = CreditsViewState.showLoading(movieTitle)
+        _viewState.value = CreditsViewState.showLoading()
     }
 
     /**
@@ -120,14 +116,13 @@ class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * a new view state that is pushed to the view to show the result of the credits
      * fetching process.
      */
-    private fun mapCreditsAndPushViewState(movieTitle: String, credits: Credits) {
+    private fun mapCreditsAndPushViewState(credits: Credits) {
         when (credits.cast.isEmpty() && credits.crew.isEmpty()) {
-            true -> _viewState.value = CreditsViewState.showNoCreditsAvailable(movieTitle)
+            true -> _viewState.value = CreditsViewState.showNoCreditsAvailable()
             false -> {
                 launch {
                     withContext(dispatchers.default()) {
                         CreditsViewState.showCredits(
-                                movieTitle,
                                 credits.cast
                                         .map { imagesPathInteractor.configureCastCharacter(currentParam.targetImageSize, it) }
                                         .map { mapCastCharacterToCreditPerson(it) }
