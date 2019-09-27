@@ -7,7 +7,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.extensions.getViewModel
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.navigation.NavigationViewModel
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
@@ -40,19 +39,6 @@ abstract class MPFragment<VM : MPScopedViewModel> : Fragment() {
 
     private fun withNavigationViewModel(action: NavigationViewModel.() -> Unit) = getViewModel<NavigationViewModel>(viewModelFactory).action()
 
-    /**
-     * Updates the screen title of the application.
-     */
-    fun updateScreenTitle(screenTitle: String) {
-
-    }
-
-    /**
-     * Updates the screen title of the application.
-     */
-    fun updateScreenTitle(screenTitle: Int) {
-        updateScreenTitle(getString(screenTitle))
-    }
-
+    //TODO JPP add javadoc
     abstract fun withViewModel(action: VM.() -> Unit): VM
 }

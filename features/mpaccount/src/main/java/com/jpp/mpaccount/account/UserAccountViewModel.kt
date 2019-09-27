@@ -2,14 +2,13 @@ package com.jpp.mpaccount.account
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
-import com.jpp.mp.common.livedata.HandledEvent
-import com.jpp.mp.common.livedata.HandledEvent.Companion.of
+import com.jpp.mp.common.navigation.Destination
+import com.jpp.mpaccount.account.UserAccountFragmentDirections.userMovieListFragment
 import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent
 import com.jpp.mpaccount.account.UserAccountInteractor.UserMoviesState
-import com.jpp.mpaccount.account.UserAccountNavigationEvent.*
+import com.jpp.mpaccount.account.lists.UserMovieListType
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
@@ -37,11 +36,9 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
     private val _viewState = MediatorLiveData<UserAccountViewState>()
     val viewState: LiveData<UserAccountViewState> get() = _viewState
 
-    private val _navEvents = MutableLiveData<HandledEvent<UserAccountNavigationEvent>>()
-    val navEvents: LiveData<HandledEvent<UserAccountNavigationEvent>> get() = _navEvents
+    private val retry: () -> Unit = { onInit(currentParam) }
 
-    private val retry: () -> Unit = { onInit(moviesPosterTargetSize) }
-    private var moviesPosterTargetSize: Int = 0
+    private lateinit var currentParam: UserAccountParam
 
     /*
      * Map the business logic coming from the interactor into view layer logic.
@@ -51,8 +48,8 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
             when (event) {
                 is UserAccountEvent.NotConnectedToNetwork -> _viewState.value = UserAccountViewState.showNoConnectivityError(retry)
                 is UserAccountEvent.UnknownError -> _viewState.value = UserAccountViewState.showUnknownError(retry)
-                is UserAccountEvent.UserNotLogged -> _navEvents.value = of(GoToPrevious)
-                is UserAccountEvent.UserDataCleared -> _navEvents.value = of(GoToPrevious)
+                is UserAccountEvent.UserNotLogged -> navigateTo(Destination.PreviousDestination)
+                is UserAccountEvent.UserDataCleared -> navigateTo(Destination.PreviousDestination)
                 is UserAccountEvent.UserChangedLanguage -> refreshData()
                 is UserAccountEvent.Success -> mapAccountInfo(event)
             }
@@ -65,8 +62,9 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit(posterSize: Int) {
-        moviesPosterTargetSize = posterSize
+    fun onInit(param: UserAccountParam) {
+        updateCurrentDestination(Destination.ReachedDestination(param.screenTitle))
+        currentParam = param
         withAccountInteractor { fetchUserAccountData() }
         _viewState.value = UserAccountViewState.showLoading()
     }
@@ -83,21 +81,21 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
      * Called when the user wants to see the favorites movies.
      */
     fun onFavorites() {
-        _navEvents.value = of(GoToFavorites)
+        navigateTo(Destination.InnerDestination(userMovieListFragment(UserMovieListType.FAVORITE_LIST)))
     }
 
     /**
      * Called when the user wants to see the rated movies.
      */
     fun onRated() {
-        _navEvents.value = of(GoToRated)
+        navigateTo(Destination.InnerDestination(userMovieListFragment(UserMovieListType.RATED_LIST)))
     }
 
     /**
      * Called when the user wants to see the watchlist.
      */
     fun onWatchlist() {
-        _navEvents.value = of(GoToWatchlist)
+        navigateTo(Destination.InnerDestination(userMovieListFragment(UserMovieListType.WATCH_LIST)))
     }
 
     private fun refreshData() {
@@ -164,7 +162,7 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
                 when {
                     userMovieState.data.results.isEmpty() -> emptyCreator()
                     else -> userMovieState.data.results
-                            .map { imagesPathInteractor.configurePathMovie(moviesPosterTargetSize, moviesPosterTargetSize, it) }
+                            .map { imagesPathInteractor.configurePathMovie(currentParam.posterSize, currentParam.posterSize, it) }
                             .map { UserMovieItem(image = it.poster_path ?: "noPath") }
                             .let { UserMoviesViewState.createWithItems(it) }
                 }

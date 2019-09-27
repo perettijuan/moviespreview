@@ -39,7 +39,7 @@ class LoginFragment : MPFragment<LoginViewModel>() {
         withViewModel {
             viewState.observe(this@LoginFragment.viewLifecycleOwner, Observer { viewState ->
                 viewBinding.viewState = viewState
-                updateScreenTitle(viewState.screenTitle)
+                //TODO JPP updateScreenTitle(viewState.screenTitle)
 
                 if (viewState.oauthViewState.reminder) {
                     snackBarNoAction(loginContent, R.string.user_account_approve_reminder)

@@ -2,6 +2,7 @@ package com.jpp.mpaccount.account
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.TestAccountCoroutineDispatchers
 import com.jpp.mpdomain.Gravatar
@@ -62,7 +63,6 @@ class UserAccountViewModelTest {
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.NotConnectedToNetwork)
 
         assertNotNull(viewStatePosted)
-        assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
 
@@ -79,7 +79,6 @@ class UserAccountViewModelTest {
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.UnknownError)
 
         assertNotNull(viewStatePosted)
-        assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
 
@@ -89,24 +88,26 @@ class UserAccountViewModelTest {
 
     @Test
     fun `Should redirect when user not logged in`() {
-        var eventPosted: UserAccountNavigationEvent? = null
+        val expectedDestination = Destination.PreviousDestination
+        var requestedDestination: Destination? = null
 
-        subject.navEvents.observeWith { it.actionIfNotHandled { navEvent -> eventPosted = navEvent } }
+        subject.navigationEvents.observeWith { it.actionIfNotHandled { dest -> requestedDestination = dest } }
 
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.UserNotLogged)
 
-        assertEquals(UserAccountNavigationEvent.GoToPrevious, eventPosted)
+        assertEquals(expectedDestination, requestedDestination)
     }
 
     @Test
     fun `Should redirect to main when user data cleared`() {
-        var eventPosted: UserAccountNavigationEvent? = null
+        val expectedDestination = Destination.PreviousDestination
+        var requestedDestination: Destination? = null
 
-        subject.navEvents.observeWith { it.actionIfNotHandled { navEvent -> eventPosted = navEvent } }
+        subject.navigationEvents.observeWith { it.actionIfNotHandled { dest -> requestedDestination = dest } }
 
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.UserDataCleared)
 
-        assertEquals(UserAccountNavigationEvent.GoToPrevious, eventPosted)
+        assertEquals(expectedDestination, requestedDestination)
     }
 
 
@@ -132,7 +133,6 @@ class UserAccountViewModelTest {
         )
 
         assertNotNull(viewStatePosted)
-        assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
 
@@ -168,7 +168,6 @@ class UserAccountViewModelTest {
         )
 
         assertNotNull(viewStatePosted)
-        assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
 
@@ -215,6 +214,7 @@ class UserAccountViewModelTest {
         every { imagesPathInteractor.configurePathMovie(any(), any(), any()) } returns mockk(relaxed = true)
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+        subject.onInit(UserAccountParam("aTitle", 10))
 
         lvInteractorEvents.postValue(
                 UserAccountInteractor.UserAccountEvent.Success(
@@ -226,7 +226,6 @@ class UserAccountViewModelTest {
         )
 
         assertNotNull(viewStatePosted)
-        assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
 
@@ -243,10 +242,9 @@ class UserAccountViewModelTest {
         var viewStatePosted: UserAccountViewState? = null
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
-        subject.onInit(10)
+        subject.onInit(UserAccountParam("aTitle", 10))
 
         assertNotNull(viewStatePosted)
-        assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
@@ -262,7 +260,6 @@ class UserAccountViewModelTest {
         subject.onLogout()
 
         assertNotNull(viewStatePosted)
-        assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
@@ -278,11 +275,22 @@ class UserAccountViewModelTest {
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.UserChangedLanguage)
 
         assertNotNull(viewStatePosted)
-        assertEquals(R.string.account_title, viewStatePosted?.screenTitle)
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
 
         verify { accountInteractor.refreshUserAccountData() }
+    }
+
+    @Test
+    fun `Should update reached destination in onInit`() {
+        var destinationReached: Destination? = null
+        val expected = Destination.ReachedDestination("aTitle")
+
+        subject.destinationEvents.observeWith { destinationReached = it }
+
+        subject.onInit(UserAccountParam("aTitle", 10))
+
+        assertEquals(expected, destinationReached)
     }
 }
