@@ -47,8 +47,6 @@ dependencies {
      */
     implementation deps.android.arch.navigation.ui
 
-    implementation "androidx.palette:palette:1.0.0"
-
     /*
      * ConstraintLayout:
      *  - alpha version in order to use MotionLayout. Should be updated once it is stable.
