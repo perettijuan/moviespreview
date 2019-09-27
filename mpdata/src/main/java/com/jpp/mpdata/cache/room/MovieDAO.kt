@@ -5,6 +5,9 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
+/**
+ * DAO definition used to access all the movies related data stored locally using Room.
+ */
 @Dao
 interface MovieDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
