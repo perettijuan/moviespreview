@@ -152,7 +152,7 @@ class MovieListViewModelTest {
     @MethodSource("movieListTestParams")
     fun `Should update reached destination in onInit`(param: MovieListParam) {
         var destinationReached: Destination? = null
-        val expected = Destination.ReachedDestination(param.screenTitle)
+        val expected = Destination.MovieListReached(param.screenTitle)
 
         subject.destinationEvents.observeWith { destinationReached = it }
 

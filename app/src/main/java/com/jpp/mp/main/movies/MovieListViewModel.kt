@@ -73,7 +73,7 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      */
     fun onInit(param: MovieListParam) {
         currentParam = param
-        updateCurrentDestination(Destination.ReachedDestination(param.screenTitle))
+        updateCurrentDestination(Destination.MovieListReached(param.screenTitle))
 
         postLoadingAndInitializePagedList(
                 currentParam.posterSize,
