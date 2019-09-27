@@ -8,6 +8,9 @@ import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.repository.AccountRepository
 
+/**
+ * [AccountRepository] implementation.
+ */
 class AccountRepositoryImpl(private val accountApi: AccountApi,
                             private val accountDb: AccountDb) : AccountRepository {
 
