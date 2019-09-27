@@ -7,6 +7,7 @@ import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpabout.AboutInteractor.AboutEvent.*
 import com.jpp.mpdomain.AboutUrl
 import kotlinx.coroutines.launch
@@ -59,7 +60,8 @@ class AboutViewModel @Inject constructor(coroutineDispatchers: CoroutineDispatch
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit() {
+    fun onInit(screenTitle: String) {
+        updateCurrentDestination(Destination.ReachedDestination(screenTitle))
         _viewState.value = AboutViewState.showLoading()
         withInteractor { fetchAppVersion() }
     }
@@ -75,7 +77,7 @@ class AboutViewModel @Inject constructor(coroutineDispatchers: CoroutineDispatch
             is AboutItem.PrivacyPolicy -> withInteractor { getPrivacyPolicyUrl() }
             is AboutItem.RateApp -> withInteractor { getStoreUrl() }
             is AboutItem.ShareApp -> withInteractor { getShareUrl() }
-            is AboutItem.Licenses -> _navEvents.value = of(AboutNavEvent.GoToLicenses)
+            is AboutItem.Licenses -> navigateTo(Destination.InnerDestination(AboutFragmentDirections.licensesFragment()))
         }
     }
 
@@ -97,7 +99,7 @@ class AboutViewModel @Inject constructor(coroutineDispatchers: CoroutineDispatch
             is AboutItem.PrivacyPolicy -> AboutNavEvent.OuterNavigation(aboutUrl.url)
             is AboutItem.RateApp -> AboutNavEvent.OpenGooglePlay(aboutUrl.url)
             is AboutItem.ShareApp -> AboutNavEvent.OpenSharing(aboutUrl.url)
-            is AboutItem.Licenses -> AboutNavEvent.GoToLicenses
+            else -> throw IllegalStateException("Unknown item selected $selectedItem")
         }.let {
             _navEvents.value = of(it)
         }
