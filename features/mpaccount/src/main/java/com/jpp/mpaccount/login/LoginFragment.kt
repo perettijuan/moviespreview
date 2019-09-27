@@ -6,12 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.databinding.FragmentLoginBinding
-import com.jpp.mpaccount.login.LoginFragmentDirections.toAccountFragment
 import com.jpp.mpdesign.ext.snackBarNoAction
 import kotlinx.android.synthetic.main.fragment_login.*
 
@@ -39,19 +37,12 @@ class LoginFragment : MPFragment<LoginViewModel>() {
         withViewModel {
             viewState.observe(this@LoginFragment.viewLifecycleOwner, Observer { viewState ->
                 viewBinding.viewState = viewState
-                //TODO JPP updateScreenTitle(viewState.screenTitle)
 
                 if (viewState.oauthViewState.reminder) {
                     snackBarNoAction(loginContent, R.string.user_account_approve_reminder)
                 }
             })
-            navEvents.observe(this@LoginFragment.viewLifecycleOwner, Observer {
-                it.actionIfNotHandled {
-                    withNavigationViewModel(viewModelFactory) { performInnerNavigation(toAccountFragment()) }
-                }
-
-            })
-            onInit()
+            onInit(getString(R.string.login_generic))
         }
     }
 
