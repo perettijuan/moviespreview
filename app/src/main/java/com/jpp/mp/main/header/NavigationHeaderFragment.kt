@@ -11,7 +11,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.R
 import com.jpp.mp.common.extensions.getViewModel
-import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.databinding.FragmentNavHeaderBinding
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_nav_header.*
@@ -52,7 +51,6 @@ class NavigationHeaderFragment : Fragment() {
 
         withViewModel {
             viewState.observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { viewState -> viewBinding.viewState = viewState })
-            navEvents.observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { withNavigationViewModel(viewModelFactory) { navigateToUserAccount() } })
             onInit()
         }
     }

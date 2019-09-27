@@ -7,6 +7,7 @@ import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.*
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
@@ -26,8 +27,6 @@ class NavigationHeaderViewModel @Inject constructor(dispatchers: CoroutineDispat
     private val _viewState = MediatorLiveData<HeaderViewState>()
     val viewState: LiveData<HeaderViewState> get() = _viewState
 
-    private val _navEvents = MutableLiveData<HandledEvent<HeaderNavigationEvent>>()
-    val navEvents: LiveData<HandledEvent<HeaderNavigationEvent>> get() = _navEvents
 
     /*
      * Map the business logic coming from the interactor into view layer logic.
@@ -55,18 +54,16 @@ class NavigationHeaderViewModel @Inject constructor(dispatchers: CoroutineDispat
 
     /**
      * Called when the the navigate to login option is selected in the UI.
-     * A new state is posted in [navEvents] in order to handle the event.
      */
     fun onNavigateToLoginSelected() {
-        _navEvents.value = of(HeaderNavigationEvent.ToLogin)
+       navigateTo(Destination.MPAccount)
     }
 
     /**
      * Called when the user attempts to navigate to the account details.
-     * A new state is posted in [navEvents] in order to handle the event.
      */
     fun onNavigateToAccountDetailsSelected() {
-        _navEvents.value = of(HeaderNavigationEvent.ToUserAccount)
+        navigateTo(Destination.MPAccount)
     }
 
     /**
