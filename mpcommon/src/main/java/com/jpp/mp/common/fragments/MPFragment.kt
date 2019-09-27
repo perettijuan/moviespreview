@@ -13,6 +13,24 @@ import javax.inject.Inject
 
 /**
  * Base [Fragment] definition for all the fragments used in the application.
+ *
+ * [VM] represents the main [MPScopedViewModel] that the Fragment uses to provide the functionallity
+ * requested to the user.
+ *
+ * Navigation support:
+ * [MPFragment] works in conjunction with [MPScopedViewModel] to update the AppBar title each time
+ * a new screen is shown. Basically, the [MPScopedViewModel] that is taking control of the application
+ * posts a new event to [MPScopedViewModel.destinationEvents] in order to indicate that a new destination
+ * has been reached. [MPFragment] captures that new state update and requests an update to the [NavigationViewModel]
+ * that, in time, posts a new event to its [NavigationViewModel.reachedDestinations]. [MainActivity] captures
+ * that new destination reached and updates the application's ActionBar with the title of the new destination.
+ *
+ *
+ * Also, in order to provide navigation between the different modules in a decouple manner, [MPFragment]
+ * works with [MPScopedViewModel] reacting to navigation updates posted in [MPScopedViewModel.navigationEvents].
+ * Every time [MPScopedViewModel] posts a new destination to navigate to, [MPFragment] posts a new
+ * event to [NavigationViewModel] that, in time, is processed by [MainActivity] to perform the navigation
+ * using the Android Navigation Components.
  */
 abstract class MPFragment<VM : MPScopedViewModel> : Fragment() {
 
@@ -37,8 +55,14 @@ abstract class MPFragment<VM : MPScopedViewModel> : Fragment() {
         }
     }
 
+    /**
+     * Helper function to access the [NavigationViewModel] of the Fragment.
+     */
     private fun withNavigationViewModel(action: NavigationViewModel.() -> Unit) = getViewModel<NavigationViewModel>(viewModelFactory).action()
 
-    //TODO JPP add javadoc
+    /**
+     * Generic function to perform actions with the [VM] that controls
+     * this [MPFragment].
+     */
     abstract fun withViewModel(action: VM.() -> Unit): VM
 }
