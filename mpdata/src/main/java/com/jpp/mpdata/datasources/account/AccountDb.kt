@@ -2,9 +2,23 @@ package com.jpp.mpdata.datasources.account
 
 import com.jpp.mpdomain.UserAccount
 
+/**
+ * Database definition to manipulate all the [UserAccount] data locally.
+ */
 interface AccountDb {
+    /**
+     * Stores the provided [userAccount] data locally.
+     */
     fun storeUserAccountInfo(userAccount: UserAccount)
+
+    /**
+     * @return the unique [UserAccount] data stored locally - if any.
+     */
     fun getUserAccountInfo(): UserAccount?
+
+    /**
+     * Flushes out all locally stored data.
+     */
     fun flushData()
 
     /**
