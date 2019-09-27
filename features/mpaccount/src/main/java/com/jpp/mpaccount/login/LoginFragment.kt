@@ -6,12 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.databinding.FragmentLoginBinding
-import com.jpp.mpaccount.login.LoginFragmentDirections.toAccountFragment
 import com.jpp.mpdesign.ext.snackBarNoAction
 import kotlinx.android.synthetic.main.fragment_login.*
 
@@ -25,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_login.*
  * The Fragment does not uses DataBinding in order to simplify the URL loading and interception
  * when the login page needs to be shown.
  */
-class LoginFragment : MPFragment() {
+class LoginFragment : MPFragment<LoginViewModel>() {
 
     private lateinit var viewBinding: FragmentLoginBinding
 
@@ -36,19 +34,17 @@ class LoginFragment : MPFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        withViewModel<LoginViewModel>(viewModelFactory) {
+        withViewModel {
             viewState.observe(this@LoginFragment.viewLifecycleOwner, Observer { viewState ->
                 viewBinding.viewState = viewState
-                updateScreenTitle(viewState.screenTitle)
 
                 if (viewState.oauthViewState.reminder) {
                     snackBarNoAction(loginContent, R.string.user_account_approve_reminder)
                 }
             })
-            navEvents.observe(this@LoginFragment.viewLifecycleOwner, Observer {
-                withNavigationViewModel(viewModelFactory) { performInnerNavigation(toAccountFragment()) }
-            })
-            onInit()
+            onInit(getString(R.string.login_generic))
         }
     }
+
+    override fun withViewModel(action: LoginViewModel.() -> Unit) = withViewModel<LoginViewModel>(viewModelFactory) { action() }
 }

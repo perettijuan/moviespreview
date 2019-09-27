@@ -3,13 +3,12 @@ package com.jpp.mp.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
+import com.jpp.mp.common.livedata.HandledEvent
+import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mp.common.navigation.Destination
-import com.jpp.mp.common.viewstate.HandledViewState
-import com.jpp.mp.common.viewstate.HandledViewState.Companion.of
+import com.jpp.mp.common.navigation.Destination.*
 import com.jpp.mpdata.datasources.language.LanguageMonitor
 import com.jpp.mpdomain.repository.LanguageRepository
-import com.jpp.mp.common.navigation.Destination.*
 import javax.inject.Inject
 
 /**
@@ -30,11 +29,11 @@ import javax.inject.Inject
 class MainActivityViewModel @Inject constructor(private val languageMonitor: LanguageMonitor,
                                                 private val languageRepository: LanguageRepository) : ViewModel() {
 
-    private val _viewState = MutableLiveData<HandledViewState<MainActivityViewState>>()
-    val viewState: LiveData<HandledViewState<MainActivityViewState>> get() = _viewState
+    private val _viewState = MutableLiveData<MainActivityViewState>()
+    val viewState: LiveData<MainActivityViewState> get() = _viewState
 
-    private val _moduleNavEvents = SingleLiveEvent<ModuleNavigationEvent>()
-    val moduleNavEvents: LiveData<ModuleNavigationEvent> get() = _moduleNavEvents
+    private val _moduleNavEvents = MutableLiveData<HandledEvent<ModuleNavigationEvent>>()
+    val moduleNavEvents: LiveData<HandledEvent<ModuleNavigationEvent>> get() = _moduleNavEvents
 
     /**
      * Called on application startup. When called, the VM takes care of initializing
@@ -57,7 +56,7 @@ class MainActivityViewModel @Inject constructor(private val languageMonitor: Lan
      * Called when the user requests to navigate to a particular [destination].
      */
     fun onRequestToNavigateToDestination(destination: Destination) {
-        _moduleNavEvents.value = when (destination) {
+        when (destination) {
             is MPAccount -> ModuleNavigationEvent.NavigateToNodeWithId.toUserAccount()
             is MPMovieDetails -> ModuleNavigationEvent.NavigateToNodeWithExtras.toMovieDetails(destination)
             is MPPerson -> ModuleNavigationEvent.NavigateToNodeWithExtras.toPerson(destination)
@@ -65,6 +64,8 @@ class MainActivityViewModel @Inject constructor(private val languageMonitor: Lan
             is PreviousDestination -> ModuleNavigationEvent.NavigateToPrevious
             is InnerDestination -> ModuleNavigationEvent.NavigateToNodeWithDirections(destination.directions)
             else -> throw IllegalStateException("Unknown navigation requested $destination")
+        }.let {
+            _moduleNavEvents.value = of(it)
         }
     }
 
@@ -87,11 +88,11 @@ class MainActivityViewModel @Inject constructor(private val languageMonitor: Lan
      * to update the search bar state.
      */
     private fun renderSearchViewState() {
-        _viewState.value = of(MainActivityViewState(
+        _viewState.value = MainActivityViewState(
                 sectionTitle = "",
                 menuBarEnabled = false,
                 searchEnabled = true
-        ))
+        )
     }
 
     /**
@@ -100,11 +101,11 @@ class MainActivityViewModel @Inject constructor(private val languageMonitor: Lan
      * contains the title of the feature being navigated.
      */
     private fun renderFeatureViewState(sectionName: String) {
-        _viewState.value = of(MainActivityViewState(
+        _viewState.value = MainActivityViewState(
                 sectionTitle = sectionName,
                 menuBarEnabled = false,
                 searchEnabled = false
-        ))
+        )
     }
 
     /**
@@ -113,10 +114,10 @@ class MainActivityViewModel @Inject constructor(private val languageMonitor: Lan
      * the name of the section being shown.
      */
     private fun renderMovieListViewState(sectionName: String) {
-        _viewState.value = of(MainActivityViewState(
+        _viewState.value = MainActivityViewState(
                 sectionTitle = sectionName,
                 menuBarEnabled = true,
                 searchEnabled = false
-        ))
+        )
     }
 }

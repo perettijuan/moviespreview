@@ -7,6 +7,6 @@ import com.jpp.mp.main.movies.MovieListViewModel
 class PopularMoviesFragment : MovieListFragment() {
 
     override fun initViewModel(posterSize: Int, backdropSize: Int, vm: MovieListViewModel) {
-        vm.onInit(MovieListParam.popular(posterSize, backdropSize))
+        vm.onInit(MovieListParam.popular(resources, posterSize, backdropSize))
     }
 }

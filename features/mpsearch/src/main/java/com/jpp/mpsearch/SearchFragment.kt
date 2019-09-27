@@ -1,6 +1,5 @@
 package com.jpp.mpsearch
 
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,21 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
-import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
-import com.jpp.mp.common.navigation.Destination.MPSearch
+import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mpsearch.databinding.ListItemSearchBinding
 import com.jpp.mpsearch.databinding.SearchFragmentBinding
-import dagger.android.support.AndroidSupportInjection
-import javax.inject.Inject
 
 /**
  * Fragment used to provide search functionality to the application.
@@ -33,17 +27,9 @@ import javax.inject.Inject
  * search performed by the user. The ViewModel will perform the search, update the
  * UI states represented by [SearchViewState] and the Fragment will render those state updates.
  */
-class SearchFragment : Fragment() {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+class SearchFragment : MPFragment<SearchViewModel>() {
 
     private lateinit var viewBinding: SearchFragmentBinding
-
-    override fun onAttach(context: Context?) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewBinding = DataBindingUtil.inflate(inflater, R.layout.search_fragment, container, false)
@@ -54,8 +40,8 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         withRecyclerView {
             layoutManager = LinearLayoutManager(activity)
-            adapter = SearchItemAdapter { item, position ->
-                withViewModel { onItemSelected(item, position) }
+            adapter = SearchItemAdapter { item ->
+                withViewModel { onItemSelected(item) }
             }
         }
         setUpSearchView()
@@ -65,37 +51,23 @@ class SearchFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         withViewModel {
-            viewState.observe(this@SearchFragment.viewLifecycleOwner, Observer {
-                it.actionIfNotHandled { viewState ->
-                    viewBinding.viewState = viewState
+            viewState.observe(this@SearchFragment.viewLifecycleOwner, Observer { viewState ->
+                viewBinding.viewState = viewState
 
-                    withRecyclerView { (adapter as SearchItemAdapter).submitList(viewState.contentViewState.searchResultList) }
+                withRecyclerView { (adapter as SearchItemAdapter).submitList(viewState.contentViewState.searchResultList) }
 
-                    withSearchView {
-                        setQuery(viewState.searchQuery, false)
-                        clearFocus() // hide keyboard
-                    }
+                withSearchView {
+                    setQuery(viewState.searchQuery, false)
+                    clearFocus() // hide keyboard
                 }
             })
-            navEvents.observe(this@SearchFragment.viewLifecycleOwner, Observer { navEvent -> reactToNavEvent(navEvent) })
             onInit(getScreenWidthInPixels())
         }
-
-        // sync search view state in
-        withNavigationViewModel(viewModelFactory) { destinationReached(MPSearch) }
     }
 
+    override fun withViewModel(action: SearchViewModel.() -> Unit) = withViewModel<SearchViewModel>(viewModelFactory) { action() }
 
-    private fun reactToNavEvent(navEvent: SearchNavigationEvent) {
-        when (navEvent) {
-            is SearchNavigationEvent.GoToMovieDetails -> withNavigationViewModel(viewModelFactory) { navigateToMovieDetails(navEvent.movieId, navEvent.movieImageUrl, navEvent.movieTitle) }
-            is SearchNavigationEvent.GoToPerson -> withNavigationViewModel(viewModelFactory) { navigateToPersonDetails(navEvent.personId, navEvent.personImageUrl, navEvent.personName) }
-        }
-    }
-
-    private fun withViewModel(action: SearchViewModel.() -> Unit) = withViewModel<SearchViewModel>(viewModelFactory) { action() }
     private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.searchResultRv)?.let(action)
-
     private fun withSearchView(action: SearchView.() -> Unit) {
         findSearchView(requireActivity().window.decorView as ViewGroup).action()
     }
@@ -173,7 +145,7 @@ class SearchFragment : Fragment() {
      * aspect of this class is that it uses Data Binding to update the UI, which differs from the
      * containing class.
      */
-    class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem, Int) -> Unit) : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
+    class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem) -> Unit) : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
@@ -193,12 +165,12 @@ class SearchFragment : Fragment() {
         }
 
         class ViewHolder(private val itemBinding: ListItemSearchBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-            fun bindSearchItem(searchItem: SearchResultItem, selectionListener: (SearchResultItem, Int) -> Unit) {
+            fun bindSearchItem(searchItem: SearchResultItem, selectionListener: (SearchResultItem) -> Unit) {
                 with(itemBinding) {
                     viewState = searchItem
                     executePendingBindings()
                 }
-                itemView.setOnClickListener { selectionListener(searchItem, adapterPosition) }
+                itemView.setOnClickListener { selectionListener(searchItem) }
             }
         }
 

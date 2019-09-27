@@ -1,8 +1,9 @@
 package com.jpp.mpaccount.account
 
+import android.content.res.Resources
+import android.view.View
 import androidx.annotation.StringRes
 import com.jpp.mpaccount.R
-import android.view.View
 import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 
 /*
@@ -17,7 +18,6 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
  * Represents the view state that the user account view can assume at any given moment.
  */
 data class UserAccountViewState(
-        @StringRes val screenTitle: Int = R.string.account_title,
         val loadingVisibility: Int = View.INVISIBLE,
         val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
         val contentViewState: UserAccountContentViewState = UserAccountContentViewState()
@@ -186,30 +186,15 @@ data class UserMovieItem(val image: String) : UserAccountMoviesView.UserAccountM
 }
 
 /**************************************************************************************************
- *************************************** NAVIGATION ***********************************************
+ *************************************** VM PARAMS ************************************************
  **************************************************************************************************/
 
-/**
- * Represents all the navigation events that the user account view will response to.
- */
-sealed class UserAccountNavigationEvent {
-    /*
-     * Used to redirect the previous step.
-     */
-    object GoToPrevious : UserAccountNavigationEvent()
-
-    /*
-     * Used to navigate to the favorite movies section.
-     */
-    object GoToFavorites : UserAccountNavigationEvent()
-
-    /*
-     * Used to navigate to the rated movies section.
-     */
-    object GoToRated : UserAccountNavigationEvent()
-
-    /*
-     * Used to navigate to the watchlist movies section.
-     */
-    object GoToWatchlist : UserAccountNavigationEvent()
+data class UserAccountParam(val screenTitle: String,
+                            val posterSize: Int) {
+    companion object {
+        fun create(resources: Resources, posterSize: Int) = UserAccountParam(
+                screenTitle = resources.getString(R.string.account_title),
+                posterSize = posterSize
+        )
+    }
 }

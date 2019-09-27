@@ -3,6 +3,7 @@ package com.jpp.mpabout
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.AppVersion
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
@@ -60,7 +61,6 @@ class AboutViewModelTest {
         lvInteractorEvents.postValue(AboutInteractor.AboutEvent.AppVersionEvent(AppVersion("appVersion")))
 
         assertNotNull(viewStatePosted)
-        assertEquals(R.string.about_top_bar_title, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
 
         assertEquals(View.VISIBLE, viewStatePosted?.content?.visibility)
@@ -75,6 +75,18 @@ class AboutViewModelTest {
         subject.onUserSelectedAboutItem(param.selected)
 
         param.verification.invoke(aboutInteractor)
+    }
+
+    @Test
+    fun `Should update reached destination in onInit`() {
+        var destinationReached: Destination? = null
+        val expected = Destination.ReachedDestination("aTitle")
+
+        subject.destinationEvents.observeWith { destinationReached = it }
+
+        subject.onInit("aTitle")
+
+        assertEquals(expected, destinationReached)
     }
 
     data class AboutInteractorTestParam(

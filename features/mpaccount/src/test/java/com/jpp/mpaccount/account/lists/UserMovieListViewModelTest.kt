@@ -2,6 +2,7 @@ package com.jpp.mpaccount.account.lists
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpaccount.TestAccountCoroutineDispatchers
 import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent
 import com.jpp.mpdomain.Movie
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.Arguments.arguments
 import org.junit.jupiter.params.provider.MethodSource
 
 @ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
@@ -63,7 +65,6 @@ class UserMovieListViewModelTest {
         lvInteractorEvents.postValue(UserMovieListEvent.NotConnectedToNetwork)
 
         assertNotNull(viewStatePosted)
-        assertEquals(param.section.titleRes, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
 
@@ -102,7 +103,6 @@ class UserMovieListViewModelTest {
         lvInteractorEvents.postValue(UserMovieListEvent.UnknownError)
 
         assertNotNull(viewStatePosted)
-        assertEquals(param.section.titleRes, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
 
@@ -120,7 +120,6 @@ class UserMovieListViewModelTest {
 
         lvInteractorEvents.postValue(UserMovieListEvent.UnknownError)
 
-        assertEquals(param.section.titleRes, viewStatePosted?.screenTitle)
         viewStatePosted?.let {
             it.errorViewState.errorHandler?.invoke()
             when (param.section) {
@@ -129,17 +128,6 @@ class UserMovieListViewModelTest {
                 UserMovieListType.WATCH_LIST -> verify(exactly = 2) { userMovieListInteractor.fetchWatchlist(any(), any()) }
             }
         } ?: fail()
-    }
-
-    @Test
-    fun `Should redirect when user not logged in`() {
-        var eventPosted: UserMovieListNavigationEvent? = null
-
-        subject.navEvents.observeWith { eventPosted = it }
-
-        lvInteractorEvents.postValue(UserMovieListEvent.UserNotLogged)
-
-        assertEquals(UserMovieListNavigationEvent.GoToUserAccount, eventPosted)
     }
 
     @ParameterizedTest
@@ -161,7 +149,6 @@ class UserMovieListViewModelTest {
         subject.onInit(param)
 
         assertNotNull(viewStatePosted)
-        assertEquals(param.section.titleRes, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
 
@@ -175,6 +162,42 @@ class UserMovieListViewModelTest {
             UserMovieListType.WATCH_LIST -> verify { userMovieListInteractor.fetchWatchlist(any(), any()) }
         }
         verify(exactly = mockedList.size) { imagesPathInteractor.configurePathMovie(10, 10, any()) }
+    }
+
+    @ParameterizedTest
+    @MethodSource("userMovieListTestParams")
+    fun `Should update reached destination in onInit`(param: UserMovieListParam) {
+        var destinationReached: Destination? = null
+        val expected = Destination.ReachedDestination(param.screenTitle)
+
+        subject.destinationEvents.observeWith { destinationReached = it }
+
+        subject.onInit(param)
+
+        assertEquals(expected, destinationReached)
+    }
+
+    @ParameterizedTest
+    @MethodSource("userMovieListTestParams")
+    fun `Should request navigation to movie details when movie item selected`(param: UserMovieListParam) {
+        val movieItem = UserMovieItem(
+                movieId = 10.0,
+                headerImageUrl = "aHeaderImageUrl",
+                title = "aTitle",
+                contentImageUrl = "aContentPath"
+        )
+
+        val expectedDestination = Destination.MPMovieDetails(
+                movieId = "10.0",
+                movieImageUrl = "aContentPath",
+                movieTitle = "aTitle")
+
+        var requestedDestination: Destination? = null
+
+        subject.navigationEvents.observeWith { it.actionIfNotHandled { dest -> requestedDestination = dest } }
+        subject.onMovieSelected(movieItem)
+
+        assertEquals(expectedDestination, requestedDestination)
     }
 
     private fun getMockedMovies(): List<Movie> {
@@ -204,9 +227,9 @@ class UserMovieListViewModelTest {
 
         @JvmStatic
         fun userMovieListTestParams() = listOf(
-                Arguments.arguments(UserMovieListParam(UserMovieListType.FAVORITE_LIST, 10, 10)),
-                Arguments.arguments(UserMovieListParam(UserMovieListType.RATED_LIST, 10, 10)),
-                Arguments.arguments(UserMovieListParam(UserMovieListType.WATCH_LIST, 10, 10))
+                arguments(UserMovieListParam(UserMovieListType.FAVORITE_LIST, "Favorites", 10, 10)),
+                arguments(UserMovieListParam(UserMovieListType.RATED_LIST, "Rated", 10, 10)),
+                arguments(UserMovieListParam(UserMovieListType.WATCH_LIST, "Watchlist", 10, 10))
         )
     }
 }

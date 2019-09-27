@@ -16,39 +16,14 @@ import javax.inject.Inject
 class NavigationViewModel @Inject constructor() : ViewModel() {
 
     private val _navEvents = MutableLiveData<InterModuleNavigationEvent>()
-    private val _reachedDestinations = MutableLiveData<Destination>()
-
-    /**
-     * Subscribe to this [LiveData] in order to get notified about inter-module navigation
-     * events.
-     */
     val navEvents: LiveData<InterModuleNavigationEvent> = _navEvents
 
+    private val _reachedDestinations = MutableLiveData<Destination>()
     val reachedDestinations: LiveData<Destination> = _reachedDestinations
 
 
-    fun navigateToUserAccount() {
-        _navEvents.value = of(Destination.MPAccount)
-    }
-
-    fun navigateToMovieDetails(movieId: String, movieImageUrl: String, movieTitle: String) {
-        _navEvents.value = of(Destination.MPMovieDetails(movieId, movieImageUrl, movieTitle))
-    }
-
-    fun navigateToMovieCredits(movieId: Double, movieTitle: String) {
-        _navEvents.value = of(Destination.MPCredits(movieId, movieTitle))
-    }
-
-    fun navigateToPersonDetails(personId: String, personImageUrl: String, personName: String) {
-        _navEvents.value = of(Destination.MPPerson(personId, personImageUrl, personName))
-    }
-
-    fun toPrevious() {
-        _navEvents.value = of(Destination.PreviousDestination)
-    }
-
-    fun performInnerNavigation(directions: NavDirections) {
-        _navEvents.value = of(Destination.InnerDestination(directions))
+    fun navigateTo(destination: Destination) {
+        _navEvents.value = of(destination)
     }
 
     fun destinationReached(destination: Destination) {

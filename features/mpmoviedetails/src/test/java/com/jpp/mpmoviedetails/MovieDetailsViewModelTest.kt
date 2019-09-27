@@ -2,6 +2,7 @@ package com.jpp.mpmoviedetails
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mptestutils.InstantTaskExecutorExtension
@@ -39,13 +40,12 @@ class MovieDetailsViewModelTest {
     fun `Should post no connectivity error when disconnected`() {
         var viewStatePosted: MovieDetailViewState? = null
 
-        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
 
         lvInteractorEvents.postValue(MovieDetailsInteractor.MovieDetailEvent.NotConnectedToNetwork)
 
         assertNotNull(viewStatePosted)
-        assertEquals("aMovie", viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
 
@@ -57,13 +57,12 @@ class MovieDetailsViewModelTest {
     fun `Should post error when failing to fetch user account data`() {
         var viewStatePosted: MovieDetailViewState? = null
 
-        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
 
         lvInteractorEvents.postValue(MovieDetailsInteractor.MovieDetailEvent.UnknownError)
 
         assertNotNull(viewStatePosted)
-        assertEquals("aMovie", viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
 
@@ -75,11 +74,10 @@ class MovieDetailsViewModelTest {
     fun `Should post loading and fetch movie details onInit`() {
         var viewStatePosted: MovieDetailViewState? = null
 
-        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
 
         assertNotNull(viewStatePosted)
-        assertEquals("aMovie", viewStatePosted?.screenTitle)
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
 
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
@@ -108,7 +106,6 @@ class MovieDetailsViewModelTest {
         )
 
         val expected = MovieDetailViewState.showDetails(
-                screenTitle = "aMovie",
                 movieImageUrl = "aUrl",
                 overview = domainDetail.overview,
                 releaseDate = domainDetail.release_date,
@@ -120,11 +117,23 @@ class MovieDetailsViewModelTest {
                 )
         )
 
-        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> viewStatePosted = viewState } }
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
 
         lvInteractorEvents.postValue(MovieDetailsInteractor.MovieDetailEvent.Success(domainDetail))
 
         assertEquals(expected, viewStatePosted)
+    }
+
+    @Test
+    fun `Should update reached destination in onInit`() {
+        var destinationReached: Destination? = null
+        val expected = Destination.ReachedDestination("aMovie")
+
+        subject.destinationEvents.observeWith { destinationReached = it }
+
+        subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
+
+        assertEquals(expected, destinationReached)
     }
 }

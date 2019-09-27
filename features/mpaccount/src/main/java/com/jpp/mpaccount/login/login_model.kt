@@ -1,8 +1,6 @@
 package com.jpp.mpaccount.login
 
 import android.view.View
-import androidx.annotation.StringRes
-import com.jpp.mpaccount.R
 import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 
 /*
@@ -17,7 +15,6 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
  * Represents the view state of the login screen.
  */
 data class LoginViewState(
-        @StringRes val screenTitle: Int = R.string.login_generic,
         val loadingVisibility: Int = View.INVISIBLE,
         val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
         val oauthViewState: OauthViewState = OauthViewState()
@@ -46,6 +43,7 @@ data class LoginViewState(
         )
     }
 }
+
 /**
  * Represents the view state of the Oauth section of the login screen.
  */
@@ -56,13 +54,3 @@ data class OauthViewState(
         val redirectListener: ((String) -> Unit)? = null,
         val reminder: Boolean = false
 )
-
-/**************************************************************************************************
- *************************************** NAVIGATION ***********************************************
- **************************************************************************************************/
-
-/**
- * Event used when the user is logged in to dismiss the login view and go to user
- * account section.
- */
-object ContinueToUserAccount

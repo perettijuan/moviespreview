@@ -39,7 +39,7 @@ class MainActivityViewModelTest {
     fun `Should post navigation event`(destination: Destination, expectedEvent: ModuleNavigationEvent) {
         var postedEvent: ModuleNavigationEvent? = null
 
-        subject.moduleNavEvents.observeWith { event -> postedEvent = event }
+        subject.moduleNavEvents.observeWith {it.actionIfNotHandled {  event -> postedEvent = event } }
 
         subject.onRequestToNavigateToDestination(destination)
 
@@ -51,7 +51,7 @@ class MainActivityViewModelTest {
     fun `Should post view state when destination reached`(destination: Destination, expectedViewState: MainActivityViewState) {
         var postedViewState: MainActivityViewState? = null
 
-        subject.viewState.observeWith { it.actionIfNotHandled { viewState -> postedViewState = viewState } }
+        subject.viewState.observeWith { viewState -> postedViewState = viewState }
 
         subject.onDestinationReached(destination)
 

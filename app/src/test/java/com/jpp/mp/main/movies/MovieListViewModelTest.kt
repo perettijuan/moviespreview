@@ -3,7 +3,9 @@ package com.jpp.mp.main.movies
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.Movie
+import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
@@ -63,7 +65,6 @@ class MovieListViewModelTest {
         lvInteractorEvents.postValue(MovieListInteractor.MovieListEvent.NotConnectedToNetwork)
 
         assertNotNull(viewStatePosted)
-        assertEquals(param.titleRes, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
 
@@ -99,7 +100,6 @@ class MovieListViewModelTest {
         lvInteractorEvents.postValue(MovieListInteractor.MovieListEvent.UnknownError)
 
         assertNotNull(viewStatePosted)
-        assertEquals(param.titleRes, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
 
@@ -138,7 +138,6 @@ class MovieListViewModelTest {
         subject.onInit(param)
 
         assertNotNull(viewStatePosted)
-        assertEquals(param.titleRes, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
 
@@ -149,6 +148,43 @@ class MovieListViewModelTest {
         verify(exactly = mockedList.size) { imagesPathInteractor.configurePathMovie(10, 10, any()) }
     }
 
+    @ParameterizedTest
+    @MethodSource("movieListTestParams")
+    fun `Should update reached destination in onInit`(param: MovieListParam) {
+        var destinationReached: Destination? = null
+        val expected = Destination.MovieListReached(param.screenTitle)
+
+        subject.destinationEvents.observeWith { destinationReached = it }
+
+        subject.onInit(param)
+
+        assertEquals(expected, destinationReached)
+    }
+
+    @ParameterizedTest
+    @MethodSource("movieListTestParams")
+    fun `Should request navigation to movie details when movie item selected`(param: MovieListParam) {
+        val movieItem = MovieListItem(
+                movieId = 10.0,
+                headerImageUrl = "aHeaderImageUrl",
+                title = "aTitle",
+                contentImageUrl = "aContentPath",
+                popularity = "aPopularity",
+                voteCount = "aVoteCount"
+        )
+
+        val expectedDestination = Destination.MPMovieDetails(
+                movieId = "10.0",
+                movieImageUrl = "aContentPath",
+                movieTitle = "aTitle")
+
+        var requestedDestination: Destination? = null
+
+        subject.navigationEvents.observeWith { it.actionIfNotHandled { dest -> requestedDestination = dest } }
+        subject.onMovieSelected(movieItem)
+
+        assertEquals(expectedDestination, requestedDestination)
+    }
 
     private fun getMockedMovies(): List<Movie> {
         return mutableListOf<Movie>().apply {
@@ -176,10 +212,38 @@ class MovieListViewModelTest {
 
         @JvmStatic
         fun movieListTestParams() = listOf(
-                arguments(MovieListParam.playing(10, 10)),
-                arguments(MovieListParam.popular(10, 10)),
-                arguments(MovieListParam.upcoming(10, 10)),
-                arguments(MovieListParam.topRated(10, 10))
+                arguments(
+                        MovieListParam(
+                                MovieSection.Playing,
+                                "Playing",
+                                10,
+                                10
+                        )
+                ),
+                arguments(
+                        MovieListParam(
+                                MovieSection.Popular,
+                                "Popular",
+                                10,
+                                10
+                        )
+                ),
+                arguments(
+                        MovieListParam(
+                                MovieSection.Upcoming,
+                                "Upcoming",
+                                10,
+                                10
+                        )
+                ),
+                arguments(
+                        MovieListParam(
+                                MovieSection.TopRated,
+                                "TopRated",
+                                10,
+                                10
+                        )
+                )
         )
     }
 

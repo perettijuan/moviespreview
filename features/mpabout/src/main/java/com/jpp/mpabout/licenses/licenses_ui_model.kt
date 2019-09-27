@@ -1,8 +1,6 @@
 package com.jpp.mpabout.licenses
 
 import android.view.View
-import androidx.annotation.StringRes
-import com.jpp.mpabout.R
 
 /*
  * This file contains the definitions for the entire model used in the licenses feature.
@@ -16,7 +14,6 @@ import com.jpp.mpabout.R
  * Represents the view state of the licenses fragment.
  */
 data class LicensesViewState(
-        @StringRes val screenTitle: Int = R.string.about_open_source_action,
         val loadingVisibility: Int = View.INVISIBLE,
         val errorViewState: LicensesErrorViewState = LicensesErrorViewState(),
         val content: LicensesContent = LicensesContent()) {

@@ -2,9 +2,9 @@ package com.jpp.mpaccount.login
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpaccount.login.LoginInteractor.LoginEvent
 import com.jpp.mpaccount.login.LoginInteractor.OauthEvent
 import com.jpp.mpdomain.AccessToken
@@ -24,11 +24,10 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _viewState = MediatorLiveData<LoginViewState>()
     val viewState: LiveData<LoginViewState> get() = _viewState
 
-    private val _navEvents = SingleLiveEvent<ContinueToUserAccount>()
-    val navEvents: LiveData<ContinueToUserAccount> get() = _navEvents
-
     private var loginAccessToken: AccessToken? = null
-    private val retry: () -> Unit = { onInit() }
+    private val retry: () -> Unit = { onInit(screenTitle) }
+
+    private lateinit var screenTitle: String
 
     /*
      * Map the business logic coming from the interactor into view layer logic.
@@ -37,9 +36,9 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         _viewState.addSource(loginInteractor.loginEvents) { loginEvent ->
             when (loginEvent) {
                 is LoginEvent.NotConnectedToNetwork -> _viewState.value = LoginViewState.showNoConnectivityError(retry)
-                is LoginEvent.LoginSuccessful -> _navEvents.value = ContinueToUserAccount
+                is LoginEvent.LoginSuccessful -> continueToUserAccount()
                 is LoginEvent.LoginError -> _viewState.value = LoginViewState.showUnknownError(retry)
-                is LoginEvent.UserAlreadyLogged -> _navEvents.value = ContinueToUserAccount
+                is LoginEvent.UserAlreadyLogged -> continueToUserAccount()
                 is LoginEvent.ReadyToLogin -> executeOauth()
             }
         }
@@ -59,7 +58,10 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit() {
+    fun onInit(title: String) {
+        screenTitle = title
+        updateCurrentDestination(Destination.ReachedDestination(screenTitle))
+
         loginAccessToken = null
         withLoginInteractor { verifyUserLogged() }
         _viewState.value = LoginViewState.showLoading()
@@ -101,5 +103,9 @@ class LoginViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                 reminder = asReminder,
                 redirectListener = { onUserRedirectedToUrl(it) }
         )
+    }
+
+    private fun continueToUserAccount() {
+        navigateTo(Destination.InnerDestination(LoginFragmentDirections.toAccountFragment()))
     }
 }

@@ -21,7 +21,7 @@ import com.jpp.mpperson.databinding.FragmentPersonBinding
  * Pre-condition: in order to instantiate this Fragment, a person ID must be provided in the arguments
  * of the Fragment.
  */
-class PersonFragment : MPFragment() {
+class PersonFragment : MPFragment<PersonViewModel>() {
 
     lateinit var viewBinding: FragmentPersonBinding
 
@@ -32,13 +32,15 @@ class PersonFragment : MPFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        withViewModel<PersonViewModel>(viewModelFactory) {
+        withViewModel {
             viewState.observe(this@PersonFragment.viewLifecycleOwner, Observer { viewState ->
                 viewBinding.viewState = viewState
-                updateScreenTitle(viewState.screenTitle)
+                //TODO JPP updateScreenTitle(viewState.screenTitle)
             })
 
             onInit(PersonParam.fromArguments(arguments))
         }
     }
+
+    override fun withViewModel(action: PersonViewModel.() -> Unit) = withViewModel<PersonViewModel>(viewModelFactory) { action() }
 }

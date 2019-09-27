@@ -4,7 +4,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.jpp.mp.common.navigation.NavigationViewModel
 
 /**
  * Returns an integer that represents the width of the screen in pixels.
@@ -42,8 +41,3 @@ inline fun <reified T : ViewModel> Fragment.withViewModel(viewModelFactory: View
     vm.body()
     return vm
 }
-
-/**
- * Extension function to execute a particular action with the [NavigationViewModel].
- */
-fun Fragment.withNavigationViewModel(viewModelFactory: ViewModelProvider.Factory, action: NavigationViewModel.() -> Unit) = getViewModel<NavigationViewModel>(viewModelFactory).action()

@@ -8,7 +8,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mpdesign.ext.setInvisible
@@ -37,7 +36,7 @@ import kotlinx.android.synthetic.main.layout_movie_detail_content.*
  *       manner.
  *
  */
-class MovieDetailsFragment : MPFragment() {
+class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
 
     private lateinit var viewBinding: FragmentMovieDetailsBinding
 
@@ -51,20 +50,12 @@ class MovieDetailsFragment : MPFragment() {
 
 
         withViewModel {
-            viewState.observe(viewLifecycleOwner, Observer {
-                it.actionIfNotHandled { viewState ->
-                    viewBinding.viewState = viewState
-                    viewBinding.executePendingBindings()
+            viewState.observe(viewLifecycleOwner, Observer { viewState ->
+                viewBinding.viewState = viewState
+                viewBinding.executePendingBindings()
 
-                    detailGenresRv.layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
-                    detailGenresRv.adapter = MovieDetailsGenreAdapter(viewState.contentViewState.genres)
-
-                    updateScreenTitle(viewState.screenTitle)
-                }
-            })
-
-            navEvents.observe(viewLifecycleOwner, Observer { navEvent ->
-                withNavigationViewModel(viewModelFactory) { navigateToMovieCredits(navEvent.movieId, navEvent.movieTitle) }
+                detailGenresRv.layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
+                detailGenresRv.adapter = MovieDetailsGenreAdapter(viewState.contentViewState.genres)
             })
 
             onInit(MovieDetailsParam.fromArguments(arguments))
@@ -82,7 +73,8 @@ class MovieDetailsFragment : MPFragment() {
     }
 
 
-    private fun withViewModel(action: MovieDetailsViewModel.() -> Unit) = withViewModel<MovieDetailsViewModel>(viewModelFactory) { action() }
+    override fun withViewModel(action: MovieDetailsViewModel.() -> Unit) = withViewModel<MovieDetailsViewModel>(viewModelFactory) { action() }
+
     private fun withActionsViewModel(action: MovieDetailsActionViewModel.() -> Unit) = withViewModel<MovieDetailsActionViewModel>(viewModelFactory) { action() }
 
 
@@ -93,7 +85,7 @@ class MovieDetailsFragment : MPFragment() {
             is MovieDetailActionViewState.ShowMovieState -> renderMovieState(actionViewState)
             is MovieDetailActionViewState.ShowNoMovieState -> renderVisibleActions()
             is MovieDetailActionViewState.ShowUserNotLogged -> snackBar(detailsContent, R.string.account_need_to_login, R.string.login_generic) {
-                withNavigationViewModel(viewModelFactory) { navigateToUserAccount() }
+                withViewModel { onUserRequestedLogin() }
             }
         }
 

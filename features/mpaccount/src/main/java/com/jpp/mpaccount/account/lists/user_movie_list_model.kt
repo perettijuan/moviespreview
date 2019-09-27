@@ -1,5 +1,6 @@
 package com.jpp.mpaccount.account.lists
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.StringRes
@@ -20,16 +21,15 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
  * can only render the view states modeled in this class.
  */
 data class UserMovieListViewState(
-        @StringRes val screenTitle: Int,
         val loadingVisibility: Int = View.INVISIBLE,
         val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
         val contentViewState: UserMovieListContentViewState = UserMovieListContentViewState()
 ) {
     companion object {
-        fun showLoading(screenTitle: Int) = UserMovieListViewState(screenTitle = screenTitle, loadingVisibility = View.VISIBLE)
-        fun showUnknownError(screenTitle: Int, errorHandler: () -> Unit) = UserMovieListViewState(screenTitle = screenTitle, errorViewState = ErrorViewState.asUnknownError(errorHandler))
-        fun showNoConnectivityError(screenTitle: Int, errorHandler: () -> Unit) = UserMovieListViewState(screenTitle = screenTitle, errorViewState = ErrorViewState.asConnectivity(errorHandler))
-        fun showMovieList(screenTitle: Int, pagedList: PagedList<UserMovieItem>) = UserMovieListViewState(screenTitle = screenTitle, contentViewState = UserMovieListContentViewState(visibility = View.VISIBLE, movieList = pagedList))
+        fun showLoading() = UserMovieListViewState(loadingVisibility = View.VISIBLE)
+        fun showUnknownError(errorHandler: () -> Unit) = UserMovieListViewState(errorViewState = ErrorViewState.asUnknownError(errorHandler))
+        fun showNoConnectivityError(errorHandler: () -> Unit) = UserMovieListViewState(errorViewState = ErrorViewState.asConnectivity(errorHandler))
+        fun showMovieList(pagedList: PagedList<UserMovieItem>) = UserMovieListViewState(contentViewState = UserMovieListContentViewState(visibility = View.VISIBLE, movieList = pagedList))
     }
 }
 
@@ -52,25 +52,6 @@ data class UserMovieItem(
 )
 
 /**************************************************************************************************
- *************************************** NAVIGATION ***********************************************
- **************************************************************************************************/
-
-/**
- * Represents all the navigation events that the user movie list view will response to.
- */
-sealed class UserMovieListNavigationEvent {
-    /*
-     * Redirects the user to the previous step
-     */
-    object GoToUserAccount : UserMovieListNavigationEvent()
-
-    /*
-     * Redirects the user to the details of the selected movie.
-     */
-    data class GoToMovieDetails(val movieId: String, val movieImageUrl: String, val movieTitle: String, var positionInList: Int) : UserMovieListNavigationEvent()
-}
-
-/**************************************************************************************************
  *************************************** VM PARAMS ************************************************
  **************************************************************************************************/
 
@@ -90,16 +71,22 @@ enum class UserMovieListType(@StringRes val titleRes: Int) {
  */
 data class UserMovieListParam(
         val section: UserMovieListType,
+        val screenTitle: String,
         val posterSize: Int,
         val backdropSize: Int
 ) {
     companion object {
         fun fromArguments(
                 arguments: Bundle?,
+                resources: Resources,
                 posterSize: Int,
                 backdropSize: Int
         ): UserMovieListParam {
-            return UserMovieListParam(arguments?.get("listType") as UserMovieListType, posterSize, backdropSize)
+            val type = arguments?.get("listType") as UserMovieListType
+            return UserMovieListParam(type,
+                    resources.getString(type.titleRes),
+                    posterSize,
+                    backdropSize)
         }
     }
 }

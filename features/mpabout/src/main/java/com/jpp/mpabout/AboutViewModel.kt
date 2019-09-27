@@ -2,9 +2,12 @@ package com.jpp.mpabout
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
+import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.livedata.HandledEvent
+import com.jpp.mp.common.livedata.HandledEvent.Companion.of
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpabout.AboutInteractor.AboutEvent.*
 import com.jpp.mpdomain.AboutUrl
 import kotlinx.coroutines.launch
@@ -23,8 +26,8 @@ class AboutViewModel @Inject constructor(coroutineDispatchers: CoroutineDispatch
     private val _viewState = MediatorLiveData<AboutViewState>()
     val viewState: LiveData<AboutViewState> get() = _viewState
 
-    private val _navEvents = SingleLiveEvent<AboutNavEvent>()
-    val navEvents: LiveData<AboutNavEvent> get() = _navEvents
+    private val _navEvents = MutableLiveData<HandledEvent<AboutNavEvent>>()
+    val navEvents: LiveData<HandledEvent<AboutNavEvent>> get() = _navEvents
 
     private lateinit var selectedItem: AboutItem
     private val supportedAboutItems = listOf(
@@ -46,7 +49,7 @@ class AboutViewModel @Inject constructor(coroutineDispatchers: CoroutineDispatch
                         appVersion = "v ${event.appVersion.version}",
                         aboutItems = supportedAboutItems)
                 is AboutUrlEvent -> processAboutUrl(event.aboutUrl)
-                is AboutWebStoreUrlEvent -> _navEvents.value = AboutNavEvent.InnerNavigation(event.aboutUrl.url)
+                is AboutWebStoreUrlEvent -> _navEvents.value = of(AboutNavEvent.InnerNavigation(event.aboutUrl.url))
             }
         }
     }
@@ -57,7 +60,8 @@ class AboutViewModel @Inject constructor(coroutineDispatchers: CoroutineDispatch
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit() {
+    fun onInit(screenTitle: String) {
+        updateCurrentDestination(Destination.ReachedDestination(screenTitle))
         _viewState.value = AboutViewState.showLoading()
         withInteractor { fetchAppVersion() }
     }
@@ -73,7 +77,7 @@ class AboutViewModel @Inject constructor(coroutineDispatchers: CoroutineDispatch
             is AboutItem.PrivacyPolicy -> withInteractor { getPrivacyPolicyUrl() }
             is AboutItem.RateApp -> withInteractor { getStoreUrl() }
             is AboutItem.ShareApp -> withInteractor { getShareUrl() }
-            is AboutItem.Licenses -> _navEvents.value = AboutNavEvent.GoToLicenses
+            is AboutItem.Licenses -> navigateTo(Destination.InnerDestination(AboutFragmentDirections.licensesFragment()))
         }
     }
 
@@ -89,13 +93,15 @@ class AboutViewModel @Inject constructor(coroutineDispatchers: CoroutineDispatch
     }
 
     private fun processAboutUrl(aboutUrl: AboutUrl) {
-        _navEvents.value = when (selectedItem) {
+        when (selectedItem) {
             is AboutItem.BrowseAppCode -> AboutNavEvent.InnerNavigation(aboutUrl.url)
             is AboutItem.TheMovieDbTermsOfUse -> AboutNavEvent.InnerNavigation(aboutUrl.url)
             is AboutItem.PrivacyPolicy -> AboutNavEvent.OuterNavigation(aboutUrl.url)
             is AboutItem.RateApp -> AboutNavEvent.OpenGooglePlay(aboutUrl.url)
             is AboutItem.ShareApp -> AboutNavEvent.OpenSharing(aboutUrl.url)
-            is AboutItem.Licenses -> AboutNavEvent.GoToLicenses
+            else -> throw IllegalStateException("Unknown item selected $selectedItem")
+        }.let {
+            _navEvents.value = of(it)
         }
     }
 }

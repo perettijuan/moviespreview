@@ -14,7 +14,6 @@ import com.jpp.mp.assertions.assertNotDisplayed
 import com.jpp.mp.assertions.withViewInRecyclerView
 import com.jpp.mp.di.TestMPViewModelFactory
 import com.jpp.mp.extras.launch
-import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.testutils.FragmentTestActivity
 import io.mockk.every
 import io.mockk.mockk

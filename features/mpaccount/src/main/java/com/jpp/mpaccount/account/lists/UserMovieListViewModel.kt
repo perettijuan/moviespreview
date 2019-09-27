@@ -4,13 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.jpp.mp.common.androidx.lifecycle.SingleLiveEvent
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
 import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.*
-import com.jpp.mpaccount.account.lists.UserMovieListNavigationEvent.GoToUserAccount
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import kotlinx.coroutines.launch
@@ -40,9 +39,6 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     private val _viewState = MediatorLiveData<UserMovieListViewState>()
     val viewState: LiveData<UserMovieListViewState> get() = _viewState
 
-    private val _navEvents = SingleLiveEvent<UserMovieListNavigationEvent>()
-    val navEvents: LiveData<UserMovieListNavigationEvent> get() = _navEvents
-
     private lateinit var currentParam: UserMovieListParam
 
     private val retry: () -> Unit = {
@@ -59,9 +55,9 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     init {
         _viewState.addSource(userMovieListInteractor.userAccountEvents) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewState.value = UserMovieListViewState.showNoConnectivityError(currentParam.section.titleRes, retry)
-                is UnknownError -> _viewState.value = UserMovieListViewState.showUnknownError(currentParam.section.titleRes, retry)
-                is UserNotLogged -> _navEvents.value = GoToUserAccount
+                is NotConnectedToNetwork -> _viewState.value = UserMovieListViewState.showNoConnectivityError(retry)
+                is UnknownError -> _viewState.value = UserMovieListViewState.showUnknownError(retry)
+                is UserNotLogged -> navigateTo(Destination.PreviousDestination)
                 is UserChangedLanguage -> refreshData()
             }
         }
@@ -75,6 +71,8 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
      */
     fun onInit(param: UserMovieListParam) {
         currentParam = param
+        updateCurrentDestination(Destination.ReachedDestination(param.screenTitle))
+
         postLoadingAndInitializePagedList(
                 currentParam.posterSize,
                 currentParam.backdropSize,
@@ -87,13 +85,13 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
      * Called when an item is selected in the list of movies.
      * A new state is posted in navEvents() in order to handle the event.
      */
-    fun onMovieSelected(movieItem: UserMovieItem, positionInList: Int) {
+    fun onMovieSelected(movieItem: UserMovieItem) {
         with(movieItem) {
-            _navEvents.value = UserMovieListNavigationEvent.GoToMovieDetails(
+            navigateTo(Destination.MPMovieDetails(
                     movieId = movieId.toString(),
                     movieImageUrl = contentImageUrl,
-                    movieTitle = title,
-                    positionInList = positionInList)
+                    movieTitle = title)
+            )
         }
     }
 
@@ -105,10 +103,10 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
     private fun postLoadingAndInitializePagedList(posterSize: Int,
                                                   backdropSize: Int,
                                                   listType: UserMovieListType) {
-        _viewState.value = UserMovieListViewState.showLoading(listType.titleRes)
+        _viewState.value = UserMovieListViewState.showLoading()
         _viewState.addSource(createPagedList(posterSize, backdropSize, listType)) { pagedList ->
             if (pagedList.isNotEmpty()) {
-                _viewState.value = UserMovieListViewState.showMovieList(listType.titleRes, pagedList)
+                _viewState.value = UserMovieListViewState.showMovieList(pagedList)
             }
         }
     }
@@ -151,7 +149,7 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
             val movieListProcessor: (List<Movie>) -> Unit = { movieList ->
                 when (movieList.isNotEmpty()) {
                     true -> callback(movieList.map { imagesPathInteractor.configurePathMovie(moviePosterSize, movieBackdropSize, it) })
-                    false -> if (page == 1) _navEvents.postValue(GoToUserAccount)
+                    false -> if (page == 1) navigateTo(Destination.PreviousDestination)
                 }
             }
 

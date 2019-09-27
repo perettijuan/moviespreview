@@ -10,10 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpabout.R
 import com.jpp.mpabout.databinding.FragmentLicensesBinding
 import com.jpp.mpabout.licenses.content.LicenseContentFragment
@@ -27,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_licenses.*
  * The Fragment interacts with [LicensesViewModel] in order to render the [LicensesViewState]
  * that the VM detects that is needed.
  */
-class LicensesFragment : MPFragment() {
+class LicensesFragment : MPFragment<LicensesViewModel>() {
 
     private lateinit var viewBinding: FragmentLicensesBinding
 
@@ -46,18 +44,15 @@ class LicensesFragment : MPFragment() {
                     adapter = LicensesAdapter(viewState.content.licenseItems) { withViewModel { onLicenseSelected(it) } }
                     addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
                 }
-
-                withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(getString(viewState.screenTitle))) }
             })
 
-            navEvents.observe(viewLifecycleOwner, Observer { showLicenseContent(it.licenseId) })
+            navEvents.observe(viewLifecycleOwner, Observer { it.actionIfNotHandled { event -> showLicenseContent(event.licenseId) } })
 
-            onInit()
+            onInit(getString(R.string.about_open_source_action))
         }
     }
 
-    private fun withViewModel(action: LicensesViewModel.() -> Unit) = withViewModel<LicensesViewModel>(viewModelFactory) { action() }
-
+    override fun withViewModel(action: LicensesViewModel.() -> Unit) = withViewModel<LicensesViewModel>(viewModelFactory) { action() }
 
     private fun showLicenseContent(licenseId: Int) {
         LicenseContentFragment.newInstance(licenseId).show(fragmentManager, "tag")

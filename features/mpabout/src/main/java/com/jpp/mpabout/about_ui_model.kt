@@ -16,7 +16,6 @@ import androidx.annotation.StringRes
  * Represents the view state of the about fragment.
  */
 data class AboutViewState(
-        @StringRes val screenTitle: Int = R.string.about_top_bar_title,
         val loadingVisibility: Int = View.INVISIBLE,
         val header: AboutHeader = AboutHeader(),
         val content: AboutContent = AboutContent()) {
@@ -87,5 +86,4 @@ sealed class AboutNavEvent {
     data class OpenGooglePlay(val url: String) : AboutNavEvent()
     data class OpenSharing(val url: String) : AboutNavEvent()
     data class OuterNavigation(val url: String) : AboutNavEvent()
-    object GoToLicenses : AboutNavEvent()
 }

@@ -3,6 +3,7 @@ package com.jpp.mp.main.header
 import android.view.View
 import androidx.lifecycle.MediatorLiveData
 import com.jpp.mp.R
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.main.TestCoroutineDispatchers
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
@@ -147,5 +148,29 @@ class NavigationHeaderViewModelTest {
         assertEquals(View.GONE, viewStatePosted?.loginButtonViewState?.visibility)
 
         verify { interactor.getUserAccountData() }
+    }
+
+    @Test
+    fun `Should request navigation to account details when onNavigateToLoginSelected`() {
+        val expectedDestination = Destination.MPAccount
+
+        var requestedDestination: Destination? = null
+
+        subject.navigationEvents.observeWith { it.actionIfNotHandled { dest -> requestedDestination = dest } }
+        subject.onNavigateToLoginSelected()
+
+        assertEquals(expectedDestination, requestedDestination)
+    }
+
+    @Test
+    fun `Should request navigation to account details when onNavigateToAccountDetailsSelected`() {
+        val expectedDestination = Destination.MPAccount
+
+        var requestedDestination: Destination? = null
+
+        subject.navigationEvents.observeWith { it.actionIfNotHandled { dest -> requestedDestination = dest } }
+        subject.onNavigateToAccountDetailsSelected()
+
+        assertEquals(expectedDestination, requestedDestination)
     }
 }

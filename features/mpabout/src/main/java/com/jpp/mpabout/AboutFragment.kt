@@ -13,9 +13,11 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jpp.mp.common.extensions.*
+import com.jpp.mp.common.extensions.cleanView
+import com.jpp.mp.common.extensions.send
+import com.jpp.mp.common.extensions.web
+import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpabout.databinding.FragmentAboutBinding
 import com.jpp.mpabout.databinding.ListItemAboutBinding
 import com.jpp.mpdesign.ext.getColor
@@ -28,8 +30,7 @@ import kotlinx.android.synthetic.main.fragment_about.*
  * and show the about data. The VM will perform the fetch and will update the UI states
  * represented by [AboutViewState] and this Fragment will render those updates.
  */
-class AboutFragment : MPFragment() {
-
+class AboutFragment : MPFragment<AboutViewModel>() {
     private lateinit var viewBinding: FragmentAboutBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -47,30 +48,23 @@ class AboutFragment : MPFragment() {
                     adapter = AboutItemsAdapter(viewState.content.aboutItems) { withViewModel { onUserSelectedAboutItem(it) } }
                     addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
                 }
-
-                withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(getString(viewState.screenTitle))) }
             })
 
-            navEvents.observe(viewLifecycleOwner, Observer { processNavEvent(it) })
+            navEvents.observe(viewLifecycleOwner, Observer { it.actionIfNotHandled { navEvent -> processNavEvent(navEvent) } })
 
-            onInit()
+            onInit(getString(R.string.about_top_bar_title))
         }
     }
-
-    /**
-     * Helper function to execute actions with the [AboutViewModel].
-     */
-    private fun withViewModel(action: AboutViewModel.() -> Unit) = withViewModel<AboutViewModel>(viewModelFactory) { action() }
 
     private fun processNavEvent(navEvent: AboutNavEvent) {
         when (navEvent) {
             is AboutNavEvent.InnerNavigation -> navigateInnerBrowser(navEvent.url)
             is AboutNavEvent.OpenGooglePlay -> goToRateAppScreen(navEvent.url)
             is AboutNavEvent.OpenSharing -> goToShareAppScreen(navEvent.url)
-            is AboutNavEvent.GoToLicenses -> goToLicensesScreen()
             is AboutNavEvent.OuterNavigation -> goToWebBrowser(navEvent.url)
         }
     }
+
 
     private fun goToRateAppScreen(uriString: String) {
         try {
@@ -80,12 +74,10 @@ class AboutFragment : MPFragment() {
         }
     }
 
+    override fun withViewModel(action: AboutViewModel.() -> Unit) = withViewModel<AboutViewModel>(viewModelFactory) { action() }
+
     private fun goToShareAppScreen(uriString: String) {
         startActivity(Intent().send(getString(R.string.share_app_text, uriString)))
-    }
-
-    private fun goToLicensesScreen() {
-        withNavigationViewModel(viewModelFactory) { performInnerNavigation(AboutFragmentDirections.licensesFragment()) }
     }
 
     private fun goToWebBrowser(url: String) {

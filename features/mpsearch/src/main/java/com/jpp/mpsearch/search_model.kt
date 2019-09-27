@@ -64,21 +64,6 @@ data class SearchResultItem(val id: Double,
     fun isMovieType() = icon == SearchResultTypeIcon.Movie
 }
 
-
-sealed class SearchNavigationEvent {
-    /*
-     * Redirects the user to the details of the selected movie.
-     */
-    data class GoToMovieDetails(val movieId: String, val movieImageUrl: String, val movieTitle: String, var positionInList: Int) : SearchNavigationEvent()
-
-    /*
-     * Redirects the user to the details of the person selected.
-     */
-    data class GoToPerson(val personId: String, val personImageUrl: String, val personName: String) : SearchNavigationEvent()
-
-
-}
-
 /**
  * Represents the icon in the type of the [SearchResultItem].
  */
