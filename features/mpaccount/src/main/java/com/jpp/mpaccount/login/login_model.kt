@@ -54,13 +54,3 @@ data class OauthViewState(
         val redirectListener: ((String) -> Unit)? = null,
         val reminder: Boolean = false
 )
-
-/**************************************************************************************************
- *************************************** NAVIGATION ***********************************************
- **************************************************************************************************/
-
-/**
- * Event used when the user is logged in to dismiss the login view and go to user
- * account section.
- */
-object ContinueToUserAccount

@@ -2,6 +2,7 @@ package com.jpp.mpperson
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.Person
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
@@ -236,5 +237,17 @@ class PersonViewModelTest {
         assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.bio?.visibility)
         assertEquals(R.string.person_bio_title, viewStatePosted?.contentViewState?.bio?.titleRes)
         assertEquals("a bio that is long", viewStatePosted?.contentViewState?.bio?.value)
+    }
+
+    @Test
+    fun `Should update reached destination in onInit`() {
+        var destinationReached: Destination? = null
+        val expected = Destination.ReachedDestination("aPerson")
+
+        subject.destinationEvents.observeWith { destinationReached = it }
+
+        subject.onInit(PersonParam(10.0, "aPerson", "aUrl"))
+
+        assertEquals(expected, destinationReached)
     }
 }

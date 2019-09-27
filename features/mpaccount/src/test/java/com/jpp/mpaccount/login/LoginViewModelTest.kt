@@ -2,7 +2,7 @@ package com.jpp.mpaccount.login
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mpaccount.R
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpaccount.TestAccountCoroutineDispatchers
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
@@ -55,7 +55,6 @@ class LoginViewModelTest {
         lvLoginEvent.postValue(LoginInteractor.LoginEvent.NotConnectedToNetwork)
 
         assertNotNull(viewStatePosted)
-        assertEquals(R.string.login_generic, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.oauthViewState?.visibility)
 
@@ -69,6 +68,7 @@ class LoginViewModelTest {
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
+        subject.onInit("aTitle")
         lvLoginEvent.postValue(LoginInteractor.LoginEvent.NotConnectedToNetwork)
 
         viewStatePosted?.let {
@@ -79,13 +79,14 @@ class LoginViewModelTest {
 
     @Test
     fun `Should navigate to user account screen when login is successful`() {
-        var eventPosted: ContinueToUserAccount? = null
+        var requestedDestination: Destination? = null
+        val expectedDestination = Destination.InnerDestination(LoginFragmentDirections.toAccountFragment())
 
-        subject.navEvents.observeWith { it.actionIfNotHandled { navEvent -> eventPosted = navEvent } }
+        subject.navigationEvents.observeWith { it.actionIfNotHandled { dest -> requestedDestination = dest } }
 
         lvLoginEvent.postValue(LoginInteractor.LoginEvent.LoginSuccessful)
 
-        assertNotNull(eventPosted)
+        assertEquals(expectedDestination, requestedDestination)
     }
 
     @Test
@@ -97,7 +98,6 @@ class LoginViewModelTest {
         lvLoginEvent.postValue(LoginInteractor.LoginEvent.LoginError)
 
         assertNotNull(viewStatePosted)
-        assertEquals(R.string.login_generic, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.oauthViewState?.visibility)
 
@@ -111,6 +111,7 @@ class LoginViewModelTest {
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
+        subject.onInit("aTitle")
         lvLoginEvent.postValue(LoginInteractor.LoginEvent.LoginError)
 
         viewStatePosted?.let {
@@ -129,7 +130,6 @@ class LoginViewModelTest {
         lvOauthEvent.postValue(LoginInteractor.OauthEvent.NotConnectedToNetwork)
 
         assertNotNull(viewStatePosted)
-        assertEquals(R.string.login_generic, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.oauthViewState?.visibility)
 
@@ -152,7 +152,6 @@ class LoginViewModelTest {
         lvOauthEvent.postValue(oauthEvent)
 
         assertNotNull(viewStatePosted)
-        assertEquals(R.string.login_generic, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
         assertEquals(false, viewStatePosted?.errorViewState?.isConnectivity)
@@ -174,7 +173,6 @@ class LoginViewModelTest {
         lvOauthEvent.postValue(LoginInteractor.OauthEvent.OauthError)
 
         assertNotNull(viewStatePosted)
-        assertEquals(R.string.login_generic, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.oauthViewState?.visibility)
 
@@ -188,10 +186,9 @@ class LoginViewModelTest {
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInit()
+        subject.onInit("aTitle")
 
         assertNotNull(viewStatePosted)
-        assertEquals(R.string.login_generic, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.oauthViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
 
@@ -208,10 +205,22 @@ class LoginViewModelTest {
         lvLoginEvent.postValue(LoginInteractor.LoginEvent.ReadyToLogin)
 
         assertNotNull(viewStatePosted)
-        assertEquals(R.string.login_generic, viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.oauthViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
 
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
     }
+
+    @Test
+    fun `Should update reached destination in onInit`() {
+        var destinationReached: Destination? = null
+        val expected = Destination.ReachedDestination("aTitle")
+
+        subject.destinationEvents.observeWith { destinationReached = it }
+
+        subject.onInit("aTitle")
+
+        assertEquals(expected, destinationReached)
+    }
+
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.Person
 import com.jpp.mpperson.PersonInteractor.PersonEvent.*
 import com.jpp.mpperson.PersonRowViewState.Companion.bioRow
@@ -56,6 +57,7 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * on it.
      */
     fun onInit(param: PersonParam) {
+        updateCurrentDestination(Destination.ReachedDestination(param.personName))
         currentParam = param
         fetchPersonData(currentParam.personName, currentParam.imageUrl, currentParam.personId)
     }
