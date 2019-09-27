@@ -7,6 +7,7 @@ import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpabout.AboutInteractor
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -45,7 +46,8 @@ class LicensesViewModel @Inject constructor(coroutineDispatchers: CoroutineDispa
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit() {
+    fun onInit(screenTitle: String) {
+        updateCurrentDestination(Destination.ReachedDestination(screenTitle))
         pushLoadingAndFetchAppLicenses()
     }
 

@@ -10,10 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpabout.R
 import com.jpp.mpabout.databinding.FragmentLicensesBinding
 import com.jpp.mpabout.licenses.content.LicenseContentFragment
@@ -46,13 +44,11 @@ class LicensesFragment : MPFragment<LicensesViewModel>() {
                     adapter = LicensesAdapter(viewState.content.licenseItems) { withViewModel { onLicenseSelected(it) } }
                     addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
                 }
-
-                withNavigationViewModel(viewModelFactory) { destinationReached(Destination.ReachedDestination(getString(viewState.screenTitle))) }
             })
 
             navEvents.observe(viewLifecycleOwner, Observer { it.actionIfNotHandled { event -> showLicenseContent(event.licenseId) } })
 
-            onInit()
+            onInit(getString(R.string.about_open_source_action))
         }
     }
 

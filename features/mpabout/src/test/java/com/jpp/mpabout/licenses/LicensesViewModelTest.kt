@@ -3,6 +3,7 @@ package com.jpp.mpabout.licenses
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpabout.AboutInteractor
 import com.jpp.mpdomain.License
 import com.jpp.mpdomain.Licenses
@@ -47,7 +48,7 @@ class LicensesViewModelTest {
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInit()
+        subject.onInit("aTitle")
 
         assertNotNull(viewStatePosted)
 
@@ -99,6 +100,19 @@ class LicensesViewModelTest {
             verify { aboutInteractor.fetchAppLicenses() }
         } ?: fail()
     }
+
+    @Test
+    fun `Should update reached destination in onInit`() {
+        var destinationReached: Destination? = null
+        val expected = Destination.ReachedDestination("aTitle")
+
+        subject.destinationEvents.observeWith { destinationReached = it }
+
+        subject.onInit("aTitle")
+
+        assertEquals(expected, destinationReached)
+    }
+
 
     private companion object {
         private val availableLicenses = listOf(
