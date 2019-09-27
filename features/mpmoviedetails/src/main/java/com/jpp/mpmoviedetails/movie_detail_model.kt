@@ -25,32 +25,26 @@ import com.jpp.mpmoviedetails.NavigationMovieDetails.movieTitle
  * Represents the view states that the movie detail view can assume.
  */
 data class MovieDetailViewState(
-        val screenTitle: String,
         val loadingVisibility: Int = View.INVISIBLE,
         val movieImageUrl: String = "emptyUrl",
         val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
         val contentViewState: MovieDetailContentViewState = MovieDetailContentViewState()) {
 
     companion object {
-        fun showLoading(screenTitle: String, movieImageUrl: String) = MovieDetailViewState(
-                screenTitle = screenTitle,
+        fun showLoading(movieImageUrl: String) = MovieDetailViewState(
                 loadingVisibility =
                 View.VISIBLE,
                 movieImageUrl = movieImageUrl)
-        fun showUnknownError(screenTitle: String, errorHandler: () -> Unit) = MovieDetailViewState(
-                screenTitle = screenTitle,
+        fun showUnknownError(errorHandler: () -> Unit) = MovieDetailViewState(
                 errorViewState = ErrorViewState.asUnknownError(errorHandler))
-        fun showNoConnectivityError(screenTitle: String, errorHandler: () -> Unit) = MovieDetailViewState(
-                screenTitle = screenTitle,
+        fun showNoConnectivityError(errorHandler: () -> Unit) = MovieDetailViewState(
                 errorViewState = ErrorViewState.asConnectivity(errorHandler))
-        fun showDetails(screenTitle: String,
-                        movieImageUrl: String,
+        fun showDetails(movieImageUrl: String,
                         overview: String,
                         genres: List<MovieGenreItem>,
                         popularity: String,
                         voteCount: String,
                         releaseDate: String) = MovieDetailViewState(
-                screenTitle = screenTitle,
                 movieImageUrl = movieImageUrl,
                 contentViewState = MovieDetailContentViewState.buildVisible(overview, genres, popularity, voteCount, releaseDate))
     }

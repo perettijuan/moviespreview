@@ -2,11 +2,9 @@ package com.jpp.mpmoviedetails
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
-import com.jpp.mp.common.livedata.HandledEvent
-import com.jpp.mp.common.livedata.HandledEvent.Companion.of
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.MovieGenre.GenresId.ACTION_GENRE_ID
@@ -51,12 +49,9 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
     private val _viewState = MediatorLiveData<MovieDetailViewState>()
     val viewState: LiveData<MovieDetailViewState> get() = _viewState
 
-    private val _navEvents = MutableLiveData<HandledEvent<NavigateToCreditsEvent>>()
-    val navEvents: LiveData<HandledEvent<NavigateToCreditsEvent>> get() = _navEvents
-
     private lateinit var currentParam: MovieDetailsParam
 
-    private val retry: () -> Unit = { fetchMovieDetails(currentParam.movieTitle, currentParam.movieId, currentParam.movieTitle) }
+    private val retry: () -> Unit = { fetchMovieDetails(currentParam.movieId, currentParam.movieTitle) }
 
     /*
      * Map the business logic coming from the interactor into view layer logic.
@@ -64,10 +59,10 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
     init {
         _viewState.addSource(movieDetailsInteractor.movieDetailEvents) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewState.value = MovieDetailViewState.showNoConnectivityError(currentParam.movieTitle, retry)
-                is UnknownError -> _viewState.value = MovieDetailViewState.showUnknownError(currentParam.movieTitle, retry)
-                is Success -> mapMovieDetails(event.data, currentParam.movieTitle, currentParam.movieImageUrl)
-                is AppLanguageChanged -> refreshDetailsData(currentParam.movieTitle, currentParam.movieId, currentParam.movieTitle)
+                is NotConnectedToNetwork -> _viewState.value = MovieDetailViewState.showNoConnectivityError(retry)
+                is UnknownError -> _viewState.value = MovieDetailViewState.showUnknownError(retry)
+                is Success -> mapMovieDetails(event.data, currentParam.movieImageUrl)
+                is AppLanguageChanged -> refreshDetailsData(currentParam.movieId, currentParam.movieTitle)
             }
         }
     }
@@ -79,24 +74,32 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
      * on it.
      */
     fun onInit(param: MovieDetailsParam) {
-        // No need to verify if params are different since the app is already caching the data in the DB.
         currentParam = param
+        updateCurrentDestination(Destination.ReachedDestination(currentParam.movieTitle))
         fetchMovieDetails(
-                currentParam.movieTitle,
                 currentParam.movieId,
                 currentParam.movieImageUrl
         )
     }
 
+
+    /**
+     * Called when the user request to login from the details actions.
+     */
+    fun onUserRequestedLogin() {
+        navigateTo(Destination.MPAccount)
+    }
+
     /**
      * Called when the user wants to navigate to the movie credits section.
-     * A new state is posted in [navEvents] in order to handle the event.
      */
     fun onMovieCreditsSelected() {
-        _navEvents.value = of(NavigateToCreditsEvent(
-                currentParam.movieId,
-                currentParam.movieTitle
-        ))
+        navigateTo(
+                Destination.MPCredits(
+                        currentParam.movieId,
+                        currentParam.movieTitle
+                )
+        )
     }
 
     /**
@@ -104,9 +107,9 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
      * of the movie being shown. When the fetching process is done, the view state will be updated
      * based on the result posted by the interactor.
      */
-    private fun fetchMovieDetails(movieTitle: String, movieId: Double, movieImageUrl: String) {
+    private fun fetchMovieDetails(movieId: Double, movieImageUrl: String) {
         withMovieDetailsInteractor { fetchMovieDetail(movieId) }
-        _viewState.value = MovieDetailViewState.showLoading(movieTitle, movieImageUrl)
+        _viewState.value = MovieDetailViewState.showLoading(movieImageUrl)
     }
 
     /**
@@ -114,12 +117,12 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
      * to be fetched for the movie details being shown. This is executed in a background
      * task while the view state is updated with the loading state.
      */
-    private fun refreshDetailsData(movieTitle: String, movieId: Double, movieImageUrl: String) {
+    private fun refreshDetailsData(movieId: Double, movieImageUrl: String) {
         withMovieDetailsInteractor {
             flushMovieDetailsData()
             fetchMovieDetail(movieId)
         }
-        _viewState.value = MovieDetailViewState.showLoading(movieTitle, movieImageUrl)
+        _viewState.value = MovieDetailViewState.showLoading(movieImageUrl)
     }
 
     /**
@@ -134,12 +137,11 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
      * Maps a domain [MovieDetail] into a UI [MovieDetailViewState] and updates
      * the state of the UI to show the details of the movie.
      */
-    private fun mapMovieDetails(domainDetail: MovieDetail, movieTitle: String, imageUrl: String) {
+    private fun mapMovieDetails(domainDetail: MovieDetail, imageUrl: String) {
         launch {
             withContext(dispatchers.default()) {
                 with(domainDetail) {
                     MovieDetailViewState.showDetails(
-                            screenTitle = movieTitle,
                             movieImageUrl = imageUrl,
                             overview = overview,
                             releaseDate = release_date,

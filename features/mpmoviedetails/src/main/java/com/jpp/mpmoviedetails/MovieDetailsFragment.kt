@@ -8,7 +8,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jpp.mp.common.extensions.withNavigationViewModel
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mpdesign.ext.setInvisible
@@ -57,14 +56,6 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
 
                 detailGenresRv.layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
                 detailGenresRv.adapter = MovieDetailsGenreAdapter(viewState.contentViewState.genres)
-
-                updateScreenTitle(viewState.screenTitle)
-            })
-
-            navEvents.observe(viewLifecycleOwner, Observer {
-                it.actionIfNotHandled { navEvent ->
-                    withNavigationViewModel(viewModelFactory) { navigateToMovieCredits(navEvent.movieId, navEvent.movieTitle) }
-                }
             })
 
             onInit(MovieDetailsParam.fromArguments(arguments))
@@ -94,7 +85,7 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
             is MovieDetailActionViewState.ShowMovieState -> renderMovieState(actionViewState)
             is MovieDetailActionViewState.ShowNoMovieState -> renderVisibleActions()
             is MovieDetailActionViewState.ShowUserNotLogged -> snackBar(detailsContent, R.string.account_need_to_login, R.string.login_generic) {
-                withNavigationViewModel(viewModelFactory) { navigateToUserAccount() }
+                withViewModel { onUserRequestedLogin() }
             }
         }
 
