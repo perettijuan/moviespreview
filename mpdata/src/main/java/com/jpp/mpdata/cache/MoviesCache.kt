@@ -76,11 +76,24 @@ class MoviesCache(private val roomDatabase: MPRoomDataBase,
         watchlist.clear()
     }
 
-    private fun <T> transformWithAdapter(action: RoomModelAdapter.() -> T): T = with(adapter) { action.invoke(this) }
+    /**
+     * Helper function to execute a [transformation] in with the [RoomModelAdapter] instance.
+     */
+    private fun <T> transformWithAdapter(transformation: RoomModelAdapter.() -> T): T = with(adapter) { transformation.invoke(this) }
 
+    /**
+     * Helper function to execute an [action] with the [MovieDAO] instance obtained from [MPRoomDataBase].
+     */
     private fun <T> withMovieDao(action: MovieDAO.() -> T): T = with(roomDatabase.moviesDao()) { action.invoke(this) }
 
+    /**
+     * @return a Long that represents the current time.
+     */
     private fun now() = timestampHelper.now()
 
+    /**
+     * @return a Long that represents the expiration date of the movies page data stored in the
+     * device.
+     */
     private fun moviePagesRefreshTime() = with(timestampHelper) { now() + moviePagesRefreshTime() }
 }

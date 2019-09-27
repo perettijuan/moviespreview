@@ -5,6 +5,9 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
+/**
+ * DAO definition used to access the image sizes data stored locally using Room.
+ */
 @Dao
 interface ImageSizeDAO {
     @Insert(onConflict =  OnConflictStrategy.REPLACE)

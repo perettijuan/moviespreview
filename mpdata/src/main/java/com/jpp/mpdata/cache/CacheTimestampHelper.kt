@@ -3,7 +3,7 @@ package com.jpp.mpdata.cache
 import java.util.concurrent.TimeUnit
 
 /**
- * Helper class to provide date based tools for the caching system
+ * Helper class to provide date based tools for the caching system.
  * The main motivation of the class is to be able to unit-test the cache
  * classes independently of the system.
  */

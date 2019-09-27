@@ -1,7 +1,12 @@
 package com.jpp.mpdata.cache.room
 
 import androidx.room.*
-
+/*
+ * This file contains the entities that are needed to operate on a database level.
+ * Since the database entities differ from the domain entities, we need this middle layer
+ * to map the data properly. All the transformations from domain to database and viceversa
+ * are executed with a proper adapter.
+ */
 
 /**
  * Represents an image size stored in the database. The application

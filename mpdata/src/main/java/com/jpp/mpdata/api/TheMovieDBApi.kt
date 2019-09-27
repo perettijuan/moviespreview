@@ -5,7 +5,7 @@ import retrofit2.Call
 import retrofit2.http.*
 
 /**
- * API instance for Retrofit
+ * API definition to use with Retrofit in order to execute requests to the backend.
  */
 interface TheMovieDBApi {
 

@@ -5,6 +5,8 @@ import com.jpp.mpdomain.AboutUrl
 import com.jpp.mpdomain.repository.AboutUrlRepository
 
 /**
+ * [AboutUrlRepository] implementation.
+ *
  * Note: Untested for simplicity.
  */
 class AboutUrlRepositoryImpl(private val context: Context) : AboutUrlRepository {

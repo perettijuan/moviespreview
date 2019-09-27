@@ -4,6 +4,9 @@ import com.jpp.mpdomain.MovieState
 import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.UserAccount
 
+/**
+ * API definition to manipulate all the [MovieState] data in the remote resources.
+ */
 interface MovieStateApi {
     /**
      * @return the [MovieState] for the provided [movieId] and the [session]. If

@@ -5,6 +5,9 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
+/**
+ * DAO definition used to access the credits data stored locally using Room.
+ */
 @Dao
 interface CreditsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

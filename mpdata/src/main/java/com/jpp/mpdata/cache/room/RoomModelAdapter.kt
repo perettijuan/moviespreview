@@ -3,6 +3,11 @@ package com.jpp.mpdata.cache.room
 import com.jpp.mp.common.extensions.addAllMapping
 import com.jpp.mpdomain.*
 
+/**
+ * Since the database entities differ from the domain entities, we need this middle layer
+ * to map the data properly. This adapter provides the capabilities to map the domain entities
+ * to database entities and viceversa.
+ */
 class RoomModelAdapter {
 
     /**
