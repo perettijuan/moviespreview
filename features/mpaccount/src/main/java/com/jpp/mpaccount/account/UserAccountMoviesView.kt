@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mpaccount.R
 import com.jpp.mpdesign.ext.inflate
-import com.jpp.mpdesign.ext.loadImageUrl
 import com.jpp.mpdesign.ext.setInvisible
 import com.jpp.mpdesign.ext.setVisible
 import kotlinx.android.synthetic.main.layout_user_account_movies.view.*
@@ -86,7 +85,7 @@ class UserAccountMoviesView : ConstraintLayout {
 
         class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             fun bind(item: UserAccountMovieItem) {
-                itemView.userAccountMoviesItemIv.loadImageUrl(item.getImageUrl())
+                itemView.userAccountMoviesItemIv.imageUrl(item.getImageUrl())
             }
         }
     }
