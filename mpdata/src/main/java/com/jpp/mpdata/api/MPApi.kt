@@ -1,5 +1,6 @@
 package com.jpp.mpdata.api
 
+import com.google.gson.GsonBuilder
 import com.jpp.mpdata.BuildConfig
 import com.jpp.mpdata.datasources.account.AccountApi
 import com.jpp.mpdata.datasources.tokens.AccessTokenApi
@@ -142,8 +143,12 @@ open class MPApi
     private companion object {
         const val API_KEY = BuildConfig.API_KEY
         val API: TheMovieDBApi by lazy {
+            val gson = GsonBuilder()
+                    .registerTypeAdapter(MovieStateRate::class.java, MovieStateRateJsonDeserializer())
+                    .create()
+
             Retrofit.Builder()
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .baseUrl(BuildConfig.API_ENDPOINT)
                     .client(OkHttpClient
                             .Builder()

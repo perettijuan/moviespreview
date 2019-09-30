@@ -142,7 +142,7 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
                 animateActionsExpanded = false,
                 favorite = favState,
                 isInWatchlist = watchlistState,
-                isRated = movieState.rated
+                isRated = movieState.rated.isRated
         )
     }
 

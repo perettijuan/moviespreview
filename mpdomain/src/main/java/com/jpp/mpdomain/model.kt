@@ -357,6 +357,16 @@ data class UserAccount(
 data class MovieState(
         val id: Double,
         val favorite: Boolean,
-        val rated: Boolean,
+        val rated: MovieStateRate,
         val watchlist: Boolean
+)
+
+/**
+ * Represents the state of the ratings for a given movie.
+ * [isRated] whether the movie is rated or not.
+ * [value] if rated, it contains the current rating value.
+ */
+data class MovieStateRate(
+        val isRated: Boolean,
+        val value: String? = null
 )

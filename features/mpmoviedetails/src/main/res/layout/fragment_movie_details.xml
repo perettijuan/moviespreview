@@ -115,6 +115,15 @@
             app:layout_anchor="@id/movieDetailAppBarLayout"
             app:layout_anchorGravity="bottom|right|end" />
 
+        <com.jpp.mpdesign.views.MPFloatingActionButton
+            android:id="@+id/movieDetailRateFab"
+            style="@style/FabMovieDetailAction"
+            android:visibility="invisible"
+            app:emptyIcon="@drawable/ic_rate_empty"
+            app:fillIcon="@drawable/ic_rate_filled"
+            app:layout_anchor="@id/movieDetailAppBarLayout"
+            app:layout_anchorGravity="bottom|right|end" />
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/movieDetailActionFab"
             style="@style/FabMovieDetailMainAction"

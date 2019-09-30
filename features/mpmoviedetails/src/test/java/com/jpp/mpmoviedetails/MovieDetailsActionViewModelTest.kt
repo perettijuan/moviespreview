@@ -2,6 +2,7 @@ package com.jpp.mpmoviedetails
 
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mpdomain.MovieState
+import com.jpp.mpdomain.MovieStateRate
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
@@ -110,6 +111,16 @@ class MovieDetailsActionViewModelTest {
                                 isRated = false
                         ),
                         MovieStateEvent.FetchSuccess(MOVIE_STATE_FAVORITE_AND_WATCHLIST)
+                ),
+                arguments(
+                        MovieDetailActionViewState.ShowMovieState(
+                                showActionsExpanded = false,
+                                animateActionsExpanded = false,
+                                favorite = ActionButtonState.ShowAsFilled,
+                                isInWatchlist = ActionButtonState.ShowAsFilled,
+                                isRated = true
+                        ),
+                        MovieStateEvent.FetchSuccess(MOVIE_STATE_FAVORITE_AND_WATCHLIST_AND_RATE)
                 )
         )
 
@@ -117,21 +128,28 @@ class MovieDetailsActionViewModelTest {
                 id = 12.0,
                 favorite = false,
                 watchlist = false,
-                rated = false
+                rated = MovieStateRate(false)
         )
 
         private val MOVIE_STATE_FAVORITE = MovieState(
                 id = 12.0,
                 favorite = true,
                 watchlist = false,
-                rated = false
+                rated = MovieStateRate(false)
         )
 
         private val MOVIE_STATE_FAVORITE_AND_WATCHLIST = MovieState(
                 id = 12.0,
                 favorite = true,
                 watchlist = true,
-                rated = false
+                rated = MovieStateRate(false)
+        )
+
+        private val MOVIE_STATE_FAVORITE_AND_WATCHLIST_AND_RATE = MovieState(
+                id = 12.0,
+                favorite = true,
+                watchlist = true,
+                rated = MovieStateRate(true, "10.0")
         )
     }
 }
