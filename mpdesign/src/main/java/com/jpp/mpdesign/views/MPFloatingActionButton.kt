@@ -1,4 +1,4 @@
-package com.jpp.mpmoviedetails
+package com.jpp.mpdesign.views
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -6,9 +6,12 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.jpp.mpdesign.R
 
 /**
- * A custom [FloatingActionButton] that renders the actions that the user can take in a movie detail.
+ * A custom [FloatingActionButton] that renders a filled or empty icon, depending on the configuration
+ * of the view.
+ * 
  * Starts as empty by default.
  * Call asFilled/asEmpty to change the state of the icon.
  * Call asClickable/asNonClickable to change the clickable state of the button.
