@@ -102,6 +102,10 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
         )
     }
 
+    fun onRateMovieSelected() {
+        navigateTo(Destination.InnerDestination(MovieDetailsFragmentDirections.rateMovie()))
+    }
+
     /**
      * When called, this method will push the loading view state and will fetch the details
      * of the movie being shown. When the fetching process is done, the view state will be updated

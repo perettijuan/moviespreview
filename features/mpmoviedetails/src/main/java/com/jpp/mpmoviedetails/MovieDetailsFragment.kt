@@ -70,6 +70,7 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
         movieDetailFavoritesFab.setOnClickListener { withActionsViewModel { onFavoriteStateChanged() } }
         movieDetailWatchlistFab.setOnClickListener { withActionsViewModel { onWatchlistStateChanged() } }
         detailCreditsSelectionView.setOnClickListener { withViewModel { onMovieCreditsSelected() } }
+        movieDetailRateFab.setOnClickListener { withViewModel { onRateMovieSelected() } }
     }
 
 
