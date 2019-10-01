@@ -15,6 +15,7 @@ import com.jpp.mpaccount.login.LoginViewModel
 import com.jpp.mpcredits.CreditsViewModel
 import com.jpp.mpmoviedetails.MovieDetailsActionViewModel
 import com.jpp.mpmoviedetails.MovieDetailsViewModel
+import com.jpp.mpmoviedetails.rates.RateMovieViewModel
 import com.jpp.mpperson.PersonViewModel
 import com.jpp.mpsearch.SearchViewModel
 import dagger.Binds
@@ -78,6 +79,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MovieDetailsActionViewModel::class)
     internal abstract fun getMovieDetailsActionViewModel(viewModel: MovieDetailsActionViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(RateMovieViewModel::class)
+    internal abstract fun getRateMovieViewModel(viewModel: RateMovieViewModel): ViewModel
 
     /*
      * Navigation dependencies.

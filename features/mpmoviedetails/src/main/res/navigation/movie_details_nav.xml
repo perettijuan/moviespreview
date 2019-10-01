@@ -15,6 +15,16 @@
     </fragment>
     <dialog
         android:id="@+id/movieRateDialogFragment"
-        android:name="com.jpp.mpmoviedetails.MovieRateDialogFragment"
-        android:label="MovieRateDialogFragment" />
+        android:name="com.jpp.mpmoviedetails.rates.RateMovieDialogFragment"
+        android:label="MovieRateDialogFragment" >
+        <argument
+            android:name="movieId"
+            app:argType="string" />
+        <argument
+            android:name="movieImageUrl"
+            app:argType="string" />
+        <argument
+            android:name="movieTitle"
+            app:argType="string" />
+    </dialog>
 </navigation>

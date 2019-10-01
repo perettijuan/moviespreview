@@ -102,8 +102,19 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
         )
     }
 
+    /**
+     * Called when the user selects the rate movie option.
+     */
     fun onRateMovieSelected() {
-        navigateTo(Destination.InnerDestination(MovieDetailsFragmentDirections.rateMovie()))
+        navigateTo(
+                Destination.InnerDestination(
+                        MovieDetailsFragmentDirections.rateMovie(
+                                currentParam.movieId.toString(),
+                                currentParam.movieImageUrl,
+                                currentParam.movieTitle
+                        )
+                )
+        )
     }
 
     /**
