@@ -49,6 +49,7 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
         object UserNotLogged : MovieStateEvent()
         data class UpdateFavorite(val success: Boolean) : MovieStateEvent()
         data class UpdateWatchlist(val success: Boolean) : MovieStateEvent()
+        data class RateMovie(val success: Boolean) : MovieStateEvent()
         data class FetchSuccess(val data: MovieState) : MovieStateEvent()
     }
 
@@ -131,6 +132,20 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
                     .let { _movieStateEvents.postValue(it) }
         }
     }
+
+    /**
+     * Rates the movie identified by [movieId] by adding the proper [rating].
+     */
+    fun rateMovie(movieId: Double, rating: Float) {
+        withAccountData { session, userAccount ->
+            movieStateRepository
+                    .rateMovie(movieId, rating, userAccount, session)
+                    .let { MovieStateEvent.RateMovie(it) }
+                    .also { moviePageRepository.flushRatedMoviePages() }
+                    .let { _movieStateEvents.postValue(it) }
+        }
+    }
+
 
     /**
      * Flushes out any movie details stored data.

@@ -112,6 +112,19 @@ open class MPApi
         }
     }
 
+    override fun rateMovie(movieId: Double, rating: Float, userAccount: UserAccount, session: Session): Boolean? {
+        return API.rateMovie(
+                movieId = movieId,
+                sessionId = session.session_id,
+                api_key = API_KEY,
+                body = RateMovieBody(
+                        value = rating
+                )
+        ).let {
+            it.execute().body()?.let { true }
+        }
+    }
+
     override fun getMovieAccountState(movieId: Double, session: Session): MovieState? {
         return tryCatchOrReturnNull { API.getMovieAccountState(movieId, session.session_id, API_KEY) }
     }

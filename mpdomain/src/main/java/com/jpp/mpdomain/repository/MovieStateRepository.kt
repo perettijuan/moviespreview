@@ -23,4 +23,9 @@ interface MovieStateRepository {
      * Updates the watchlist state of the movie identified by [movieId] to [inWatchList].
      */
     fun updateWatchlistMovieState(movieId: Double, inWatchList: Boolean, userAccount: UserAccount, session: Session): Boolean
+
+    /**
+     * Rates the movie identified by [movieId] with the provided [rating].
+     */
+    fun rateMovie(movieId: Double, rating: Float, userAccount: UserAccount, session: Session): Boolean
 }

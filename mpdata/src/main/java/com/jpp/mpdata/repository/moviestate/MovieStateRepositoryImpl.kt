@@ -28,4 +28,10 @@ class MovieStateRepositoryImpl(private val movieStateApi: MovieStateApi) : Movie
                 .updateWatchlistMovieState(movieId, inWatchList, userAccount, session)?.let { true }
                 ?: false
     }
+
+    override fun rateMovie(movieId: Double, rating: Float, userAccount: UserAccount, session: Session): Boolean {
+        return movieStateApi
+                .rateMovie(movieId, rating, userAccount, session)
+                ?: false
+    }
 }

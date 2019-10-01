@@ -19,6 +19,17 @@ data class FavoriteMediaBody(val media_type: String,
                              val favorite: Boolean)
 
 /**
+ * Body used to rate a movie.
+ */
+data class RateMovieBody(val value: Float)
+
+/**
+ * Response obtained when a movie is rated.
+ */
+data class RateMovieResponse(val status_code: Double,
+                             val status_message: String)
+
+/**
  * Response obtained when the favorite state of a given resource is updated
  * in the API.
  */

@@ -2,8 +2,10 @@ package com.jpp.mpmoviedetails.rates
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpmoviedetails.MovieDetailsInteractor
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.*
@@ -20,6 +22,9 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _viewState = MediatorLiveData<RateMovieViewState>()
     val viewState: LiveData<RateMovieViewState> get() = _viewState
 
+    private val _userMessages = MutableLiveData<RateMovieUserMessages>()
+    val userMessages: LiveData<RateMovieUserMessages> get() = _userMessages
+
     private lateinit var currentParam: RateMovieParam
 
     init {
@@ -29,7 +34,15 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                 is NotConnectedToNetwork -> TODO()
                 is UserNotLogged -> TODO()
                 is UnknownError -> TODO()
-                is FetchSuccess -> _viewState.value = processMovieStateUpdate(event.data)
+                is FetchSuccess -> processMovieStateUpdate(event.data, currentParam.screenTitle, currentParam.movieImageUrl)
+                is RateMovie -> when (event.success) {
+                    true -> RateMovieUserMessages.RATE_SUCCESS
+                    false -> RateMovieUserMessages.RATE_ERROR
+                }.let {
+                    _userMessages.value = it
+                }.also {
+                    navigateTo(Destination.PreviousDestination)
+                }
             }
         }
     }
@@ -47,6 +60,16 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                 param.screenTitle,
                 param.movieImageUrl
         )
+    }
+
+    fun onRateMovie(rating: Float) {
+        if (_viewState.value?.rating != rating) {
+            withMovieDetailsInteractor { rateMovie(currentParam.movieId, scaleUpRatingValue(rating)) }
+            _viewState.value = RateMovieViewState.showLoading(
+                    currentParam.screenTitle,
+                    currentParam.movieImageUrl
+            )
+        }
     }
 
     /**
@@ -74,16 +97,16 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Process the [MovieState] provided producing a [RateMovieViewState] that contains
      * the data to be shown to the user.
      */
-    private fun processMovieStateUpdate(movieState: MovieState): RateMovieViewState {
-        return movieState.rated.value?.toFloat()?.let {
+    private fun processMovieStateUpdate(movieState: MovieState, screenTitle: String, movieImageUrl: String) {
+        _viewState.value = movieState.rated.value?.toFloat()?.let {
             RateMovieViewState.showRated(
-                    currentParam.screenTitle,
-                    currentParam.movieImageUrl,
-                    scaleRatingValue(it)
+                    screenTitle,
+                    movieImageUrl,
+                    scaleDownRatingValue(it)
             )
         } ?: RateMovieViewState.showNoRated(
-                currentParam.screenTitle,
-                currentParam.movieImageUrl
+                screenTitle,
+                movieImageUrl
         )
     }
 
@@ -91,5 +114,12 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Scale the obtained rating: since the value is a 10th-based value and we're showing
      * 5 stars, we need to scale by two in order to properly set the UI.
      */
-    private fun scaleRatingValue(value: Float): Float = value / 2
+    private fun scaleDownRatingValue(value: Float): Float = value / SCALING_FACTOR
+
+    private fun scaleUpRatingValue(value: Float): Float = value * SCALING_FACTOR
+
+
+    private companion object {
+        private const val SCALING_FACTOR = 2
+    }
 }

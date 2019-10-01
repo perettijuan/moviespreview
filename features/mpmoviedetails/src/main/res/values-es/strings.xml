@@ -32,4 +32,6 @@
     <string name="rate_movie_title">Calificar película</string>
     <string name="rate_movie_btn">Enviar</string>
     <string name="delete_rate_movie_btn">Borrar Calificación</string>
+    <string name="rate_movie_success_message">Película calificada correctamente</string>
+    <string name="rate_movie_error_message">@string/error_unexpected_error_message</string>
 </resources>

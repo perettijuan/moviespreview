@@ -2,7 +2,9 @@ package com.jpp.mpmoviedetails.rates
 
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.StringRes
 import com.jpp.mp.common.extensions.getStringOrFail
+import com.jpp.mpmoviedetails.R
 
 /*
  * This file contains the definitions for the entire model used in the movie detail feature.
@@ -49,6 +51,14 @@ data class RateMovieViewState(
                 rating = rating
         )
     }
+}
+
+/**
+ * Represents the messages that can be shown to the user when the rate action is completed.
+ */
+enum class RateMovieUserMessages(@StringRes val messageRes: Int) {
+    RATE_SUCCESS(R.string.rate_movie_success_message),
+    RATE_ERROR(R.string.rate_movie_error_message)
 }
 
 /**************************************************************************************************
