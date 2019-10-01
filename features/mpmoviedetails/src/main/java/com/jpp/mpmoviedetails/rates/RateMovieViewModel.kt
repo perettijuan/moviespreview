@@ -10,6 +10,7 @@ import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+//TODO JPP add javadoc
 class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                              private val movieDetailsInteractor: MovieDetailsInteractor)
     : MPScopedViewModel(dispatchers) {
@@ -27,7 +28,10 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                 is NotConnectedToNetwork -> TODO()
                 is UserNotLogged -> TODO()
                 is UnknownError -> TODO()
-                is FetchSuccess -> TODO()
+                is FetchSuccess ->  _viewState.value = RateMovieViewState.showLoading(
+                        currentParam.screenTitle,
+                        currentParam.movieImageUrl
+                )
             }
         }
     }

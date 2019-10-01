@@ -27,4 +27,8 @@
 
     <string name="account_need_to_login">You need to be logged in to execute this action.</string>
     <string name="unexpected_action_error">Something went wrong. Please, try again later.</string>
+
+    <string name="rate_movie_title">Rate Movie</string>
+    <string name="rate_movie_btn">Submit</string>
+    <string name="delete_rate_movie_btn">Delete rating</string>
 </resources>

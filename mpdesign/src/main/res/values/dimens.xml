@@ -35,6 +35,8 @@
     <dimen name="movie_details_content_padding">20dp</dimen>
     <dimen name="movie_details_actions_loading_size">50dp</dimen>
     <dimen name="movie_details_actions_margin">6dp</dimen>
+    <dimen name="movie_details_rate_image_size">60dp</dimen>
+    <dimen name="movie_details_rate_padding">20dp</dimen>
 
     <!-- Search -->
     <dimen name="search_body_icon_size">300dp</dimen>

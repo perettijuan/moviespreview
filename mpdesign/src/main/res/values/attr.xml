@@ -42,6 +42,9 @@
     <attr name="mpUserMovieItemImageHeight" format="reference" />
     <attr name="mpUserAccountContentPadding" format="reference" />
 
+    <attr name="mpRateMovieImageSize" format="reference" />
+    <attr name="mpRateMoviePadding" format="reference" />
+
 
     <declare-styleable name="MPTitleValueRow">
         <attr name="titleText" format="reference"/>

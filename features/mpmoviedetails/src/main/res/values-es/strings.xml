@@ -28,4 +28,8 @@
 
     <string name="account_need_to_login">Debes estar registrado para ejecutar esta acción.</string>
     <string name="unexpected_action_error">Algo salió mal. Por favor, intenta de nuevo mas tarde.</string>
+
+    <string name="rate_movie_title">Calificar película</string>
+    <string name="rate_movie_btn">Enviar</string>
+    <string name="delete_rate_movie_btn">Borrar Calificación</string>
 </resources>

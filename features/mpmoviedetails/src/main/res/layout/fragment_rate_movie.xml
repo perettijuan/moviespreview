@@ -1,16 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RatingBar
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:numStars="5"/>
+        android:layout_height="match_parent"
+        android:padding="?attr/mpRateMoviePadding">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Rate Me"/>
+        <Button
+            android:id="@+id/rateBtn"
+            style="@style/MPTextViewNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/rate_movie_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/movieRatingBar" />
 
-</LinearLayout>
+        <Button
+            android:id="@+id/deleteRateBtn"
+            style="@style/MPTextViewNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delete_rate_movie_btn"
+            app:layout_constraintBottom_toBottomOf="@+id/rateBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/rateBtn" />
+
+        <RatingBar
+            android:id="@+id/movieRatingBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:numStars="5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/movieImageView" />
+
+        <TextView
+            android:id="@+id/screenTitleTxt"
+            style="@style/MPTextViewSmall"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/rate_movie_title"
+            app:layout_constraintBottom_toTopOf="@+id/movieTitleTxt"
+            app:layout_constraintStart_toEndOf="@+id/movieImageView"
+            app:layout_constraintTop_toTopOf="@+id/movieImageView"
+            tools:text="Rate movie" />
+
+        <TextView
+            android:id="@+id/movieTitleTxt"
+            style="@style/MPTextViewTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{viewState.movieTitle}"
+            app:layout_constraintBottom_toBottomOf="@+id/movieImageView"
+            app:layout_constraintStart_toStartOf="@+id/screenTitleTxt"
+            app:layout_constraintTop_toBottomOf="@+id/screenTitleTxt"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Movie Title" />
+
+
+        <com.jpp.mpdesign.views.MPImageView
+            android:id="@+id/movieImageView"
+            android:layout_width="?attr/mpRateMovieImageSize"
+            android:layout_height="?attr/mpRateMovieImageSize"
+            android:scaleType="centerCrop"
+            app:circularUrl="@{viewState.movieImageUrl}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <data>
+
+        <variable
+            name="viewState"
+            type="com.jpp.mpmoviedetails.rates.RateMovieViewState" />
+    </data>
+
+
+</layout>

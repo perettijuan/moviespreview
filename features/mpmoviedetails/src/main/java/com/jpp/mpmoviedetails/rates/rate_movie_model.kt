@@ -21,13 +21,17 @@ data class RateMovieViewState(
         val movieImageUrl: String
 ) {
     companion object {
-
         fun showLoading(movieTitle: String, movieImageUrl: String) = RateMovieViewState(
                 loadingVisibility = View.VISIBLE,
                 movieTitle = movieTitle,
                 movieImageUrl = movieImageUrl
         )
 
+        fun showContent(movieTitle: String, movieImageUrl: String) = RateMovieViewState(
+                loadingVisibility = View.INVISIBLE,
+                movieTitle = movieTitle,
+                movieImageUrl = movieImageUrl
+        )
     }
 }
 
