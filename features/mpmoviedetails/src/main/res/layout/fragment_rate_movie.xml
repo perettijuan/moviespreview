@@ -14,6 +14,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="@string/rate_movie_btn"
+            android:visibility="@{viewState.submitVisibility}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/movieRatingBar" />
 
@@ -23,9 +24,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/delete_rate_movie_btn"
+            android:visibility="@{viewState.deleteVisibility}"
             app:layout_constraintBottom_toBottomOf="@+id/rateBtn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/rateBtn" />
+
+        <ProgressBar
+            android:id="@+id/movieDetailActionsLoadingView"
+            style="@style/MPProgressBar"
+            android:layout_width="?attr/mpDetailsActionLoadingSize"
+            android:layout_height="?attr/mpDetailsActionLoadingSize"
+            android:layout_margin="?attr/mpDetailsActionMargin"
+            android:visibility="@{viewState.loadingVisibility}"
+            app:layout_constraintBottom_toBottomOf="@+id/movieRatingBar"
+            app:layout_constraintEnd_toEndOf="@+id/movieRatingBar"
+            app:layout_constraintStart_toStartOf="@+id/movieRatingBar"
+            app:layout_constraintTop_toTopOf="@+id/movieRatingBar" />
 
         <RatingBar
             android:id="@+id/movieRatingBar"
@@ -33,21 +47,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:numStars="5"
+            android:rating="@{viewState.rating}"
+            android:visibility="@{viewState.ratingBarVisibility}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/movieImageView" />
-
-        <TextView
-            android:id="@+id/screenTitleTxt"
-            style="@style/MPTextViewSmall"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="@string/rate_movie_title"
-            app:layout_constraintBottom_toTopOf="@+id/movieTitleTxt"
-            app:layout_constraintStart_toEndOf="@+id/movieImageView"
-            app:layout_constraintTop_toTopOf="@+id/movieImageView"
-            tools:text="Rate movie" />
 
         <TextView
             android:id="@+id/movieTitleTxt"
@@ -61,6 +65,18 @@
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="Movie Title" />
 
+
+        <TextView
+            android:id="@+id/screenTitleTxt"
+            style="@style/MPTextViewSmall"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/rate_movie_title"
+            app:layout_constraintBottom_toTopOf="@+id/movieTitleTxt"
+            app:layout_constraintStart_toEndOf="@+id/movieImageView"
+            app:layout_constraintTop_toTopOf="@+id/movieImageView"
+            tools:text="Rate movie" />
 
         <com.jpp.mpdesign.views.MPImageView
             android:id="@+id/movieImageView"

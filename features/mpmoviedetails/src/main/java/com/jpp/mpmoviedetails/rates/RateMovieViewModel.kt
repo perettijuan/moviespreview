@@ -4,11 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mpdomain.MovieState
 import com.jpp.mpmoviedetails.MovieDetailsInteractor
-import javax.inject.Inject
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 //TODO JPP add javadoc
 class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
@@ -28,15 +29,17 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                 is NotConnectedToNetwork -> TODO()
                 is UserNotLogged -> TODO()
                 is UnknownError -> TODO()
-                is FetchSuccess ->  _viewState.value = RateMovieViewState.showLoading(
-                        currentParam.screenTitle,
-                        currentParam.movieImageUrl
-                )
+                is FetchSuccess -> _viewState.value = processMovieStateUpdate(event.data)
             }
         }
     }
 
-
+    /**
+     * Called on VM initialization. The View (Fragment) should call this method to
+     * indicate that it is ready to start rendering. When the method is called, the VM
+     * internally verifies the state of the application and updates the view state based
+     * on it.
+     */
     fun onInit(param: RateMovieParam) {
         currentParam = param
         fetchMovieState(
@@ -66,4 +69,27 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private fun withMovieDetailsInteractor(action: MovieDetailsInteractor.() -> Unit) {
         launch { withContext(dispatchers.default()) { action(movieDetailsInteractor) } }
     }
+
+    /**
+     * Process the [MovieState] provided producing a [RateMovieViewState] that contains
+     * the data to be shown to the user.
+     */
+    private fun processMovieStateUpdate(movieState: MovieState): RateMovieViewState {
+        return movieState.rated.value?.toFloat()?.let {
+            RateMovieViewState.showRated(
+                    currentParam.screenTitle,
+                    currentParam.movieImageUrl,
+                    scaleRatingValue(it)
+            )
+        } ?: RateMovieViewState.showNoRated(
+                currentParam.screenTitle,
+                currentParam.movieImageUrl
+        )
+    }
+
+    /**
+     * Scale the obtained rating: since the value is a 10th-based value and we're showing
+     * 5 stars, we need to scale by two in order to properly set the UI.
+     */
+    private fun scaleRatingValue(value: Float): Float = value / 2
 }
