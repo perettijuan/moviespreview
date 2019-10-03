@@ -13,7 +13,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-//TODO JPP add javadoc
+/**
+ * [MPScopedViewModel] that supports the movie movie rating feature. The VM retrieves
+ * the data from the underlying layers using the provided [MovieDetailsInteractor] and maps the business
+ * data to UI data, producing a [RateMovieViewState] that represents the configuration of the view
+ * at any given moment. It also exposes message updates as [RateMovieUserMessages] in order to notify
+ * particular updates.
+ *
+ * When the user performs the rating action the VM updates the state
+ * of the movie internally and in the server side and updates the view layer according to the new
+ * state of the business layer.
+ */
 class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                              private val movieDetailsInteractor: MovieDetailsInteractor)
     : MPScopedViewModel(dispatchers) {
@@ -30,19 +40,15 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     init {
         _viewState.addSource(movieDetailsInteractor.movieStateEvents) { event ->
             when (event) {
-                is NoStateFound -> TODO()
-                is NotConnectedToNetwork -> TODO()
-                is UserNotLogged -> TODO()
-                is UnknownError -> TODO()
+                is NoStateFound -> navigateTo(Destination.PreviousDestination)
+                is NotConnectedToNetwork -> navigateTo(Destination.PreviousDestination)
+                is UserNotLogged -> navigateTo(Destination.PreviousDestination)
+                is UnknownError -> navigateTo(Destination.PreviousDestination)
                 is FetchSuccess -> processMovieStateUpdate(event.data, currentParam.screenTitle, currentParam.movieImageUrl)
-                is RateMovie -> when (event.success) {
+                is RateMovie -> postUserMessageAndExit(when (event.success) {
                     true -> RateMovieUserMessages.RATE_SUCCESS
                     false -> RateMovieUserMessages.RATE_ERROR
-                }.let {
-                    _userMessages.value = it
-                }.also {
-                    navigateTo(Destination.PreviousDestination)
-                }
+                })
             }
         }
     }
@@ -62,6 +68,9 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         )
     }
 
+    /**
+     * Rates the current movie being shown with the provided [rating].
+     */
     fun onRateMovie(rating: Float) {
         if (_viewState.value?.rating != rating) {
             withMovieDetailsInteractor { rateMovie(currentParam.movieId, scaleUpRatingValue(rating)) }
@@ -108,6 +117,14 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                 screenTitle,
                 movieImageUrl
         )
+    }
+
+    /**
+     * Posts the provided [message] to [userMessages] and exists the current flow.
+     */
+    private fun postUserMessageAndExit(message: RateMovieUserMessages) {
+        _userMessages.value = message
+        navigateTo(Destination.PreviousDestination)
     }
 
     /**

@@ -137,12 +137,15 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
      * Rates the movie identified by [movieId] by adding the proper [rating].
      */
     fun rateMovie(movieId: Double, rating: Float) {
-        withAccountData { session, userAccount ->
-            movieStateRepository
-                    .rateMovie(movieId, rating, userAccount, session)
-                    .let { MovieStateEvent.RateMovie(it) }
-                    .also { moviePageRepository.flushRatedMoviePages() }
-                    .let { _movieStateEvents.postValue(it) }
+        when (connectivityRepository.getCurrentConnectivity()) {
+            is Disconnected -> _movieStateEvents.postValue(MovieStateEvent.NotConnectedToNetwork)
+            is Connected -> withAccountData { session, userAccount ->
+                movieStateRepository
+                        .rateMovie(movieId, rating, userAccount, session)
+                        .let { MovieStateEvent.RateMovie(it) }
+                        .also { moviePageRepository.flushRatedMoviePages() }
+                        .let { _movieStateEvents.postValue(it) }
+            }
         }
     }
 
