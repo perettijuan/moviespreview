@@ -33,4 +33,6 @@
     <string name="delete_rate_movie_btn">Delete rating</string>
     <string name="rate_movie_success_message">Movie rated successfully</string>
     <string name="rate_movie_error_message">@string/error_unexpected_error_message</string>
+    <string name="rate_movie_deletion_success_message">Movie rating deleted successfully</string>
+    <string name="rate_movie_deletion_error_message">@string/error_unexpected_error_message</string>
 </resources>

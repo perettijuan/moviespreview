@@ -31,4 +31,10 @@ interface MovieStateApi {
      * @return true if the movie has been rated, false any other case.
      */
     fun rateMovie(movieId: Double, rating: Float, userAccount: UserAccount, session: Session): Boolean?
+
+    /**
+     * Deletes the rating that the user has set for the movie identified by [movieId].
+     * @return true if the movie rating has been rated, false any other case.
+     */
+    fun deleteMovieRating(movieId: Double, session: Session): Boolean?
 }

@@ -49,6 +49,10 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                     true -> RateMovieUserMessages.RATE_SUCCESS
                     false -> RateMovieUserMessages.RATE_ERROR
                 })
+                is RatingDeleted -> postUserMessageAndExit(when (event.success) {
+                    true -> RateMovieUserMessages.DELETE_SUCESS
+                    false -> RateMovieUserMessages.DELETE_ERROR
+                })
             }
         }
     }
@@ -80,6 +84,19 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             )
         }
     }
+
+    /**
+     * Called when the user attempts to delete a previously rating set for the movie
+     * being shown.
+     */
+    fun onDeleteMovieRating() {
+        withMovieDetailsInteractor { deleteMovieRating(currentParam.movieId) }
+        _viewState.value = RateMovieViewState.showLoading(
+                currentParam.screenTitle,
+                currentParam.movieImageUrl
+        )
+    }
+
 
     /**
      * When called, this method will push the loading view state and will fetch the movie state

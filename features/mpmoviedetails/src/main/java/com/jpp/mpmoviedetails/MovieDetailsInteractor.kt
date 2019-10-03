@@ -51,6 +51,7 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
         data class UpdateWatchlist(val success: Boolean) : MovieStateEvent()
         data class RateMovie(val success: Boolean) : MovieStateEvent()
         data class FetchSuccess(val data: MovieState) : MovieStateEvent()
+        data class RatingDeleted(val success: Boolean) : MovieStateEvent()
     }
 
     private val _movieDetailEvents = MediatorLiveData<MovieDetailEvent>()
@@ -137,12 +138,27 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
      * Rates the movie identified by [movieId] by adding the proper [rating].
      */
     fun rateMovie(movieId: Double, rating: Float) {
-        when (connectivityRepository.getCurrentConnectivity()) {
-            is Disconnected -> _movieStateEvents.postValue(MovieStateEvent.NotConnectedToNetwork)
-            is Connected -> withAccountData { session, userAccount ->
+        whenConnected {
+            withAccountData { session, userAccount ->
                 movieStateRepository
                         .rateMovie(movieId, rating, userAccount, session)
                         .let { MovieStateEvent.RateMovie(it) }
+                        .also { moviePageRepository.flushRatedMoviePages() }
+                        .let { _movieStateEvents.postValue(it) }
+            }
+        }
+    }
+
+    /**
+     * Deletes the rating that the user has previously set in the movie identified
+     * by [movieId].
+     */
+    fun deleteMovieRating(movieId: Double) {
+        whenConnected {
+            withAccountData { session, _ ->
+                movieStateRepository
+                        .deleteMovieRate(movieId, session)
+                        .let { MovieStateEvent.RatingDeleted(it) }
                         .also { moviePageRepository.flushRatedMoviePages() }
                         .let { _movieStateEvents.postValue(it) }
             }
@@ -155,6 +171,14 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
      */
     fun flushMovieDetailsData() {
         movieDetailRepository.flushMovieDetailsData()
+    }
+
+
+    private fun whenConnected(action: () -> Unit) {
+        when (connectivityRepository.getCurrentConnectivity()) {
+            is Disconnected -> _movieStateEvents.postValue(MovieStateEvent.NotConnectedToNetwork)
+            is Connected -> action()
+        }
     }
 
     private fun withAccountData(callback: (Session, UserAccount) -> Unit) {

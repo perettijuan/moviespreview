@@ -203,6 +203,17 @@ interface TheMovieDBApi {
                               @Query("language") language: String? = null): Call<MoviePage>
 
     /**
+     * Deletes the rating for a movie that has previously rated by the user.
+     * [movieId] the identifier of the movie to rate.
+     * [sessionId] the session identifier for the current user.
+     * [api_key] the api key provided by themoviedb.
+     */
+    @DELETE("movie/{movie_id}/rating")
+    fun deleteMovieRating(@Path("movie_id") movieId: Double,
+                          @Query("session_id") sessionId: String,
+                          @Query("api_key") api_key: String): Call<RateMovieResponse>
+
+    /**
      * Retrieves the list of rated movies of the user.
      * [accountId] the identifier of users account.
      * [page] the current page to retrieve.

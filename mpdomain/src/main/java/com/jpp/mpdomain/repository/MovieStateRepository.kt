@@ -28,4 +28,9 @@ interface MovieStateRepository {
      * Rates the movie identified by [movieId] with the provided [rating].
      */
     fun rateMovie(movieId: Double, rating: Float, userAccount: UserAccount, session: Session): Boolean
+
+    /**
+     * Deletes the rating that the user has previously set for the movie identified by [movieId].
+     */
+    fun deleteMovieRate(movieId: Double, session: Session): Boolean
 }

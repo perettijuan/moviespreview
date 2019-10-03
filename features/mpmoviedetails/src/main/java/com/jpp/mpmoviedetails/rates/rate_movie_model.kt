@@ -58,7 +58,9 @@ data class RateMovieViewState(
  */
 enum class RateMovieUserMessages(@StringRes val messageRes: Int) {
     RATE_SUCCESS(R.string.rate_movie_success_message),
-    RATE_ERROR(R.string.rate_movie_error_message)
+    RATE_ERROR(R.string.rate_movie_error_message),
+    DELETE_SUCESS(R.string.rate_movie_deletion_success_message),
+    DELETE_ERROR(R.string.rate_movie_deletion_error_message)
 }
 
 /**************************************************************************************************

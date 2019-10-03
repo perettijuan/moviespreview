@@ -125,6 +125,16 @@ open class MPApi
         }
     }
 
+    override fun deleteMovieRating(movieId: Double, session: Session): Boolean? {
+        return API.deleteMovieRating(
+                movieId = movieId,
+                sessionId = session.session_id,
+                api_key = API_KEY
+        ).let {
+            it.execute().body()?.let { true }
+        }
+    }
+
     override fun getMovieAccountState(movieId: Double, session: Session): MovieState? {
         return tryCatchOrReturnNull { API.getMovieAccountState(movieId, session.session_id, API_KEY) }
     }

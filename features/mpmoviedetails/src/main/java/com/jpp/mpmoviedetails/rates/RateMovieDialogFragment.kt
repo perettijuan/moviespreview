@@ -39,6 +39,10 @@ class RateMovieDialogFragment : MPDialogFragment<RateMovieViewModel>() {
             rateBtn.setOnClickListener {
                 onRateMovie(movieRatingBar.rating)
             }
+
+            deleteRateBtn.setOnClickListener {
+                onDeleteMovieRating()
+            }
         }
     }
 

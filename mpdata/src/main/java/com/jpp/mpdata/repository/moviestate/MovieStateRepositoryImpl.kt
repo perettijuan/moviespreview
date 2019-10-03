@@ -34,4 +34,10 @@ class MovieStateRepositoryImpl(private val movieStateApi: MovieStateApi) : Movie
                 .rateMovie(movieId, rating, userAccount, session)
                 ?: false
     }
+
+    override fun deleteMovieRate(movieId: Double, session: Session): Boolean {
+        return movieStateApi
+                .deleteMovieRating(movieId, session)
+                ?: false
+    }
 }
