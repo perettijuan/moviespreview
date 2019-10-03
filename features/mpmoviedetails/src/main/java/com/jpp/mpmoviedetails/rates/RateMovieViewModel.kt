@@ -32,7 +32,7 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _viewState = MediatorLiveData<RateMovieViewState>()
     val viewState: LiveData<RateMovieViewState> get() = _viewState
 
-    private val _userMessages = MutableLiveData<RateMovieUserMessages>()
+    private val _userMessages = MediatorLiveData<RateMovieUserMessages>()
     val userMessages: LiveData<RateMovieUserMessages> get() = _userMessages
 
     private lateinit var currentParam: RateMovieParam
@@ -44,13 +44,25 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                 is NotConnectedToNetwork -> navigateTo(Destination.PreviousDestination)
                 is UserNotLogged -> navigateTo(Destination.PreviousDestination)
                 is UnknownError -> navigateTo(Destination.PreviousDestination)
-                is FetchSuccess -> processMovieStateUpdate(event.data, currentParam.screenTitle, currentParam.movieImageUrl)
+                is FetchSuccess -> processMovieStateUpdate(
+                        event.data,
+                        currentParam.screenTitle,
+                        currentParam.movieImageUrl
+                )
+            }
+        }
+        _userMessages.addSource(movieDetailsInteractor.movieStateEvents) { event ->
+            when (event) {
+                is NoStateFound -> navigateTo(Destination.PreviousDestination)
+                is NotConnectedToNetwork -> navigateTo(Destination.PreviousDestination)
+                is UserNotLogged -> navigateTo(Destination.PreviousDestination)
+                is UnknownError -> navigateTo(Destination.PreviousDestination)
                 is RateMovie -> postUserMessageAndExit(when (event.success) {
                     true -> RateMovieUserMessages.RATE_SUCCESS
                     false -> RateMovieUserMessages.RATE_ERROR
                 })
                 is RatingDeleted -> postUserMessageAndExit(when (event.success) {
-                    true -> RateMovieUserMessages.DELETE_SUCESS
+                    true -> RateMovieUserMessages.DELETE_SUCCESS
                     false -> RateMovieUserMessages.DELETE_ERROR
                 })
             }

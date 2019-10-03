@@ -96,15 +96,12 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
      * It will post a new event to [movieStateEvents] indicating the result of the action.
      */
     fun fetchMovieState(movieId: Double) {
-        when (connectivityRepository.getCurrentConnectivity()) {
-            is Disconnected -> _movieStateEvents.postValue(MovieStateEvent.NotConnectedToNetwork)
-            is Connected -> {
-                sessionRepository.getCurrentSession()?.let { session ->
-                    movieStateRepository.getStateForMovie(movieId, session)?.let { movieState ->
-                        _movieStateEvents.postValue(MovieStateEvent.FetchSuccess(movieState))
-                    } ?: _movieStateEvents.postValue(MovieStateEvent.UnknownError)
-                } ?: _movieStateEvents.postValue(MovieStateEvent.NoStateFound)
-            }
+        whenConnected {
+            sessionRepository.getCurrentSession()?.let { session ->
+                movieStateRepository.getStateForMovie(movieId, session)?.let { movieState ->
+                    _movieStateEvents.postValue(MovieStateEvent.FetchSuccess(movieState))
+                } ?: _movieStateEvents.postValue(MovieStateEvent.UnknownError)
+            } ?: _movieStateEvents.postValue(MovieStateEvent.NoStateFound)
         }
     }
 

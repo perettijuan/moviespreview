@@ -19,7 +19,10 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
+@ExtendWith(
+        MockKExtension::class,
+        InstantTaskExecutorExtension::class
+)
 class MovieDetailsInteractorTest {
 
     @MockK
@@ -62,7 +65,7 @@ class MovieDetailsInteractorTest {
     }
 
     @Test
-    fun `Should post not connected event when not connected to network`() {
+    fun `Should post not connected event when disconnected from network`() {
         var eventPosted: MovieDetailEvent? = null
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
@@ -273,5 +276,96 @@ class MovieDetailsInteractorTest {
         languageUpdates.value = SupportedLanguage.Spanish
 
         assertEquals(AppLanguageChanged, eventPosted)
+    }
+
+    @Test
+    fun `Should post user not logged when there is no session created on rateMovie`() {
+        var eventPosted: MovieStateEvent? = null
+
+        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        every { sessionRepository.getCurrentSession() } returns null
+
+        subject.movieStateEvents.observeWith { eventPosted = it }
+
+        subject.rateMovie(12.0, 5.5F)
+        assertEquals(MovieStateEvent.UserNotLogged, eventPosted)
+        verify(exactly = 0) { movieStateRepository.rateMovie(any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `Should post user not logged when there is a session created but no user account data on rateMovie`() {
+        var eventPosted: MovieStateEvent? = null
+        val session = mockk<Session>()
+
+        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        every { sessionRepository.getCurrentSession() } returns session
+        every { accountRepository.getUserAccount(any()) } returns null
+
+        subject.movieStateEvents.observeWith { eventPosted = it }
+
+        subject.rateMovie(12.0, 5.5F)
+        assertEquals(MovieStateEvent.UserNotLogged, eventPosted)
+        verify(exactly = 0) { movieStateRepository.rateMovie(any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `Should rate movie and post result when session and account data available rateMovie`() {
+        var eventPosted: MovieStateEvent? = null
+        val session = mockk<Session>()
+        val userAccount = mockk<UserAccount>()
+        val expected = MovieStateEvent.RateMovie(true)
+
+        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        every { sessionRepository.getCurrentSession() } returns session
+        every { accountRepository.getUserAccount(any()) } returns userAccount
+        every { movieStateRepository.rateMovie(any(), any(), any(), any()) } returns true
+
+        subject.movieStateEvents.observeWith { eventPosted = it }
+
+        subject.rateMovie(12.0, 5.5f)
+        assertEquals(expected, eventPosted)
+        verify { movieStateRepository.rateMovie(12.0, 5.5F, userAccount, session) }
+        verify { moviePageRepository.flushRatedMoviePages() }
+    }
+
+
+    @Test
+    fun `Should rate move and post error result when session and account data available rateMovie`() {
+        var eventPosted: MovieStateEvent? = null
+        val session = mockk<Session>()
+        val userAccount = mockk<UserAccount>()
+        val expected = MovieStateEvent.RateMovie(false)
+
+        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        every { sessionRepository.getCurrentSession() } returns session
+        every { accountRepository.getUserAccount(any()) } returns userAccount
+        every { movieStateRepository.rateMovie(any(), any(), any(), any()) } returns false
+
+        subject.movieStateEvents.observeWith { eventPosted = it }
+
+        subject.rateMovie(12.0, 5.5f)
+        assertEquals(expected, eventPosted)
+        verify { movieStateRepository.rateMovie(12.0, 5.5F, userAccount, session) }
+        verify { moviePageRepository.flushRatedMoviePages() }
+    }
+
+    @Test
+    fun `Should post NotConnectedToNetwork when trying to rate movie in disconnected state`() {
+        var eventPosted: MovieStateEvent? = null
+        val session = mockk<Session>()
+        val userAccount = mockk<UserAccount>()
+        val expected = MovieStateEvent.NotConnectedToNetwork
+
+        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
+        every { sessionRepository.getCurrentSession() } returns session
+        every { accountRepository.getUserAccount(any()) } returns userAccount
+        every { movieStateRepository.rateMovie(any(), any(), any(), any()) } returns true
+
+        subject.movieStateEvents.observeWith { eventPosted = it }
+
+        subject.rateMovie(12.0, 5.5f)
+        assertEquals(expected, eventPosted)
+        verify(exactly = 0) { movieStateRepository.rateMovie(12.0, 5.5F, userAccount, session) }
+        verify(exactly = 0) { moviePageRepository.flushRatedMoviePages() }
     }
 }
