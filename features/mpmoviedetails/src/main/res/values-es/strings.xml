@@ -36,4 +36,5 @@
     <string name="rate_movie_error_message">@string/error_unexpected_error_message</string>
     <string name="rate_movie_deletion_success_message">Calificación borrada</string>
     <string name="rate_movie_deletion_error_message">@string/error_unexpected_error_message</string>
+    <string name="rate_movie_error_retrieving_data_message">@string/error_unexpected_error_message</string>
 </resources>

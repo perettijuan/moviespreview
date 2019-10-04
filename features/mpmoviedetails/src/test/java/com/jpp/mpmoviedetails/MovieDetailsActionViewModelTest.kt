@@ -74,11 +74,11 @@ class MovieDetailsActionViewModelTest {
                         MovieStateEvent.NoStateFound
                 ),
                 arguments(
-                        MovieDetailActionViewState.ShowError,
+                        MovieDetailActionViewState.ShowReloadState(false),
                         MovieStateEvent.NotConnectedToNetwork
                 ),
                 arguments(
-                        MovieDetailActionViewState.ShowError,
+                        MovieDetailActionViewState.ShowReloadState(false),
                         MovieStateEvent.UnknownError
                 ),
                 arguments(

@@ -36,9 +36,9 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
         _viewState.addSource(movieDetailsInteractor.movieStateEvents) { event ->
             when (event) {
                 is NoStateFound -> _viewState.value = ShowNoMovieState(false, false)
-                is NotConnectedToNetwork -> _viewState.value = ShowError
+                is NotConnectedToNetwork -> _viewState.value = processErrorState()
                 is UserNotLogged -> _viewState.value = processUserNotLogged()
-                is UnknownError -> _viewState.value = ShowError
+                is UnknownError -> _viewState.value = processErrorState()
                 is FetchSuccess -> _viewState.value = processMovieStateUpdate(event.data)
                 is UpdateFavorite -> _viewState.value = processUpdateFavorite(event)
                 is UpdateWatchlist -> _viewState.value = processUpdateWatchlist(event)
@@ -50,12 +50,12 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
      * Called when the view is initialized.
      */
     fun onInit(movieId: Double) {
-        if (currentMovieId == movieId) {
-            // movie data is not being cached locally.
-            return
-        }
         currentMovieId = movieId
         fetchMovieState(movieId)
+    }
+
+    fun onRetry() {
+        fetchMovieState(currentMovieId)
     }
 
     /**
@@ -66,13 +66,13 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
     fun onMainActionSelected() {
         viewState.value?.let { currentViewState ->
             _viewState.value = when (currentViewState) {
-                is ShowError -> ShowError
+                is ShowReloadState -> ShowReloadState(currentViewState.expanded)
                 is ShowLoading -> ShowLoading
-                is ShowNoMovieState -> currentViewState.copy(
+                is ShowUserNotLogged -> currentViewState.copy(
                         animateActionsExpanded = true,
                         showActionsExpanded = !currentViewState.showActionsExpanded
                 )
-                is ShowUserNotLogged -> currentViewState.copy(
+                is ShowNoMovieState -> currentViewState.copy(
                         animateActionsExpanded = true,
                         showActionsExpanded = !currentViewState.showActionsExpanded
                 )
@@ -171,6 +171,12 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
      */
     private fun withMovieDetailsInteractor(action: MovieDetailsInteractor.() -> Unit) {
         launch { withContext(dispatchers.default()) { action(movieDetailsInteractor) } }
+    }
+
+    private fun processErrorState(): MovieDetailActionViewState {
+        return viewState.value?.let { currentViewState ->
+            ShowReloadState(currentViewState.expanded)
+        } ?: ShowReloadState(false)
     }
 
     /**

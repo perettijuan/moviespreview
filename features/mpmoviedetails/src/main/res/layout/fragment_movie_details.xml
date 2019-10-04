@@ -132,6 +132,14 @@
             app:layout_anchor="@id/movieDetailAppBarLayout"
             app:layout_anchorGravity="bottom|right|end" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/movieDetailReloadActionFab"
+            style="@style/FabMovieDetailMainAction"
+            android:src="@drawable/ic_reload"
+            android:visibility="invisible"
+            app:layout_anchor="@id/movieDetailAppBarLayout"
+            app:layout_anchorGravity="bottom|right|end" />
+
         <ProgressBar
             android:id="@+id/movieDetailActionsLoadingView"
             style="@style/MPProgressBar"

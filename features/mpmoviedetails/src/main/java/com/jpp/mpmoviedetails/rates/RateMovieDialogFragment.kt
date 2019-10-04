@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPDialogFragment
+import com.jpp.mpdesign.ext.mpToast
 import com.jpp.mpmoviedetails.R
 import com.jpp.mpmoviedetails.databinding.FragmentRateMovieBinding
 import kotlinx.android.synthetic.main.fragment_rate_movie.*
@@ -25,13 +25,18 @@ class RateMovieDialogFragment : MPDialogFragment<RateMovieViewModel>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        dialog?.window?.attributes?.windowAnimations = R.style.RateMovieDialogAnim
+
         withViewModel {
             viewState.observe(viewLifecycleOwner, Observer { viewState ->
                 viewBinding.viewState = viewState
             })
 
-            userMessages.observe(viewLifecycleOwner, Observer { message ->
-                Toast.makeText(requireContext(), message.messageRes, Toast.LENGTH_SHORT).show()
+            userMessages.observe(viewLifecycleOwner, Observer {
+                it.actionIfNotHandled { message ->
+                    mpToast(message.messageRes)
+                }
             })
 
             onInit(RateMovieParam.fromArguments(arguments))
