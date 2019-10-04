@@ -155,22 +155,11 @@ sealed class MovieDetailActionViewState(val animate: Boolean, val expanded: Bool
     object ShowLoading : MovieDetailActionViewState(animate = false, expanded = false)
 
     /*
-     * Shows the error state in the actions sections.
-     */
-    object ShowError : MovieDetailActionViewState(animate = false, expanded = false)
-
-    /*
-     * Shows the error state in the actions sections.
-     */
-    object ShowErrorNoConnectivity : MovieDetailActionViewState(animate = false, expanded = false)
-
-    /*
      * Shows the view state when there's no movie state to render. i.e.: the user is
      * not logged.
      */
-    data class ShowNoMovieState(val showActionsExpanded: Boolean,
-                                val animateActionsExpanded: Boolean)
-        : MovieDetailActionViewState(animate = animateActionsExpanded, expanded = showActionsExpanded)
+    data class ShowReloadState(val animateActionsExpanded: Boolean)
+        : MovieDetailActionViewState(animate = animateActionsExpanded, expanded = false)
 
     /*
      * Shows the user not logged view state.

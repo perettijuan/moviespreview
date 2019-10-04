@@ -71,6 +71,7 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
         movieDetailWatchlistFab.setOnClickListener { withActionsViewModel { onWatchlistStateChanged() } }
         detailCreditsSelectionView.setOnClickListener { withViewModel { onMovieCreditsSelected() } }
         movieDetailRateFab.setOnClickListener { withViewModel { onRateMovieSelected() } }
+        movieDetailReloadActionFab.setOnClickListener { withActionsViewModel { onRetry() } }
     }
 
 
@@ -82,13 +83,17 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
     private fun renderActionViewState(actionViewState: MovieDetailActionViewState) {
         when (actionViewState) {
             is MovieDetailActionViewState.ShowLoading -> renderLoadingActions()
-            is MovieDetailActionViewState.ShowError -> snackBarNoAction(detailsContent, R.string.unexpected_action_error)
-            is MovieDetailActionViewState.ShowErrorNoConnectivity -> {
-                enableActions()
-                snackBarNoAction(detailsContent, R.string.error_no_network_connection_message)
+            is MovieDetailActionViewState.ShowReloadState -> {
+                disableActions()
+                movieDetailReloadActionFab.setVisible()
+                movieDetailActionFab.setInvisible()
+                snackBarNoAction(detailsContent, R.string.unexpected_action_error)
             }
-            is MovieDetailActionViewState.ShowMovieState -> renderMovieState(actionViewState)
-            is MovieDetailActionViewState.ShowNoMovieState -> renderVisibleActions()
+            is MovieDetailActionViewState.ShowMovieState -> {
+                movieDetailReloadActionFab.setInvisible()
+                movieDetailActionFab.setVisible()
+                renderMovieState(actionViewState)
+            }
             is MovieDetailActionViewState.ShowUserNotLogged -> snackBar(detailsContent, R.string.account_need_to_login, R.string.login_generic) {
                 withViewModel { onUserRequestedLogin() }
             }
@@ -117,27 +122,20 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
         movieDetailRateFab.animate().translationY(0F).alpha(0F)
     }
 
-    private fun renderVisibleActions() {
-        movieDetailActionsLoadingView.setInvisible()
-
-        movieDetailFavoritesFab.setVisible()
-        movieDetailWatchlistFab.setVisible()
-        movieDetailRateFab.setVisible()
-        movieDetailActionFab.setVisible()
-    }
-
     private fun renderLoadingActions() {
         movieDetailActionFab.setInvisible()
         movieDetailFavoritesFab.setInvisible()
         movieDetailWatchlistFab.setInvisible()
         movieDetailRateFab.setInvisible()
+        movieDetailReloadActionFab.setInvisible()
 
         movieDetailActionsLoadingView.setVisible()
     }
 
-    private fun enableActions() {
-        movieDetailFavoritesFab.asClickable()
-        movieDetailWatchlistFab.asClickable()
+    private fun disableActions() {
+        movieDetailFavoritesFab.asNonClickable()
+        movieDetailWatchlistFab.asNonClickable()
+        movieDetailRateFab.asNonClickable()
     }
 
     private fun renderMovieState(movieState: MovieDetailActionViewState.ShowMovieState) {
