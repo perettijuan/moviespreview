@@ -115,25 +115,29 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
      * Updates the favorite state of the movie identified with [movieId] to [asFavorite].
      */
     fun updateFavoriteMovieState(movieId: Double, asFavorite: Boolean) {
-        withAccountData { session, userAccount ->
-            movieStateRepository
-                    .updateFavoriteMovieState(movieId, asFavorite, userAccount, session)
-                    .let { MovieStateEvent.UpdateFavorite(it) }
-                    .also { moviePageRepository.flushFavoriteMoviePages() }
-                    .let { _movieStateEvents.postValue(it) }
-        }
+       whenConnected {
+           withAccountData { session, userAccount ->
+               movieStateRepository
+                       .updateFavoriteMovieState(movieId, asFavorite, userAccount, session)
+                       .let { MovieStateEvent.UpdateFavorite(it) }
+                       .also { moviePageRepository.flushFavoriteMoviePages() }
+                       .let { _movieStateEvents.postValue(it) }
+           }
+       }
     }
 
     /**
      * Updates the watchlist state of the movie identified with [movieId] to [inWatchlist].
      */
     fun updateWatchlistMovieState(movieId: Double, inWatchlist: Boolean) {
-        withAccountData { session, userAccount ->
-            movieStateRepository
-                    .updateWatchlistMovieState(movieId, inWatchlist, userAccount, session)
-                    .let { MovieStateEvent.UpdateWatchlist(it) }
-                    .also { moviePageRepository.flushWatchlistMoviePages() }
-                    .let { _movieStateEvents.postValue(it) }
+        whenConnected {
+            withAccountData { session, userAccount ->
+                movieStateRepository
+                        .updateWatchlistMovieState(movieId, inWatchlist, userAccount, session)
+                        .let { MovieStateEvent.UpdateWatchlist(it) }
+                        .also { moviePageRepository.flushWatchlistMoviePages() }
+                        .let { _movieStateEvents.postValue(it) }
+            }
         }
     }
 
