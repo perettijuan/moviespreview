@@ -1,5 +1,6 @@
 package com.jpp.mpdata.api
 
+import com.google.gson.GsonBuilder
 import com.jpp.mpdata.BuildConfig
 import com.jpp.mpdata.datasources.account.AccountApi
 import com.jpp.mpdata.datasources.tokens.AccessTokenApi
@@ -111,6 +112,29 @@ open class MPApi
         }
     }
 
+    override fun rateMovie(movieId: Double, rating: Float, userAccount: UserAccount, session: Session): Boolean? {
+        return API.rateMovie(
+                movieId = movieId,
+                sessionId = session.session_id,
+                api_key = API_KEY,
+                body = RateMovieBody(
+                        value = rating
+                )
+        ).let {
+            it.execute().body()?.let { true }
+        }
+    }
+
+    override fun deleteMovieRating(movieId: Double, session: Session): Boolean? {
+        return API.deleteMovieRating(
+                movieId = movieId,
+                sessionId = session.session_id,
+                api_key = API_KEY
+        ).let {
+            it.execute().body()?.let { true }
+        }
+    }
+
     override fun getMovieAccountState(movieId: Double, session: Session): MovieState? {
         return tryCatchOrReturnNull { API.getMovieAccountState(movieId, session.session_id, API_KEY) }
     }
@@ -142,8 +166,12 @@ open class MPApi
     private companion object {
         const val API_KEY = BuildConfig.API_KEY
         val API: TheMovieDBApi by lazy {
+            val gson = GsonBuilder()
+                    .registerTypeAdapter(MovieStateRate::class.java, MovieStateRateJsonDeserializer())
+                    .create()
+
             Retrofit.Builder()
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .baseUrl(BuildConfig.API_ENDPOINT)
                     .client(OkHttpClient
                             .Builder()

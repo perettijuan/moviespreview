@@ -55,7 +55,7 @@ class LicensesFragment : MPFragment<LicensesViewModel>() {
     override fun withViewModel(action: LicensesViewModel.() -> Unit) = withViewModel<LicensesViewModel>(viewModelFactory) { action() }
 
     private fun showLicenseContent(licenseId: Int) {
-        LicenseContentFragment.newInstance(licenseId).show(fragmentManager, "tag")
+        LicenseContentFragment.newInstance(licenseId).show(requireFragmentManager(), "tag")
     }
 
     class LicensesAdapter(private val items: List<LicenseItem>, private val selectionListener: (LicenseItem) -> Unit) : RecyclerView.Adapter<LicensesAdapter.ViewHolder>() {

@@ -8,5 +8,23 @@
     <fragment
         android:id="@+id/movieDetailsFragment"
         android:name="com.jpp.mpmoviedetails.MovieDetailsFragment"
-        tools:layout="@layout/fragment_movie_details" />
+        tools:layout="@layout/fragment_movie_details" >
+        <action
+            android:id="@+id/rateMovie"
+            app:destination="@id/movieRateDialogFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/movieRateDialogFragment"
+        android:name="com.jpp.mpmoviedetails.rates.RateMovieDialogFragment"
+        android:label="MovieRateDialogFragment" >
+        <argument
+            android:name="movieId"
+            app:argType="string" />
+        <argument
+            android:name="movieImageUrl"
+            app:argType="string" />
+        <argument
+            android:name="movieTitle"
+            app:argType="string" />
+    </dialog>
 </navigation>

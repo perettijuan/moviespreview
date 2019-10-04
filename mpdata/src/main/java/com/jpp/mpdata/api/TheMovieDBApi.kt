@@ -174,6 +174,19 @@ interface TheMovieDBApi {
                             @Query("api_key") api_key: String,
                             @Body body: WatchlistMediaBody): Call<WatchlistMediaResponse>
 
+
+    /**
+     * Rates the movie defined by [movieId].
+     * [movieId] the identifier of the movie to rate.
+     * [sessionId] the session identifier for the current user.
+     * [api_key] the api key provided by themoviedb.
+     */
+    @POST("movie/{movie_id}/rating")
+    fun rateMovie(@Path("movie_id") movieId: Double,
+                  @Query("session_id") sessionId: String,
+                  @Query("api_key") api_key: String,
+                  @Body body: RateMovieBody): Call<RateMovieResponse>
+
     /**
      * Retrieves the list of favorite movies of the user.
      * [accountId] the identifier of users account.
@@ -188,6 +201,17 @@ interface TheMovieDBApi {
                               @Query("session_id") sessionId: String,
                               @Query("api_key") api_key: String,
                               @Query("language") language: String? = null): Call<MoviePage>
+
+    /**
+     * Deletes the rating for a movie that has previously rated by the user.
+     * [movieId] the identifier of the movie to rate.
+     * [sessionId] the session identifier for the current user.
+     * [api_key] the api key provided by themoviedb.
+     */
+    @DELETE("movie/{movie_id}/rating")
+    fun deleteMovieRating(@Path("movie_id") movieId: Double,
+                          @Query("session_id") sessionId: String,
+                          @Query("api_key") api_key: String): Call<RateMovieResponse>
 
     /**
      * Retrieves the list of rated movies of the user.

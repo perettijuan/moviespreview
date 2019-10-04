@@ -46,6 +46,8 @@
         <item name="mpUserMovieItemHeaderImageHeight">@dimen/movie_item_header_image_view_height</item>
         <item name="mpUserMovieItemImageHeight">@dimen/movie_item_image_height</item>
         <item name="mpUserAccountContentPadding">@dimen/user_account_content_padding</item>
+        <item name="mpRateMovieImageSize">@dimen/movie_details_rate_image_size</item>
+        <item name="mpRateMoviePadding">@dimen/movie_details_rate_padding</item>
 
     </style>
 

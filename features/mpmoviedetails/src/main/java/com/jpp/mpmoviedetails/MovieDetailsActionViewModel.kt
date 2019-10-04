@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpmoviedetails.MovieDetailActionViewState.*
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.*
@@ -142,7 +141,7 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
                 animateActionsExpanded = false,
                 favorite = favState,
                 isInWatchlist = watchlistState,
-                isRated = movieState.rated
+                isRated = movieState.rated.isRated
         )
     }
 

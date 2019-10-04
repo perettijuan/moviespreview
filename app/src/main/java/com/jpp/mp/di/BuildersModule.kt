@@ -14,6 +14,7 @@ import com.jpp.mpaccount.account.lists.UserMovieListFragment
 import com.jpp.mpaccount.login.LoginFragment
 import com.jpp.mpcredits.CreditsFragment
 import com.jpp.mpmoviedetails.MovieDetailsFragment
+import com.jpp.mpmoviedetails.rates.RateMovieDialogFragment
 import com.jpp.mpperson.PersonFragment
 import com.jpp.mpsearch.SearchFragment
 import dagger.Module
@@ -72,4 +73,7 @@ abstract class BuildersModule {
 
     @ContributesAndroidInjector
     abstract fun bindLicenseContentFragment(): LicenseContentFragment
+
+    @ContributesAndroidInjector
+    abstract fun bindRateMovieDialogFragment(): RateMovieDialogFragment
 }

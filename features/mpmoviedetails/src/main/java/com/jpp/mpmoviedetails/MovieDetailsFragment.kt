@@ -70,6 +70,7 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
         movieDetailFavoritesFab.setOnClickListener { withActionsViewModel { onFavoriteStateChanged() } }
         movieDetailWatchlistFab.setOnClickListener { withActionsViewModel { onWatchlistStateChanged() } }
         detailCreditsSelectionView.setOnClickListener { withViewModel { onMovieCreditsSelected() } }
+        movieDetailRateFab.setOnClickListener { withViewModel { onRateMovieSelected() } }
     }
 
 
@@ -102,12 +103,14 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
         movieDetailActionFab.animate().rotation(180F)
         movieDetailFavoritesFab.animate().translationY(resources.getDimension(R.dimen.standard_55)).alpha(1F)
         movieDetailWatchlistFab.animate().translationY(resources.getDimension(R.dimen.standard_105)).alpha(1F)
+        movieDetailRateFab.animate().translationY(resources.getDimension(R.dimen.standard_155)).alpha(1F)
     }
 
     private fun renderClosedActions() {
         movieDetailActionFab.animate().rotation(0F)
         movieDetailFavoritesFab.animate().translationY(0F).alpha(0F)
         movieDetailWatchlistFab.animate().translationY(0F).alpha(0F)
+        movieDetailRateFab.animate().translationY(0F).alpha(0F)
     }
 
     private fun renderVisibleActions() {
@@ -115,6 +118,7 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
 
         movieDetailFavoritesFab.setVisible()
         movieDetailWatchlistFab.setVisible()
+        movieDetailRateFab.setVisible()
         movieDetailActionFab.setVisible()
     }
 
@@ -122,6 +126,7 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
         movieDetailActionFab.setInvisible()
         movieDetailFavoritesFab.setInvisible()
         movieDetailWatchlistFab.setInvisible()
+        movieDetailRateFab.setInvisible()
 
         movieDetailActionsLoadingView.setVisible()
     }
@@ -157,12 +162,20 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
             }
         }
 
+        when (movieState.isRated) {
+            true -> movieDetailRateFab.asFilled()
+            false -> movieDetailRateFab.asEmpty()
+        }.also {
+            movieDetailRateFab.asClickable()
+        }
+
 
         movieDetailActionsLoadingView.setInvisible()
 
         movieDetailActionFab.setVisible()
         movieDetailFavoritesFab.setVisible()
         movieDetailWatchlistFab.setVisible()
+        movieDetailRateFab.setVisible()
     }
 
     class MovieDetailsGenreAdapter(private val genres: List<MovieGenreItem>) : RecyclerView.Adapter<MovieDetailsGenreAdapter.ViewHolder>() {
