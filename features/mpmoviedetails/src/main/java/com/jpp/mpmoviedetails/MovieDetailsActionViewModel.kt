@@ -50,10 +50,6 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
      * Called when the view is initialized.
      */
     fun onInit(movieId: Double) {
-        if (currentMovieId == movieId) {
-            // movie data is not being cached locally.
-            return
-        }
         currentMovieId = movieId
         fetchMovieState(movieId)
     }

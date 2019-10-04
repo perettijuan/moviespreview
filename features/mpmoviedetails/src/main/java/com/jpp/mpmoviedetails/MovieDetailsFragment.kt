@@ -83,7 +83,10 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
         when (actionViewState) {
             is MovieDetailActionViewState.ShowLoading -> renderLoadingActions()
             is MovieDetailActionViewState.ShowError -> snackBarNoAction(detailsContent, R.string.unexpected_action_error)
-            is MovieDetailActionViewState.ShowErrorNoConnectivity -> snackBarNoAction(detailsContent, R.string.error_no_network_connection_message)
+            is MovieDetailActionViewState.ShowErrorNoConnectivity -> {
+                enableActions()
+                snackBarNoAction(detailsContent, R.string.error_no_network_connection_message)
+            }
             is MovieDetailActionViewState.ShowMovieState -> renderMovieState(actionViewState)
             is MovieDetailActionViewState.ShowNoMovieState -> renderVisibleActions()
             is MovieDetailActionViewState.ShowUserNotLogged -> snackBar(detailsContent, R.string.account_need_to_login, R.string.login_generic) {
@@ -130,6 +133,11 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
         movieDetailRateFab.setInvisible()
 
         movieDetailActionsLoadingView.setVisible()
+    }
+
+    private fun enableActions() {
+        movieDetailFavoritesFab.asClickable()
+        movieDetailWatchlistFab.asClickable()
     }
 
     private fun renderMovieState(movieState: MovieDetailActionViewState.ShowMovieState) {
