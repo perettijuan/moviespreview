@@ -158,6 +158,13 @@ sealed class MovieDetailActionViewState(val animate: Boolean, val expanded: Bool
      * Shows the view state when there's no movie state to render. i.e.: the user is
      * not logged.
      */
+    data class ShowNoMovieState(val showActionsExpanded: Boolean,
+                                val animateActionsExpanded: Boolean)
+        : MovieDetailActionViewState(animate = animateActionsExpanded, expanded = showActionsExpanded)
+
+    /*
+     * Shows the view state when there's an error and the user needs to reload the data.
+     */
     data class ShowReloadState(val animateActionsExpanded: Boolean)
         : MovieDetailActionViewState(animate = animateActionsExpanded, expanded = false)
 

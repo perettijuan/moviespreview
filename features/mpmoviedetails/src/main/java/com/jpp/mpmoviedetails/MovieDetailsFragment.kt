@@ -89,6 +89,7 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
                 movieDetailActionFab.setInvisible()
                 snackBarNoAction(detailsContent, R.string.unexpected_action_error)
             }
+            is MovieDetailActionViewState.ShowNoMovieState -> renderVisibleActions()
             is MovieDetailActionViewState.ShowMovieState -> {
                 movieDetailReloadActionFab.setInvisible()
                 movieDetailActionFab.setVisible()
@@ -120,6 +121,15 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
         movieDetailFavoritesFab.animate().translationY(0F).alpha(0F)
         movieDetailWatchlistFab.animate().translationY(0F).alpha(0F)
         movieDetailRateFab.animate().translationY(0F).alpha(0F)
+    }
+
+    private fun renderVisibleActions() {
+        movieDetailActionsLoadingView.setInvisible()
+
+        movieDetailFavoritesFab.setVisible()
+        movieDetailWatchlistFab.setVisible()
+        movieDetailRateFab.setVisible()
+        movieDetailActionFab.setVisible()
     }
 
     private fun renderLoadingActions() {

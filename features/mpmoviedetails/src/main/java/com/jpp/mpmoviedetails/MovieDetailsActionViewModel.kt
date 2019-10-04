@@ -35,6 +35,7 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
     init {
         _viewState.addSource(movieDetailsInteractor.movieStateEvents) { event ->
             when (event) {
+                is NoStateFound -> _viewState.value = ShowNoMovieState(false, false)
                 is NotConnectedToNetwork -> _viewState.value = processErrorState()
                 is UserNotLogged -> _viewState.value = processUserNotLogged()
                 is UnknownError -> _viewState.value = processErrorState()
@@ -68,6 +69,10 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
                 is ShowReloadState -> ShowReloadState(currentViewState.expanded)
                 is ShowLoading -> ShowLoading
                 is ShowUserNotLogged -> currentViewState.copy(
+                        animateActionsExpanded = true,
+                        showActionsExpanded = !currentViewState.showActionsExpanded
+                )
+                is ShowNoMovieState -> currentViewState.copy(
                         animateActionsExpanded = true,
                         showActionsExpanded = !currentViewState.showActionsExpanded
                 )
@@ -192,6 +197,9 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
             is ShowMovieState -> {
                 _viewState.value = copyLoadingStateFunction(currentState)
                 withMovieDetailsInteractor { stateUpdateFunction() }
+            }
+            is ShowNoMovieState -> {
+                _viewState.value = ShowUserNotLogged(showActionsExpanded = currentState.expanded, animateActionsExpanded = false)
             }
             is ShowUserNotLogged -> _viewState.value = currentState
         }
