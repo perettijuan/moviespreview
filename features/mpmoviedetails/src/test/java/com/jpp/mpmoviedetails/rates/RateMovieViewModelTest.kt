@@ -33,12 +33,14 @@ class RateMovieViewModelTest {
     private lateinit var movieDetailsInteractor: MovieDetailsInteractor
 
     private val lvInteractorEvents = MutableLiveData<MovieStateEvent>()
+    private val lvRateMovieEvents = MutableLiveData<MovieDetailsInteractor.RateMovieEvent>()
 
     private lateinit var subject: RateMovieViewModel
 
     @BeforeEach
     fun setUp() {
         every { movieDetailsInteractor.movieStateEvents } returns lvInteractorEvents
+        every { movieDetailsInteractor.rateMovieEvents } returns lvRateMovieEvents
 
         subject = RateMovieViewModel(
                 TestMovieDetailCoroutineDispatchers(),
@@ -48,31 +50,19 @@ class RateMovieViewModelTest {
 
     @ParameterizedTest
     @MethodSource("rateMovieEvents")
-    fun `Map interactor events to user messages and exit`(expected: RateMovieUserMessages, pushed: MovieStateEvent) {
+    fun `Map interactor events to user messages and exit`(expected: RateMovieUserMessages, pushed: MovieDetailsInteractor.RateMovieEvent) {
         var userMessagePosted: RateMovieUserMessages? = null
         var postedDestination: Destination? = null
 
-        subject.userMessages.observeWith { userMessage -> userMessagePosted = userMessage }
+        subject.userMessages.observeWith { it.actionIfNotHandled { userMessage -> userMessagePosted = userMessage } }
         subject.navigationEvents.observeWith { it.actionIfNotHandled { destination -> postedDestination = destination } }
 
-        lvInteractorEvents.postValue(pushed)
+        lvRateMovieEvents.postValue(pushed)
 
         assertEquals(expected, userMessagePosted)
         assertEquals(Destination.PreviousDestination, postedDestination)
     }
 
-    @ParameterizedTest
-    @MethodSource("rateMovieEventsErrors")
-    fun `Map interactor events and exit when errors`(pushed: MovieStateEvent) {
-        var postedDestination: Destination? = null
-
-        subject.userMessages.observeForever { }
-        subject.navigationEvents.observeWith { it.actionIfNotHandled { destination -> postedDestination = destination } }
-
-        lvInteractorEvents.postValue(pushed)
-
-        assertEquals(Destination.PreviousDestination, postedDestination)
-    }
 
     @Test
     fun `Should map interactor FetchSuccess event to ViewState`() {
@@ -99,7 +89,7 @@ class RateMovieViewModelTest {
 
         subject.onInit(param)
 
-        lvInteractorEvents.postValue(MovieStateEvent.FetchSuccess(movieState))
+        lvRateMovieEvents.postValue(MovieDetailsInteractor.RateMovieEvent.FetchSuccess(movieState))
 
         assertNotNull(postedViewState)
         assertEquals(View.INVISIBLE, postedViewState?.loadingVisibility)
@@ -136,7 +126,7 @@ class RateMovieViewModelTest {
 
         subject.onInit(param)
 
-        lvInteractorEvents.postValue(MovieStateEvent.FetchSuccess(movieState))
+        lvRateMovieEvents.postValue(MovieDetailsInteractor.RateMovieEvent.FetchSuccess(movieState))
 
         assertNotNull(postedViewState)
         assertEquals(View.INVISIBLE, postedViewState?.loadingVisibility)
@@ -171,7 +161,7 @@ class RateMovieViewModelTest {
         assertEquals("aUrl", postedViewState?.movieImageUrl)
         assertEquals(0.0F, postedViewState?.rating)
 
-        verify { movieDetailsInteractor.fetchMovieState(12.0) }
+        verify { movieDetailsInteractor.fetchMovieRating(12.0) }
     }
 
     @Test
@@ -262,28 +252,21 @@ class RateMovieViewModelTest {
         fun rateMovieEvents() = listOf(
                 arguments(
                         RateMovieUserMessages.RATE_SUCCESS,
-                        MovieStateEvent.RateMovie(true)
+                        MovieDetailsInteractor.RateMovieEvent.RateMovie(true)
                 ),
                 arguments(
                         RateMovieUserMessages.RATE_ERROR,
-                        MovieStateEvent.RateMovie(false)
+                        MovieDetailsInteractor.RateMovieEvent.RateMovie(false)
                 ),
                 arguments(
                         RateMovieUserMessages.DELETE_SUCCESS,
-                        MovieStateEvent.RatingDeleted(true)
+                        MovieDetailsInteractor.RateMovieEvent.RatingDeleted(true)
                 ),
                 arguments(
                         RateMovieUserMessages.DELETE_ERROR,
-                        MovieStateEvent.RatingDeleted(false)
+                        MovieDetailsInteractor.RateMovieEvent.RatingDeleted(false)
                 )
         )
 
-        @JvmStatic
-        fun rateMovieEventsErrors() = listOf(
-                MovieStateEvent.NoStateFound,
-                MovieStateEvent.NotConnectedToNetwork,
-                MovieStateEvent.UserNotLogged,
-                MovieStateEvent.UnknownError
-        )
     }
 }

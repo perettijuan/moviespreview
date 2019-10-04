@@ -184,12 +184,6 @@
                   <entry key="movieDetailsFragment">
                     <value>
                       <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="-615" />
-                            <option name="y" value="-218" />
-                          </Point>
-                        </option>
                         <option name="myPositions">
                           <map>
                             <entry key="rateMovie">
@@ -204,14 +198,7 @@
                   </entry>
                   <entry key="movieRateDialogFragment">
                     <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="-310" />
-                            <option name="y" value="-143" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
+                      <LayoutPositions />
                     </value>
                   </entry>
                 </map>

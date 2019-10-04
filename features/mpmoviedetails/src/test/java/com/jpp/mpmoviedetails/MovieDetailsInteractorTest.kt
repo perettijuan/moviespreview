@@ -177,6 +177,7 @@ class MovieDetailsInteractorTest {
     fun `Should post user not logged when there is no session created on updateFavoriteMovieState`() {
         var eventPosted: MovieStateEvent? = null
 
+        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getCurrentSession() } returns null
 
         subject.movieStateEvents.observeWith { eventPosted = it }
@@ -191,6 +192,7 @@ class MovieDetailsInteractorTest {
         var eventPosted: MovieStateEvent? = null
         val session = mockk<Session>()
 
+        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getCurrentSession() } returns session
         every { accountRepository.getUserAccount(any()) } returns null
 
@@ -208,6 +210,7 @@ class MovieDetailsInteractorTest {
         val userAccount = mockk<UserAccount>()
         val expected = MovieStateEvent.UpdateFavorite(true)
 
+        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getCurrentSession() } returns session
         every { accountRepository.getUserAccount(any()) } returns userAccount
         every { movieStateRepository.updateFavoriteMovieState(any(), any(), any(), any()) } returns true
@@ -224,6 +227,7 @@ class MovieDetailsInteractorTest {
     fun `Should post user not logged when there is no session created on updateWatchlistMovieState`() {
         var eventPosted: MovieStateEvent? = null
 
+        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getCurrentSession() } returns null
 
         subject.movieStateEvents.observeWith { eventPosted = it }
@@ -238,6 +242,7 @@ class MovieDetailsInteractorTest {
         var eventPosted: MovieStateEvent? = null
         val session = mockk<Session>()
 
+        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getCurrentSession() } returns session
         every { accountRepository.getUserAccount(any()) } returns null
 
@@ -255,6 +260,7 @@ class MovieDetailsInteractorTest {
         val userAccount = mockk<UserAccount>()
         val expected = MovieStateEvent.UpdateWatchlist(true)
 
+        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getCurrentSession() } returns session
         every { accountRepository.getUserAccount(any()) } returns userAccount
         every { movieStateRepository.updateWatchlistMovieState(any(), any(), any(), any()) } returns true
@@ -310,17 +316,17 @@ class MovieDetailsInteractorTest {
 
     @Test
     fun `Should rate movie and post result when session and account data available rateMovie`() {
-        var eventPosted: MovieStateEvent? = null
+        var eventPosted: MovieDetailsInteractor.RateMovieEvent? = null
         val session = mockk<Session>()
         val userAccount = mockk<UserAccount>()
-        val expected = MovieStateEvent.RateMovie(true)
+        val expected = MovieDetailsInteractor.RateMovieEvent.RateMovie(true)
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getCurrentSession() } returns session
         every { accountRepository.getUserAccount(any()) } returns userAccount
         every { movieStateRepository.rateMovie(any(), any(), any(), any()) } returns true
 
-        subject.movieStateEvents.observeWith { eventPosted = it }
+        subject.rateMovieEvents.observeWith { eventPosted = it }
 
         subject.rateMovie(12.0, 5.5f)
         assertEquals(expected, eventPosted)
@@ -331,17 +337,17 @@ class MovieDetailsInteractorTest {
 
     @Test
     fun `Should rate move and post error result when session and account data available rateMovie`() {
-        var eventPosted: MovieStateEvent? = null
+        var eventPosted: MovieDetailsInteractor.RateMovieEvent? = null
         val session = mockk<Session>()
         val userAccount = mockk<UserAccount>()
-        val expected = MovieStateEvent.RateMovie(false)
+        val expected = MovieDetailsInteractor.RateMovieEvent.RateMovie(false)
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getCurrentSession() } returns session
         every { accountRepository.getUserAccount(any()) } returns userAccount
         every { movieStateRepository.rateMovie(any(), any(), any(), any()) } returns false
 
-        subject.movieStateEvents.observeWith { eventPosted = it }
+        subject.rateMovieEvents.observeWith { eventPosted = it }
 
         subject.rateMovie(12.0, 5.5f)
         assertEquals(expected, eventPosted)
@@ -351,17 +357,17 @@ class MovieDetailsInteractorTest {
 
     @Test
     fun `Should post NotConnectedToNetwork when trying to rate movie in disconnected state`() {
-        var eventPosted: MovieStateEvent? = null
+        var eventPosted: MovieDetailsInteractor.RateMovieEvent? = null
         val session = mockk<Session>()
         val userAccount = mockk<UserAccount>()
-        val expected = MovieStateEvent.NotConnectedToNetwork
+        val expected = MovieDetailsInteractor.RateMovieEvent.NotConnectedToNetwork
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
         every { sessionRepository.getCurrentSession() } returns session
         every { accountRepository.getUserAccount(any()) } returns userAccount
         every { movieStateRepository.rateMovie(any(), any(), any(), any()) } returns true
 
-        subject.movieStateEvents.observeWith { eventPosted = it }
+        subject.rateMovieEvents.observeWith { eventPosted = it }
 
         subject.rateMovie(12.0, 5.5f)
         assertEquals(expected, eventPosted)
