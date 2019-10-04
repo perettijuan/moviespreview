@@ -1,7 +1,9 @@
 package com.jpp.mpdesign.ext
 
+import android.graphics.PorterDuff
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -45,6 +47,15 @@ fun Fragment.snackBarNoAction(contentView: View,
             view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).typeface = ResourcesCompat.getFont(it, R.font.poppins_bold)
         }.show()
     }
+}
+
+
+fun Fragment.mpToast(@StringRes messageRes: Int) {
+    Toast.makeText(requireContext(), messageRes, Toast.LENGTH_SHORT)
+            .apply {
+                view.background.setColorFilter(getColor(android.R.color.background_dark), PorterDuff.Mode.SRC_IN)
+                view.findViewById<TextView>(android.R.id.message).setTextColor(getColor(android.R.color.white))
+            }.show()
 }
 
 /**
