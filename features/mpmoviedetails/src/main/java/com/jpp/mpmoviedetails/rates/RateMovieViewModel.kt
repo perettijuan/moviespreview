@@ -2,13 +2,14 @@ package com.jpp.mpmoviedetails.rates
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.livedata.HandledEvent
+import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpmoviedetails.MovieDetailsInteractor
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.*
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.RateMovieEvent
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -32,36 +33,31 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _viewState = MediatorLiveData<RateMovieViewState>()
     val viewState: LiveData<RateMovieViewState> get() = _viewState
 
-    private val _userMessages = MediatorLiveData<RateMovieUserMessages>()
-    val userMessages: LiveData<RateMovieUserMessages> get() = _userMessages
+    private val _userMessages = MediatorLiveData<HandledEvent<RateMovieUserMessages>>()
+    val userMessages: LiveData<HandledEvent<RateMovieUserMessages>> get() = _userMessages
 
     private lateinit var currentParam: RateMovieParam
 
     init {
-        _viewState.addSource(movieDetailsInteractor.movieStateEvents) { event ->
+        _viewState.addSource(movieDetailsInteractor.rateMovieEvents) { event ->
             when (event) {
-                is NoStateFound -> navigateTo(Destination.PreviousDestination)
-                is NotConnectedToNetwork -> navigateTo(Destination.PreviousDestination)
-                is UserNotLogged -> navigateTo(Destination.PreviousDestination)
-                is UnknownError -> navigateTo(Destination.PreviousDestination)
-                is FetchSuccess -> processMovieStateUpdate(
+                is RateMovieEvent.NotConnectedToNetwork -> postUserMessageAndExit(RateMovieUserMessages.ERROR_FETCHING_DATA)
+                is RateMovieEvent.UserNotLogged -> postUserMessageAndExit(RateMovieUserMessages.USER_NOT_LOGGED)
+                is RateMovieEvent.UnknownError -> postUserMessageAndExit(RateMovieUserMessages.ERROR_FETCHING_DATA)
+                is RateMovieEvent.FetchSuccess -> processMovieStateUpdate(
                         event.data,
                         currentParam.screenTitle,
                         currentParam.movieImageUrl
                 )
             }
         }
-        _userMessages.addSource(movieDetailsInteractor.movieStateEvents) { event ->
+        _userMessages.addSource(movieDetailsInteractor.rateMovieEvents) { event ->
             when (event) {
-                is NoStateFound -> navigateTo(Destination.PreviousDestination)
-                is NotConnectedToNetwork -> navigateTo(Destination.PreviousDestination)
-                is UserNotLogged -> navigateTo(Destination.PreviousDestination)
-                is UnknownError -> navigateTo(Destination.PreviousDestination)
-                is RateMovie -> postUserMessageAndExit(when (event.success) {
+                is RateMovieEvent.RateMovie -> postUserMessageAndExit(when (event.success) {
                     true -> RateMovieUserMessages.RATE_SUCCESS
                     false -> RateMovieUserMessages.RATE_ERROR
                 })
-                is RatingDeleted -> postUserMessageAndExit(when (event.success) {
+                is RateMovieEvent.RatingDeleted -> postUserMessageAndExit(when (event.success) {
                     true -> RateMovieUserMessages.DELETE_SUCCESS
                     false -> RateMovieUserMessages.DELETE_ERROR
                 })
@@ -116,7 +112,7 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * based on the result posted by the interactor.
      */
     private fun fetchMovieState(movieId: Double, movieTitle: String, movieImageUrl: String) {
-        withMovieDetailsInteractor { fetchMovieState(movieId) }
+        withMovieDetailsInteractor { fetchMovieRating(movieId) }
         _viewState.value = RateMovieViewState.showLoading(
                 movieTitle,
                 movieImageUrl
@@ -152,7 +148,7 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
      * Posts the provided [message] to [userMessages] and exists the current flow.
      */
     private fun postUserMessageAndExit(message: RateMovieUserMessages) {
-        _userMessages.value = message
+        _userMessages.value = of(message)
         navigateTo(Destination.PreviousDestination)
     }
 

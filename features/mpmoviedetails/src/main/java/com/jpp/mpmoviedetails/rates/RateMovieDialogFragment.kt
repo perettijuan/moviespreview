@@ -30,8 +30,10 @@ class RateMovieDialogFragment : MPDialogFragment<RateMovieViewModel>() {
                 viewBinding.viewState = viewState
             })
 
-            userMessages.observe(viewLifecycleOwner, Observer { message ->
-                Toast.makeText(requireContext(), message.messageRes, Toast.LENGTH_SHORT).show()
+            userMessages.observe(viewLifecycleOwner, Observer {
+                it.actionIfNotHandled { message ->
+                    Toast.makeText(requireContext(), message.messageRes, Toast.LENGTH_SHORT).show()
+                }
             })
 
             onInit(RateMovieParam.fromArguments(arguments))
