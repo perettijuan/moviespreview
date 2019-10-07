@@ -4,7 +4,6 @@
     xmlns:bind="http://schemas.android.com/tools">
 
     <ScrollView
-        android:id="@+id/detailsContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
