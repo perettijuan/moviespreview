@@ -18,7 +18,6 @@ import com.jpp.mpmoviedetails.NavigationMovieDetails.movieId
 import com.jpp.mpmoviedetails.databinding.FragmentMovieDetailsBinding
 import com.jpp.mpmoviedetails.databinding.ListItemMovieDetailGenreBinding
 import kotlinx.android.synthetic.main.fragment_movie_details.*
-import kotlinx.android.synthetic.main.layout_movie_detail_content.*
 
 /**
  * Fragment used to show the details of a particular movie selected by the user.
@@ -40,6 +39,7 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
 
     private lateinit var viewBinding: FragmentMovieDetailsBinding
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie_details, container, false)
         return viewBinding.root
@@ -54,8 +54,8 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
                 viewBinding.viewState = viewState
                 viewBinding.executePendingBindings()
 
-                detailGenresRv.layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
-                detailGenresRv.adapter = MovieDetailsGenreAdapter(viewState.contentViewState.genres)
+                viewBinding.detailGenresRv?.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+                viewBinding.detailGenresRv?.adapter = MovieDetailsGenreAdapter(viewState.contentViewState.genres)
             })
 
             onInit(MovieDetailsParam.fromArguments(arguments))
@@ -66,12 +66,12 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
             onInit(movieId(arguments).toDouble())
         }
 
-        movieDetailActionFab.setOnClickListener { withActionsViewModel { onMainActionSelected() } }
-        movieDetailFavoritesFab.setOnClickListener { withActionsViewModel { onFavoriteStateChanged() } }
-        movieDetailWatchlistFab.setOnClickListener { withActionsViewModel { onWatchlistStateChanged() } }
-        detailCreditsSelectionView.setOnClickListener { withViewModel { onMovieCreditsSelected() } }
-        movieDetailRateFab.setOnClickListener { withViewModel { onRateMovieSelected() } }
-        movieDetailReloadActionFab.setOnClickListener { withActionsViewModel { onRetry() } }
+        viewBinding.movieDetailActionFab.setOnClickListener { withActionsViewModel { onMainActionSelected() } }
+        viewBinding.movieDetailFavoritesFab.setOnClickListener { withActionsViewModel { onFavoriteStateChanged() } }
+        viewBinding.movieDetailWatchlistFab.setOnClickListener { withActionsViewModel { onWatchlistStateChanged() } }
+        viewBinding.detailCreditsSelectionView?.setOnClickListener { withViewModel { onMovieCreditsSelected() } }
+        viewBinding.movieDetailRateFab.setOnClickListener { withViewModel { onRateMovieSelected() } }
+        viewBinding.movieDetailReloadActionFab.setOnClickListener { withActionsViewModel { onRetry() } }
     }
 
 
