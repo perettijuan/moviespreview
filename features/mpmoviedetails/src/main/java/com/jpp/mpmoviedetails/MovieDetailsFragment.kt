@@ -87,7 +87,7 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
                 disableActions()
                 movieDetailReloadActionFab.setVisible()
                 movieDetailActionFab.setInvisible()
-                snackBarNoAction(detailsContent, R.string.unexpected_action_error)
+                view?.let { snackBarNoAction(it, R.string.unexpected_action_error) }
             }
             is MovieDetailActionViewState.ShowNoMovieState -> renderVisibleActions()
             is MovieDetailActionViewState.ShowMovieState -> {
