@@ -35,7 +35,6 @@ class PersonFragment : MPFragment<PersonViewModel>() {
         withViewModel {
             viewState.observe(this@PersonFragment.viewLifecycleOwner, Observer { viewState ->
                 viewBinding.viewState = viewState
-                //TODO JPP updateScreenTitle(viewState.screenTitle)
             })
 
             onInit(PersonParam.fromArguments(arguments))
