@@ -3,6 +3,7 @@
 
     <!-- Custom attributes declared to be able to implement Dynamic Themes
          ref = https://medium.com/mindorks/mastering-android-themes-chapter-3-26a5b7773b6b -->
+
     <attr name="mpActionBarHeightExpanded" format="reference" />
     <attr name="mpActionBarHeightNormal" format="reference" />
     <attr name="mpMovieItemHeaderImageWidth" format="reference" />
