@@ -70,6 +70,7 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
         viewBinding.movieDetailFavoritesFab.setOnClickListener { withActionsViewModel { onFavoriteStateChanged() } }
         viewBinding.movieDetailWatchlistFab.setOnClickListener { withActionsViewModel { onWatchlistStateChanged() } }
         viewBinding.detailCreditsSelectionView?.setOnClickListener { withViewModel { onMovieCreditsSelected() } }
+        viewBinding.movieDetailContent?.detailCreditsSelectionView?.setOnClickListener { withViewModel { onMovieCreditsSelected() } }
         viewBinding.movieDetailRateFab.setOnClickListener { withViewModel { onRateMovieSelected() } }
         viewBinding.movieDetailReloadActionFab.setOnClickListener { withActionsViewModel { onRetry() } }
     }
