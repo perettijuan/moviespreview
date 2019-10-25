@@ -32,8 +32,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         vectorDrawables.useSupportLibrary = true
-        versionCode 3
-        versionName "1.5"
+        versionCode 4
+        versionName "1.6"
         buildConfigField 'String', 'API_KEY', '"eddf6980a6d7dadd72386f55f94ab571"'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
