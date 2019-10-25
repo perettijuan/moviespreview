@@ -1,47 +1,54 @@
-## Build status
-[![Build Status](https://travis-ci.org/perettijuan/moviespreview.svg?branch=master)](https://travis-ci.org/perettijuan/moviespreview)
+## MoviesPreview [![Build Status](https://travis-ci.org/perettijuan/moviespreview.svg?branch=master)](https://travis-ci.org/perettijuan/moviespreview)
+
+MoviesPreview is a typical Android Application that queries The Movie DB API and presents the data available to the user. The user might do different things with that data, besides browsing it. But mainly, MoviesPreview is an ongoing effort to expose my ideas and to try to stay up to date with the development of Android Applications.
+
+
+## Architecture
+
+Check the [Medium posts](https://medium.com/@peretti.juan/moviespreview-the-android-app-architecture-a19221094292) to stay up to date
+
 
 ## Features
 
 <details>
     <summary>Movie list</summary>
 
-[![Home gif](https://github.com/perettijuan/moviespreview/blob/master/art/home.gif)](https://github.com/perettijuan/moviespreview/blob/master/art/home.gif)
+[![Lists gif](https://github.com/perettijuan/moviespreview/blob/develop/art/movieList.gif)](https://github.com/perettijuan/moviespreview/blob/develop/art/movieList.gif)
 
 </details>
 
 <details>
     <summary>Sections</summary>
 
-[![Sections gif](https://github.com/perettijuan/moviespreview/blob/master/art/sections.gif)](https://github.com/perettijuan/moviespreview/blob/master/art/sections.gif)
+[![Sections gif](https://github.com/perettijuan/moviespreview/blob/develop/art/sections.gif)](https://github.com/perettijuan/moviespreview/blob/develop/art/sections.gif)
 
 </details>
 
 <details>
     <summary>Search</summary>
 
-[![Search gif](https://github.com/perettijuan/moviespreview/blob/master/art/search.gif)](https://github.com/perettijuan/moviespreview/blob/master/art/search.gif)
+[![Search gif](https://github.com/perettijuan/moviespreview/blob/develop/art/search.gif)](https://github.com/perettijuan/moviespreview/blob/develop/art/search.gif)
 
 </details>
 
 <details>
     <summary>Movie details</summary>
 
-[![Details gif](https://github.com/perettijuan/moviespreview/blob/master/art/details.gif)](https://github.com/perettijuan/moviespreview/blob/master/art/details.gif)
+[![Details gif](https://github.com/perettijuan/moviespreview/blob/develop/art/movieDetails.gif)](https://github.com/perettijuan/moviespreview/blob/develop/art/movieDetails.gif)
 
 </details>
 
 <details>
     <summary>Credits</summary>
 
-[![Credits gif](https://github.com/perettijuan/moviespreview/blob/master/art/credits.gif)](https://github.com/perettijuan/moviespreview/blob/master/art/credits.gif)
+[![Credits gif](https://github.com/perettijuan/moviespreview/blob/develop/art/movieCredits.gif)](https://github.com/perettijuan/moviespreview/blob/develop/art/movieCredits.gif)
 
 </details>
 
 <details>
     <summary>Bio</summary>
 
-[![Bio gif](https://github.com/perettijuan/moviespreview/blob/master/art/bio.gif)](https://github.com/perettijuan/moviespreview/blob/master/art/bio.gif)
+[![Bio gif](https://github.com/perettijuan/moviespreview/blob/develop/art/bio.gif)](https://github.com/perettijuan/moviespreview/blob/develop/art/bio.gif)
 
 </details>
 
@@ -49,13 +56,30 @@
 <details>
     <summary>About</summary>
 
-[![About gif](https://github.com/perettijuan/moviespreview/blob/master/art/about.gif)](https://github.com/perettijuan/moviespreview/blob/master/art/about.gif)
+[![About gif](https://github.com/perettijuan/moviespreview/blob/develop/art/about.gif)](https://github.com/perettijuan/moviespreview/blob/develop/art/about.gif)
 
 </details>
 
-## High Level Architecture
+<details>
+    <summary>Login</summary>
 
-[![HLArch](https://github.com/perettijuan/moviespreview/blob/master/art/MoviesPreview-HighLevelArchitecture.png)](https://github.com/perettijuan/moviespreview/blob/master/art/MoviesPreview-HighLevelArchitecture.png)
+[![About gif](https://github.com/perettijuan/moviespreview/blob/develop/art/login.gif)](https://github.com/perettijuan/moviespreview/blob/develop/art/login.gif)
+
+</details>
+
+<details>
+    <summary>Account</summary>
+
+[![About gif](https://github.com/perettijuan/moviespreview/blob/develop/art/userAccount.gif)](https://github.com/perettijuan/moviespreview/blob/develop/art/userAccount.gif)
+
+</details>
+
+<details>
+    <summary>Actions</summary>
+
+[![Actions gif](https://github.com/perettijuan/moviespreview/blob/develop/art/movieActions.gif)](https://github.com/perettijuan/moviespreview/blob/develop/art/movieActions.gif)
+
+</details>
 
 ## Libraries and Stack
 
@@ -74,5 +98,4 @@
  - [MockK](https://github.com/mockk/mockk) 
 
 ## Testing
-- Unit testing with JUnit 5 is appliead to all layers (ViewModels, UseCases, Repositories).
-- Espresso testing is applied to each individal screen.
+- TODO

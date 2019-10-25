@@ -54,8 +54,13 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
                 viewBinding.viewState = viewState
                 viewBinding.executePendingBindings()
 
+                //horizontal
                 viewBinding.detailGenresRv?.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
                 viewBinding.detailGenresRv?.adapter = MovieDetailsGenreAdapter(viewState.contentViewState.genres)
+
+                // vertical
+                viewBinding.movieDetailContent?.detailGenresRv?.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+                viewBinding.movieDetailContent?.detailGenresRv?.adapter = MovieDetailsGenreAdapter(viewState.contentViewState.genres)
             })
 
             onInit(MovieDetailsParam.fromArguments(arguments))
@@ -70,6 +75,7 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
         viewBinding.movieDetailFavoritesFab.setOnClickListener { withActionsViewModel { onFavoriteStateChanged() } }
         viewBinding.movieDetailWatchlistFab.setOnClickListener { withActionsViewModel { onWatchlistStateChanged() } }
         viewBinding.detailCreditsSelectionView?.setOnClickListener { withViewModel { onMovieCreditsSelected() } }
+        viewBinding.movieDetailContent?.detailCreditsSelectionView?.setOnClickListener { withViewModel { onMovieCreditsSelected() } }
         viewBinding.movieDetailRateFab.setOnClickListener { withViewModel { onRateMovieSelected() } }
         viewBinding.movieDetailReloadActionFab.setOnClickListener { withActionsViewModel { onRetry() } }
     }
