@@ -12,7 +12,6 @@ import dagger.Provides
 class DomainLayerModule {
 
     @Provides
-    fun providesImagesPathInteractor(configurationRepository: ConfigurationRepository)
-            : ImagesPathInteractor = ImagesPathInteractor.Impl(configurationRepository)
-
+    fun providesImagesPathInteractor(configurationRepository: ConfigurationRepository):
+            ImagesPathInteractor = ImagesPathInteractor.Impl(configurationRepository)
 }

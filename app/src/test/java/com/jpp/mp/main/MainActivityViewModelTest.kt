@@ -33,13 +33,12 @@ class MainActivityViewModelTest {
         subject = MainActivityViewModel(languageMonitor, languageRepository)
     }
 
-
     @ParameterizedTest
     @MethodSource("navigationEvents")
     fun `Should post navigation event`(destination: Destination, expectedEvent: ModuleNavigationEvent) {
         var postedEvent: ModuleNavigationEvent? = null
 
-        subject.moduleNavEvents.observeWith {it.actionIfNotHandled {  event -> postedEvent = event } }
+        subject.moduleNavEvents.observeWith { it.actionIfNotHandled { event -> postedEvent = event } }
 
         subject.onRequestToNavigateToDestination(destination)
 
@@ -58,7 +57,6 @@ class MainActivityViewModelTest {
         assertEquals(expectedViewState, postedViewState)
     }
 
-
     @Test
     fun `Should start monitoring in onInit`() {
         subject.onInit()
@@ -72,7 +70,6 @@ class MainActivityViewModelTest {
 
         verify { languageRepository.syncPlatformLanguage() }
     }
-
 
     companion object {
         @JvmStatic

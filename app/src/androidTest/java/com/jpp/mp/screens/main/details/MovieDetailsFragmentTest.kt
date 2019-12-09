@@ -1,26 +1,9 @@
 package com.jpp.mp.screens.main.details
 
-import android.os.Bundle
-import androidx.lifecycle.MutableLiveData
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
-import com.jpp.mp.R
-import com.jpp.mp.assertions.*
-import com.jpp.mp.di.TestMPViewModelFactory
-import com.jpp.mp.extras.launch
-import com.jpp.mp.testutils.FragmentTestActivity
-import io.mockk.every
-import io.mockk.mockk
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
 
-//TODO JPP re-enable espresso tests
+// TODO JPP re-enable espresso tests
 @RunWith(AndroidJUnit4::class)
 class MovieDetailsFragmentTest {
 
@@ -40,13 +23,13 @@ class MovieDetailsFragmentTest {
 //
 //    private fun inject(fragment: MovieDetailsFragment) {
 //
-////        val viewModel = mockk<MovieDetailsViewModel>(relaxed = true)
-////        every { viewModel.viewState() } returns viewStateLiveData
-////        every { actionsViewModel.actionsState() } returns actionsStateLiveData
-////        fragment.viewModelFactory = TestMPViewModelFactory().apply {
-////            addVm(viewModel)
-////            addVm(actionsViewModel)
-////        }
+// //        val viewModel = mockk<MovieDetailsViewModel>(relaxed = true)
+// //        every { viewModel.viewState() } returns viewStateLiveData
+// //        every { actionsViewModel.actionsState() } returns actionsStateLiveData
+// //        fragment.viewModelFactory = TestMPViewModelFactory().apply {
+// //            addVm(viewModel)
+// //            addVm(actionsViewModel)
+// //        }
 //    }
 //
 //    private val viewStateLiveData = MutableLiveData<MovieDetailsViewState>()
@@ -98,39 +81,39 @@ class MovieDetailsFragmentTest {
 //
 //    @Test
 //    fun shouldShowMovieDetails() {
-////        val genres = listOf(
-////                MovieGenreItem.Action,
-////                MovieGenreItem.Crime
-////        )
-////        val movieDetails = UiMovieDetails(
-////                movieTitle = "aMovie",
-////                overview = "anOverview",
-////                releaseDate = "aReleaseDate",
-////                genres = genres,
-////                voteCount = 200.toDouble(),
-////                voteAverage = 100F,
-////                popularity = 1.2F
-////        )
-////
-////        launchAndInjectFragment()
-////
-////        viewStateLiveData.postValue(MovieDetailsViewState.ShowDetail(movieDetails))
-////
-////        onDetailsErrorView().assertNotDisplayed()
-////        onDetailsLoadingView().assertNotDisplayed()
-////
-////        onDetailsContentView().assertDisplayed()
-////        onOverviewView().assertWithText(movieDetails.overview)
-////        onPopularityView().assertWithText(movieDetails.popularity.toString())
-////        onVoteCountView().assertWithText(movieDetails.voteCount.toString())
-////        onReleaseView().assertWithText(movieDetails.releaseDate)
-////        onGenresView().assertItemCount(genres.size)
-////
-////        onView(withViewInRecyclerView(R.id.detailsGenresRv, 0, R.id.genreListItemTxt))
-////                .check(ViewAssertions.matches(ViewMatchers.withText(genres[0].name)))
-////
-////        onView(withViewInRecyclerView(R.id.detailsGenresRv, 1, R.id.genreListItemTxt))
-////                .check(ViewAssertions.matches(ViewMatchers.withText(genres[1].name)))
+// //        val genres = listOf(
+// //                MovieGenreItem.Action,
+// //                MovieGenreItem.Crime
+// //        )
+// //        val movieDetails = UiMovieDetails(
+// //                movieTitle = "aMovie",
+// //                overview = "anOverview",
+// //                releaseDate = "aReleaseDate",
+// //                genres = genres,
+// //                voteCount = 200.toDouble(),
+// //                voteAverage = 100F,
+// //                popularity = 1.2F
+// //        )
+// //
+// //        launchAndInjectFragment()
+// //
+// //        viewStateLiveData.postValue(MovieDetailsViewState.ShowDetail(movieDetails))
+// //
+// //        onDetailsErrorView().assertNotDisplayed()
+// //        onDetailsLoadingView().assertNotDisplayed()
+// //
+// //        onDetailsContentView().assertDisplayed()
+// //        onOverviewView().assertWithText(movieDetails.overview)
+// //        onPopularityView().assertWithText(movieDetails.popularity.toString())
+// //        onVoteCountView().assertWithText(movieDetails.voteCount.toString())
+// //        onReleaseView().assertWithText(movieDetails.releaseDate)
+// //        onGenresView().assertItemCount(genres.size)
+// //
+// //        onView(withViewInRecyclerView(R.id.detailsGenresRv, 0, R.id.genreListItemTxt))
+// //                .check(ViewAssertions.matches(ViewMatchers.withText(genres[0].name)))
+// //
+// //        onView(withViewInRecyclerView(R.id.detailsGenresRv, 1, R.id.genreListItemTxt))
+// //                .check(ViewAssertions.matches(ViewMatchers.withText(genres[1].name)))
 //    }
 //
 //    @Test
@@ -152,5 +135,4 @@ class MovieDetailsFragmentTest {
 //    private fun onReleaseView() = onView(withId(R.id.detailsReleaseDateContentTxt))
 //    private fun onGenresView() = onView(withId(R.id.detailsGenresRv))
 //    private fun onFavoritesButton() = onView(withId(R.id.favActionButton))
-
 }

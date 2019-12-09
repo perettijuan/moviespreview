@@ -10,7 +10,6 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 
-
 /**
  * ViewAssertion to count the number of items in a RecyclerView.
  */
@@ -24,13 +23,14 @@ fun itemCount(expectedItemCount: Int): ViewAssertion = ViewAssertion { view, noV
     assertThat(adapter?.itemCount, `is`(expectedItemCount))
 }
 
-
 /**
  * Matches a View in a RecyclerView at the given [position] with the provided [targetViewId].
  */
-fun withViewInRecyclerView(recyclerViewId: Int,
-                           position: Int,
-                           targetViewId: Int): Matcher<View> = object : TypeSafeMatcher<View>() {
+fun withViewInRecyclerView(
+    recyclerViewId: Int,
+    position: Int,
+    targetViewId: Int
+): Matcher<View> = object : TypeSafeMatcher<View>() {
 
     private lateinit var resources: Resources
     private var childView: View? = null
@@ -50,7 +50,6 @@ fun withViewInRecyclerView(recyclerViewId: Int,
                 return false
             }
         }
-
 
         return if (targetViewId == -1) {
             item == childView

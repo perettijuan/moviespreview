@@ -14,7 +14,10 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -96,7 +99,6 @@ class NavigationHeaderViewModelTest {
         assertEquals(View.VISIBLE, viewStatePosted?.accountViewState?.avatarViewState?.avatarVisibility)
         assertEquals(View.GONE, viewStatePosted?.accountViewState?.avatarViewState?.defaultLetterVisibility)
         assertEquals(View.VISIBLE, viewStatePosted?.detailsViewState?.visibility)
-
     }
 
     @Test
@@ -129,7 +131,6 @@ class NavigationHeaderViewModelTest {
         assertEquals(View.VISIBLE, viewStatePosted?.accountViewState?.avatarViewState?.defaultLetterVisibility)
         assertEquals("A", viewStatePosted?.accountViewState?.avatarViewState?.defaultLetter)
         assertEquals(View.VISIBLE, viewStatePosted?.detailsViewState?.visibility)
-
     }
 
     @Test

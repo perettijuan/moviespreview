@@ -6,7 +6,15 @@ import androidx.lifecycle.ViewModel
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mp.common.navigation.Destination
-import com.jpp.mp.common.navigation.Destination.*
+import com.jpp.mp.common.navigation.Destination.InnerDestination
+import com.jpp.mp.common.navigation.Destination.MPAccount
+import com.jpp.mp.common.navigation.Destination.MPCredits
+import com.jpp.mp.common.navigation.Destination.MPMovieDetails
+import com.jpp.mp.common.navigation.Destination.MPPerson
+import com.jpp.mp.common.navigation.Destination.MPSearch
+import com.jpp.mp.common.navigation.Destination.MovieListReached
+import com.jpp.mp.common.navigation.Destination.PreviousDestination
+import com.jpp.mp.common.navigation.Destination.ReachedDestination
 import com.jpp.mpdata.datasources.language.LanguageMonitor
 import com.jpp.mpdomain.repository.LanguageRepository
 import javax.inject.Inject
@@ -26,8 +34,10 @@ import javax.inject.Inject
  * and asks the Activity to update the Action Bar's movieTitle.
  *
  */
-class MainActivityViewModel @Inject constructor(private val languageMonitor: LanguageMonitor,
-                                                private val languageRepository: LanguageRepository) : ViewModel() {
+class MainActivityViewModel @Inject constructor(
+    private val languageMonitor: LanguageMonitor,
+    private val languageRepository: LanguageRepository
+) : ViewModel() {
 
     private val _viewState = MutableLiveData<MainActivityViewState>()
     val viewState: LiveData<MainActivityViewState> get() = _viewState

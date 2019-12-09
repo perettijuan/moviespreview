@@ -2,7 +2,9 @@ package com.jpp.mp.main.movies
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.*
+import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.NotConnectedToNetwork
+import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.UnknownError
+import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.UserChangedLanguage
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
@@ -22,10 +24,11 @@ import javax.inject.Inject
  *    in the paging library, where a callback needs to be provided - instead of using
  *    a reactive approach.
  */
-class MovieListInteractor @Inject constructor(private val moviePageRepository: MoviePageRepository,
-                                              private val connectivityRepository: ConnectivityRepository,
-                                              private val languageRepository: LanguageRepository) {
-
+class MovieListInteractor @Inject constructor(
+    private val moviePageRepository: MoviePageRepository,
+    private val connectivityRepository: ConnectivityRepository,
+    private val languageRepository: LanguageRepository
+) {
 
     /**
      * Represents all the events that can be posted by the interactor as response

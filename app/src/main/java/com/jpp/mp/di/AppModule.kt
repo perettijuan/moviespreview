@@ -21,5 +21,4 @@ class AppModule(private val appInstance: MPApp) {
     @Provides
     @Singleton
     fun providesCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersImpl()
-
 }

@@ -3,7 +3,7 @@ package com.jpp.mp.screens.main.about
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.runner.RunWith
 
-//TODO JPP re-enable espresso tests
+// TODO JPP re-enable espresso tests
 @RunWith(AndroidJUnit4::class)
 class AboutFragmentTest {
 //

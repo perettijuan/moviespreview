@@ -85,7 +85,7 @@ jobs:
           path: features/mpperson/mpdomain/build/test-results
       - run:
           name: Run app Module Unit Tests
-          command: ./gradlew lint test
+          command: ./gradlew lint ktlint test
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: app/build/reports
           destination: reports

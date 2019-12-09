@@ -1,6 +1,5 @@
 package com.jpp.mp.screens.main.search
 
-
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -8,20 +7,23 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.jpp.mp.R
-import com.jpp.mp.assertions.*
+import com.jpp.mp.assertions.assertDisplayed
+import com.jpp.mp.assertions.assertItemCount
+import com.jpp.mp.assertions.assertNotDisplayed
+import com.jpp.mp.assertions.assertWithText
+import com.jpp.mp.assertions.withViewInRecyclerView
 import com.jpp.mp.testutils.FragmentTestActivity
 import com.jpp.mpdomain.SearchPage
 import com.jpp.mpdomain.SearchResult
+import com.jpp.mpsearch.SearchViewState
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-
-//TODO JPP bring back espresso tests
+// TODO JPP bring back espresso tests
 @RunWith(AndroidJUnit4::class)
 class SearchFragmentIntegrationTest {
-
 
     @get:Rule
     val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java, true, false) {
@@ -50,9 +52,8 @@ class SearchFragmentIntegrationTest {
 //            //addVm(searchViewViewModel)
 //        }
 
-    //searchFragment.viewModelFactory = vmFactory
+    // searchFragment.viewModelFactory = vmFactory
 //    }
-
 
 //    private val searchUseCase = mockk<SearchUseCase>()
 //    private val configSearchResultUseCase = mockk<ConfigSearchResultUseCase>()
@@ -73,7 +74,7 @@ class SearchFragmentIntegrationTest {
 //        every { searchUseCase.search(any(), any()) } answers { SearchUseCaseResult.Success(pages[arg(1)]) }
 //        every { configSearchResultUseCase.configure(any(), any()) } answers { arg(1) }
 
-        //searchViewViewModel.search("aQuery")
+        // searchViewViewModel.search("aQuery")
 
         waitForDoneSearching()
 
@@ -108,9 +109,9 @@ class SearchFragmentIntegrationTest {
     fun shouldShowUnknownError() {
 //        every { searchUseCase.search(any(), 1) } answers { SearchUseCaseResult.ErrorUnknown }
 
-        //searchViewViewModel.search("aQuery")
+        // searchViewViewModel.search("aQuery")
 
-        waitForViewState(SearchViewState.ErrorUnknown)
+//        waitForViewState(SearchViewState.ErrorUnknown)
 
         onErrorSearchView().assertDisplayed()
         onView(withId(R.id.errorTitleTextView)).assertWithText(R.string.error_unexpected_error_message)
@@ -125,9 +126,9 @@ class SearchFragmentIntegrationTest {
     fun shouldShowConnectivityError() {
 //        every { searchUseCase.search(any(), 1) } answers { SearchUseCaseResult.ErrorNoConnectivity }
 
-        //searchViewViewModel.search("aQuery")
+        // searchViewViewModel.search("aQuery")
 
-        waitForViewState(SearchViewState.ErrorNoConnectivity)
+//        waitForViewState(SearchViewState.ErrorNoConnectivity)
 
         onErrorSearchView().assertDisplayed()
         onView(withId(R.id.errorTitleTextView)).assertWithText(R.string.error_no_network_connection_message)
@@ -138,12 +139,11 @@ class SearchFragmentIntegrationTest {
         onResultsRecyclerView().assertNotDisplayed()
     }
 
-
     @Test
     fun shouldShowEmptySearchView() {
 //        every { searchUseCase.search(any(), any()) } answers { SearchUseCaseResult.Success(emptySearchPage()) }
 
-        //searchViewViewModel.search("aQuery")
+        // searchViewViewModel.search("aQuery")
 
         waitForEmptySearch()
 
@@ -154,7 +154,6 @@ class SearchFragmentIntegrationTest {
         onLoadingSearchView().assertNotDisplayed()
         onResultsRecyclerView().assertNotDisplayed()
     }
-
 
     private fun waitForDoneSearching() {
 //        ConditionWatcher.waitForCondition(object : Instruction() {
@@ -218,7 +217,6 @@ class SearchFragmentIntegrationTest {
             return listOfPages
         }
 
-
         /**
          * Creates a list of 10 [SearchResult] using the provided [page] element
          * as suffix for each string value.
@@ -248,8 +246,5 @@ class SearchFragmentIntegrationTest {
 
             return results
         }
-
     }
-
-
 }
