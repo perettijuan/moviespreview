@@ -21,7 +21,14 @@ jobs:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
-          name: Run Tests
+          name: Run mpcommon Module Unit Tests
+          command: ./gradlew :mpcommon:test
+            - store_artifacts:
+                path: mpcommon/build/reports
+            - store_test_results:
+                path: mpcommon/build/test-results
+      - run:
+          name: Run app Module Unit Tests
           command: ./gradlew lint test
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: app/build/reports
