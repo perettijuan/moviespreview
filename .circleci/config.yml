@@ -23,10 +23,24 @@ jobs:
       - run:
           name: Run mpcommon Module Unit Tests
           command: ./gradlew :mpcommon:test
-            - store_artifacts:
-                path: mpcommon/build/reports
-            - store_test_results:
-                path: mpcommon/build/test-results
+      - store_artifacts:
+          path: mpcommon/build/reports
+      - store_test_results:
+          path: mpcommon/build/test-results
+      - run:
+          name: Run mpdata Module Unit Tests
+          command: ./gradlew :mpdata:test
+      - store_artifacts:
+          path: mpdata/build/reports
+      - store_test_results:
+          path: mpdata/build/test-results
+      - run:
+          name: Run mpdomain Module Unit Tests
+          command: ./gradlew :mpdomain:test
+      - store_artifacts:
+          path: mpdomain/build/reports
+      - store_test_results:
+          path: mpdomain/build/test-results
       - run:
           name: Run app Module Unit Tests
           command: ./gradlew lint test
