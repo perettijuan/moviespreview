@@ -25,7 +25,6 @@ class LanguageMonitorTest {
         subject = LanguageMonitor.Impl(context)
     }
 
-
     @Test
     fun `Should invoke lambda when language changed`() {
         val bcReceiverSlot = slot<BroadcastReceiver>()

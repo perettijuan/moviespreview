@@ -28,7 +28,6 @@ interface LanguageMonitor {
      */
     fun addListener(languageChange: () -> Unit)
 
-
     class Impl(private val context: Context) : LanguageMonitor {
 
         private val listeners = mutableListOf<() -> Unit>()

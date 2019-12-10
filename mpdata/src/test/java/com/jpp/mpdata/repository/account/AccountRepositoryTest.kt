@@ -2,19 +2,16 @@ package com.jpp.mpdata.repository.account
 
 import com.jpp.mpdata.datasources.account.AccountApi
 import com.jpp.mpdata.datasources.account.AccountDb
-import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.Session
-import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.repository.AccountRepository
 import com.jpp.mptestutils.InstantTaskExecutorExtension
-import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -46,7 +43,6 @@ class AccountRepositoryTest {
         assertEquals(expected, actual)
         verify(exactly = 0) { accountApi.getUserAccountInfo(any()) }
     }
-
 
     @Test
     fun `Should update DB if data fetched from API`() {

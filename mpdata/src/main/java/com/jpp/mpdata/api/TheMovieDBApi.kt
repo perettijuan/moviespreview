@@ -1,8 +1,22 @@
 package com.jpp.mpdata.api
 
-import com.jpp.mpdomain.*
+import com.jpp.mpdomain.AccessToken
+import com.jpp.mpdomain.AppConfiguration
+import com.jpp.mpdomain.Credits
+import com.jpp.mpdomain.MovieDetail
+import com.jpp.mpdomain.MoviePage
+import com.jpp.mpdomain.MovieState
+import com.jpp.mpdomain.Person
+import com.jpp.mpdomain.SearchPage
+import com.jpp.mpdomain.Session
+import com.jpp.mpdomain.UserAccount
 import retrofit2.Call
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 /**
  * API definition to use with Retrofit in order to execute requests to the backend.
@@ -23,10 +37,12 @@ interface TheMovieDBApi {
      * [region] Specify a ISO 3166-1 code to filter release dates. Must be uppercase. - Optional.
      */
     @GET("movie/now_playing")
-    fun getNowPlaying(@Query("page") page: Int,
-                      @Query("api_key") api_key: String,
-                      @Query("language") language: String? = null,
-                      @Query("region") region: String? = null): Call<MoviePage>
+    fun getNowPlaying(
+        @Query("page") page: Int,
+        @Query("api_key") api_key: String,
+        @Query("language") language: String? = null,
+        @Query("region") region: String? = null
+    ): Call<MoviePage>
 
     /**
      * Retrieves the list of most popular movies.
@@ -36,10 +52,12 @@ interface TheMovieDBApi {
      * [region] Specify a ISO 3166-1 code to filter release dates. Must be uppercase. - Optional.
      */
     @GET("movie/popular")
-    fun getPopular(@Query("page") page: Int,
-                   @Query("api_key") api_key: String,
-                   @Query("language") language: String? = null,
-                   @Query("region") region: String? = null): Call<MoviePage>
+    fun getPopular(
+        @Query("page") page: Int,
+        @Query("api_key") api_key: String,
+        @Query("language") language: String? = null,
+        @Query("region") region: String? = null
+    ): Call<MoviePage>
 
     /**
      * Retrieves the list of top rated movies.
@@ -49,10 +67,12 @@ interface TheMovieDBApi {
      * [region] Specify a ISO 3166-1 code to filter release dates. Must be uppercase. - Optional.
      */
     @GET("movie/top_rated")
-    fun getTopRated(@Query("page") page: Int,
-                    @Query("api_key") api_key: String,
-                    @Query("language") language: String? = null,
-                    @Query("region") region: String? = null): Call<MoviePage>
+    fun getTopRated(
+        @Query("page") page: Int,
+        @Query("api_key") api_key: String,
+        @Query("language") language: String? = null,
+        @Query("region") region: String? = null
+    ): Call<MoviePage>
 
     /**
      * Retrieves the list of upcoming movies.
@@ -62,10 +82,12 @@ interface TheMovieDBApi {
      * [region] Specify a ISO 3166-1 code to filter release dates. Must be uppercase. - Optional.
      */
     @GET("movie/upcoming")
-    fun getUpcoming(@Query("page") page: Int,
-                    @Query("api_key") api_key: String,
-                    @Query("language") language: String? = null,
-                    @Query("region") region: String? = null): Call<MoviePage>
+    fun getUpcoming(
+        @Query("page") page: Int,
+        @Query("api_key") api_key: String,
+        @Query("language") language: String? = null,
+        @Query("region") region: String? = null
+    ): Call<MoviePage>
 
     /**
      * Retrieves th details of a Movie identified by its personId.
@@ -74,10 +96,11 @@ interface TheMovieDBApi {
      * [language] Pass a ISO 639-1 value to display translated data for the fields that support it. - Optional.
      */
     @GET("movie/{movie_id}")
-    fun getMovieDetails(@Path("movie_id") movieId: Double,
-                        @Query("api_key") api_key: String,
-                        @Query("language") language: String? = null): Call<MovieDetail>
-
+    fun getMovieDetails(
+        @Path("movie_id") movieId: Double,
+        @Query("api_key") api_key: String,
+        @Query("language") language: String? = null
+    ): Call<MovieDetail>
 
     /**
      * Executes a multi searchFirstPage API call.
@@ -88,11 +111,13 @@ interface TheMovieDBApi {
      * [query] The query to execute.
      */
     @GET("search/multi")
-    fun search(@Query("query") query: String,
-               @Query("page") page: Int,
-               @Query("api_key") api_key: String,
-               @Query("language") language: String? = null,
-               @Query("region") region: String? = null): Call<SearchPage>
+    fun search(
+        @Query("query") query: String,
+        @Query("page") page: Int,
+        @Query("api_key") api_key: String,
+        @Query("language") language: String? = null,
+        @Query("region") region: String? = null
+    ): Call<SearchPage>
 
     /**
      * Retrieves a [Person\] identified by its personId.
@@ -101,9 +126,11 @@ interface TheMovieDBApi {
      * [language] Pass a ISO 639-1 value to display translated data for the fields that support it. - Optional.
      */
     @GET("person/{person_id}")
-    fun getPerson(@Path("person_id") personId: Double,
-                  @Query("api_key") api_key: String,
-                  @Query("language") language: String? = null): Call<Person>
+    fun getPerson(
+        @Path("person_id") personId: Double,
+        @Query("api_key") api_key: String,
+        @Query("language") language: String? = null
+    ): Call<Person>
 
     /**
      * Retrieves the credits of a given movie.
@@ -111,8 +138,10 @@ interface TheMovieDBApi {
      * [api_key] the api key provided by themoviedb.
      */
     @GET("movie/{movie_id}/credits")
-    fun getMovieCredits(@Path("movie_id") movieId: Double,
-                        @Query("api_key") api_key: String): Call<Credits>
+    fun getMovieCredits(
+        @Path("movie_id") movieId: Double,
+        @Query("api_key") api_key: String
+    ): Call<Credits>
 
     /**
      * Retrieves an [AccessToken] to be used in a login process.
@@ -145,10 +174,11 @@ interface TheMovieDBApi {
      * [api_key] the api key provided by themoviedb.
      */
     @GET("movie/{movie_id}/account_states")
-    fun getMovieAccountState(@Path("movie_id") movieId: Double,
-                             @Query("session_id") sessionId: String,
-                             @Query("api_key") api_key: String): Call<MovieState>
-
+    fun getMovieAccountState(
+        @Path("movie_id") movieId: Double,
+        @Query("session_id") sessionId: String,
+        @Query("api_key") api_key: String
+    ): Call<MovieState>
 
     /**
      * Updates the favorite state of a media resource (movie or tv).
@@ -157,10 +187,12 @@ interface TheMovieDBApi {
      * [api_key] the api key provided by themoviedb.
      */
     @POST("account/{account_id}/favorite")
-    fun markMediaAsFavorite(@Path("account_id") accountId: Double,
-                            @Query("session_id") sessionId: String,
-                            @Query("api_key") api_key: String,
-                            @Body body: FavoriteMediaBody): Call<FavoriteMediaResponse>
+    fun markMediaAsFavorite(
+        @Path("account_id") accountId: Double,
+        @Query("session_id") sessionId: String,
+        @Query("api_key") api_key: String,
+        @Body body: FavoriteMediaBody
+    ): Call<FavoriteMediaResponse>
 
     /**
      * Updates the watchlist state of a media resource (movie or tv).
@@ -169,11 +201,12 @@ interface TheMovieDBApi {
      * [api_key] the api key provided by themoviedb.
      */
     @POST("account/{account_id}/watchlist")
-    fun addMediaToWatchlist(@Path("account_id") accountId: Double,
-                            @Query("session_id") sessionId: String,
-                            @Query("api_key") api_key: String,
-                            @Body body: WatchlistMediaBody): Call<WatchlistMediaResponse>
-
+    fun addMediaToWatchlist(
+        @Path("account_id") accountId: Double,
+        @Query("session_id") sessionId: String,
+        @Query("api_key") api_key: String,
+        @Body body: WatchlistMediaBody
+    ): Call<WatchlistMediaResponse>
 
     /**
      * Rates the movie defined by [movieId].
@@ -182,10 +215,12 @@ interface TheMovieDBApi {
      * [api_key] the api key provided by themoviedb.
      */
     @POST("movie/{movie_id}/rating")
-    fun rateMovie(@Path("movie_id") movieId: Double,
-                  @Query("session_id") sessionId: String,
-                  @Query("api_key") api_key: String,
-                  @Body body: RateMovieBody): Call<RateMovieResponse>
+    fun rateMovie(
+        @Path("movie_id") movieId: Double,
+        @Query("session_id") sessionId: String,
+        @Query("api_key") api_key: String,
+        @Body body: RateMovieBody
+    ): Call<RateMovieResponse>
 
     /**
      * Retrieves the list of favorite movies of the user.
@@ -196,11 +231,13 @@ interface TheMovieDBApi {
      * [language] Pass a ISO 639-1 value to display translated data for the fields that support it. - Optional.
      */
     @GET("account/{account_id}/favorite/movies")
-    fun getFavoriteMoviesPage(@Path("account_id") accountId: Double,
-                              @Query("page") page: Int,
-                              @Query("session_id") sessionId: String,
-                              @Query("api_key") api_key: String,
-                              @Query("language") language: String? = null): Call<MoviePage>
+    fun getFavoriteMoviesPage(
+        @Path("account_id") accountId: Double,
+        @Query("page") page: Int,
+        @Query("session_id") sessionId: String,
+        @Query("api_key") api_key: String,
+        @Query("language") language: String? = null
+    ): Call<MoviePage>
 
     /**
      * Deletes the rating for a movie that has previously rated by the user.
@@ -209,9 +246,11 @@ interface TheMovieDBApi {
      * [api_key] the api key provided by themoviedb.
      */
     @DELETE("movie/{movie_id}/rating")
-    fun deleteMovieRating(@Path("movie_id") movieId: Double,
-                          @Query("session_id") sessionId: String,
-                          @Query("api_key") api_key: String): Call<RateMovieResponse>
+    fun deleteMovieRating(
+        @Path("movie_id") movieId: Double,
+        @Query("session_id") sessionId: String,
+        @Query("api_key") api_key: String
+    ): Call<RateMovieResponse>
 
     /**
      * Retrieves the list of rated movies of the user.
@@ -222,11 +261,13 @@ interface TheMovieDBApi {
      * [language] Pass a ISO 639-1 value to display translated data for the fields that support it. - Optional.
      */
     @GET("account/{account_id}/rated/movies")
-    fun getRatedMoviesPage(@Path("account_id") accountId: Double,
-                           @Query("page") page: Int,
-                           @Query("session_id") sessionId: String,
-                           @Query("api_key") api_key: String,
-                           @Query("language") language: String? = null): Call<MoviePage>
+    fun getRatedMoviesPage(
+        @Path("account_id") accountId: Double,
+        @Query("page") page: Int,
+        @Query("session_id") sessionId: String,
+        @Query("api_key") api_key: String,
+        @Query("language") language: String? = null
+    ): Call<MoviePage>
 
     /**
      * Retrieves the page of watchlisted movies of the user.
@@ -237,10 +278,11 @@ interface TheMovieDBApi {
      * [language] Pass a ISO 639-1 value to display translated data for the fields that support it. - Optional.
      */
     @GET("account/{account_id}/watchlist/movies")
-    fun getWatchlistMoviesPage(@Path("account_id") accountId: Double,
-                               @Query("page") page: Int,
-                               @Query("session_id") sessionId: String,
-                               @Query("api_key") api_key: String,
-                               @Query("language") language: String? = null): Call<MoviePage>
-
+    fun getWatchlistMoviesPage(
+        @Path("account_id") accountId: Double,
+        @Query("page") page: Int,
+        @Query("session_id") sessionId: String,
+        @Query("api_key") api_key: String,
+        @Query("language") language: String? = null
+    ): Call<MoviePage>
 }

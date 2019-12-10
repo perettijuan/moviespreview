@@ -10,7 +10,7 @@ import androidx.room.Query
  */
 @Dao
 interface ImageSizeDAO {
-    @Insert(onConflict =  OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertImageSizes(sizes: List<DBImageSize>)
 
     @Query("select * from image_size where duedate >= :nowDate")

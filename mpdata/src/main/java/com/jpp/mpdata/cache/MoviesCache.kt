@@ -12,9 +12,11 @@ import com.jpp.mpdomain.MovieSection
  * [MoviesDb] implementation with a cache mechanism to verify that the data stored in the application
  * is valid after a period of time.
  */
-class MoviesCache(private val roomDatabase: MPRoomDataBase,
-                  private val adapter: RoomModelAdapter,
-                  private val timestampHelper: CacheTimestampHelper) : MoviesDb {
+class MoviesCache(
+    private val roomDatabase: MPRoomDataBase,
+    private val adapter: RoomModelAdapter,
+    private val timestampHelper: CacheTimestampHelper
+) : MoviesDb {
 
     private val favoriteMovies = SparseArray<MoviePage>()
     private val ratedMovies = SparseArray<MoviePage>()

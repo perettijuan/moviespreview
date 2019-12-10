@@ -2,11 +2,17 @@ package com.jpp.mpdata.repository.movies
 
 import com.jpp.mpdata.datasources.moviepage.MoviesApi
 import com.jpp.mpdata.datasources.moviepage.MoviesDb
-import com.jpp.mpdomain.*
+import com.jpp.mpdomain.MoviePage
+import com.jpp.mpdomain.MovieSection
+import com.jpp.mpdomain.Session
+import com.jpp.mpdomain.SupportedLanguage
+import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.repository.MoviePageRepository
 
-class MoviePageRepositoryImpl(private val moviesApi: MoviesApi,
-                              private val moviesDb: MoviesDb) : MoviePageRepository {
+class MoviePageRepositoryImpl(
+    private val moviesApi: MoviesApi,
+    private val moviesDb: MoviesDb
+) : MoviePageRepository {
 
     override fun getMoviePageForSection(page: Int, section: MovieSection, language: SupportedLanguage): MoviePage? {
         return moviesDb.getMoviePageForSection(page, section)

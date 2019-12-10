@@ -63,5 +63,4 @@ class ConfigurationRepositoryTest {
         verify { configurationDb.getAppConfiguration() }
         assertNull(result)
     }
-
 }

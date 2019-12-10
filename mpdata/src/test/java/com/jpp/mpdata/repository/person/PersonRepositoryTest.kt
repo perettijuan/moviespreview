@@ -55,7 +55,7 @@ class PersonRepositoryTest {
     @Test
     fun `Should return null when it fails`() {
         every { personDb.getPerson(any()) } returns null
-        every { personApi.getPerson(any(),any()) } returns null
+        every { personApi.getPerson(any(), any()) } returns null
 
         val result = subject.getPerson(personId, SupportedLanguage.English)
 

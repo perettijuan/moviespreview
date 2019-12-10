@@ -3,16 +3,27 @@ package com.jpp.mpdata.api
 import com.google.gson.GsonBuilder
 import com.jpp.mpdata.BuildConfig
 import com.jpp.mpdata.datasources.account.AccountApi
-import com.jpp.mpdata.datasources.tokens.AccessTokenApi
-import com.jpp.mpdata.datasources.session.SessionApi
 import com.jpp.mpdata.datasources.configuration.ConfigurationApi
 import com.jpp.mpdata.datasources.moviedetail.MovieDetailApi
-import com.jpp.mpdata.repository.credits.CreditsApi
 import com.jpp.mpdata.datasources.moviepage.MoviesApi
 import com.jpp.mpdata.datasources.moviestate.MovieStateApi
+import com.jpp.mpdata.datasources.session.SessionApi
+import com.jpp.mpdata.datasources.tokens.AccessTokenApi
+import com.jpp.mpdata.repository.credits.CreditsApi
 import com.jpp.mpdata.repository.person.PersonApi
 import com.jpp.mpdata.repository.search.SearchApi
-import com.jpp.mpdomain.*
+import com.jpp.mpdomain.AccessToken
+import com.jpp.mpdomain.AppConfiguration
+import com.jpp.mpdomain.Credits
+import com.jpp.mpdomain.MovieDetail
+import com.jpp.mpdomain.MoviePage
+import com.jpp.mpdomain.MovieState
+import com.jpp.mpdomain.MovieStateRate
+import com.jpp.mpdomain.Person
+import com.jpp.mpdomain.SearchPage
+import com.jpp.mpdomain.Session
+import com.jpp.mpdomain.SupportedLanguage
+import com.jpp.mpdomain.UserAccount
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -23,8 +34,8 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Represents the remote API that MoviesPreview supports.
  * It is a wrapper around Retrofit classes to provide a clean access to the API.
  */
-open class MPApi
-    : ConfigurationApi,
+open class MPApi :
+        ConfigurationApi,
         MoviesApi,
         SearchApi,
         PersonApi,
@@ -182,5 +193,4 @@ open class MPApi
                     .create(TheMovieDBApi::class.java)
         }
     }
-
 }
