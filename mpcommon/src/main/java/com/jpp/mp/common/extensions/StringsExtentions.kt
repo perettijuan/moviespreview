@@ -1,6 +1,6 @@
 package com.jpp.mp.common.extensions
 
-import java.util.*
+import java.util.Scanner
 
 /**
  * Transforms a String into it's integer representation by removing all

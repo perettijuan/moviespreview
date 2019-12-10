@@ -15,7 +15,9 @@ import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI.*
+import androidx.navigation.ui.NavigationUI.navigateUp
+import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
+import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.jpp.mp.R
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.NavigationViewModel
@@ -26,9 +28,8 @@ import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
-import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
-
+import kotlinx.android.synthetic.main.activity_main.*
 
 /**
  * Main entry point of the app.
@@ -142,7 +143,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             }
             else -> super.onOptionsItemSelected(item)
         }
-
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentDispatchingAndroidInjector
@@ -208,7 +208,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             .setPopExitAnim(R.anim.fragment_exit_slide_left)
             .build()
 
-
     private fun withMainViewModel(action: MainActivityViewModel.() -> Unit) = withViewModel<MainActivityViewModel>(viewModelFactory) { action() }
     private fun withNavigationViewModel(action: NavigationViewModel.() -> Unit) = withViewModel<NavigationViewModel>(viewModelFactory) { action() }
 
@@ -244,12 +243,10 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     private inner class MPToolbarManager {
         private var originalInsetStartWithNavigation = -1
 
-
         fun setInsetStartWithNavigation(toSet: Int, toolbar: Toolbar) {
             originalInsetStartWithNavigation = toSet
             toolbar.contentInsetStartWithNavigation = toSet
         }
-
 
         fun clearInsetStartWithNavigation(toolbar: Toolbar) {
             when (originalInsetStartWithNavigation != -1) {
@@ -259,6 +256,5 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 }
             }
         }
-
     }
 }

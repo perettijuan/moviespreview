@@ -11,7 +11,9 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import io.mockk.verifyOrder
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -110,7 +112,6 @@ class PersonViewModelTest {
             verify(exactly = 2) { interactor.fetchPerson(10.0) }
         } ?: fail()
     }
-
 
     @Test
     fun `Should post loading and fetch person data onInit`() {

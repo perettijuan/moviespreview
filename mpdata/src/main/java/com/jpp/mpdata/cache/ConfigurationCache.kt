@@ -3,16 +3,18 @@ package com.jpp.mpdata.cache
 import com.jpp.mpdata.cache.room.ImageSizeDAO
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter
-import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdata.datasources.configuration.ConfigurationDb
+import com.jpp.mpdomain.AppConfiguration
 
 /**
  * [ConfigurationDb] implementation with a cache mechanism to verify that the data stored in the application
  * is valid after a period of time.
  */
-class ConfigurationCache(private val roomDatabase: MPRoomDataBase,
-                         private val adapter: RoomModelAdapter,
-                         private val timestampHelper: CacheTimestampHelper) : ConfigurationDb {
+class ConfigurationCache(
+    private val roomDatabase: MPRoomDataBase,
+    private val adapter: RoomModelAdapter,
+    private val timestampHelper: CacheTimestampHelper
+) : ConfigurationDb {
 
     override fun getAppConfiguration(): AppConfiguration? {
         return withImageSizeDAO { getImageSizes(now()) }

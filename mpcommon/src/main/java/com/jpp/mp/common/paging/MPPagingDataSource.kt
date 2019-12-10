@@ -1,6 +1,5 @@
 package com.jpp.mp.common.paging
 
-
 import androidx.paging.PageKeyedDataSource
 
 /**
@@ -15,8 +14,8 @@ import androidx.paging.PageKeyedDataSource
  * right place (either local database or remote server) and updating the local data when needed,
  * and this class takes care of knowing when a new page is needed.
  */
-class MPPagingDataSource<T>(private val fetchItems: (Int, (List<T>) -> Unit) -> Unit)
-    : PageKeyedDataSource<Int, T>() {
+class MPPagingDataSource<T>(private val fetchItems: (Int, (List<T>) -> Unit) -> Unit) :
+    PageKeyedDataSource<Int, T>() {
 
     // keep a function reference for the retry event
     private var retry: (() -> Any)? = null
@@ -51,7 +50,7 @@ class MPPagingDataSource<T>(private val fetchItems: (Int, (List<T>) -> Unit) -> 
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, T>) {
-        //no-op
+        // no-op
     }
 
     /*

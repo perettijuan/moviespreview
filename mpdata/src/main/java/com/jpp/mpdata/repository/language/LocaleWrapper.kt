@@ -1,6 +1,6 @@
 package com.jpp.mpdata.repository.language
 
-import java.util.*
+import java.util.Locale
 
 /**
  * This class exists mostly because of testing purposes: avoid using

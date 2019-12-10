@@ -27,7 +27,6 @@ class LoginInteractorTest {
     @MockK
     private lateinit var sessionRepository: SessionRepository
 
-
     private lateinit var subject: LoginInteractor
 
     @BeforeEach
@@ -136,7 +135,6 @@ class LoginInteractorTest {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.createSession(any()) } returns null
 
-
         subject.loginEvents.observeWith { eventPosted = it }
 
         subject.loginUser(mockk())
@@ -151,7 +149,6 @@ class LoginInteractorTest {
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.createSession(any()) } returns mockk()
-
 
         subject.loginEvents.observeWith { eventPosted = it }
 

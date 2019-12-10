@@ -1,6 +1,10 @@
 package com.jpp.mpdata.cache
 
-import com.jpp.mpdata.cache.room.*
+import com.jpp.mpdata.cache.room.CreditsDao
+import com.jpp.mpdata.cache.room.DBCastCharacter
+import com.jpp.mpdata.cache.room.DBCrewPerson
+import com.jpp.mpdata.cache.room.MPRoomDataBase
+import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
 import com.jpp.mpdomain.CrewMember

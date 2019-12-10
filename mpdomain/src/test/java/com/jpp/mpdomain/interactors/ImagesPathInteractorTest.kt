@@ -1,6 +1,10 @@
 package com.jpp.mpdomain.interactors
 
-import com.jpp.mpdomain.*
+import com.jpp.mpdomain.AppConfiguration
+import com.jpp.mpdomain.CastCharacter
+import com.jpp.mpdomain.ImagesConfiguration
+import com.jpp.mpdomain.Movie
+import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.repository.ConfigurationRepository
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -19,13 +23,11 @@ class ImagesPathInteractorTest {
 
     private lateinit var subject: ImagesPathInteractor
 
-
     @BeforeEach
     fun setUp() {
         every { configurationRepository.getAppConfiguration() } returns AppConfiguration(imagesConfig)
         subject = ImagesPathInteractor.Impl(configurationRepository)
     }
-
 
     @ParameterizedTest
     @MethodSource("executeMovieConfigParams")
@@ -51,23 +53,22 @@ class ImagesPathInteractorTest {
         assertEquals(param.expected, configured)
     }
 
-
     data class MoviePathConfigParam(
-            val targetImageSize: Int,
-            val movie: Movie,
-            val expected: Movie
+        val targetImageSize: Int,
+        val movie: Movie,
+        val expected: Movie
     )
 
     data class SearchResultPathParam(
-            val targetImageSize: Int,
-            val searchResult: SearchResult,
-            val expected: SearchResult
+        val targetImageSize: Int,
+        val searchResult: SearchResult,
+        val expected: SearchResult
     )
 
     data class CastCharacterConfigParam(
-            val targetImageSize: Int,
-            val castCharacter: CastCharacter,
-            val expected: CastCharacter
+        val targetImageSize: Int,
+        val castCharacter: CastCharacter,
+        val expected: CastCharacter
     )
 
     private val imagesConfig = ImagesConfiguration(
@@ -171,7 +172,7 @@ class ImagesPathInteractorTest {
                         searchResult = searchResultMovie,
                         expected = searchResultMovie.copy(
                                 backdrop_path = "baseUrl/w780/m110vLaDDOCca4hfOcS5mK5cDke.jpg",
-                                poster_path ="baseUrl/w780/m110vLaDDOCca4hfOcS5mK5cDke.jpg"
+                                poster_path = "baseUrl/w780/m110vLaDDOCca4hfOcS5mK5cDke.jpg"
                         )
                 ),
                 SearchResultPathParam(
@@ -198,7 +199,6 @@ class ImagesPathInteractorTest {
                 )
         )
 
-
         @JvmStatic
         fun executeCastCharacterParameters() = listOf(
                 CastCharacterConfigParam(
@@ -224,7 +224,6 @@ class ImagesPathInteractorTest {
                 )
 
         )
-
 
         private val originalMovie = Movie(
                 id = 15.toDouble(),
@@ -287,5 +286,4 @@ class ImagesPathInteractorTest {
                 profile_path = "/m110vLaDDOCca4hfOcS5mK5cDke.jpg"
         )
     }
-
 }

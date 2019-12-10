@@ -9,13 +9,15 @@ import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
-import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.*
+import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.NotConnectedToNetwork
+import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.UnknownError
+import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.UserChangedLanguage
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPScopedViewModel] used to support the movie list section of the application. This ViewModel is shared by
@@ -34,10 +36,12 @@ import javax.inject.Inject
  * VM is notified about such event and executes a refresh of both: the data stored by the application
  * and the view state being shown to the user.
  */
-class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                             private val movieListInteractor: MovieListInteractor,
-                                             private val imagesPathInteractor: ImagesPathInteractor)
-    : MPScopedViewModel(dispatchers) {
+class MovieListViewModel @Inject constructor(
+    dispatchers: CoroutineDispatchers,
+    private val movieListInteractor: MovieListInteractor,
+    private val imagesPathInteractor: ImagesPathInteractor
+) :
+        MPScopedViewModel(dispatchers) {
 
     private val _viewState = MediatorLiveData<MovieListViewState>()
     val viewState: LiveData<MovieListViewState> get() = _viewState
@@ -94,7 +98,6 @@ class MovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             )
         }
     }
-
 
     /**
      * Pushes the Loading view state into the view layer and creates the [PagedList]

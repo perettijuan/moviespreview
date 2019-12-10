@@ -134,5 +134,4 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(LicenseContentViewModel::class)
     internal abstract fun postLicenseContentViewModel(viewModel: LicenseContentViewModel): ViewModel
-
 }

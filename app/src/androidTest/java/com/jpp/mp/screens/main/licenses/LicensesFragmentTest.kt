@@ -1,28 +1,9 @@
 package com.jpp.mp.screens.main.licenses
 
-import androidx.lifecycle.MutableLiveData
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
-import com.jpp.mp.R
-import com.jpp.mp.assertions.assertDisplayed
-import com.jpp.mp.assertions.assertItemCount
-import com.jpp.mp.assertions.assertNotDisplayed
-import com.jpp.mp.assertions.withViewInRecyclerView
-import com.jpp.mp.di.TestMPViewModelFactory
-import com.jpp.mp.extras.launch
-import com.jpp.mp.testutils.FragmentTestActivity
-import io.mockk.every
-import io.mockk.mockk
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
 
-//TODO JPP re-enable Espresso tests
+// TODO JPP re-enable Espresso tests
 @RunWith(AndroidJUnit4::class)
 class LicensesFragmentTest {
 

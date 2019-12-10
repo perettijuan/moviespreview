@@ -6,8 +6,10 @@ import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.repository.MovieDetailRepository
 
-class MovieDetailRepositoryImpl(private val movieDetailApi: MovieDetailApi,
-                                private val movieDetailDb: MovieDetailDb) : MovieDetailRepository {
+class MovieDetailRepositoryImpl(
+    private val movieDetailApi: MovieDetailApi,
+    private val movieDetailDb: MovieDetailDb
+) : MovieDetailRepository {
 
     override fun getMovieDetails(movieId: Double, language: SupportedLanguage): MovieDetail? {
         return movieDetailDb.getMovieDetails(movieId)

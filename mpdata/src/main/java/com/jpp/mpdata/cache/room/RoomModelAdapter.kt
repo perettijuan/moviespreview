@@ -1,7 +1,15 @@
 package com.jpp.mpdata.cache.room
 
 import com.jpp.mp.common.extensions.addAllMapping
-import com.jpp.mpdomain.*
+import com.jpp.mpdomain.AppConfiguration
+import com.jpp.mpdomain.CastCharacter
+import com.jpp.mpdomain.Credits
+import com.jpp.mpdomain.CrewMember
+import com.jpp.mpdomain.ImagesConfiguration
+import com.jpp.mpdomain.Movie
+import com.jpp.mpdomain.MovieDetail
+import com.jpp.mpdomain.MovieGenre
+import com.jpp.mpdomain.MoviePage
 
 /**
  * Since the database entities differ from the domain entities, we need this middle layer
@@ -165,7 +173,6 @@ class RoomModelAdapter {
         )
     }
 
-
     /**
      * Adapts the provided [DBMovieGenre] to the respective [MovieGenre].
      */
@@ -243,7 +250,6 @@ class RoomModelAdapter {
                         )
                     }
             )
-
 
     private companion object {
         sealed class ImageTypes(val id: Int) {

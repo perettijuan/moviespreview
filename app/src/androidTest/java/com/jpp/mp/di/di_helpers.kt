@@ -8,12 +8,11 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.DispatchingAndroidInjector_Factory
 import javax.inject.Provider
 
-
 /**
  * Source -> https://proandroiddev.com/activity-espresso-test-with-daggers-android-injector-82f3ee564aa4
  */
-inline fun <reified T : Activity> createFakeActivityInjector(crossinline block: T.() -> Unit)
-        : DispatchingAndroidInjector<Activity> {
+inline fun <reified T : Activity> createFakeActivityInjector(crossinline block: T.() -> Unit):
+        DispatchingAndroidInjector<Activity> {
     val injector = AndroidInjector<Activity> { instance ->
         if (instance is T) {
             instance.block()
@@ -24,9 +23,8 @@ inline fun <reified T : Activity> createFakeActivityInjector(crossinline block: 
     return DispatchingAndroidInjector_Factory.newDispatchingAndroidInjector(map)
 }
 
-
-inline fun <reified T : Fragment> createFakeFragmentInjector(crossinline block: T.() -> Unit)
-        : DispatchingAndroidInjector<Fragment> {
+inline fun <reified T : Fragment> createFakeFragmentInjector(crossinline block: T.() -> Unit):
+        DispatchingAndroidInjector<Fragment> {
     val injector = AndroidInjector<Fragment> { instance ->
         if (instance is T) {
             instance.block()

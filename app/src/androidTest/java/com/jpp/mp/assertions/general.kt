@@ -1,18 +1,17 @@
 package com.jpp.mp.assertions
 
+import android.view.View
+import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.annotation.IdRes
-import android.view.View
 import com.jpp.mp.R
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
-
 
 /*
  * General view assertions.
@@ -23,12 +22,10 @@ fun ViewInteraction.assertItemCount(count: Int) = check(itemCount(count))
 fun ViewInteraction.assertWithText(@StringRes stringRes: Int) = check(ViewAssertions.matches(ViewMatchers.withText(stringRes)))
 fun ViewInteraction.assertWithText(value: String) = check(ViewAssertions.matches(ViewMatchers.withText(value)))
 
-
 /*
  * Common view actions
  */
 fun onErrorViewText() = onView(withId(R.id.errorTitleTextView))
-
 
 /**
  *

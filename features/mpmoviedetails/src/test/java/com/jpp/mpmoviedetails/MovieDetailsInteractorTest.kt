@@ -1,10 +1,24 @@
 package com.jpp.mpmoviedetails
 
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mpdomain.*
-import com.jpp.mpdomain.repository.*
+import com.jpp.mpdomain.Connectivity
+import com.jpp.mpdomain.MovieDetail
+import com.jpp.mpdomain.MovieState
+import com.jpp.mpdomain.Session
+import com.jpp.mpdomain.SupportedLanguage
+import com.jpp.mpdomain.UserAccount
+import com.jpp.mpdomain.repository.AccountRepository
+import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.LanguageRepository
+import com.jpp.mpdomain.repository.MovieDetailRepository
+import com.jpp.mpdomain.repository.MoviePageRepository
+import com.jpp.mpdomain.repository.MovieStateRepository
+import com.jpp.mpdomain.repository.SessionRepository
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.*
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.AppLanguageChanged
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.NotConnectedToNetwork
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.Success
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.UnknownError
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
@@ -333,7 +347,6 @@ class MovieDetailsInteractorTest {
         verify { movieStateRepository.rateMovie(12.0, 5.5F, userAccount, session) }
         verify { moviePageRepository.flushRatedMoviePages() }
     }
-
 
     @Test
     fun `Should rate move and post error result when session and account data available rateMovie`() {

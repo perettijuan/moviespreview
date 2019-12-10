@@ -10,10 +10,10 @@ fun Bundle?.getStringOrDefault(key: String, default: String = ""): String {
     return this?.let { getString(key) } ?: default
 }
 
-fun Bundle?.getStringOrFail(key: String) : String {
+fun Bundle?.getStringOrFail(key: String): String {
     return this?.let { getString(key) } ?: throw IllegalStateException("Can't find the provided $key in this Bundle")
 }
 
-fun Bundle?.getDoubleOrFail(key: String) : Double {
+fun Bundle?.getDoubleOrFail(key: String): Double {
     return this?.let { getDouble(key) } ?: throw IllegalStateException("Can't find the provided $key in this Bundle")
 }

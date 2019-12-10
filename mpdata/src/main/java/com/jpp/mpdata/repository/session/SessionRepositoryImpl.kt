@@ -8,8 +8,10 @@ import com.jpp.mpdomain.AccessToken
 import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.repository.SessionRepository
 
-class SessionRepositoryImpl(private val sessionApi: SessionApi,
-                            private val sessionDb: SessionDb) : SessionRepository {
+class SessionRepositoryImpl(
+    private val sessionApi: SessionApi,
+    private val sessionDb: SessionDb
+) : SessionRepository {
 
     private val sessionUpdates = MutableLiveData<Session?>()
 

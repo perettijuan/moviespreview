@@ -6,7 +6,7 @@ import com.jpp.mpdomain.SupportedLanguage
 /**
  * Repository definition to access all [MovieDetail] data.
  */
-interface MovieDetailRepository  {
+interface MovieDetailRepository {
     /**
      * Retrieves a [MovieDetail] for a particular movie.
      * @return a [MovieDetail] instance if a detail can be found for the provided [movieId],

@@ -1,0 +1,103 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-28
+    environment:
+      JVM_OPTS: -Xmx3200m
+    steps:
+      - checkout
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+         name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
+         command: sudo chmod +x ./gradlew
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Run mpcommon Module Unit Tests
+          command: ./gradlew :mpcommon:test
+      - store_artifacts:
+          path: mpcommon/build/reports
+      - store_test_results:
+          path: mpcommon/build/test-results
+      - run:
+          name: Run mpdata Module Unit Tests
+          command: ./gradlew :mpdata:test
+      - store_artifacts:
+          path: mpdata/build/reports
+      - store_test_results:
+          path: mpdata/build/test-results
+      - run:
+          name: Run mpdomain Module Unit Tests
+          command: ./gradlew :mpdomain:test
+      - store_artifacts:
+          path: mpdomain/build/reports
+      - store_test_results:
+          path: mpdomain/build/test-results
+      - run:
+          name: Run mpabout Module Unit Tests
+          command: ./gradlew :features:mpabout:test
+      - store_artifacts:
+          path: features/mpabout/build/reports
+      - store_test_results:
+          path: features/mpabout/mpdomain/build/test-results
+      - run:
+          name: Run mpcredits Module Unit Tests
+          command: ./gradlew :features:mpcredits:test
+      - store_artifacts:
+          path: features/mpcredits/build/reports
+      - store_test_results:
+          path: features/mpcredits/mpdomain/build/test-results
+      - run:
+          name: Run mpaccount Module Unit Tests
+          command: ./gradlew :features:mpcredits:test
+      - store_artifacts:
+          path: features/mpaccount/build/reports
+      - store_test_results:
+          path: features/mpaccount/mpdomain/build/test-results
+      - run:
+          name: Run mpmoviedetails Module Unit Tests
+          command: ./gradlew :features:mpmoviedetails:test
+      - store_artifacts:
+          path: features/mpmoviedetails/build/reports
+      - store_test_results:
+          path: features/mpmoviedetails/mpdomain/build/test-results
+      - run:
+          name: Run mpsearch Module Unit Tests
+          command: ./gradlew :features:mpsearch:test
+      - store_artifacts:
+          path: features/mpsearch/build/reports
+      - store_test_results:
+          path: features/mpsearch/mpdomain/build/test-results
+      - run:
+          name: Run mpperson Module Unit Tests
+          command: ./gradlew :features:mpperson:test
+      - store_artifacts:
+          path: features/mpperson/build/reports
+      - store_test_results:
+          path: features/mpperson/mpdomain/build/test-results
+      - run:
+          name: Run Detekt
+          command: ./gradlew detekt
+      - run:
+          name: Run Ktlint
+          command: ./gradlew ktlint
+      - run:
+          name: Run Lint
+          command: ./gradlew lintDebug
+      - run:
+          name: Run Unit Tests
+          command: ./gradlew test
+      - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
+          path: app/build/reports
+          destination: reports
+      - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
+          path: app/build/test-results
+      # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples

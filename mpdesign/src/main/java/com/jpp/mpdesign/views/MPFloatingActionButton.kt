@@ -11,7 +11,7 @@ import com.jpp.mpdesign.R
 /**
  * A custom [FloatingActionButton] that renders a filled or empty icon, depending on the configuration
  * of the view.
- * 
+ *
  * Starts as empty by default.
  * Call asFilled/asEmpty to change the state of the icon.
  * Call asClickable/asNonClickable to change the clickable state of the button.
@@ -37,7 +37,6 @@ class MPFloatingActionButton : FloatingActionButton {
 
         setImageDrawable(emptyIcon)
     }
-
 
     fun asFilled() {
         setImageDrawable(filledIcon)
@@ -86,4 +85,3 @@ class MPFloatingActionButton : FloatingActionButton {
         isClickable = !isAnimating && isAsClickable
     }
 }
-

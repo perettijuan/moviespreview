@@ -93,6 +93,10 @@ buildscript {
     }
 }
 
+plugins {
+    id "io.gitlab.arturbosch.detekt" version "1.2.2"
+}
+
 project.ext {
     compileSdkVersion = 28
     minSdkVersion = 21
@@ -104,7 +108,11 @@ allprojects {
         google()
         jcenter()
     }
+
+    apply from: "$rootDir/detekt.gradle"
+    apply from: "$rootDir/ktlint.gradle"
 }
+
 
 task clean(type: Delete) {
     delete rootProject.buildDir

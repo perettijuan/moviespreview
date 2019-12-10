@@ -16,26 +16,29 @@ import androidx.annotation.StringRes
  * Represents the view state of the about fragment.
  */
 data class AboutViewState(
-        val loadingVisibility: Int = View.INVISIBLE,
-        val header: AboutHeader = AboutHeader(),
-        val content: AboutContent = AboutContent()) {
+    val loadingVisibility: Int = View.INVISIBLE,
+    val header: AboutHeader = AboutHeader(),
+    val content: AboutContent = AboutContent()
+) {
 
     companion object {
         fun showLoading() = AboutViewState()
         fun showContent(
-                appVersion: String,
-                aboutItems: List<AboutItem>) = AboutViewState(header = AboutHeader.withHeader(appVersion), content = AboutContent.withContent(aboutItems))
+            appVersion: String,
+            aboutItems: List<AboutItem>
+        ) = AboutViewState(header = AboutHeader.withHeader(appVersion), content = AboutContent.withContent(aboutItems))
     }
-
 }
 
 /**
  * Represents the header section of the about screen.
  */
-data class AboutHeader(val visibility: Int = View.INVISIBLE,
-                       val icon: Int = R.drawable.ic_launcher_round,
-                       val title: Int = R.string.app_name,
-                       val appVersion: String = "") {
+data class AboutHeader(
+    val visibility: Int = View.INVISIBLE,
+    val icon: Int = R.drawable.ic_launcher_round,
+    val title: Int = R.string.app_name,
+    val appVersion: String = ""
+) {
 
     companion object {
         fun withHeader(appVersion: String) = AboutHeader(
@@ -43,23 +46,22 @@ data class AboutHeader(val visibility: Int = View.INVISIBLE,
                 appVersion = appVersion
         )
     }
-
 }
 /**
  * Represents the content of the about screen.
  */
 data class AboutContent(
-        val visibility: Int = View.INVISIBLE,
-        val contentText: Int = R.string.about_content,
-        val aboutItems: List<AboutItem> = emptyList()) {
+    val visibility: Int = View.INVISIBLE,
+    val contentText: Int = R.string.about_content,
+    val aboutItems: List<AboutItem> = emptyList()
+) {
     companion object {
-        fun withContent(aboutItems: List<AboutItem>)
-                = AboutContent(
+        fun withContent(aboutItems: List<AboutItem>) =
+                AboutContent(
                 visibility = View.VISIBLE,
                 aboutItems = aboutItems
         )
     }
-
 }
 
 /**

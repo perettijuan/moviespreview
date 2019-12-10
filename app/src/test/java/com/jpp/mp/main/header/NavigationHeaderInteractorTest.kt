@@ -2,7 +2,9 @@ package com.jpp.mp.main.header
 
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent
-import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.*
+import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.Success
+import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.UnknownError
+import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.UserNotLogged
 import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.repository.AccountRepository
@@ -22,7 +24,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
 class NavigationHeaderInteractorTest {
-
 
     @MockK
     private lateinit var sessionRepository: SessionRepository

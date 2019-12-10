@@ -29,7 +29,6 @@ class ConfigurationCacheTest {
 
     private lateinit var subject: ConfigurationCache
 
-
     @BeforeEach
     fun setUp() {
         val roomDatabase = mockk<MPRoomDataBase>()
@@ -37,19 +36,17 @@ class ConfigurationCacheTest {
         subject = ConfigurationCache(roomDatabase, roomModelAdapter, timestampHelper)
     }
 
-
     @Test
     fun `Should return null when there is configuration stored`() {
         val now = 12L
 
         every { timestampHelper.now() } returns now
-        every { imageSizeDAO.getImageSizes(now) } returns listOf()// empty list means no data stored
+        every { imageSizeDAO.getImageSizes(now) } returns listOf() // empty list means no data stored
 
         val result = subject.getAppConfiguration()
 
         assertNull(result)
     }
-
 
     @Test
     fun `Should return app configuration mapped from image list`() {
@@ -67,7 +64,6 @@ class ConfigurationCacheTest {
         verify { roomModelAdapter.adaptImageSizesToAppConfiguration(dbImageSizes) }
     }
 
-
     @Test
     fun `Should insert movie page and movie list when saving movie page`() {
         val appConfiguration = mockk<AppConfiguration>()
@@ -80,9 +76,7 @@ class ConfigurationCacheTest {
         every { timestampHelper.appConfigRefreshTime() } returns movieRefreshTime
         every { roomModelAdapter.adaptAppConfigurationToImageSizes(any(), any()) } returns dbImageSizes
 
-
         subject.saveAppConfiguration(appConfiguration)
-
 
         verify { roomModelAdapter.adaptAppConfigurationToImageSizes(appConfiguration, expectedDueDate) }
         verify { imageSizeDAO.insertImageSizes(dbImageSizes) }

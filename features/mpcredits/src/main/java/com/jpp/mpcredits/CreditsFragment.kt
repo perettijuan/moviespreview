@@ -71,7 +71,6 @@ class CreditsFragment : MPFragment<CreditsViewModel>() {
 
     override fun withViewModel(action: CreditsViewModel.() -> Unit) = withViewModel<CreditsViewModel>(viewModelFactory) { action() }
 
-
     private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.creditsRv)?.let(action)
 
     /**
@@ -95,7 +94,6 @@ class CreditsFragment : MPFragment<CreditsViewModel>() {
         }
 
         override fun getItemCount(): Int = credits.size
-
 
         class ViewHolder(private val itemBinding: ListItemCreditsBinding) : RecyclerView.ViewHolder(itemBinding.root) {
             fun bindCredit(credit: CreditPerson, selectionListener: (CreditPerson) -> Unit) {

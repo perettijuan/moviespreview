@@ -11,10 +11,12 @@ import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
-import com.jpp.mpsearch.SearchInteractor.SearchEvent.*
+import com.jpp.mpsearch.SearchInteractor.SearchEvent.AppLanguageChanged
+import com.jpp.mpsearch.SearchInteractor.SearchEvent.NotConnectedToNetwork
+import com.jpp.mpsearch.SearchInteractor.SearchEvent.UnknownError
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPScopedViewModel] used to support the search section of the application.
@@ -30,11 +32,12 @@ import javax.inject.Inject
  * VM is notified about such event and executes a refresh of both: the data stored by the application
  * and the view state being shown to the user.
  */
-class SearchViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                          private val searchInteractor: SearchInteractor,
-                                          private val imagesPathInteractor: ImagesPathInteractor)
-    : MPScopedViewModel(dispatchers) {
-
+class SearchViewModel @Inject constructor(
+    dispatchers: CoroutineDispatchers,
+    private val searchInteractor: SearchInteractor,
+    private val imagesPathInteractor: ImagesPathInteractor
+) :
+        MPScopedViewModel(dispatchers) {
 
     private val _viewState = MediatorLiveData<SearchViewState>()
     val viewState: LiveData<SearchViewState> = _viewState

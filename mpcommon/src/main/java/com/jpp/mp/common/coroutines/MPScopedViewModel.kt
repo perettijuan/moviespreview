@@ -4,14 +4,13 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mp.common.navigation.Destination
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.isActive
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Generic [ViewModel] to execute work that might cause long term interruptions in the UI thread.
@@ -84,13 +83,11 @@ abstract class MPScopedViewModel(val dispatchers: CoroutineDispatchers) : ViewMo
     override val coroutineContext: CoroutineContext
         get() = currentJob + dispatchers.main()
 
-
     private val _destinationsEvent = MutableLiveData<Destination>()
     val destinationEvents: LiveData<Destination> get() = _destinationsEvent
 
     private val _navigationEvent = MutableLiveData<HandledEvent<Destination>>()
     val navigationEvents: LiveData<HandledEvent<Destination>> get() = _navigationEvent
-
 
     /**
      * Called when a [Destination] has been reached in the application. A call
@@ -108,7 +105,6 @@ abstract class MPScopedViewModel(val dispatchers: CoroutineDispatchers) : ViewMo
     protected fun navigateTo(destination: Destination) {
         _navigationEvent.value = of(destination)
     }
-
 
     override fun onCleared() {
         currentJob.cancel()

@@ -2,9 +2,21 @@ package com.jpp.mpaccount.account.lists
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.*
-import com.jpp.mpdomain.*
-import com.jpp.mpdomain.repository.*
+import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.NotConnectedToNetwork
+import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.UnknownError
+import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.UserChangedLanguage
+import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.UserNotLogged
+import com.jpp.mpdomain.Connectivity
+import com.jpp.mpdomain.Movie
+import com.jpp.mpdomain.MoviePage
+import com.jpp.mpdomain.Session
+import com.jpp.mpdomain.SupportedLanguage
+import com.jpp.mpdomain.UserAccount
+import com.jpp.mpdomain.repository.AccountRepository
+import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.LanguageRepository
+import com.jpp.mpdomain.repository.MoviePageRepository
+import com.jpp.mpdomain.repository.SessionRepository
 import javax.inject.Inject
 
 /**
@@ -18,18 +30,19 @@ import javax.inject.Inject
  *    in the paging library, where a callback needs to be provided - instead of using
  *    a reactive approach.
  */
-class UserMovieListInteractor @Inject constructor(private val connectivityRepository: ConnectivityRepository,
-                                                  private val sessionRepository: SessionRepository,
-                                                  private val accountRepository: AccountRepository,
-                                                  private val moviePageRepository: MoviePageRepository,
-                                                  private val languageRepository: LanguageRepository) {
+class UserMovieListInteractor @Inject constructor(
+    private val connectivityRepository: ConnectivityRepository,
+    private val sessionRepository: SessionRepository,
+    private val accountRepository: AccountRepository,
+    private val moviePageRepository: MoviePageRepository,
+    private val languageRepository: LanguageRepository
+) {
     sealed class UserMovieListEvent {
         object UserChangedLanguage : UserMovieListEvent()
         object UserNotLogged : UserMovieListEvent()
         object NotConnectedToNetwork : UserMovieListEvent()
         object UnknownError : UserMovieListEvent()
     }
-
 
     private val _userMovieListEvents = MediatorLiveData<UserMovieListEvent>()
 
@@ -42,7 +55,6 @@ class UserMovieListInteractor @Inject constructor(private val connectivityReposi
      * in order to be notified about interactor related events.
      */
     val userAccountEvents: LiveData<UserMovieListEvent> get() = _userMovieListEvents
-
 
     /**
      * Fetches the favorite movies that the user has.
@@ -95,8 +107,10 @@ class UserMovieListInteractor @Inject constructor(private val connectivityReposi
      * scenario. On an error scenario, the state is published via the [LiveData] object
      * obtained in [userAccountEvents].
      */
-    private fun fetchFromRepository(callback: (List<Movie>) -> Unit,
-                                    fetch: (UserAccount, Session, SupportedLanguage) -> MoviePage?) {
+    private fun fetchFromRepository(
+        callback: (List<Movie>) -> Unit,
+        fetch: (UserAccount, Session, SupportedLanguage) -> MoviePage?
+    ) {
         withSession { session ->
             withUserAccount(session) { account ->
                 when (connectivityRepository.getCurrentConnectivity()) {

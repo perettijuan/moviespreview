@@ -10,10 +10,11 @@ import com.jpp.mpdomain.MovieDetail
  * [MovieDetailDb] implementation with a cache mechanism to verify that the data stored in the application
  * is valid after a period of time.
  */
-class MovieDetailCache(private val roomDatabase: MPRoomDataBase,
-                       private val adapter: RoomModelAdapter,
-                       private val timestampHelper: CacheTimestampHelper) : MovieDetailDb {
-
+class MovieDetailCache(
+    private val roomDatabase: MPRoomDataBase,
+    private val adapter: RoomModelAdapter,
+    private val timestampHelper: CacheTimestampHelper
+) : MovieDetailDb {
 
     override fun getMovieDetails(movieId: Double): MovieDetail? {
         return withMovieDetailsDao {

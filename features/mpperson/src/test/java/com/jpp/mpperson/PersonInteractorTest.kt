@@ -7,19 +7,21 @@ import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.PersonRepository
+import com.jpp.mpperson.PersonInteractor.PersonEvent.AppLanguageChanged
+import com.jpp.mpperson.PersonInteractor.PersonEvent.NotConnectedToNetwork
+import com.jpp.mpperson.PersonInteractor.PersonEvent.Success
+import com.jpp.mpperson.PersonInteractor.PersonEvent.UnknownError
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import com.jpp.mpperson.PersonInteractor.PersonEvent.*
-import io.mockk.mockk
-import org.junit.jupiter.api.Assertions.assertEquals
 
 @ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
 class PersonInteractorTest {
@@ -51,7 +53,7 @@ class PersonInteractorTest {
          * an observer on the view states attached all the time in order
          * to get notifications.
          */
-        subject.events.observeForever {  }
+        subject.events.observeForever { }
     }
 
     @Test
@@ -110,5 +112,4 @@ class PersonInteractorTest {
 
         assertEquals(AppLanguageChanged, eventPosted)
     }
-
 }

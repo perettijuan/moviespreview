@@ -18,13 +18,13 @@ import com.jpp.mpmoviedetails.R
  * Represents the view states that the movie detail view can assume.
  */
 data class RateMovieViewState(
-        val loadingVisibility: Int = View.INVISIBLE,
-        val deleteVisibility: Int = View.INVISIBLE,
-        val submitVisibility: Int = View.INVISIBLE,
-        val ratingBarVisibility: Int = View.INVISIBLE,
-        val movieTitle: String,
-        val movieImageUrl: String,
-        val rating: Float = 0.0F
+    val loadingVisibility: Int = View.INVISIBLE,
+    val deleteVisibility: Int = View.INVISIBLE,
+    val submitVisibility: Int = View.INVISIBLE,
+    val ratingBarVisibility: Int = View.INVISIBLE,
+    val movieTitle: String,
+    val movieImageUrl: String,
+    val rating: Float = 0.0F
 ) {
     companion object {
         fun showLoading(movieTitle: String, movieImageUrl: String) = RateMovieViewState(
@@ -74,13 +74,13 @@ enum class RateMovieUserMessages(@StringRes val messageRes: Int) {
  * [RateMovieViewModel].
  */
 data class RateMovieParam(
-        val movieId: Double,
-        val screenTitle: String,
-        val movieImageUrl: String
+    val movieId: Double,
+    val screenTitle: String,
+    val movieImageUrl: String
 ) {
     companion object {
         fun fromArguments(
-                arguments: Bundle?
+            arguments: Bundle?
         ): RateMovieParam {
             return RateMovieParam(
                     arguments.getStringOrFail("movieId").toDouble(),

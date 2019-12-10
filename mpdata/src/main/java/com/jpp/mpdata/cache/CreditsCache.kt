@@ -10,9 +10,11 @@ import com.jpp.mpdomain.Credits
  * [CreditsDb] implementation with a caching mechanism to verify that the data stored in the application
  * is valid after a period of time.
  */
-class CreditsCache(private val roomDatabase: MPRoomDataBase,
-                   private val adapter: RoomModelAdapter,
-                   private val timestampHelper: CacheTimestampHelper) : CreditsDb {
+class CreditsCache(
+    private val roomDatabase: MPRoomDataBase,
+    private val adapter: RoomModelAdapter,
+    private val timestampHelper: CacheTimestampHelper
+) : CreditsDb {
 
     override fun getCreditsForMovie(movieId: Double): Credits? {
         return withCreditsDao {

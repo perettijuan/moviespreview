@@ -21,9 +21,9 @@ import com.jpp.mpperson.NavigationPerson
  * Represents the view state that the MainActivity can show at any given time.
  */
 data class MainActivityViewState(
-        val sectionTitle: String,
-        val menuBarEnabled: Boolean,
-        val searchEnabled: Boolean
+    val sectionTitle: String,
+    val menuBarEnabled: Boolean,
+    val searchEnabled: Boolean
 )
 
 /**************************************************************************************************
@@ -63,7 +63,6 @@ sealed class ModuleNavigationEvent {
      * the extra data.
      */
     data class NavigateToNodeWithExtras(@IdRes val nodeId: Int, val extras: Bundle) : ModuleNavigationEvent() {
-
 
         companion object {
             fun toMovieDetails(destination: Destination.MPMovieDetails) = NavigateToNodeWithExtras(R.id.movie_details_nav,
@@ -105,6 +104,4 @@ sealed class ModuleNavigationEvent {
             return nodeId
         }
     }
-
-
 }

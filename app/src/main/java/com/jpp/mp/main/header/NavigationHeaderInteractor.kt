@@ -2,7 +2,9 @@ package com.jpp.mp.main.header
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.*
+import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.Success
+import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.UnknownError
+import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.UserNotLogged
 import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.repository.AccountRepository
@@ -14,8 +16,10 @@ import javax.inject.Inject
  * Takes care of accessing the repository layer to perform the inner state updates needed to
  * provide functionality in the header section of the navigation view.
  */
-class NavigationHeaderInteractor @Inject constructor(private val sessionRepository: SessionRepository,
-                                                     private val accountRepository: AccountRepository) {
+class NavigationHeaderInteractor @Inject constructor(
+    private val sessionRepository: SessionRepository,
+    private val accountRepository: AccountRepository
+) {
 
     /**
      * Represents the events that this interactor can route to the upper layers.

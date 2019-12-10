@@ -24,7 +24,6 @@ abstract class MPDialogFragment<VM : MPScopedViewModel> : DialogFragment() {
         super.onAttach(context)
     }
 
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         withViewModel {

@@ -31,6 +31,6 @@ class HandledEvent<out T>(private val viewState: T) {
     fun peekContent(): T = viewState
 
     companion object {
-        fun <T> of(viewState: T) : HandledEvent<T> = HandledEvent(viewState)
+        fun <T> of(viewState: T): HandledEvent<T> = HandledEvent(viewState)
     }
 }

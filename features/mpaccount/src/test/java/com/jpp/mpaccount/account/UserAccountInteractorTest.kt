@@ -2,8 +2,16 @@ package com.jpp.mpaccount.account
 
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent
-import com.jpp.mpdomain.*
-import com.jpp.mpdomain.repository.*
+import com.jpp.mpdomain.Connectivity
+import com.jpp.mpdomain.MoviePage
+import com.jpp.mpdomain.Session
+import com.jpp.mpdomain.SupportedLanguage
+import com.jpp.mpdomain.UserAccount
+import com.jpp.mpdomain.repository.AccountRepository
+import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.LanguageRepository
+import com.jpp.mpdomain.repository.MoviePageRepository
+import com.jpp.mpdomain.repository.SessionRepository
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every

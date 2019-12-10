@@ -72,7 +72,6 @@ class UserAccountMoviesView : ConstraintLayout {
         }
     }
 
-
     class AccountMovieAdapter(private val items: List<UserAccountMovieItem>) : RecyclerView.Adapter<AccountMovieAdapter.ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent.inflate(R.layout.list_item_user_account_movies))

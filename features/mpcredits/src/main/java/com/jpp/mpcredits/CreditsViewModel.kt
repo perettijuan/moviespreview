@@ -6,14 +6,17 @@ import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.extensions.addAllMapping
 import com.jpp.mp.common.navigation.Destination
-import com.jpp.mpcredits.CreditsInteractor.CreditsEvent.*
+import com.jpp.mpcredits.CreditsInteractor.CreditsEvent.AppLanguageChanged
+import com.jpp.mpcredits.CreditsInteractor.CreditsEvent.NotConnectedToNetwork
+import com.jpp.mpcredits.CreditsInteractor.CreditsEvent.Success
+import com.jpp.mpcredits.CreditsInteractor.CreditsEvent.UnknownError
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
 import com.jpp.mpdomain.CrewMember
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPScopedViewModel] that supports the credits section. The VM retrieves
@@ -27,11 +30,12 @@ import javax.inject.Inject
  * VM is notified about such event and executes a refresh of both: the data stored by the application
  * and the view state being shown to the user.
  */
-class CreditsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                           private val creditsInteractor: CreditsInteractor,
-                                           private val imagesPathInteractor: ImagesPathInteractor)
-    : MPScopedViewModel(dispatchers) {
-
+class CreditsViewModel @Inject constructor(
+    dispatchers: CoroutineDispatchers,
+    private val creditsInteractor: CreditsInteractor,
+    private val imagesPathInteractor: ImagesPathInteractor
+) :
+        MPScopedViewModel(dispatchers) {
 
     private val _viewState = MediatorLiveData<CreditsViewState>()
     val viewState: LiveData<CreditsViewState> get() = _viewState

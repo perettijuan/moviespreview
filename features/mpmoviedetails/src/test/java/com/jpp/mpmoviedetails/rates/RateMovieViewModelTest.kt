@@ -63,7 +63,6 @@ class RateMovieViewModelTest {
         assertEquals(Destination.PreviousDestination, postedDestination)
     }
 
-
     @Test
     fun `Should map interactor FetchSuccess event to ViewState`() {
         var postedViewState: RateMovieViewState? = null
@@ -192,7 +191,7 @@ class RateMovieViewModelTest {
 
     @Test
     fun `Should NOT rate movie onRateMovie when it has been rated with same value`() {
-        subject.viewState.observeForever {  }
+        subject.viewState.observeForever { }
 
         val rating = MovieStateRate(
                 isRated = true,
@@ -214,7 +213,6 @@ class RateMovieViewModelTest {
         lvInteractorEvents.postValue(MovieStateEvent.FetchSuccess(movieState))
 
         subject.onRateMovie(5.5F)
-
 
         verify(exactly = 0) { movieDetailsInteractor.rateMovie(12.0, 4F) }
     }
@@ -245,7 +243,6 @@ class RateMovieViewModelTest {
         verify { movieDetailsInteractor.deleteMovieRating(12.0) }
     }
 
-
     companion object {
 
         @JvmStatic
@@ -267,6 +264,5 @@ class RateMovieViewModelTest {
                         MovieDetailsInteractor.RateMovieEvent.RatingDeleted(false)
                 )
         )
-
     }
 }

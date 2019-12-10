@@ -35,7 +35,6 @@ class MoviePageRepositoryImplTest {
         subject = MoviePageRepositoryImpl(moviesApi, moviesDb)
     }
 
-
     @ParameterizedTest
     @MethodSource("allMovieSections")
     fun `Should not retrieve from API when valid movie page in DB`(section: MovieSection) {
@@ -208,10 +207,10 @@ class MoviePageRepositoryImplTest {
     }
 
     data class MoviesRepositoryTestInput(
-            val callsToNowPlaying: Int = 0,
-            val callsToTopRated: Int = 0,
-            val callsToPopular: Int = 0,
-            val callsToUpcoming: Int = 0
+        val callsToNowPlaying: Int = 0,
+        val callsToTopRated: Int = 0,
+        val callsToPopular: Int = 0,
+        val callsToUpcoming: Int = 0
     )
 
     companion object {
@@ -224,7 +223,6 @@ class MoviePageRepositoryImplTest {
                 MovieSection.TopRated
         )
 
-
         @JvmStatic
         fun movieSectionsAndCount() = listOf(
                 arguments(MovieSection.Playing, MoviesRepositoryTestInput(callsToNowPlaying = 1)),
@@ -233,5 +231,4 @@ class MoviePageRepositoryImplTest {
                 arguments(MovieSection.TopRated, MoviesRepositoryTestInput(callsToTopRated = 1))
         )
     }
-
 }

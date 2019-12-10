@@ -2,9 +2,22 @@ package com.jpp.mpaccount.account
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent.*
-import com.jpp.mpdomain.*
-import com.jpp.mpdomain.repository.*
+import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent.NotConnectedToNetwork
+import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent.Success
+import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent.UnknownError
+import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent.UserChangedLanguage
+import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent.UserDataCleared
+import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent.UserNotLogged
+import com.jpp.mpdomain.Connectivity
+import com.jpp.mpdomain.MoviePage
+import com.jpp.mpdomain.Session
+import com.jpp.mpdomain.SupportedLanguage
+import com.jpp.mpdomain.UserAccount
+import com.jpp.mpdomain.repository.AccountRepository
+import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.LanguageRepository
+import com.jpp.mpdomain.repository.MoviePageRepository
+import com.jpp.mpdomain.repository.SessionRepository
 import javax.inject.Inject
 
 /**
@@ -12,11 +25,13 @@ import javax.inject.Inject
  * repository layer to perform the inner state updates needed to provide functionality to the
  * user account screen.
  */
-class UserAccountInteractor @Inject constructor(private val connectivityRepository: ConnectivityRepository,
-                                                private val sessionRepository: SessionRepository,
-                                                private val accountRepository: AccountRepository,
-                                                private val moviePageRepository: MoviePageRepository,
-                                                private val languageRepository: LanguageRepository) {
+class UserAccountInteractor @Inject constructor(
+    private val connectivityRepository: ConnectivityRepository,
+    private val sessionRepository: SessionRepository,
+    private val accountRepository: AccountRepository,
+    private val moviePageRepository: MoviePageRepository,
+    private val languageRepository: LanguageRepository
+) {
 
     /**
      * Represents the events that this interactor can route to the upper layers.
@@ -27,11 +42,13 @@ class UserAccountInteractor @Inject constructor(private val connectivityReposito
         object UserNotLogged : UserAccountEvent()
         object NotConnectedToNetwork : UserAccountEvent()
         object UnknownError : UserAccountEvent()
-        data class Success(val data: UserAccount,
-                           val favoriteMovies: UserMoviesState,
-                           val ratedMovies: UserMoviesState,
-                           val watchList: UserMoviesState)
-            : UserAccountEvent()
+        data class Success(
+            val data: UserAccount,
+            val favoriteMovies: UserMoviesState,
+            val ratedMovies: UserMoviesState,
+            val watchList: UserMoviesState
+        ) :
+                UserAccountEvent()
     }
 
     sealed class UserMoviesState {

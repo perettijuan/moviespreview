@@ -12,7 +12,6 @@ interface CoroutineDispatchers {
     fun default(): CoroutineDispatcher
 }
 
-
 class CoroutineDispatchersImpl : CoroutineDispatchers {
     override fun main(): CoroutineDispatcher = Dispatchers.Main
     override fun default(): CoroutineDispatcher = Dispatchers.Default

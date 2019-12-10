@@ -2,7 +2,10 @@ package com.jpp.mpcredits
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mpcredits.CreditsInteractor.CreditsEvent.*
+import com.jpp.mpcredits.CreditsInteractor.CreditsEvent.AppLanguageChanged
+import com.jpp.mpcredits.CreditsInteractor.CreditsEvent.NotConnectedToNetwork
+import com.jpp.mpcredits.CreditsInteractor.CreditsEvent.Success
+import com.jpp.mpcredits.CreditsInteractor.CreditsEvent.UnknownError
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.Credits
 import com.jpp.mpdomain.repository.ConnectivityRepository
@@ -17,10 +20,11 @@ import javax.inject.Singleton
  * view layer.
  */
 @Singleton
-class CreditsInteractor @Inject constructor(private val connectivityRepository: ConnectivityRepository,
-                                            private val creditsRepository: CreditsRepository,
-                                            languageRepository: LanguageRepository) {
-
+class CreditsInteractor @Inject constructor(
+    private val connectivityRepository: ConnectivityRepository,
+    private val creditsRepository: CreditsRepository,
+    languageRepository: LanguageRepository
+) {
 
     sealed class CreditsEvent {
         object AppLanguageChanged : CreditsEvent()

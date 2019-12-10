@@ -20,9 +20,9 @@ import com.jpp.mpdomain.MovieSection
  * can only render the view states modeled in this class.
  */
 data class MovieListViewState(
-        val loadingVisibility: Int = View.INVISIBLE,
-        val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
-        val contentViewState: MovieListContentViewState = MovieListContentViewState()
+    val loadingVisibility: Int = View.INVISIBLE,
+    val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
+    val contentViewState: MovieListContentViewState = MovieListContentViewState()
 ) {
     companion object {
         fun showLoading() = MovieListViewState(loadingVisibility = View.VISIBLE)
@@ -36,20 +36,20 @@ data class MovieListViewState(
  * Represents the view state of the content shown in the movie list view.
  */
 data class MovieListContentViewState(
-        val visibility: Int = View.INVISIBLE,
-        val movieList: PagedList<MovieListItem>? = null
+    val visibility: Int = View.INVISIBLE,
+    val movieList: PagedList<MovieListItem>? = null
 )
 
 /**
  * Represents an item in the list of Movies.
  */
 data class MovieListItem(
-        val movieId: Double,
-        val headerImageUrl: String,
-        val title: String,
-        val contentImageUrl: String,
-        val popularity: String,
-        val voteCount: String
+    val movieId: Double,
+    val headerImageUrl: String,
+    val title: String,
+    val contentImageUrl: String,
+    val popularity: String,
+    val voteCount: String
 )
 
 /**************************************************************************************************
@@ -61,10 +61,10 @@ data class MovieListItem(
  * [MovieListViewModel].
  */
 data class MovieListParam(
-        val section: MovieSection,
-        val screenTitle: String,
-        val posterSize: Int,
-        val backdropSize: Int
+    val section: MovieSection,
+    val screenTitle: String,
+    val posterSize: Int,
+    val backdropSize: Int
 ) {
     companion object {
         fun playing(resources: Resources, posterSize: Int, backdropSize: Int) = MovieListParam(

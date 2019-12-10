@@ -69,8 +69,12 @@ interface ImagesPathInteractor {
          * @return a new [Movie] object with the same attributes as the original one, but with
          * the images paths configured.
          */
-        private fun configureMovieImagesPath(movie: Movie, imagesConfig: ImagesConfiguration,
-                                             targetBackdropSize: Int, targetPosterSize: Int): Movie {
+        private fun configureMovieImagesPath(
+            movie: Movie,
+            imagesConfig: ImagesConfiguration,
+            targetBackdropSize: Int,
+            targetPosterSize: Int
+        ): Movie {
             return movie.copy(
                     poster_path = createUrlForPath(movie.poster_path, imagesConfig.base_url, imagesConfig.poster_sizes, targetPosterSize),
                     backdrop_path = createUrlForPath(movie.backdrop_path, imagesConfig.base_url, imagesConfig.backdrop_sizes, targetBackdropSize)

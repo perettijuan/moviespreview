@@ -1,6 +1,11 @@
 package com.jpp.mpdata.cache
 
-import com.jpp.mpdata.cache.room.*
+import com.jpp.mpdata.cache.room.DBMovieDetail
+import com.jpp.mpdata.cache.room.DBMovieGenre
+import com.jpp.mpdata.cache.room.MPRoomDataBase
+import com.jpp.mpdata.cache.room.MovieDAO
+import com.jpp.mpdata.cache.room.MovieDetailDAO
+import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdomain.MovieDetail
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -77,5 +82,4 @@ class MovieDetailCacheTest {
         verify { detailsDAO.getGenresForDetailId(dbMovieDetailId) }
         verify { roomModelAdapter.adaptDBMovieDetailToDataMovieDetail(dbMovieDetail, dbGenres) }
     }
-
 }

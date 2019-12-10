@@ -10,9 +10,9 @@ import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpmoviedetails.MovieDetailsInteractor
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.RateMovieEvent
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPScopedViewModel] that supports the movie movie rating feature. The VM retrieves
@@ -25,10 +25,11 @@ import javax.inject.Inject
  * of the movie internally and in the server side and updates the view layer according to the new
  * state of the business layer.
  */
-class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                             private val movieDetailsInteractor: MovieDetailsInteractor)
-    : MPScopedViewModel(dispatchers) {
-
+class RateMovieViewModel @Inject constructor(
+    dispatchers: CoroutineDispatchers,
+    private val movieDetailsInteractor: MovieDetailsInteractor
+) :
+    MPScopedViewModel(dispatchers) {
 
     private val _viewState = MediatorLiveData<RateMovieViewState>()
     val viewState: LiveData<RateMovieViewState> get() = _viewState
@@ -105,7 +106,6 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         )
     }
 
-
     /**
      * When called, this method will push the loading view state and will fetch the movie state
      * of the movie being shown. When the fetching process is done, the view state will be updated
@@ -159,7 +159,6 @@ class RateMovieViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private fun scaleDownRatingValue(value: Float): Float = value / SCALING_FACTOR
 
     private fun scaleUpRatingValue(value: Float): Float = value * SCALING_FACTOR
-
 
     private companion object {
         private const val SCALING_FACTOR = 2

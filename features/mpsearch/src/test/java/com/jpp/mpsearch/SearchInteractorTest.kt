@@ -9,9 +9,9 @@ import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.SearchRepository
 import com.jpp.mpsearch.SearchInteractor.SearchEvent
+import com.jpp.mpsearch.SearchInteractor.SearchEvent.AppLanguageChanged
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.NotConnectedToNetwork
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.UnknownError
-import com.jpp.mpsearch.SearchInteractor.SearchEvent.AppLanguageChanged
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
@@ -37,7 +37,6 @@ class SearchInteractorTest {
     private val languageUpdates = MutableLiveData<SupportedLanguage>()
 
     private lateinit var subject: SearchInteractor
-
 
     @BeforeEach
     fun setUp() {

@@ -8,5 +8,5 @@ interface AboutUrlRepository {
     fun getGPlayAppUrl(): AboutUrl
     fun getGPlayWebUrl(): AboutUrl
     fun getSharingUrl(): AboutUrl
-    fun getPrivacyPolicyUrl() : AboutUrl
+    fun getPrivacyPolicyUrl(): AboutUrl
 }

@@ -29,7 +29,6 @@ class InterModuleNavigationEvent(private val destination: Destination) {
     }
 }
 
-
 sealed class Destination {
     /*
      * Represents a request to perform an up destination.
@@ -46,24 +45,30 @@ sealed class Destination {
      * Destination used to perform inter-module navigation to the details
      * module.
      */
-    data class MPMovieDetails(val movieId: String,
-                              val movieImageUrl: String,
-                              val movieTitle: String) : Destination()
+    data class MPMovieDetails(
+        val movieId: String,
+        val movieImageUrl: String,
+        val movieTitle: String
+    ) : Destination()
 
     /*
      * Destination used to perform inter-module navigation to the persons
      * module.
      */
-    data class MPPerson(val personId: String,
-                        val personImageUrl: String,
-                        val personName: String) : Destination()
+    data class MPPerson(
+        val personId: String,
+        val personImageUrl: String,
+        val personName: String
+    ) : Destination()
 
     /*
      * Destination used to perform inter-module navigation to the credits
      * module.
      */
-    data class MPCredits(val movieId: Double,
-                         val movieTitle: String) : Destination()
+    data class MPCredits(
+        val movieId: Double,
+        val movieTitle: String
+    ) : Destination()
 
     /*
      * Represents a Destination that is internal to a module.
