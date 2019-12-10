@@ -3,7 +3,6 @@ package com.jpp.mp.common.navigation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavDirections
 import com.jpp.mp.common.navigation.InterModuleNavigationEvent.Companion.of
 import javax.inject.Inject
 
@@ -20,7 +19,6 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
 
     private val _reachedDestinations = MutableLiveData<Destination>()
     val reachedDestinations: LiveData<Destination> = _reachedDestinations
-
 
     fun navigateTo(destination: Destination) {
         _navEvents.value = of(destination)

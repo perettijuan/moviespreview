@@ -21,8 +21,6 @@ apply plugin: 'androidx.navigation.safeargs'
 
 apply plugin: 'io.fabric'
 
-apply from: "../ktlint.gradle"
-
 repositories {
     maven { url 'https://maven.fabric.io/public' }
 }

@@ -12,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
 class HandledEventTest {
 
-
     @Test
     fun `Should handle value only once`() {
         var sumOfHandles = 0

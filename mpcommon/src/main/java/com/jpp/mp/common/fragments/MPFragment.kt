@@ -42,7 +42,6 @@ abstract class MPFragment<VM : MPScopedViewModel> : Fragment() {
         super.onAttach(context)
     }
 
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         withViewModel {

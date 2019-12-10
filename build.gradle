@@ -110,6 +110,7 @@ allprojects {
     }
 
     apply from: "$rootDir/detekt.gradle"
+    apply from: "$rootDir/ktlint.gradle"
 }
 
 

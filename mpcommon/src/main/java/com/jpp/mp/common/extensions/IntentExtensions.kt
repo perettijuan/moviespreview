@@ -34,7 +34,7 @@ fun Intent.send(sharingText: String): Intent {
 /**
  * Formats the [Intent] to expanded the web browser at the provided [url].
  */
-fun Intent.web(url: String) : Intent {
+fun Intent.web(url: String): Intent {
     action = Intent.ACTION_VIEW
     data = Uri.parse(url)
     return this
