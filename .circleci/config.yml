@@ -48,7 +48,7 @@
 
     # Build the debug apk
 
-    build_debug:
+    Build Debug Apk:
       <<: *android_config
       steps:
         - checkout
@@ -178,10 +178,10 @@
     version: 2
     workflow:
       jobs:
-        - build_debug
+        - Build Debug Apk
         - check_quality:
             requires:
-              - build_debug
+              - Build Debug Apk
         - test_unit:
             requires:
-              - build_debug
+              - Build Debug Apk
