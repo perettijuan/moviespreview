@@ -1,49 +1,45 @@
-version: 2
+  version: 2
+  references:
 
+    ## Workspace
 
-references:
-
-  ## Cache
-
-  cache_key: &cache_key
-    key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-  restore_cache: &restore_cache
-    restore_cache:
-      <<: *cache_key
-  save_cache: &save_cache
-    save_cache:
-      <<: *cache_key
+    workspace: &workspace
+                 ~/workspace
+    persist_debug_workspace: &persist_debug_workspace
+    persist_to_workspace:
+      root: *workspace
       paths:
-        - ~/.gradle
-        - ~/.m2
+        - app/build/intermediates
+        - app/build/outputs/androidTest-results
+        - app/build/outputs/apk
+        - app/build/outputs/code-coverage
+        - app/build/test-results
 
-  ## Workspace
-
-  workspace: &workspace
-               ~/workspace
-  persist_debug_workspace: &persist_debug_workspace
-  persist_to_workspace:
-    root: *workspace
-    paths:
-      - app/build/intermediates
-      - app/build/outputs/androidTest-results
-      - app/build/outputs/apk
-      - app/build/outputs/code-coverage
-      - app/build/test-results
 
     ## Docker image configurations
 
     android_config: &android_config
       working_directory: *workspace
       docker:
-        - image: circleci/android:api-28
+        - image: circleci/android:api-29
       environment:
         TERM: dumb
         _JAVA_OPTIONS: "-Xmx2048m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
-        GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m"'
+        GRADLE_OPTS: -Xmx1536m -XX:+HeapDumpOnOutOfMemoryError -Dorg.gradle.caching=true -Dorg.gradle.configureondemand=true -Dkotlin.compiler.execution.strategy=in-process -Dkotlin.incremental=false -Dorg.gradle.daemon=false
 
+    ## Cache
 
-
+    cache_key: &cache_key
+      key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+    restore_cache: &restore_cache
+      restore_cache:
+        <<: *cache_key
+    save_cache: &save_cache
+      save_cache:
+        <<: *cache_key
+        paths:
+          - ~/.gradle
+          - ~/.m2
 
   jobs:
 
@@ -66,126 +62,126 @@ references:
             path: app/build/outputs/apk/
             destination: /apk/
 
-  ## Check code quality
+    # Check code quality
 
-  check_quality:
-    <<: *android_config
-    steps:
-      - checkout
-      - *restore_cache
-      - run:
-          name: Download dependencies
-          command: ./gradlew androidDependencies
-      - *save_cache
-      - run:
-          name: Run Detekt
-          command: ./gradlew detekt
-      - run:
-          name: Run Ktlint
-          command: ./gradlew ktlint
-      - run:
-          name: Run Lint
-          command: ./gradlew lintDebug
-      - *persist_debug_workspace
-      - store_artifacts:
-          path: app/build/reports/
-          destination: /reports/
-
-
-  ## Run unit tests
-
-  test_unit:
-    <<: *android_config
-    steps:
-      - checkout
-      - *restore_cache
-      - run:
-          name: Download dependencies
-          command: ./gradlew androidDependencies
-      - *save_cache
-      - run:
-          name: Run mpcommon Module Unit Tests
-          command: ./gradlew :mpcommon:test
-      - store_artifacts:
-          path: mpcommon/build/reports
-      - store_test_results:
-          path: mpcommon/build/test-results
-      - run:
-          name: Run mpdata Module Unit Tests
-          command: ./gradlew :mpdata:test
-      - store_artifacts:
-          path: mpdata/build/reports
-      - store_test_results:
-          path: mpdata/build/test-results
-      - run:
-          name: Run mpdomain Module Unit Tests
-          command: ./gradlew :mpdomain:test
-      - store_artifacts:
-          path: mpdomain/build/reports
-      - store_test_results:
-          path: mpdomain/build/test-results
-      - run:
-          name: Run mpabout Module Unit Tests
-          command: ./gradlew :features:mpabout:test
-      - store_artifacts:
-          path: features/mpabout/build/reports
-      - store_test_results:
-          path: features/mpabout/mpdomain/build/test-results
-      - run:
-          name: Run mpcredits Module Unit Tests
-          command: ./gradlew :features:mpcredits:test
-      - store_artifacts:
-          path: features/mpcredits/build/reports
-      - store_test_results:
-          path: features/mpcredits/mpdomain/build/test-results
-      - run:
-          name: Run mpaccount Module Unit Tests
-          command: ./gradlew :features:mpcredits:test
-      - store_artifacts:
-          path: features/mpaccount/build/reports
-      - store_test_results:
-          path: features/mpaccount/mpdomain/build/test-results
-      - run:
-          name: Run mpmoviedetails Module Unit Tests
-          command: ./gradlew :features:mpmoviedetails:test
-      - store_artifacts:
-          path: features/mpmoviedetails/build/reports
-      - store_test_results:
-          path: features/mpmoviedetails/mpdomain/build/test-results
-      - run:
-          name: Run mpsearch Module Unit Tests
-          command: ./gradlew :features:mpsearch:test
-      - store_artifacts:
-          path: features/mpsearch/build/reports
-      - store_test_results:
-          path: features/mpsearch/mpdomain/build/test-results
-      - run:
-          name: Run mpperson Module Unit Tests
-          command: ./gradlew :features:mpperson:test
-      - store_artifacts:
-          path: features/mpperson/build/reports
-      - store_test_results:
-          path: features/mpperson/mpdomain/build/test-results
-      - run:
-          name: Run Unit Tests
-          command: ./gradlew test
-      - store_artifacts:
-          path: app/build/reports
-          destination: reports
-      - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
-          path: app/build/test-results
+    check_quality:
+      <<: *android_config
+      steps:
+        - checkout
+        - *restore_cache
+        - run:
+            name: Download dependencies
+            command: ./gradlew androidDependencies
+        - *save_cache
+        - run:
+            name: Run Detekt
+            command: ./gradlew detekt
+        - run:
+            name: Run Ktlint
+            command: ./gradlew ktlint
+        - run:
+            name: Run Lint
+            command: ./gradlew lintDebug
+        - *persist_debug_workspace
+        - store_artifacts:
+            path: app/build/reports/
+            destination: /reports/
 
 
+    ## Run unit tests
+
+    test_unit:
+      <<: *android_config
+      steps:
+        - checkout
+        - *restore_cache
+        - run:
+            name: Download dependencies
+            command: ./gradlew androidDependencies
+        - *save_cache
+        - run:
+            name: Run mpcommon Module Unit Tests
+            command: ./gradlew :mpcommon:test
+        - store_artifacts:
+            path: mpcommon/build/reports
+        - store_test_results:
+            path: mpcommon/build/test-results
+        - run:
+            name: Run mpdata Module Unit Tests
+            command: ./gradlew :mpdata:test
+        - store_artifacts:
+            path: mpdata/build/reports
+        - store_test_results:
+            path: mpdata/build/test-results
+        - run:
+            name: Run mpdomain Module Unit Tests
+            command: ./gradlew :mpdomain:test
+        - store_artifacts:
+            path: mpdomain/build/reports
+        - store_test_results:
+            path: mpdomain/build/test-results
+        - run:
+            name: Run mpabout Module Unit Tests
+            command: ./gradlew :features:mpabout:test
+        - store_artifacts:
+            path: features/mpabout/build/reports
+        - store_test_results:
+            path: features/mpabout/mpdomain/build/test-results
+        - run:
+            name: Run mpcredits Module Unit Tests
+            command: ./gradlew :features:mpcredits:test
+        - store_artifacts:
+            path: features/mpcredits/build/reports
+        - store_test_results:
+            path: features/mpcredits/mpdomain/build/test-results
+        - run:
+            name: Run mpaccount Module Unit Tests
+            command: ./gradlew :features:mpcredits:test
+        - store_artifacts:
+            path: features/mpaccount/build/reports
+        - store_test_results:
+            path: features/mpaccount/mpdomain/build/test-results
+        - run:
+            name: Run mpmoviedetails Module Unit Tests
+            command: ./gradlew :features:mpmoviedetails:test
+        - store_artifacts:
+            path: features/mpmoviedetails/build/reports
+        - store_test_results:
+            path: features/mpmoviedetails/mpdomain/build/test-results
+        - run:
+            name: Run mpsearch Module Unit Tests
+            command: ./gradlew :features:mpsearch:test
+        - store_artifacts:
+            path: features/mpsearch/build/reports
+        - store_test_results:
+            path: features/mpsearch/mpdomain/build/test-results
+        - run:
+            name: Run mpperson Module Unit Tests
+            command: ./gradlew :features:mpperson:test
+        - store_artifacts:
+            path: features/mpperson/build/reports
+        - store_test_results:
+            path: features/mpperson/mpdomain/build/test-results
+        - run:
+            name: Run Unit Tests
+            command: ./gradlew test
+        - store_artifacts:
+            path: app/build/reports
+            destination: reports
+        - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
+            path: app/build/test-results
 
 
-workflows:
-  version: 2
-  workflow:
-    jobs:
-      - build_debug
-      - check_quality:
-          requires:
-            - build_debug
-      - test_unit:
-          requires:
-            - build_debug
+
+
+  workflows:
+    version: 2
+    workflow:
+      jobs:
+        - build_debug
+        - check_quality:
+            requires:
+              - build_debug
+        - test_unit:
+            requires:
+              - build_debug
