@@ -69,9 +69,9 @@ jobs:
           name: Gradle build (debug)
           command: ./gradlew -PciBuild=true :app:assembleDebug :app:assembleAndroidTest
             - *persist_debug_workspace
-            - store_artifacts:
-                path: mobile/build/outputs/apk/
-                destination: /apk/
+       - store_artifacts:
+          path: mobile/build/outputs/apk/
+          destination: /apk/
 
     ## Check code quality
 
@@ -196,4 +196,3 @@ workflows:
       - test_unit:
           requires:
             - build_debug
-        
