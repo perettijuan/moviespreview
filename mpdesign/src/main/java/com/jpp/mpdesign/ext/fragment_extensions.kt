@@ -15,10 +15,12 @@ import com.jpp.mpdesign.R
 /**
  * Creates and shows a [Snackbar] styled with the application resources.
  */
-fun Fragment.snackBar(contentView: View,
-                      @StringRes message: Int,
-                      @StringRes actionMessage: Int,
-                      action: () -> Unit) {
+fun Fragment.snackBar(
+    contentView: View,
+    @StringRes message: Int,
+    @StringRes actionMessage: Int,
+    action: () -> Unit
+) {
     activity?.let {
         Snackbar.make(
                 contentView,
@@ -36,8 +38,10 @@ fun Fragment.snackBar(contentView: View,
 /**
  * Creates and shows a [Snackbar] styled with the application resources.
  */
-fun Fragment.snackBarNoAction(contentView: View,
-                              @StringRes message: Int) {
+fun Fragment.snackBarNoAction(
+    contentView: View,
+    @StringRes message: Int
+) {
     activity?.let {
         Snackbar.make(
                 contentView,
@@ -48,7 +52,6 @@ fun Fragment.snackBarNoAction(contentView: View,
         }.show()
     }
 }
-
 
 fun Fragment.mpToast(@StringRes messageRes: Int) {
     Toast.makeText(requireContext(), messageRes, Toast.LENGTH_SHORT)
