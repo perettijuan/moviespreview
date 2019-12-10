@@ -21,9 +21,9 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
  * can only render the view states modeled in this class.
  */
 data class UserMovieListViewState(
-        val loadingVisibility: Int = View.INVISIBLE,
-        val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
-        val contentViewState: UserMovieListContentViewState = UserMovieListContentViewState()
+    val loadingVisibility: Int = View.INVISIBLE,
+    val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
+    val contentViewState: UserMovieListContentViewState = UserMovieListContentViewState()
 ) {
     companion object {
         fun showLoading() = UserMovieListViewState(loadingVisibility = View.VISIBLE)
@@ -37,18 +37,18 @@ data class UserMovieListViewState(
  * Represents the view state of the content shown in the movie list view.
  */
 data class UserMovieListContentViewState(
-        val visibility: Int = View.INVISIBLE,
-        val movieList: PagedList<UserMovieItem>? = null
+    val visibility: Int = View.INVISIBLE,
+    val movieList: PagedList<UserMovieItem>? = null
 )
 
 /**
  * Represents an item in the list of User Movies.
  */
 data class UserMovieItem(
-        val movieId: Double,
-        val headerImageUrl: String,
-        val title: String,
-        val contentImageUrl: String
+    val movieId: Double,
+    val headerImageUrl: String,
+    val title: String,
+    val contentImageUrl: String
 )
 
 /**************************************************************************************************
@@ -70,17 +70,17 @@ enum class UserMovieListType(@StringRes val titleRes: Int) {
  * [UserMovieListViewModel].
  */
 data class UserMovieListParam(
-        val section: UserMovieListType,
-        val screenTitle: String,
-        val posterSize: Int,
-        val backdropSize: Int
+    val section: UserMovieListType,
+    val screenTitle: String,
+    val posterSize: Int,
+    val backdropSize: Int
 ) {
     companion object {
         fun fromArguments(
-                arguments: Bundle?,
-                resources: Resources,
-                posterSize: Int,
-                backdropSize: Int
+            arguments: Bundle?,
+            resources: Resources,
+            posterSize: Int,
+            backdropSize: Int
         ): UserMovieListParam {
             val type = arguments?.get("listType") as UserMovieListType
             return UserMovieListParam(type,

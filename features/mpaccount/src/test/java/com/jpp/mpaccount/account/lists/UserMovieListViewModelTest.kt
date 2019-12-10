@@ -15,12 +15,12 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.slot
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.Arguments.arguments
 import org.junit.jupiter.params.provider.MethodSource
 
@@ -155,7 +155,6 @@ class UserMovieListViewModelTest {
         assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.visibility)
         assertEquals(mockedList.size, viewStatePosted?.contentViewState?.movieList?.size)
 
-
         when (param.section) {
             UserMovieListType.FAVORITE_LIST -> verify { userMovieListInteractor.fetchFavoriteMovies(any(), any()) }
             UserMovieListType.RATED_LIST -> verify { userMovieListInteractor.fetchRatedMovies(any(), any()) }
@@ -221,7 +220,6 @@ class UserMovieListViewModelTest {
             }
         }
     }
-
 
     companion object {
 

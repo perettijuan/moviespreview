@@ -2,7 +2,6 @@ package com.jpp.mpaccount.account
 
 import android.content.res.Resources
 import android.view.View
-import androidx.annotation.StringRes
 import com.jpp.mpaccount.R
 import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 
@@ -18,9 +17,9 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
  * Represents the view state that the user account view can assume at any given moment.
  */
 data class UserAccountViewState(
-        val loadingVisibility: Int = View.INVISIBLE,
-        val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
-        val contentViewState: UserAccountContentViewState = UserAccountContentViewState()
+    val loadingVisibility: Int = View.INVISIBLE,
+    val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
+    val contentViewState: UserAccountContentViewState = UserAccountContentViewState()
 ) {
     companion object {
         fun showLoading() = UserAccountViewState(loadingVisibility = View.VISIBLE)
@@ -33,13 +32,13 @@ data class UserAccountViewState(
         )
 
         fun showContentWithAvatar(
-                userName: String,
-                accountName: String,
-                favoriteMovieState: UserMoviesViewState,
-                ratedMovieState: UserMoviesViewState,
-                watchListState: UserMoviesViewState,
-                avatarUrl: String,
-                avatarCallback: (() -> Unit)
+            userName: String,
+            accountName: String,
+            favoriteMovieState: UserMoviesViewState,
+            ratedMovieState: UserMoviesViewState,
+            watchListState: UserMoviesViewState,
+            avatarUrl: String,
+            avatarCallback: (() -> Unit)
         ) = UserAccountViewState(contentViewState = UserAccountContentViewState.withAvatar(
                 userName,
                 accountName,
@@ -51,12 +50,12 @@ data class UserAccountViewState(
         ))
 
         fun showContentWithLetter(
-                userName: String,
-                accountName: String,
-                favoriteMovieState: UserMoviesViewState,
-                ratedMovieState: UserMoviesViewState,
-                watchListState: UserMoviesViewState,
-                defaultLetter: String
+            userName: String,
+            accountName: String,
+            favoriteMovieState: UserMoviesViewState,
+            ratedMovieState: UserMoviesViewState,
+            watchListState: UserMoviesViewState,
+            defaultLetter: String
         ) = UserAccountViewState(contentViewState = UserAccountContentViewState.withLetter(
                 userName,
                 accountName,
@@ -72,23 +71,23 @@ data class UserAccountViewState(
  * Represents the view state of the user's account data.
  */
 data class UserAccountContentViewState(
-        val visibility: Int = View.INVISIBLE,
-        val userName: String = "",
-        val accountName: String = "",
-        val avatarViewState: AccountAvatarViewState = AccountAvatarViewState(),
-        val favoriteMovieState: UserMoviesViewState = UserMoviesViewState(),
-        val ratedMovieState: UserMoviesViewState = UserMoviesViewState(),
-        val watchListState: UserMoviesViewState = UserMoviesViewState()
+    val visibility: Int = View.INVISIBLE,
+    val userName: String = "",
+    val accountName: String = "",
+    val avatarViewState: AccountAvatarViewState = AccountAvatarViewState(),
+    val favoriteMovieState: UserMoviesViewState = UserMoviesViewState(),
+    val ratedMovieState: UserMoviesViewState = UserMoviesViewState(),
+    val watchListState: UserMoviesViewState = UserMoviesViewState()
 ) {
     companion object {
         fun withAvatar(
-                userName: String,
-                accountName: String,
-                favoriteMovieState: UserMoviesViewState,
-                ratedMovieState: UserMoviesViewState,
-                watchListState: UserMoviesViewState,
-                avatarUrl: String,
-                avatarCallback: (() -> Unit)
+            userName: String,
+            accountName: String,
+            favoriteMovieState: UserMoviesViewState,
+            ratedMovieState: UserMoviesViewState,
+            watchListState: UserMoviesViewState,
+            avatarUrl: String,
+            avatarCallback: (() -> Unit)
         ) = UserAccountContentViewState(
                 visibility = View.VISIBLE,
                 userName = userName,
@@ -100,12 +99,12 @@ data class UserAccountContentViewState(
         )
 
         fun withLetter(
-                userName: String,
-                accountName: String,
-                favoriteMovieState: UserMoviesViewState,
-                ratedMovieState: UserMoviesViewState,
-                watchListState: UserMoviesViewState,
-                defaultLetter: String
+            userName: String,
+            accountName: String,
+            favoriteMovieState: UserMoviesViewState,
+            ratedMovieState: UserMoviesViewState,
+            watchListState: UserMoviesViewState,
+            defaultLetter: String
         ) = UserAccountContentViewState(
                 visibility = View.VISIBLE,
                 userName = userName,
@@ -125,11 +124,11 @@ data class UserAccountContentViewState(
  * view state will show the default letter and will hide the avatar.
  */
 data class AccountAvatarViewState(
-        val avatarUrl: String? = null,
-        val avatarVisibility: Int = View.INVISIBLE,
-        val avatarErrorCallback: (() -> Unit)? = null,
-        val defaultLetter: String = "",
-        val defaultLetterVisibility: Int = View.INVISIBLE
+    val avatarUrl: String? = null,
+    val avatarVisibility: Int = View.INVISIBLE,
+    val avatarErrorCallback: (() -> Unit)? = null,
+    val defaultLetter: String = "",
+    val defaultLetterVisibility: Int = View.INVISIBLE
 ) {
     companion object {
         fun createAvatar(avatarUrl: String, callback: (() -> Unit)) = AccountAvatarViewState(
@@ -149,8 +148,8 @@ data class AccountAvatarViewState(
  * the favorite list, in the rated list and/or in the watchlist.
  */
 data class UserMoviesViewState(
-        val errorText: Int = 0,
-        val items: List<UserMovieItem>? = null
+    val errorText: Int = 0,
+    val items: List<UserMovieItem>? = null
 ) {
     companion object {
 
@@ -173,10 +172,8 @@ data class UserMoviesViewState(
         fun createError() = UserMoviesViewState(
                 errorText = R.string.user_account_favorite_movies_error
         )
-
     }
 }
-
 
 /**
  * Represents an item shown in the user movies section.
@@ -189,8 +186,10 @@ data class UserMovieItem(val image: String) : UserAccountMoviesView.UserAccountM
  *************************************** VM PARAMS ************************************************
  **************************************************************************************************/
 
-data class UserAccountParam(val screenTitle: String,
-                            val posterSize: Int) {
+data class UserAccountParam(
+    val screenTitle: String,
+    val posterSize: Int
+) {
     companion object {
         fun create(resources: Resources, posterSize: Int) = UserAccountParam(
                 screenTitle = resources.getString(R.string.account_title),

@@ -9,12 +9,15 @@ import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
-import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.*
+import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.NotConnectedToNetwork
+import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.UnknownError
+import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.UserChangedLanguage
+import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.UserNotLogged
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPScopedViewModel] used to support the user's movie list section of the application.
@@ -30,11 +33,12 @@ import javax.inject.Inject
  * VM is notified about such event and executes a refresh of both: the data stored by the application
  * and the view state being shown to the user.
  */
-class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                                 private val userMovieListInteractor: UserMovieListInteractor,
-                                                 private val imagesPathInteractor: ImagesPathInteractor)
-    : MPScopedViewModel(dispatchers) {
-
+class UserMovieListViewModel @Inject constructor(
+    dispatchers: CoroutineDispatchers,
+    private val userMovieListInteractor: UserMovieListInteractor,
+    private val imagesPathInteractor: ImagesPathInteractor
+) :
+        MPScopedViewModel(dispatchers) {
 
     private val _viewState = MediatorLiveData<UserMovieListViewState>()
     val viewState: LiveData<UserMovieListViewState> get() = _viewState
@@ -80,7 +84,6 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
         )
     }
 
-
     /**
      * Called when an item is selected in the list of movies.
      * A new state is posted in navEvents() in order to handle the event.
@@ -95,14 +98,15 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
         }
     }
 
-
     /**
      * Pushes the Loading view state into the view layer and creates the [PagedList]
      * of [UserMovieItem] that will be rendered by the view layer.
      */
-    private fun postLoadingAndInitializePagedList(posterSize: Int,
-                                                  backdropSize: Int,
-                                                  listType: UserMovieListType) {
+    private fun postLoadingAndInitializePagedList(
+        posterSize: Int,
+        backdropSize: Int,
+        listType: UserMovieListType
+    ) {
         _viewState.value = UserMovieListViewState.showLoading()
         _viewState.addSource(createPagedList(posterSize, backdropSize, listType)) { pagedList ->
             if (pagedList.isNotEmpty()) {
@@ -116,9 +120,11 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
      * with the interactor in order to fetch a new page of movies each time the user scrolls down in
      * the list of movies.
      */
-    private fun createPagedList(moviePosterSize: Int,
-                                movieBackdropSize: Int,
-                                listType: UserMovieListType): LiveData<PagedList<UserMovieItem>> {
+    private fun createPagedList(
+        moviePosterSize: Int,
+        movieBackdropSize: Int,
+        listType: UserMovieListType
+    ): LiveData<PagedList<UserMovieItem>> {
         return createPagingFactory(moviePosterSize, movieBackdropSize, listType)
                 .map { mapDomainMovie(it) }
                 .let {
@@ -142,9 +148,11 @@ class UserMovieListViewModel @Inject constructor(dispatchers: CoroutineDispatche
      *  1 - Produces a List of Movies from the [userMovieListInteractor].
      *  2 - Configures the images path of each Movie in the list with the [imagesPathInteractor].
      */
-    private fun createPagingFactory(moviePosterSize: Int,
-                                    movieBackdropSize: Int,
-                                    listType: UserMovieListType): MPPagingDataSourceFactory<Movie> {
+    private fun createPagingFactory(
+        moviePosterSize: Int,
+        movieBackdropSize: Int,
+        listType: UserMovieListType
+    ): MPPagingDataSourceFactory<Movie> {
         return MPPagingDataSourceFactory { page, callback ->
             val movieListProcessor: (List<Movie>) -> Unit = { movieList ->
                 when (movieList.isNotEmpty()) {

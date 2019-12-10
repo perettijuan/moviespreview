@@ -35,7 +35,6 @@ class UserAccountViewModelTest {
 
     private lateinit var subject: UserAccountViewModel
 
-
     @BeforeEach
     fun setUp() {
         every { accountInteractor.userAccountEvents } returns lvInteractorEvents
@@ -109,7 +108,6 @@ class UserAccountViewModelTest {
 
         assertEquals(expectedDestination, requestedDestination)
     }
-
 
     @Test
     fun `Should map user account data and post data into view when user account is fetched`() {

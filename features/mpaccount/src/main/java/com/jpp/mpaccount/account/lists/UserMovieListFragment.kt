@@ -77,11 +77,9 @@ class UserMovieListFragment : MPFragment<UserMovieListViewModel>() {
         super.onSaveInstanceState(outState)
     }
 
-
     override fun withViewModel(action: UserMovieListViewModel.() -> Unit) = withViewModel<UserMovieListViewModel>(viewModelFactory) { action() }
 
     private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.userMoviesList)?.let(action)
-
 
     class UserMoviesAdapter(private val itemSelectionListener: (UserMovieItem) -> Unit) : PagedListAdapter<UserMovieItem, UserMoviesAdapter.ViewHolder>(UserMovieDiffCallback()) {
 

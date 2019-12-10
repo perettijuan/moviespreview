@@ -11,7 +11,9 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -26,7 +28,6 @@ class LoginViewModelTest {
     private val lvOauthEvent = MutableLiveData<LoginInteractor.OauthEvent>()
 
     private lateinit var subject: LoginViewModel
-
 
     @BeforeEach
     fun setUp() {
@@ -120,7 +121,6 @@ class LoginViewModelTest {
         } ?: fail()
     }
 
-
     @Test
     fun `Should show not connected when disconnection detected during oauth`() {
         var viewStatePosted: LoginViewState? = null
@@ -160,9 +160,7 @@ class LoginViewModelTest {
         assertEquals("aUrl", viewStatePosted?.oauthViewState?.url)
         assertEquals("anInterceptUrl", viewStatePosted?.oauthViewState?.interceptUrl)
         assertEquals(false, viewStatePosted?.oauthViewState?.reminder)
-
     }
-
 
     @Test
     fun `Should show login error when error detected during oauth`() {
@@ -222,5 +220,4 @@ class LoginViewModelTest {
 
         assertEquals(expected, destinationReached)
     }
-
 }
