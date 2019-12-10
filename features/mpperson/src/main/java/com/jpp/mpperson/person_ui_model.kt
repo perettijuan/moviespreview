@@ -16,11 +16,12 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
  * Represents the view state of the profile person screen.
  */
 data class PersonViewState(
-        val screenTitle: String,
-        val personImageUrl: String = "emptyUrl",
-        val loadingVisibility: Int = View.INVISIBLE,
-        val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
-        val contentViewState: PersonContentViewState = PersonContentViewState()) {
+    val screenTitle: String,
+    val personImageUrl: String = "emptyUrl",
+    val loadingVisibility: Int = View.INVISIBLE,
+    val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
+    val contentViewState: PersonContentViewState = PersonContentViewState()
+) {
 
     companion object {
         fun showLoading(screenTitle: String, imageUrl: String) = PersonViewState(
@@ -58,19 +59,21 @@ data class PersonViewState(
  * Represents the view state of the content of the person biography from the UI perspective.
  */
 data class PersonContentViewState(
-        val birthday: PersonRowViewState = PersonRowViewState.emptyRow(),
-        val placeOfBirth: PersonRowViewState = PersonRowViewState.emptyRow(),
-        val deathDay: PersonRowViewState = PersonRowViewState.emptyRow(),
-        val bio: PersonRowViewState = PersonRowViewState.emptyRow(),
-        val dataAvailable: PersonRowViewState = PersonRowViewState.emptyRow()
+    val birthday: PersonRowViewState = PersonRowViewState.emptyRow(),
+    val placeOfBirth: PersonRowViewState = PersonRowViewState.emptyRow(),
+    val deathDay: PersonRowViewState = PersonRowViewState.emptyRow(),
+    val bio: PersonRowViewState = PersonRowViewState.emptyRow(),
+    val dataAvailable: PersonRowViewState = PersonRowViewState.emptyRow()
 )
 
 /**
  * Represents the view state of the rows that are shown in the person's layout.
  */
-data class PersonRowViewState(val visibility: Int = View.INVISIBLE,
-                              val titleRes: Int,
-                              val value: String) {
+data class PersonRowViewState(
+    val visibility: Int = View.INVISIBLE,
+    val titleRes: Int,
+    val value: String
+) {
 
     companion object {
         fun emptyRow() = PersonRowViewState(
@@ -116,9 +119,11 @@ data class PersonRowViewState(val visibility: Int = View.INVISIBLE,
 /**
  * The initialization parameter for the [PersonViewModel.onInit] method.
  */
-data class PersonParam(val personId: Double,
-                       val personName: String,
-                       val imageUrl: String) {
+data class PersonParam(
+    val personId: Double,
+    val personName: String,
+    val imageUrl: String
+) {
     companion object {
         fun fromArguments(arguments: Bundle?) = PersonParam(
                 NavigationPerson.personId(arguments).toDouble(),
