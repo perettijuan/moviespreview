@@ -5,11 +5,21 @@ import androidx.lifecycle.MediatorLiveData
 import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mpdomain.MovieState
-import com.jpp.mpmoviedetails.MovieDetailActionViewState.*
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.*
+import com.jpp.mpmoviedetails.MovieDetailActionViewState.ShowLoading
+import com.jpp.mpmoviedetails.MovieDetailActionViewState.ShowMovieState
+import com.jpp.mpmoviedetails.MovieDetailActionViewState.ShowNoMovieState
+import com.jpp.mpmoviedetails.MovieDetailActionViewState.ShowReloadState
+import com.jpp.mpmoviedetails.MovieDetailActionViewState.ShowUserNotLogged
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.FetchSuccess
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.NoStateFound
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.NotConnectedToNetwork
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UnknownError
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UpdateFavorite
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UpdateWatchlist
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UserNotLogged
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPScopedViewModel] that supports the movie details actions (the data shown by the UI that is not
@@ -22,9 +32,11 @@ import javax.inject.Inject
  * of the movie internally and in the server side and updates the view layer according to the new
  * state of the business layer.
  */
-class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                                      private val movieDetailsInteractor: MovieDetailsInteractor)
-    : MPScopedViewModel(dispatchers) {
+class MovieDetailsActionViewModel @Inject constructor(
+    dispatchers: CoroutineDispatchers,
+    private val movieDetailsInteractor: MovieDetailsInteractor
+) :
+        MPScopedViewModel(dispatchers) {
 
     private val _viewState = MediatorLiveData<MovieDetailActionViewState>()
     val viewState: LiveData<MovieDetailActionViewState> get() = _viewState
@@ -191,8 +203,10 @@ class MovieDetailsActionViewModel @Inject constructor(dispatchers: CoroutineDisp
      * Based on the current state being shown to the user, this function will allow
      * to update the state of the movie (via interactor) and update the UI state.
      */
-    private fun executeMovieStateUpdate(stateUpdateFunction: MovieDetailsInteractor.() -> Unit,
-                                        copyLoadingStateFunction: (ShowMovieState) -> ShowMovieState) {
+    private fun executeMovieStateUpdate(
+        stateUpdateFunction: MovieDetailsInteractor.() -> Unit,
+        copyLoadingStateFunction: (ShowMovieState) -> ShowMovieState
+    ) {
         when (val currentState = viewState.value) {
             is ShowMovieState -> {
                 _viewState.value = copyLoadingStateFunction(currentState)

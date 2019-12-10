@@ -6,15 +6,18 @@ import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.Person
-import com.jpp.mpperson.PersonInteractor.PersonEvent.*
+import com.jpp.mpperson.PersonInteractor.PersonEvent.AppLanguageChanged
+import com.jpp.mpperson.PersonInteractor.PersonEvent.NotConnectedToNetwork
+import com.jpp.mpperson.PersonInteractor.PersonEvent.Success
+import com.jpp.mpperson.PersonInteractor.PersonEvent.UnknownError
 import com.jpp.mpperson.PersonRowViewState.Companion.bioRow
 import com.jpp.mpperson.PersonRowViewState.Companion.birthdayRow
 import com.jpp.mpperson.PersonRowViewState.Companion.deathDayRow
 import com.jpp.mpperson.PersonRowViewState.Companion.emptyRow
 import com.jpp.mpperson.PersonRowViewState.Companion.placeOfBirthRow
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPScopedViewModel] that supports the person section. The VM retrieves
@@ -25,9 +28,11 @@ import javax.inject.Inject
  * VM is notified about such event and executes a refresh of both: the data stored by the application
  * and the view state being shown to the user.
  */
-class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                          private val personInteractor: PersonInteractor)
-    : MPScopedViewModel(dispatchers) {
+class PersonViewModel @Inject constructor(
+    dispatchers: CoroutineDispatchers,
+    private val personInteractor: PersonInteractor
+) :
+        MPScopedViewModel(dispatchers) {
 
     private val _viewState = MediatorLiveData<PersonViewState>()
     val viewState: LiveData<PersonViewState> get() = _viewState
@@ -113,8 +118,8 @@ class PersonViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         )
     }
 
-    private fun Person.isEmpty() = biography.isEmpty()
-            && birthday.isNullOrEmpty()
-            && deathday.isNullOrEmpty()
-            && place_of_birth.isNullOrEmpty()
+    private fun Person.isEmpty() = biography.isEmpty() &&
+            birthday.isNullOrEmpty() &&
+            deathday.isNullOrEmpty() &&
+            place_of_birth.isNullOrEmpty()
 }

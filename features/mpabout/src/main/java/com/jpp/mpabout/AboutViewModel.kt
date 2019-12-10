@@ -8,20 +8,24 @@ import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mp.common.navigation.Destination
-import com.jpp.mpabout.AboutInteractor.AboutEvent.*
+import com.jpp.mpabout.AboutInteractor.AboutEvent.AboutUrlEvent
+import com.jpp.mpabout.AboutInteractor.AboutEvent.AboutWebStoreUrlEvent
+import com.jpp.mpabout.AboutInteractor.AboutEvent.AppVersionEvent
 import com.jpp.mpdomain.AboutUrl
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPScopedViewModel] that supports the about section. The VM retrieves
  * the data from the underlying layers using the provided [AboutInteractor] and maps the business
  * data to UI data, producing a [AboutViewState] that represents the configuration of the view.
  */
-class AboutViewModel @Inject constructor(coroutineDispatchers: CoroutineDispatchers,
-                                         private val aboutInteractor: AboutInteractor)
-    : MPScopedViewModel(coroutineDispatchers) {
+class AboutViewModel @Inject constructor(
+    coroutineDispatchers: CoroutineDispatchers,
+    private val aboutInteractor: AboutInteractor
+) :
+        MPScopedViewModel(coroutineDispatchers) {
 
     private val _viewState = MediatorLiveData<AboutViewState>()
     val viewState: LiveData<AboutViewState> get() = _viewState

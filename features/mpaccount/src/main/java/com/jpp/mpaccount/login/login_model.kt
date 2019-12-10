@@ -15,9 +15,9 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
  * Represents the view state of the login screen.
  */
 data class LoginViewState(
-        val loadingVisibility: Int = View.INVISIBLE,
-        val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
-        val oauthViewState: OauthViewState = OauthViewState()
+    val loadingVisibility: Int = View.INVISIBLE,
+    val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
+    val oauthViewState: OauthViewState = OauthViewState()
 ) {
     companion object {
         fun showLoading() = LoginViewState(loadingVisibility = View.VISIBLE)
@@ -29,10 +29,12 @@ data class LoginViewState(
                 errorViewState = ErrorViewState.asUnknownError(errorHandler)
         )
 
-        fun showOauth(url: String,
-                      interceptUrl: String,
-                      reminder: Boolean,
-                      redirectListener: (String) -> Unit) = LoginViewState(
+        fun showOauth(
+            url: String,
+            interceptUrl: String,
+            reminder: Boolean,
+            redirectListener: (String) -> Unit
+        ) = LoginViewState(
                 oauthViewState = OauthViewState(
                         visibility = View.VISIBLE,
                         url = url,
@@ -48,9 +50,9 @@ data class LoginViewState(
  * Represents the view state of the Oauth section of the login screen.
  */
 data class OauthViewState(
-        val visibility: Int = View.INVISIBLE,
-        val url: String? = null,
-        val interceptUrl: String? = null,
-        val redirectListener: ((String) -> Unit)? = null,
-        val reminder: Boolean = false
+    val visibility: Int = View.INVISIBLE,
+    val url: String? = null,
+    val interceptUrl: String? = null,
+    val redirectListener: ((String) -> Unit)? = null,
+    val reminder: Boolean = false
 )

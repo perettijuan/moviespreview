@@ -4,9 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.view.View
-
 import androidx.databinding.BindingAdapter
-
 import com.jpp.mpdesign.R
 
 /**

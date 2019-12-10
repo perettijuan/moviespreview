@@ -39,7 +39,6 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
 
     private lateinit var viewBinding: FragmentMovieDetailsBinding
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie_details, container, false)
         return viewBinding.root
@@ -48,13 +47,12 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         withViewModel {
             viewState.observe(viewLifecycleOwner, Observer { viewState ->
                 viewBinding.viewState = viewState
                 viewBinding.executePendingBindings()
 
-                //horizontal
+                // horizontal
                 viewBinding.detailGenresRv?.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
                 viewBinding.detailGenresRv?.adapter = MovieDetailsGenreAdapter(viewState.contentViewState.genres)
 
@@ -80,11 +78,9 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
         viewBinding.movieDetailReloadActionFab.setOnClickListener { withActionsViewModel { onRetry() } }
     }
 
-
     override fun withViewModel(action: MovieDetailsViewModel.() -> Unit) = withViewModel<MovieDetailsViewModel>(viewModelFactory) { action() }
 
     private fun withActionsViewModel(action: MovieDetailsActionViewModel.() -> Unit) = withViewModel<MovieDetailsActionViewModel>(viewModelFactory) { action() }
-
 
     private fun renderActionViewState(actionViewState: MovieDetailActionViewState) {
         when (actionViewState) {
@@ -105,7 +101,6 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
                 withViewModel { onUserRequestedLogin() }
             }
         }
-
 
         if (actionViewState.animate) {
             when (actionViewState.expanded) {
@@ -192,7 +187,6 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
             movieDetailRateFab.asClickable()
         }
 
-
         movieDetailActionsLoadingView.setInvisible()
 
         movieDetailActionFab.setVisible()
@@ -218,14 +212,12 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
 
         override fun getItemCount() = genres.size
 
-
         class ViewHolder(private val itemBinding: ListItemMovieDetailGenreBinding) : RecyclerView.ViewHolder(itemBinding.root) {
 
             fun bind(genre: MovieGenreItem) {
                 itemBinding.viewState = genre
                 itemBinding.executePendingBindings()
             }
-
         }
     }
 }

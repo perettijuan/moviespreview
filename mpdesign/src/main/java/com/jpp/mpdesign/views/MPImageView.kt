@@ -64,11 +64,13 @@ class MPImageView : AppCompatImageView {
      * Loads an image retrieved from the provided [imageUrl]
      * into the ImageView as a circular image.
      */
-    private fun loadImageUrlAsCircular(imageUrl: String,
-                                       onErrorAction: (() -> Unit)? = null,
-                                       onBitmapAvailable: ((Bitmap) -> Unit)? = null,
-                                       @DrawableRes placeholderRes: Int = R.drawable.ic_app_icon_black,
-                                       @DrawableRes errorImageRes: Int = R.drawable.ic_error_black) {
+    private fun loadImageUrlAsCircular(
+        imageUrl: String,
+        onErrorAction: (() -> Unit)? = null,
+        onBitmapAvailable: ((Bitmap) -> Unit)? = null,
+        @DrawableRes placeholderRes: Int = R.drawable.ic_app_icon_black,
+        @DrawableRes errorImageRes: Int = R.drawable.ic_error_black
+    ) {
         Picasso
                 .with(context)
                 .load(imageUrl)
@@ -90,16 +92,17 @@ class MPImageView : AppCompatImageView {
                         onErrorAction?.invoke()
                     }
                 })
-
     }
 
     /**
      * Loads an image retrieved from the provided [imageUrl]
      * into the ImageView.
      */
-    private fun loadImageUrl(imageUrl: String,
-                             @DrawableRes placeholderRes: Int = R.drawable.ic_app_icon_black,
-                             @DrawableRes errorImageRes: Int = R.drawable.ic_error_black) {
+    private fun loadImageUrl(
+        imageUrl: String,
+        @DrawableRes placeholderRes: Int = R.drawable.ic_app_icon_black,
+        @DrawableRes errorImageRes: Int = R.drawable.ic_error_black
+    ) {
         Picasso
                 .with(context)
                 .load(imageUrl)

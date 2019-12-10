@@ -14,9 +14,11 @@ import javax.inject.Inject
  * Interactor that supports the login process. This interactor takes care of accessing the
  * repository layer to perform the inner state updates needed to perform the user's login.
  */
-class LoginInteractor @Inject constructor(private val connectivityRepository: ConnectivityRepository,
-                                          private val accessTokenRepository: AccessTokenRepository,
-                                          private val sessionRepository: SessionRepository) {
+class LoginInteractor @Inject constructor(
+    private val connectivityRepository: ConnectivityRepository,
+    private val accessTokenRepository: AccessTokenRepository,
+    private val sessionRepository: SessionRepository
+) {
 
     /**
      * Represents the events related to the login process.
@@ -38,7 +40,6 @@ class LoginInteractor @Inject constructor(private val connectivityRepository: Co
         object OauthError : OauthEvent()
         object NotConnectedToNetwork : OauthEvent()
     }
-
 
     private val _loginEvents = MutableLiveData<LoginEvent>()
     private val _oauthEvents = MutableLiveData<OauthEvent>()

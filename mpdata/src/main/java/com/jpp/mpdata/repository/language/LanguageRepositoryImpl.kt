@@ -8,15 +8,16 @@ import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.SupportedLanguage.English
 import com.jpp.mpdomain.SupportedLanguage.Spanish
 import com.jpp.mpdomain.repository.LanguageRepository
-import java.util.*
-
+import java.util.Locale
 
 /**
  * [LanguageRepository] implementation.
  */
-class LanguageRepositoryImpl(private val languageDb: LanguageDb,
-                             languageMonitor: LanguageMonitor,
-                             private val locale: LocaleWrapper = LocaleWrapper()) : LanguageRepository {
+class LanguageRepositoryImpl(
+    private val languageDb: LanguageDb,
+    languageMonitor: LanguageMonitor,
+    private val locale: LocaleWrapper = LocaleWrapper()
+) : LanguageRepository {
 
     private val stateUpdates = MutableLiveData<SupportedLanguage>()
 
@@ -30,7 +31,6 @@ class LanguageRepositoryImpl(private val languageDb: LanguageDb,
     }
 
     override fun updates(): LiveData<SupportedLanguage> = stateUpdates
-
 
     override fun getCurrentAppLanguage(): SupportedLanguage {
         return languageDb.getStoredLanguageString()?.let { mapFrom(locale.localeFrom(it)) }

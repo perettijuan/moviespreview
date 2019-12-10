@@ -12,9 +12,9 @@ import com.jpp.mpaccount.account.lists.UserMovieListType
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPScopedViewModel] to handle the state of the [UserAccountFragment]. It is a coroutine-scoped
@@ -27,11 +27,13 @@ import javax.inject.Inject
  * This VM consumes data from two interactors - [UserAccountInteractor] and [ImagesPathInteractor] -
  * because it needs to map the URL of the movies to be shown before rendering the data.
  */
-class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                               private val accountInteractor: UserAccountInteractor,
-                                               private val imagesPathInteractor: ImagesPathInteractor)
+class UserAccountViewModel @Inject constructor(
+    dispatchers: CoroutineDispatchers,
+    private val accountInteractor: UserAccountInteractor,
+    private val imagesPathInteractor: ImagesPathInteractor
+) :
 
-    : MPScopedViewModel(dispatchers) {
+    MPScopedViewModel(dispatchers) {
 
     private val _viewState = MediatorLiveData<UserAccountViewState>()
     val viewState: LiveData<UserAccountViewState> get() = _viewState
@@ -134,10 +136,12 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
      * will render a new [UserAccountViewState] that will show the user's name letter
      * instead of the user's avatar.
      */
-    private fun mapAccountInfoWithoutAvatar(userAccount: UserAccount,
-                                            favViewState: UserMoviesViewState,
-                                            ratedViewState: UserMoviesViewState,
-                                            watchViewState: UserMoviesViewState) {
+    private fun mapAccountInfoWithoutAvatar(
+        userAccount: UserAccount,
+        favViewState: UserMoviesViewState,
+        ratedViewState: UserMoviesViewState,
+        watchViewState: UserMoviesViewState
+    ) {
         _viewState.value = UserAccountViewState.showContentWithLetter(
                 userName = if (userAccount.name.isEmpty()) userAccount.username else userAccount.name,
                 accountName = userAccount.username,
@@ -148,14 +152,14 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
         )
     }
 
-
     private fun withAccountInteractor(action: UserAccountInteractor.() -> Unit) {
         launch { withContext(dispatchers.default()) { action(accountInteractor) } }
     }
 
-
-    private suspend fun getUserMoviesViewState(userMovieState: UserMoviesState,
-                                               emptyCreator: () -> UserMoviesViewState) = withContext(dispatchers.default()) {
+    private suspend fun getUserMoviesViewState(
+        userMovieState: UserMoviesState,
+        emptyCreator: () -> UserMoviesViewState
+    ) = withContext(dispatchers.default()) {
         when (userMovieState) {
             is UserMoviesState.UnknownError -> UserMoviesViewState.createError()
             is UserMoviesState.Success -> {
@@ -169,6 +173,4 @@ class UserAccountViewModel @Inject constructor(dispatchers: CoroutineDispatchers
             }
         }
     }
-
-
 }

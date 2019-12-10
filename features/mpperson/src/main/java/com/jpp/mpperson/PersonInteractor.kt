@@ -7,7 +7,10 @@ import com.jpp.mpdomain.Person
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.PersonRepository
-import com.jpp.mpperson.PersonInteractor.PersonEvent.*
+import com.jpp.mpperson.PersonInteractor.PersonEvent.AppLanguageChanged
+import com.jpp.mpperson.PersonInteractor.PersonEvent.NotConnectedToNetwork
+import com.jpp.mpperson.PersonInteractor.PersonEvent.Success
+import com.jpp.mpperson.PersonInteractor.PersonEvent.UnknownError
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,9 +20,11 @@ import javax.inject.Singleton
  * view layer.
  */
 @Singleton
-class PersonInteractor @Inject constructor(private val connectivityRepository: ConnectivityRepository,
-                                           private val personRepository: PersonRepository,
-                                           private val languageRepository: LanguageRepository) {
+class PersonInteractor @Inject constructor(
+    private val connectivityRepository: ConnectivityRepository,
+    private val personRepository: PersonRepository,
+    private val languageRepository: LanguageRepository
+) {
 
     sealed class PersonEvent {
         object AppLanguageChanged : PersonEvent()

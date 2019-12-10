@@ -18,7 +18,9 @@ import io.mockk.verify
 import io.mockk.verifyOrder
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -178,7 +180,6 @@ class CreditsViewModelTest {
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.creditsViewState?.visibility)
 
-
         assertEquals(View.VISIBLE, viewStatePosted?.noCreditsViewState?.visibility)
         assertEquals(R.string.no_credits_for_this_movie, viewStatePosted?.noCreditsViewState?.titleRes)
     }
@@ -199,7 +200,6 @@ class CreditsViewModelTest {
 
         subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
         lvInteractorEvents.postValue(CreditsInteractor.CreditsEvent.Success(credits))
-
 
         assertNotNull(viewStatePosted)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
@@ -261,7 +261,6 @@ class CreditsViewModelTest {
         assertEquals(expectedDestination, requestedDestination)
     }
 
-
     private val cast = listOf(
             CastCharacter(
                     cast_id = 12.toDouble(),
@@ -304,7 +303,6 @@ class CreditsViewModelTest {
                     profile_path = "aProfilePath4"
             )
     )
-
 
     private val crew = listOf(
             CrewMember(

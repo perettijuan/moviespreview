@@ -11,8 +11,10 @@ import com.jpp.mpdomain.repository.AccountRepository
 /**
  * [AccountRepository] implementation.
  */
-class AccountRepositoryImpl(private val accountApi: AccountApi,
-                            private val accountDb: AccountDb) : AccountRepository {
+class AccountRepositoryImpl(
+    private val accountApi: AccountApi,
+    private val accountDb: AccountDb
+) : AccountRepository {
 
     private val accountUpdates = MutableLiveData<UserAccount>()
 

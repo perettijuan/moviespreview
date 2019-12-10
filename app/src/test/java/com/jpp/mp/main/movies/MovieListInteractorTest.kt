@@ -1,9 +1,14 @@
 package com.jpp.mp.main.movies
 
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.main.movies.MovieListInteractor
-import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.*
-import com.jpp.mpdomain.*
+import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.NotConnectedToNetwork
+import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.UnknownError
+import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.UserChangedLanguage
+import com.jpp.mpdomain.Connectivity
+import com.jpp.mpdomain.Movie
+import com.jpp.mpdomain.MoviePage
+import com.jpp.mpdomain.MovieSection
+import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.MoviePageRepository
@@ -92,7 +97,6 @@ class MovieListInteractorTest {
         verify(exactly = 1) { languageRepository.getCurrentAppLanguage() }
     }
 
-
     @ParameterizedTest
     @MethodSource("successCasesParams")
     fun `Should execute callback with movie list`(param: MovieListTestParam) {
@@ -109,13 +113,12 @@ class MovieListInteractorTest {
         verify { moviePageRepository.getMoviePageForSection(param.page, param.movieSection, param.language) }
     }
 
-
     data class MovieListTestParam(
-            val whenAction: (MovieListInteractor) -> Unit,
-            val mockCallback: (List<Movie>) -> Unit,
-            val movieSection: MovieSection,
-            val page: Int = 1,
-            val language: SupportedLanguage = SupportedLanguage.English
+        val whenAction: (MovieListInteractor) -> Unit,
+        val mockCallback: (List<Movie>) -> Unit,
+        val movieSection: MovieSection,
+        val page: Int = 1,
+        val language: SupportedLanguage = SupportedLanguage.English
     )
 
     companion object {
@@ -153,7 +156,5 @@ class MovieListInteractorTest {
                         movieSection = MovieSection.TopRated
                 )
         )
-
     }
-
 }

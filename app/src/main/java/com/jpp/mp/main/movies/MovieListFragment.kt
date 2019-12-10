@@ -91,7 +91,6 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
 
     override fun withViewModel(action: MovieListViewModel.() -> Unit) = withViewModel<MovieListViewModel>(viewModelFactory) { action() }
 
-
     abstract fun initViewModel(posterSize: Int, backdropSize: Int, vm: MovieListViewModel)
     private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.movieList)?.let(action)
 
@@ -102,7 +101,6 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
      * containing class.
      */
     class MoviesAdapter(private val movieSelectionListener: (MovieListItem) -> Unit) : PagedListAdapter<MovieListItem, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {
-
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
@@ -131,7 +129,6 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
             }
         }
     }
-
 
     class MovieDiffCallback : DiffUtil.ItemCallback<MovieListItem>() {
 

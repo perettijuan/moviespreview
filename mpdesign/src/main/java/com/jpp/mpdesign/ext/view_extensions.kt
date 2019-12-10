@@ -10,7 +10,6 @@ import androidx.annotation.StyleRes
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 
-
 /**
  * Inflates a given layout resources and returns the inflated view.
  */
@@ -29,7 +28,6 @@ fun View.getStringFromResources(@StringRes stringResId: Int): CharSequence = res
 fun View.setVisible() {
     this.visibility = View.VISIBLE
 }
-
 
 /**
  * Extension function for the View class to make a View gone
@@ -53,7 +51,6 @@ fun DrawerLayout.closeDrawerIfOpen() {
         closeDrawer(GravityCompat.START)
     }
 }
-
 
 /**
  * Sets the text appearance of the TextView based on the current API level.

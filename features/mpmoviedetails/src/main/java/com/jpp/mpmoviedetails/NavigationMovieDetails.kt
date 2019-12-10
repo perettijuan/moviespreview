@@ -8,7 +8,6 @@ import com.jpp.mp.common.extensions.getStringOrFail
  */
 object NavigationMovieDetails {
 
-
     /**
      * Create the navigation arguments needed to navigate to the movie details.
      */

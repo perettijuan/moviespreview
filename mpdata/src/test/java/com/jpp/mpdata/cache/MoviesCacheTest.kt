@@ -1,6 +1,11 @@
 package com.jpp.mpdata.cache
 
-import com.jpp.mpdata.cache.room.*
+import com.jpp.mpdata.cache.room.DBMovie
+import com.jpp.mpdata.cache.room.DBMoviePage
+import com.jpp.mpdata.cache.room.MPRoomDataBase
+import com.jpp.mpdata.cache.room.MovieDAO
+import com.jpp.mpdata.cache.room.MovieDetailDAO
+import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
@@ -67,7 +72,6 @@ class MoviesCacheTest {
         verify { movieDAO.getMoviesFromPage(moviePage.id) }
     }
 
-
     @Test
     fun `Should return mapped movie page`() {
         val now = 12L
@@ -103,7 +107,6 @@ class MoviesCacheTest {
         every { movieDAO.insertMoviePage(any()) } returns insertedMoviePageId
 
         subject.saveMoviePageForSection(moviePage, section)
-
 
         verify { roomModelAdapter.adaptDataMoviePageToDBMoviePage(moviePage, section.name, expectedDueDate) }
         verify(exactly = 3) { roomModelAdapter.adaptDataMovieToDBMovie(any(), insertedMoviePageId) }

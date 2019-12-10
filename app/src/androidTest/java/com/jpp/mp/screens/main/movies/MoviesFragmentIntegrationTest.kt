@@ -5,7 +5,7 @@ import org.junit.runner.RunWith
 
 /**
  */
-//TODO JPP re-enable Espresso tests
+// TODO JPP re-enable Espresso tests
 @RunWith(AndroidJUnit4::class)
 class MoviesFragmentIntegrationTest {
 

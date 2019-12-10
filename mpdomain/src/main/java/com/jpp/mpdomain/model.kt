@@ -38,10 +38,12 @@ data class AppConfiguration(val images: ImagesConfiguration)
  * [profile_sizes] - represents the possible sizes for profile images (w500).
  * [backdrop_sizes] - represents the possible sizes for backdrop images.
  */
-data class ImagesConfiguration(val base_url: String,
-                               val poster_sizes: List<String>,
-                               val profile_sizes: List<String>,
-                               val backdrop_sizes: List<String>)
+data class ImagesConfiguration(
+    val base_url: String,
+    val poster_sizes: List<String>,
+    val profile_sizes: List<String>,
+    val backdrop_sizes: List<String>
+)
 
 /**
  * Represents a page of [Movie] retrieved from the API server.
@@ -51,10 +53,12 @@ data class ImagesConfiguration(val base_url: String,
  * pages to retrieve.
  * [total_results] - the total number of results in all pages available.
  */
-data class MoviePage(val page: Int,
-                     val results: List<Movie>,
-                     val total_pages: Int,
-                     val total_results: Int)
+data class MoviePage(
+    val page: Int,
+    val results: List<Movie>,
+    val total_pages: Int,
+    val total_results: Int
+)
 
 /**
  * Represents a Movie as it is retrieved from the API server.
@@ -73,25 +77,29 @@ data class MoviePage(val page: Int,
  * [popularity] - represents how popular the movie is in the community, based in the
  * relative number of votes.
  */
-data class Movie(val id: Double,
-                 val title: String,
-                 val original_title: String,
-                 val overview: String,
-                 val release_date: String,
-                 val original_language: String,
-                 val poster_path: String?,
-                 val backdrop_path: String?,
-                 val vote_count: Double,
-                 val vote_average: Float,
-                 val popularity: Float)
+data class Movie(
+    val id: Double,
+    val title: String,
+    val original_title: String,
+    val overview: String,
+    val release_date: String,
+    val original_language: String,
+    val poster_path: String?,
+    val backdrop_path: String?,
+    val vote_count: Double,
+    val vote_average: Float,
+    val popularity: Float
+)
 
 /**
  * Represents the Genre of a movie.
  * [id] - the identifier of the Genre.
  * [name] - the name to show.
  */
-data class MovieGenre(val id: Int,
-                      val name: String) {
+data class MovieGenre(
+    val id: Int,
+    val name: String
+) {
     companion object GenresId {
         const val ACTION_GENRE_ID = 28
         const val ADVENTURE_GENRE_ID = 12
@@ -129,16 +137,17 @@ data class MovieGenre(val id: Int,
  * [popularity] - represents how popular the movie is in the community, based in the
  * relative number of votes.
  */
-data class MovieDetail(val id: Double,
-                       val title: String,
-                       val overview: String,
-                       val release_date: String,
-                       val poster_path: String?,
-                       val genres: List<MovieGenre>,
-                       val vote_count: Double,
-                       val vote_average: Float,
-                       val popularity: Float)
-
+data class MovieDetail(
+    val id: Double,
+    val title: String,
+    val overview: String,
+    val release_date: String,
+    val poster_path: String?,
+    val genres: List<MovieGenre>,
+    val vote_count: Double,
+    val vote_average: Float,
+    val popularity: Float
+)
 
 /**
  * Represents a section of the application in terms of the movies that can be shown.
@@ -150,7 +159,6 @@ sealed class MovieSection(val name: String) {
     object Upcoming : MovieSection("upcoming")
 }
 
-
 /**
  * Represents a page of results of a searchFirstPage retrieved from the backend.
  * [page] - the page number.
@@ -158,10 +166,12 @@ sealed class MovieSection(val name: String) {
  * [total_pages] - the total number of pages that can be retrieved for the current searchPage.
  * [total_results] - the total number of [SearchResult] available for the searchPage.
  */
-data class SearchPage(val page: Int,
-                      val results: List<SearchResult>,
-                      val total_pages: Int,
-                      val total_results: Int)
+data class SearchPage(
+    val page: Int,
+    val results: List<SearchResult>,
+    val total_pages: Int,
+    val total_results: Int
+)
 
 /**
  * Represents an item in a page of searchPage results.
@@ -185,21 +195,23 @@ data class SearchPage(val page: Int,
  * [popularity] - represents how popular the movie is in the community, based in the
  * relative number of votes.
  */
-data class SearchResult(val id: Double,
-                        val poster_path: String?,
-                        val profile_path: String?,
-                        val media_type: String,
-                        val name: String?,
-                        val title: String?,
-                        val original_title: String?,
-                        val overview: String?,
-                        val release_date: String?,
-                        val original_language: String?,
-                        val backdrop_path: String?,
-                        val genre_ids: List<Int>?,
-                        val vote_count: Double?,
-                        val vote_average: Float?,
-                        val popularity: Float?) {
+data class SearchResult(
+    val id: Double,
+    val poster_path: String?,
+    val profile_path: String?,
+    val media_type: String,
+    val name: String?,
+    val title: String?,
+    val original_title: String?,
+    val overview: String?,
+    val release_date: String?,
+    val original_language: String?,
+    val backdrop_path: String?,
+    val genre_ids: List<Int>?,
+    val vote_count: Double?,
+    val vote_average: Float?,
+    val popularity: Float?
+) {
 
     fun isMovie(): Boolean = media_type == "movie"
     fun isTvShow(): Boolean = media_type == "tv"
@@ -214,12 +226,14 @@ data class SearchResult(val id: Double,
  * [birthday] - the birthday of the person, if any.
  * [place_of_birth] - the place where the person was born, if the data exists.
  */
-data class Person(val id: Double,
-                  val name: String,
-                  val biography: String,
-                  val birthday: String?,
-                  val deathday: String?,
-                  val place_of_birth: String?)
+data class Person(
+    val id: Double,
+    val name: String,
+    val biography: String,
+    val birthday: String?,
+    val deathday: String?,
+    val place_of_birth: String?
+)
 
 /**
  * Represents the credits of a particular [Movie].
@@ -227,9 +241,11 @@ data class Person(val id: Double,
  * [cast] - the list of [CastCharacter] that are present in these credits.
  * [crew] - the list if [CrewMember] that are part of these credits.
  */
-data class Credits(val id: Double,
-                   val cast: List<CastCharacter>,
-                   val crew: List<CrewMember>)
+data class Credits(
+    val id: Double,
+    val cast: List<CastCharacter>,
+    val crew: List<CrewMember>
+)
 
 /**
  * Represents a character that is present in the cast of a [Movie].
@@ -242,14 +258,16 @@ data class Credits(val id: Double,
  * [order] - the order of importance of this character in the cast.
  * [profile_path] - the path to the profile image of the [Person] that interprets this character.
  */
-data class CastCharacter(val cast_id: Double,
-                         val character: String,
-                         val credit_id: String,
-                         val gender: Int,
-                         val id: Double,
-                         val name: String,
-                         val order: Int,
-                         val profile_path: String?)
+data class CastCharacter(
+    val cast_id: Double,
+    val character: String,
+    val credit_id: String,
+    val gender: Int,
+    val id: Double,
+    val name: String,
+    val order: Int,
+    val profile_path: String?
+)
 
 /**
  * Represents a person that is part of a crew of a [Movie].
@@ -261,13 +279,15 @@ data class CastCharacter(val cast_id: Double,
  * [name] - name of the [Person] that is this crew member.
  * [profile_path] - the path to the profile image of the [Person] that is this crew member.
  */
-data class CrewMember(val credit_id: String,
-                      val department: String,
-                      val gender: Int,
-                      val id: Double,
-                      val job: String,
-                      val name: String,
-                      val profile_path: String?)
+data class CrewMember(
+    val credit_id: String,
+    val department: String,
+    val gender: Int,
+    val id: Double,
+    val job: String,
+    val name: String,
+    val profile_path: String?
+)
 
 /**
  * Represents a License description for the libraries used by the application.
@@ -275,9 +295,11 @@ data class CrewMember(val credit_id: String,
  * [name] - the name to show of the license.
  * [url] - the path to load the license documentation.
  */
-data class License(val id: Int,
-                   val name: String,
-                   val url: String)
+data class License(
+    val id: Int,
+    val name: String,
+    val url: String
+)
 
 /**
  * Represents the list of all [License] used by the application.
@@ -300,9 +322,10 @@ sealed class SupportedLanguage(val id: String) {
  * that needs to be used to authenticate the user.
  */
 data class AccessToken(
-        val success: Boolean,
-        val expires_at: String,
-        val request_token: String)
+    val success: Boolean,
+    val expires_at: String,
+    val request_token: String
+)
 
 /**
  * Represents a session related to the user that is using the application.
@@ -310,8 +333,8 @@ data class AccessToken(
  * [session_id] represents the identifier of the session (the actual session).
  */
 data class Session(
-        val success: Boolean,
-        val session_id: String
+    val success: Boolean,
+    val session_id: String
 )
 
 /**
@@ -341,10 +364,10 @@ data class UserAvatar(val gravatar: Gravatar)
  * [username] the username of the user's account.
  */
 data class UserAccount(
-        val avatar: UserAvatar,
-        val id: Double,
-        val name: String,
-        val username: String
+    val avatar: UserAvatar,
+    val id: Double,
+    val name: String,
+    val username: String
 )
 
 /**
@@ -355,10 +378,10 @@ data class UserAccount(
  * [watchlist] whether the user has added the movie to his watchlist or not.
  */
 data class MovieState(
-        val id: Double,
-        val favorite: Boolean,
-        val rated: MovieStateRate,
-        val watchlist: Boolean
+    val id: Double,
+    val favorite: Boolean,
+    val rated: MovieStateRate,
+    val watchlist: Boolean
 )
 
 /**
@@ -367,6 +390,6 @@ data class MovieState(
  * [value] if rated, it contains the current rating value.
  */
 data class MovieStateRate(
-        val isRated: Boolean,
-        val value: String? = null
+    val isRated: Boolean,
+    val value: String? = null
 )

@@ -20,13 +20,15 @@ object LoginBinding {
      */
     @JvmStatic
     @BindingAdapter("bind:url", "bind:interceptPrefix", "bind:redirectListener")
-    fun loadUrlWithIntercept(loginWebView: WebView,
-                             url: String?,
-                             interceptPrefix: String?,
-                             redirectListener: ((String) -> Unit)?) {
-        if (url == null
-                || interceptPrefix == null
-                || redirectListener == null) {
+    fun loadUrlWithIntercept(
+        loginWebView: WebView,
+        url: String?,
+        interceptPrefix: String?,
+        redirectListener: ((String) -> Unit)?
+    ) {
+        if (url == null ||
+                interceptPrefix == null ||
+                redirectListener == null) {
             return
         }
 
@@ -40,13 +42,14 @@ object LoginBinding {
         }
     }
 
-
     /**
      * A [WebViewClient] used to listen for changes in the WebView
      * being used to load the login page used in the Oauth flow.
      */
-    private class LoginWebViewClient(private val redirectUrl: String,
-                                     private val callback: (String) -> Unit) : WebViewClient() {
+    private class LoginWebViewClient(
+        private val redirectUrl: String,
+        private val callback: (String) -> Unit
+    ) : WebViewClient() {
 
         @SuppressWarnings("deprecation")
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {

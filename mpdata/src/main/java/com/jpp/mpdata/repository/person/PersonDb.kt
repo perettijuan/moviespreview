@@ -7,7 +7,6 @@ interface PersonDb {
     fun savePerson(person: Person)
     fun clearAllData()
 
-
     /**
      * Persons are not stored in the local storage. Instead, they're kept in memory
      */

@@ -26,7 +26,6 @@ class MPErrorView : ConstraintLayout {
         inflate(context, R.layout.layout_mp_error_view, this)
     }
 
-
     /**
      * Prepare the view to be shown as a generic unknown error.
      */
@@ -72,10 +71,12 @@ class MPErrorView : ConstraintLayout {
         }
     }
 
-    private fun setupWith(@DrawableRes errorImageIcon: Int,
-                          @StringRes errorTitle: Int,
-                          @StringRes errorButton: Int,
-                          retryAction: () -> Unit) {
+    private fun setupWith(
+        @DrawableRes errorImageIcon: Int,
+        @StringRes errorTitle: Int,
+        @StringRes errorButton: Int,
+        retryAction: () -> Unit
+    ) {
         errorImageView.setImageResource(errorImageIcon)
         errorTitleTextView.apply { text = getStringFromResources(errorTitle) }
         errorActionButton.apply {
@@ -84,9 +85,11 @@ class MPErrorView : ConstraintLayout {
         }
     }
 
-    private fun setupWith(@DrawableRes errorImageIcon: Int,
-                          @StringRes errorTitle: Int,
-                          @StringRes errorButton: Int) {
+    private fun setupWith(
+        @DrawableRes errorImageIcon: Int,
+        @StringRes errorTitle: Int,
+        @StringRes errorButton: Int
+    ) {
         errorImageView.setImageResource(errorImageIcon)
         errorTitleTextView.apply { text = getStringFromResources(errorTitle) }
         errorActionButton.apply {
@@ -103,9 +106,11 @@ class MPErrorView : ConstraintLayout {
      * 3 - Generic unknown error, that is rendered when [asUnknownError] is called and shows the
      *     view configured to show this type of error.
      */
-    data class ErrorViewState(val visibility: Int = View.INVISIBLE,
-                              val isConnectivity: Boolean = false,
-                              val errorHandler: (() -> Unit)? = null) {
+    data class ErrorViewState(
+        val visibility: Int = View.INVISIBLE,
+        val isConnectivity: Boolean = false,
+        val errorHandler: (() -> Unit)? = null
+    ) {
 
         companion object {
             fun asNotVisible() = ErrorViewState()

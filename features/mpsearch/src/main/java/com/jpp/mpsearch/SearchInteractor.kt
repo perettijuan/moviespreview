@@ -7,17 +7,18 @@ import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.SearchRepository
+import com.jpp.mpsearch.SearchInteractor.SearchEvent.AppLanguageChanged
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.NotConnectedToNetwork
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.UnknownError
-import com.jpp.mpsearch.SearchInteractor.SearchEvent.AppLanguageChanged
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SearchInteractor @Inject constructor(private val connectivityRepository: ConnectivityRepository,
-                                           private val searchRepository: SearchRepository,
-                                           private val languageRepository: LanguageRepository) {
-
+class SearchInteractor @Inject constructor(
+    private val connectivityRepository: ConnectivityRepository,
+    private val searchRepository: SearchRepository,
+    private val languageRepository: LanguageRepository
+) {
 
     sealed class SearchEvent {
         object AppLanguageChanged : SearchEvent()
@@ -36,7 +37,6 @@ class SearchInteractor @Inject constructor(private val connectivityRepository: C
      * in order to be notified about interactor related events.
      */
     val searchEvents: LiveData<SearchEvent> get() = _searchEvents
-
 
     /**
      * Performs the onSearch for the provided [query].

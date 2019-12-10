@@ -4,7 +4,6 @@ import android.os.Build
 import android.os.Bundle
 import android.webkit.CookieManager
 import androidx.annotation.IdRes
-import androidx.annotation.Nullable
 import androidx.navigation.NavController
 import androidx.navigation.Navigator
 
@@ -16,7 +15,10 @@ fun CookieManager.clearAllCookies() {
     }
 }
 
-fun NavController.navigate(@IdRes resId: Int, args: Bundle,
-                           navigatorExtras: Navigator.Extras) {
+fun NavController.navigate(
+    @IdRes resId: Int,
+    args: Bundle,
+    navigatorExtras: Navigator.Extras
+) {
     this.navigate(resId, args, null, navigatorExtras)
 }
