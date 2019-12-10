@@ -41,6 +41,9 @@
           - ~/.gradle
           - ~/.m2
 
+  orbs:
+    jq: circleci/jq@1.9.0
+
   jobs:
 
     # Build the debug apk
@@ -170,9 +173,6 @@
             destination: reports
         - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
             path: app/build/test-results
-
-
-
 
   workflows:
     version: 2
