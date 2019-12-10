@@ -84,8 +84,17 @@ jobs:
       - store_test_results:
           path: features/mpperson/mpdomain/build/test-results
       - run:
-          name: Run app Module Unit Tests
-          command: ./gradlew lint ktlint test
+          name: Run Detekt
+          command: ./gradlew detekt
+      - run:
+          name: Run Ktlint
+          command: ./gradlew ktlint
+      - run:
+          name: Run Lint
+          command: ./gradlew lintDebug
+      - run:
+          name: Run Unit Tests
+          command: ./gradlew test
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: app/build/reports
           destination: reports
