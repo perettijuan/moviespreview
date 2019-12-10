@@ -21,9 +21,6 @@ references:
 
   workspace: &workspace
                ~/workspace
-  attach_debug_workspace: &attach_debug_workspace
-    attach_workspace:
-      at: *workspace
   persist_debug_workspace: &persist_debug_workspace
   persist_to_workspace:
     root: *workspace
@@ -44,36 +41,32 @@ references:
         TERM: dumb
         _JAVA_OPTIONS: "-Xmx2048m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
         GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m"'
-    gcloud_config: &gcloud_config
-      working_directory: *workspace
-      docker:
-        - image: google/cloud-sdk:latest
-      environment:
-        TERM: dumb
 
 
 
 
-jobs:
+  jobs:
 
-  build_debug:
-    <<: *android_config
-    steps:
-      - checkout
-      - *restore_cache
-      - run:
-          name: Download dependencies
-          command: ./gradlew androidDependencies
-      - *save_cache
-      - run:
-          name: Gradle build (debug)
-          command: ./gradlew -PciBuild=true :app:assembleDebug :app:assembleAndroidTest
-      - *persist_debug_workspace
-      - store_artifacts:
-          path: app/build/outputs/apk/
-          destination: /apk/
+    # Build the debug apk
 
-    ## Check code quality
+    build_debug:
+      <<: *android_config
+      steps:
+        - checkout
+        - *restore_cache
+        - run:
+            name: Download dependencies
+            command: ./gradlew androidDependencies
+        - *save_cache
+        - run:
+            name: Gradle build (debug)
+            command: ./gradlew -PciBuild=true assembleDebug assembleAndroidTest
+        - *persist_debug_workspace
+        - store_artifacts:
+            path: app/build/outputs/apk/
+            destination: /apk/
+
+  ## Check code quality
 
   check_quality:
     <<: *android_config
