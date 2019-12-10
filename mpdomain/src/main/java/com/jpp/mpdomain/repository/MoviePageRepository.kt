@@ -1,6 +1,10 @@
 package com.jpp.mpdomain.repository
 
-import com.jpp.mpdomain.*
+import com.jpp.mpdomain.MoviePage
+import com.jpp.mpdomain.MovieSection
+import com.jpp.mpdomain.Session
+import com.jpp.mpdomain.SupportedLanguage
+import com.jpp.mpdomain.UserAccount
 
 /**
  * Repository definition to access all [MoviePage] related data.
