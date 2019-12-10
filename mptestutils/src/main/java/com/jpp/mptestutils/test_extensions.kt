@@ -22,7 +22,6 @@ fun resumedLifecycleOwner(): LifecycleOwner {
     return lifecycleOwner
 }
 
-
 /**
  * Observes the LiveData with a resumed lifecycle and calls the [observer]
  * whenever it is updated.
