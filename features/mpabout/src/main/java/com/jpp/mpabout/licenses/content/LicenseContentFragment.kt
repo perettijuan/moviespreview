@@ -70,7 +70,6 @@ class LicenseContentFragment : BottomSheetDialogFragment() {
         return dialog
     }
 
-
     companion object {
         fun newInstance(licenseId: Int) = LicenseContentFragment().apply {
             arguments = Bundle().apply { putInt("licenseIdKey", licenseId) }

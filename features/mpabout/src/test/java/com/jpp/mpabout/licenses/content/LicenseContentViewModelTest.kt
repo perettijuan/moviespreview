@@ -14,7 +14,9 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -41,7 +43,6 @@ class LicenseContentViewModelTest {
         subject = LicenseContentViewModel(dispatchers, aboutInteractor)
     }
 
-
     @Test
     fun `Should post loading and fetch licences in onInit`() {
         var viewStatePosted: LicenseContentViewState? = null
@@ -60,7 +61,6 @@ class LicenseContentViewModelTest {
         verify { aboutInteractor.fetchAppLicenses() }
     }
 
-
     @Test
     fun `Should map show content with url for selected license`() {
         var viewStatePosted: LicenseContentViewState? = null
@@ -78,7 +78,6 @@ class LicenseContentViewModelTest {
         assertEquals(View.VISIBLE, viewStatePosted?.content?.visibility)
         assertEquals("u5", viewStatePosted?.content?.licenseUrl)
     }
-
 
     @Test
     fun `Should retry to fetch licenses when error is detected and retry is taped`() {

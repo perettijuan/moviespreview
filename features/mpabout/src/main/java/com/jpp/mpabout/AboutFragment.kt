@@ -65,7 +65,6 @@ class AboutFragment : MPFragment<AboutViewModel>() {
         }
     }
 
-
     private fun goToRateAppScreen(uriString: String) {
         try {
             startActivity(Intent().cleanView(uriString))
@@ -94,7 +93,6 @@ class AboutFragment : MPFragment<AboutViewModel>() {
         }
     }
 
-
     class AboutItemsAdapter(private val items: List<AboutItem>, private val itemSelectionListener: (AboutItem) -> Unit) : RecyclerView.Adapter<AboutItemsAdapter.ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
@@ -112,7 +110,6 @@ class AboutFragment : MPFragment<AboutViewModel>() {
         }
 
         override fun getItemCount(): Int = items.size
-
 
         class ViewHolder(private val itemBinding: ListItemAboutBinding) : RecyclerView.ViewHolder(itemBinding.root) {
             fun bindItem(item: AboutItem, selectionListener: (AboutItem) -> Unit) {

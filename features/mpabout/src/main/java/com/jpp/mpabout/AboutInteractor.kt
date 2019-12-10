@@ -2,7 +2,9 @@ package com.jpp.mpabout
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mpabout.AboutInteractor.AboutEvent.*
+import com.jpp.mpabout.AboutInteractor.AboutEvent.AboutUrlEvent
+import com.jpp.mpabout.AboutInteractor.AboutEvent.AboutWebStoreUrlEvent
+import com.jpp.mpabout.AboutInteractor.AboutEvent.AppVersionEvent
 import com.jpp.mpdomain.AboutUrl
 import com.jpp.mpdomain.AppVersion
 import com.jpp.mpdomain.Licenses
@@ -18,9 +20,11 @@ import javax.inject.Singleton
  * view layer.
  */
 @Singleton
-class AboutInteractor @Inject constructor(private val appVersionRepository: AppVersionRepository,
-                                          private val aboutUrlRepository: AboutUrlRepository,
-                                          private val licensesRepository: LicensesRepository) {
+class AboutInteractor @Inject constructor(
+    private val appVersionRepository: AppVersionRepository,
+    private val aboutUrlRepository: AboutUrlRepository,
+    private val licensesRepository: LicensesRepository
+) {
 
     sealed class AboutEvent {
         data class AppVersionEvent(val appVersion: AppVersion) : AboutEvent()
@@ -88,5 +92,4 @@ class AboutInteractor @Inject constructor(private val appVersionRepository: AppV
             _licenseEvents.postValue(it)
         }
     }
-
 }
