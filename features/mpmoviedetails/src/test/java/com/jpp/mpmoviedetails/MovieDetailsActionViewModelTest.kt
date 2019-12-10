@@ -30,7 +30,6 @@ class MovieDetailsActionViewModelTest {
 
     private lateinit var subject: MovieDetailsActionViewModel
 
-
     @BeforeEach
     fun setUp() {
         every { movieDetailsInteractor.movieStateEvents } returns lvInteractorEvents

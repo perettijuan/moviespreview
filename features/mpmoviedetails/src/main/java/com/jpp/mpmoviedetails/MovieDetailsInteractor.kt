@@ -9,8 +9,17 @@ import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.UserAccount
-import com.jpp.mpdomain.repository.*
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.*
+import com.jpp.mpdomain.repository.AccountRepository
+import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.LanguageRepository
+import com.jpp.mpdomain.repository.MovieDetailRepository
+import com.jpp.mpdomain.repository.MoviePageRepository
+import com.jpp.mpdomain.repository.MovieStateRepository
+import com.jpp.mpdomain.repository.SessionRepository
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.AppLanguageChanged
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.NotConnectedToNetwork
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.Success
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.UnknownError
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,13 +29,15 @@ import javax.inject.Singleton
  * view layer.
  */
 @Singleton
-class MovieDetailsInteractor @Inject constructor(private val connectivityRepository: ConnectivityRepository,
-                                                 private val movieDetailRepository: MovieDetailRepository,
-                                                 private val languageRepository: LanguageRepository,
-                                                 private val sessionRepository: SessionRepository,
-                                                 private val accountRepository: AccountRepository,
-                                                 private val movieStateRepository: MovieStateRepository,
-                                                 private val moviePageRepository: MoviePageRepository) {
+class MovieDetailsInteractor @Inject constructor(
+    private val connectivityRepository: ConnectivityRepository,
+    private val movieDetailRepository: MovieDetailRepository,
+    private val languageRepository: LanguageRepository,
+    private val sessionRepository: SessionRepository,
+    private val accountRepository: AccountRepository,
+    private val movieStateRepository: MovieStateRepository,
+    private val moviePageRepository: MoviePageRepository
+) {
     /**
      * Represents the events that this interactor
      * can route to the upper layers.
@@ -80,7 +91,6 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
         }
     }
 
-
     /**
      * Fetches the [MovieDetail] that corresponds to the movie identified by [movieId].
      * It will post a new event to [movieDetailEvents] indicating the result of the action.
@@ -115,15 +125,15 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
      * Updates the favorite state of the movie identified with [movieId] to [asFavorite].
      */
     fun updateFavoriteMovieState(movieId: Double, asFavorite: Boolean) {
-       whenConnected {
-           withAccountData { session, userAccount ->
-               movieStateRepository
-                       .updateFavoriteMovieState(movieId, asFavorite, userAccount, session)
-                       .let { MovieStateEvent.UpdateFavorite(it) }
-                       .also { moviePageRepository.flushFavoriteMoviePages() }
-                       .let { _movieStateEvents.postValue(it) }
-           }
-       }
+        whenConnected {
+            withAccountData { session, userAccount ->
+                movieStateRepository
+                        .updateFavoriteMovieState(movieId, asFavorite, userAccount, session)
+                        .let { MovieStateEvent.UpdateFavorite(it) }
+                        .also { moviePageRepository.flushFavoriteMoviePages() }
+                        .let { _movieStateEvents.postValue(it) }
+            }
+        }
     }
 
     /**
@@ -189,14 +199,12 @@ class MovieDetailsInteractor @Inject constructor(private val connectivityReposit
         }
     }
 
-
     /**
      * Flushes out any movie details stored data.
      */
     fun flushMovieDetailsData() {
         movieDetailRepository.flushMovieDetailsData()
     }
-
 
     private fun whenConnected(action: () -> Unit) {
         when (connectivityRepository.getCurrentConnectivity()) {

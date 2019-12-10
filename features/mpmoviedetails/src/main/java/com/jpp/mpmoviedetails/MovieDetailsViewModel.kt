@@ -25,10 +25,13 @@ import com.jpp.mpdomain.MovieGenre.GenresId.THRILLER_GENRE_ID
 import com.jpp.mpdomain.MovieGenre.GenresId.TV_MOVIE_GENRE_ID
 import com.jpp.mpdomain.MovieGenre.GenresId.WAR_GENRE_ID
 import com.jpp.mpdomain.MovieGenre.GenresId.WESTERN_GENRE_ID
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.*
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.AppLanguageChanged
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.NotConnectedToNetwork
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.Success
+import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.UnknownError
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPScopedViewModel] that supports the movie details section (only the static data, not the actions
@@ -41,10 +44,11 @@ import javax.inject.Inject
  * VM is notified about such event and executes a refresh of both: the data stored by the application
  * and the view state being shown to the user.
  */
-class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                                private val movieDetailsInteractor: MovieDetailsInteractor)
-    : MPScopedViewModel(dispatchers) {
-
+class MovieDetailsViewModel @Inject constructor(
+    dispatchers: CoroutineDispatchers,
+    private val movieDetailsInteractor: MovieDetailsInteractor
+) :
+        MPScopedViewModel(dispatchers) {
 
     private val _viewState = MediatorLiveData<MovieDetailViewState>()
     val viewState: LiveData<MovieDetailViewState> get() = _viewState
@@ -81,7 +85,6 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
                 currentParam.movieImageUrl
         )
     }
-
 
     /**
      * Called when the user request to login from the details actions.
@@ -169,7 +172,6 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
         }
     }
 
-
     /**
      * Maps all the known genres with a given icon.
      */
@@ -196,5 +198,4 @@ class MovieDetailsViewModel @Inject constructor(dispatchers: CoroutineDispatcher
             else -> return MovieGenreItem.Generic
         }
     }
-
 }

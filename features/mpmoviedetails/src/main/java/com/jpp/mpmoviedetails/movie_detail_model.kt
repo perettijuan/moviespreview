@@ -25,10 +25,11 @@ import com.jpp.mpmoviedetails.NavigationMovieDetails.movieTitle
  * Represents the view states that the movie detail view can assume.
  */
 data class MovieDetailViewState(
-        val loadingVisibility: Int = View.INVISIBLE,
-        val movieImageUrl: String = "emptyUrl",
-        val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
-        val contentViewState: MovieDetailContentViewState = MovieDetailContentViewState()) {
+    val loadingVisibility: Int = View.INVISIBLE,
+    val movieImageUrl: String = "emptyUrl",
+    val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
+    val contentViewState: MovieDetailContentViewState = MovieDetailContentViewState()
+) {
 
     companion object {
         fun showLoading(movieImageUrl: String) = MovieDetailViewState(
@@ -39,41 +40,44 @@ data class MovieDetailViewState(
                 errorViewState = ErrorViewState.asUnknownError(errorHandler))
         fun showNoConnectivityError(errorHandler: () -> Unit) = MovieDetailViewState(
                 errorViewState = ErrorViewState.asConnectivity(errorHandler))
-        fun showDetails(movieImageUrl: String,
-                        overview: String,
-                        genres: List<MovieGenreItem>,
-                        popularity: String,
-                        voteCount: String,
-                        releaseDate: String) = MovieDetailViewState(
+        fun showDetails(
+            movieImageUrl: String,
+            overview: String,
+            genres: List<MovieGenreItem>,
+            popularity: String,
+            voteCount: String,
+            releaseDate: String
+        ) = MovieDetailViewState(
                 movieImageUrl = movieImageUrl,
                 contentViewState = MovieDetailContentViewState.buildVisible(overview, genres, popularity, voteCount, releaseDate))
     }
 }
 
-
 /**
  * Represents the view state of the details content.
  */
 data class MovieDetailContentViewState(
-        val visibility: Int = View.INVISIBLE,
-        @StringRes val overviewTitle: Int = R.string.overview_title,
-        val overview: String = "",
-        @StringRes val genresTitle: Int = R.string.genres_title,
-        val genres: List<MovieGenreItem> = emptyList(),
-        @StringRes val popularityTitle: Int = R.string.popularity_title,
-        val popularity: String = "",
-        @StringRes val voteCountTitle: Int = R.string.vote_count_title,
-        val voteCount: String = "",
-        @StringRes val releaseDateTitle: Int = R.string.release_date_title,
-        val releaseDate: String = "",
-        @StringRes val creditsTitle: Int = R.string.movie_credits_title
+    val visibility: Int = View.INVISIBLE,
+    @StringRes val overviewTitle: Int = R.string.overview_title,
+    val overview: String = "",
+    @StringRes val genresTitle: Int = R.string.genres_title,
+    val genres: List<MovieGenreItem> = emptyList(),
+    @StringRes val popularityTitle: Int = R.string.popularity_title,
+    val popularity: String = "",
+    @StringRes val voteCountTitle: Int = R.string.vote_count_title,
+    val voteCount: String = "",
+    @StringRes val releaseDateTitle: Int = R.string.release_date_title,
+    val releaseDate: String = "",
+    @StringRes val creditsTitle: Int = R.string.movie_credits_title
 ) {
     companion object {
-        fun buildVisible(overview: String,
-                         genres: List<MovieGenreItem>,
-                         popularity: String,
-                         voteCount: String,
-                         releaseDate: String) = MovieDetailContentViewState(
+        fun buildVisible(
+            overview: String,
+            genres: List<MovieGenreItem>,
+            popularity: String,
+            voteCount: String,
+            releaseDate: String
+        ) = MovieDetailContentViewState(
                 visibility = View.VISIBLE,
                 overview = overview,
                 genres = genres,
@@ -83,7 +87,6 @@ data class MovieDetailContentViewState(
         )
     }
 }
-
 
 /**
  * Represents an item in the list of genres that a movie can belong to.
@@ -126,9 +129,11 @@ data class NavigateToCreditsEvent(val movieId: Double, val movieTitle: String)
 /**
  * The initialization parameter for the [MovieDetailsViewModel.onInit] method.
  */
-data class MovieDetailsParam(val movieId: Double,
-                             val movieTitle: String,
-                             val movieImageUrl: String) {
+data class MovieDetailsParam(
+    val movieId: Double,
+    val movieTitle: String,
+    val movieImageUrl: String
+) {
     companion object {
         fun fromArguments(arguments: Bundle?) = MovieDetailsParam(
                 movieId(arguments).toDouble(),
@@ -141,7 +146,6 @@ data class MovieDetailsParam(val movieId: Double,
 /***************************************************************************************************
  ****************************** MOVIE ACTIONS MODEL ************************************************
  ***************************************************************************************************/
-
 
 /**
  * Represents the view state that the action item in the movie detail can assume.
@@ -158,32 +162,38 @@ sealed class MovieDetailActionViewState(val animate: Boolean, val expanded: Bool
      * Shows the view state when there's no movie state to render. i.e.: the user is
      * not logged.
      */
-    data class ShowNoMovieState(val showActionsExpanded: Boolean,
-                                val animateActionsExpanded: Boolean)
-        : MovieDetailActionViewState(animate = animateActionsExpanded, expanded = showActionsExpanded)
+    data class ShowNoMovieState(
+        val showActionsExpanded: Boolean,
+        val animateActionsExpanded: Boolean
+    ) :
+        MovieDetailActionViewState(animate = animateActionsExpanded, expanded = showActionsExpanded)
 
     /*
      * Shows the view state when there's an error and the user needs to reload the data.
      */
-    data class ShowReloadState(val animateActionsExpanded: Boolean)
-        : MovieDetailActionViewState(animate = animateActionsExpanded, expanded = false)
+    data class ShowReloadState(val animateActionsExpanded: Boolean) :
+        MovieDetailActionViewState(animate = animateActionsExpanded, expanded = false)
 
     /*
      * Shows the user not logged view state.
      */
-    data class ShowUserNotLogged(val showActionsExpanded: Boolean,
-                                 val animateActionsExpanded: Boolean)
-        : MovieDetailActionViewState(animate = animateActionsExpanded, expanded = showActionsExpanded)
+    data class ShowUserNotLogged(
+        val showActionsExpanded: Boolean,
+        val animateActionsExpanded: Boolean
+    ) :
+        MovieDetailActionViewState(animate = animateActionsExpanded, expanded = showActionsExpanded)
 
     /*
      * Renders the movie state with the provided data.
      */
-    data class ShowMovieState(val showActionsExpanded: Boolean,
-                              val animateActionsExpanded: Boolean,
-                              val favorite: ActionButtonState,
-                              val isRated: Boolean,
-                              val isInWatchlist: ActionButtonState)
-        : MovieDetailActionViewState(animate = animateActionsExpanded, expanded = showActionsExpanded)
+    data class ShowMovieState(
+        val showActionsExpanded: Boolean,
+        val animateActionsExpanded: Boolean,
+        val favorite: ActionButtonState,
+        val isRated: Boolean,
+        val isInWatchlist: ActionButtonState
+    ) :
+        MovieDetailActionViewState(animate = animateActionsExpanded, expanded = showActionsExpanded)
 }
 
 /**
