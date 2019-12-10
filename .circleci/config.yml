@@ -28,11 +28,11 @@ references:
   persist_to_workspace:
     root: *workspace
     paths:
-      - mobile/build/intermediates
-      - mobile/build/outputs/androidTest-results
-      - mobile/build/outputs/apk
-      - mobile/build/outputs/code-coverage
-      - mobile/build/test-results
+      - app/build/intermediates
+      - app/build/outputs/androidTest-results
+      - app/build/outputs/apk
+      - app/build/outputs/code-coverage
+      - app/build/test-results
 
     ## Docker image configurations
 
@@ -70,7 +70,7 @@ jobs:
           command: ./gradlew -PciBuild=true :app:assembleDebug :app:assembleAndroidTest
       - *persist_debug_workspace
       - store_artifacts:
-          path: mobile/build/outputs/apk/
+          path: app/build/outputs/apk/
           destination: /apk/
 
     ## Check code quality
@@ -95,7 +95,7 @@ jobs:
           command: ./gradlew lintDebug
       - *persist_debug_workspace
       - store_artifacts:
-          path: mobile/build/reports/
+          path: app/build/reports/
           destination: /reports/
 
 
