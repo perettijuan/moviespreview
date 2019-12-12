@@ -77,7 +77,7 @@ jobs:
       - *save_gradle_dependency_cache
       - run:
           name: Assemble debug apks
-          command: ./gradlew assembleDebug assembleAndroidTest --stacktrace --max-workers=2
+          command: ./gradlew assembleDebug assembleAndroidTest --stacktrace
       - *persist_debug_workspace # This persists the specified paths (app/build/outputs/apk) into the workspace for use in downstream job
       - store_artifacts:
           path: app/build/outputs/apk
