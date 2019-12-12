@@ -15,7 +15,6 @@ import com.jpp.mp.assertions.withViewInRecyclerView
 import com.jpp.mp.testutils.FragmentTestActivity
 import com.jpp.mpdomain.SearchPage
 import com.jpp.mpdomain.SearchResult
-import com.jpp.mpsearch.SearchViewState
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -165,7 +164,7 @@ class SearchFragmentIntegrationTest {
 //        })
     }
 
-    private fun waitForViewState(viewState: SearchViewState) {
+//    private fun waitForViewState(viewState: SearchViewState) {
 //        ConditionWatcher.waitForCondition(object : Instruction() {
 //            override fun getDescription(): String = "Waiting for items in list"
 //
@@ -173,7 +172,7 @@ class SearchFragmentIntegrationTest {
 //                return searchViewModel.viewState().value == viewState
 //            }
 //        })
-    }
+//    }
 
     private fun waitForEmptySearch() {
 //        ConditionWatcher.waitForCondition(object : Instruction() {
