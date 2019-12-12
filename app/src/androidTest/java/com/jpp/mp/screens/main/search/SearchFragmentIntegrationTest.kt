@@ -15,7 +15,6 @@ import com.jpp.mp.assertions.withViewInRecyclerView
 import com.jpp.mp.testutils.FragmentTestActivity
 import com.jpp.mpdomain.SearchPage
 import com.jpp.mpdomain.SearchResult
-import com.jpp.mpsearch.SearchViewState
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
