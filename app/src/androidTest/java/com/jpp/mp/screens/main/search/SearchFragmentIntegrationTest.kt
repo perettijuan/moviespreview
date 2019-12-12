@@ -165,7 +165,7 @@ class SearchFragmentIntegrationTest {
 //        })
     }
 
-    private fun waitForViewState(viewState: SearchViewState) {
+//    private fun waitForViewState(viewState: SearchViewState) {
 //        ConditionWatcher.waitForCondition(object : Instruction() {
 //            override fun getDescription(): String = "Waiting for items in list"
 //
@@ -173,7 +173,7 @@ class SearchFragmentIntegrationTest {
 //                return searchViewModel.viewState().value == viewState
 //            }
 //        })
-    }
+//    }
 
     private fun waitForEmptySearch() {
 //        ConditionWatcher.waitForCondition(object : Instruction() {
