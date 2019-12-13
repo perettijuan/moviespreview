@@ -225,23 +225,23 @@ jobs:
 
   # Run UI tests
 
-    UI Tests:
-      <<: *setup_android_env
-      steps:
-        - checkout
-        - *attach_debug_workspace
-        - *dump_credentials
-        - run:
-            name: Run UI Tests
-            command: |
-              export GOOGLE_APPLICATION_CREDENTIALS=${HOME}/secret.json
-              java -jar ./.circleci/flank.jar android run
-            no_output_timeout: 30m
-        - *fetch_firebase_results
-        - *persist_firebase_workspace
-        - *store_firebase_artifact
-        - *move_firebase_results
-        - *store_firebase_results
+  UI Tests:
+    <<: *setup_android_env
+    steps:
+      - checkout
+      - *attach_debug_workspace
+      - *dump_credentials
+      - run:
+          name: Run UI Tests
+          command: |
+            export GOOGLE_APPLICATION_CREDENTIALS=${HOME}/secret.json
+            java -jar ./.circleci/flank.jar android run
+          no_output_timeout: 30m
+      - *fetch_firebase_results
+      - *persist_firebase_workspace
+      - *store_firebase_artifact
+      - *move_firebase_results
+      - *store_firebase_results
 
 
 workflows:
