@@ -1,0 +1,13 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: Describe a Deployment.
+    description: Describe a Cloud Game Server Deployment.
+
+  request:
+    collection: gameservices.projects.locations.gameServerDeployments
+
+  arguments:
+    resource:
+      help_text: Cloud Game Server Deployment to describe.
+      spec: !REF googlecloudsdk.command_lib.game.resources:deployment

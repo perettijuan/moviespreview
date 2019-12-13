@@ -1,0 +1,30 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: List Realms.
+    description: List Cloud Game Server Realms.
+
+  request:
+    collection: gameservices.projects.locations.realms
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.game.servers.hooks:AddDefaultLocationToListRequest
+
+  response:
+    id_field: name
+
+  arguments:
+    resource:
+      help_text: Cloud Game Servers Location of the Realms to list.
+      spec: !REF googlecloudsdk.command_lib.game.resources:location
+
+  output:
+    format: |
+      table(
+         name.basename():label=NAME,
+         name.scope("locations").segment(0):label=LOCATION,
+         description:label=DESCRIPTION,
+         createTime,
+         updateTime,
+         timeZone,
+         labels
+       )

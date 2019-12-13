@@ -1,0 +1,13 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: Describe a Game Server Config.
+    description: Describe a Cloud Game Server Config.
+
+  request:
+    collection: gameservices.projects.locations.gameServerDeployments.configs
+
+  arguments:
+    resource:
+      help_text: Cloud Game Server Config to describe.
+      spec: !REF googlecloudsdk.command_lib.game.resources:config

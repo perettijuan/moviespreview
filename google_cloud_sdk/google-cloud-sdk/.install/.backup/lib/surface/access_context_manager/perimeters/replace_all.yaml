@@ -1,0 +1,54 @@
+- release_tracks: [ALPHA]
+  command_type: GENERIC
+
+  help_text:
+    brief: |
+      Replace all existing service perimeters.
+    description: |
+      Replace all existing service perimeter in specified access policy with service perimeters
+      specified in a file.
+  request:
+    api_version: v1beta
+    method: replaceAll
+    collection: accesscontextmanager.accessPolicies.servicePerimeters
+  response:
+    modify_response_hooks:
+    - googlecloudsdk.command_lib.accesscontextmanager.perimeters:ParseReplaceServicePerimetersResponseBeta
+
+  arguments:
+    resource:
+      help_text: The access policy that contains the perimeters you want to replace.
+      spec: !REF googlecloudsdk.command_lib.accesscontextmanager.resources:policy
+      override_resource_collection: true
+
+    params:
+    - api_field: replaceServicePerimetersRequest.servicePerimeters
+      arg_name: source-file
+      required: true
+      help_text: |
+        Path to a file containing a list of service perimeters.
+
+        An service perimeter file is a YAML-formatted list of service perimeters,
+        which are YAML objects representing a Condition as described in
+        the API reference. For example:
+
+        ```
+        - name: my_perimeter
+          title: My Perimeter
+          description: Perimeter for foo.
+          perimeterType: PERIMETER_TYPE_REGULAR
+          status:
+            resources:
+            - projects/0123456789
+            accessLevels:
+            - accessPolicies/my_policy/accessLevels/my_level
+            unrestrictedServices:
+            - "*"
+            restrictedServices:
+            - storage.googleapis.com
+        ```
+
+        For more information, see:
+        https://cloud.google.com/access-context-manager/docs/reference/rest/v1beta/accessPolicies.servicePerimeters
+      repeated: false
+      processor: googlecloudsdk.command_lib.accesscontextmanager.perimeters:ParseServicePerimetersBeta

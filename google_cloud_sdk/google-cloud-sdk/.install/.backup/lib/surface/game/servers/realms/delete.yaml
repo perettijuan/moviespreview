@@ -1,0 +1,16 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: Delete a Realm.
+    description: Delete a Cloud Game Server Realm.
+
+  request:
+    collection: gameservices.projects.locations.realms
+
+  arguments:
+    resource:
+      help_text: Cloud Game Server Realm to describe.
+      spec: !REF googlecloudsdk.command_lib.game.resources:realm
+
+  async:
+    collection: gameservices.projects.locations.operations

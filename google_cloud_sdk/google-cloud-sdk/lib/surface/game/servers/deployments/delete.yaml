@@ -1,0 +1,16 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: Delete a Deployment.
+    description: Delete a Cloud Game Server Deployment.
+
+  request:
+    collection: gameservices.projects.locations.gameServerDeployments
+
+  arguments:
+    resource:
+      help_text: Cloud Game Server Deployment to describe.
+      spec: !REF googlecloudsdk.command_lib.game.resources:deployment
+
+  async:
+    collection: gameservices.projects.locations.operations

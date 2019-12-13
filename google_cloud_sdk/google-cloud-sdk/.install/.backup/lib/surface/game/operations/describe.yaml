@@ -1,0 +1,13 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: Describe an Operation.
+    description: Describe a Cloud Game Services Operation.
+
+  request:
+    collection: gameservices.projects.locations.operations
+
+  arguments:
+    resource:
+      help_text: Cloud Game Services Operation to describe.
+      spec: !REF googlecloudsdk.command_lib.game.resources:operation

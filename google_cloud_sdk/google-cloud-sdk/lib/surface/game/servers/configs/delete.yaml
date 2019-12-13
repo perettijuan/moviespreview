@@ -1,0 +1,16 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: Delete a Game Server Config.
+    description: Delete a Cloud Game Server Config.
+
+  request:
+    collection: gameservices.projects.locations.gameServerDeployments.configs
+
+  arguments:
+    resource:
+      help_text: Cloud Game Server Config to delete.
+      spec: !REF googlecloudsdk.command_lib.game.resources:config
+
+  async:
+    collection: gameservices.projects.locations.operations

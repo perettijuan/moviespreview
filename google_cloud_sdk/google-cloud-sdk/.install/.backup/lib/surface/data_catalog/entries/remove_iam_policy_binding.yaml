@@ -1,0 +1,27 @@
+- release_tracks: [ALPHA, BETA]
+  help_text:
+    brief: Remove an IAM policy binding from a Cloud Data Catalog entry.
+    description: Remove an IAM policy binding from a Cloud Data Catalog entry.
+    examples: |
+      To remove an IAM policy binding for the role of 'roles/editor' for the
+      user 'test-user@gmail.com' from entry 'entry1' in group 'group1' and location
+      'us-central1', run:
+
+        $ {command} --entry-group=group1 --location=us-central1 entry1 --member='user:test-user@gmail.com' --role='roles/editor'
+
+      To remove an IAM policy binding for the role of 'roles/editor' for all
+      authenticated users from entry 'entry1' in group 'group1' and location
+      'us-central1', run:
+
+        $ {command} --entry-group=group1 --location=us-central1 entry1 --member='allAuthenticatedUsers' --role='roles/editor'
+
+      See https://cloud.google.com/iam/docs/managing-policies for details of
+      policy role and member types.
+
+  request:
+    collection: datacatalog.projects.locations.entryGroups.entries
+
+  arguments:
+    resource:
+      help_text: Entry from which to remove the IAM policy binding.
+      spec: !REF googlecloudsdk.command_lib.data_catalog.resources:entry

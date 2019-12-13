@@ -1,0 +1,13 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: Describe a Location.
+    description: Describe a Cloud Game Services Location.
+
+  request:
+    collection: gameservices.projects.locations
+
+  arguments:
+    resource:
+      help_text: Cloud Game Services Location to describe.
+      spec: !REF googlecloudsdk.command_lib.game.resources:location

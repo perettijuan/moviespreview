@@ -1,0 +1,13 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: Describe a Scaling Policy.
+    description: Describe a Cloud Game Server Scaling Policy.
+
+  request:
+    collection: gameservices.projects.locations.scalingPolicies
+
+  arguments:
+    resource:
+      help_text: Cloud Game Server Scaling Policy to describe.
+      spec: !REF googlecloudsdk.command_lib.game.resources:scaling_policy

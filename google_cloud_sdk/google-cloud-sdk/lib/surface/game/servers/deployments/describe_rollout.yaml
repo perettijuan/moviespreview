@@ -1,0 +1,14 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: Describe a Rollout.
+    description: Describe a Cloud Game Server Deployment Rollout.
+
+  request:
+    collection: gameservices.projects.locations.gameServerDeployments
+    method: getRollout
+
+  arguments:
+    resource:
+      help_text: Cloud Game Server Deployment Rollout to describe.
+      spec: !REF googlecloudsdk.command_lib.game.resources:deployment

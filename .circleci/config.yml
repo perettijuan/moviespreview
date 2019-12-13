@@ -17,6 +17,12 @@ references:
       paths:
         - app/build/outputs/apk
 
+  persist_firebase_workspace: &persist_firebase_workspace
+    persist_to_workspace:
+      root: *workspace
+      paths:
+        - firebase
+
   # Docker config
 
   setup_android_env: &setup_android_env
@@ -44,19 +50,48 @@ references:
     restore_cache:
       key: *cache_key_gradle
 
+  # Gcloud service
+
+  dump_credentials: &dump_credentials
+    run:
+      name: Move Google Cloud Credentials
+      command: echo ${GOOGLE_AUTH_TEST} > ${HOME}/secret.json
+
+  # Store results
+  fetch_firebase_results: &fetch_firebase_results
+    run:
+      when: always
+      name: Download test results from Firebase Test Lab
+      command: |
+        mkdir firebase
+        mv /home/circleci/repo/results /home/circleci/repo/firebase
+
+  store_firebase_artifact: &store_firebase_artifact
+    store_artifacts:
+      path: firebase/
+      destination: /firebase/
+
+  move_firebase_results: &move_firebase_results
+    run:
+      when: always
+      name: Move test results to summary tab
+      command: |
+        mkdir -p test-results/ui_tests
+        cd firebase/results
+        cp 2*/*.xml .
+        cd ~
+        cd repo
+        mv /home/circleci/repo/firebase/results/JUnitReport.xml test-results/ui_tests
+
+  store_firebase_results: &store_firebase_results
+    store_test_results:
+      path: ./test-results
 
   # Common setup for UI test job
 
   UI_Job_Setup: &UI_Job_Setup
     requires:
       - Build Debug Apk
-
-
-  # Check the health before running the UI tests
-
-  check_health: &check_health
-    requires:
-      - Health Check
 
 orbs:
   jq: circleci/jq@1.9.0
@@ -188,6 +223,26 @@ jobs:
       - store_test_results:
           path: app/build/test-results
 
+  # Run UI tests
+
+    UI Tests:
+      <<: *setup_android_env
+      steps:
+        - checkout
+        - *attach_debug_workspace
+        - *dump_credentials
+        - run:
+            name: Run UI Tests
+            command: |
+              export GOOGLE_APPLICATION_CREDENTIALS=${HOME}/secret.json
+              java -jar ./.circleci/flank.jar android run
+            no_output_timeout: 30m
+        - *fetch_firebase_results
+        - *persist_firebase_workspace
+        - *store_firebase_artifact
+        - *move_firebase_results
+        - *store_firebase_results
+
 
 workflows:
   version: 2
@@ -203,3 +258,5 @@ workflows:
   UI Tests:
     jobs:
       - Build Debug Apk
+      - UI Tests:
+          <<: *UI_Job_Setup

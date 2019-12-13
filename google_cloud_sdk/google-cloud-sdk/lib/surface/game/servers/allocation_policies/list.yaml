@@ -1,0 +1,33 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: List Allocation Policies.
+    description: List Cloud Game Server Allocation Policies.
+
+  request:
+    collection: gameservices.projects.locations.allocationPolicies
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.game.servers.hooks:AddDefaultLocationToListRequest
+
+  response:
+    id_field: name
+
+  arguments:
+    resource:
+      help_text: Cloud Game Servers Location of the Allocation Policies to list.
+      spec: !REF googlecloudsdk.command_lib.game.resources:location
+
+  output:
+    format: |
+      table(
+         name.basename():label=NAME,
+         name.scope("locations").segment(0):label=LOCATION,
+         description:label=DESCRIPTION,
+         createTime,
+         updateTime,
+         priority,
+         weight,
+         clusterSelectors.labels:label=MATCH_CLUSTERS,
+         schedules,
+         labels
+       )

@@ -1,0 +1,13 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: Describe an Allocation Policy.
+    description: Describe a Cloud Game Server Allocation Policy.
+
+  request:
+    collection: gameservices.projects.locations.allocationPolicies
+
+  arguments:
+    resource:
+      help_text: Cloud Game Server Allocation Policy to describe.
+      spec: !REF googlecloudsdk.command_lib.game.resources:allocation_policy
