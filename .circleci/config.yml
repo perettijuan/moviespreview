@@ -34,6 +34,13 @@ references:
       _JAVA_OPTIONS: "-Xmx2048m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
       GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m"'
 
+  gcloud_config: &gcloud_config
+    working_directory: *workspace
+    docker:
+      - image: google/cloud-sdk:latest
+    environment:
+      TERM: dumb
+
 
   # Cache
 
@@ -226,19 +233,27 @@ jobs:
   # Run UI tests
 
   UI Tests:
-    <<: *setup_android_env
+    <<: *gcloud_config
     steps:
       - checkout
       - *attach_debug_workspace
       - *dump_credentials
-      - run: echo "Building"
       - run:
-          name: Run UI Tests
-          command: |
-            export GOOGLE_APPLICATION_CREDENTIALS=${HOME}/secret.json
-            java -jar ./.circleci/flank.jar android run
+          name: Set Google Cloud target project
+          command: gcloud config set project newspaper-84169
+      - run:
+          name: Authenticate with Google Cloud
+          command: gcloud auth activate-service-account firebase-adminsdk-p9qvk@newspaper-84169.iam.gserviceaccount.com --key-file ${HOME}/secret.json
+      - run:
+          name: Run instrumented test on Firebase Test Lab
+          command: gcloud firebase test android run --type instrumentation --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --device-ids hammerhead --os-version-ids 21 --locales en --orientations portrait --environment-variables coverage=true,coverageFile=/sdcard/tmp/code-coverage/connected/coverage.ec --directories-to-pull=/sdcard/tmp --timeout 20m
           no_output_timeout: 30m
-      - *fetch_firebase_results
+      - run:
+          name: Create directory to store test results
+          command: mkdir firebase
+      - run:
+          name: Download instrumented test results from Firebase Test Lab
+          command: gsutil -m cp -r -U "`gsutil ls gs://test-lab-3udbiqpdyp0d0-miwcp7d69v80m | tail -1`*" /root/workspace/firebase/
       - *persist_firebase_workspace
       - *store_firebase_artifact
       - *move_firebase_results
@@ -260,4 +275,5 @@ workflows:
     jobs:
       - Build Debug Apk
       - UI Tests:
-          <<: *UI_Job_Setup
+          requires:
+            - Build Debug Apk
