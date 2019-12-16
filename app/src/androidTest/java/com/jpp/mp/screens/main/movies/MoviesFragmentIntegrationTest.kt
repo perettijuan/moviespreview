@@ -11,7 +11,7 @@ import com.jpp.mp.main.movies.fragments.PlayingMoviesFragment
 import com.jpp.mp.testutils.FragmentTestActivity
 import io.mockk.every
 import io.mockk.mockk
-import junit.framework.Assert.assertTrue
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
