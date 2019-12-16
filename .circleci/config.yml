@@ -231,6 +231,7 @@ jobs:
       - checkout
       - *attach_debug_workspace
       - *dump_credentials
+      - run: echo "Building"
       - run:
           name: Run UI Tests
           command: |
