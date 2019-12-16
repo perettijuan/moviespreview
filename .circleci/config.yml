@@ -246,7 +246,7 @@ jobs:
           command: echo ${HOME}/secret.json
       - run:
           name: Set Google Cloud target project
-          command: gcloud config set project moviesPreview
+          command: gcloud config set project moviespreview-80dec
       - run:
           name: Authenticate with Google Cloud
           command: gcloud auth activate-service-account firebase-adminsdk-p9qvk@newspaper-84169.iam.gserviceaccount.com --key-file ${HOME}/secret.json
