@@ -239,8 +239,14 @@ jobs:
       - *attach_debug_workspace
       - *dump_credentials
       - run:
+          name: Print env Variable
+          command: echo ${GOOGLE_AUTH_TEST}
+      - run:
+          name: Print json
+          command: echo ${HOME}/secret.json
+      - run:
           name: Set Google Cloud target project
-          command: gcloud config set project newspaper-84169
+          command: gcloud config set project moviesPreview
       - run:
           name: Authenticate with Google Cloud
           command: gcloud auth activate-service-account firebase-adminsdk-p9qvk@newspaper-84169.iam.gserviceaccount.com --key-file ${HOME}/secret.json
