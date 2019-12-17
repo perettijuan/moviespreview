@@ -62,7 +62,7 @@ references:
   dump_credentials: &dump_credentials
     run:
       name: Move Google Cloud Credentials
-      command: echo ${GOOGLE_AUTH_TEST} > ${HOME}/secret.json
+      command: echo ${GOOGLE_AUTH_TEST} | base64 -di > ${HOME}/secret.json
 
   # Store results
   fetch_firebase_results: &fetch_firebase_results
@@ -249,7 +249,7 @@ jobs:
           command: gcloud config set project moviespreview-80dec
       - run:
           name: Authenticate with Google Cloud
-          command: gcloud auth activate-service-account circle-ci@cattle-android.iam.gserviceaccount.com --key-file ${HOME}/secret.json
+          command: gcloud auth activate-service-account firebase-adminsdk-p9qvk@newspaper-84169.iam.gserviceaccount.com --key-file ${HOME}/secret.json
       - run:
           name: Run instrumented test on Firebase Test Lab
           command: gcloud firebase test android run --type instrumentation --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --device-ids hammerhead --os-version-ids 21 --locales en --orientations portrait --environment-variables coverage=true,coverageFile=/sdcard/tmp/code-coverage/connected/coverage.ec --directories-to-pull=/sdcard/tmp --timeout 20m
