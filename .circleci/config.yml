@@ -17,6 +17,12 @@ references:
       paths:
         - app/build/outputs/apk
 
+  persist_firebase_workspace: &persist_firebase_workspace
+    persist_to_workspace:
+      root: *workspace
+      paths:
+        - firebase
+
   # Docker config
 
   setup_android_env: &setup_android_env
@@ -26,7 +32,14 @@ references:
     environment:
       TERM: dumb
       _JAVA_OPTIONS: "-Xmx2048m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
-      GRADLE_OPTS: -Xmx1536m -XX:+HeapDumpOnOutOfMemoryError -Dorg.gradle.caching=true -Dorg.gradle.configureondemand=true -Dkotlin.compiler.execution.strategy=in-process -Dkotlin.incremental=false -Dorg.gradle.daemon=false
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m"'
+
+  gcloud_config: &gcloud_config
+    working_directory: *workspace
+    docker:
+      - image: google/cloud-sdk:latest
+    environment:
+      TERM: dumb
 
 
   # Cache
@@ -44,19 +57,48 @@ references:
     restore_cache:
       key: *cache_key_gradle
 
+  # Gcloud service
+
+  dump_credentials: &dump_credentials
+    run:
+      name: Move Google Cloud Credentials
+      command: echo ${GOOGLE_AUTH_TEST} | base64 -di > ${HOME}/secret.json
+
+  # Store results
+  fetch_firebase_results: &fetch_firebase_results
+    run:
+      when: always
+      name: Download test results from Firebase Test Lab
+      command: |
+        mkdir firebase
+        mv /home/circleci/repo/results /home/circleci/repo/firebase
+
+  store_firebase_artifact: &store_firebase_artifact
+    store_artifacts:
+      path: firebase/
+      destination: /firebase/
+
+  move_firebase_results: &move_firebase_results
+    run:
+      when: always
+      name: Move test results to summary tab
+      command: |
+        mkdir -p test-results/ui_tests
+        cd firebase/results
+        cp 2*/*.xml .
+        cd ~
+        cd repo
+        mv /home/circleci/repo/firebase/results/JUnitReport.xml test-results/ui_tests
+
+  store_firebase_results: &store_firebase_results
+    store_test_results:
+      path: ./test-results
 
   # Common setup for UI test job
 
   UI_Job_Setup: &UI_Job_Setup
     requires:
       - Build Debug Apk
-
-
-  # Check the health before running the UI tests
-
-  check_health: &check_health
-    requires:
-      - Health Check
 
 orbs:
   jq: circleci/jq@1.9.0
@@ -188,6 +230,41 @@ jobs:
       - store_test_results:
           path: app/build/test-results
 
+  # Run UI tests
+
+  UI Tests:
+    <<: *gcloud_config
+    steps:
+      - checkout
+      - *attach_debug_workspace
+      - *dump_credentials
+      - run:
+          name: Print env Variable
+          command: echo ${GOOGLE_AUTH_TEST}
+      - run:
+          name: Print json
+          command: echo ${HOME}/secret.json
+      - run:
+          name: Set Google Cloud target project
+          command: gcloud config set project moviespreview-80dec
+      - run:
+          name: Authenticate with Google Cloud
+          command: gcloud auth activate-service-account firebase-adminsdk-h3i3q@moviespreview-80dec.iam.gserviceaccount.com --key-file ${HOME}/secret.json
+      - run:
+          name: Run instrumented test on Firebase Test Lab
+          command: gcloud firebase test android run --type instrumentation --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --device-ids hammerhead --os-version-ids 21 --locales en --orientations portrait --environment-variables coverage=true,coverageFile=/sdcard/tmp/code-coverage/connected/coverage.ec --directories-to-pull=/sdcard/tmp --timeout 20m
+          no_output_timeout: 30m
+      - run:
+          name: Create directory to store test results
+          command: mkdir firebase
+      - run:
+          name: Download instrumented test results from Firebase Test Lab
+          command: gsutil -m cp -r -U "`gsutil ls gs://test-lab-3udbiqpdyp0d0-miwcp7d69v80m | tail -1`*" /root/workspace/firebase/
+      - *persist_firebase_workspace
+      - *store_firebase_artifact
+      - *move_firebase_results
+      - *store_firebase_results
+
 
 workflows:
   version: 2
@@ -200,6 +277,12 @@ workflows:
     jobs:
       - Unit Tests
 
-  UI Tests:
-    jobs:
-      - Build Debug Apk
+  # Example followed : https://medium.com/@ayltai/all-you-need-to-know-about-circleci-2-0-with-firebase-test-lab-2a66785ff3c2
+  # For the moment these are disabled.
+  # 12/18/2019 -> It seems that the service account I'm using for Firebase is not properly authorized.
+  #UI Tests:
+    #jobs:
+      #- Build Debug Apk
+      #- UI Tests:
+          #requires:
+           # - Build Debug Apk

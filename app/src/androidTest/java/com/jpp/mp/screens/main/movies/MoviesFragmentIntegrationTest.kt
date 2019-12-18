@@ -1,6 +1,20 @@
 package com.jpp.mp.screens.main.movies
 
+import androidx.lifecycle.MutableLiveData
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import com.jpp.mp.common.navigation.Destination
+import com.jpp.mp.di.TestMPViewModelFactory
+import com.jpp.mp.extras.launch
+import com.jpp.mp.main.movies.MovieListViewModel
+import com.jpp.mp.main.movies.fragments.PlayingMoviesFragment
+import com.jpp.mp.testutils.FragmentTestActivity
+import io.mockk.every
+import io.mockk.mockk
+import org.junit.Assert.assertTrue
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
@@ -9,41 +23,33 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class MoviesFragmentIntegrationTest {
 
-//    @get:Rule
-//    val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java, true, false) {
-//    }
-//
-//    private fun launchAndInjectFragment() {
-//        activityTestRule.activity.startFragment(PlayingMoviesFragment(), this@MoviesFragmentIntegrationTest::inject)
-//    }
-//
-//    private fun inject(fragment: PlayingMoviesFragment) {
-//        // inject the factory and the ViewModel
-//        fragment.viewModelFactory = TestMPViewModelFactory().apply {
-//            addVm(viewModel)
-//        }
-//    }
-//
-//    private lateinit var getMoviesUseCase: GetMoviesUseCase
-//    private lateinit var configMovieUseCase: ConfigMovieUseCase
-//    private lateinit var viewModel: PlayingMoviesFragment.PlayingMoviesFragmentViewModel
-//
-//    @Before
-//    fun setUp() {
-//        getMoviesUseCase = mockk()
-//        configMovieUseCase = mockk()
-//
-//        // real ViewModel
-//        viewModel = PlayingMoviesFragment.PlayingMoviesFragmentViewModel(
-//                getMoviesUseCase = getMoviesUseCase,
-//                configMovieUseCase = configMovieUseCase,
-//                networkExecutor = CurrentThreadExecutorService()
-//        )
-//
-//        activityTestRule.launch()
-//    }
-//
-//    @Test
+    @get:Rule
+    val activityTestRule = object : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java, true, false) {
+    }
+
+    private fun launchAndInjectFragment() {
+        activityTestRule.activity.startFragment(PlayingMoviesFragment(), this@MoviesFragmentIntegrationTest::inject)
+    }
+
+    private fun inject(fragment: PlayingMoviesFragment) {
+        // inject the factory and the ViewModel
+        fragment.viewModelFactory = TestMPViewModelFactory().apply {
+            addVm(viewModel)
+        }
+    }
+
+    private lateinit var viewModel: MovieListViewModel
+    private val _destinationsEvent = MutableLiveData<Destination>()
+
+    @Before
+    fun setUp() {
+        viewModel = mockk()
+        every { viewModel.destinationEvents } returns _destinationsEvent
+
+        activityTestRule.launch()
+    }
+
+    //    @Test
 //    fun shouldFetchNewMoviesPageOnAttachedToActivity() {
 //        val pages = moviesPages(10)
 //
@@ -72,12 +78,11 @@ class MoviesFragmentIntegrationTest {
 //        verify { getMoviesUseCase.getMoviePageForSection(1, MovieSection.Playing) }
 //    }
 //
-//    @Test
-//    fun shouldShowUnknownError() {
-//        every { getMoviesUseCase.getMoviePageForSection(any(), MovieSection.Playing) } answers { ErrorUnknown }
-//
-//        launchAndInjectFragment()
-//
+    @Test
+    fun shouldShowUnknownError() {
+        launchAndInjectFragment()
+        assertTrue(1 == 1)
+
 //        waitForViewState(MoviesViewState.ErrorUnknown)
 //
 //        onMoviesErrorView().assertDisplayed()
@@ -85,7 +90,7 @@ class MoviesFragmentIntegrationTest {
 //
 //        onMoviesLoadingView().assertNotDisplayed()
 //        onMoviesList().assertNotDisplayed()
-//    }
+    }
 //
 //    @Test
 //    fun shouldShowConnectivityError() {
