@@ -1,25 +1,163 @@
-version: 2
-jobs:
-  build:
-    working_directory: ~/code
+
+version: 2.1
+references:
+
+  # workspace
+
+  workspace: &workspace
+               ~/repo
+
+  attach_debug_workspace: &attach_debug_workspace
+    attach_workspace:
+      at: *workspace
+
+  persist_debug_workspace: &persist_debug_workspace
+    persist_to_workspace:
+      root: *workspace
+      paths:
+        - app/build/outputs/apk
+
+  persist_firebase_workspace: &persist_firebase_workspace
+    persist_to_workspace:
+      root: *workspace
+      paths:
+        - firebase
+
+  # Docker config
+
+  setup_android_env: &setup_android_env
+    working_directory: *workspace
     docker:
-      - image: circleci/android:api-28
+      - image: circleci/android:api-29
     environment:
-      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+      _JAVA_OPTIONS: "-Xmx2048m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m"'
+
+  gcloud_config: &gcloud_config
+    working_directory: *workspace
+    docker:
+      - image: google/cloud-sdk:latest
+    environment:
+      TERM: dumb
+
+
+  # Cache
+
+  cache_key_gradle: &cache_key_gradle
+                      jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+
+  save_gradle_dependency_cache: &save_gradle_dependency_cache
+    save_cache:
+      key: *cache_key_gradle
+      paths:
+        - ~/.gradle
+
+  restore_gradle_dependecy_cache: &restore_gradle_dependecy_cache
+    restore_cache:
+      key: *cache_key_gradle
+
+  # Gcloud service
+
+  dump_credentials: &dump_credentials
+    run:
+      name: Move Google Cloud Credentials
+      command: echo ${GOOGLE_AUTH_TEST} | base64 -di > ${HOME}/secret.json
+
+  # Store results
+  fetch_firebase_results: &fetch_firebase_results
+    run:
+      when: always
+      name: Download test results from Firebase Test Lab
+      command: |
+        mkdir firebase
+        mv /home/circleci/repo/results /home/circleci/repo/firebase
+
+  store_firebase_artifact: &store_firebase_artifact
+    store_artifacts:
+      path: firebase/
+      destination: /firebase/
+
+  move_firebase_results: &move_firebase_results
+    run:
+      when: always
+      name: Move test results to summary tab
+      command: |
+        mkdir -p test-results/ui_tests
+        cd firebase/results
+        cp 2*/*.xml .
+        cd ~
+        cd repo
+        mv /home/circleci/repo/firebase/results/JUnitReport.xml test-results/ui_tests
+
+  store_firebase_results: &store_firebase_results
+    store_test_results:
+      path: ./test-results
+
+  # Common setup for UI test job
+
+  UI_Job_Setup: &UI_Job_Setup
+    requires:
+      - Build Debug Apk
+
+orbs:
+  jq: circleci/jq@1.9.0
+
+
+jobs:
+
+  # Build the debug apk for our ui tests
+
+  Build Debug Apk:
+    <<: *setup_android_env
     steps:
       - checkout
-      - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run:
-         name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
-         command: sudo chmod +x ./gradlew
+      - *restore_gradle_dependecy_cache
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - *save_gradle_dependency_cache
+      - run:
+          name: Assemble debug apks
+          command: ./gradlew app:assembleDebug app:assembleAndroidTest --stacktrace
+      - *persist_debug_workspace # This persists the specified paths (app/build/outputs/apk) into the workspace for use in downstream job
+      - store_artifacts:
+          path: app/build/outputs/apk
+          destination: /apk/
+
+  # Health Check
+
+  Health Check:
+    <<: *setup_android_env
+    steps:
+      - checkout
+      - *restore_gradle_dependecy_cache
+      - run:
+          name: Download dependencies
+          command: ./gradlew androidDependencies
+      - *save_gradle_dependency_cache
+      - run:
+          name: Run Detekt
+          command: ./gradlew detekt
+      - run:
+          name: Run Ktlint
+          command: ./gradlew ktlint
+      - run:
+          name: Run lint
+          command: ./gradlew lintDebug
+
+
+  # Run unit tests
+
+  Unit Tests:
+    <<: *setup_android_env
+    steps:
+      - checkout
+      - *restore_gradle_dependecy_cache
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - *save_gradle_dependency_cache
       - run:
           name: Run mpcommon Module Unit Tests
           command: ./gradlew :mpcommon:test
@@ -84,20 +222,67 @@ jobs:
       - store_test_results:
           path: features/mpperson/mpdomain/build/test-results
       - run:
-          name: Run Detekt
-          command: ./gradlew detekt
-      - run:
-          name: Run Ktlint
-          command: ./gradlew ktlint
-      - run:
-          name: Run Lint
-          command: ./gradlew lintDebug
-      - run:
           name: Run Unit Tests
           command: ./gradlew test
-      - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
+      - store_artifacts:
           path: app/build/reports
           destination: reports
-      - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
+      - store_test_results:
           path: app/build/test-results
-      # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
+
+  # Run UI tests
+
+  UI Tests:
+    <<: *gcloud_config
+    steps:
+      - checkout
+      - *attach_debug_workspace
+      - *dump_credentials
+      - run:
+          name: Print env Variable
+          command: echo ${GOOGLE_AUTH_TEST}
+      - run:
+          name: Print json
+          command: echo ${HOME}/secret.json
+      - run:
+          name: Set Google Cloud target project
+          command: gcloud config set project moviespreview-80dec
+      - run:
+          name: Authenticate with Google Cloud
+          command: gcloud auth activate-service-account firebase-adminsdk-h3i3q@moviespreview-80dec.iam.gserviceaccount.com --key-file ${HOME}/secret.json
+      - run:
+          name: Run instrumented test on Firebase Test Lab
+          command: gcloud firebase test android run --type instrumentation --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --device-ids hammerhead --os-version-ids 21 --locales en --orientations portrait --environment-variables coverage=true,coverageFile=/sdcard/tmp/code-coverage/connected/coverage.ec --directories-to-pull=/sdcard/tmp --timeout 20m
+          no_output_timeout: 30m
+      - run:
+          name: Create directory to store test results
+          command: mkdir firebase
+      - run:
+          name: Download instrumented test results from Firebase Test Lab
+          command: gsutil -m cp -r -U "`gsutil ls gs://test-lab-3udbiqpdyp0d0-miwcp7d69v80m | tail -1`*" /root/workspace/firebase/
+      - *persist_firebase_workspace
+      - *store_firebase_artifact
+      - *move_firebase_results
+      - *store_firebase_results
+
+
+workflows:
+  version: 2
+
+  Health Check:
+    jobs:
+      - Health Check
+
+  Unit Tests:
+    jobs:
+      - Unit Tests
+
+  # Example followed : https://medium.com/@ayltai/all-you-need-to-know-about-circleci-2-0-with-firebase-test-lab-2a66785ff3c2
+  # For the moment these are disabled.
+  # 12/18/2019 -> It seems that the service account I'm using for Firebase is not properly authorized.
+  #UI Tests:
+    #jobs:
+      #- Build Debug Apk
+      #- UI Tests:
+          #requires:
+           # - Build Debug Apk
