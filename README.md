@@ -9,6 +9,7 @@ MoviesPreview is a typical Android Application that queries The Movie DB API and
       - [Repository Pattern](https://medium.com/@peretti.juan/moviespreview-the-android-app-repository-architecture-d29d1e85fe60)
       - [Interactor](https://medium.com/@peretti.juan/moviespreview-the-android-app-architecture-the-interactor-3680f9dca6e4)
       - [UI architecture](https://medium.com/@peretti.juan/moviespreview-the-android-app-architecture-ui-architecture-4f4b8aacd066)
+  - [App Modules](https://medium.com/@peretti.juan/moviespreview-the-android-app-project-modularization-6a9620ec356a)
 
 ## Features
 
