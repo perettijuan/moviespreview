@@ -193,7 +193,7 @@ open class MPApi :
         private fun buildHttpClient(): OkHttpClient {
             return OkHttpClient.Builder().apply {
                 if (BuildConfig.DEBUG) {
-                    addInterceptor(BaseUrlChangingInterceptor)
+                    addInterceptor(BaseUrlChangingInterceptorProvider.getInterceptor())
                     addInterceptor(HttpLoggingInterceptor().apply {
                         level = HttpLoggingInterceptor.Level.BODY
                     })
