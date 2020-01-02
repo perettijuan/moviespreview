@@ -154,6 +154,13 @@ dependencies {
 
     // Include testing utils
     androidTestImplementation project(path: ':mptestutils')
+
+    androidTestImplementation("com.github.tomakehurst:wiremock:2.25.1") {
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+        exclude group: 'asm', module: 'asm'
+        exclude group: 'org.json', module: 'json'
+        exclude group: 'com.google.guava', module:'guava'
+    }
 }
 
 
