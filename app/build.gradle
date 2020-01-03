@@ -35,7 +35,7 @@ android {
         versionCode 4
         versionName "1.6"
         buildConfigField 'String', 'API_KEY', '"eddf6980a6d7dadd72386f55f94ab571"'
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.jpp.mp.MPJUnitRunner"
     }
 
     compileOptions {
