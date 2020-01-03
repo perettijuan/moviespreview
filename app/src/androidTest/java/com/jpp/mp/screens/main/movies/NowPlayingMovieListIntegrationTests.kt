@@ -1,4 +1,4 @@
-package com.jpp.mp.screens.main
+package com.jpp.mp.screens.main.movies
 
 import android.view.View
 import androidx.test.espresso.Espresso.onView
@@ -20,7 +20,7 @@ import com.jpp.mp.assertions.onErrorViewButton
 import com.jpp.mp.assertions.onErrorViewText
 import com.jpp.mp.assertions.withViewInRecyclerView
 import com.jpp.mp.stubbers.stubConfigurationDefault
-import com.jpp.mp.stubbers.stubNowPLayingWithError
+import com.jpp.mp.stubbers.stubNowPlayingWithError
 import com.jpp.mp.stubbers.stubNowPlayingFirstPage
 import org.junit.Rule
 import org.junit.Test
@@ -92,7 +92,7 @@ class NowPlayingMovieListIntegrationTests {
 
     @Test
     fun shouldShowUnknownError() {
-        stubNowPLayingWithError()
+        stubNowPlayingWithError()
 
         activityTestRule.launch()
 

@@ -17,7 +17,7 @@ const val LOCAL_HOST = "http://127.0.0.1:8080"
 /**
  * Stubs the movie list now playing section to fail with the [errorCode] provided.
  */
-fun stubNowPLayingWithError(errorCode: Int = 400) {
+fun stubNowPlayingWithError(errorCode: Int = 400) {
     val url = "/3/movie/now_playing"
     BaseUrlChangingInterceptorProvider.setInterceptor(LOCAL_HOST + url)
     stubFor(get(urlPathMatching(url))
