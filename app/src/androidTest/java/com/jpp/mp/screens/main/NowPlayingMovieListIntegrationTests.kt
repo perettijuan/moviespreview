@@ -1,29 +1,22 @@
 package com.jpp.mp.screens.main
 
-import android.net.ConnectivityManager
 import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.azimolabs.conditionwatcher.ConditionWatcher
 import com.azimolabs.conditionwatcher.Instruction
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.junit.WireMockRule
-import com.jpp.mp.MPTestApp
+import com.jpp.mp.MPMainActivityTestRule
 import com.jpp.mp.R
 import com.jpp.mp.assertions.assertDisplayed
 import com.jpp.mp.assertions.assertItemCount
 import com.jpp.mp.assertions.assertNotDisplayed
 import com.jpp.mp.assertions.withViewInRecyclerView
-import com.jpp.mp.extras.launch
-import com.jpp.mp.main.MainActivity
 import com.jpp.mp.stubbers.stubNowPlayingFirstPage
-import io.mockk.every
-import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,22 +25,10 @@ import org.junit.runner.RunWith
 class NowPlayingMovieListIntegrationTests {
 
     @get:Rule
-    var activityTestRule = object : ActivityTestRule<MainActivity>(
-            MainActivity::class.java,
-            true,
-            false) {
-
-        override fun beforeActivityLaunched() {
-            super.beforeActivityLaunched()
-            val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as MPTestApp
-            app.isConnectedToNetwork = isConnectedToNetwork
-        }
-    }
+    var activityTestRule = MPMainActivityTestRule()
 
     @get:Rule
     var wireMockRule = WireMockRule(wireMockConfig().port(8080))
-
-    private var isConnectedToNetwork = true
 
 
     @Test
