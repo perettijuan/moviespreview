@@ -18,6 +18,11 @@ class MPMainActivityTestRule : ActivityTestRule<MainActivity>(MainActivity::clas
         super.beforeActivityLaunched()
         val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as MPTestApp
         app.isConnectedToNetwork = isConnectedToNetwork
+
+        /*
+         * IMPORTANT: clear all the data stored in the application's database in order to run a clean test.
+         */
+        InstrumentationRegistry.getInstrumentation().targetContext.deleteDatabase("MPRoomDataBase")
     }
 
     /**

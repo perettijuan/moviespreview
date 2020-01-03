@@ -15,7 +15,12 @@ import com.jpp.mp.R
 import com.jpp.mp.assertions.assertDisplayed
 import com.jpp.mp.assertions.assertItemCount
 import com.jpp.mp.assertions.assertNotDisplayed
+import com.jpp.mp.assertions.assertWithText
+import com.jpp.mp.assertions.onErrorViewButton
+import com.jpp.mp.assertions.onErrorViewText
 import com.jpp.mp.assertions.withViewInRecyclerView
+import com.jpp.mp.stubbers.stubConfigurationDefault
+import com.jpp.mp.stubbers.stubNowPLayingWithError
 import com.jpp.mp.stubbers.stubNowPlayingFirstPage
 import org.junit.Rule
 import org.junit.Test
@@ -32,10 +37,13 @@ class NowPlayingMovieListIntegrationTests {
 
 
     @Test
-    fun shouldNowPlayingFirstPlay() {
+    fun shouldShowFirstMoviesPage() {
+        stubConfigurationDefault()
         stubNowPlayingFirstPage()
 
         activityTestRule.launch()
+
+        onMoviesLoadingView().assertDisplayed()
 
         waitForDoneLoading()
 
@@ -70,13 +78,38 @@ class NowPlayingMovieListIntegrationTests {
 
     @Test
     fun shouldShowConnectivityError() {
+        activityTestRule.launchNotConnectedTonNetwork()
 
+        waitForDoneLoading()
+
+        onMoviesLoadingView().assertNotDisplayed()
+        onMoviesList().assertNotDisplayed()
+
+        onMoviesErrorView().assertDisplayed()
+        onErrorViewText().assertWithText(R.string.error_no_network_connection_message)
+        onErrorViewButton().assertWithText(R.string.error_retry)
+    }
+
+    @Test
+    fun shouldShowUnknownError() {
+        stubNowPLayingWithError()
+
+        activityTestRule.launch()
+
+        waitForDoneLoading()
+
+        onMoviesLoadingView().assertNotDisplayed()
+        onMoviesList().assertNotDisplayed()
+
+        onMoviesErrorView().assertDisplayed()
+        onErrorViewText().assertWithText(R.string.error_unexpected_error_message)
+        onErrorViewButton().assertWithText(R.string.error_retry)
     }
 
 
     private fun waitForDoneLoading() {
         ConditionWatcher.waitForCondition(object : Instruction() {
-            override fun getDescription(): String = "Waiting for items in list"
+            override fun getDescription(): String = "Waiting for loading done"
 
             override fun checkCondition(): Boolean {
                 return activityTestRule.activity.findViewById<View>(R.id.moviesLoadingView).visibility == View.INVISIBLE

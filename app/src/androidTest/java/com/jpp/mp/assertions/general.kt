@@ -26,6 +26,7 @@ fun ViewInteraction.assertWithText(value: String) = check(ViewAssertions.matches
  * Common view actions
  */
 fun onErrorViewText() = onView(withId(R.id.errorTitleTextView))
+fun onErrorViewButton() = onView(withId(R.id.errorActionButton))
 
 /**
  *

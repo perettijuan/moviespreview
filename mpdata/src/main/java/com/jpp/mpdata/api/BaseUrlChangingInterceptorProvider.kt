@@ -29,24 +29,32 @@ object BaseUrlChangingInterceptorProvider {
      * Used in testing scenarios.
      */
     private object BaseUrlChangingInterceptor : Interceptor {
-        private var httpUrl: HttpUrl? = null
+        private var shouldIntercept = false
+        private val urls = mutableListOf<HttpUrl>()
 
         /**
          * Call this method when a URL must intercepted and redirected to a specific direction.
          */
         fun setInterceptor(url: String) {
-            httpUrl = HttpUrl.parse(url)
+            HttpUrl.parse(url)?.let { parsedUrl ->
+                shouldIntercept = true
+                urls.add(parsedUrl)
+            }
         }
 
         override fun intercept(chain: Interceptor.Chain): Response {
             var original = chain.request()
 
-            httpUrl?.let {
-                original = original
-                        .newBuilder()
-                        .url(it)
-                        .build()
-
+            if (shouldIntercept) {
+                for (url in urls) {
+                    if (url.pathSegments() == original.url().pathSegments()) {
+                        original = original
+                                .newBuilder()
+                                .url(url)
+                                .build()
+                        break
+                    }
+                }
             }
 
             return chain.proceed(original)
