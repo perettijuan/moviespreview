@@ -1,45 +1,54 @@
 package com.jpp.mp.assertions
 
+import android.content.res.Resources
 import android.view.View
 import androidx.annotation.IdRes
-import androidx.annotation.StringRes
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.ViewInteraction
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import com.jpp.mp.R
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.ViewAction
-import androidx.appcompat.widget.SearchView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
-import org.hamcrest.CoreMatchers.allOf
 
-
-/*
- * General view assertions.
- */
-fun ViewInteraction.assertDisplayed() = check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-fun ViewInteraction.assertNotDisplayed() = check(ViewAssertions.matches(org.hamcrest.Matchers.not(ViewMatchers.isDisplayed())))
-fun ViewInteraction.assertItemCount(count: Int) = check(itemCount(count))
-fun ViewInteraction.assertWithText(@StringRes stringRes: Int) = check(ViewAssertions.matches(ViewMatchers.withText(stringRes)))
-fun ViewInteraction.assertWithText(value: String) = check(ViewAssertions.matches(ViewMatchers.withText(value)))
-
-/*
- * Common view actions
- */
-fun onErrorViewText() = onView(withId(R.id.errorTitleTextView))
-fun onErrorViewButton() = onView(withId(R.id.errorActionButton))
 
 /**
- * Helper function to access the back button in the action bar
+ * Matches a View in a RecyclerView at the given [position] with the provided [targetViewId].
  */
-fun onActionBarBackButton() = onView(withContentDescription(R.string.abc_action_bar_up_description))
+fun withViewInRecyclerView(
+        recyclerViewId: Int,
+        position: Int,
+        targetViewId: Int
+): Matcher<View> = object : TypeSafeMatcher<View>() {
+
+    private lateinit var resources: Resources
+    private var childView: View? = null
+
+    override fun describeTo(description: Description) {
+        description.appendText("With id: " + resources.getResourceName(recyclerViewId))
+    }
+
+    override fun matchesSafely(item: View): Boolean {
+        resources = item.resources
+
+        if (childView == null) {
+            val rvView = item.rootView.findViewById<RecyclerView>(recyclerViewId)
+            if (rvView != null && rvView.id == recyclerViewId) {
+                childView = rvView.findViewHolderForAdapterPosition(position)?.itemView
+            } else {
+                return false
+            }
+        }
+
+        return if (targetViewId == -1) {
+            item == childView
+        } else {
+            item == childView?.findViewById(targetViewId)
+        }
+    }
+}
 
 /**
  *
@@ -53,7 +62,7 @@ fun onActionBarBackButton() = onView(withContentDescription(R.string.abc_action_
  * @see .disambiguatingMatcher
  */
 fun disambiguateId(@IdRes viewId: Int, index: Int): Matcher<View> {
-    return disambiguatingMatcher(withId(viewId), index)
+    return disambiguatingMatcher(ViewMatchers.withId(viewId), index)
 }
 
 /**
@@ -83,6 +92,7 @@ fun disambiguatingMatcher(matcher: Matcher<View>, index: Int): Matcher<View> {
     }
 }
 
+
 /**
  * [ViewAction] to type text into a [SearchView].
  * The provided [text] will be inserted directly in the [SearchView], but the query will
@@ -92,7 +102,7 @@ fun typeText(text: String): ViewAction {
     return object : ViewAction {
         override fun getConstraints(): Matcher<View> {
             //Ensure that only apply if it is a SearchView and if it is visible.
-            return allOf(isDisplayed(), isAssignableFrom(SearchView::class.java))
+            return CoreMatchers.allOf(ViewMatchers.isDisplayed(), ViewMatchers.isAssignableFrom(SearchView::class.java))
         }
 
         override fun getDescription(): String {
