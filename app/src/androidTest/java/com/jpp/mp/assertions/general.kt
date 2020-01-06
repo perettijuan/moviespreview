@@ -7,11 +7,19 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.jpp.mp.R
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.ViewAction
+import androidx.appcompat.widget.SearchView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
+import org.hamcrest.CoreMatchers.allOf
+
 
 /*
  * General view assertions.
@@ -27,6 +35,11 @@ fun ViewInteraction.assertWithText(value: String) = check(ViewAssertions.matches
  */
 fun onErrorViewText() = onView(withId(R.id.errorTitleTextView))
 fun onErrorViewButton() = onView(withId(R.id.errorActionButton))
+
+/**
+ * Helper function to access the back button in the action bar
+ */
+fun onActionBarBackButton() = onView(withContentDescription(R.string.abc_action_bar_up_description))
 
 /**
  *
@@ -66,6 +79,28 @@ fun disambiguatingMatcher(matcher: Matcher<View>, index: Int): Matcher<View> {
 
         override fun matchesSafely(view: View): Boolean {
             return matcher.matches(view) && currentIndex++ == index
+        }
+    }
+}
+
+/**
+ * [ViewAction] to type text into a [SearchView].
+ * The provided [text] will be inserted directly in the [SearchView], but the query will
+ * be not submitted.
+ */
+fun typeText(text: String): ViewAction {
+    return object : ViewAction {
+        override fun getConstraints(): Matcher<View> {
+            //Ensure that only apply if it is a SearchView and if it is visible.
+            return allOf(isDisplayed(), isAssignableFrom(SearchView::class.java))
+        }
+
+        override fun getDescription(): String {
+            return "Change view text"
+        }
+
+        override fun perform(uiController: UiController, view: View) {
+            (view as SearchView).setQuery(text, false)
         }
     }
 }
