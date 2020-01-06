@@ -6,9 +6,12 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.jpp.mp.R
 import org.hamcrest.CoreMatchers
 
@@ -16,11 +19,11 @@ import org.hamcrest.CoreMatchers
 /*
  * General view assertions.
  */
-fun ViewInteraction.assertDisplayed(): ViewInteraction = check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-fun ViewInteraction.assertNotDisplayed(): ViewInteraction = check(ViewAssertions.matches(org.hamcrest.Matchers.not(ViewMatchers.isDisplayed())))
+fun ViewInteraction.assertDisplayed(): ViewInteraction = check(matches(isDisplayed()))
+fun ViewInteraction.assertNotDisplayed(): ViewInteraction = check(matches(org.hamcrest.Matchers.not(isDisplayed())))
 fun ViewInteraction.assertItemCount(count: Int): ViewInteraction = check(itemCount(count))
-fun ViewInteraction.assertWithText(@StringRes stringRes: Int): ViewInteraction = check(ViewAssertions.matches(ViewMatchers.withText(stringRes)))
-fun ViewInteraction.assertWithText(value: String): ViewInteraction = check(ViewAssertions.matches(ViewMatchers.withText(value)))
+fun ViewInteraction.assertWithText(@StringRes stringRes: Int): ViewInteraction = check(matches(withText(stringRes)))
+fun ViewInteraction.assertWithText(value: String): ViewInteraction = check(matches(withText(value)))
 
 /*
  * Common view interactions

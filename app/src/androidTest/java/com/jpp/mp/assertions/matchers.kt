@@ -3,15 +3,15 @@ package com.jpp.mp.assertions
 import android.content.res.Resources
 import android.view.View
 import androidx.annotation.IdRes
-import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers
-import org.hamcrest.CoreMatchers
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import android.widget.ImageView
 
 
 /**
@@ -47,6 +47,39 @@ fun withViewInRecyclerView(
         } else {
             item == childView?.findViewById(targetViewId)
         }
+    }
+}
+
+/**
+ * A [Matcher] that verifies if an [ImageView] contains a drawable resource identified by [resourceId].
+ */
+fun withDrawable(resourceId: Int): Matcher<View> = object : TypeSafeMatcher<View>() {
+    override fun describeTo(description: Description?) {
+        description?.appendText("with drawable from resource id: ")
+        description?.appendValue(resourceId)
+    }
+
+    override fun matchesSafely(target: View?): Boolean {
+        if (target !is ImageView) {
+            return false
+        }
+        if (resourceId < 0) {
+            return target.drawable == null
+        }
+        val resources = target.getContext().resources
+        val expectedDrawable = resources.getDrawable(resourceId) ?: return false
+        val bitmap = getBitmap(target.drawable)
+        val otherBitmap = getBitmap(expectedDrawable)
+        return bitmap.sameAs(otherBitmap)
+    }
+
+    private fun getBitmap(drawable: Drawable): Bitmap {
+        val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth,
+                drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+        return bitmap
     }
 }
 
@@ -93,24 +126,4 @@ fun disambiguatingMatcher(matcher: Matcher<View>, index: Int): Matcher<View> {
 }
 
 
-/**
- * [ViewAction] to type text into a [SearchView].
- * The provided [text] will be inserted directly in the [SearchView], but the query will
- * be not submitted.
- */
-fun typeText(text: String): ViewAction {
-    return object : ViewAction {
-        override fun getConstraints(): Matcher<View> {
-            //Ensure that only apply if it is a SearchView and if it is visible.
-            return CoreMatchers.allOf(ViewMatchers.isDisplayed(), ViewMatchers.isAssignableFrom(SearchView::class.java))
-        }
 
-        override fun getDescription(): String {
-            return "Change view text"
-        }
-
-        override fun perform(uiController: UiController, view: View) {
-            (view as SearchView).setQuery(text, false)
-        }
-    }
-}
