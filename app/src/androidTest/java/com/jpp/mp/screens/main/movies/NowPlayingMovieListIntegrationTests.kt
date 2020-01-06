@@ -1,8 +1,10 @@
 package com.jpp.mp.screens.main.movies
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -77,6 +79,30 @@ class NowPlayingMovieListIntegrationTests {
     }
 
     @Test
+    fun shouldRequestMorePagesWhenUserScrolls() {
+        stubConfigurationDefault()
+        stubNowPlayingFirstPage()
+
+        activityTestRule.launch()
+
+        onMoviesLoadingView().assertDisplayed()
+
+        waitForDoneLoading()
+
+        onMoviesLoadingView().assertNotDisplayed()
+        onMoviesErrorView().assertNotDisplayed()
+        onMoviesList().assertDisplayed()
+        onMoviesList().assertItemCount(20)
+
+        // perform the scrolling
+        onMoviesList().perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(19))
+
+        waitForMoreMovies()
+
+        onMoviesList().assertItemCount(40)
+    }
+
+    @Test
     fun shouldShowConnectivityError() {
         activityTestRule.launchNotConnectedTonNetwork()
 
@@ -117,7 +143,16 @@ class NowPlayingMovieListIntegrationTests {
         })
     }
 
+    private fun waitForMoreMovies() {
+        ConditionWatcher.waitForCondition(object : Instruction() {
+            override fun getDescription(): String = "Waiting for loading done"
 
+            override fun checkCondition(): Boolean {
+                return activityTestRule.activity.findViewById<RecyclerView>(R.id.movieList).adapter?.let { it.itemCount > 20 } ?: false
+            }
+        })
+    }
+    
     private fun onMoviesList() = onView(withId(R.id.movieList))
     private fun onMoviesLoadingView() = onView(withId(R.id.moviesLoadingView))
     private fun onMoviesErrorView() = onView(withId(R.id.movieListErrorView))
