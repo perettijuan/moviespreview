@@ -9,6 +9,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.LargeTest
 import com.azimolabs.conditionwatcher.ConditionWatcher
 import com.azimolabs.conditionwatcher.Instruction
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
@@ -30,6 +31,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+@LargeTest
 class NowPlayingMovieListIntegrationTests {
 
     @get:Rule

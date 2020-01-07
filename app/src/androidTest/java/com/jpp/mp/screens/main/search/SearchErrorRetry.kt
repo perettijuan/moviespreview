@@ -2,6 +2,7 @@ package com.jpp.mp.screens.main.search
 
 import androidx.test.espresso.action.ViewActions
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.LargeTest
 import com.jpp.mp.assertions.assertDisplayed
 import com.jpp.mp.assertions.assertItemCount
 import com.jpp.mp.assertions.assertNotDisplayed
@@ -14,6 +15,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+@LargeTest
 class SearchErrorRetry : BaseSearchIntegrationTest() {
 
     @Test

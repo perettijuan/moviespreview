@@ -30,6 +30,11 @@ fun typeText(text: String): ViewAction {
     }
 }
 
+/**
+ * [ViewAction] to type text into a [SearchView] and submite the query.
+ * The provided [text] will be inserted directly in the [SearchView] and the query associated will
+ * be submitted.
+ */
 fun typeTextAndSubmit(text: String): ViewAction {
     return object : ViewAction {
         override fun getConstraints(): Matcher<View> {

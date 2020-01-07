@@ -9,6 +9,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.LargeTest
 import com.azimolabs.conditionwatcher.ConditionWatcher
 import com.azimolabs.conditionwatcher.Instruction
 import com.jpp.mp.R
@@ -29,6 +30,7 @@ import org.junit.runner.RunWith
  * Contains all the search integration tests cases of success searches.
  */
 @RunWith(AndroidJUnit4::class)
+@LargeTest
 class SearchSuccessTestCases : BaseSearchIntegrationTest() {
 
     @Test
