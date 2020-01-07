@@ -1,49 +1,35 @@
 package com.jpp.mp.screens.main.details
 
-import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.azimolabs.conditionwatcher.ConditionWatcher
-import com.azimolabs.conditionwatcher.Instruction
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
-import com.github.tomakehurst.wiremock.junit.WireMockRule
-import com.jpp.mp.MPMainActivityTestRule
 import com.jpp.mp.R
 import com.jpp.mp.assertions.NestedScrollViewExtension
 import com.jpp.mp.assertions.assertDisplayed
 import com.jpp.mp.assertions.assertItemCount
 import com.jpp.mp.assertions.assertNotDisplayed
 import com.jpp.mp.assertions.assertWithText
+import com.jpp.mp.assertions.onActionBarTitle
 import com.jpp.mp.assertions.onErrorViewButton
 import com.jpp.mp.assertions.onErrorViewText
 import com.jpp.mp.assertions.withDrawable
 import com.jpp.mp.assertions.withViewInRecyclerView
 import com.jpp.mp.stubbers.stubConfigurationDefault
 import com.jpp.mp.stubbers.stubMovieDetails
-import com.jpp.mp.stubbers.stubMovieDetailsWitherror
+import com.jpp.mp.stubbers.stubMovieDetailsWithError
 import com.jpp.mp.stubbers.stubNowPlayingFirstPage
-import com.jpp.mp.stubbers.stubNowPlayingWithError
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+/**
+ * Contains all the tests that exercise the movie details screen.
+ */
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class MovieDetailsIntegrationTest {
-
-    @get:Rule
-    var activityTestRule = MPMainActivityTestRule()
-
-    @get:Rule
-    var wireMockRule = WireMockRule(wireMockConfig().port(8080))
-
+class MovieDetailsIntegrationTest : BaseMovieDetailsIntegrationTest() {
 
     @Test
     fun shouldRenderMovieDetailsWhenSelectedInHomeScreen() {
@@ -64,6 +50,9 @@ class MovieDetailsIntegrationTest {
         onDetailsLoadingView().assertNotDisplayed()
         onDetailsErrorView().assertNotDisplayed()
         onDetailsContentView().assertDisplayed()
+
+        //-- Action bar
+        onActionBarTitle().assertWithText("Ad Astra")
 
         //-- Overview section
         onOverviewTitleView().assertDisplayed()
@@ -122,7 +111,6 @@ class MovieDetailsIntegrationTest {
         onCreditsSelectionTitle().assertWithText(R.string.movie_credits_title)
     }
 
-
     @Test
     fun shouldShowConnectivityError() {
         stubConfigurationDefault()
@@ -148,7 +136,7 @@ class MovieDetailsIntegrationTest {
     fun shouldShowUnknownError() {
         stubConfigurationDefault()
         stubNowPlayingFirstPage()
-        stubMovieDetailsWitherror()
+        stubMovieDetailsWithError()
 
         activityTestRule.launch()
         waitForMoviesLoadingDone()
@@ -164,38 +152,6 @@ class MovieDetailsIntegrationTest {
         onErrorViewButton().assertWithText(R.string.error_retry)
     }
 
-    private fun navigateToMovieDetails() {
-        onView(withId(R.id.movieList))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
-
-    }
-
-    /**
-     * Adds a condition to wait until the movies in the home screen are loaded.
-     */
-    private fun waitForMoviesLoadingDone() {
-        ConditionWatcher.waitForCondition(object : Instruction() {
-            override fun getDescription(): String = "Waiting for movies list done"
-
-            override fun checkCondition(): Boolean {
-                return activityTestRule.activity.findViewById<View>(R.id.moviesLoadingView).visibility == View.INVISIBLE
-            }
-        })
-    }
-
-    /**
-     * Adds a condition to wait until the details of the movie is loaded.
-     */
-    private fun waitForMovieDetailsLoaded() {
-        ConditionWatcher.waitForCondition(object : Instruction() {
-            override fun getDescription(): String = "Waiting for movie details loading done"
-
-            override fun checkCondition(): Boolean {
-                return activityTestRule.activity.findViewById<View>(R.id.movieDetailLoadingView).visibility == View.INVISIBLE
-            }
-        })
-    }
-
     private fun onDetailsLoadingView() = onView(withId(R.id.movieDetailLoadingView))
     private fun onDetailsErrorView() = onView(withId(R.id.movieDetailErrorView))
     private fun onDetailsContentView() = onView(withId(R.id.movieDetailContent))
@@ -209,6 +165,4 @@ class MovieDetailsIntegrationTest {
     private fun onReleaseContentView() = onView(withId(R.id.detailReleaseDateContentTxt))
     private fun onCreditsSelectionTitle() = onView(withId(R.id.itemSelectionViewTitle))
     private fun onGenresList() = onView(withId(R.id.detailGenresRv))
-//    private fun onGenresView() = onView(withId(R.id.detailsGenresRv))
-//    private fun onFavoritesButton() = onView(withId(R.id.favActionButton))
 }
