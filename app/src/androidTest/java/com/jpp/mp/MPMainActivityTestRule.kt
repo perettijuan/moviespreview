@@ -39,4 +39,13 @@ class MPMainActivityTestRule : ActivityTestRule<MainActivity>(MainActivity::clas
         isConnectedToNetwork = false
         launchActivity(android.content.Intent())
     }
+
+    /**
+     * Simulates an internet disconnection
+     */
+    fun simulateNotConnectedToNetwork() {
+        isConnectedToNetwork = false
+        val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as MPTestApp
+        app.isConnectedToNetwork = isConnectedToNetwork
+    }
 }

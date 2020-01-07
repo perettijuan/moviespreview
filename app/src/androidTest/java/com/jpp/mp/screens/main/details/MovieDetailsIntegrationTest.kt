@@ -21,11 +21,15 @@ import com.jpp.mp.assertions.assertDisplayed
 import com.jpp.mp.assertions.assertItemCount
 import com.jpp.mp.assertions.assertNotDisplayed
 import com.jpp.mp.assertions.assertWithText
+import com.jpp.mp.assertions.onErrorViewButton
+import com.jpp.mp.assertions.onErrorViewText
 import com.jpp.mp.assertions.withDrawable
 import com.jpp.mp.assertions.withViewInRecyclerView
 import com.jpp.mp.stubbers.stubConfigurationDefault
 import com.jpp.mp.stubbers.stubMovieDetails
+import com.jpp.mp.stubbers.stubMovieDetailsWitherror
 import com.jpp.mp.stubbers.stubNowPlayingFirstPage
+import com.jpp.mp.stubbers.stubNowPlayingWithError
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -51,9 +55,7 @@ class MovieDetailsIntegrationTest {
         activityTestRule.launch()
         waitForMoviesLoadingDone()
 
-        onView(withId(R.id.movieList))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
-
+        navigateToMovieDetails()
         waitForMovieDetailsLoaded()
 
         // scroll to the last position of the NestedScrollView to make sure all views are visible.
@@ -120,12 +122,60 @@ class MovieDetailsIntegrationTest {
         onCreditsSelectionTitle().assertWithText(R.string.movie_credits_title)
     }
 
+
+    @Test
+    fun shouldShowConnectivityError() {
+        stubConfigurationDefault()
+        stubNowPlayingFirstPage()
+
+        activityTestRule.launch()
+        waitForMoviesLoadingDone()
+
+        activityTestRule.simulateNotConnectedToNetwork()
+        navigateToMovieDetails()
+
+        waitForMovieDetailsLoaded()
+
+        onDetailsLoadingView().assertNotDisplayed()
+        onDetailsContentView().assertNotDisplayed()
+
+        onDetailsErrorView().assertDisplayed()
+        onErrorViewText().assertWithText(R.string.error_no_network_connection_message)
+        onErrorViewButton().assertWithText(R.string.error_retry)
+    }
+
+    @Test
+    fun shouldShowUnknownError() {
+        stubConfigurationDefault()
+        stubNowPlayingFirstPage()
+        stubMovieDetailsWitherror()
+
+        activityTestRule.launch()
+        waitForMoviesLoadingDone()
+
+        navigateToMovieDetails()
+        waitForMovieDetailsLoaded()
+
+        onDetailsLoadingView().assertNotDisplayed()
+        onDetailsContentView().assertNotDisplayed()
+
+        onDetailsErrorView().assertDisplayed()
+        onErrorViewText().assertWithText(R.string.error_unexpected_error_message)
+        onErrorViewButton().assertWithText(R.string.error_retry)
+    }
+
+    private fun navigateToMovieDetails() {
+        onView(withId(R.id.movieList))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+
+    }
+
     /**
      * Adds a condition to wait until the movies in the home screen are loaded.
      */
     private fun waitForMoviesLoadingDone() {
         ConditionWatcher.waitForCondition(object : Instruction() {
-            override fun getDescription(): String = "Waiting for loading done"
+            override fun getDescription(): String = "Waiting for movies list done"
 
             override fun checkCondition(): Boolean {
                 return activityTestRule.activity.findViewById<View>(R.id.moviesLoadingView).visibility == View.INVISIBLE
@@ -133,17 +183,18 @@ class MovieDetailsIntegrationTest {
         })
     }
 
+    /**
+     * Adds a condition to wait until the details of the movie is loaded.
+     */
     private fun waitForMovieDetailsLoaded() {
         ConditionWatcher.waitForCondition(object : Instruction() {
-            override fun getDescription(): String = "Waiting for loading done"
+            override fun getDescription(): String = "Waiting for movie details loading done"
 
             override fun checkCondition(): Boolean {
                 return activityTestRule.activity.findViewById<View>(R.id.movieDetailLoadingView).visibility == View.INVISIBLE
             }
         })
     }
-
-    private fun getString(stringRes: Int) = activityTestRule.activity.getString(stringRes)
 
     private fun onDetailsLoadingView() = onView(withId(R.id.movieDetailLoadingView))
     private fun onDetailsErrorView() = onView(withId(R.id.movieDetailErrorView))
