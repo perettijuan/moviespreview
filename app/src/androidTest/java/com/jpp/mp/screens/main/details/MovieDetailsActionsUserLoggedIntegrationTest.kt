@@ -10,6 +10,7 @@ import com.jpp.mp.assertions.assertClickable
 import com.jpp.mp.assertions.assertDisplayed
 import com.jpp.mp.assertions.assertNotDisplayed
 import com.jpp.mp.assertions.withDrawable
+import com.jpp.mp.extras.navigateToMovieDetails
 import com.jpp.mp.stubbers.stubConfigurationDefault
 import com.jpp.mp.stubbers.stubMovieDetails
 import com.jpp.mp.stubbers.stubMovieStateFlavor1

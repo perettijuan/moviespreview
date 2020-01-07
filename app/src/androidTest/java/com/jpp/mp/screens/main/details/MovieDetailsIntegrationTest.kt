@@ -17,6 +17,7 @@ import com.jpp.mp.assertions.onErrorViewButton
 import com.jpp.mp.assertions.onErrorViewText
 import com.jpp.mp.assertions.withDrawable
 import com.jpp.mp.assertions.withViewInRecyclerView
+import com.jpp.mp.extras.navigateToMovieDetails
 import com.jpp.mp.stubbers.stubConfigurationDefault
 import com.jpp.mp.stubbers.stubMovieDetails
 import com.jpp.mp.stubbers.stubMovieDetailsWithError

@@ -4,7 +4,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -24,8 +23,8 @@ import com.jpp.mp.assertions.onErrorViewButton
 import com.jpp.mp.assertions.onErrorViewText
 import com.jpp.mp.assertions.withViewInRecyclerView
 import com.jpp.mp.stubbers.stubConfigurationDefault
-import com.jpp.mp.stubbers.stubNowPlayingWithError
 import com.jpp.mp.stubbers.stubNowPlayingFirstPage
+import com.jpp.mp.stubbers.stubNowPlayingWithError
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -151,11 +150,12 @@ class NowPlayingMovieListIntegrationTests {
             override fun getDescription(): String = "Waiting for loading done"
 
             override fun checkCondition(): Boolean {
-                return activityTestRule.activity.findViewById<RecyclerView>(R.id.movieList).adapter?.let { it.itemCount > 20 } ?: false
+                return activityTestRule.activity.findViewById<RecyclerView>(R.id.movieList).adapter?.let { it.itemCount > 20 }
+                        ?: false
             }
         })
     }
-    
+
     private fun onMoviesList() = onView(withId(R.id.movieList))
     private fun onMoviesLoadingView() = onView(withId(R.id.moviesLoadingView))
     private fun onMoviesErrorView() = onView(withId(R.id.movieListErrorView))
