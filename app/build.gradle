@@ -35,7 +35,7 @@ android {
         versionCode 4
         versionName "1.6"
         buildConfigField 'String', 'API_KEY', '"eddf6980a6d7dadd72386f55f94ab571"'
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.jpp.mp.MPJUnitRunner"
     }
 
     compileOptions {
@@ -154,6 +154,13 @@ dependencies {
 
     // Include testing utils
     androidTestImplementation project(path: ':mptestutils')
+
+    androidTestImplementation("com.github.tomakehurst:wiremock:2.25.1") {
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+        exclude group: 'asm', module: 'asm'
+        exclude group: 'org.json', module: 'json'
+    }
+    androidTestImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5'
 }
 
 

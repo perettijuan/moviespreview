@@ -184,13 +184,20 @@ open class MPApi :
             Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .baseUrl(BuildConfig.API_ENDPOINT)
-                    .client(OkHttpClient
-                            .Builder()
-                            .addInterceptor(HttpLoggingInterceptor().apply {
-                                level = HttpLoggingInterceptor.Level.BODY
-                            }).build())
+                    .client(buildHttpClient())
                     .build()
                     .create(TheMovieDBApi::class.java)
+        }
+
+        private fun buildHttpClient(): OkHttpClient {
+            return OkHttpClient.Builder().apply {
+                if (BuildConfig.DEBUG) {
+                    addInterceptor(BaseUrlChangingInterceptorProvider.getInterceptor())
+                    addInterceptor(HttpLoggingInterceptor().apply {
+                        level = HttpLoggingInterceptor.Level.BODY
+                    })
+                }
+            }.build()
         }
     }
 }

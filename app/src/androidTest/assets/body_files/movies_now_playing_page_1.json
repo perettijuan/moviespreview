@@ -1,0 +1,416 @@
+{
+  "results": [{
+    "popularity": 498.648,
+    "vote_count": 1605,
+    "video": false,
+    "poster_path": "/xBHvZcjRiWyobQ9kxBhO6B2dtRI.jpg",
+    "id": 419704,
+    "adult": false,
+    "backdrop_path": "/p3TCqUDoVsrIm8fHK9KOTfWnDjZ.jpg",
+    "original_language": "en",
+    "original_title": "Ad Astra",
+    "genre_ids": [
+      12,
+      18,
+      9648,
+      878,
+      53
+    ],
+    "title": "Ad Astra",
+    "vote_average": 6,
+    "overview": "The near future, a time when both hope and hardships drive humanity to look to the stars and beyond. While a mysterious phenomenon menaces to destroy life on planet Earth, astronaut Roy McBride undertakes a mission across the immensity of space and its many perils to uncover the truth about a lost expedition that decades before boldly faced emptiness and silence in search of the unknown.",
+    "release_date": "2019-09-17"
+  },
+    {
+      "popularity": 400.039,
+      "vote_count": 1767,
+      "video": false,
+      "poster_path": "/db32LaOibwEliAmSL2jjDF6oDdj.jpg",
+      "id": 181812,
+      "adult": false,
+      "backdrop_path": "/jOzrELAzFxtMx2I4uDGHOotdfsS.jpg",
+      "original_language": "en",
+      "original_title": "Star Wars: The Rise of Skywalker",
+      "genre_ids": [
+        28,
+        12,
+        878
+      ],
+      "title": "Star Wars: The Rise of Skywalker",
+      "vote_average": 6.7,
+      "overview": "The surviving Resistance faces the First Order once again as the journey of Rey, Finn and Poe Dameron continues. With the power and knowledge of generations behind them, the final battle begins.",
+      "release_date": "2019-12-18"
+    },
+    {
+      "popularity": 259.883,
+      "vote_count": 766,
+      "video": false,
+      "poster_path": "/jyw8VKYEiM1UDzPB7NsisUgBeJ8.jpg",
+      "id": 512200,
+      "adult": false,
+      "backdrop_path": "/zTxHf9iIOCqRbxvl8W5QYKrsMLq.jpg",
+      "original_language": "en",
+      "original_title": "Jumanji: The Next Level",
+      "genre_ids": [
+        28,
+        12,
+        35,
+        14
+      ],
+      "title": "Jumanji: The Next Level",
+      "vote_average": 6.8,
+      "overview": "As the gang return to Jumanji to rescue one of their own, they discover that nothing is as they expect. The players will have to brave parts unknown and unexplored in order to escape the world’s most dangerous game.",
+      "release_date": "2019-12-04"
+    },
+    {
+      "popularity": 288.021,
+      "vote_count": 84,
+      "video": false,
+      "poster_path": "/yJdeWaVXa2se9agI6B4mQunVYkB.jpg",
+      "id": 449924,
+      "adult": false,
+      "backdrop_path": "/ekP6EVxL81lZ4ivcqPsoZ72rY0h.jpg",
+      "original_language": "cn",
+      "original_title": "葉問4",
+      "genre_ids": [
+        28,
+        18,
+        36
+      ],
+      "title": "Ip Man 4: The Finale",
+      "vote_average": 6.2,
+      "overview": "Following the death of his wife, Ip Man travels to San Francisco to ease tensions between the local kung fu masters and his star student, Bruce Lee, while searching for a better future for his son.",
+      "release_date": "2019-12-20"
+    },
+    {
+      "popularity": 180.169,
+      "vote_count": 984,
+      "video": false,
+      "poster_path": "/lnWkyG3LLgbbrIEeyl5mK5VRFe4.jpg",
+      "id": 509967,
+      "adult": false,
+      "backdrop_path": "/eFw5YSorHidsajLTayo1noueIxI.jpg",
+      "original_language": "en",
+      "original_title": "6 Underground",
+      "genre_ids": [
+        28,
+        35,
+        53
+      ],
+      "title": "6 Underground",
+      "vote_average": 6.2,
+      "overview": "After faking his death, a tech billionaire recruits a team of international operatives for a bold and bloody mission to take down a brutal dictator.",
+      "release_date": "2019-12-13"
+    },
+    {
+      "popularity": 159.723,
+      "vote_count": 2071,
+      "video": false,
+      "poster_path": "/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg",
+      "id": 496243,
+      "adult": false,
+      "backdrop_path": "/TU9NIjwzjoKPwQHoHshkFcQUCG.jpg",
+      "original_language": "ko",
+      "original_title": "기생충",
+      "genre_ids": [
+        35,
+        18,
+        53
+      ],
+      "title": "Parasite",
+      "vote_average": 8.6,
+      "overview": "All unemployed, Ki-taek's family takes peculiar interest in the wealthy and glamorous Parks for their livelihood until they get entangled in an unexpected incident.",
+      "release_date": "2019-05-30"
+    },
+    {
+      "popularity": 126.965,
+      "vote_count": 860,
+      "video": false,
+      "poster_path": "/dtRbVsUb5O12WWO54SRpiMtHKC0.jpg",
+      "id": 338967,
+      "adult": false,
+      "backdrop_path": "/3ghImmHdp4RnC3UkL6hpLayclnb.jpg",
+      "original_language": "en",
+      "original_title": "Zombieland: Double Tap",
+      "genre_ids": [
+        28,
+        35,
+        27
+      ],
+      "title": "Zombieland: Double Tap",
+      "vote_average": 7,
+      "overview": "Columbus, Tallahassee, Wichita, and Little Rock move to the American heartland as they face off against evolved zombies, fellow survivors, and the growing pains of the snarky makeshift family.",
+      "release_date": "2019-10-09"
+    },
+    {
+      "popularity": 139.983,
+      "vote_count": 1129,
+      "video": false,
+      "poster_path": "/tBuabjEqxzoUBHfbyNbd8ulgy5j.jpg",
+      "id": 420809,
+      "adult": false,
+      "backdrop_path": "/skvI4rYFrKXS73BJxWGH54Omlvv.jpg",
+      "original_language": "en",
+      "original_title": "Maleficent: Mistress of Evil",
+      "genre_ids": [
+        12,
+        14,
+        10751
+      ],
+      "title": "Maleficent: Mistress of Evil",
+      "vote_average": 7.2,
+      "overview": "Maleficent and her goddaughter Aurora begin to question the complex family ties that bind them as they are pulled in different directions by impending nuptials, unexpected allies, and dark new forces at play.",
+      "release_date": "2019-10-16"
+    },
+    {
+      "popularity": 124.726,
+      "vote_count": 1401,
+      "video": false,
+      "poster_path": "/pjeMs3yqRmFL3giJy4PMXWZTTPa.jpg",
+      "id": 330457,
+      "adult": false,
+      "backdrop_path": "/xJWPZIYOEFIjZpBL7SVBGnzRYXp.jpg",
+      "original_language": "en",
+      "original_title": "Frozen II",
+      "genre_ids": [
+        12,
+        16,
+        10402,
+        10751
+      ],
+      "title": "Frozen II",
+      "vote_average": 7,
+      "overview": "Elsa, Anna, Kristoff and Olaf head far into the forest to learn the truth about an ancient mystery of their kingdom.",
+      "release_date": "2019-11-20"
+    },
+    {
+      "popularity": 122.555,
+      "vote_count": 716,
+      "video": false,
+      "poster_path": "/6ApDtO7xaWAfPqfi2IARXIzj8QS.jpg",
+      "id": 359724,
+      "adult": false,
+      "backdrop_path": "/mn9k8zapebAbCqsiKf24juhXjjx.jpg",
+      "original_language": "en",
+      "original_title": "Ford v Ferrari",
+      "genre_ids": [
+        28,
+        18,
+        36
+      ],
+      "title": "Ford v Ferrari",
+      "vote_average": 7.9,
+      "overview": "American car designer Carroll Shelby and the British-born driver Ken Miles work together to battle corporate interference, the laws of physics, and their own personal demons to build a revolutionary race car for Ford Motor Company and take on the dominating race cars of Enzo Ferrari at the 24 Hours of Le Mans in France in 1966.",
+      "release_date": "2019-11-13"
+    },
+    {
+      "popularity": 86.648,
+      "vote_count": 69,
+      "video": false,
+      "poster_path": "/MBiKqTsouYqAACLYNDadsjhhC0.jpg",
+      "id": 486589,
+      "adult": false,
+      "backdrop_path": "/bga3i5jcejBekr2FCGJga1fYCh.jpg",
+      "original_language": "en",
+      "original_title": "Red Shoes and the Seven Dwarfs",
+      "genre_ids": [
+        16,
+        10749
+      ],
+      "title": "Red Shoes and the Seven Dwarfs",
+      "vote_average": 6.5,
+      "overview": "Princes who have been turned into Dwarfs seek the red shoes of a lady in order to break the spell, although it will not be easy.",
+      "release_date": "2019-07-25"
+    },
+    {
+      "popularity": 102.731,
+      "vote_count": 1096,
+      "video": false,
+      "poster_path": "/pThyQovXQrw2m0s9x82twj48Jq4.jpg",
+      "id": 546554,
+      "adult": false,
+      "backdrop_path": "/AbRYlvwAKHs0YuyNO6NX9ofq4l6.jpg",
+      "original_language": "en",
+      "original_title": "Knives Out",
+      "genre_ids": [
+        35,
+        9648,
+        53
+      ],
+      "title": "Knives Out",
+      "vote_average": 7.8,
+      "overview": "When renowned crime novelist Harlan Thrombey is found dead at his estate just after his 85th birthday, the inquisitive and debonair Detective Benoit Blanc is mysteriously enlisted to investigate. From Harlan's dysfunctional family to his devoted staff, Blanc sifts through a web of red herrings and self-serving lies to uncover the truth behind Harlan's untimely death.",
+      "release_date": "2019-11-27"
+    },
+    {
+      "popularity": 73.338,
+      "vote_count": 943,
+      "video": false,
+      "poster_path": "/kTQ3J8oTTKofAVLYnds2cHUz9KO.jpg",
+      "id": 522938,
+      "adult": false,
+      "backdrop_path": "/spYx9XQFODuqEVoPpvaJI1ksAVt.jpg",
+      "original_language": "en",
+      "original_title": "Rambo: Last Blood",
+      "genre_ids": [
+        28,
+        18,
+        53
+      ],
+      "title": "Rambo: Last Blood",
+      "vote_average": 5.8,
+      "overview": "After fighting his demons for decades, John Rambo now lives in peace on his family ranch in Arizona, but his rest is interrupted when Gabriela, the granddaughter of his housekeeper María, disappears after crossing the border into Mexico to meet her biological father. Rambo, who has become a true father figure for Gabriela over the years, undertakes a desperate and dangerous journey to find her.",
+      "release_date": "2019-09-19"
+    },
+    {
+      "popularity": 80.104,
+      "vote_count": 330,
+      "video": false,
+      "poster_path": "/q1epO0eO8DWu8Vo8tPfvVlzW48T.jpg",
+      "id": 481084,
+      "adult": false,
+      "backdrop_path": "/ur4NTeFGZmQ6Hz5uEkAMgPI3WRg.jpg",
+      "original_language": "en",
+      "original_title": "The Addams Family",
+      "genre_ids": [
+        16,
+        35,
+        14,
+        10751
+      ],
+      "title": "The Addams Family",
+      "vote_average": 6.2,
+      "overview": "The Addams family's lives begin to unravel when they face-off against a treacherous, greedy crafty reality-TV host while also preparing for their extended family to arrive for a major celebration.",
+      "release_date": "2019-10-10"
+    },
+    {
+      "popularity": 90.306,
+      "vote_count": 96,
+      "video": false,
+      "poster_path": "/9zvjgr1v8pwFYQNHZTtnKNQUWmw.jpg",
+      "id": 536869,
+      "adult": false,
+      "backdrop_path": "/2wWHK7QRASgtvnIk9zYh5KVVLaZ.jpg",
+      "original_language": "en",
+      "original_title": "Cats",
+      "genre_ids": [
+        35,
+        18,
+        14,
+        10402
+      ],
+      "title": "Cats",
+      "vote_average": 4.8,
+      "overview": "A tribe of cats called the Jellicles must decide yearly which one will ascend to the Heaviside Layer and come back to a new Jellicle life.",
+      "release_date": "2019-12-19"
+    },
+    {
+      "popularity": 71.324,
+      "vote_count": 1780,
+      "video": false,
+      "poster_path": "/mbm8k3GFhXS0ROd9AD1gqYbIFbM.jpg",
+      "id": 398978,
+      "adult": false,
+      "backdrop_path": "/ww5aGS5H2tUtckxFFNOJE2790S7.jpg",
+      "original_language": "en",
+      "original_title": "The Irishman",
+      "genre_ids": [
+        80,
+        18,
+        36
+      ],
+      "title": "The Irishman",
+      "vote_average": 7.9,
+      "overview": "Pennsylvania, 1956. Frank Sheeran, a war veteran of Irish origin who works as a truck driver, accidentally meets mobster Russell Bufalino. Once Frank becomes his trusted man, Bufalino sends him to Chicago with the task of helping Jimmy Hoffa, a powerful union leader related to organized crime, with whom Frank will maintain a close friendship for nearly twenty years.",
+      "release_date": "2019-11-01"
+    },
+    {
+      "popularity": 78.497,
+      "vote_count": 46,
+      "video": false,
+      "poster_path": "/30YacPAcxpNemhhwX0PVUl9pVA3.jpg",
+      "id": 431693,
+      "adult": false,
+      "backdrop_path": "/qlYxtqVfu2LOdvYMMDPCSGX0Oz0.jpg",
+      "original_language": "en",
+      "original_title": "Spies in Disguise",
+      "genre_ids": [
+        28,
+        12,
+        16,
+        35
+      ],
+      "title": "Spies in Disguise",
+      "vote_average": 7.7,
+      "overview": "When the world's best spy is turned into a pigeon, he must rely on his nerdy tech officer to save the world.",
+      "release_date": "2019-12-24"
+    },
+    {
+      "popularity": 77.989,
+      "vote_count": 128,
+      "video": false,
+      "poster_path": "/84Xz2Jh60tC3ICO1CY27wc0zwgC.jpg",
+      "id": 461130,
+      "adult": false,
+      "backdrop_path": "/raspMdRYIj0cCF6SQH8NQ1lLLMB.jpg",
+      "original_language": "en",
+      "original_title": "Code 8",
+      "genre_ids": [
+        28,
+        80,
+        18,
+        878,
+        53
+      ],
+      "title": "Code 8",
+      "vote_average": 6.3,
+      "overview": "In Lincoln City, some inhabitants have extraordinary abilities. Most live below the poverty line, under the close surveillance of a heavily militarized police force. Connor, a construction worker with powers, involves with a criminal gang to help his ailing mother. (Based on the short film “Code 8,” 2016.)",
+      "release_date": "2019-12-06"
+    },
+    {
+      "popularity": 57.059,
+      "vote_count": 95,
+      "video": false,
+      "poster_path": "/7gOozJufKJ9WjcIs38KEs08Iq3D.jpg",
+      "id": 473033,
+      "adult": false,
+      "backdrop_path": "/eGljNfNCrPhFYG2RXXmmE0OKu5.jpg",
+      "original_language": "en",
+      "original_title": "Uncut Gems",
+      "genre_ids": [
+        80,
+        53
+      ],
+      "title": "Uncut Gems",
+      "vote_average": 7.6,
+      "overview": "Howard Ratner, a charismatic New York City jeweler always on the lookout for the next big score, makes a series of high-stakes bets that could lead to the windfall of a lifetime.",
+      "release_date": "2019-12-13"
+    },
+    {
+      "popularity": 69.364,
+      "vote_count": 6,
+      "video": false,
+      "poster_path": "/7OtwQv5BLIelqJ0JU3AwcDR0hjz.jpg",
+      "id": 465086,
+      "adult": false,
+      "backdrop_path": "/25oEpqNkaqhYKnhg0o0oEcGF4hB.jpg",
+      "original_language": "en",
+      "original_title": "The Grudge",
+      "genre_ids": [
+        27,
+        9648
+      ],
+      "title": "The Grudge",
+      "vote_average": 6.8,
+      "overview": "A house is cursed by a vengeful ghost that dooms those who enter it with a violent death.",
+      "release_date": "2020-01-02"
+    }
+  ],
+  "page": 1,
+  "total_results": 1150,
+  "dates": {
+    "maximum": "2020-01-07",
+    "minimum": "2019-11-20"
+  },
+  "total_pages": 58
+}
