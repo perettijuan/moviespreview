@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.ViewInteraction
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
@@ -20,7 +19,6 @@ import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
-
 
 /*
  * General view assertions.
@@ -39,7 +37,6 @@ fun onErrorViewText(): ViewInteraction = onView(withId(R.id.errorTitleTextView))
 fun onErrorViewButton(): ViewInteraction = onView(withId(R.id.errorActionButton))
 fun onActionBarBackButton(): ViewInteraction = onView(withContentDescription(R.string.abc_action_bar_up_description))
 fun onActionBarTitle(): ViewInteraction = onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.mainToolbar))))
-
 
 /**
  * Asserts that a given [RecyclerView] is showing the [expectedItemCount] number of items.

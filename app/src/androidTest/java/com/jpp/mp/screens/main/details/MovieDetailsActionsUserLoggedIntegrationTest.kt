@@ -35,36 +35,36 @@ class MovieDetailsActionsUserLoggedIntegrationTest : BaseMovieDetailsIntegration
      */
     @Test
     fun shouldShowMovieState_flavor1() {
-        //-- we need results to navigate to details screen
+        // -- we need results to navigate to details screen
         stubConfigurationDefault()
         stubNowPlayingFirstPage()
         stubMovieDetails()
         stubMovieStateFlavor1()
 
-        //-- launch app
+        // -- launch app
         activityTestRule.launch()
         waitForMoviesLoadingDone()
 
-        //-- navigate to movie details
+        // -- navigate to movie details
         navigateToMovieDetails()
         waitForMovieActionsLoaded()
 
-        //-- general state
+        // -- general state
         onActionsLoadingView().assertNotDisplayed()
         onActionsReloadButton().assertNotDisplayed()
         onActionsButton().assertDisplayed()
 
-        //-- favorite button
+        // -- favorite button
         onActionsFavoriteButton().assertDisplayed()
         onActionsFavoriteButton().assertClickable()
         onActionsFavoriteButton().check(matches(withDrawable(R.drawable.ic_favorite_empty)))
 
-        //-- rate button
+        // -- rate button
         onActionsRateButton().assertDisplayed()
         onActionsRateButton().assertClickable()
         onActionsRateButton().check(matches(withDrawable(R.drawable.ic_rate_empty)))
 
-        //-- watchlist button
+        // -- watchlist button
         onActionsWatchlistButton().assertDisplayed()
         onActionsWatchlistButton().assertClickable()
         onActionsWatchlistButton().check(matches(withDrawable(R.drawable.ic_watchlist_empty)))
@@ -77,36 +77,36 @@ class MovieDetailsActionsUserLoggedIntegrationTest : BaseMovieDetailsIntegration
      */
     @Test
     fun shouldShowMovieState_flavor2() {
-        //-- we need results to navigate to details screen
+        // -- we need results to navigate to details screen
         stubConfigurationDefault()
         stubNowPlayingFirstPage()
         stubMovieDetails()
         stubMovieStateFlavor2()
 
-        //-- launch app
+        // -- launch app
         activityTestRule.launch()
         waitForMoviesLoadingDone()
 
-        //-- navigate to movie details
+        // -- navigate to movie details
         navigateToMovieDetails()
         waitForMovieActionsLoaded()
 
-        //-- general state
+        // -- general state
         onActionsLoadingView().assertNotDisplayed()
         onActionsReloadButton().assertNotDisplayed()
         onActionsButton().assertDisplayed()
 
-        //-- favorite button
+        // -- favorite button
         onActionsFavoriteButton().assertDisplayed()
         onActionsFavoriteButton().assertClickable()
         onActionsFavoriteButton().check(matches(withDrawable(R.drawable.ic_favorite_filled)))
 
-        //-- rate button
+        // -- rate button
         onActionsRateButton().assertDisplayed()
         onActionsRateButton().assertClickable()
         onActionsRateButton().check(matches(withDrawable(R.drawable.ic_rate_empty)))
 
-        //-- watchlist button
+        // -- watchlist button
         onActionsWatchlistButton().assertDisplayed()
         onActionsWatchlistButton().assertClickable()
         onActionsWatchlistButton().check(matches(withDrawable(R.drawable.ic_watchlist_empty)))
@@ -119,36 +119,36 @@ class MovieDetailsActionsUserLoggedIntegrationTest : BaseMovieDetailsIntegration
      */
     @Test
     fun shouldShowMovieState_flavor3() {
-        //-- we need results to navigate to details screen
+        // -- we need results to navigate to details screen
         stubConfigurationDefault()
         stubNowPlayingFirstPage()
         stubMovieDetails()
         stubMovieStateFlavor3()
 
-        //-- launch app
+        // -- launch app
         activityTestRule.launch()
         waitForMoviesLoadingDone()
 
-        //-- navigate to movie details
+        // -- navigate to movie details
         navigateToMovieDetails()
         waitForMovieActionsLoaded()
 
-        //-- general state
+        // -- general state
         onActionsLoadingView().assertNotDisplayed()
         onActionsReloadButton().assertNotDisplayed()
         onActionsButton().assertDisplayed()
 
-        //-- favorite button
+        // -- favorite button
         onActionsFavoriteButton().assertDisplayed()
         onActionsFavoriteButton().assertClickable()
         onActionsFavoriteButton().check(matches(withDrawable(R.drawable.ic_favorite_filled)))
 
-        //-- rate button
+        // -- rate button
         onActionsRateButton().assertDisplayed()
         onActionsRateButton().assertClickable()
         onActionsRateButton().check(matches(withDrawable(R.drawable.ic_rate_filled)))
 
-        //-- watchlist button
+        // -- watchlist button
         onActionsWatchlistButton().assertDisplayed()
         onActionsWatchlistButton().assertClickable()
         onActionsWatchlistButton().check(matches(withDrawable(R.drawable.ic_watchlist_empty)))
@@ -161,36 +161,36 @@ class MovieDetailsActionsUserLoggedIntegrationTest : BaseMovieDetailsIntegration
      */
     @Test
     fun shouldShowMovieState_flavor4() {
-        //-- we need results to navigate to details screen
+        // -- we need results to navigate to details screen
         stubConfigurationDefault()
         stubNowPlayingFirstPage()
         stubMovieDetails()
         stubMovieStateFlavor4()
 
-        //-- launch app
+        // -- launch app
         activityTestRule.launch()
         waitForMoviesLoadingDone()
 
-        //-- navigate to movie details
+        // -- navigate to movie details
         navigateToMovieDetails()
         waitForMovieActionsLoaded()
 
-        //-- general state
+        // -- general state
         onActionsLoadingView().assertNotDisplayed()
         onActionsReloadButton().assertNotDisplayed()
         onActionsButton().assertDisplayed()
 
-        //-- favorite button
+        // -- favorite button
         onActionsFavoriteButton().assertDisplayed()
         onActionsFavoriteButton().assertClickable()
         onActionsFavoriteButton().check(matches(withDrawable(R.drawable.ic_favorite_filled)))
 
-        //-- rate button
+        // -- rate button
         onActionsRateButton().assertDisplayed()
         onActionsRateButton().assertClickable()
         onActionsRateButton().check(matches(withDrawable(R.drawable.ic_rate_filled)))
 
-        //-- watchlist button
+        // -- watchlist button
         onActionsWatchlistButton().assertDisplayed()
         onActionsWatchlistButton().assertClickable()
         onActionsWatchlistButton().check(matches(withDrawable(R.drawable.ic_watchlist_filled)))

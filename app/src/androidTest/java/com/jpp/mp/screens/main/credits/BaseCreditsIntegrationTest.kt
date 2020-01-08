@@ -59,7 +59,6 @@ abstract class BaseCreditsIntegrationTest {
         })
     }
 
-
     protected fun onCreditsLoadingView(): ViewInteraction = onView(withId(R.id.creditsLoadingView))
     protected fun onCreditsErrorView(): ViewInteraction = onView(withId(R.id.creditsErrorView))
     protected fun onCreditsListView(): ViewInteraction = onView(withId(R.id.creditsRv))

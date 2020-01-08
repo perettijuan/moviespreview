@@ -27,7 +27,7 @@ class CreditsMovieErrorTest : BaseCreditsIntegrationTest() {
         stubNowPlayingFirstPage()
         stubMovieDetails()
 
-        //-- launch app and move to movie details
+        // -- launch app and move to movie details
         activityTestRule.launch()
         waitForMoviesLoadingDone()
         navigateToMovieDetails()
@@ -35,7 +35,7 @@ class CreditsMovieErrorTest : BaseCreditsIntegrationTest() {
 
         activityTestRule.simulateNotConnectedToNetwork()
 
-        //-- go to movie credits
+        // -- go to movie credits
         onView(withId(R.id.detailCreditsSelectionView)).perform(NestedScrollViewExtension())
         navigateToMovieCredits()
         waitForMovieCreditsLoaded()
@@ -48,7 +48,6 @@ class CreditsMovieErrorTest : BaseCreditsIntegrationTest() {
         onErrorViewButton().assertWithText(R.string.error_retry)
     }
 
-
     @Test
     fun shouldShowUnknownError() {
         stubConfigurationDefault()
@@ -56,13 +55,13 @@ class CreditsMovieErrorTest : BaseCreditsIntegrationTest() {
         stubMovieDetails()
         stubMovieCreditsWithError()
 
-        //-- launch app and move to movie details
+        // -- launch app and move to movie details
         activityTestRule.launch()
         waitForMoviesLoadingDone()
         navigateToMovieDetails()
         waitForMovieDetailsLoaded()
 
-        //-- go to movie credits
+        // -- go to movie credits
         onView(withId(R.id.detailCreditsSelectionView)).perform(NestedScrollViewExtension())
         navigateToMovieCredits()
         waitForMovieCreditsLoaded()

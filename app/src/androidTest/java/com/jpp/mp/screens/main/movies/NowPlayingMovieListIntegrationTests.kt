@@ -39,7 +39,6 @@ class NowPlayingMovieListIntegrationTests {
     @get:Rule
     var wireMockRule = WireMockRule(wireMockConfig().port(8080))
 
-
     @Test
     fun shouldShowFirstMoviesPage() {
         stubConfigurationDefault()
@@ -67,7 +66,6 @@ class NowPlayingMovieListIntegrationTests {
 
         onView(withViewInRecyclerView(R.id.movieList, 0, R.id.movieItemVoteCountText))
                 .check(matches(withText("1605.0")))
-
 
         // Item 1
         onView(withViewInRecyclerView(R.id.movieList, 1, R.id.movieItemTitle))
@@ -133,7 +131,6 @@ class NowPlayingMovieListIntegrationTests {
         onErrorViewText().assertWithText(R.string.error_unexpected_error_message)
         onErrorViewButton().assertWithText(R.string.error_retry)
     }
-
 
     private fun waitForDoneLoading() {
         ConditionWatcher.waitForCondition(object : Instruction() {

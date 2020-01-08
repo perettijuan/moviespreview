@@ -1,12 +1,10 @@
 package com.jpp.mp.stubbers
 
-
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching
 import com.jpp.mpdata.api.BaseUrlChangingInterceptorProvider
-
 
 /**
  * This file contains all the stub functions used in the movie lists sections.

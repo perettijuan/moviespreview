@@ -34,7 +34,7 @@ class MovieDetailsIntegrationTest : BaseMovieDetailsIntegrationTest() {
 
     @Test
     fun shouldRenderMovieDetailsWhenSelectedInHomeScreen() {
-        //-- we need results to navigate to details screen
+        // -- we need results to navigate to details screen
         stubConfigurationDefault()
         stubNowPlayingFirstPage()
         stubMovieDetails()
@@ -52,16 +52,16 @@ class MovieDetailsIntegrationTest : BaseMovieDetailsIntegrationTest() {
         onDetailsErrorView().assertNotDisplayed()
         onDetailsContentView().assertDisplayed()
 
-        //-- Action bar
+        // -- Action bar
         onActionBarTitle().assertWithText("Ad Astra")
 
-        //-- Overview section
+        // -- Overview section
         onOverviewTitleView().assertDisplayed()
         onOverviewTitleView().assertWithText(R.string.overview_title)
         onOverviewContentView().assertDisplayed()
         onOverviewContentView().assertWithText("The near future, a time when both hope and hardships drive humanity to look to the stars and beyond. While a mysterious phenomenon menaces to destroy life on planet Earth, astronaut Roy McBride undertakes a mission across the immensity of space and its many perils to uncover the truth about a lost expedition that decades before boldly faced emptiness and silence in search of the unknown.")
 
-        //-- Genres section
+        // -- Genres section
         onGenresList().assertDisplayed()
         onGenresList().assertItemCount(5)
 
@@ -90,19 +90,19 @@ class MovieDetailsIntegrationTest : BaseMovieDetailsIntegrationTest() {
         onView(withViewInRecyclerView(R.id.detailGenresRv, 4, R.id.genreListItemIv))
                 .check(matches(withDrawable(R.drawable.ic_mystery)))
 
-        //-- Popularity section
+        // -- Popularity section
         onPopularityTitleView().assertDisplayed()
         onPopularityTitleView().assertWithText(R.string.popularity_title)
         onPopularityContentView().assertDisplayed()
         onPopularityContentView().assertWithText("752.439")
 
-        //-- Vote count section
+        // -- Vote count section
         onVoteCountTitleView().assertDisplayed()
         onVoteCountTitleView().assertWithText(R.string.vote_count_title)
         onVoteCountContentView().assertDisplayed()
         onVoteCountContentView().assertWithText("1703.0")
 
-        //-- Release date section
+        // -- Release date section
         onReleaseTitleView().assertDisplayed()
         onReleaseTitleView().assertWithText(R.string.release_date_title)
         onReleaseContentView().assertDisplayed()

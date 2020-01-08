@@ -18,7 +18,6 @@ class MPTestApp : MPApp() {
     private val localActiveNetwork = mockk<NetworkInfo>(relaxed = true)
     var isConnectedToNetwork = true
 
-
     override fun getSystemService(name: String): Any {
         if (name == CONNECTIVITY_SERVICE) {
             every { localConnectivityManager.activeNetworkInfo } returns localActiveNetwork

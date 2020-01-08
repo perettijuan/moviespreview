@@ -1,33 +1,32 @@
 package com.jpp.mp.assertions
 
 import android.content.res.Resources
-import android.view.View
-import androidx.annotation.IdRes
-import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.matcher.ViewMatchers
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.TypeSafeMatcher
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.view.View
 import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.ScrollView
+import androidx.annotation.IdRes
 import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.matcher.ViewMatchers
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers
-
+import org.hamcrest.TypeSafeMatcher
 
 /**
  * Matches a View in a RecyclerView at the given [position] with the provided [targetViewId].
  */
 fun withViewInRecyclerView(
-        recyclerViewId: Int,
-        position: Int,
-        targetViewId: Int
+    recyclerViewId: Int,
+    position: Int,
+    targetViewId: Int
 ): Matcher<View> = object : TypeSafeMatcher<View>() {
 
     private lateinit var resources: Resources
@@ -146,6 +145,3 @@ class NestedScrollViewExtension(scrollToAction: ViewAction = ViewActions.scrollT
                         ViewMatchers.isAssignableFrom(ListView::class.java))))
     }
 }
-
-
-

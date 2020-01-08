@@ -189,7 +189,6 @@ open class MPApi :
                     .create(TheMovieDBApi::class.java)
         }
 
-
         private fun buildHttpClient(): OkHttpClient {
             return OkHttpClient.Builder().apply {
                 if (BuildConfig.DEBUG) {

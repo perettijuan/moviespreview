@@ -33,7 +33,7 @@ class SearchErrorRetry : BaseSearchIntegrationTest() {
         waitForSearchDone()
         onErrorSearchView().assertDisplayed()
 
-        //-- stub a possible result
+        // -- stub a possible result
         stubConfigurationDefault()
         stubSearchDefault()
         onErrorViewButton().perform(ViewActions.click())

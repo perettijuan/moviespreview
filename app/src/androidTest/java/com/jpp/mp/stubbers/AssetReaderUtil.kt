@@ -17,5 +17,4 @@ fun readAssetFrom(assetPath: String): String {
         e.printStackTrace()
         throw RuntimeException(e)
     }
-
 }

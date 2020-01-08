@@ -37,7 +37,6 @@ fun stubMovieStateFlavor2() = stubMovieState("movie_state_flavor_2.json")
 fun stubMovieStateFlavor3() = stubMovieState("movie_state_flavor_3.json")
 fun stubMovieStateFlavor4() = stubMovieState("movie_state_flavor_4.json")
 
-
 private fun stubMovieState(filePath: String) {
     BaseUrlChangingInterceptorProvider.setInterceptor(LOCAL_HOST + movieStateUrl)
     val jsonBody = readAssetFrom(filePath)

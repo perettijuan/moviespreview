@@ -16,7 +16,7 @@ import org.hamcrest.Matcher
 fun typeText(text: String): ViewAction {
     return object : ViewAction {
         override fun getConstraints(): Matcher<View> {
-            //Ensure that only apply if it is a SearchView and if it is visible.
+            // Ensure that only apply if it is a SearchView and if it is visible.
             return CoreMatchers.allOf(ViewMatchers.isDisplayed(), ViewMatchers.isAssignableFrom(SearchView::class.java))
         }
 
@@ -38,7 +38,7 @@ fun typeText(text: String): ViewAction {
 fun typeTextAndSubmit(text: String): ViewAction {
     return object : ViewAction {
         override fun getConstraints(): Matcher<View> {
-            //Ensure that only apply if it is a SearchView and if it is visible.
+            // Ensure that only apply if it is a SearchView and if it is visible.
             return CoreMatchers.allOf(ViewMatchers.isDisplayed(), ViewMatchers.isAssignableFrom(SearchView::class.java))
         }
 

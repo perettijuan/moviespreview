@@ -141,7 +141,7 @@ class SearchSuccessTestCases : BaseSearchIntegrationTest() {
 
         onSearchView().perform(typeText("Ramb"))
 
-        //-- initial search
+        // -- initial search
         waitForSearchStarted()
         waitForSearchDone()
         onLoadingSearchView().assertNotDisplayed()
@@ -151,11 +151,11 @@ class SearchSuccessTestCases : BaseSearchIntegrationTest() {
         onResultsRecyclerView().assertDisplayed()
         onResultsRecyclerView().assertItemCount(19)
 
-        //-- go back home
+        // -- go back home
         onActionBarBackButton().perform(click())
         waitForHomeScreen()
 
-        //-- re-open search and verify data is there
+        // -- re-open search and verify data is there
         openSearchScreen()
         onLoadingSearchView().assertNotDisplayed()
         onEmptySearchView().assertNotDisplayed()
@@ -176,7 +176,7 @@ class SearchSuccessTestCases : BaseSearchIntegrationTest() {
 
         onSearchView().perform(typeText("Ramb"))
 
-        //-- initial search
+        // -- initial search
         waitForSearchStarted()
         waitForSearchDone()
         onLoadingSearchView().assertNotDisplayed()
@@ -217,5 +217,4 @@ class SearchSuccessTestCases : BaseSearchIntegrationTest() {
             }
         })
     }
-
 }
