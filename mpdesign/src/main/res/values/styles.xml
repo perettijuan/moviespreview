@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base appModule theme. -->
-    <style name="MPTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="MPTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
