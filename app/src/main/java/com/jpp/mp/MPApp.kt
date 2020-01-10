@@ -2,7 +2,6 @@ package com.jpp.mp
 
 import android.app.Activity
 import android.app.Application
-import androidx.appcompat.app.AppCompatDelegate
 import com.crashlytics.android.Crashlytics
 import com.jpp.mp.di.AppModule
 import com.jpp.mp.di.DaggerAppComponent
@@ -36,7 +35,6 @@ open class MPApp : Application(), HasActivityInjector {
          * UPDATE 08/22/2019 ---> executed a canary session and all seems to work OK.
          * launchCanary()
          */
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     }
 
     private fun launchCanary() {
