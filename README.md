@@ -3,10 +3,15 @@
 MoviesPreview is a typical Android Application that queries The Movie DB API and presents the data available to the user. The user might do different things with that data, besides browsing it. But mainly, MoviesPreview is an ongoing effort to expose my ideas and to try to stay up to date with the development of Android Applications.
 
 
-## Architecture
+## Medium Posts
 
-Check the [Medium posts](https://medium.com/@peretti.juan/moviespreview-the-android-app-architecture-a19221094292) to stay up to date
-
+  - [Main App Architecture](https://medium.com/@peretti.juan/moviespreview-the-android-app-architecture-a19221094292)
+      - [Repository Pattern](https://medium.com/@peretti.juan/moviespreview-the-android-app-repository-architecture-d29d1e85fe60)
+      - [Interactor](https://medium.com/@peretti.juan/moviespreview-the-android-app-architecture-the-interactor-3680f9dca6e4)
+      - [UI architecture](https://medium.com/@peretti.juan/moviespreview-the-android-app-architecture-ui-architecture-4f4b8aacd066)
+  - [App Modules](https://medium.com/@peretti.juan/moviespreview-the-android-app-project-modularization-6a9620ec356a)
+      - [Navigation](https://medium.com/@peretti.juan/moviespreview-modularization-and-navigation-1a9bbeb28f08) 
+  - [Integrity](https://medium.com/@peretti.juan/moviespreview-integrity-framework-8c034d2093bf)    
 
 ## Features
 
