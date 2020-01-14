@@ -20,7 +20,7 @@
             android:id="@+id/person_app_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/person_app_bar_height"
-            android:background="@android:color/white"
+            android:background="@color/person_app_bar_bg"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <include

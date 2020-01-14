@@ -10,7 +10,7 @@
         <item name="elevation">6dp</item>
         <item name="pressedTranslationZ">12dp</item>
         <item name="rippleColor">@android:color/white</item>
-        <item name="backgroundTint">@color/primaryDarkColor</item>
+        <item name="backgroundTint">@color/fab_action_color</item>
         <item name="fabSize">mini</item>
     </style>
 
@@ -22,7 +22,7 @@
         <item name="elevation">6dp</item>
         <item name="pressedTranslationZ">12dp</item>
         <item name="rippleColor">@android:color/white</item>
-        <item name="backgroundTint">@color/primaryLightColor</item>
+        <item name="backgroundTint">@color/fab_main_color</item>
         <item name="fabSize">normal</item>
     </style>
 
