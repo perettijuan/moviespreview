@@ -101,6 +101,8 @@ project.ext {
     compileSdkVersion = 28
     minSdkVersion = 21
     targetSdkVersion = 28
+    versionName = "1.6"
+    versionCode = 4
 }
 
 allprojects {
