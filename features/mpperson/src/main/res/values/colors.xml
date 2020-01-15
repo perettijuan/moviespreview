@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="person_app_bar_bg">@android:color/white</color>
+</resources>
