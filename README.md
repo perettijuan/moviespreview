@@ -86,6 +86,13 @@ MoviesPreview is a typical Android Application that queries The Movie DB API and
 
 </details>
 
+<details>
+    <summary>Dark Mode</summary>
+
+[![NightMode gif](https://github.com/perettijuan/moviespreview/blob/develop/art/night-mode.gif)](https://github.com/perettijuan/moviespreview/blob/develop/art/night-mode.gif)
+
+</details>
+
 ## Libraries and Stack
 
  - [The Movie DB API](https://www.themoviedb.org/documentation/api)
@@ -101,6 +108,3 @@ MoviesPreview is a typical Android Application that queries The Movie DB API and
  - [Android Room](https://developer.android.com/topic/libraries/architecture/room.html) 
  - [Espresso](https://developer.android.com/training/testing/espresso/index.html) 
  - [MockK](https://github.com/mockk/mockk) 
-
-## Testing
-- TODO
