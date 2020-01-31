@@ -27,7 +27,9 @@ jobs:
     - name: Run Unit Tests
       run: bash ./gradlew test --stacktrace
 
-  health-check: Health Check
+  health-check:
+
+  name: Health Check
   runs-on: ubuntu-latest
 
     steps:
