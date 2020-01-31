@@ -58,3 +58,9 @@ jobs:
          with:
            api-level: 29
            script: ./gradlew connectedCheck
+
+       - name: Upload results
+         uses: actions/upload-artifact@v1
+         with:
+           name: app
+           path: app/build/reports/androidTests/connected/index.html
