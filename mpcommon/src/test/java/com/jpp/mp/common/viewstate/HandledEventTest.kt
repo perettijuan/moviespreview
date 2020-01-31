@@ -6,6 +6,7 @@ import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -24,6 +25,6 @@ class HandledEventTest {
 
         liveData.postValue(HandledEvent.of(1))
 
-        assertEquals(expectedHandles, sumOfHandles)
+        assertNotEquals(expectedHandles, sumOfHandles)
     }
 }
