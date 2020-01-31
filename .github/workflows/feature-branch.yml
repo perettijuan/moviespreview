@@ -1,5 +1,5 @@
-name: Movies Preview Feature Branch CI
-## Does the comment works?
+name: Movies Preview Feature Branch Checks
+
 on: 
   push:
     branches:
@@ -44,3 +44,17 @@ jobs:
         run: bash ./gradlew lintDebug
       - name: Run Unit Tests
         run: bash ./gradlew test --stacktrace
+
+  run-integration-tests:
+     name: Run Integration Tests
+     runs-on: macOS-latest
+
+     steps:
+       - name: checkout
+         uses: actions/checkout@v2
+
+       - name: run tests
+         uses: reactivecircus/android-emulator-runner@v2
+         with:
+           api-level: 29
+           script: ./gradlew connectedCheck
