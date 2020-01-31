@@ -76,7 +76,7 @@ class MovieDetailsActionsUserLoggedIntegrationTest : BaseMovieDetailsIntegration
      * rated -> false,
      * watchlist -> false
      */
-    @Ignore(value ="Ignore for flakyness")
+    @Ignore(value = "Ignore for flakyness")
     @Test
     fun shouldShowMovieState_flavor2() {
         // -- we need results to navigate to details screen
@@ -119,7 +119,7 @@ class MovieDetailsActionsUserLoggedIntegrationTest : BaseMovieDetailsIntegration
      * rated -> true,
      * watchlist -> false
      */
-    @Ignore(value ="Ignore for flakyness")
+    @Ignore(value = "Ignore for flakyness")
     @Test
     fun shouldShowMovieState_flavor3() {
         // -- we need results to navigate to details screen
@@ -162,7 +162,7 @@ class MovieDetailsActionsUserLoggedIntegrationTest : BaseMovieDetailsIntegration
      * rated -> true,
      * watchlist -> true
      */
-    @Ignore(value ="Ignore for flakyness")
+    @Ignore(value = "Ignore for flakyness")
     @Test
     fun shouldShowMovieState_flavor4() {
         // -- we need results to navigate to details screen
