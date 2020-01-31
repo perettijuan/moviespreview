@@ -24,9 +24,6 @@ class MPMainActivityTestRule : ActivityTestRule<MainActivity>(MainActivity::clas
         app.isConnectedToNetwork = isConnectedToNetwork
 
         with(InstrumentationRegistry.getInstrumentation().targetContext) {
-            // IMPORTANT: clear all the data stored in the application's database in order to run a clean test.
-            deleteDatabase("MPRoomDataBase")
-
             // IMPORTANT: when sessionId is not null, we assume the user logged in
             // IMPORTANT2: the file name and the preference name is based on [SessionDbImpl]
             val pref = getSharedPreferences("com.jpp.moviespreview.preferences.session", Context.MODE_PRIVATE)

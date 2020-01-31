@@ -59,6 +59,19 @@ abstract class BaseCreditsIntegrationTest {
         })
     }
 
+    /**
+     * Adds a condition to wait until the movies in the home screen are loaded.
+     */
+    protected fun waitForErrorView() {
+        ConditionWatcher.waitForCondition(object : Instruction() {
+            override fun getDescription(): String = "Waiting for credits error"
+
+            override fun checkCondition(): Boolean {
+                return activityTestRule.activity.findViewById<View>(R.id.creditsErrorView).visibility == View.INVISIBLE
+            }
+        })
+    }
+
     protected fun onCreditsLoadingView(): ViewInteraction = onView(withId(R.id.creditsLoadingView))
     protected fun onCreditsErrorView(): ViewInteraction = onView(withId(R.id.creditsErrorView))
     protected fun onCreditsListView(): ViewInteraction = onView(withId(R.id.creditsRv))

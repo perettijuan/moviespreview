@@ -36,6 +36,7 @@ android {
         versionName rootProject.versionName
         buildConfigField 'String', 'API_KEY', '"eddf6980a6d7dadd72386f55f94ab571"'
         testInstrumentationRunner "com.jpp.mp.MPJUnitRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
 
     compileOptions {
@@ -64,6 +65,7 @@ android {
     }
 
     testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
         unitTests.returnDefaultValues = true
     }
 }
@@ -151,6 +153,7 @@ dependencies {
     }
     androidTestImplementation 'com.azimolabs.conditionwatcher:conditionwatcher:0.2'
     androidTestImplementation 'junit:junit:4.12'
+    androidTestUtil "androidx.test:orchestrator:$androidTestLibVersion"
 
     // Include testing utils
     androidTestImplementation project(path: ':mptestutils')

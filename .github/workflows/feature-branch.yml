@@ -57,10 +57,10 @@ jobs:
          uses: reactivecircus/android-emulator-runner@v2
          with:
            api-level: 29
-           script: ./gradlew connectedCheck
+           script: ./gradlew connectedAndroidTest
 
        - name: Upload results
          uses: actions/upload-artifact@v1
          with:
            name: app
-           path: app/build/reports/androidTests/connected/index.html
+           path: file:///Users/runner/runners/2.164.0/work/moviespreview/moviespreview/app/build/reports/androidTests/connected/index.html
