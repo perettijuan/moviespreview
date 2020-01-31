@@ -19,7 +19,6 @@ import io.mockk.verifyOrder
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
@@ -70,7 +69,7 @@ class CreditsViewModelTest {
         assertEquals(View.INVISIBLE, viewStatePosted?.noCreditsViewState?.visibility)
 
         assertEquals(View.VISIBLE, viewStatePosted?.errorViewState?.visibility)
-        assertNotEquals(true, viewStatePosted?.errorViewState?.isConnectivity)
+        assertEquals(true, viewStatePosted?.errorViewState?.isConnectivity)
     }
 
     @Test
