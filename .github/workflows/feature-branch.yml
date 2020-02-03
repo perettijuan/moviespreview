@@ -48,10 +48,10 @@ jobs:
          uses: actions/checkout@v2
 
        - name: run tests
-         uses: reactivecircus/android-emulator-runner@v2
+         uses: reactivecircus/android-emulator-runner@v1
          with:
-           api-level: 29
-           script: ./gradlew connectedAndroidTest
+           api-level: 24
+           script: ./gradlew connectedCheck
 
        - name: Upload results
          uses: actions/upload-artifact@v1
