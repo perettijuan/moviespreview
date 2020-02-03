@@ -51,6 +51,7 @@ jobs:
          uses: reactivecircus/android-emulator-runner@v1
          with:
            api-level: 24
+           emulator-options: -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
            script: ./gradlew connectedCheck
 
        - name: Upload results
