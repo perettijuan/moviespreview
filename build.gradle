@@ -15,7 +15,7 @@ buildscript {
             'room' : '2.2.5',
             'mockk' : '1.8.13.kotlin13',
             'canary' : '1.6.3',
-            'lifecycle': '2.0.0',
+            'lifecycle': '2.2.0',
             'appCompat': '1.1.0',
             'coroutines' : '1.1.1'
     ]
