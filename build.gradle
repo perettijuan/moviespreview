@@ -10,7 +10,7 @@ buildscript {
             ],
             'hamcrest' : '1.3',
             'pagingLib': '2.1.0-rc01',
-            'navigationLib' : '2.1.0',
+            'navigationLib' : '2.2.2',
             'dagger' : '2.16',
             'room' : '2.0.0',
             'mockk' : '1.8.13.kotlin13',
