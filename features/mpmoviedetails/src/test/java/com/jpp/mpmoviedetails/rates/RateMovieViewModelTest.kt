@@ -7,13 +7,14 @@ import com.jpp.mpdomain.MovieState
 import com.jpp.mpdomain.MovieStateRate
 import com.jpp.mpmoviedetails.MovieDetailsInteractor
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent
-import com.jpp.mpmoviedetails.TestMovieDetailCoroutineDispatchers
+import com.jpp.mptestutils.CoroutineTestExtension
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
@@ -23,9 +24,11 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments.arguments
 import org.junit.jupiter.params.provider.MethodSource
 
+@ExperimentalCoroutinesApi
 @ExtendWith(
         MockKExtension::class,
-        InstantTaskExecutorExtension::class
+        InstantTaskExecutorExtension::class,
+        CoroutineTestExtension::class
 )
 class RateMovieViewModelTest {
 
@@ -42,10 +45,7 @@ class RateMovieViewModelTest {
         every { movieDetailsInteractor.movieStateEvents } returns lvInteractorEvents
         every { movieDetailsInteractor.rateMovieEvents } returns lvRateMovieEvents
 
-        subject = RateMovieViewModel(
-                TestMovieDetailCoroutineDispatchers(),
-                movieDetailsInteractor
-        )
+        subject = RateMovieViewModel(movieDetailsInteractor)
     }
 
     @ParameterizedTest

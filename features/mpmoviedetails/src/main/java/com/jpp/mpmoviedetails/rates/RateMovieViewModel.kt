@@ -2,7 +2,7 @@ package com.jpp.mpmoviedetails.rates
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
+import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
@@ -10,9 +10,10 @@ import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpmoviedetails.MovieDetailsInteractor
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.RateMovieEvent
-import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * [MPScopedViewModel] that supports the movie movie rating feature. The VM retrieves
@@ -26,10 +27,8 @@ import kotlinx.coroutines.withContext
  * state of the business layer.
  */
 class RateMovieViewModel @Inject constructor(
-    dispatchers: CoroutineDispatchers,
-    private val movieDetailsInteractor: MovieDetailsInteractor
-) :
-    MPScopedViewModel(dispatchers) {
+        private val movieDetailsInteractor: MovieDetailsInteractor
+) : MPScopedViewModel() {
 
     private val _viewState = MediatorLiveData<RateMovieViewState>()
     val viewState: LiveData<RateMovieViewState> get() = _viewState
@@ -124,7 +123,11 @@ class RateMovieViewModel @Inject constructor(
      * on a background task.
      */
     private fun withMovieDetailsInteractor(action: MovieDetailsInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(movieDetailsInteractor) } }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                action(movieDetailsInteractor)
+            }
+        }
     }
 
     /**
