@@ -2,7 +2,7 @@ package com.jpp.mpaccount.account
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
+import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpaccount.account.UserAccountFragmentDirections.userMovieListFragment
@@ -12,9 +12,10 @@ import com.jpp.mpaccount.account.lists.UserMovieListType
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
-import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * [MPScopedViewModel] to handle the state of the [UserAccountFragment]. It is a coroutine-scoped
@@ -28,12 +29,9 @@ import kotlinx.coroutines.withContext
  * because it needs to map the URL of the movies to be shown before rendering the data.
  */
 class UserAccountViewModel @Inject constructor(
-    dispatchers: CoroutineDispatchers,
-    private val accountInteractor: UserAccountInteractor,
-    private val imagesPathInteractor: ImagesPathInteractor
-) :
-
-    MPScopedViewModel(dispatchers) {
+        private val accountInteractor: UserAccountInteractor,
+        private val imagesPathInteractor: ImagesPathInteractor
+) : MPScopedViewModel() {
 
     private val _viewState = MediatorLiveData<UserAccountViewState>()
     val viewState: LiveData<UserAccountViewState> get() = _viewState
@@ -106,7 +104,7 @@ class UserAccountViewModel @Inject constructor(
     }
 
     private fun mapAccountInfo(successState: UserAccountEvent.Success) {
-        launch {
+        viewModelScope.launch {
             with(successState.data) {
                 val favoriteMovieState = getUserMoviesViewState(successState.favoriteMovies) { UserMoviesViewState.createFavoriteEmpty() }
                 val ratedMovieState = getUserMoviesViewState(successState.ratedMovies) { UserMoviesViewState.createRatedEmpty() }
@@ -137,10 +135,10 @@ class UserAccountViewModel @Inject constructor(
      * instead of the user's avatar.
      */
     private fun mapAccountInfoWithoutAvatar(
-        userAccount: UserAccount,
-        favViewState: UserMoviesViewState,
-        ratedViewState: UserMoviesViewState,
-        watchViewState: UserMoviesViewState
+            userAccount: UserAccount,
+            favViewState: UserMoviesViewState,
+            ratedViewState: UserMoviesViewState,
+            watchViewState: UserMoviesViewState
     ) {
         _viewState.value = UserAccountViewState.showContentWithLetter(
                 userName = if (userAccount.name.isEmpty()) userAccount.username else userAccount.name,
@@ -153,13 +151,17 @@ class UserAccountViewModel @Inject constructor(
     }
 
     private fun withAccountInteractor(action: UserAccountInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(accountInteractor) } }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                action(accountInteractor)
+            }
+        }
     }
 
     private suspend fun getUserMoviesViewState(
-        userMovieState: UserMoviesState,
-        emptyCreator: () -> UserMoviesViewState
-    ) = withContext(dispatchers.default()) {
+            userMovieState: UserMoviesState,
+            emptyCreator: () -> UserMoviesViewState
+    ) = withContext(Dispatchers.IO) {
         when (userMovieState) {
             is UserMoviesState.UnknownError -> UserMoviesViewState.createError()
             is UserMoviesState.Success -> {
