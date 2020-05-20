@@ -131,7 +131,7 @@ class UserMovieListViewModel @Inject constructor(
                             .setPrefetchDistance(2)
                             .build()
                     LivePagedListBuilder(it, config)
-                            .setFetchExecutor(CoroutineExecutor(this, Dispatchers.IO))
+                            .setFetchExecutor(CoroutineExecutor(viewModelScope, Dispatchers.IO))
                             .build()
                 }
     }

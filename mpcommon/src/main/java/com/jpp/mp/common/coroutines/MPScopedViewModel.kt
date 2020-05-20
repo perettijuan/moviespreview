@@ -1,42 +1,13 @@
 package com.jpp.mp.common.coroutines
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mp.common.navigation.Destination
-import kotlin.coroutines.CoroutineContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.isActive
 
 /**
- * Generic [ViewModel] to execute work that might cause long term interruptions in the UI thread.
- *
- * The mechanism used to execute background work and sync the state to the UI thread is Kotlin Coroutines.
- * In order to apply that mechanism, this [ViewModel] is a [CoroutineScope] to provide a structured enviroment
- * to execute coroutines - check https://medium.com/@elizarov/structured-concurrency-722d765aa952 to get more
- * information about structured coroutines.
- *
- * By default, all code executed in this class is executed in the Main Dispatcher (dispatchers.main()) - which is
- * equivalent to say that all the code in this class is executed in the UI thread.
- * In order to execute code that might block the UI thread, the dispatcher needs to be changed explicitly.
- * Example:
- *          withContext(dispatchers.default()) { longTermOperation() }
- *
- * Every time that this ViewModel is stopped (onCleared() is called), the CoroutineContext is killed, which
- * causes that any code being executed in the scope of the CoroutineContext is killed automatically.
- *
- * In order to facilitate unit testing of any subclass, the MPScopedViewModel defines a constructor that
- * receives an instance of [CoroutineDispatchers] that can be overridden in order to provide single-threaded
- * behavior.
- *
- * Example of CoroutineScope = https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/index.html
- *
- *
- *
  * Navigation support:
  * The application uses the Android Navigation Architecture Components to perform the navigation between
  * different screens of the application. This provides a good number of benefits - all listed in
@@ -56,32 +27,7 @@ import kotlinx.coroutines.isActive
  *
  * To see the full implementation of this solution, check [MPFragment] definition.
  */
-abstract class MPScopedViewModel(val dispatchers: CoroutineDispatchers = CoroutineDispatchersImpl()) : ViewModel(), CoroutineScope {
-
-    /*
-     * This Job represents the work that it is being done in the
-     * background. It will be cancelled as soon as the ViewModel is
-     * destroyed, meaning that any work being executed in the
-     * context of the coroutine - the background - will be
-     * automatically cancelled.
-     */
-    private val currentJob = SupervisorJob()
-
-    /*
-    * This is the scope in which the coroutines are executed. This indicates that, while the scope
-    * is alive, any subclass of MPScopedViewModel can execute coroutines using the scope. When the scope
-    * is killed, all work being executed in any ongoing coroutine is automatically cancelled.
-    *
-    * It is constructed using [MPScopedViewModel.currentJob] Job and the main dispatcher (UI dispatcher):
-    *  - currentJob means that when the job is cancelled, the scope is killed.
-    *  - the main dispatcher (UI dispatcher) means that any code that it is not specifically wrapped into another
-    *    context, will execute in the UI thread, forcing us to be explicit when we're writing
-    *    code that might take too long to finish.
-    *
-    * What is the plus (+) operator? -> https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/plus.html
-    */
-    override val coroutineContext: CoroutineContext
-        get() = currentJob + dispatchers.main()
+abstract class MPScopedViewModel : ViewModel() {
 
     private val _destinationsEvent = MutableLiveData<Destination>()
     val destinationEvents: LiveData<Destination> get() = _destinationsEvent
@@ -104,11 +50,5 @@ abstract class MPScopedViewModel(val dispatchers: CoroutineDispatchers = Corouti
      */
     protected fun navigateTo(destination: Destination) {
         _navigationEvent.value = of(destination)
-    }
-
-    override fun onCleared() {
-        currentJob.cancel()
-        Log.d("ViewModel", "Scope is active $isActive")
-        super.onCleared()
     }
 }

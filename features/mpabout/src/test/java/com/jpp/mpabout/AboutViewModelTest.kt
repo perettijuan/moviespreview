@@ -2,7 +2,6 @@ package com.jpp.mpabout
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.AppVersion
 import com.jpp.mptestutils.CoroutineTestExtension
@@ -12,8 +11,6 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -92,8 +89,8 @@ class AboutViewModelTest {
     }
 
     data class AboutInteractorTestParam(
-        val selected: AboutItem,
-        val verification: (AboutInteractor) -> Unit
+            val selected: AboutItem,
+            val verification: (AboutInteractor) -> Unit
     )
 
     companion object {
