@@ -4,7 +4,6 @@ import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpaccount.R
-import com.jpp.mpaccount.TestAccountCoroutineDispatchers
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.UserAccount

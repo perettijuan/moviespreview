@@ -2,9 +2,9 @@ package com.jpp.mpaccount.account.lists
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.navigation.Destination
@@ -15,9 +15,10 @@ import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEven
 import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.UserNotLogged
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
-import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * [MPScopedViewModel] used to support the user's movie list section of the application.
@@ -34,11 +35,9 @@ import kotlinx.coroutines.withContext
  * and the view state being shown to the user.
  */
 class UserMovieListViewModel @Inject constructor(
-    dispatchers: CoroutineDispatchers,
-    private val userMovieListInteractor: UserMovieListInteractor,
-    private val imagesPathInteractor: ImagesPathInteractor
-) :
-        MPScopedViewModel(dispatchers) {
+        private val userMovieListInteractor: UserMovieListInteractor,
+        private val imagesPathInteractor: ImagesPathInteractor
+) : MPScopedViewModel() {
 
     private val _viewState = MediatorLiveData<UserMovieListViewState>()
     val viewState: LiveData<UserMovieListViewState> get() = _viewState
@@ -103,9 +102,9 @@ class UserMovieListViewModel @Inject constructor(
      * of [UserMovieItem] that will be rendered by the view layer.
      */
     private fun postLoadingAndInitializePagedList(
-        posterSize: Int,
-        backdropSize: Int,
-        listType: UserMovieListType
+            posterSize: Int,
+            backdropSize: Int,
+            listType: UserMovieListType
     ) {
         _viewState.value = UserMovieListViewState.showLoading()
         _viewState.addSource(createPagedList(posterSize, backdropSize, listType)) { pagedList ->
@@ -121,9 +120,9 @@ class UserMovieListViewModel @Inject constructor(
      * the list of movies.
      */
     private fun createPagedList(
-        moviePosterSize: Int,
-        movieBackdropSize: Int,
-        listType: UserMovieListType
+            moviePosterSize: Int,
+            movieBackdropSize: Int,
+            listType: UserMovieListType
     ): LiveData<PagedList<UserMovieItem>> {
         return createPagingFactory(moviePosterSize, movieBackdropSize, listType)
                 .map { mapDomainMovie(it) }
@@ -132,7 +131,7 @@ class UserMovieListViewModel @Inject constructor(
                             .setPrefetchDistance(2)
                             .build()
                     LivePagedListBuilder(it, config)
-                            .setFetchExecutor(CoroutineExecutor(this, dispatchers.default()))
+                            .setFetchExecutor(CoroutineExecutor(this, Dispatchers.IO))
                             .build()
                 }
     }
@@ -149,9 +148,9 @@ class UserMovieListViewModel @Inject constructor(
      *  2 - Configures the images path of each Movie in the list with the [imagesPathInteractor].
      */
     private fun createPagingFactory(
-        moviePosterSize: Int,
-        movieBackdropSize: Int,
-        listType: UserMovieListType
+            moviePosterSize: Int,
+            movieBackdropSize: Int,
+            listType: UserMovieListType
     ): MPPagingDataSourceFactory<Movie> {
         return MPPagingDataSourceFactory { page, callback ->
             val movieListProcessor: (List<Movie>) -> Unit = { movieList ->
@@ -174,8 +173,10 @@ class UserMovieListViewModel @Inject constructor(
      * movie list for the current section being shown.
      */
     private fun refreshData() {
-        launch {
-            withContext(dispatchers.default()) { userMovieListInteractor.refreshUserMoviesData() }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                userMovieListInteractor.refreshUserMoviesData()
+            }
             postLoadingAndInitializePagedList(
                     currentParam.posterSize,
                     currentParam.backdropSize,
