@@ -2,7 +2,7 @@ package com.jpp.mpmoviedetails
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
+import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpmoviedetails.MovieDetailActionViewState.ShowLoading
@@ -17,9 +17,10 @@ import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UnknownErro
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UpdateFavorite
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UpdateWatchlist
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UserNotLogged
-import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * [MPScopedViewModel] that supports the movie details actions (the data shown by the UI that is not
@@ -33,10 +34,8 @@ import kotlinx.coroutines.withContext
  * state of the business layer.
  */
 class MovieDetailsActionViewModel @Inject constructor(
-    dispatchers: CoroutineDispatchers,
-    private val movieDetailsInteractor: MovieDetailsInteractor
-) :
-        MPScopedViewModel(dispatchers) {
+        private val movieDetailsInteractor: MovieDetailsInteractor
+) : MPScopedViewModel() {
 
     private val _viewState = MediatorLiveData<MovieDetailActionViewState>()
     val viewState: LiveData<MovieDetailActionViewState> get() = _viewState
@@ -182,7 +181,11 @@ class MovieDetailsActionViewModel @Inject constructor(
      * on a background task.
      */
     private fun withMovieDetailsInteractor(action: MovieDetailsInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(movieDetailsInteractor) } }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                action(movieDetailsInteractor)
+            }
+        }
     }
 
     private fun processErrorState(): MovieDetailActionViewState {
@@ -204,8 +207,8 @@ class MovieDetailsActionViewModel @Inject constructor(
      * to update the state of the movie (via interactor) and update the UI state.
      */
     private fun executeMovieStateUpdate(
-        stateUpdateFunction: MovieDetailsInteractor.() -> Unit,
-        copyLoadingStateFunction: (ShowMovieState) -> ShowMovieState
+            stateUpdateFunction: MovieDetailsInteractor.() -> Unit,
+            copyLoadingStateFunction: (ShowMovieState) -> ShowMovieState
     ) {
         when (val currentState = viewState.value) {
             is ShowMovieState -> {
