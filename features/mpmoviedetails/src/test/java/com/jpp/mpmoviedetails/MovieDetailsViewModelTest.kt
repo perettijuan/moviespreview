@@ -16,6 +16,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -90,46 +91,50 @@ class MovieDetailsViewModelTest {
         verify { interactor.fetchMovieDetail(10.0) }
     }
 
-    //TODO JPP review after refactor to UseCases
-//    @Test
-//    fun `Should execute GetMovieDetailsUseCase, adapt result to UI model and post value on init`() {
-//        var viewStatePosted: MovieDetailViewState? = null
-//        val movieDetailId = 12.0
-//
-//        val domainDetail = MovieDetail(
-//                id = movieDetailId,
-//                title = "aTitle",
-//                overview = "anOverview",
-//                release_date = "aReleaseDate",
-//                vote_count = 12.toDouble(),
-//                vote_average = 15F,
-//                popularity = 178F,
-//                poster_path = null,
-//                genres = listOf(
-//                        MovieGenre(28, "Action"),
-//                        MovieGenre(27, "Horror")
-//                )
-//        )
-//
-//        val expected = MovieDetailViewState.showDetails(
-//                movieImageUrl = "aUrl",
-//                overview = domainDetail.overview,
-//                releaseDate = domainDetail.release_date,
-//                voteCount = domainDetail.vote_count.toString(),
-//                popularity = domainDetail.popularity.toString(),
-//                genres = listOf(
-//                        MovieGenreItem.Action,
-//                        MovieGenreItem.Horror
-//                )
-//        )
-//
-//        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
-//        subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
-//
-//        lvInteractorEvents.postValue(MovieDetailsInteractor.MovieDetailEvent.Success(domainDetail))
-//
-//        assertEquals(expected, viewStatePosted)
-//    }
+    /*
+     * TODO I need to check exactly what's happening with this UT. Don't want to waste
+     *  time since I'm going to refactor by eliminating the interactor layers.
+     */
+    @Test
+    @Disabled
+    fun `Should execute GetMovieDetailsUseCase, adapt result to UI model and post value on init`() {
+        var viewStatePosted: MovieDetailViewState? = null
+        val movieDetailId = 12.0
+
+        val domainDetail = MovieDetail(
+                id = movieDetailId,
+                title = "aTitle",
+                overview = "anOverview",
+                release_date = "aReleaseDate",
+                vote_count = 12.toDouble(),
+                vote_average = 15F,
+                popularity = 178F,
+                poster_path = null,
+                genres = listOf(
+                        MovieGenre(28, "Action"),
+                        MovieGenre(27, "Horror")
+                )
+        )
+
+        val expected = MovieDetailViewState.showDetails(
+                movieImageUrl = "aUrl",
+                overview = domainDetail.overview,
+                releaseDate = domainDetail.release_date,
+                voteCount = domainDetail.vote_count.toString(),
+                popularity = domainDetail.popularity.toString(),
+                genres = listOf(
+                        MovieGenreItem.Action,
+                        MovieGenreItem.Horror
+                )
+        )
+
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+        subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
+
+        lvInteractorEvents.postValue(MovieDetailsInteractor.MovieDetailEvent.Success(domainDetail))
+
+        assertEquals(expected, viewStatePosted)
+    }
 
     @Test
     fun `Should update reached destination in onInit`() {
