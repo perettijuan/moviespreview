@@ -2,7 +2,7 @@ package com.jpp.mp.main.header
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
+import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.Success
@@ -10,9 +10,10 @@ import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.Unknown
 import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.UserNotLogged
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
-import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * [MPScopedViewModel] that supports the [NavigationHeaderFragment] behavior. It retrieves the
@@ -20,10 +21,8 @@ import kotlinx.coroutines.withContext
  * state that the Fragment takes care of rendering.
  */
 class NavigationHeaderViewModel @Inject constructor(
-    dispatchers: CoroutineDispatchers,
-    private val interactor: NavigationHeaderInteractor
-) :
-        MPScopedViewModel(dispatchers) {
+        private val interactor: NavigationHeaderInteractor
+) : MPScopedViewModel() {
 
     private val _viewState = MediatorLiveData<HeaderViewState>()
     val viewState: LiveData<HeaderViewState> get() = _viewState
@@ -48,7 +47,11 @@ class NavigationHeaderViewModel @Inject constructor(
      * on it.
      */
     fun onInit() {
-        launch { withContext(dispatchers.default()) { interactor.getUserAccountData() } }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                interactor.getUserAccountData()
+            }
+        }
         _viewState.value = HeaderViewState.showLoading()
     }
 
