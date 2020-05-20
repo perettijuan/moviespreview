@@ -2,9 +2,9 @@ package com.jpp.mp.main.movies
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.navigation.Destination
@@ -15,9 +15,10 @@ import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.UserChangedLang
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
-import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * [MPScopedViewModel] used to support the movie list section of the application. This ViewModel is shared by
@@ -37,11 +38,9 @@ import kotlinx.coroutines.withContext
  * and the view state being shown to the user.
  */
 class MovieListViewModel @Inject constructor(
-    dispatchers: CoroutineDispatchers,
-    private val movieListInteractor: MovieListInteractor,
-    private val imagesPathInteractor: ImagesPathInteractor
-) :
-        MPScopedViewModel(dispatchers) {
+        private val movieListInteractor: MovieListInteractor,
+        private val imagesPathInteractor: ImagesPathInteractor
+) : MPScopedViewModel() {
 
     private val _viewState = MediatorLiveData<MovieListViewState>()
     val viewState: LiveData<MovieListViewState> get() = _viewState
@@ -125,7 +124,7 @@ class MovieListViewModel @Inject constructor(
                             .setPrefetchDistance(2)
                             .build()
                     LivePagedListBuilder(it, config)
-                            .setFetchExecutor(CoroutineExecutor(this, dispatchers.default()))
+                            .setFetchExecutor(CoroutineExecutor(this, Dispatchers.IO))
                             .build()
                 }
     }
@@ -154,8 +153,8 @@ class MovieListViewModel @Inject constructor(
      * movie list for the current section being shown.
      */
     private fun refreshData() {
-        launch {
-            withContext(dispatchers.default()) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
                 with(movieListInteractor) {
                     flushMoviePagesForSection(MovieSection.Playing)
                     flushMoviePagesForSection(MovieSection.Popular)
