@@ -2,7 +2,7 @@ package com.jpp.mpperson
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
+import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.coroutines.MPScopedViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.Person
@@ -15,9 +15,10 @@ import com.jpp.mpperson.PersonRowViewState.Companion.birthdayRow
 import com.jpp.mpperson.PersonRowViewState.Companion.deathDayRow
 import com.jpp.mpperson.PersonRowViewState.Companion.emptyRow
 import com.jpp.mpperson.PersonRowViewState.Companion.placeOfBirthRow
-import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * [MPScopedViewModel] that supports the person section. The VM retrieves
@@ -29,10 +30,8 @@ import kotlinx.coroutines.withContext
  * and the view state being shown to the user.
  */
 class PersonViewModel @Inject constructor(
-    dispatchers: CoroutineDispatchers,
-    private val personInteractor: PersonInteractor
-) :
-        MPScopedViewModel(dispatchers) {
+        private val personInteractor: PersonInteractor
+) : MPScopedViewModel() {
 
     private val _viewState = MediatorLiveData<PersonViewState>()
     val viewState: LiveData<PersonViewState> get() = _viewState
@@ -95,7 +94,11 @@ class PersonViewModel @Inject constructor(
      * on a background task.
      */
     private fun withInteractor(action: PersonInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(personInteractor) } }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                action(personInteractor)
+            }
+        }
     }
 
     /**

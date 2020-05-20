@@ -56,7 +56,7 @@ import kotlinx.coroutines.isActive
  *
  * To see the full implementation of this solution, check [MPFragment] definition.
  */
-abstract class MPScopedViewModel(val dispatchers: CoroutineDispatchers) : ViewModel(), CoroutineScope {
+abstract class MPScopedViewModel(val dispatchers: CoroutineDispatchers = CoroutineDispatchersImpl()) : ViewModel(), CoroutineScope {
 
     /*
      * This Job represents the work that it is being done in the
