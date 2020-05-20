@@ -3,7 +3,7 @@ package com.jpp.mpperson
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.Person
 import com.jpp.mpperson.PersonInteractor.PersonEvent.AppLanguageChanged
@@ -21,7 +21,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * [MPScopedViewModel] that supports the person section. The VM retrieves
+ * [MPViewModel] that supports the person section. The VM retrieves
  * the data from the underlying layers using the provided [PersonInteractor] and maps the business
  * data to UI data, producing a [PersonViewState] that represents the configuration of the view.
  *
@@ -31,7 +31,7 @@ import javax.inject.Inject
  */
 class PersonViewModel @Inject constructor(
         private val personInteractor: PersonInteractor
-) : MPScopedViewModel() {
+) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<PersonViewState>()
     val viewState: LiveData<PersonViewState> get() = _viewState

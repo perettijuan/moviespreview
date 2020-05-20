@@ -27,7 +27,7 @@ import com.jpp.mp.common.navigation.Destination
  *
  * To see the full implementation of this solution, check [MPFragment] definition.
  */
-abstract class MPScopedViewModel : ViewModel() {
+abstract class MPViewModel : ViewModel() {
 
     private val _destinationsEvent = MutableLiveData<Destination>()
     val destinationEvents: LiveData<Destination> get() = _destinationsEvent

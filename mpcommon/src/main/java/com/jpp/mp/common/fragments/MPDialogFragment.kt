@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.extensions.getViewModel
 import com.jpp.mp.common.navigation.NavigationViewModel
 import dagger.android.support.AndroidSupportInjection
@@ -14,7 +14,7 @@ import javax.inject.Inject
 /**
  * Check [MPFragment] for a detailed explanation.
  */
-abstract class MPDialogFragment<VM : MPScopedViewModel> : DialogFragment() {
+abstract class MPDialogFragment<VM : MPViewModel> : DialogFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

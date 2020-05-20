@@ -3,7 +3,7 @@ package com.jpp.mp.main.header
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.Success
 import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.UnknownError
@@ -16,13 +16,13 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * [MPScopedViewModel] that supports the [NavigationHeaderFragment] behavior. It retrieves the
+ * [MPViewModel] that supports the [NavigationHeaderFragment] behavior. It retrieves the
  * user account data and state using the provided [NavigationHeaderInteractor] and updates the view
  * state that the Fragment takes care of rendering.
  */
 class NavigationHeaderViewModel @Inject constructor(
         private val interactor: NavigationHeaderInteractor
-) : MPScopedViewModel() {
+) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<HeaderViewState>()
     val viewState: LiveData<HeaderViewState> get() = _viewState

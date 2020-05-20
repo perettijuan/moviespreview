@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mp.common.coroutines.CoroutineExecutor
-import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
 import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.NotConnectedToNetwork
@@ -21,7 +21,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * [MPScopedViewModel] used to support the user's movie list section of the application.
+ * [MPViewModel] used to support the user's movie list section of the application.
  * Produces different [UserMovieListViewState] that represents the entire configuration of the screen at any
  * given moment.
  *
@@ -37,7 +37,7 @@ import javax.inject.Inject
 class UserMovieListViewModel @Inject constructor(
         private val userMovieListInteractor: UserMovieListInteractor,
         private val imagesPathInteractor: ImagesPathInteractor
-) : MPScopedViewModel() {
+) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<UserMovieListViewState>()
     val viewState: LiveData<UserMovieListViewState> get() = _viewState

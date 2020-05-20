@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mp.common.coroutines.CoroutineExecutor
-import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
 import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.NotConnectedToNetwork
@@ -21,7 +21,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * [MPScopedViewModel] used to support the movie list section of the application. This ViewModel is shared by
+ * [MPViewModel] used to support the movie list section of the application. This ViewModel is shared by
  * the Fragments that show the movies listed in each category that can be displayed. Every time the
  * user selects a section, this VM is refreshed and triggers a new fetching to the underlying layers
  * of the application.
@@ -40,7 +40,7 @@ import javax.inject.Inject
 class MovieListViewModel @Inject constructor(
         private val movieListInteractor: MovieListInteractor,
         private val imagesPathInteractor: ImagesPathInteractor
-) : MPScopedViewModel() {
+) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<MovieListViewState>()
     val viewState: LiveData<MovieListViewState> get() = _viewState

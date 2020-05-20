@@ -3,7 +3,7 @@ package com.jpp.mpmoviedetails.rates
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mp.common.navigation.Destination
@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * [MPScopedViewModel] that supports the movie movie rating feature. The VM retrieves
+ * [MPViewModel] that supports the movie movie rating feature. The VM retrieves
  * the data from the underlying layers using the provided [MovieDetailsInteractor] and maps the business
  * data to UI data, producing a [RateMovieViewState] that represents the configuration of the view
  * at any given moment. It also exposes message updates as [RateMovieUserMessages] in order to notify
@@ -28,7 +28,7 @@ import javax.inject.Inject
  */
 class RateMovieViewModel @Inject constructor(
         private val movieDetailsInteractor: MovieDetailsInteractor
-) : MPScopedViewModel() {
+) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<RateMovieViewState>()
     val viewState: LiveData<RateMovieViewState> get() = _viewState

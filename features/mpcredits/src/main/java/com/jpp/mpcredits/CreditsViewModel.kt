@@ -3,7 +3,7 @@ package com.jpp.mpcredits
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.extensions.addAllMapping
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpcredits.CreditsInteractor.CreditsEvent.AppLanguageChanged
@@ -20,7 +20,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * [MPScopedViewModel] that supports the credits section. The VM retrieves
+ * [MPViewModel] that supports the credits section. The VM retrieves
  * the data from the underlying layers using the provided [CreditsInteractor] and maps the business
  * data to UI data, producing a [CreditsViewState] that represents the configuration of the view
  * at any given moment. The mapping process involves fetching and parsing the paths for the images
@@ -34,7 +34,7 @@ import javax.inject.Inject
 class CreditsViewModel @Inject constructor(
         private val creditsInteractor: CreditsInteractor,
         private val imagesPathInteractor: ImagesPathInteractor
-) : MPScopedViewModel() {
+) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<CreditsViewState>()
     val viewState: LiveData<CreditsViewState> get() = _viewState

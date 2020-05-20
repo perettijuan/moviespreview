@@ -3,7 +3,7 @@ package com.jpp.mpaccount.account
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpaccount.account.UserAccountFragmentDirections.userMovieListFragment
 import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent
@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * [MPScopedViewModel] to handle the state of the [UserAccountFragment]. It is a coroutine-scoped
+ * [MPViewModel] to handle the state of the [UserAccountFragment]. It is a coroutine-scoped
  * ViewModel, which indicates that some work will be executed in a background context and synced
  * to the main context when over.
  *
@@ -31,7 +31,7 @@ import javax.inject.Inject
 class UserAccountViewModel @Inject constructor(
         private val accountInteractor: UserAccountInteractor,
         private val imagesPathInteractor: ImagesPathInteractor
-) : MPScopedViewModel() {
+) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<UserAccountViewState>()
     val viewState: LiveData<UserAccountViewState> get() = _viewState

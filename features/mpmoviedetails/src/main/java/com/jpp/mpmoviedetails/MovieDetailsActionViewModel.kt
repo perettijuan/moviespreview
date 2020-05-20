@@ -3,7 +3,7 @@ package com.jpp.mpmoviedetails
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpmoviedetails.MovieDetailActionViewState.ShowLoading
 import com.jpp.mpmoviedetails.MovieDetailActionViewState.ShowMovieState
@@ -23,7 +23,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * [MPScopedViewModel] that supports the movie details actions (the data shown by the UI that is not
+ * [MPViewModel] that supports the movie details actions (the data shown by the UI that is not
  * related to the actions that the user can perform is controlled by [MovieDetailsViewModel]). The VM retrieves
  * the data from the underlying layers using the provided [MovieDetailsInteractor] and maps the business
  * data to UI data, producing a [MovieDetailViewState] that represents the configuration of the view
@@ -35,7 +35,7 @@ import javax.inject.Inject
  */
 class MovieDetailsActionViewModel @Inject constructor(
         private val movieDetailsInteractor: MovieDetailsInteractor
-) : MPScopedViewModel() {
+) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<MovieDetailActionViewState>()
     val viewState: LiveData<MovieDetailActionViewState> get() = _viewState

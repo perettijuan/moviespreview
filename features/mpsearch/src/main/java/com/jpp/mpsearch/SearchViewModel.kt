@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.jpp.mp.common.coroutines.CoroutineExecutor
-import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
 import com.jpp.mpdomain.SearchResult
@@ -20,7 +20,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * [MPScopedViewModel] used to support the search section of the application.
+ * [MPViewModel] used to support the search section of the application.
  * Produces different [SearchViewState] that represents the entire configuration of the screen at any
  * given moment.
  *
@@ -36,7 +36,7 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
         private val searchInteractor: SearchInteractor,
         private val imagesPathInteractor: ImagesPathInteractor
-) : MPScopedViewModel() {
+) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<SearchViewState>()
     val viewState: LiveData<SearchViewState> = _viewState
