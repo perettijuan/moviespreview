@@ -183,7 +183,6 @@ class CreditsViewModelTest {
         assertEquals(R.string.no_credits_for_this_movie, viewStatePosted?.noCreditsViewState?.titleRes)
     }
 
-
     /*
      * TODO I need to check exactly what's happening with this UT. Don't want to waste
      *  time since I'm going to refactor by eliminating the interactor layers.

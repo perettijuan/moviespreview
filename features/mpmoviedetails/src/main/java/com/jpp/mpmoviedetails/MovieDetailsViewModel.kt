@@ -29,10 +29,10 @@ import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.AppLanguag
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.NotConnectedToNetwork
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.Success
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.UnknownError
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] that supports the movie details section (only the static data, not the actions
@@ -46,7 +46,7 @@ import javax.inject.Inject
  * and the view state being shown to the user.
  */
 class MovieDetailsViewModel @Inject constructor(
-        private val movieDetailsInteractor: MovieDetailsInteractor
+    private val movieDetailsInteractor: MovieDetailsInteractor
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<MovieDetailViewState>()

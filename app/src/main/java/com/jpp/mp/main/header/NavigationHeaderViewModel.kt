@@ -10,10 +10,10 @@ import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.Unknown
 import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.UserNotLogged
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] that supports the [NavigationHeaderFragment] behavior. It retrieves the
@@ -21,7 +21,7 @@ import javax.inject.Inject
  * state that the Fragment takes care of rendering.
  */
 class NavigationHeaderViewModel @Inject constructor(
-        private val interactor: NavigationHeaderInteractor
+    private val interactor: NavigationHeaderInteractor
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<HeaderViewState>()

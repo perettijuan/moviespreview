@@ -15,10 +15,10 @@ import com.jpp.mpperson.PersonRowViewState.Companion.birthdayRow
 import com.jpp.mpperson.PersonRowViewState.Companion.deathDayRow
 import com.jpp.mpperson.PersonRowViewState.Companion.emptyRow
 import com.jpp.mpperson.PersonRowViewState.Companion.placeOfBirthRow
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] that supports the person section. The VM retrieves
@@ -30,7 +30,7 @@ import javax.inject.Inject
  * and the view state being shown to the user.
  */
 class PersonViewModel @Inject constructor(
-        private val personInteractor: PersonInteractor
+    private val personInteractor: PersonInteractor
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<PersonViewState>()

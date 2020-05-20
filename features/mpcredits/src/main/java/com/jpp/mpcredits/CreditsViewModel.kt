@@ -14,10 +14,10 @@ import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
 import com.jpp.mpdomain.CrewMember
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] that supports the credits section. The VM retrieves
@@ -32,8 +32,8 @@ import javax.inject.Inject
  * and the view state being shown to the user.
  */
 class CreditsViewModel @Inject constructor(
-        private val creditsInteractor: CreditsInteractor,
-        private val imagesPathInteractor: ImagesPathInteractor
+    private val creditsInteractor: CreditsInteractor,
+    private val imagesPathInteractor: ImagesPathInteractor
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<CreditsViewState>()

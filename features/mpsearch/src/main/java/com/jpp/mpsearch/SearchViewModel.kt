@@ -14,10 +14,10 @@ import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.AppLanguageChanged
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.NotConnectedToNetwork
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.UnknownError
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] used to support the search section of the application.
@@ -34,8 +34,8 @@ import javax.inject.Inject
  * and the view state being shown to the user.
  */
 class SearchViewModel @Inject constructor(
-        private val searchInteractor: SearchInteractor,
-        private val imagesPathInteractor: ImagesPathInteractor
+    private val searchInteractor: SearchInteractor,
+    private val imagesPathInteractor: ImagesPathInteractor
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<SearchViewState>()

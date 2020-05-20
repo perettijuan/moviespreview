@@ -10,10 +10,10 @@ import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpmoviedetails.MovieDetailsInteractor
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.RateMovieEvent
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] that supports the movie movie rating feature. The VM retrieves
@@ -27,7 +27,7 @@ import javax.inject.Inject
  * state of the business layer.
  */
 class RateMovieViewModel @Inject constructor(
-        private val movieDetailsInteractor: MovieDetailsInteractor
+    private val movieDetailsInteractor: MovieDetailsInteractor
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<RateMovieViewState>()

@@ -15,10 +15,10 @@ import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.UserChangedLang
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] used to support the movie list section of the application. This ViewModel is shared by
@@ -38,8 +38,8 @@ import javax.inject.Inject
  * and the view state being shown to the user.
  */
 class MovieListViewModel @Inject constructor(
-        private val movieListInteractor: MovieListInteractor,
-        private val imagesPathInteractor: ImagesPathInteractor
+    private val movieListInteractor: MovieListInteractor,
+    private val imagesPathInteractor: ImagesPathInteractor
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<MovieListViewState>()

@@ -12,10 +12,10 @@ import com.jpp.mpabout.AboutInteractor.AboutEvent.AboutUrlEvent
 import com.jpp.mpabout.AboutInteractor.AboutEvent.AboutWebStoreUrlEvent
 import com.jpp.mpabout.AboutInteractor.AboutEvent.AppVersionEvent
 import com.jpp.mpdomain.AboutUrl
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] that supports the about section. The VM retrieves
@@ -23,7 +23,7 @@ import javax.inject.Inject
  * data to UI data, producing a [AboutViewState] that represents the configuration of the view.
  */
 class AboutViewModel @Inject constructor(
-        private val aboutInteractor: AboutInteractor
+    private val aboutInteractor: AboutInteractor
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<AboutViewState>()

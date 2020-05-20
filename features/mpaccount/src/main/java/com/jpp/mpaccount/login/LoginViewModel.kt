@@ -8,10 +8,10 @@ import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpaccount.login.LoginInteractor.LoginEvent
 import com.jpp.mpaccount.login.LoginInteractor.OauthEvent
 import com.jpp.mpdomain.AccessToken
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] that supports the login process. The login implementation is implemented using
@@ -19,7 +19,7 @@ import javax.inject.Inject
  * to properly render the view state needed to support Oauth.
  */
 class LoginViewModel @Inject constructor(
-        private val loginInteractor: LoginInteractor
+    private val loginInteractor: LoginInteractor
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<LoginViewState>()

@@ -17,7 +17,7 @@ import org.junit.jupiter.api.extension.ExtensionContext
 @RestrictTo(RestrictTo.Scope.TESTS)
 @ExperimentalCoroutinesApi
 class CoroutineTestExtension(
-        private val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
+    private val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
 ) : BeforeEachCallback, AfterEachCallback {
 
     override fun beforeEach(context: ExtensionContext?) {

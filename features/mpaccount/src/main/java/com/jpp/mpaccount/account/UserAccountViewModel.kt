@@ -12,10 +12,10 @@ import com.jpp.mpaccount.account.lists.UserMovieListType
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] to handle the state of the [UserAccountFragment]. It is a coroutine-scoped
@@ -29,8 +29,8 @@ import javax.inject.Inject
  * because it needs to map the URL of the movies to be shown before rendering the data.
  */
 class UserAccountViewModel @Inject constructor(
-        private val accountInteractor: UserAccountInteractor,
-        private val imagesPathInteractor: ImagesPathInteractor
+    private val accountInteractor: UserAccountInteractor,
+    private val imagesPathInteractor: ImagesPathInteractor
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<UserAccountViewState>()
@@ -135,10 +135,10 @@ class UserAccountViewModel @Inject constructor(
      * instead of the user's avatar.
      */
     private fun mapAccountInfoWithoutAvatar(
-            userAccount: UserAccount,
-            favViewState: UserMoviesViewState,
-            ratedViewState: UserMoviesViewState,
-            watchViewState: UserMoviesViewState
+        userAccount: UserAccount,
+        favViewState: UserMoviesViewState,
+        ratedViewState: UserMoviesViewState,
+        watchViewState: UserMoviesViewState
     ) {
         _viewState.value = UserAccountViewState.showContentWithLetter(
                 userName = if (userAccount.name.isEmpty()) userAccount.username else userAccount.name,
@@ -159,8 +159,8 @@ class UserAccountViewModel @Inject constructor(
     }
 
     private suspend fun getUserMoviesViewState(
-            userMovieState: UserMoviesState,
-            emptyCreator: () -> UserMoviesViewState
+        userMovieState: UserMoviesState,
+        emptyCreator: () -> UserMoviesViewState
     ) = withContext(Dispatchers.IO) {
         when (userMovieState) {
             is UserMoviesState.UnknownError -> UserMoviesViewState.createError()

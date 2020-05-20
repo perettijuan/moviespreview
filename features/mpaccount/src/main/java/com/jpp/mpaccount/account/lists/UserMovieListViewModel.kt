@@ -15,10 +15,10 @@ import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEven
 import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.UserNotLogged
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] used to support the user's movie list section of the application.
@@ -35,8 +35,8 @@ import javax.inject.Inject
  * and the view state being shown to the user.
  */
 class UserMovieListViewModel @Inject constructor(
-        private val userMovieListInteractor: UserMovieListInteractor,
-        private val imagesPathInteractor: ImagesPathInteractor
+    private val userMovieListInteractor: UserMovieListInteractor,
+    private val imagesPathInteractor: ImagesPathInteractor
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<UserMovieListViewState>()
@@ -102,9 +102,9 @@ class UserMovieListViewModel @Inject constructor(
      * of [UserMovieItem] that will be rendered by the view layer.
      */
     private fun postLoadingAndInitializePagedList(
-            posterSize: Int,
-            backdropSize: Int,
-            listType: UserMovieListType
+        posterSize: Int,
+        backdropSize: Int,
+        listType: UserMovieListType
     ) {
         _viewState.value = UserMovieListViewState.showLoading()
         _viewState.addSource(createPagedList(posterSize, backdropSize, listType)) { pagedList ->
@@ -120,9 +120,9 @@ class UserMovieListViewModel @Inject constructor(
      * the list of movies.
      */
     private fun createPagedList(
-            moviePosterSize: Int,
-            movieBackdropSize: Int,
-            listType: UserMovieListType
+        moviePosterSize: Int,
+        movieBackdropSize: Int,
+        listType: UserMovieListType
     ): LiveData<PagedList<UserMovieItem>> {
         return createPagingFactory(moviePosterSize, movieBackdropSize, listType)
                 .map { mapDomainMovie(it) }
@@ -148,9 +148,9 @@ class UserMovieListViewModel @Inject constructor(
      *  2 - Configures the images path of each Movie in the list with the [imagesPathInteractor].
      */
     private fun createPagingFactory(
-            moviePosterSize: Int,
-            movieBackdropSize: Int,
-            listType: UserMovieListType
+        moviePosterSize: Int,
+        movieBackdropSize: Int,
+        listType: UserMovieListType
     ): MPPagingDataSourceFactory<Movie> {
         return MPPagingDataSourceFactory { page, callback ->
             val movieListProcessor: (List<Movie>) -> Unit = { movieList ->

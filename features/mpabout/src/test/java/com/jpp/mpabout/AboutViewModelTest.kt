@@ -89,8 +89,8 @@ class AboutViewModelTest {
     }
 
     data class AboutInteractorTestParam(
-            val selected: AboutItem,
-            val verification: (AboutInteractor) -> Unit
+        val selected: AboutItem,
+        val verification: (AboutInteractor) -> Unit
     )
 
     companion object {

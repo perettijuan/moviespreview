@@ -12,16 +12,16 @@ import com.jpp.mpabout.AboutInteractor
 import com.jpp.mpabout.AboutInteractor.LicensesEvent.Success
 import com.jpp.mpabout.AboutInteractor.LicensesEvent.UnknownError
 import com.jpp.mpdomain.License
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] that supports the list of [License]s that the application uses.
  */
 class LicensesViewModel @Inject constructor(
-        private val aboutInteractor: AboutInteractor
+    private val aboutInteractor: AboutInteractor
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<LicensesViewState>()

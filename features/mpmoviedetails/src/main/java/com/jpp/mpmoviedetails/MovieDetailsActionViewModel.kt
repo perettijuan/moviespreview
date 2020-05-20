@@ -17,10 +17,10 @@ import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UnknownErro
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UpdateFavorite
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UpdateWatchlist
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UserNotLogged
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] that supports the movie details actions (the data shown by the UI that is not
@@ -34,7 +34,7 @@ import javax.inject.Inject
  * state of the business layer.
  */
 class MovieDetailsActionViewModel @Inject constructor(
-        private val movieDetailsInteractor: MovieDetailsInteractor
+    private val movieDetailsInteractor: MovieDetailsInteractor
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<MovieDetailActionViewState>()
@@ -207,8 +207,8 @@ class MovieDetailsActionViewModel @Inject constructor(
      * to update the state of the movie (via interactor) and update the UI state.
      */
     private fun executeMovieStateUpdate(
-            stateUpdateFunction: MovieDetailsInteractor.() -> Unit,
-            copyLoadingStateFunction: (ShowMovieState) -> ShowMovieState
+        stateUpdateFunction: MovieDetailsInteractor.() -> Unit,
+        copyLoadingStateFunction: (ShowMovieState) -> ShowMovieState
     ) {
         when (val currentState = viewState.value) {
             is ShowMovieState -> {
