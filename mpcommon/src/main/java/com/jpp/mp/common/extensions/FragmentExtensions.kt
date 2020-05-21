@@ -3,7 +3,6 @@ package com.jpp.mp.common.extensions
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 
 /**
  * Returns an integer that represents the width of the screen in pixels.
@@ -11,7 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 fun Fragment.getScreenWidthInPixels(): Int {
     activity?.let {
         return it.getScreenSizeInPixels().x
-    } ?: throw IllegalStateException("Activity is null at this point")
+    } ?: throw IllegalStateException("Activity is null at this øpoint")
 }
 
 /**
@@ -28,7 +27,7 @@ fun Fragment.getResIdFromAttribute(attr: Int): Int {
  */
 inline fun <reified T : ViewModel> Fragment.getViewModel(viewModelFactory: ViewModelProvider.Factory): T {
     return activity?.run {
-        ViewModelProviders.of(this, viewModelFactory)[T::class.java]
+        ViewModelProvider(this, viewModelFactory)[T::class.java]
     } ?: throw RuntimeException("Invalid Activity")
 }
 

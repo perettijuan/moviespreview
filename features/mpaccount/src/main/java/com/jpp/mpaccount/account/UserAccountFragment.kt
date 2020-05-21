@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.webkit.CookieManager
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import com.jpp.mp.common.extensions.clearAllCookies
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
@@ -42,7 +41,7 @@ class UserAccountFragment : MPFragment<UserAccountViewModel>() {
 
         userAccountLogoutBtn.setOnClickListener {
             withViewModel { onLogout() }
-            CookieManager.getInstance().clearAllCookies()
+            CookieManager.getInstance().removeAllCookies(null)
         }
 
         userAccountFavoriteMovies.setOnClickListener {

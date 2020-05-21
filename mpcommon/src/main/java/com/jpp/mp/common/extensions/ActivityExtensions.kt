@@ -24,7 +24,7 @@ fun Activity.getScreenSizeInPixels(): Point {
  * Extension function to find a ViewModel in an Activity.
  */
 inline fun <reified T : ViewModel> FragmentActivity.getViewModel(viewModelFactory: ViewModelProvider.Factory): T {
-    return androidx.lifecycle.ViewModelProviders.of(this, viewModelFactory)[T::class.java]
+    return ViewModelProvider(this, viewModelFactory)[T::class.java]
 }
 
 /**
