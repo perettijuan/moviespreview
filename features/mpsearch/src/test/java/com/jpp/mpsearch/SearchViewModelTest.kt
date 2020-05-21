@@ -118,7 +118,6 @@ class SearchViewModelTest {
         assertEquals(false, viewStatePosted?.errorViewState?.isConnectivity)
     }
 
-
     /*
      * TODO I need to check exactly what's happening with this UT. Don't want to waste
      *  time since I'm going to refactor by eliminating the interactor layers.
