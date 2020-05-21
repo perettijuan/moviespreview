@@ -43,6 +43,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     // Kotlin standard libs
     implementation deps.kotlin.stdlib
+    // Kotlin test libs
+    implementation deps.coroutines.test
     // ViewModel and LiveData
     implementation deps.androidx.lifecycle.extensions
     kapt deps.androidx.lifecycle.compiler

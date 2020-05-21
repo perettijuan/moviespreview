@@ -2,8 +2,8 @@ package com.jpp.mpcredits
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
-import com.jpp.mp.common.coroutines.MPScopedViewModel
+import androidx.lifecycle.viewModelScope
+import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.extensions.addAllMapping
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpcredits.CreditsInteractor.CreditsEvent.AppLanguageChanged
@@ -15,11 +15,12 @@ import com.jpp.mpdomain.Credits
 import com.jpp.mpdomain.CrewMember
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * [MPScopedViewModel] that supports the credits section. The VM retrieves
+ * [MPViewModel] that supports the credits section. The VM retrieves
  * the data from the underlying layers using the provided [CreditsInteractor] and maps the business
  * data to UI data, producing a [CreditsViewState] that represents the configuration of the view
  * at any given moment. The mapping process involves fetching and parsing the paths for the images
@@ -31,11 +32,9 @@ import kotlinx.coroutines.withContext
  * and the view state being shown to the user.
  */
 class CreditsViewModel @Inject constructor(
-    dispatchers: CoroutineDispatchers,
     private val creditsInteractor: CreditsInteractor,
     private val imagesPathInteractor: ImagesPathInteractor
-) :
-        MPScopedViewModel(dispatchers) {
+) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<CreditsViewState>()
     val viewState: LiveData<CreditsViewState> get() = _viewState
@@ -112,7 +111,11 @@ class CreditsViewModel @Inject constructor(
      * on a background task.
      */
     private fun withInteractor(action: CreditsInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(creditsInteractor) } }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                action(creditsInteractor)
+            }
+        }
     }
 
     /**
@@ -124,8 +127,8 @@ class CreditsViewModel @Inject constructor(
         when (credits.cast.isEmpty() && credits.crew.isEmpty()) {
             true -> _viewState.value = CreditsViewState.showNoCreditsAvailable()
             false -> {
-                launch {
-                    withContext(dispatchers.default()) {
+                viewModelScope.launch {
+                    withContext(Dispatchers.IO) {
                         CreditsViewState.showCredits(
                                 credits.cast
                                         .map { imagesPathInteractor.configureCastCharacter(currentParam.targetImageSize, it) }

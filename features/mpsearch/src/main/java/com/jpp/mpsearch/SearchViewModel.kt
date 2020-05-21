@@ -2,11 +2,11 @@ package com.jpp.mpsearch
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.CoroutineExecutor
-import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
 import com.jpp.mpdomain.SearchResult
@@ -15,11 +15,12 @@ import com.jpp.mpsearch.SearchInteractor.SearchEvent.AppLanguageChanged
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.NotConnectedToNetwork
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.UnknownError
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * [MPScopedViewModel] used to support the search section of the application.
+ * [MPViewModel] used to support the search section of the application.
  * Produces different [SearchViewState] that represents the entire configuration of the screen at any
  * given moment.
  *
@@ -33,11 +34,9 @@ import kotlinx.coroutines.withContext
  * and the view state being shown to the user.
  */
 class SearchViewModel @Inject constructor(
-    dispatchers: CoroutineDispatchers,
     private val searchInteractor: SearchInteractor,
     private val imagesPathInteractor: ImagesPathInteractor
-) :
-        MPScopedViewModel(dispatchers) {
+) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<SearchViewState>()
     val viewState: LiveData<SearchViewState> = _viewState
@@ -132,8 +131,10 @@ class SearchViewModel @Inject constructor(
      * movie list for the current section being shown.
      */
     private fun refreshData() {
-        launch {
-            withContext(dispatchers.default()) { searchInteractor.flushCurrentSearch() }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                searchInteractor.flushCurrentSearch()
+            }
             postLoadingAndPerformSearch(searchQuery)
         }
     }
@@ -156,7 +157,7 @@ class SearchViewModel @Inject constructor(
                             .setPrefetchDistance(2)
                             .build()
                     LivePagedListBuilder(it, config)
-                            .setFetchExecutor(CoroutineExecutor(this, dispatchers.default()))
+                            .setFetchExecutor(CoroutineExecutor(viewModelScope, Dispatchers.IO))
                             .build()
                 }
     }

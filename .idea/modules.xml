@@ -2,20 +2,20 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/features/features.iml" filepath="$PROJECT_DIR$/features/features.iml" />
-      <module fileurl="file://$PROJECT_DIR$/moviespreview.iml" filepath="$PROJECT_DIR$/moviespreview.iml" />
-      <module fileurl="file://$PROJECT_DIR$/features/mpabout/mpabout.iml" filepath="$PROJECT_DIR$/features/mpabout/mpabout.iml" />
-      <module fileurl="file://$PROJECT_DIR$/features/mpaccount/mpaccount.iml" filepath="$PROJECT_DIR$/features/mpaccount/mpaccount.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mpcommon/mpcommon.iml" filepath="$PROJECT_DIR$/mpcommon/mpcommon.iml" />
-      <module fileurl="file://$PROJECT_DIR$/features/mpcredits/mpcredits.iml" filepath="$PROJECT_DIR$/features/mpcredits/mpcredits.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mpdata/mpdata.iml" filepath="$PROJECT_DIR$/mpdata/mpdata.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mpdesign/mpdesign.iml" filepath="$PROJECT_DIR$/mpdesign/mpdesign.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mpdomain/mpdomain.iml" filepath="$PROJECT_DIR$/mpdomain/mpdomain.iml" />
-      <module fileurl="file://$PROJECT_DIR$/features/mpmoviedetails/mpmoviedetails.iml" filepath="$PROJECT_DIR$/features/mpmoviedetails/mpmoviedetails.iml" />
-      <module fileurl="file://$PROJECT_DIR$/features/mpperson/mpperson.iml" filepath="$PROJECT_DIR$/features/mpperson/mpperson.iml" />
-      <module fileurl="file://$PROJECT_DIR$/features/mpsearch/mpsearch.iml" filepath="$PROJECT_DIR$/features/mpsearch/mpsearch.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mptestutils/mptestutils.iml" filepath="$PROJECT_DIR$/mptestutils/mptestutils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="moviespreview/app" />
+      <module fileurl="file://$PROJECT_DIR$/features/features.iml" filepath="$PROJECT_DIR$/features/features.iml" group="moviespreview/features" />
+      <module fileurl="file://$PROJECT_DIR$/moviespreview.iml" filepath="$PROJECT_DIR$/moviespreview.iml" group="moviespreview" />
+      <module fileurl="file://$PROJECT_DIR$/features/mpabout/mpabout.iml" filepath="$PROJECT_DIR$/features/mpabout/mpabout.iml" group="moviespreview/features/mpabout" />
+      <module fileurl="file://$PROJECT_DIR$/features/mpaccount/mpaccount.iml" filepath="$PROJECT_DIR$/features/mpaccount/mpaccount.iml" group="moviespreview/features/mpaccount" />
+      <module fileurl="file://$PROJECT_DIR$/mpcommon/mpcommon.iml" filepath="$PROJECT_DIR$/mpcommon/mpcommon.iml" group="moviespreview/mpcommon" />
+      <module fileurl="file://$PROJECT_DIR$/features/mpcredits/mpcredits.iml" filepath="$PROJECT_DIR$/features/mpcredits/mpcredits.iml" group="moviespreview/features/mpcredits" />
+      <module fileurl="file://$PROJECT_DIR$/mpdata/mpdata.iml" filepath="$PROJECT_DIR$/mpdata/mpdata.iml" group="moviespreview/mpdata" />
+      <module fileurl="file://$PROJECT_DIR$/mpdesign/mpdesign.iml" filepath="$PROJECT_DIR$/mpdesign/mpdesign.iml" group="moviespreview/mpdesign" />
+      <module fileurl="file://$PROJECT_DIR$/mpdomain/mpdomain.iml" filepath="$PROJECT_DIR$/mpdomain/mpdomain.iml" group="moviespreview/mpdomain" />
+      <module fileurl="file://$PROJECT_DIR$/features/mpmoviedetails/mpmoviedetails.iml" filepath="$PROJECT_DIR$/features/mpmoviedetails/mpmoviedetails.iml" group="moviespreview/features/mpmoviedetails" />
+      <module fileurl="file://$PROJECT_DIR$/features/mpperson/mpperson.iml" filepath="$PROJECT_DIR$/features/mpperson/mpperson.iml" group="moviespreview/features/mpperson" />
+      <module fileurl="file://$PROJECT_DIR$/features/mpsearch/mpsearch.iml" filepath="$PROJECT_DIR$/features/mpsearch/mpsearch.iml" group="moviespreview/features/mpsearch" />
+      <module fileurl="file://$PROJECT_DIR$/mptestutils/mptestutils.iml" filepath="$PROJECT_DIR$/mptestutils/mptestutils.iml" group="moviespreview/mptestutils" />
     </modules>
   </component>
 </project>

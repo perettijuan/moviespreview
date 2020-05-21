@@ -2,17 +2,16 @@ package com.jpp.mpabout
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.AppVersion
+import com.jpp.mptestutils.CoroutineTestExtension
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
@@ -21,7 +20,12 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
-@ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
+@ExperimentalCoroutinesApi
+@ExtendWith(
+        MockKExtension::class,
+        InstantTaskExecutorExtension::class,
+        CoroutineTestExtension::class
+)
 class AboutViewModelTest {
 
     @RelaxedMockK
@@ -35,12 +39,7 @@ class AboutViewModelTest {
     fun setUp() {
         every { aboutInteractor.events } returns lvInteractorEvents
 
-        val dispatchers = object : CoroutineDispatchers {
-            override fun main(): CoroutineDispatcher = Dispatchers.Unconfined
-            override fun default(): CoroutineDispatcher = Dispatchers.Unconfined
-        }
-
-        subject = AboutViewModel(dispatchers, aboutInteractor)
+        subject = AboutViewModel(aboutInteractor)
     }
 
     @Test

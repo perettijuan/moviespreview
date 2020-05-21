@@ -2,8 +2,8 @@ package com.jpp.mpmoviedetails
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
-import com.jpp.mp.common.coroutines.MPScopedViewModel
+import androidx.lifecycle.viewModelScope
+import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
@@ -30,11 +30,12 @@ import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.NotConnect
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.Success
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.UnknownError
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * [MPScopedViewModel] that supports the movie details section (only the static data, not the actions
+ * [MPViewModel] that supports the movie details section (only the static data, not the actions
  * that the user can perform - for the actions, check [MovieDetailsActionViewModel]). The VM retrieves
  * the data from the underlying layers using the provided [MovieDetailsInteractor] and maps the business
  * data to UI data, producing a [MovieDetailViewState] that represents the configuration of the view
@@ -45,10 +46,8 @@ import kotlinx.coroutines.withContext
  * and the view state being shown to the user.
  */
 class MovieDetailsViewModel @Inject constructor(
-    dispatchers: CoroutineDispatchers,
     private val movieDetailsInteractor: MovieDetailsInteractor
-) :
-        MPScopedViewModel(dispatchers) {
+) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<MovieDetailViewState>()
     val viewState: LiveData<MovieDetailViewState> get() = _viewState
@@ -148,7 +147,11 @@ class MovieDetailsViewModel @Inject constructor(
      * on a background task.
      */
     private fun withMovieDetailsInteractor(action: MovieDetailsInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(movieDetailsInteractor) } }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                action(movieDetailsInteractor)
+            }
+        }
     }
 
     /**
@@ -156,8 +159,8 @@ class MovieDetailsViewModel @Inject constructor(
      * the state of the UI to show the details of the movie.
      */
     private fun mapMovieDetails(domainDetail: MovieDetail, imageUrl: String) {
-        launch {
-            withContext(dispatchers.default()) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
                 with(domainDetail) {
                     MovieDetailViewState.showDetails(
                             movieImageUrl = imageUrl,

@@ -2,11 +2,11 @@ package com.jpp.mpaccount.account.lists
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.coroutines.CoroutineExecutor
-import com.jpp.mp.common.coroutines.MPScopedViewModel
+import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.common.paging.MPPagingDataSourceFactory
 import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.NotConnectedToNetwork
@@ -16,11 +16,12 @@ import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEven
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * [MPScopedViewModel] used to support the user's movie list section of the application.
+ * [MPViewModel] used to support the user's movie list section of the application.
  * Produces different [UserMovieListViewState] that represents the entire configuration of the screen at any
  * given moment.
  *
@@ -34,11 +35,9 @@ import kotlinx.coroutines.withContext
  * and the view state being shown to the user.
  */
 class UserMovieListViewModel @Inject constructor(
-    dispatchers: CoroutineDispatchers,
     private val userMovieListInteractor: UserMovieListInteractor,
     private val imagesPathInteractor: ImagesPathInteractor
-) :
-        MPScopedViewModel(dispatchers) {
+) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<UserMovieListViewState>()
     val viewState: LiveData<UserMovieListViewState> get() = _viewState
@@ -132,7 +131,7 @@ class UserMovieListViewModel @Inject constructor(
                             .setPrefetchDistance(2)
                             .build()
                     LivePagedListBuilder(it, config)
-                            .setFetchExecutor(CoroutineExecutor(this, dispatchers.default()))
+                            .setFetchExecutor(CoroutineExecutor(viewModelScope, Dispatchers.IO))
                             .build()
                 }
     }
@@ -174,8 +173,10 @@ class UserMovieListViewModel @Inject constructor(
      * movie list for the current section being shown.
      */
     private fun refreshData() {
-        launch {
-            withContext(dispatchers.default()) { userMovieListInteractor.refreshUserMoviesData() }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                userMovieListInteractor.refreshUserMoviesData()
+            }
             postLoadingAndInitializePagedList(
                     currentParam.posterSize,
                     currentParam.backdropSize,

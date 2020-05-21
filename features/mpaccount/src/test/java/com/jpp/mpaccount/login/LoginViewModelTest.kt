@@ -3,7 +3,7 @@ package com.jpp.mpaccount.login
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.navigation.Destination
-import com.jpp.mpaccount.TestAccountCoroutineDispatchers
+import com.jpp.mptestutils.CoroutineTestExtension
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
@@ -11,6 +11,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.fail
@@ -18,7 +19,12 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
+@ExperimentalCoroutinesApi
+@ExtendWith(
+        MockKExtension::class,
+        InstantTaskExecutorExtension::class,
+        CoroutineTestExtension::class
+)
 class LoginViewModelTest {
 
     @RelaxedMockK
@@ -34,10 +40,7 @@ class LoginViewModelTest {
         every { loginInteractor.loginEvents } returns lvLoginEvent
         every { loginInteractor.oauthEvents } returns lvOauthEvent
 
-        subject = LoginViewModel(
-                TestAccountCoroutineDispatchers(),
-                loginInteractor
-        )
+        subject = LoginViewModel(loginInteractor)
 
         /*
          * Since the ViewModel uses a MediatorLiveData, we need to have

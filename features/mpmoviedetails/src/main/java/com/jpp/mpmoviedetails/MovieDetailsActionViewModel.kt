@@ -2,8 +2,8 @@ package com.jpp.mpmoviedetails
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
-import com.jpp.mp.common.coroutines.MPScopedViewModel
+import androidx.lifecycle.viewModelScope
+import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpmoviedetails.MovieDetailActionViewState.ShowLoading
 import com.jpp.mpmoviedetails.MovieDetailActionViewState.ShowMovieState
@@ -18,11 +18,12 @@ import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UpdateFavor
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UpdateWatchlist
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UserNotLogged
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * [MPScopedViewModel] that supports the movie details actions (the data shown by the UI that is not
+ * [MPViewModel] that supports the movie details actions (the data shown by the UI that is not
  * related to the actions that the user can perform is controlled by [MovieDetailsViewModel]). The VM retrieves
  * the data from the underlying layers using the provided [MovieDetailsInteractor] and maps the business
  * data to UI data, producing a [MovieDetailViewState] that represents the configuration of the view
@@ -33,10 +34,8 @@ import kotlinx.coroutines.withContext
  * state of the business layer.
  */
 class MovieDetailsActionViewModel @Inject constructor(
-    dispatchers: CoroutineDispatchers,
     private val movieDetailsInteractor: MovieDetailsInteractor
-) :
-        MPScopedViewModel(dispatchers) {
+) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<MovieDetailActionViewState>()
     val viewState: LiveData<MovieDetailActionViewState> get() = _viewState
@@ -182,7 +181,11 @@ class MovieDetailsActionViewModel @Inject constructor(
      * on a background task.
      */
     private fun withMovieDetailsInteractor(action: MovieDetailsInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(movieDetailsInteractor) } }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                action(movieDetailsInteractor)
+            }
+        }
     }
 
     private fun processErrorState(): MovieDetailActionViewState {

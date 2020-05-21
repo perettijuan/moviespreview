@@ -2,19 +2,18 @@ package com.jpp.mpabout.licenses
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpabout.AboutInteractor
 import com.jpp.mpdomain.License
 import com.jpp.mpdomain.Licenses
+import com.jpp.mptestutils.CoroutineTestExtension
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.fail
@@ -22,7 +21,12 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(MockKExtension::class, InstantTaskExecutorExtension::class)
+@ExperimentalCoroutinesApi
+@ExtendWith(
+        MockKExtension::class,
+        InstantTaskExecutorExtension::class,
+        CoroutineTestExtension::class
+)
 class LicensesViewModelTest {
 
     @RelaxedMockK
@@ -36,12 +40,7 @@ class LicensesViewModelTest {
     fun setUp() {
         every { aboutInteractor.licenseEvents } returns lvInteractorEvents
 
-        val dispatchers = object : CoroutineDispatchers {
-            override fun main(): CoroutineDispatcher = Dispatchers.Unconfined
-            override fun default(): CoroutineDispatcher = Dispatchers.Unconfined
-        }
-
-        subject = LicensesViewModel(dispatchers, aboutInteractor)
+        subject = LicensesViewModel(aboutInteractor)
     }
 
     @Test

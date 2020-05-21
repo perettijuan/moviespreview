@@ -2,24 +2,23 @@ package com.jpp.mpabout.licenses.content
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
-import com.jpp.mp.common.coroutines.MPScopedViewModel
+import androidx.lifecycle.viewModelScope
+import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mpabout.AboutInteractor
 import com.jpp.mpabout.AboutInteractor.LicensesEvent.Success
 import com.jpp.mpabout.AboutInteractor.LicensesEvent.UnknownError
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * [MPScopedViewModel] that supports the [LicenseContentFragment]. When initialized, the VM
+ * [MPViewModel] that supports the [LicenseContentFragment]. When initialized, the VM
  * takes care of updating the UI state in order to render the content of a particular license.
  */
 class LicenseContentViewModel @Inject constructor(
-    coroutineDispatchers: CoroutineDispatchers,
     private val aboutInteractor: AboutInteractor
-) :
-    MPScopedViewModel(coroutineDispatchers) {
+) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<LicenseContentViewState>()
     val viewState: LiveData<LicenseContentViewState> get() = _viewState
@@ -50,7 +49,11 @@ class LicenseContentViewModel @Inject constructor(
     }
 
     private fun withInteractor(action: AboutInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(aboutInteractor) } }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                action(aboutInteractor)
+            }
+        }
     }
 
     private fun pushLoadingAndFetchAppLicenses() {

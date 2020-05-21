@@ -2,26 +2,25 @@ package com.jpp.mpaccount.login
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
-import com.jpp.mp.common.coroutines.MPScopedViewModel
+import androidx.lifecycle.viewModelScope
+import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpaccount.login.LoginInteractor.LoginEvent
 import com.jpp.mpaccount.login.LoginInteractor.OauthEvent
 import com.jpp.mpdomain.AccessToken
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * [MPScopedViewModel] that supports the login process. The login implementation is implemented using
+ * [MPViewModel] that supports the login process. The login implementation is implemented using
  * Oauth - therefore, this VM takes care of updating the view state of the [LoginFragment] in order
  * to properly render the view state needed to support Oauth.
  */
 class LoginViewModel @Inject constructor(
-    dispatchers: CoroutineDispatchers,
     private val loginInteractor: LoginInteractor
-) :
-    MPScopedViewModel(dispatchers) {
+) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<LoginViewState>()
     val viewState: LiveData<LoginViewState> get() = _viewState
@@ -93,7 +92,11 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun withLoginInteractor(action: LoginInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(loginInteractor) } }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                action(loginInteractor)
+            }
+        }
     }
 
     private fun createOauthViewState(oauthEvent: OauthEvent.OauthSuccessful): LoginViewState {

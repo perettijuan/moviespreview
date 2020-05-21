@@ -4,11 +4,13 @@ import androidx.lifecycle.MutableLiveData
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpdomain.MovieStateRate
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent
+import com.jpp.mptestutils.CoroutineTestExtension
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -17,9 +19,11 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments.arguments
 import org.junit.jupiter.params.provider.MethodSource
 
+@ExperimentalCoroutinesApi
 @ExtendWith(
         MockKExtension::class,
-        InstantTaskExecutorExtension::class
+        InstantTaskExecutorExtension::class,
+        CoroutineTestExtension::class
 )
 class MovieDetailsActionViewModelTest {
 
@@ -34,10 +38,7 @@ class MovieDetailsActionViewModelTest {
     fun setUp() {
         every { movieDetailsInteractor.movieStateEvents } returns lvInteractorEvents
 
-        subject = MovieDetailsActionViewModel(
-                TestMovieDetailCoroutineDispatchers(),
-                movieDetailsInteractor
-        )
+        subject = MovieDetailsActionViewModel(movieDetailsInteractor)
     }
 
     @ParameterizedTest

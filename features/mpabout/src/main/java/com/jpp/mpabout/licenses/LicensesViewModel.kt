@@ -3,8 +3,8 @@ package com.jpp.mpabout.licenses
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
-import com.jpp.mp.common.coroutines.MPScopedViewModel
+import androidx.lifecycle.viewModelScope
+import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mp.common.navigation.Destination
@@ -13,17 +13,16 @@ import com.jpp.mpabout.AboutInteractor.LicensesEvent.Success
 import com.jpp.mpabout.AboutInteractor.LicensesEvent.UnknownError
 import com.jpp.mpdomain.License
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * [MPScopedViewModel] that supports the list of [License]s that the application uses.
+ * [MPViewModel] that supports the list of [License]s that the application uses.
  */
 class LicensesViewModel @Inject constructor(
-    coroutineDispatchers: CoroutineDispatchers,
     private val aboutInteractor: AboutInteractor
-) :
-        MPScopedViewModel(coroutineDispatchers) {
+) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<LicensesViewState>()
     val viewState: LiveData<LicensesViewState> get() = _viewState
@@ -67,7 +66,11 @@ class LicensesViewModel @Inject constructor(
      * thread.
      */
     private fun withInteractor(action: AboutInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(aboutInteractor) } }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                action(aboutInteractor)
+            }
+        }
     }
 
     /**

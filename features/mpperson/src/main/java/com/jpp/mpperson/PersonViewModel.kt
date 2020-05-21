@@ -2,8 +2,8 @@ package com.jpp.mpperson
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.common.coroutines.CoroutineDispatchers
-import com.jpp.mp.common.coroutines.MPScopedViewModel
+import androidx.lifecycle.viewModelScope
+import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.Person
 import com.jpp.mpperson.PersonInteractor.PersonEvent.AppLanguageChanged
@@ -16,11 +16,12 @@ import com.jpp.mpperson.PersonRowViewState.Companion.deathDayRow
 import com.jpp.mpperson.PersonRowViewState.Companion.emptyRow
 import com.jpp.mpperson.PersonRowViewState.Companion.placeOfBirthRow
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * [MPScopedViewModel] that supports the person section. The VM retrieves
+ * [MPViewModel] that supports the person section. The VM retrieves
  * the data from the underlying layers using the provided [PersonInteractor] and maps the business
  * data to UI data, producing a [PersonViewState] that represents the configuration of the view.
  *
@@ -29,10 +30,8 @@ import kotlinx.coroutines.withContext
  * and the view state being shown to the user.
  */
 class PersonViewModel @Inject constructor(
-    dispatchers: CoroutineDispatchers,
     private val personInteractor: PersonInteractor
-) :
-        MPScopedViewModel(dispatchers) {
+) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<PersonViewState>()
     val viewState: LiveData<PersonViewState> get() = _viewState
@@ -95,7 +94,11 @@ class PersonViewModel @Inject constructor(
      * on a background task.
      */
     private fun withInteractor(action: PersonInteractor.() -> Unit) {
-        launch { withContext(dispatchers.default()) { action(personInteractor) } }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                action(personInteractor)
+            }
+        }
     }
 
     /**
