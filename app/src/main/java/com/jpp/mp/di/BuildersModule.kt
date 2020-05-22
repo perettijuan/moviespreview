@@ -16,6 +16,7 @@ import com.jpp.mpcredits.CreditsFragment
 import com.jpp.mpmoviedetails.MovieDetailsFragment
 import com.jpp.mpmoviedetails.rates.RateMovieDialogFragment
 import com.jpp.mpperson.PersonFragment
+import com.jpp.mpsearch.SearchActivity
 import com.jpp.mpsearch.SearchFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -28,6 +29,9 @@ import dagger.android.ContributesAndroidInjector
 abstract class BuildersModule {
     @ContributesAndroidInjector
     abstract fun bindMainActivity(): MainActivity
+
+    @ContributesAndroidInjector
+    abstract fun bindSearchActivity(): SearchActivity
 
     @ContributesAndroidInjector
     abstract fun bindPlayingMoviesFragment(): PlayingMoviesFragment

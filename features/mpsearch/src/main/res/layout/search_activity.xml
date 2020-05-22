@@ -8,7 +8,8 @@
         android:id="@+id/searchToolbar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:transitionName="a_transition"
+        android:transitionName="@string/toolbar_search_transition"
+        app:contentInsetStartWithNavigation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -19,6 +20,7 @@
             android:id="@+id/searchView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:queryHint="@string/search_hint"
             app:searchIcon="@null" />
 
     </androidx.appcompat.widget.Toolbar>

@@ -208,7 +208,10 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 //                    buildAnimationNavOptions())
 //        }
         val intent = Intent(this, SearchActivity::class.java)
-        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this, mainToolbar, "a_transition").toBundle())
+        val transitionOptions = ActivityOptions
+                .makeSceneTransitionAnimation(this, mainToolbar, getString(R.string.toolbar_search_transition))
+                .toBundle()
+        startActivity(intent, transitionOptions)
     }
 
     private fun buildAnimationNavOptions() = NavOptions.Builder()
