@@ -39,6 +39,7 @@
     <dimen name="movie_details_rate_padding">20dp</dimen>
 
     <!-- Search -->
+    <dimen name="search_toolbar_size">60dp</dimen>
     <dimen name="search_body_icon_size">300dp</dimen>
     <dimen name="search_result_image_size">52dp</dimen>
     <dimen name="search_result_title_padding">10dp</dimen>

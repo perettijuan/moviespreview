@@ -18,6 +18,7 @@
     <attr name="mpDetailsActionLoadingSize" format="reference" />
     <attr name="mpDetailsActionMargin" format="reference" />
 
+    <attr name="mpSearchToolbarSize" format="reference" />
     <attr name="mpSearchImageSize" format="reference" />
     <attr name="mpSearchItemImageSize" format="reference" />
     <attr name="mpSearchItemTitlePadding" format="reference" />

@@ -28,6 +28,7 @@
         <item name="mpDetailsActionLoadingSize">@dimen/movie_details_actions_loading_size</item>
         <item name="mpDetailsActionMargin">@dimen/movie_details_actions_margin</item>
 
+        <item name="mpSearchToolbarSize">@dimen/search_toolbar_size</item>
         <item name="mpSearchImageSize">@dimen/search_body_icon_size</item>
         <item name="mpSearchItemImageSize">@dimen/search_result_image_size</item>
         <item name="mpSearchItemTitlePadding">@dimen/search_result_title_padding</item>
