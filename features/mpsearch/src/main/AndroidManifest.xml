@@ -1,2 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.jpp.mpsearch" />
+    package="com.jpp.mpsearch">
+
+    <application>
+        <activity android:name=".SearchActivity" />
+    </application>
+
+</manifest>

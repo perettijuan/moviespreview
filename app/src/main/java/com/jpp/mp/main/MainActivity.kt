@@ -1,6 +1,9 @@
 package com.jpp.mp.main
 
+import android.app.ActivityOptions
+import android.content.Intent
 import android.os.Bundle
+import android.transition.ChangeBounds
 import android.view.Menu
 import android.view.MenuItem
 import androidx.annotation.IdRes
@@ -24,12 +27,13 @@ import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mpdesign.ext.closeDrawerIfOpen
 import com.jpp.mpdesign.ext.setGone
 import com.jpp.mpdesign.ext.setVisible
+import com.jpp.mpsearch.SearchActivity
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
-import javax.inject.Inject
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 /**
  * Main entry point of the app.
@@ -66,6 +70,10 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Important to avoid blinks in transitions.
+        // Source -> https://stackoverflow.com/questions/28364106/blinking-screen-on-image-transition-between-activities
+        window.exitTransition = null
 
         mpToolbarManager = MPToolbarManager()
 
@@ -191,14 +199,16 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     }
 
     private fun navigateToSearch() {
-        withNavController {
-            navigate(
-                    object : NavDirections {
-                        override fun getArguments() = Bundle()
-                        override fun getActionId() = R.id.search_nav
-                    },
-                    buildAnimationNavOptions())
-        }
+//        withNavController {
+//            navigate(
+//                    object : NavDirections {
+//                        override fun getArguments() = Bundle()
+//                        override fun getActionId() = R.id.search_nav
+//                    },
+//                    buildAnimationNavOptions())
+//        }
+        val intent = Intent(this, SearchActivity::class.java)
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this, mainToolbar, "a_transition").toBundle())
     }
 
     private fun buildAnimationNavOptions() = NavOptions.Builder()
