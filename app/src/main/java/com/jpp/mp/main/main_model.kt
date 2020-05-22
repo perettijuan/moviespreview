@@ -22,8 +22,7 @@ import com.jpp.mpperson.NavigationPerson
  */
 data class MainActivityViewState(
     val sectionTitle: String,
-    val menuBarEnabled: Boolean,
-    val searchEnabled: Boolean
+    val menuBarEnabled: Boolean
 )
 
 /**************************************************************************************************

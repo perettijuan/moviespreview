@@ -114,29 +114,25 @@ class MainActivityViewModelTest {
                         Destination.ReachedDestination("aTitle"),
                         MainActivityViewState(
                                 sectionTitle = "aTitle",
-                                menuBarEnabled = false,
-                                searchEnabled = false
+                                menuBarEnabled = false
                         )),
                 Arguments.arguments(
                         Destination.MovieListReached("aTitle"),
                         MainActivityViewState(
                                 sectionTitle = "aTitle",
-                                menuBarEnabled = true,
-                                searchEnabled = false
+                                menuBarEnabled = true
                         )),
                 Arguments.arguments(
                         Destination.MPSearch,
                         MainActivityViewState(
                                 sectionTitle = "",
-                                menuBarEnabled = false,
-                                searchEnabled = true
+                                menuBarEnabled = false
                         )),
                 Arguments.arguments(
                         Destination.MPCredits(12.toDouble(), "aTitle"),
                         MainActivityViewState(
                                 sectionTitle = "aTitle",
-                                menuBarEnabled = false,
-                                searchEnabled = false
+                                menuBarEnabled = false
                         ))
         )
     }

@@ -3,12 +3,10 @@ package com.jpp.mp.main
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
-import android.transition.ChangeBounds
 import android.view.Menu
 import android.view.MenuItem
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -25,8 +23,6 @@ import com.jpp.mp.R
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mpdesign.ext.closeDrawerIfOpen
-import com.jpp.mpdesign.ext.setGone
-import com.jpp.mpdesign.ext.setVisible
 import com.jpp.mpsearch.SearchActivity
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
@@ -62,8 +58,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var mpToolbarManager: MPToolbarManager
-
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,8 +68,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         // Important to avoid blinks in transitions.
         // Source -> https://stackoverflow.com/questions/28364106/blinking-screen-on-image-transition-between-activities
         window.exitTransition = null
-
-        mpToolbarManager = MPToolbarManager()
 
         withMainViewModel {
             onInit()
@@ -199,14 +191,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     }
 
     private fun navigateToSearch() {
-//        withNavController {
-//            navigate(
-//                    object : NavDirections {
-//                        override fun getArguments() = Bundle()
-//                        override fun getActionId() = R.id.search_nav
-//                    },
-//                    buildAnimationNavOptions())
-//        }
         val intent = Intent(this, SearchActivity::class.java)
         val transitionOptions = ActivityOptions
                 .makeSceneTransitionAnimation(this, mainToolbar, getString(R.string.toolbar_search_transition))
@@ -226,17 +210,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     private fun renderViewState(viewState: MainActivityViewState) {
         supportActionBar?.title = viewState.sectionTitle
-        when (viewState.searchEnabled) {
-            true -> {
-                mainSearchView.setVisible()
-                mpToolbarManager.setInsetStartWithNavigation(0, mainToolbar)
-            }
-            false -> {
-                mainSearchView.setGone()
-                mpToolbarManager.clearInsetStartWithNavigation(mainToolbar)
-            }
-        }
-
         /*
          * Forces to inflate the menu shown in the Toolbar.
          * onCreateOptionsMenu() will be re-executed to hide/show the
@@ -244,30 +217,5 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
          */
         invalidateOptionsMenu()
         mainDrawerLayout.closeDrawerIfOpen()
-    }
-
-    /**
-     * Helper class to remove the space between the arrow image and the
-     * text (or the SearchView) that is shown in the Toolbar.
-     * In some screens (e.g.: searchPage screen) we want to remove this
-     * space to provide more space for the contentViewState shown right next
-     * to the arrow/burger icon.
-     */
-    private inner class MPToolbarManager {
-        private var originalInsetStartWithNavigation = -1
-
-        fun setInsetStartWithNavigation(toSet: Int, toolbar: Toolbar) {
-            originalInsetStartWithNavigation = toSet
-            toolbar.contentInsetStartWithNavigation = toSet
-        }
-
-        fun clearInsetStartWithNavigation(toolbar: Toolbar) {
-            when (originalInsetStartWithNavigation != -1) {
-                true -> {
-                    toolbar.contentInsetStartWithNavigation = originalInsetStartWithNavigation
-                    originalInsetStartWithNavigation = -1
-                }
-            }
-        }
     }
 }

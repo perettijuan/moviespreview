@@ -63,5 +63,4 @@ abstract class BaseSearchIntegrationTest {
     protected fun onEmptySearchView(): ViewInteraction = onView(withId(R.id.emptySearch))
     protected fun onErrorSearchView(): ViewInteraction = onView(withId(R.id.searchErrorView))
     protected fun onLoadingSearchView(): ViewInteraction = onView(withId(R.id.searchLoadingView))
-    protected fun onSearchView(): ViewInteraction = onView(withId(R.id.mainSearchView))
 }

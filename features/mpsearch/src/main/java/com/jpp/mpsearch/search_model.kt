@@ -10,7 +10,7 @@ import com.jpp.mpdesign.views.MPErrorView
  */
 
 /**
- * Represents the view state that the search view ([SearchFragment]) can assume at any given point.
+ * Represents the view state that the search view can assume at any given point.
  */
 data class SearchViewState(
         val searchQuery: String = "",

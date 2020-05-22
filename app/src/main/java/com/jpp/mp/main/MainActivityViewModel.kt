@@ -100,8 +100,7 @@ class MainActivityViewModel @Inject constructor(
     private fun renderSearchViewState() {
         _viewState.value = MainActivityViewState(
                 sectionTitle = "",
-                menuBarEnabled = false,
-                searchEnabled = true
+                menuBarEnabled = false
         )
     }
 
@@ -113,8 +112,7 @@ class MainActivityViewModel @Inject constructor(
     private fun renderFeatureViewState(sectionName: String) {
         _viewState.value = MainActivityViewState(
                 sectionTitle = sectionName,
-                menuBarEnabled = false,
-                searchEnabled = false
+                menuBarEnabled = false
         )
     }
 
@@ -126,8 +124,7 @@ class MainActivityViewModel @Inject constructor(
     private fun renderMovieListViewState(sectionName: String) {
         _viewState.value = MainActivityViewState(
                 sectionTitle = sectionName,
-                menuBarEnabled = true,
-                searchEnabled = false
+                menuBarEnabled = true
         )
     }
 }
