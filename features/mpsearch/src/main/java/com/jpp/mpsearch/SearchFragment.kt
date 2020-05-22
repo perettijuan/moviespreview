@@ -9,14 +9,11 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.paging.PagedListAdapter
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
-import com.jpp.mpsearch.databinding.ListItemSearchBinding
 import com.jpp.mpsearch.databinding.SearchFragmentBinding
 
 /**
@@ -102,86 +99,5 @@ class SearchFragment : MPFragment<SearchViewModel>() {
             }
         }
         throw IllegalStateException("The container Activity for SearchFragment should provide a SearchView")
-    }
-
-    /**
-     * Inner [SearchView.OnQueryTextListener] implementation to handle the user searchPage over the
-     * SearchView. It waits to submit the query a given amount of time that is based on the size
-     * of the text introduced by the user.
-     *
-     * Note that this custom implementation could be a lot simpler using Android RxBindings, but
-     * I don't want to bring RxJava into the project for this single reason.
-     */
-    private inner class QuerySubmitter(private val callback: (String) -> Unit) : SearchView.OnQueryTextListener {
-
-        private lateinit var queryToSubmit: String
-        private var isTyping = false
-        private val typingTimeout = 1000L // 1 second
-        private val timeoutHandler = Handler(Looper.getMainLooper())
-        private val timeoutTask = Runnable {
-            isTyping = false
-            callback(queryToSubmit)
-        }
-
-        override fun onQueryTextSubmit(query: String): Boolean {
-            timeoutHandler.removeCallbacks(timeoutTask)
-            callback(query)
-            return true
-        }
-
-        override fun onQueryTextChange(newText: String): Boolean {
-            timeoutHandler.removeCallbacks(timeoutTask)
-            if (newText.length > 3) {
-                queryToSubmit = newText
-                timeoutHandler.postDelayed(timeoutTask, typingTimeout)
-            }
-            return true
-        }
-    }
-
-    /**
-     * Internal [PagedListAdapter] to render the list of search results. The fact that this class is a
-     * [PagedListAdapter] indicates that the paging library is being used. Another important
-     * aspect of this class is that it uses Data Binding to update the UI, which differs from the
-     * containing class.
-     */
-    class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem) -> Unit) : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(
-                    DataBindingUtil.inflate(
-                            LayoutInflater.from(parent.context),
-                            R.layout.list_item_search,
-                            parent,
-                            false
-                    )
-            )
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            getItem(position)?.let {
-                holder.bindSearchItem(it, searchSelectionListener)
-            }
-        }
-
-        class ViewHolder(private val itemBinding: ListItemSearchBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-            fun bindSearchItem(searchItem: SearchResultItem, selectionListener: (SearchResultItem) -> Unit) {
-                with(itemBinding) {
-                    viewState = searchItem
-                    executePendingBindings()
-                }
-                itemView.setOnClickListener { selectionListener(searchItem) }
-            }
-        }
-
-        class SearchResultDiffCallback : DiffUtil.ItemCallback<SearchResultItem>() {
-            override fun areItemsTheSame(oldItem: SearchResultItem, newItem: SearchResultItem): Boolean {
-                return oldItem.id == newItem.id
-            }
-
-            override fun areContentsTheSame(oldItem: SearchResultItem, newItem: SearchResultItem): Boolean {
-                return oldItem.id == newItem.id
-            }
-        }
     }
 }

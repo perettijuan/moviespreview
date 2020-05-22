@@ -1,29 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/searchToolbar"
+    <data>
+
+        <variable
+            name="viewState"
+            type="com.jpp.mpsearch.SearchViewState" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:transitionName="@string/toolbar_search_transition"
-        app:contentInsetStartWithNavigation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/MPAppToolbar">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchView"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/searchToolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:queryHint="@string/search_hint"
-            app:searchIcon="@null" />
+            android:layout_height="50dp"
+            android:transitionName="@string/toolbar_search_transition"
+            app:contentInsetStartWithNavigation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/MPAppToolbar">
 
-    </androidx.appcompat.widget.Toolbar>
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:queryHint="@string/search_hint"
+                app:searchIcon="@null" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <com.jpp.mpdesign.views.MPImageView
+            android:id="@+id/searchPlaceHolderIv"
+            android:layout_width="?attr/mpSearchImageSize"
+            android:layout_height="?attr/mpSearchImageSize"
+            android:alpha="0.3"
+            app:animatedVisibility="@{viewState.placeHolderViewState.visibility}"
+            app:imageRes="@{viewState.placeHolderViewState.icon}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchToolbar" />
+
+        <TextView
+            android:id="@+id/emptySearch"
+            style="@style/MPTextViewTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@{viewState.contentViewState.emptySearchTextRes}"
+            app:animatedVisibility="@{viewState.contentViewState.emptySearchResultsVisibility}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchPlaceHolderIv"
+            tools:text="No result for your search" />
+
+        <com.jpp.mpdesign.views.MPErrorView
+            android:id="@+id/searchErrorView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:animatedVisibility="@{viewState.errorViewState.visibility}"
+            app:asConnectivity="@{viewState.errorViewState.isConnectivity}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchToolbar"
+            app:onRetry="@{viewState.errorViewState.errorHandler}" />
+
+        <ProgressBar
+            android:id="@+id/searchLoadingView"
+            style="@style/MPProgressBar"
+            app:animatedVisibility="@{viewState.loadingVisibility}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchToolbar" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchResultRv"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:animatedVisibility="@{viewState.contentViewState.searchResultsVisibility}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchToolbar"
+            tools:listitem="@layout/list_item_search" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
