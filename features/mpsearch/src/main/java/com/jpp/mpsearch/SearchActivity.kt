@@ -1,11 +1,13 @@
 package com.jpp.mpsearch
 
 import android.os.Bundle
-
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
+import com.jpp.mp.common.extensions.getScreenSizeInPixels
+import dagger.android.AndroidInjection
 import javax.inject.Inject
 
 /**
@@ -17,7 +19,10 @@ class SearchActivity : AppCompatActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private val searchViewModel: SearchViewModel by viewModels { viewModelFactory }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_activity)
 
@@ -39,6 +44,8 @@ class SearchActivity : AppCompatActivity() {
             isIconified = false
             setIconifiedByDefault(false)
         }
+
+        searchViewModel.onInit(getScreenSizeInPixels().x)
     }
 
     override fun onSupportNavigateUp(): Boolean {
