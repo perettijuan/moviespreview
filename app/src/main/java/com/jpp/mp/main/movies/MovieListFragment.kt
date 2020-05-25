@@ -39,6 +39,8 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
 
     private lateinit var viewBinding: FragmentMovieListBinding
 
+    private var movieListRv: RecyclerView? = null
+
     // used to restore the position of the RecyclerView on view re-creation
     private var rvState: Parcelable? = null
 
@@ -49,7 +51,7 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        withRecyclerView {
+        movieListRv = view.findViewById<RecyclerView>(R.id.movieList).apply {
             layoutManager = LinearLayoutManager(context)
             adapter = MoviesAdapter { item -> withViewModel { onMovieSelected(item) } }
 
@@ -60,6 +62,11 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
         }
     }
 
+    override fun onDestroyView() {
+        movieListRv = null
+        super.onDestroyView()
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -68,11 +75,8 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
         withViewModel {
             viewState.observe(viewLifecycleOwner, Observer { viewState ->
                 viewBinding.viewState = viewState
-
-                withRecyclerView {
-                    (adapter as MoviesAdapter).submitList(viewState.contentViewState.movieList)
-                    layoutManager?.onRestoreInstanceState(rvState)
-                }
+                (movieListRv?.adapter as MoviesAdapter).updateDataList(viewState.contentViewState.movieList)
+                movieListRv?.layoutManager?.onRestoreInstanceState(rvState)
             })
 
             initViewModel(
@@ -83,19 +87,18 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
     }
 
     override fun onPause() {
-        withRecyclerView { rvState = layoutManager?.onSaveInstanceState() }
+        rvState = movieListRv?.layoutManager?.onSaveInstanceState()
         super.onPause()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        withRecyclerView { outState.putParcelable(MOVIES_RV_STATE_KEY, layoutManager?.onSaveInstanceState()) }
+        outState.putParcelable(MOVIES_RV_STATE_KEY, movieListRv?.layoutManager?.onSaveInstanceState())
         super.onSaveInstanceState(outState)
     }
 
     override fun withViewModel(action: MovieListViewModel.() -> Unit) = withViewModel<MovieListViewModel>(viewModelFactory) { action() }
 
     abstract fun initViewModel(posterSize: Int, backdropSize: Int, vm: MovieListViewModel)
-    private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.movieList)?.let(action)
 
     private companion object {
         const val MOVIES_RV_STATE_KEY = "moviesRvStateKey"

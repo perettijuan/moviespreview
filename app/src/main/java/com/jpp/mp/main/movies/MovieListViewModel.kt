@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.coroutines.MPViewModel
-import com.jpp.mp.common.extensions.addAllMapping
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
@@ -50,6 +49,9 @@ class MovieListViewModel @Inject constructor(
         fetchMoviePage(FIRST_PAGE)
     }
 
+    /**
+     * Called when the next movie page should be retrieved.
+     */
     fun onNextMoviePage() {
         val nextPage = currentPage + 1
         fetchMoviePage(nextPage)
@@ -91,21 +93,17 @@ class MovieListViewModel @Inject constructor(
     }
 
     private fun processMoviePage(moviePage: MoviePage) {
-        val currentMovieListItem = _viewState.value?.contentViewState?.movieList ?: return
+
 
         viewModelScope.launch {
             currentPage = moviePage.page
             maxPage = moviePage.total_pages
 
-            val movieList = currentMovieListItem
-                    .toMutableList()
-                    .addAllMapping {
-                        withContext(Dispatchers.IO) {
-                            moviePage.results
-                                    .map { movie -> movie.configurePath() }
-                                    .map { configuredMovie -> configuredMovie.mapToListItem() }
-                        }
-                    }
+            val movieList = withContext(Dispatchers.IO) {
+                moviePage.results
+                        .map { movie -> movie.configurePath() }
+                        .map { configuredMovie -> configuredMovie.mapToListItem() }
+            }
 
             _viewState.value = MovieListViewState.showMovieList(
                     movieList = movieList
