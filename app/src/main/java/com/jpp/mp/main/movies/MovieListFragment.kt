@@ -10,11 +10,11 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
-import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mp.common.paging.MPVerticalPagingHandler
 import com.jpp.mp.databinding.FragmentMovieListBinding
+import com.jpp.mpdomain.MovieSection
 
 /**
  * Base fragment used to show the list of movies that are present in a particular section.
@@ -40,6 +40,9 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
     private lateinit var viewBinding: FragmentMovieListBinding
 
     private var movieListRv: RecyclerView? = null
+
+    protected abstract val movieSection: MovieSection
+    protected abstract val screenTitle: String
 
     // used to restore the position of the RecyclerView on view re-creation
     private var rvState: Parcelable? = null
@@ -79,10 +82,7 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
                 movieListRv?.layoutManager?.onRestoreInstanceState(rvState)
             })
 
-            initViewModel(
-                    getScreenWidthInPixels(),
-                    getScreenWidthInPixels(),
-                    this)
+            onInit(movieSection, screenTitle)
         }
     }
 
@@ -97,8 +97,6 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
     }
 
     override fun withViewModel(action: MovieListViewModel.() -> Unit) = withViewModel<MovieListViewModel>(viewModelFactory) { action() }
-
-    abstract fun initViewModel(posterSize: Int, backdropSize: Int, vm: MovieListViewModel)
 
     private companion object {
         const val MOVIES_RV_STATE_KEY = "moviesRvStateKey"

@@ -42,9 +42,9 @@ class MovieListViewModel @Inject constructor(
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit(param: MovieListParam) {
-        movieSection = param.section
-        updateCurrentDestination(Destination.MovieListReached(param.screenTitle))
+    fun onInit(section: MovieSection, screenTitle: String) {
+        movieSection = section
+        updateCurrentDestination(Destination.MovieListReached(screenTitle))
         _viewState.value = MovieListViewState.showLoading()
         fetchMoviePage(FIRST_PAGE)
     }
