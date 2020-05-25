@@ -15,7 +15,7 @@ class GetMoviePageUseCase(
         private val connectivityRepository: ConnectivityRepository,
         private val languageRepository: LanguageRepository) {
 
-    fun execute(page: Int, section: MovieSection): Try<MoviePage> {
+    suspend fun execute(page: Int, section: MovieSection): Try<MoviePage> {
         return when (connectivityRepository.getCurrentConnectivity()) {
             is Connectivity.Disconnected -> Try.Failure(Try.FailureCause.NoConnectivity)
             is Connectivity.Connected ->

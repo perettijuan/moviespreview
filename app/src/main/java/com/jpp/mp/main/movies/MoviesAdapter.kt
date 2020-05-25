@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
 import com.jpp.mp.databinding.ListItemMovieBinding
@@ -16,7 +17,7 @@ import com.jpp.mp.databinding.ListItemMovieBinding
  * containing class.
  */
 class MoviesAdapter(private val movieSelectionListener: (MovieListItem) -> Unit) :
-    PagedListAdapter<MovieListItem, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {
+        ListAdapter<MovieListItem, MoviesAdapter.ViewHolder>(DIFFER) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -45,14 +46,17 @@ class MoviesAdapter(private val movieSelectionListener: (MovieListItem) -> Unit)
         }
     }
 
-    class MovieDiffCallback : DiffUtil.ItemCallback<MovieListItem>() {
 
-        override fun areItemsTheSame(oldItem: MovieListItem, newItem: MovieListItem): Boolean {
-            return oldItem.title == newItem.title
-        }
+    companion object {
+        val DIFFER = object : DiffUtil.ItemCallback<MovieListItem>() {
 
-        override fun areContentsTheSame(oldItem: MovieListItem, newItem: MovieListItem): Boolean {
-            return oldItem.title == newItem.title
+            override fun areItemsTheSame(oldItem: MovieListItem, newItem: MovieListItem): Boolean {
+                return oldItem.title == newItem.title
+            }
+
+            override fun areContentsTheSame(oldItem: MovieListItem, newItem: MovieListItem): Boolean {
+                return oldItem.title == newItem.title
+            }
         }
     }
 }

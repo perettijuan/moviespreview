@@ -12,7 +12,7 @@ class ConfigureMovieImagesPathUseCase(
         private val configurationRepository: ConfigurationRepository
 ) {
 
-    fun execute(movie: Movie): Try<Movie> {
+    suspend fun execute(movie: Movie): Try<Movie> {
         return configurationRepository.getAppConfiguration()?.let { appConfiguration ->
             Try.Success(movie.configurePaths(appConfiguration.images))
         } ?: Try.Failure(Try.FailureCause.Unknown)

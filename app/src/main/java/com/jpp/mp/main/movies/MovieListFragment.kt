@@ -13,6 +13,7 @@ import com.jpp.mp.R
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
+import com.jpp.mp.common.paging.MPVerticalPagingHandler
 import com.jpp.mp.databinding.FragmentMovieListBinding
 
 /**
@@ -51,6 +52,11 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
         withRecyclerView {
             layoutManager = LinearLayoutManager(context)
             adapter = MoviesAdapter { item -> withViewModel { onMovieSelected(item) } }
+
+            val pagingHandler = MPVerticalPagingHandler(layoutManager as LinearLayoutManager) {
+                withViewModel { onNextMoviePage() }
+            }
+            addOnScrollListener(pagingHandler)
         }
     }
 

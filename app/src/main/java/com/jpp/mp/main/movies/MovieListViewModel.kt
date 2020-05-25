@@ -1,24 +1,21 @@
 package com.jpp.mp.main.movies
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
-import com.jpp.mp.common.coroutines.CoroutineExecutor
 import com.jpp.mp.common.coroutines.MPViewModel
+import com.jpp.mp.common.extensions.addAllMapping
 import com.jpp.mp.common.navigation.Destination
-import com.jpp.mp.common.paging.MPPagingDataSourceFactory
-import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.NotConnectedToNetwork
-import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.UnknownError
-import com.jpp.mp.main.movies.MovieListInteractor.MovieListEvent.UserChangedLanguage
 import com.jpp.mpdomain.Movie
+import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
-import com.jpp.mpdomain.interactors.ImagesPathInteractor
-import javax.inject.Inject
+import com.jpp.mpdomain.usecase.ConfigureMovieImagesPathUseCase
+import com.jpp.mpdomain.usecase.GetMoviePageUseCase
+import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * [MPViewModel] used to support the movie list section of the application. This ViewModel is shared by
@@ -27,46 +24,18 @@ import kotlinx.coroutines.withContext
  * of the application.
  * Produces different [MovieListViewState] that represents the entire configuration of the screen at any
  * given moment.
- *
- * Since the UI is using the Android Paging Library, the VM needs a way to map the data retrieved from
- * the [MovieListInteractor] to a [PagedList] that can be used by the library. That process is done
- * using the [MPPagingDataSourceFactory] that creates the DataSource and produces a [LiveData] object
- * that is combined with the [viewState] in order to properly map the data into a [MovieListViewState].
- *
- * This VM is language aware, meaning that when the user changes the language of the device, the
- * VM is notified about such event and executes a refresh of both: the data stored by the application
- * and the view state being shown to the user.
  */
 class MovieListViewModel @Inject constructor(
-    private val movieListInteractor: MovieListInteractor,
-    private val imagesPathInteractor: ImagesPathInteractor
+        private val getMoviePageUseCase: GetMoviePageUseCase,
+        private val configureMovieImagesPathUseCase: ConfigureMovieImagesPathUseCase
 ) : MPViewModel() {
 
-    private val _viewState = MediatorLiveData<MovieListViewState>()
+    private lateinit var movieSection: MovieSection
+    private var currentPage: Int = 0
+    private var maxPage: Int = 0
+
+    private val _viewState = MutableLiveData<MovieListViewState>()
     val viewState: LiveData<MovieListViewState> get() = _viewState
-
-    private lateinit var currentParam: MovieListParam
-
-    private val retry: () -> Unit = {
-        postLoadingAndInitializePagedList(
-                currentParam.posterSize,
-                currentParam.backdropSize,
-                currentParam.section
-        )
-    }
-
-    /*
-     * Map the business logic coming from the interactor into view layer logic.
-     */
-    init {
-        _viewState.addSource(movieListInteractor.events) { event ->
-            when (event) {
-                is NotConnectedToNetwork -> _viewState.value = MovieListViewState.showNoConnectivityError(retry)
-                is UnknownError -> _viewState.value = MovieListViewState.showUnknownError(retry)
-                is UserChangedLanguage -> refreshData()
-            }
-        }
-    }
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -75,15 +44,17 @@ class MovieListViewModel @Inject constructor(
      * on it.
      */
     fun onInit(param: MovieListParam) {
-        currentParam = param
+        movieSection = param.section
         updateCurrentDestination(Destination.MovieListReached(param.screenTitle))
-
-        postLoadingAndInitializePagedList(
-                currentParam.posterSize,
-                currentParam.backdropSize,
-                currentParam.section
-        )
+        _viewState.value = MovieListViewState.showLoading()
+        fetchMoviePage(FIRST_PAGE)
     }
+
+    fun onNextMoviePage() {
+        val nextPage = currentPage + 1
+        fetchMoviePage(nextPage)
+    }
+
 
     /**
      * Called when an item is selected in the list of movies.
@@ -98,86 +69,65 @@ class MovieListViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Pushes the Loading view state into the view layer and creates the [PagedList]
-     * of [MovieListItem] that will be rendered by the view layer.
-     */
-    private fun postLoadingAndInitializePagedList(posterSize: Int, backdropSize: Int, section: MovieSection) {
-        _viewState.value = MovieListViewState.showLoading()
-        _viewState.addSource(createPagedList(posterSize, backdropSize, section)) { pagedList ->
-            if (pagedList.isNotEmpty()) {
-                _viewState.value = MovieListViewState.showMovieList(pagedList)
-            }
+    private fun fetchMoviePage(page: Int) {
+        if (maxPage in 1..page) {
+            return
         }
-    }
-
-    /**
-     * Creates a [LiveData] object of the [PagedList] that is used to wire up the Android Paging Library
-     * with the interactor in order to fetch a new page of movies each time the user scrolls down in
-     * the list of movies.
-     */
-    private fun createPagedList(posterSize: Int, backdropSize: Int, section: MovieSection): LiveData<PagedList<MovieListItem>> {
-        return createPagingFactory(posterSize, backdropSize, section)
-                .map { mapDomainMovie(it) }
-                .let {
-                    val config = PagedList.Config.Builder()
-                            .setPrefetchDistance(2)
-                            .build()
-                    LivePagedListBuilder(it, config)
-                            .setFetchExecutor(CoroutineExecutor(viewModelScope, Dispatchers.IO))
-                            .build()
-                }
-    }
-
-    /**
-     * Creates an instance of [MPPagingDataSourceFactory] that is used to retrieve new pages of movies
-     * every time the user reaches the end of current page.
-     *
-     *
-     * IMPORTANT:
-     * The lambda created as parameter of the factory executes it work in a background thread.
-     * It does two basic things in the background:
-     *  1 - Produces a List of Movies from the [movieListInteractor].
-     *  2 - Configures the images path of each Movie in the list with the [imagesPathInteractor].
-     */
-    private fun createPagingFactory(moviePosterSize: Int, movieBackdropSize: Int, section: MovieSection): MPPagingDataSourceFactory<Movie> {
-        return MPPagingDataSourceFactory { page, callback ->
-            movieListInteractor.fetchMoviePageForSection(page, section) { movieList ->
-                callback(movieList.map { imagesPathInteractor.configurePathMovie(moviePosterSize, movieBackdropSize, it) })
-            }
-        }
-    }
-
-    /**
-     * Asks the interactor to flush any data that might be locally cached and re-fetch the
-     * movie list for the current section being shown.
-     */
-    private fun refreshData() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                with(movieListInteractor) {
-                    flushMoviePagesForSection(MovieSection.Playing)
-                    flushMoviePagesForSection(MovieSection.Popular)
-                    flushMoviePagesForSection(MovieSection.Upcoming)
-                    flushMoviePagesForSection(MovieSection.TopRated)
+                when (val firstPageResult = getMoviePageUseCase.execute(page, movieSection)) {
+                    is Try.Failure -> processFailure(firstPageResult.cause)
+                    is Try.Success -> processMoviePage(firstPageResult.value)
                 }
             }
-            postLoadingAndInitializePagedList(
-                    currentParam.posterSize,
-                    currentParam.backdropSize,
-                    currentParam.section
+        }
+    }
+
+    private fun processFailure(failure: Try.FailureCause) {
+        _viewState.value = when (failure) {
+            is Try.FailureCause.NoConnectivity -> MovieListViewState.showNoConnectivityError { }
+            is Try.FailureCause.Unknown -> MovieListViewState.showUnknownError { }
+        }
+    }
+
+    private fun processMoviePage(moviePage: MoviePage) {
+        val currentMovieListItem = _viewState.value?.contentViewState?.movieList ?: return
+
+        viewModelScope.launch {
+            currentPage = moviePage.page
+            maxPage = moviePage.total_pages
+
+            val movieList = currentMovieListItem
+                    .toMutableList()
+                    .addAllMapping {
+                        withContext(Dispatchers.IO) {
+                            moviePage.results
+                                    .map { movie -> movie.configurePath() }
+                                    .map { configuredMovie -> configuredMovie.mapToListItem() }
+                        }
+                    }
+
+            _viewState.value = MovieListViewState.showMovieList(
+                    movieList = movieList
             )
         }
     }
 
-    private fun mapDomainMovie(domainMovie: Movie) = with(domainMovie) {
-        MovieListItem(
-                movieId = id,
-                headerImageUrl = backdrop_path ?: "emptyPath",
-                title = title,
-                contentImageUrl = poster_path ?: "emptyPath",
-                popularity = popularity.toString(),
-                voteCount = vote_count.toString()
-        )
+    private suspend fun Movie.configurePath(): Movie {
+        return configureMovieImagesPathUseCase.execute(this).getOrNull() ?: this
+    }
+
+    private fun Movie.mapToListItem() =
+            MovieListItem(
+                    movieId = id,
+                    headerImageUrl = backdrop_path ?: "emptyPath",
+                    title = title,
+                    contentImageUrl = poster_path ?: "emptyPath",
+                    popularity = popularity.toString(),
+                    voteCount = vote_count.toString()
+            )
+
+    private companion object {
+        const val FIRST_PAGE = 1
     }
 }

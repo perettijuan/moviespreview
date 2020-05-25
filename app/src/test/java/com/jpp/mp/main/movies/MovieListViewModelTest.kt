@@ -148,7 +148,7 @@ class MovieListViewModelTest {
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
 
         assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.visibility)
-        assertEquals(mockedList.size, viewStatePosted?.contentViewState?.movieList?.size)
+        assertEquals(mockedList.size, viewStatePosted?.contentViewState?.moviePage?.size)
 
         verify { movieListInteractor.fetchMoviePageForSection(1, param.section, any()) }
         verify(exactly = mockedList.size) { imagesPathInteractor.configurePathMovie(10, 10, any()) }
