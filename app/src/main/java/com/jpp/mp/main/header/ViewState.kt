@@ -4,14 +4,6 @@ import android.view.View
 import androidx.annotation.StringRes
 import com.jpp.mp.R
 
-/*
- * This file contains the definitions for the entire model used in the navigation header.
- */
-
-/**************************************************************************************************
- *************************************** VIEW STATES **********************************************
- **************************************************************************************************/
-
 /**
  * Represents the view states that the [NavigationHeaderFragment] can render at any given time.
  */
@@ -122,16 +114,4 @@ data class AccountAvatarViewState(
         fun createAvatar(avatarUrl: String, callback: (() -> Unit)) = AccountAvatarViewState(avatarUrl = avatarUrl, avatarVisibility = View.VISIBLE, avatarErrorCallback = callback)
         fun createLetter(defaultLetter: String) = AccountAvatarViewState(defaultLetter = defaultLetter, defaultLetterVisibility = View.VISIBLE, avatarVisibility = View.INVISIBLE)
     }
-}
-
-/**************************************************************************************************
- *************************************** NAVIGATION ***********************************************
- **************************************************************************************************/
-
-/**
- * Represents the navigation events that can be routed from the navigation header.
- */
-sealed class HeaderNavigationEvent {
-    object ToUserAccount : HeaderNavigationEvent()
-    object ToLogin : HeaderNavigationEvent()
 }

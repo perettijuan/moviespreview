@@ -7,8 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.paging.PagedListAdapter
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
@@ -16,7 +14,6 @@ import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mp.databinding.FragmentMovieListBinding
-import com.jpp.mp.databinding.ListItemMovieBinding
 
 /**
  * Base fragment used to show the list of movies that are present in a particular section.
@@ -93,53 +90,6 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
 
     abstract fun initViewModel(posterSize: Int, backdropSize: Int, vm: MovieListViewModel)
     private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.movieList)?.let(action)
-
-    /**
-     * Internal [PagedListAdapter] to render the list of movies. The fact that this class is a
-     * [PagedListAdapter] indicates that the paging library is being used. Another important
-     * aspect of this class is that it uses Data Binding to update the UI, which differs from the
-     * containing class.
-     */
-    class MoviesAdapter(private val movieSelectionListener: (MovieListItem) -> Unit) : PagedListAdapter<MovieListItem, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(
-                    DataBindingUtil.inflate(
-                            LayoutInflater.from(parent.context),
-                            R.layout.list_item_movie,
-                            parent,
-                            false
-                    )
-            )
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            getItem(position)?.let {
-                holder.bindMovie(it, movieSelectionListener)
-            }
-        }
-
-        class ViewHolder(private val itemBinding: ListItemMovieBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-            fun bindMovie(movieList: MovieListItem, movieSelectionListener: (MovieListItem) -> Unit) {
-                with(itemBinding) {
-                    viewState = movieList
-                    executePendingBindings()
-                }
-                itemView.setOnClickListener { movieSelectionListener(movieList) }
-            }
-        }
-    }
-
-    class MovieDiffCallback : DiffUtil.ItemCallback<MovieListItem>() {
-
-        override fun areItemsTheSame(oldItem: MovieListItem, newItem: MovieListItem): Boolean {
-            return oldItem.title == newItem.title
-        }
-
-        override fun areContentsTheSame(oldItem: MovieListItem, newItem: MovieListItem): Boolean {
-            return oldItem.title == newItem.title
-        }
-    }
 
     private companion object {
         const val MOVIES_RV_STATE_KEY = "moviesRvStateKey"
