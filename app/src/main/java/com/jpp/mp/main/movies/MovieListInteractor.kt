@@ -24,6 +24,8 @@ import javax.inject.Inject
  *    in the paging library, where a callback needs to be provided - instead of using
  *    a reactive approach.
  */
+//TODO DELETE ME
+@Deprecated("No more interactors")
 class MovieListInteractor @Inject constructor(
     private val moviePageRepository: MoviePageRepository,
     private val connectivityRepository: ConnectivityRepository,

@@ -11,7 +11,7 @@ import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.usecase.ConfigureMovieImagesPathUseCase
 import com.jpp.mpdomain.usecase.GetMoviePageUseCase
 import com.jpp.mpdomain.usecase.Try
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -26,7 +26,8 @@ import javax.inject.Inject
  */
 class MovieListViewModel @Inject constructor(
         private val getMoviePageUseCase: GetMoviePageUseCase,
-        private val configureMovieImagesPathUseCase: ConfigureMovieImagesPathUseCase
+        private val configureMovieImagesPathUseCase: ConfigureMovieImagesPathUseCase,
+        private val ioDispatcher: CoroutineDispatcher
 ) : MPViewModel() {
 
     private lateinit var movieSection: MovieSection
@@ -72,34 +73,31 @@ class MovieListViewModel @Inject constructor(
     }
 
     private fun fetchMoviePage(page: Int) {
-        if (maxPage in 1..page) {
-            return
-        }
+        if (maxPage in 1..page) return
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                when (val firstPageResult = getMoviePageUseCase.execute(page, movieSection)) {
-                    is Try.Failure -> processFailure(firstPageResult.cause)
-                    is Try.Success -> processMoviePage(firstPageResult.value)
-                }
+            val pageResult = withContext(ioDispatcher) {
+                getMoviePageUseCase.execute(page, movieSection)
+            }
+            when (pageResult) {
+                is Try.Failure -> processFailure(pageResult.cause)
+                is Try.Success -> processMoviePage(pageResult.value)
             }
         }
     }
 
     private fun processFailure(failure: Try.FailureCause) {
         _viewState.value = when (failure) {
-            is Try.FailureCause.NoConnectivity -> MovieListViewState.showNoConnectivityError { }
-            is Try.FailureCause.Unknown -> MovieListViewState.showUnknownError { }
+            is Try.FailureCause.NoConnectivity -> MovieListViewState.showNoConnectivityError { onNextMoviePage() }
+            is Try.FailureCause.Unknown -> MovieListViewState.showUnknownError { onNextMoviePage() }
         }
     }
 
     private fun processMoviePage(moviePage: MoviePage) {
-
-
         viewModelScope.launch {
             currentPage = moviePage.page
             maxPage = moviePage.total_pages
 
-            val movieList = withContext(Dispatchers.IO) {
+            val movieList = withContext(ioDispatcher) {
                 moviePage.results
                         .map { movie -> movie.configurePath() }
                         .map { configuredMovie -> configuredMovie.mapToListItem() }
