@@ -58,7 +58,6 @@ class MovieListViewModel @Inject constructor(
         fetchMoviePage(nextPage)
     }
 
-
     /**
      * Called when an item is selected in the list of movies.
      */
