@@ -1,26 +1,26 @@
 package com.jpp.mp.main.movies
 
 import android.view.View
-import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.common.navigation.Destination
+import androidx.lifecycle.SavedStateHandle
 import com.jpp.mpdomain.Movie
+import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
-import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import com.jpp.mpdomain.usecase.ConfigureMovieImagesPathUseCase
+import com.jpp.mpdomain.usecase.GetMoviePageUseCase
+import com.jpp.mpdomain.usecase.Try
 import com.jpp.mptestutils.CoroutineTestExtension
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
-import io.mockk.every
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.fail
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments.arguments
@@ -34,38 +34,44 @@ import org.junit.jupiter.params.provider.MethodSource
 )
 class MovieListViewModelTest {
 
-    @RelaxedMockK
-    private lateinit var movieListInteractor: MovieListInteractor
+    @MockK
+    private lateinit var getMoviePageUseCase: GetMoviePageUseCase
 
     @MockK
-    private lateinit var imagesPathInteractor: ImagesPathInteractor
+    private lateinit var configureMovieImagesPathUseCase: ConfigureMovieImagesPathUseCase
 
-    private val lvInteractorEvents = MutableLiveData<MovieListInteractor.MovieListEvent>()
+    @RelaxedMockK
+    private lateinit var navigator: MovieListNavigator
+
+    private val savedStateHandle: SavedStateHandle by lazy {
+        SavedStateHandle()
+    }
 
     private lateinit var subject: MovieListViewModel
 
     @BeforeEach
     fun setUp() {
-        every { movieListInteractor.events } returns lvInteractorEvents
-
         subject = MovieListViewModel(
-                movieListInteractor,
-                imagesPathInteractor
+                getMoviePageUseCase,
+                configureMovieImagesPathUseCase,
+                navigator,
+                CoroutineTestExtension.testDispatcher,
+                savedStateHandle
         )
     }
 
     @ParameterizedTest
     @MethodSource("movieListTestParams")
-    fun `Should post no connectivity error when disconnected`(param: MovieListParam) {
+    fun `Should post no connectivity error when disconnected`(section: MovieSection, screenTitle: String) {
         var viewStatePosted: MovieListViewState? = null
 
+        coEvery { getMoviePageUseCase.execute(any(), section) } returns Try.Failure(Try.FailureCause.NoConnectivity)
+
+        subject.onInit(section, screenTitle)
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInit(param)
+        assertEquals(screenTitle, viewStatePosted?.screenTitle)
 
-        lvInteractorEvents.postValue(MovieListInteractor.MovieListEvent.NotConnectedToNetwork)
-
-        assertNotNull(viewStatePosted)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
 
@@ -75,32 +81,34 @@ class MovieListViewModelTest {
 
     @ParameterizedTest
     @MethodSource("movieListTestParams")
-    fun `Should retry to fetch data when not connected and retry is executed`(param: MovieListParam) {
+    fun `Should retry to fetch data when not connected and retry is executed`(section: MovieSection, screenTitle: String) {
         var viewStatePosted: MovieListViewState? = null
 
-        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+        coEvery { getMoviePageUseCase.execute(any(), section) } returns Try.Failure(Try.FailureCause.NoConnectivity)
 
-        subject.onInit(param)
-        lvInteractorEvents.postValue(MovieListInteractor.MovieListEvent.NotConnectedToNetwork)
+        subject.onInit(section, screenTitle)
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         viewStatePosted?.let {
             it.errorViewState.errorHandler?.invoke()
-            verify(exactly = 2) { movieListInteractor.fetchMoviePageForSection(1, param.section, any()) }
+            coVerify(exactly = 2) { getMoviePageUseCase.execute(1, section) }
         } ?: fail()
     }
 
     @ParameterizedTest
     @MethodSource("movieListTestParams")
-    fun `Should post error when failing to fetch movies`(param: MovieListParam) {
+    fun `Should post error when failing to fetch movies`(section: MovieSection, screenTitle: String) {
         var viewStatePosted: MovieListViewState? = null
 
+        coEvery { getMoviePageUseCase.execute(any(), section) } returns Try.Failure(Try.FailureCause.Unknown)
+
+        subject.onInit(section, screenTitle)
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInit(param)
-
-        lvInteractorEvents.postValue(MovieListInteractor.MovieListEvent.UnknownError)
-
         assertNotNull(viewStatePosted)
+
+        assertEquals(screenTitle, viewStatePosted?.screenTitle)
+
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
 
@@ -110,66 +118,54 @@ class MovieListViewModelTest {
 
     @ParameterizedTest
     @MethodSource("movieListTestParams")
-    fun `Should retry to fetch data when error unknown and retry is executed`(param: MovieListParam) {
+    fun `Should retry to fetch data when error unknown and retry is executed`(section: MovieSection, screenTitle: String) {
         var viewStatePosted: MovieListViewState? = null
 
-        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+        coEvery { getMoviePageUseCase.execute(any(), section) } returns Try.Failure(Try.FailureCause.Unknown)
 
-        subject.onInit(param)
-        lvInteractorEvents.postValue(MovieListInteractor.MovieListEvent.UnknownError)
+        subject.onInit(section, screenTitle)
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         viewStatePosted?.let {
             it.errorViewState.errorHandler?.invoke()
-            verify(exactly = 2) { movieListInteractor.fetchMoviePageForSection(1, param.section, any()) }
+            coVerify(exactly = 2) { getMoviePageUseCase.execute(1, section) }
         } ?: fail()
     }
 
-    /*
-     * TODO I need to check exactly what's happening with this UT. Don't want to waste
-     *  time since I'm going to refactor by eliminating the interactor layers.
-     */
-    @Disabled
-    @ParameterizedTest
-    @MethodSource("movieListTestParams")
-    fun `Should fetch movies, adapt result to UI and post value`(param: MovieListParam) {
+    @Test
+    fun `Should fetch movies, adapt result to UI and post value`() {
+        val screenTitle = "aTitle"
+        val section = MovieSection.Playing
         var viewStatePosted: MovieListViewState? = null
         val mockedList = getMockedMovies()
-        val slot = slot<(List<Movie>) -> Unit>()
+        val moviePage = MoviePage(
+                page = 1,
+                results = mockedList,
+                total_pages = 100,
+                total_results = 2000
+        )
 
-        every { imagesPathInteractor.configurePathMovie(any(), any(), any()) } answers { arg(2) }
-        every { movieListInteractor.fetchMoviePageForSection(any(), any(), capture(slot)) } answers { slot.captured.invoke(mockedList) }
+        coEvery { getMoviePageUseCase.execute(any(), section) } returns Try.Success(moviePage)
+        coEvery { configureMovieImagesPathUseCase.execute(any()) } answers { Try.Success(arg(0)) }
 
+        subject.onInit(section, screenTitle)
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInit(param)
-
         assertNotNull(viewStatePosted)
+
+        assertEquals(screenTitle, viewStatePosted?.screenTitle)
+
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
 
         assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.visibility)
         assertEquals(mockedList.size, viewStatePosted?.contentViewState?.movieList?.size)
 
-        verify { movieListInteractor.fetchMoviePageForSection(1, param.section, any()) }
-        verify(exactly = mockedList.size) { imagesPathInteractor.configurePathMovie(10, 10, any()) }
     }
 
     @ParameterizedTest
     @MethodSource("movieListTestParams")
-    fun `Should update reached destination in onInit`(param: MovieListParam) {
-        var destinationReached: Destination? = null
-        val expected = Destination.MovieListReached(param.screenTitle)
-
-        subject.destinationEvents.observeWith { destinationReached = it }
-
-        subject.onInit(param)
-
-        assertEquals(expected, destinationReached)
-    }
-
-    @ParameterizedTest
-    @MethodSource("movieListTestParams")
-    fun `Should request navigation to movie details when movie item selected`(param: MovieListParam) {
+    fun `Should request navigation to movie details when movie item selected`(section: MovieSection, screenTitle: String) {
         val movieItem = MovieListItem(
                 movieId = 10.0,
                 headerImageUrl = "aHeaderImageUrl",
@@ -178,18 +174,15 @@ class MovieListViewModelTest {
                 popularity = "aPopularity",
                 voteCount = "aVoteCount"
         )
-
-        val expectedDestination = Destination.MPMovieDetails(
-                movieId = "10.0",
-                movieImageUrl = "aContentPath",
-                movieTitle = "aTitle")
-
-        var requestedDestination: Destination? = null
-
-        subject.navigationEvents.observeWith { it.actionIfNotHandled { dest -> requestedDestination = dest } }
         subject.onMovieSelected(movieItem)
 
-        assertEquals(expectedDestination, requestedDestination)
+        verify {
+            navigator.navigateToMovieDetails(
+                    movieId = "10.0",
+                    movieImageUrl = "aContentPath",
+                    movieTitle = "aTitle"
+            )
+        }
     }
 
     private fun getMockedMovies(): List<Movie> {
@@ -219,36 +212,20 @@ class MovieListViewModelTest {
         @JvmStatic
         fun movieListTestParams() = listOf(
                 arguments(
-                        MovieListParam(
-                                MovieSection.Playing,
-                                "Playing",
-                                10,
-                                10
-                        )
+                        MovieSection.Playing,
+                        "Playing"
                 ),
                 arguments(
-                        MovieListParam(
-                                MovieSection.Popular,
-                                "Popular",
-                                10,
-                                10
-                        )
+                        MovieSection.Popular,
+                        "Popular"
                 ),
                 arguments(
-                        MovieListParam(
-                                MovieSection.Upcoming,
-                                "Upcoming",
-                                10,
-                                10
-                        )
+                        MovieSection.Upcoming,
+                        "Upcoming"
                 ),
                 arguments(
-                        MovieListParam(
-                                MovieSection.TopRated,
-                                "TopRated",
-                                10,
-                                10
-                        )
+                        MovieSection.TopRated,
+                        "TopRated"
                 )
         )
     }

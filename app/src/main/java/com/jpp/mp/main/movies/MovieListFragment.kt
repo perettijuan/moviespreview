@@ -1,19 +1,23 @@
 package com.jpp.mp.main.movies
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
-import com.jpp.mp.common.extensions.getScreenWidthInPixels
-import com.jpp.mp.common.extensions.withViewModel
-import com.jpp.mp.common.fragments.MPFragment
+import com.jpp.mp.common.extensions.observeValue
+import com.jpp.mp.common.extensions.setScreenTitle
+import com.jpp.mp.common.paging.MPVerticalPagingHandler
 import com.jpp.mp.databinding.FragmentMovieListBinding
+import com.jpp.mp.di.MPGenericSavedStateViewModelFactory
+import com.jpp.mpdomain.MovieSection
+import dagger.android.support.AndroidSupportInjection
+import javax.inject.Inject
 
 /**
  * Base fragment used to show the list of movies that are present in a particular section.
@@ -34,62 +38,109 @@ import com.jpp.mp.databinding.FragmentMovieListBinding
  * VM instead of a VM per Fragment is based only in the simplification over the complication that
  * could represent having a hierarchy of VM to provide the functionality to this view.
  */
-abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
+abstract class MovieListFragment : Fragment() {
+
+    @Inject
+    lateinit var movieListViewModelFactory: MovieListViewModelFactory
 
     private lateinit var viewBinding: FragmentMovieListBinding
 
+    private val viewModel: MovieListViewModel by viewModels {
+        MPGenericSavedStateViewModelFactory(movieListViewModelFactory, this)
+    }
+
+    private var movieListRv: RecyclerView? = null
+
+    protected abstract val movieSection: MovieSection
+    protected abstract val screenTitle: String
+
+
     // used to restore the position of the RecyclerView on view re-creation
+    // TODO we can simplify this once RecyclerView 1.2.0 is released
+    //  ==> https://medium.com/androiddevelopers/restore-recyclerview-scroll-position-a8fbdc9a9334
     private var rvState: Parcelable? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie_list, container, false)
+        viewBinding = DataBindingUtil.inflate(
+                inflater,
+                R.layout.fragment_movie_list,
+                container,
+                false
+        )
         return viewBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        withRecyclerView {
-            layoutManager = LinearLayoutManager(context)
-            adapter = MoviesAdapter { item -> withViewModel { onMovieSelected(item) } }
-        }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+        setUpViews(view)
 
         rvState = savedInstanceState?.getParcelable(MOVIES_RV_STATE_KEY) ?: rvState
 
-        withViewModel {
-            viewState.observe(viewLifecycleOwner, Observer { viewState ->
-                viewBinding.viewState = viewState
+        viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
+        viewModel.onInit(movieSection, screenTitle)
+    }
 
-                withRecyclerView {
-                    (adapter as MoviesAdapter).submitList(viewState.contentViewState.movieList)
-                    layoutManager?.onRestoreInstanceState(rvState)
-                }
-            })
-
-            initViewModel(
-                    getScreenWidthInPixels(),
-                    getScreenWidthInPixels(),
-                    this)
-        }
+    override fun onDestroyView() {
+        movieListRv = null
+        super.onDestroyView()
     }
 
     override fun onPause() {
-        withRecyclerView { rvState = layoutManager?.onSaveInstanceState() }
+        rvState = movieListRv?.layoutManager?.onSaveInstanceState()
         super.onPause()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        withRecyclerView { outState.putParcelable(MOVIES_RV_STATE_KEY, layoutManager?.onSaveInstanceState()) }
+        outState.putParcelable(MOVIES_RV_STATE_KEY, movieListRv?.layoutManager?.onSaveInstanceState())
         super.onSaveInstanceState(outState)
     }
 
-    override fun withViewModel(action: MovieListViewModel.() -> Unit) = withViewModel<MovieListViewModel>(viewModelFactory) { action() }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.movie_list_menu, menu)
+    }
 
-    abstract fun initViewModel(posterSize: Int, backdropSize: Int, vm: MovieListViewModel)
-    private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.movieList)?.let(action)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.search_menu -> {
+                viewModel.onSearchOptionSelected()
+                return true
+            }
+            R.id.about_menu -> {
+                viewModel.onAboutOptionSelected()
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun setUpViews(view: View) {
+        movieListRv = view.findViewById<RecyclerView>(R.id.movieList).apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = MoviesAdapter { item -> viewModel.onMovieSelected(item) }
+
+            val pagingHandler = MPVerticalPagingHandler(layoutManager as LinearLayoutManager) {
+                viewModel.onNextMoviePage()
+            }
+            addOnScrollListener(pagingHandler)
+        }
+    }
+
+    private fun renderViewState(viewState: MovieListViewState) {
+        setScreenTitle(viewState.screenTitle)
+        viewBinding.viewState = viewState
+        (movieListRv?.adapter as MoviesAdapter).updateDataList(viewState.contentViewState.movieList)
+        movieListRv?.layoutManager?.onRestoreInstanceState(rvState)
+    }
 
     private companion object {
         const val MOVIES_RV_STATE_KEY = "moviesRvStateKey"

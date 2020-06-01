@@ -1,8 +1,6 @@
 package com.jpp.mp.main
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -58,6 +56,9 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var mainNavigator: MainNavigator
+
     private lateinit var mpToolbarManager: MPToolbarManager
 
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -100,6 +101,18 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
         setSupportActionBar(mainToolbar)
         setupNavigation()
+        //TODO delete this once all Fragments are handling title manually
+        mainSearchView.setGone()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainNavigator.bind(findNavController(this, R.id.mainNavHostFragment))
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mainNavigator.unBind()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -111,37 +124,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             mainDrawerLayout.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_activity_menu, menu)
-
-        /*
-         * Disable the menu if the current view state requires
-         * to hide the menus - this is true when we're showing
-         * a non-top-level fragment.
-         */
-        withMainViewModel {
-            for (i in 0 until menu.size()) {
-                menu.getItem(i).isVisible = viewState.value?.menuBarEnabled ?: true
-            }
-        }
-
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.search_menu -> {
-                navigateToSearch()
-                return true
-            }
-            R.id.about_menu -> {
-                interModuleNavigationTo(R.id.about_nav)
-                return true
-            }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -187,17 +169,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                     extras,
                     buildAnimationNavOptions()
             )
-        }
-    }
-
-    private fun navigateToSearch() {
-        withNavController {
-            navigate(
-                    object : NavDirections {
-                        override fun getArguments() = Bundle()
-                        override fun getActionId() = R.id.search_nav
-                    },
-                    buildAnimationNavOptions())
         }
     }
 
