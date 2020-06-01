@@ -5,6 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.coroutines.MPViewModel
+import com.jpp.mp.common.extensions.setHandledEvent
+import com.jpp.mp.common.livedata.HandledEvent
+import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
@@ -61,6 +64,9 @@ class MovieListViewModel(
     private val _viewState = MutableLiveData<MovieListViewState>()
     val viewState: LiveData<MovieListViewState> = _viewState
 
+    private val _event = MutableLiveData<HandledEvent<MovieListEvent>>()
+    val event: LiveData<HandledEvent<MovieListEvent>> = _event
+
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
      * indicate that it is ready to start rendering. When the method is called, the VM
@@ -85,14 +91,14 @@ class MovieListViewModel(
     /**
      * Called when an item is selected in the list of movies.
      */
-    fun onMovieSelected(movieListItem: MovieListItem) {
-        with(movieListItem) {
-            navigateTo(Destination.MPMovieDetails(
-                    movieId = movieId.toString(),
-                    movieImageUrl = contentImageUrl,
-                    movieTitle = title)
-            )
-        }
+    fun onMovieSelected(item: MovieListItem) {
+        _event.setHandledEvent(
+                MovieListEvent.NavigateToMovieDetails(
+                        item.movieId.toString(),
+                        item.contentImageUrl,
+                        item.title
+                )
+        )
     }
 
     private fun fetchMoviePage(page: Int, movieSection: MovieSection?) {

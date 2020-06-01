@@ -58,6 +58,9 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var mainNavigator: MainNavigator
+
     private lateinit var mpToolbarManager: MPToolbarManager
 
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -100,6 +103,16 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
         setSupportActionBar(mainToolbar)
         setupNavigation()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainNavigator.bind(findNavController(this, R.id.mainNavHostFragment))
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mainNavigator.unBind()
     }
 
     override fun onSupportNavigateUp(): Boolean {
