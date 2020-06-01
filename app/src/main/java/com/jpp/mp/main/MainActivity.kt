@@ -1,8 +1,6 @@
 package com.jpp.mp.main
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -129,37 +127,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_activity_menu, menu)
-
-        /*
-         * Disable the menu if the current view state requires
-         * to hide the menus - this is true when we're showing
-         * a non-top-level fragment.
-         */
-        withMainViewModel {
-            for (i in 0 until menu.size()) {
-                menu.getItem(i).isVisible = viewState.value?.menuBarEnabled ?: true
-            }
-        }
-
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.search_menu -> {
-                navigateToSearch()
-                return true
-            }
-            R.id.about_menu -> {
-                interModuleNavigationTo(R.id.about_nav)
-                return true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentDispatchingAndroidInjector
 
     /**
@@ -202,17 +169,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                     extras,
                     buildAnimationNavOptions()
             )
-        }
-    }
-
-    private fun navigateToSearch() {
-        withNavController {
-            navigate(
-                    object : NavDirections {
-                        override fun getArguments() = Bundle()
-                        override fun getActionId() = R.id.search_nav
-                    },
-                    buildAnimationNavOptions())
         }
     }
 

@@ -9,4 +9,6 @@ interface MovieListNavigator {
                                movieImageUrl: String,
                                movieTitle: String)
 
+    fun navigateToSearch()
+    fun navigateToAboutSection()
 }

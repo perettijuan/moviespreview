@@ -92,6 +92,20 @@ class MovieListViewModel(
         )
     }
 
+    /**
+     * Called when the search option is selected.
+     */
+    fun onSearchOptionSelected() {
+        navigator.navigateToSearch()
+    }
+
+    /**
+     * Called when the about option is selected.
+     */
+    fun onAboutOptionSelected() {
+        navigator.navigateToAboutSection()
+    }
+
     private fun fetchMoviePage(page: Int, movieSection: MovieSection?) {
         if (movieSection == null) {
             throw NullPointerException("movieSection is NULL for some reason")

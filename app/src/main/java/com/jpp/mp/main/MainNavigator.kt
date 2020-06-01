@@ -1,10 +1,13 @@
 package com.jpp.mp.main
 
+import android.os.Bundle
 import androidx.navigation.NavController
+import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import com.jpp.mp.R
 import com.jpp.mp.main.movies.MovieListNavigator
 import com.jpp.mpmoviedetails.NavigationMovieDetails
+
 /**
  * Provides navigation to the main module and also to each individual
  * feature module.
@@ -12,7 +15,6 @@ import com.jpp.mpmoviedetails.NavigationMovieDetails
 class MainNavigator : MovieListNavigator {
 
     private var navController: NavController? = null
-
 
     override fun navigateToMovieDetails(
             movieId: String,
@@ -28,6 +30,24 @@ class MainNavigator : MovieListNavigator {
                 buildAnimationNavOptions()
         )
 
+    }
+
+    override fun navigateToSearch() {
+        navController?.navigate(
+                object : NavDirections {
+                    override fun getArguments() = Bundle()
+                    override fun getActionId() = R.id.search_nav
+                },
+                buildAnimationNavOptions()
+        )
+    }
+
+    override fun navigateToAboutSection() {
+        navController?.navigate(
+                R.id.about_nav,
+                null,
+                buildAnimationNavOptions()
+        )
     }
 
     fun bind(newNavController: NavController) {

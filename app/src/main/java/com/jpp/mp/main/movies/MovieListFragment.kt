@@ -3,9 +3,7 @@ package com.jpp.mp.main.movies
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -40,7 +38,6 @@ import javax.inject.Inject
  * VM instead of a VM per Fragment is based only in the simplification over the complication that
  * could represent having a hierarchy of VM to provide the functionality to this view.
  */
-//TODO handle menu
 abstract class MovieListFragment : Fragment() {
 
     @Inject
@@ -59,8 +56,14 @@ abstract class MovieListFragment : Fragment() {
 
 
     // used to restore the position of the RecyclerView on view re-creation
-    // TODO we can simplify this once RecyclerView 1.2.0 is released ==> https://medium.com/androiddevelopers/restore-recyclerview-scroll-position-a8fbdc9a9334
+    // TODO we can simplify this once RecyclerView 1.2.0 is released
+    //  ==> https://medium.com/androiddevelopers/restore-recyclerview-scroll-position-a8fbdc9a9334
     private var rvState: Parcelable? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -68,7 +71,12 @@ abstract class MovieListFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie_list, container, false)
+        viewBinding = DataBindingUtil.inflate(
+                inflater,
+                R.layout.fragment_movie_list,
+                container,
+                false
+        )
         return viewBinding.root
     }
 
@@ -95,6 +103,24 @@ abstract class MovieListFragment : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelable(MOVIES_RV_STATE_KEY, movieListRv?.layoutManager?.onSaveInstanceState())
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.movie_list_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.search_menu -> {
+                viewModel.onSearchOptionSelected()
+                return true
+            }
+            R.id.about_menu -> {
+                viewModel.onAboutOptionSelected()
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun setUpViews(view: View) {
