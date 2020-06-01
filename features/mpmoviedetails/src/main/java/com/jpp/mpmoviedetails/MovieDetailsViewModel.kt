@@ -29,8 +29,8 @@ import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.AppLanguag
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.NotConnectedToNetwork
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.Success
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.UnknownError
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -46,7 +46,8 @@ import kotlinx.coroutines.withContext
  * and the view state being shown to the user.
  */
 class MovieDetailsViewModel @Inject constructor(
-    private val movieDetailsInteractor: MovieDetailsInteractor
+        private val movieDetailsInteractor: MovieDetailsInteractor,
+        private val ioDispatcher: CoroutineDispatcher
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<MovieDetailViewState>()
@@ -148,7 +149,7 @@ class MovieDetailsViewModel @Inject constructor(
      */
     private fun withMovieDetailsInteractor(action: MovieDetailsInteractor.() -> Unit) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            withContext(ioDispatcher) {
                 action(movieDetailsInteractor)
             }
         }
@@ -160,7 +161,7 @@ class MovieDetailsViewModel @Inject constructor(
      */
     private fun mapMovieDetails(domainDetail: MovieDetail, imageUrl: String) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            withContext(ioDispatcher) {
                 with(domainDetail) {
                     MovieDetailViewState.showDetails(
                             movieImageUrl = imageUrl,
