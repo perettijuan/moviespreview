@@ -1,20 +1,24 @@
 package com.jpp.mp.main.movies
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
-import com.jpp.mp.common.extensions.withViewModel
-import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mp.common.paging.MPVerticalPagingHandler
 import com.jpp.mp.databinding.FragmentMovieListBinding
+import com.jpp.mp.di.MPGenericSavedStateViewModelFactory
 import com.jpp.mpdomain.MovieSection
+import dagger.android.support.AndroidSupportInjection
+import javax.inject.Inject
 
 /**
  * Base fragment used to show the list of movies that are present in a particular section.
@@ -35,17 +39,31 @@ import com.jpp.mpdomain.MovieSection
  * VM instead of a VM per Fragment is based only in the simplification over the complication that
  * could represent having a hierarchy of VM to provide the functionality to this view.
  */
-abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
+abstract class MovieListFragment : Fragment() {
+
+    @Inject
+    internal lateinit var movieListViewModelFactory: MovieListViewModelFactory
 
     private lateinit var viewBinding: FragmentMovieListBinding
+
+    private val viewModel: MovieListViewModel by viewModels {
+        MPGenericSavedStateViewModelFactory(movieListViewModelFactory, this)
+    }
 
     private var movieListRv: RecyclerView? = null
 
     protected abstract val movieSection: MovieSection
     protected abstract val screenTitle: String
 
+
     // used to restore the position of the RecyclerView on view re-creation
+    // TODO we can simplify this once RecyclerView 1.2.0 is released ==> https://medium.com/androiddevelopers/restore-recyclerview-scroll-position-a8fbdc9a9334
     private var rvState: Parcelable? = null
+
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie_list, container, false)
@@ -56,10 +74,10 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         movieListRv = view.findViewById<RecyclerView>(R.id.movieList).apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = MoviesAdapter { item -> withViewModel { onMovieSelected(item) } }
+            adapter = MoviesAdapter { item -> viewModel.onMovieSelected(item) }
 
             val pagingHandler = MPVerticalPagingHandler(layoutManager as LinearLayoutManager) {
-                withViewModel { onNextMoviePage() }
+                viewModel.onNextMoviePage()
             }
             addOnScrollListener(pagingHandler)
         }
@@ -75,15 +93,14 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
 
         rvState = savedInstanceState?.getParcelable(MOVIES_RV_STATE_KEY) ?: rvState
 
-        withViewModel {
-            viewState.observe(viewLifecycleOwner, Observer { viewState ->
-                viewBinding.viewState = viewState
-                (movieListRv?.adapter as MoviesAdapter).updateDataList(viewState.contentViewState.movieList)
-                movieListRv?.layoutManager?.onRestoreInstanceState(rvState)
-            })
+        //TODO Move this to onViewCreated and simplify methods like Earnin
+        viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
+            viewBinding.viewState = viewState
+            (movieListRv?.adapter as MoviesAdapter).updateDataList(viewState.contentViewState.movieList)
+            movieListRv?.layoutManager?.onRestoreInstanceState(rvState)
+        })
 
-            onInit(movieSection, screenTitle)
-        }
+        viewModel.onInit(movieSection, screenTitle)
     }
 
     override fun onPause() {
@@ -95,8 +112,6 @@ abstract class MovieListFragment : MPFragment<MovieListViewModel>() {
         outState.putParcelable(MOVIES_RV_STATE_KEY, movieListRv?.layoutManager?.onSaveInstanceState())
         super.onSaveInstanceState(outState)
     }
-
-    override fun withViewModel(action: MovieListViewModel.() -> Unit) = withViewModel<MovieListViewModel>(viewModelFactory) { action() }
 
     private companion object {
         const val MOVIES_RV_STATE_KEY = "moviesRvStateKey"

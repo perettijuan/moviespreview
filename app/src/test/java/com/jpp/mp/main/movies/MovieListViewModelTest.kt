@@ -1,6 +1,7 @@
 package com.jpp.mp.main.movies
 
 import android.view.View
+import androidx.lifecycle.SavedStateHandle
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
@@ -40,6 +41,10 @@ class MovieListViewModelTest {
     @MockK
     private lateinit var configureMovieImagesPathUseCase: ConfigureMovieImagesPathUseCase
 
+    private val savedStateHandle: SavedStateHandle by lazy {
+        SavedStateHandle()
+    }
+
     private lateinit var subject: MovieListViewModel
 
     @BeforeEach
@@ -47,7 +52,8 @@ class MovieListViewModelTest {
         subject = MovieListViewModel(
                 getMoviePageUseCase,
                 configureMovieImagesPathUseCase,
-                CoroutineTestExtension.testDispatcher
+                CoroutineTestExtension.testDispatcher,
+                savedStateHandle
         )
     }
 

@@ -2,6 +2,7 @@ package com.jpp.mp.main.movies
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.navigation.Destination
@@ -14,7 +15,6 @@ import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] used to support the movie list section of the application. This ViewModel is shared by
@@ -24,18 +24,42 @@ import javax.inject.Inject
  * Produces different [MovieListViewState] that represents the entire configuration of the screen at any
  * given moment.
  */
-class MovieListViewModel @Inject constructor(
+class MovieListViewModel(
         private val getMoviePageUseCase: GetMoviePageUseCase,
         private val configureMovieImagesPathUseCase: ConfigureMovieImagesPathUseCase,
-        private val ioDispatcher: CoroutineDispatcher
+        private val ioDispatcher: CoroutineDispatcher,
+        private val savedStateHandle: SavedStateHandle
 ) : MPViewModel() {
 
-    private lateinit var movieSection: MovieSection
-    private var currentPage: Int = 0
-    private var maxPage: Int = 0
+    private var movieSection: MovieSection?
+        set(value) {
+            savedStateHandle.set(MOVIE_SECTION_KEY, value?.name)
+        }
+        get() {
+            return when (val name = (savedStateHandle.get(MOVIE_SECTION_KEY) as String?)) {
+                MovieSection.Playing.name -> MovieSection.Playing
+                MovieSection.Popular.name -> MovieSection.Popular
+                MovieSection.TopRated.name -> MovieSection.TopRated
+                MovieSection.Upcoming.name -> MovieSection.Upcoming
+                else -> throw IllegalStateException("Can't find section $name")
+            }
+        }
+
+    private var currentPage: Int
+        set(value) {
+            savedStateHandle.set(MOVIE_PAGE_KEY, value)
+        }
+        get() = savedStateHandle.get(MOVIE_PAGE_KEY) ?: 0
+
+
+    private var maxPage: Int
+        set(value) {
+            savedStateHandle.set(MAX_MOVIE_PAGE_KEY, value)
+        }
+        get() = savedStateHandle.get(MAX_MOVIE_PAGE_KEY) ?: 0
 
     private val _viewState = MutableLiveData<MovieListViewState>()
-    val viewState: LiveData<MovieListViewState> get() = _viewState
+    val viewState: LiveData<MovieListViewState> = _viewState
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -47,7 +71,7 @@ class MovieListViewModel @Inject constructor(
         movieSection = section
         updateCurrentDestination(Destination.MovieListReached(screenTitle))
         _viewState.value = MovieListViewState.showLoading()
-        fetchMoviePage(FIRST_PAGE)
+        fetchMoviePage(FIRST_PAGE, movieSection)
     }
 
     /**
@@ -55,7 +79,7 @@ class MovieListViewModel @Inject constructor(
      */
     fun onNextMoviePage() {
         val nextPage = currentPage + 1
-        fetchMoviePage(nextPage)
+        fetchMoviePage(nextPage, movieSection)
     }
 
     /**
@@ -71,7 +95,11 @@ class MovieListViewModel @Inject constructor(
         }
     }
 
-    private fun fetchMoviePage(page: Int) {
+    private fun fetchMoviePage(page: Int, movieSection: MovieSection?) {
+        if (movieSection == null) {
+            throw NullPointerException("movieSection is NULL for some reason")
+        }
+
         if (maxPage in 1..page) return
         viewModelScope.launch {
             val pageResult = withContext(ioDispatcher) {
@@ -123,6 +151,9 @@ class MovieListViewModel @Inject constructor(
             )
 
     private companion object {
+        const val MOVIE_SECTION_KEY = "MOVIE_SECTION_KEY"
+        const val MOVIE_PAGE_KEY = "MOVIE_PAGE_KEY"
+        const val MAX_MOVIE_PAGE_KEY = "MAX_MOVIE_PAGE_KEY"
         const val FIRST_PAGE = 1
     }
 }
