@@ -16,6 +16,7 @@ import javax.inject.Inject
 class MovieListViewModelFactory @Inject constructor(
         private val getMoviePageUseCase: GetMoviePageUseCase,
         private val configureMovieImagesPathUseCase: ConfigureMovieImagesPathUseCase,
+        private val navigator: MovieListNavigator,
         private val ioDispatcher: CoroutineDispatcher
 ) : ViewModelAssistedFactory<MovieListViewModel> {
 
@@ -23,6 +24,7 @@ class MovieListViewModelFactory @Inject constructor(
         return MovieListViewModel(
                 getMoviePageUseCase,
                 configureMovieImagesPathUseCase,
+                navigator,
                 ioDispatcher,
                 handle
         )

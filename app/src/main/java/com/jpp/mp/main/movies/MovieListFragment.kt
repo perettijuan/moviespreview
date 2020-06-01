@@ -12,7 +12,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
-import com.jpp.mp.common.extensions.observeHandledEvent
 import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.paging.MPVerticalPagingHandler
 import com.jpp.mp.databinding.FragmentMovieListBinding
@@ -45,9 +44,6 @@ abstract class MovieListFragment : Fragment() {
 
     @Inject
     lateinit var movieListViewModelFactory: MovieListViewModelFactory
-
-    @Inject
-    lateinit var navigator: MovieListNavigator
 
     private lateinit var viewBinding: FragmentMovieListBinding
 
@@ -82,7 +78,6 @@ abstract class MovieListFragment : Fragment() {
         rvState = savedInstanceState?.getParcelable(MOVIES_RV_STATE_KEY) ?: rvState
 
         viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
-        viewModel.event.observeHandledEvent(viewLifecycleOwner, ::handleEvent)
         viewModel.onInit(movieSection, screenTitle)
     }
 
@@ -117,16 +112,6 @@ abstract class MovieListFragment : Fragment() {
         viewBinding.viewState = viewState
         (movieListRv?.adapter as MoviesAdapter).updateDataList(viewState.contentViewState.movieList)
         movieListRv?.layoutManager?.onRestoreInstanceState(rvState)
-    }
-
-    private fun handleEvent(event: MovieListEvent) {
-        when (event) {
-            is MovieListEvent.NavigateToMovieDetails -> navigator.navigateToMovieDetails(
-                    event.movieId,
-                    event.movieImageUrl,
-                    event.movieTitle
-            )
-        }
     }
 
     private companion object {
