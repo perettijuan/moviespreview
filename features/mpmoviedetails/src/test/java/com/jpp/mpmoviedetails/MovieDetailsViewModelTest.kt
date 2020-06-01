@@ -16,7 +16,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -39,7 +38,10 @@ class MovieDetailsViewModelTest {
     fun setUp() {
         every { interactor.movieDetailEvents } returns lvInteractorEvents
 
-        subject = MovieDetailsViewModel(interactor)
+        subject = MovieDetailsViewModel(
+                interactor,
+                CoroutineTestExtension.testDispatcher
+        )
     }
 
     @Test
@@ -91,12 +93,7 @@ class MovieDetailsViewModelTest {
         verify { interactor.fetchMovieDetail(10.0) }
     }
 
-    /*
-     * TODO I need to check exactly what's happening with this UT. Don't want to waste
-     *  time since I'm going to refactor by eliminating the interactor layers.
-     */
     @Test
-    @Disabled
     fun `Should execute GetMovieDetailsUseCase, adapt result to UI model and post value on init`() {
         var viewStatePosted: MovieDetailViewState? = null
         val movieDetailId = 12.0
