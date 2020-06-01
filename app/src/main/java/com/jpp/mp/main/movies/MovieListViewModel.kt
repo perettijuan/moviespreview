@@ -1,10 +1,6 @@
 package com.jpp.mp.main.movies
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPViewModel
+import androidx.lifecycle.*
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
@@ -16,7 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * [MPViewModel] used to support the movie list section of the application. This ViewModel is shared by
+ * [ViewModel] used to support the movie list section of the application. This ViewModel is shared by
  * the Fragments that show the movies listed in each category that can be displayed. Every time the
  * user selects a section, this VM is refreshed and triggers a new fetching to the underlying layers
  * of the application.
@@ -29,7 +25,7 @@ class MovieListViewModel(
         private val navigator: MovieListNavigator,
         private val ioDispatcher: CoroutineDispatcher,
         private val savedStateHandle: SavedStateHandle
-) : MPViewModel() {
+) : ViewModel() {
 
     private var movieSection: MovieSection?
         set(value) {

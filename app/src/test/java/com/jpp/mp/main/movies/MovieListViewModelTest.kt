@@ -2,7 +2,6 @@ package com.jpp.mp.main.movies
 
 import android.view.View
 import androidx.lifecycle.SavedStateHandle
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
@@ -15,11 +14,11 @@ import com.jpp.mptestutils.observeWith
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.fail
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -41,6 +40,9 @@ class MovieListViewModelTest {
     @MockK
     private lateinit var configureMovieImagesPathUseCase: ConfigureMovieImagesPathUseCase
 
+    @RelaxedMockK
+    private lateinit var navigator: MovieListNavigator
+
     private val savedStateHandle: SavedStateHandle by lazy {
         SavedStateHandle()
     }
@@ -52,6 +54,7 @@ class MovieListViewModelTest {
         subject = MovieListViewModel(
                 getMoviePageUseCase,
                 configureMovieImagesPathUseCase,
+                navigator,
                 CoroutineTestExtension.testDispatcher,
                 savedStateHandle
         )
@@ -66,6 +69,8 @@ class MovieListViewModelTest {
 
         subject.onInit(section, screenTitle)
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+
+        assertEquals(screenTitle, viewStatePosted?.screenTitle)
 
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
@@ -101,6 +106,9 @@ class MovieListViewModelTest {
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         assertNotNull(viewStatePosted)
+
+        assertEquals(screenTitle, viewStatePosted?.screenTitle)
+
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.visibility)
 
@@ -126,6 +134,7 @@ class MovieListViewModelTest {
 
     @Test
     fun `Should fetch movies, adapt result to UI and post value`() {
+        val screenTitle = "aTitle"
         val section = MovieSection.Playing
         var viewStatePosted: MovieListViewState? = null
         val mockedList = getMockedMovies()
@@ -139,30 +148,19 @@ class MovieListViewModelTest {
         coEvery { getMoviePageUseCase.execute(any(), section) } returns Try.Success(moviePage)
         coEvery { configureMovieImagesPathUseCase.execute(any()) } answers { Try.Success(arg(0)) }
 
-        subject.onInit(section, "aTitle")
+        subject.onInit(section, screenTitle)
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         assertNotNull(viewStatePosted)
+
+        assertEquals(screenTitle, viewStatePosted?.screenTitle)
+
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
 
         assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.visibility)
         assertEquals(mockedList.size, viewStatePosted?.contentViewState?.movieList?.size)
 
-    }
-
-    @ParameterizedTest
-    @MethodSource("movieListTestParams")
-    fun `Should update reached destination in onInit`(section: MovieSection, screenTitle: String) {
-        var destinationReached: Destination? = null
-        val expected = Destination.MovieListReached(screenTitle)
-
-        coEvery { getMoviePageUseCase.execute(any(), section) } returns Try.Failure(Try.FailureCause.Unknown)
-
-        subject.onInit(section, screenTitle)
-        subject.destinationEvents.observeWith { destinationReached = it }
-
-        assertEquals(expected, destinationReached)
     }
 
     @ParameterizedTest
@@ -176,18 +174,15 @@ class MovieListViewModelTest {
                 popularity = "aPopularity",
                 voteCount = "aVoteCount"
         )
-
-        val expectedDestination = Destination.MPMovieDetails(
-                movieId = "10.0",
-                movieImageUrl = "aContentPath",
-                movieTitle = "aTitle")
-
-        var requestedDestination: Destination? = null
-
-        subject.navigationEvents.observeWith { it.actionIfNotHandled { dest -> requestedDestination = dest } }
         subject.onMovieSelected(movieItem)
 
-        assertEquals(expectedDestination, requestedDestination)
+        verify {
+            navigator.navigateToMovieDetails(
+                    movieId = "10.0",
+                    movieImageUrl = "aContentPath",
+                    movieTitle = "aTitle"
+            )
+        }
     }
 
     private fun getMockedMovies(): List<Movie> {
