@@ -9,10 +9,10 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
+import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.paging.MPVerticalPagingHandler
 import com.jpp.mp.databinding.FragmentMovieListBinding
 import com.jpp.mp.di.MPGenericSavedStateViewModelFactory
@@ -39,6 +39,8 @@ import javax.inject.Inject
  * VM instead of a VM per Fragment is based only in the simplification over the complication that
  * could represent having a hierarchy of VM to provide the functionality to this view.
  */
+//TODO Handle Navigation properly
+//TODO handle Activity title properly
 abstract class MovieListFragment : Fragment() {
 
     @Inject
@@ -72,6 +74,30 @@ abstract class MovieListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpViews(view)
+
+        rvState = savedInstanceState?.getParcelable(MOVIES_RV_STATE_KEY) ?: rvState
+
+        viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
+        viewModel.onInit(movieSection, screenTitle)
+    }
+
+    override fun onDestroyView() {
+        movieListRv = null
+        super.onDestroyView()
+    }
+
+    override fun onPause() {
+        rvState = movieListRv?.layoutManager?.onSaveInstanceState()
+        super.onPause()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable(MOVIES_RV_STATE_KEY, movieListRv?.layoutManager?.onSaveInstanceState())
+        super.onSaveInstanceState(outState)
+    }
+
+    private fun setUpViews(view: View) {
         movieListRv = view.findViewById<RecyclerView>(R.id.movieList).apply {
             layoutManager = LinearLayoutManager(context)
             adapter = MoviesAdapter { item -> viewModel.onMovieSelected(item) }
@@ -83,34 +109,10 @@ abstract class MovieListFragment : Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        movieListRv = null
-        super.onDestroyView()
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        rvState = savedInstanceState?.getParcelable(MOVIES_RV_STATE_KEY) ?: rvState
-
-        //TODO Move this to onViewCreated and simplify methods like Earnin
-        viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
-            viewBinding.viewState = viewState
-            (movieListRv?.adapter as MoviesAdapter).updateDataList(viewState.contentViewState.movieList)
-            movieListRv?.layoutManager?.onRestoreInstanceState(rvState)
-        })
-
-        viewModel.onInit(movieSection, screenTitle)
-    }
-
-    override fun onPause() {
-        rvState = movieListRv?.layoutManager?.onSaveInstanceState()
-        super.onPause()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable(MOVIES_RV_STATE_KEY, movieListRv?.layoutManager?.onSaveInstanceState())
-        super.onSaveInstanceState(outState)
+    private fun renderViewState(viewState: MovieListViewState) {
+        viewBinding.viewState = viewState
+        (movieListRv?.adapter as MoviesAdapter).updateDataList(viewState.contentViewState.movieList)
+        movieListRv?.layoutManager?.onRestoreInstanceState(rvState)
     }
 
     private companion object {
