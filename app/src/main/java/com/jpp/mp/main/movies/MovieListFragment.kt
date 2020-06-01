@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
 import com.jpp.mp.common.extensions.observeValue
+import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.paging.MPVerticalPagingHandler
 import com.jpp.mp.databinding.FragmentMovieListBinding
 import com.jpp.mp.di.MPGenericSavedStateViewModelFactory
@@ -39,7 +40,7 @@ import javax.inject.Inject
  * VM instead of a VM per Fragment is based only in the simplification over the complication that
  * could represent having a hierarchy of VM to provide the functionality to this view.
  */
-//TODO handle Activity title properly
+//TODO handle menu
 abstract class MovieListFragment : Fragment() {
 
     @Inject
@@ -109,6 +110,7 @@ abstract class MovieListFragment : Fragment() {
     }
 
     private fun renderViewState(viewState: MovieListViewState) {
+        setScreenTitle(viewState.screenTitle)
         viewBinding.viewState = viewState
         (movieListRv?.adapter as MoviesAdapter).updateDataList(viewState.contentViewState.movieList)
         movieListRv?.layoutManager?.onRestoreInstanceState(rvState)

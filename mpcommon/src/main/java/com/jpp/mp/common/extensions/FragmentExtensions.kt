@@ -1,5 +1,6 @@
 package com.jpp.mp.common.extensions
 
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -39,4 +40,11 @@ inline fun <reified T : ViewModel> Fragment.withViewModel(viewModelFactory: View
     val vm = getViewModel<T>(viewModelFactory)
     vm.body()
     return vm
+}
+
+/**
+ * Changes the title of the screen to the new provided [title].
+ */
+fun Fragment.setScreenTitle(title: String) {
+    (activity as AppCompatActivity).supportActionBar?.title = title
 }

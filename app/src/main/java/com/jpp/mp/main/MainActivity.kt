@@ -103,6 +103,8 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
         setSupportActionBar(mainToolbar)
         setupNavigation()
+        //TODO delete this once all Fragments are handling title manually
+        mainSearchView.setGone()
     }
 
     override fun onResume() {

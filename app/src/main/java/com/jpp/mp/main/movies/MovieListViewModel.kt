@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.coroutines.MPViewModel
-import com.jpp.mp.common.livedata.HandledEvent
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
@@ -71,8 +69,7 @@ class MovieListViewModel(
      */
     fun onInit(section: MovieSection, screenTitle: String) {
         movieSection = section
-        updateCurrentDestination(Destination.MovieListReached(screenTitle))
-        _viewState.value = MovieListViewState.showLoading()
+        _viewState.value = MovieListViewState.showLoading(screenTitle)
         fetchMoviePage(FIRST_PAGE, movieSection)
     }
 
@@ -114,8 +111,8 @@ class MovieListViewModel(
 
     private fun processFailure(failure: Try.FailureCause) {
         _viewState.value = when (failure) {
-            is Try.FailureCause.NoConnectivity -> MovieListViewState.showNoConnectivityError { onNextMoviePage() }
-            is Try.FailureCause.Unknown -> MovieListViewState.showUnknownError { onNextMoviePage() }
+            is Try.FailureCause.NoConnectivity -> _viewState.value?.showNoConnectivityError { onNextMoviePage() }
+            is Try.FailureCause.Unknown -> _viewState.value?.showUnknownError { onNextMoviePage() }
         }
     }
 
@@ -130,7 +127,7 @@ class MovieListViewModel(
                         .map { configuredMovie -> configuredMovie.mapToListItem() }
             }
 
-            _viewState.value = MovieListViewState.showMovieList(
+            _viewState.value = viewState.value?.showMovieList(
                     movieList = movieList
             )
         }

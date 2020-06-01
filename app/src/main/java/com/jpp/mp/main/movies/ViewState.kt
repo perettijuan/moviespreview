@@ -9,19 +9,40 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
  */
 data class MovieListViewState(
         val loadingVisibility: Int = View.INVISIBLE,
+        val screenTitle: String,
         val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
         val contentViewState: MovieListContentViewState = MovieListContentViewState()
 ) {
-    companion object {
-        fun showLoading() = MovieListViewState(loadingVisibility = View.VISIBLE)
-        fun showUnknownError(errorHandler: () -> Unit) = MovieListViewState(errorViewState = ErrorViewState.asUnknownError(errorHandler))
-        fun showNoConnectivityError(errorHandler: () -> Unit) = MovieListViewState(errorViewState = ErrorViewState.asConnectivity(errorHandler))
-        fun showMovieList(movieList: List<MovieListItem>) = MovieListViewState(
+
+    fun showUnknownError(errorHandler: () -> Unit): MovieListViewState {
+        return copy(
+                loadingVisibility = View.INVISIBLE,
+                errorViewState = ErrorViewState.asUnknownError(errorHandler),
+                contentViewState = MovieListContentViewState()
+        )
+    }
+
+    fun showNoConnectivityError(errorHandler: () -> Unit): MovieListViewState {
+        return copy(
+                loadingVisibility = View.INVISIBLE,
+                errorViewState = ErrorViewState.asConnectivity(errorHandler),
+                contentViewState = MovieListContentViewState()
+        )
+    }
+
+    fun showMovieList(movieList: List<MovieListItem>): MovieListViewState {
+        return copy(
+                loadingVisibility = View.INVISIBLE,
                 contentViewState = MovieListContentViewState(
                         visibility = View.VISIBLE,
                         movieList = movieList
-                )
+                ),
+                errorViewState = ErrorViewState.asNotVisible()
         )
+    }
+
+    companion object {
+        fun showLoading(screenTitle: String) = MovieListViewState(screenTitle = screenTitle, loadingVisibility = View.VISIBLE)
     }
 }
 
