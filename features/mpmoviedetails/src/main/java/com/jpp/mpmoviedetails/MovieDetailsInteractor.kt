@@ -1,25 +1,13 @@
 package com.jpp.mpmoviedetails
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mpdomain.Connectivity.Connected
 import com.jpp.mpdomain.Connectivity.Disconnected
-import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.UserAccount
-import com.jpp.mpdomain.repository.AccountRepository
-import com.jpp.mpdomain.repository.ConnectivityRepository
-import com.jpp.mpdomain.repository.LanguageRepository
-import com.jpp.mpdomain.repository.MovieDetailRepository
-import com.jpp.mpdomain.repository.MoviePageRepository
-import com.jpp.mpdomain.repository.MovieStateRepository
-import com.jpp.mpdomain.repository.SessionRepository
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.AppLanguageChanged
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.NotConnectedToNetwork
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.Success
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.UnknownError
+import com.jpp.mpdomain.repository.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -38,17 +26,6 @@ class MovieDetailsInteractor @Inject constructor(
     private val movieStateRepository: MovieStateRepository,
     private val moviePageRepository: MoviePageRepository
 ) {
-    /**
-     * Represents the events that this interactor
-     * can route to the upper layers.
-     */
-    sealed class MovieDetailEvent {
-        object AppLanguageChanged : MovieDetailEvent()
-        object NotConnectedToNetwork : MovieDetailEvent()
-        object UnknownError : MovieDetailEvent()
-        data class Success(val data: MovieDetail) : MovieDetailEvent()
-    }
-
     /**
      * Represents the events related to movie states that this interactor
      * can route to the upper layers.
@@ -76,36 +53,12 @@ class MovieDetailsInteractor @Inject constructor(
         data class RatingDeleted(val success: Boolean) : RateMovieEvent()
     }
 
-    private val _movieDetailEvents = MediatorLiveData<MovieDetailEvent>()
-    val movieDetailEvents: LiveData<MovieDetailEvent> get() = _movieDetailEvents
-
     private val _movieStateEvents = MutableLiveData<MovieStateEvent>()
     val movieStateEvents: LiveData<MovieStateEvent> get() = _movieStateEvents
 
     private val _rateMovieEvents = MutableLiveData<RateMovieEvent>()
     val rateMovieEvents: LiveData<RateMovieEvent> get() = _rateMovieEvents
 
-    init {
-        _movieDetailEvents.addSource(languageRepository.updates()) {
-            _movieDetailEvents.postValue(AppLanguageChanged)
-        }
-    }
-
-    /**
-     * Fetches the [MovieDetail] that corresponds to the movie identified by [movieId].
-     * It will post a new event to [movieDetailEvents] indicating the result of the action.
-     */
-    fun fetchMovieDetail(movieId: Double) {
-        when (connectivityRepository.getCurrentConnectivity()) {
-            is Disconnected -> _movieDetailEvents.postValue(NotConnectedToNetwork)
-            is Connected -> {
-                movieDetailRepository
-                        .getMovieDetails(movieId, languageRepository.getCurrentAppLanguage())
-                        ?.let { _movieDetailEvents.postValue(Success(it)) }
-                        ?: _movieDetailEvents.postValue(UnknownError)
-            }
-        }
-    }
 
     /**
      * Fetches the [MovieState] that corresponds to the movie identified by [movieId].
