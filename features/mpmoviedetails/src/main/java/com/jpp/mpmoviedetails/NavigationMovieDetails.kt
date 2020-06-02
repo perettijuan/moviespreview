@@ -12,11 +12,11 @@ object NavigationMovieDetails {
      * Create the navigation arguments needed to navigate to the movie details.
      */
     fun navArgs(movieId: String, movieImageUrl: String, movieTitle: String) = Bundle()
-            .apply {
-                putString("movieId", movieId)
-                putString("movieImageUrl", movieImageUrl)
-                putString("movieTitle", movieTitle)
-            }
+        .apply {
+            putString("movieId", movieId)
+            putString("movieImageUrl", movieImageUrl)
+            putString("movieTitle", movieTitle)
+        }
 
     fun movieId(args: Bundle?) = args.getStringOrFail("movieId")
     fun movieImageUrl(args: Bundle?) = args.getStringOrFail("movieImageUrl")

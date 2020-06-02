@@ -44,8 +44,8 @@ import javax.inject.Inject
  * and the view state being shown to the user.
  */
 class MovieDetailsViewModel @Inject constructor(
-        private val getMovieDetailUseCase: GetMovieDetailUseCase,
-        private val ioDispatcher: CoroutineDispatcher
+    private val getMovieDetailUseCase: GetMovieDetailUseCase,
+    private val ioDispatcher: CoroutineDispatcher
 ) : MPViewModel() {
 
     private val _viewState = MutableLiveData<MovieDetailViewState>()
@@ -53,7 +53,8 @@ class MovieDetailsViewModel @Inject constructor(
 
     private lateinit var currentParam: MovieDetailsParam
 
-    private val retry: () -> Unit = { fetchMovieDetails(currentParam.movieId, currentParam.movieTitle) }
+    private val retry: () -> Unit =
+        { fetchMovieDetails(currentParam.movieId, currentParam.movieTitle) }
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -79,10 +80,10 @@ class MovieDetailsViewModel @Inject constructor(
      */
     fun onMovieCreditsSelected() {
         navigateTo(
-                Destination.MPCredits(
-                        currentParam.movieId,
-                        currentParam.movieTitle
-                )
+            Destination.MPCredits(
+                currentParam.movieId,
+                currentParam.movieTitle
+            )
         )
     }
 
@@ -91,13 +92,13 @@ class MovieDetailsViewModel @Inject constructor(
      */
     fun onRateMovieSelected() {
         navigateTo(
-                Destination.InnerDestination(
-                        MovieDetailsFragmentDirections.rateMovie(
-                                currentParam.movieId.toString(),
-                                currentParam.movieImageUrl,
-                                currentParam.movieTitle
-                        )
+            Destination.InnerDestination(
+                MovieDetailsFragmentDirections.rateMovie(
+                    currentParam.movieId.toString(),
+                    currentParam.movieImageUrl,
+                    currentParam.movieTitle
                 )
+            )
         )
     }
 

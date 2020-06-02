@@ -16,7 +16,6 @@ import com.jpp.mpdesign.ext.snackBar
 import com.jpp.mpdesign.ext.snackBarNoAction
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieId
 import com.jpp.mpmoviedetails.databinding.FragmentMovieDetailsBinding
-import com.jpp.mpmoviedetails.databinding.ListItemMovieDetailGenreBinding
 import kotlinx.android.synthetic.main.fragment_movie_details.*
 
 /**
@@ -39,8 +38,13 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
 
     private lateinit var viewBinding: FragmentMovieDetailsBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie_details, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        viewBinding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_movie_details, container, false)
         return viewBinding.root
     }
 
@@ -53,19 +57,25 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
                 viewBinding.executePendingBindings()
 
                 // horizontal
-                viewBinding.detailGenresRv?.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-                viewBinding.detailGenresRv?.adapter = MovieDetailsGenreAdapter(viewState.contentViewState.genres)
+                viewBinding.detailGenresRv?.layoutManager =
+                    LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+                viewBinding.detailGenresRv?.adapter =
+                    MovieDetailsGenreAdapter(viewState.contentViewState.genres)
 
                 // vertical
-                viewBinding.movieDetailContent?.detailGenresRv?.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-                viewBinding.movieDetailContent?.detailGenresRv?.adapter = MovieDetailsGenreAdapter(viewState.contentViewState.genres)
+                viewBinding.movieDetailContent?.detailGenresRv?.layoutManager =
+                    LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+                viewBinding.movieDetailContent?.detailGenresRv?.adapter =
+                    MovieDetailsGenreAdapter(viewState.contentViewState.genres)
             })
 
             onInit(MovieDetailsParam.fromArguments(arguments))
         }
 
         withActionsViewModel {
-            viewState.observe(viewLifecycleOwner, Observer { viewState -> renderActionViewState(viewState) })
+            viewState.observe(
+                viewLifecycleOwner,
+                Observer { viewState -> renderActionViewState(viewState) })
             onInit(movieId(arguments).toDouble())
         }
 
@@ -78,9 +88,11 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
         viewBinding.movieDetailReloadActionFab.setOnClickListener { withActionsViewModel { onRetry() } }
     }
 
-    override fun withViewModel(action: MovieDetailsViewModel.() -> Unit) = withViewModel<MovieDetailsViewModel>(viewModelFactory) { action() }
+    override fun withViewModel(action: MovieDetailsViewModel.() -> Unit) =
+        withViewModel<MovieDetailsViewModel>(viewModelFactory) { action() }
 
-    private fun withActionsViewModel(action: MovieDetailsActionViewModel.() -> Unit) = withViewModel<MovieDetailsActionViewModel>(viewModelFactory) { action() }
+    private fun withActionsViewModel(action: MovieDetailsActionViewModel.() -> Unit) =
+        withViewModel<MovieDetailsActionViewModel>(viewModelFactory) { action() }
 
     private fun renderActionViewState(actionViewState: MovieDetailActionViewState) {
         when (actionViewState) {
@@ -97,7 +109,11 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
                 movieDetailActionFab.setVisible()
                 renderMovieState(actionViewState)
             }
-            is MovieDetailActionViewState.ShowUserNotLogged -> snackBar(detailsContent, R.string.account_need_to_login, R.string.login_generic) {
+            is MovieDetailActionViewState.ShowUserNotLogged -> snackBar(
+                detailsContent,
+                R.string.account_need_to_login,
+                R.string.login_generic
+            ) {
                 withViewModel { onUserRequestedLogin() }
             }
         }
@@ -112,9 +128,12 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
 
     private fun renderExpandedActions() {
         movieDetailActionFab.animate().rotation(180F)
-        movieDetailFavoritesFab.animate().translationY(resources.getDimension(R.dimen.standard_55)).alpha(1F)
-        movieDetailWatchlistFab.animate().translationY(resources.getDimension(R.dimen.standard_105)).alpha(1F)
-        movieDetailRateFab.animate().translationY(resources.getDimension(R.dimen.standard_155)).alpha(1F)
+        movieDetailFavoritesFab.animate().translationY(resources.getDimension(R.dimen.standard_55))
+            .alpha(1F)
+        movieDetailWatchlistFab.animate().translationY(resources.getDimension(R.dimen.standard_105))
+            .alpha(1F)
+        movieDetailRateFab.animate().translationY(resources.getDimension(R.dimen.standard_155))
+            .alpha(1F)
     }
 
     private fun renderClosedActions() {
@@ -193,31 +212,5 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
         movieDetailFavoritesFab.setVisible()
         movieDetailWatchlistFab.setVisible()
         movieDetailRateFab.setVisible()
-    }
-
-    class MovieDetailsGenreAdapter(private val genres: List<MovieGenreItem>) : RecyclerView.Adapter<MovieDetailsGenreAdapter.ViewHolder>() {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(
-                    DataBindingUtil.inflate(
-                            LayoutInflater.from(parent.context),
-                            R.layout.list_item_movie_detail_genre,
-                            parent,
-                            false
-                    )
-            )
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(genres[position])
-
-        override fun getItemCount() = genres.size
-
-        class ViewHolder(private val itemBinding: ListItemMovieDetailGenreBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-
-            fun bind(genre: MovieGenreItem) {
-                itemBinding.viewState = genre
-                itemBinding.executePendingBindings()
-            }
-        }
     }
 }
