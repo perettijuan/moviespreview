@@ -53,8 +53,6 @@ class MovieDetailsViewModel @Inject constructor(
 
     private lateinit var currentParam: MovieDetailsParam
 
-    private val retry: () -> Unit =
-        { fetchMovieDetails(currentParam.movieId, currentParam.movieTitle) }
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -122,8 +120,18 @@ class MovieDetailsViewModel @Inject constructor(
 
     private fun processFailure(failure: Try.FailureCause) {
         _viewState.value = when (failure) {
-            is Try.FailureCause.NoConnectivity -> _viewState.value?.showNoConnectivityError(retry)
-            is Try.FailureCause.Unknown -> _viewState.value?.showUnknownError(retry)
+            is Try.FailureCause.NoConnectivity -> _viewState.value?.showNoConnectivityError {
+                fetchMovieDetails(
+                    currentParam.movieId,
+                    currentParam.movieTitle
+                )
+            }
+            is Try.FailureCause.Unknown -> _viewState.value?.showUnknownError {
+                fetchMovieDetails(
+                    currentParam.movieId,
+                    currentParam.movieTitle
+                )
+            }
         }
     }
 
