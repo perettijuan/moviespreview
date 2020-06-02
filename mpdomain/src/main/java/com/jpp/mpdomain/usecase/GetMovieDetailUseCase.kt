@@ -10,8 +10,8 @@ import com.jpp.mpdomain.repository.MovieDetailRepository
  * Use case to retrieve a [MovieDetail].
  */
 class GetMovieDetailUseCase(
-    private val connectivityRepository: ConnectivityRepository,
     private val movieDetailRepository: MovieDetailRepository,
+    private val connectivityRepository: ConnectivityRepository,
     private val languageRepository: LanguageRepository
 ) {
 
