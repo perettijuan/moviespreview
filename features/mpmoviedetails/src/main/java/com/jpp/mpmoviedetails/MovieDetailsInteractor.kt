@@ -17,6 +17,7 @@ import javax.inject.Singleton
  * view layer.
  */
 @Singleton
+@Deprecated("Use the respective use cases instead")
 class MovieDetailsInteractor @Inject constructor(
     private val connectivityRepository: ConnectivityRepository,
     private val movieDetailRepository: MovieDetailRepository,

@@ -8,41 +8,42 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
  * can only render the view states modeled in this class.
  */
 data class MovieListViewState(
-        val loadingVisibility: Int = View.INVISIBLE,
-        val screenTitle: String,
-        val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
-        val contentViewState: MovieListContentViewState = MovieListContentViewState()
+    val loadingVisibility: Int = View.INVISIBLE,
+    val screenTitle: String,
+    val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
+    val contentViewState: MovieListContentViewState = MovieListContentViewState()
 ) {
 
     fun showUnknownError(errorHandler: () -> Unit): MovieListViewState {
         return copy(
-                loadingVisibility = View.INVISIBLE,
-                errorViewState = ErrorViewState.asUnknownError(errorHandler),
-                contentViewState = MovieListContentViewState()
+            loadingVisibility = View.INVISIBLE,
+            errorViewState = ErrorViewState.asUnknownError(errorHandler),
+            contentViewState = MovieListContentViewState()
         )
     }
 
     fun showNoConnectivityError(errorHandler: () -> Unit): MovieListViewState {
         return copy(
-                loadingVisibility = View.INVISIBLE,
-                errorViewState = ErrorViewState.asConnectivity(errorHandler),
-                contentViewState = MovieListContentViewState()
+            loadingVisibility = View.INVISIBLE,
+            errorViewState = ErrorViewState.asConnectivity(errorHandler),
+            contentViewState = MovieListContentViewState()
         )
     }
 
     fun showMovieList(movieList: List<MovieListItem>): MovieListViewState {
         return copy(
-                loadingVisibility = View.INVISIBLE,
-                contentViewState = MovieListContentViewState(
-                        visibility = View.VISIBLE,
-                        movieList = movieList
-                ),
-                errorViewState = ErrorViewState.asNotVisible()
+            loadingVisibility = View.INVISIBLE,
+            contentViewState = MovieListContentViewState(
+                visibility = View.VISIBLE,
+                movieList = movieList
+            ),
+            errorViewState = ErrorViewState.asNotVisible()
         )
     }
 
     companion object {
-        fun showLoading(screenTitle: String) = MovieListViewState(screenTitle = screenTitle, loadingVisibility = View.VISIBLE)
+        fun showLoading(screenTitle: String) =
+            MovieListViewState(screenTitle = screenTitle, loadingVisibility = View.VISIBLE)
     }
 }
 
@@ -50,6 +51,6 @@ data class MovieListViewState(
  * Represents the view state of the content shown in the movie list view.
  */
 data class MovieListContentViewState(
-        val visibility: Int = View.INVISIBLE,
-        val movieList: List<MovieListItem> = emptyList()
+    val visibility: Int = View.INVISIBLE,
+    val movieList: List<MovieListItem> = emptyList()
 )

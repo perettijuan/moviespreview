@@ -70,12 +70,16 @@ abstract class MovieListFragment : Fragment() {
         super.onAttach(context)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         viewBinding = DataBindingUtil.inflate(
-                inflater,
-                R.layout.fragment_movie_list,
-                container,
-                false
+            inflater,
+            R.layout.fragment_movie_list,
+            container,
+            false
         )
         return viewBinding.root
     }
@@ -101,7 +105,10 @@ abstract class MovieListFragment : Fragment() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable(MOVIES_RV_STATE_KEY, movieListRv?.layoutManager?.onSaveInstanceState())
+        outState.putParcelable(
+            MOVIES_RV_STATE_KEY,
+            movieListRv?.layoutManager?.onSaveInstanceState()
+        )
         super.onSaveInstanceState(outState)
     }
 

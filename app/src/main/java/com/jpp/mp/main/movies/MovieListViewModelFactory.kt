@@ -14,19 +14,19 @@ import javax.inject.Inject
  * the [MovieListViewModel] instance needed.
  */
 class MovieListViewModelFactory @Inject constructor(
-        private val getMoviePageUseCase: GetMoviePageUseCase,
-        private val configureMovieImagesPathUseCase: ConfigureMovieImagesPathUseCase,
-        private val navigator: MovieListNavigator,
-        private val ioDispatcher: CoroutineDispatcher
+    private val getMoviePageUseCase: GetMoviePageUseCase,
+    private val configureMovieImagesPathUseCase: ConfigureMovieImagesPathUseCase,
+    private val navigator: MovieListNavigator,
+    private val ioDispatcher: CoroutineDispatcher
 ) : ViewModelAssistedFactory<MovieListViewModel> {
 
     override fun create(handle: SavedStateHandle): MovieListViewModel {
         return MovieListViewModel(
-                getMoviePageUseCase,
-                configureMovieImagesPathUseCase,
-                navigator,
-                ioDispatcher,
-                handle
+            getMoviePageUseCase,
+            configureMovieImagesPathUseCase,
+            navigator,
+            ioDispatcher,
+            handle
         )
     }
 }

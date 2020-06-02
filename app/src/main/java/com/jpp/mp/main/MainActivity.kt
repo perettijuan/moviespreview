@@ -13,9 +13,7 @@ import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI.navigateUp
-import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
-import androidx.navigation.ui.NavigationUI.setupWithNavController
+import androidx.navigation.ui.NavigationUI.*
 import com.jpp.mp.R
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.NavigationViewModel
@@ -26,8 +24,8 @@ import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
-import javax.inject.Inject
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 /**
  * Main entry point of the app.
@@ -73,14 +71,23 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         withMainViewModel {
             onInit()
 
-            viewState.observe(this@MainActivity, Observer { viewState -> renderViewState(viewState) })
+            viewState.observe(
+                this@MainActivity,
+                Observer { viewState -> renderViewState(viewState) })
 
             moduleNavEvents.observe(this@MainActivity, Observer {
                 it.actionIfNotHandled { navEvent ->
                     when (navEvent) {
-                        is ModuleNavigationEvent.NavigateToNodeWithDirections -> innerNavigateTo(navEvent.directions)
-                        is ModuleNavigationEvent.NavigateToNodeWithId -> interModuleNavigationTo(navEvent.nodeId)
-                        is ModuleNavigationEvent.NavigateToNodeWithExtras -> navigateToModuleWithExtras(navEvent.nodeId, navEvent.extras)
+                        is ModuleNavigationEvent.NavigateToNodeWithDirections -> innerNavigateTo(
+                            navEvent.directions
+                        )
+                        is ModuleNavigationEvent.NavigateToNodeWithId -> interModuleNavigationTo(
+                            navEvent.nodeId
+                        )
+                        is ModuleNavigationEvent.NavigateToNodeWithExtras -> navigateToModuleWithExtras(
+                            navEvent.nodeId,
+                            navEvent.extras
+                        )
                         is ModuleNavigationEvent.NavigateToPrevious -> withNavController { popBackStack() }
                     }
                 }
@@ -88,16 +95,29 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         }
 
         withNavigationViewModel {
-            navEvents.observe(this@MainActivity, Observer { it.actionIfNotHandled { destination -> withMainViewModel { onRequestToNavigateToDestination(destination) } } })
-            reachedDestinations.observe(this@MainActivity, Observer { withMainViewModel { onDestinationReached(it) } })
+            navEvents.observe(
+                this@MainActivity,
+                Observer {
+                    it.actionIfNotHandled { destination ->
+                        withMainViewModel {
+                            onRequestToNavigateToDestination(destination)
+                        }
+                    }
+                })
+            reachedDestinations.observe(
+                this@MainActivity,
+                Observer { withMainViewModel { onDestinationReached(it) } })
         }
 
-        appBarConfiguration = AppBarConfiguration(setOf(
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
                 R.id.playingMoviesFragment,
                 R.id.popularMoviesFragment,
                 R.id.upcomingMoviesFragment,
-                R.id.topRatedMoviesFragment),
-                mainDrawerLayout)
+                R.id.topRatedMoviesFragment
+            ),
+            mainDrawerLayout
+        )
 
         setSupportActionBar(mainToolbar)
         setupNavigation()
@@ -127,7 +147,8 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         }
     }
 
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentDispatchingAndroidInjector
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> =
+        fragmentDispatchingAndroidInjector
 
     /**
      * Prepare the navigation components by setting the fragments that are going to be used
@@ -141,9 +162,9 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
              * navigation drawer.
              */
             setupActionBarWithNavController(
-                    this,
-                    navController,
-                    appBarConfiguration
+                this,
+                navController,
+                appBarConfiguration
             )
             setupWithNavController(mainNavigationView, navController)
         }
@@ -165,22 +186,26 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     private fun navigateToModuleWithExtras(@IdRes moduleNavId: Int, extras: Bundle) {
         withNavController {
-            navigate(moduleNavId,
-                    extras,
-                    buildAnimationNavOptions()
+            navigate(
+                moduleNavId,
+                extras,
+                buildAnimationNavOptions()
             )
         }
     }
 
     private fun buildAnimationNavOptions() = NavOptions.Builder()
-            .setEnterAnim(R.anim.fragment_enter_slide_right)
-            .setExitAnim(R.anim.fragment_exit_slide_right)
-            .setPopEnterAnim(R.anim.fragment_enter_slide_left)
-            .setPopExitAnim(R.anim.fragment_exit_slide_left)
-            .build()
+        .setEnterAnim(R.anim.fragment_enter_slide_right)
+        .setExitAnim(R.anim.fragment_exit_slide_right)
+        .setPopEnterAnim(R.anim.fragment_enter_slide_left)
+        .setPopExitAnim(R.anim.fragment_exit_slide_left)
+        .build()
 
-    private fun withMainViewModel(action: MainActivityViewModel.() -> Unit) = withViewModel<MainActivityViewModel>(viewModelFactory) { action() }
-    private fun withNavigationViewModel(action: NavigationViewModel.() -> Unit) = withViewModel<NavigationViewModel>(viewModelFactory) { action() }
+    private fun withMainViewModel(action: MainActivityViewModel.() -> Unit) =
+        withViewModel<MainActivityViewModel>(viewModelFactory) { action() }
+
+    private fun withNavigationViewModel(action: NavigationViewModel.() -> Unit) =
+        withViewModel<NavigationViewModel>(viewModelFactory) { action() }
 
     private fun renderViewState(viewState: MainActivityViewState) {
         supportActionBar?.title = viewState.sectionTitle

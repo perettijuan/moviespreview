@@ -80,16 +80,16 @@ class MovieDetailsActionViewModel @Inject constructor(
                 is ShowReloadState -> ShowReloadState(currentViewState.expanded)
                 is ShowLoading -> ShowLoading
                 is ShowUserNotLogged -> currentViewState.copy(
-                        animateActionsExpanded = true,
-                        showActionsExpanded = !currentViewState.showActionsExpanded
+                    animateActionsExpanded = true,
+                    showActionsExpanded = !currentViewState.showActionsExpanded
                 )
                 is ShowNoMovieState -> currentViewState.copy(
-                        animateActionsExpanded = true,
-                        showActionsExpanded = !currentViewState.showActionsExpanded
+                    animateActionsExpanded = true,
+                    showActionsExpanded = !currentViewState.showActionsExpanded
                 )
                 is ShowMovieState -> currentViewState.copy(
-                        animateActionsExpanded = true,
-                        showActionsExpanded = !currentViewState.showActionsExpanded
+                    animateActionsExpanded = true,
+                    showActionsExpanded = !currentViewState.showActionsExpanded
                 )
             }
         }
@@ -101,7 +101,10 @@ class MovieDetailsActionViewModel @Inject constructor(
      */
     fun onFavoriteStateChanged() {
         executeMovieStateUpdate({
-            updateFavoriteMovieState(movieId = currentMovieState.id, asFavorite = !currentMovieState.favorite)
+            updateFavoriteMovieState(
+                movieId = currentMovieState.id,
+                asFavorite = !currentMovieState.favorite
+            )
         }, { currentShowingState ->
             currentShowingState.copy(favorite = ActionButtonState.ShowAsLoading)
         })
@@ -113,7 +116,10 @@ class MovieDetailsActionViewModel @Inject constructor(
      */
     fun onWatchlistStateChanged() {
         executeMovieStateUpdate({
-            updateWatchlistMovieState(movieId = currentMovieState.id, inWatchlist = !currentMovieState.watchlist)
+            updateWatchlistMovieState(
+                movieId = currentMovieState.id,
+                inWatchlist = !currentMovieState.watchlist
+            )
         }, { currentShowingState ->
             currentShowingState.copy(isInWatchlist = ActionButtonState.ShowAsLoading)
         })
@@ -148,11 +154,11 @@ class MovieDetailsActionViewModel @Inject constructor(
         }
 
         return ShowMovieState(
-                showActionsExpanded = false,
-                animateActionsExpanded = false,
-                favorite = favState,
-                isInWatchlist = watchlistState,
-                isRated = movieState.rated.isRated
+            showActionsExpanded = false,
+            animateActionsExpanded = false,
+            favorite = favState,
+            isInWatchlist = watchlistState,
+            isRated = movieState.rated.isRated
         )
     }
 
@@ -172,7 +178,10 @@ class MovieDetailsActionViewModel @Inject constructor(
 
     private fun processUserNotLogged(): MovieDetailActionViewState {
         return viewState.value?.let {
-            ShowUserNotLogged(showActionsExpanded = it.expanded, animateActionsExpanded = it.animate)
+            ShowUserNotLogged(
+                showActionsExpanded = it.expanded,
+                animateActionsExpanded = it.animate
+            )
         } ?: ShowUserNotLogged(false, false)
     }
 
@@ -216,7 +225,10 @@ class MovieDetailsActionViewModel @Inject constructor(
                 withMovieDetailsInteractor { stateUpdateFunction() }
             }
             is ShowNoMovieState -> {
-                _viewState.value = ShowUserNotLogged(showActionsExpanded = currentState.expanded, animateActionsExpanded = false)
+                _viewState.value = ShowUserNotLogged(
+                    showActionsExpanded = currentState.expanded,
+                    animateActionsExpanded = false
+                )
             }
             is ShowUserNotLogged -> _viewState.value = currentState
         }

@@ -16,18 +16,18 @@ import java.util.*
  * containing class.
  */
 class MoviesAdapter(private val movieSelectionListener: (MovieListItem) -> Unit) :
-        RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
+    RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
 
     private val itemList = ArrayList<MovieListItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-                DataBindingUtil.inflate(
-                        LayoutInflater.from(parent.context),
-                        R.layout.list_item_movie,
-                        parent,
-                        false
-                )
+            DataBindingUtil.inflate(
+                LayoutInflater.from(parent.context),
+                R.layout.list_item_movie,
+                parent,
+                false
+            )
         )
     }
 
@@ -43,7 +43,8 @@ class MoviesAdapter(private val movieSelectionListener: (MovieListItem) -> Unit)
         notifyItemRangeChanged(currentLastIndex, itemList.size)
     }
 
-    class ViewHolder(private val itemBinding: ListItemMovieBinding) : RecyclerView.ViewHolder(itemBinding.root) {
+    class ViewHolder(private val itemBinding: ListItemMovieBinding) :
+        RecyclerView.ViewHolder(itemBinding.root) {
         fun bindMovie(movieList: MovieListItem, movieSelectionListener: (MovieListItem) -> Unit) {
             itemBinding.viewState = movieList
             itemView.setOnClickListener { movieSelectionListener(movieList) }

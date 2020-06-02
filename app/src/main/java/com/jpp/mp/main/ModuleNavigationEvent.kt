@@ -41,30 +41,34 @@ sealed class ModuleNavigationEvent {
      * with extra data. [nodeId] represents the node to navigate to and [extras] represents
      * the extra data.
      */
-    data class NavigateToNodeWithExtras(@IdRes val nodeId: Int, val extras: Bundle) : ModuleNavigationEvent() {
+    data class NavigateToNodeWithExtras(@IdRes val nodeId: Int, val extras: Bundle) :
+        ModuleNavigationEvent() {
 
         companion object {
-            fun toMovieDetails(destination: Destination.MPMovieDetails) = NavigateToNodeWithExtras(R.id.movie_details_nav,
-                    NavigationMovieDetails.navArgs(
-                            destination.movieId,
-                            destination.movieImageUrl,
-                            destination.movieTitle
-                    )
+            fun toMovieDetails(destination: Destination.MPMovieDetails) = NavigateToNodeWithExtras(
+                R.id.movie_details_nav,
+                NavigationMovieDetails.navArgs(
+                    destination.movieId,
+                    destination.movieImageUrl,
+                    destination.movieTitle
+                )
             )
 
-            fun toPerson(destination: Destination.MPPerson) = NavigateToNodeWithExtras(R.id.person_nav,
-                    NavigationPerson.navArgs(
-                            destination.personId,
-                            destination.personImageUrl,
-                            destination.personName
-                    )
+            fun toPerson(destination: Destination.MPPerson) = NavigateToNodeWithExtras(
+                R.id.person_nav,
+                NavigationPerson.navArgs(
+                    destination.personId,
+                    destination.personImageUrl,
+                    destination.personName
+                )
             )
 
-            fun toCredits(destination: Destination.MPCredits) = NavigateToNodeWithExtras(R.id.credits_nav,
-                    NavigationCredits.navArgs(
-                            destination.movieId,
-                            destination.movieTitle
-                    )
+            fun toCredits(destination: Destination.MPCredits) = NavigateToNodeWithExtras(
+                R.id.credits_nav,
+                NavigationCredits.navArgs(
+                    destination.movieId,
+                    destination.movieTitle
+                )
             )
         }
 

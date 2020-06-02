@@ -20,11 +20,11 @@ import kotlinx.coroutines.withContext
  * given moment.
  */
 class MovieListViewModel(
-        private val getMoviePageUseCase: GetMoviePageUseCase,
-        private val configureMovieImagesPathUseCase: ConfigureMovieImagesPathUseCase,
-        private val navigator: MovieListNavigator,
-        private val ioDispatcher: CoroutineDispatcher,
-        private val savedStateHandle: SavedStateHandle
+    private val getMoviePageUseCase: GetMoviePageUseCase,
+    private val configureMovieImagesPathUseCase: ConfigureMovieImagesPathUseCase,
+    private val navigator: MovieListNavigator,
+    private val ioDispatcher: CoroutineDispatcher,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private var movieSection: MovieSection?
@@ -41,12 +41,11 @@ class MovieListViewModel(
             }
         }
 
-    private var currentPage: Int
-        set(value) {
-            savedStateHandle.set(MOVIE_PAGE_KEY, value)
-        }
-        get() = savedStateHandle.get(MOVIE_PAGE_KEY) ?: 0
-
+    /*
+     * Not stored in SavedStateHandle b/c we want to recreate
+     * the whole paging when app killed.
+     */
+    private var currentPage: Int = 0
 
     private var maxPage: Int
         set(value) {
@@ -82,9 +81,9 @@ class MovieListViewModel(
      */
     fun onMovieSelected(item: MovieListItem) {
         navigator.navigateToMovieDetails(
-                item.movieId.toString(),
-                item.contentImageUrl,
-                item.title
+            item.movieId.toString(),
+            item.contentImageUrl,
+            item.title
         )
     }
 
@@ -133,12 +132,12 @@ class MovieListViewModel(
 
             val movieList = withContext(ioDispatcher) {
                 moviePage.results
-                        .map { movie -> movie.configurePath() }
-                        .map { configuredMovie -> configuredMovie.mapToListItem() }
+                    .map { movie -> movie.configurePath() }
+                    .map { configuredMovie -> configuredMovie.mapToListItem() }
             }
 
             _viewState.value = viewState.value?.showMovieList(
-                    movieList = movieList
+                movieList = movieList
             )
         }
     }
@@ -148,18 +147,17 @@ class MovieListViewModel(
     }
 
     private fun Movie.mapToListItem() =
-            MovieListItem(
-                    movieId = id,
-                    headerImageUrl = backdrop_path ?: "emptyPath",
-                    title = title,
-                    contentImageUrl = poster_path ?: "emptyPath",
-                    popularity = popularity.toString(),
-                    voteCount = vote_count.toString()
-            )
+        MovieListItem(
+            movieId = id,
+            headerImageUrl = backdrop_path ?: "emptyPath",
+            title = title,
+            contentImageUrl = poster_path ?: "emptyPath",
+            popularity = popularity.toString(),
+            voteCount = vote_count.toString()
+        )
 
     private companion object {
         const val MOVIE_SECTION_KEY = "MOVIE_SECTION_KEY"
-        const val MOVIE_PAGE_KEY = "MOVIE_PAGE_KEY"
         const val MAX_MOVIE_PAGE_KEY = "MAX_MOVIE_PAGE_KEY"
         const val FIRST_PAGE = 1
     }
