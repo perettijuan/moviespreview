@@ -11,6 +11,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -36,14 +37,14 @@ class GetMoviePageUseCaseTest {
     @BeforeEach
     fun setUp() {
         subject = GetMoviePageUseCase(
-                moviePageRepository,
-                connectivityRepository,
-                languageRepository
+            moviePageRepository,
+            connectivityRepository,
+            languageRepository
         )
     }
 
     @Test
-    fun `Should fail with no connectivity message`() {
+    fun `Should fail with no connectivity message`() = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
         val actual = subject.execute(1, MovieSection.Playing)
@@ -54,7 +55,7 @@ class GetMoviePageUseCaseTest {
 
     @ParameterizedTest
     @MethodSource("movieSections")
-    fun `Should retrieve return unknown error`(movieSection: MovieSection) {
+    fun `Should retrieve return unknown error`(movieSection: MovieSection) = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
 
@@ -70,7 +71,7 @@ class GetMoviePageUseCaseTest {
 
     @ParameterizedTest
     @MethodSource("movieSections")
-    fun `Should retrieve proper movie page`(movieSection: MovieSection) {
+    fun `Should retrieve proper movie page`(movieSection: MovieSection) = runBlocking {
         val expected: MoviePage = mockk()
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
@@ -89,10 +90,10 @@ class GetMoviePageUseCaseTest {
     companion object {
         @JvmStatic
         fun movieSections() = listOf(
-                MovieSection.Playing,
-                MovieSection.Popular,
-                MovieSection.TopRated,
-                MovieSection.Upcoming
+            MovieSection.Playing,
+            MovieSection.Popular,
+            MovieSection.TopRated,
+            MovieSection.Upcoming
         )
     }
 }
