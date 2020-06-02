@@ -21,9 +21,9 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExperimentalCoroutinesApi
 @ExtendWith(
-        MockKExtension::class,
-        InstantTaskExecutorExtension::class,
-        CoroutineTestExtension::class
+    MockKExtension::class,
+    InstantTaskExecutorExtension::class,
+    CoroutineTestExtension::class
 )
 class MovieDetailsViewModelTest {
 
@@ -35,8 +35,8 @@ class MovieDetailsViewModelTest {
     @BeforeEach
     fun setUp() {
         subject = MovieDetailsViewModel(
-                getMovieDetailUseCase,
-                CoroutineTestExtension.testDispatcher
+            getMovieDetailUseCase,
+            CoroutineTestExtension.testDispatcher
         )
     }
 
@@ -80,30 +80,30 @@ class MovieDetailsViewModelTest {
         val movieDetailId = 12.0
 
         val domainDetail = MovieDetail(
-                id = movieDetailId,
-                title = "aTitle",
-                overview = "anOverview",
-                release_date = "aReleaseDate",
-                vote_count = 12.toDouble(),
-                vote_average = 15F,
-                popularity = 178F,
-                poster_path = null,
-                genres = listOf(
-                        MovieGenre(28, "Action"),
-                        MovieGenre(27, "Horror")
-                )
+            id = movieDetailId,
+            title = "aTitle",
+            overview = "anOverview",
+            release_date = "aReleaseDate",
+            vote_count = 12.toDouble(),
+            vote_average = 15F,
+            popularity = 178F,
+            poster_path = null,
+            genres = listOf(
+                MovieGenre(28, "Action"),
+                MovieGenre(27, "Horror")
+            )
         )
 
-        val expected = MovieDetailViewState.showDetails(
-                movieImageUrl = "aUrl",
-                overview = domainDetail.overview,
-                releaseDate = domainDetail.release_date,
-                voteCount = domainDetail.vote_count.toString(),
-                popularity = domainDetail.popularity.toString(),
-                genres = listOf(
-                        MovieGenreItem.Action,
-                        MovieGenreItem.Horror
-                )
+        val expected = MovieDetailViewState.showLoading("aUrl").showDetails(
+            movieImageUrl = "aUrl",
+            overview = domainDetail.overview,
+            releaseDate = domainDetail.release_date,
+            voteCount = domainDetail.vote_count.toString(),
+            popularity = domainDetail.popularity.toString(),
+            genres = listOf(
+                MovieGenreItem.Action,
+                MovieGenreItem.Horror
+            )
         )
 
         coEvery { getMovieDetailUseCase.execute(movieDetailId) } returns Try.Success(domainDetail)
