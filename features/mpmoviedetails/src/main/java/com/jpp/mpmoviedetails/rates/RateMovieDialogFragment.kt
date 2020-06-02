@@ -17,8 +17,13 @@ class RateMovieDialogFragment : MPDialogFragment<RateMovieViewModel>() {
 
     private lateinit var viewBinding: FragmentRateMovieBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_rate_movie, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        viewBinding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_rate_movie, container, false)
         return viewBinding.root
     }
 
@@ -50,5 +55,6 @@ class RateMovieDialogFragment : MPDialogFragment<RateMovieViewModel>() {
         }
     }
 
-    override fun withViewModel(action: RateMovieViewModel.() -> Unit): RateMovieViewModel = withViewModel(viewModelFactory) { action() }
+    override fun withViewModel(action: RateMovieViewModel.() -> Unit): RateMovieViewModel =
+        withViewModel(viewModelFactory) { action() }
 }

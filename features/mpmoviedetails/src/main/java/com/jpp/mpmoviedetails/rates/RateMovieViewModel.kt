@@ -10,10 +10,10 @@ import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpmoviedetails.MovieDetailsInteractor
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.RateMovieEvent
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * [MPViewModel] that supports the movie movie rating feature. The VM retrieves
@@ -41,26 +41,32 @@ class RateMovieViewModel @Inject constructor(
     init {
         _viewState.addSource(movieDetailsInteractor.rateMovieEvents) { event ->
             when (event) {
-                is RateMovieEvent.NotConnectedToNetwork -> postUserMessageAndExit(RateMovieUserMessages.ERROR_FETCHING_DATA)
+                is RateMovieEvent.NotConnectedToNetwork -> postUserMessageAndExit(
+                    RateMovieUserMessages.ERROR_FETCHING_DATA
+                )
                 is RateMovieEvent.UserNotLogged -> postUserMessageAndExit(RateMovieUserMessages.USER_NOT_LOGGED)
                 is RateMovieEvent.UnknownError -> postUserMessageAndExit(RateMovieUserMessages.ERROR_FETCHING_DATA)
                 is RateMovieEvent.FetchSuccess -> processMovieStateUpdate(
-                        event.data,
-                        currentParam.screenTitle,
-                        currentParam.movieImageUrl
+                    event.data,
+                    currentParam.screenTitle,
+                    currentParam.movieImageUrl
                 )
             }
         }
         _userMessages.addSource(movieDetailsInteractor.rateMovieEvents) { event ->
             when (event) {
-                is RateMovieEvent.RateMovie -> postUserMessageAndExit(when (event.success) {
-                    true -> RateMovieUserMessages.RATE_SUCCESS
-                    false -> RateMovieUserMessages.RATE_ERROR
-                })
-                is RateMovieEvent.RatingDeleted -> postUserMessageAndExit(when (event.success) {
-                    true -> RateMovieUserMessages.DELETE_SUCCESS
-                    false -> RateMovieUserMessages.DELETE_ERROR
-                })
+                is RateMovieEvent.RateMovie -> postUserMessageAndExit(
+                    when (event.success) {
+                        true -> RateMovieUserMessages.RATE_SUCCESS
+                        false -> RateMovieUserMessages.RATE_ERROR
+                    }
+                )
+                is RateMovieEvent.RatingDeleted -> postUserMessageAndExit(
+                    when (event.success) {
+                        true -> RateMovieUserMessages.DELETE_SUCCESS
+                        false -> RateMovieUserMessages.DELETE_ERROR
+                    }
+                )
             }
         }
     }
@@ -74,9 +80,9 @@ class RateMovieViewModel @Inject constructor(
     fun onInit(param: RateMovieParam) {
         currentParam = param
         fetchMovieState(
-                param.movieId,
-                param.screenTitle,
-                param.movieImageUrl
+            param.movieId,
+            param.screenTitle,
+            param.movieImageUrl
         )
     }
 
@@ -85,10 +91,15 @@ class RateMovieViewModel @Inject constructor(
      */
     fun onRateMovie(rating: Float) {
         if (_viewState.value?.rating != rating) {
-            withMovieDetailsInteractor { rateMovie(currentParam.movieId, scaleUpRatingValue(rating)) }
+            withMovieDetailsInteractor {
+                rateMovie(
+                    currentParam.movieId,
+                    scaleUpRatingValue(rating)
+                )
+            }
             _viewState.value = RateMovieViewState.showLoading(
-                    currentParam.screenTitle,
-                    currentParam.movieImageUrl
+                currentParam.screenTitle,
+                currentParam.movieImageUrl
             )
         }
     }
@@ -100,8 +111,8 @@ class RateMovieViewModel @Inject constructor(
     fun onDeleteMovieRating() {
         withMovieDetailsInteractor { deleteMovieRating(currentParam.movieId) }
         _viewState.value = RateMovieViewState.showLoading(
-                currentParam.screenTitle,
-                currentParam.movieImageUrl
+            currentParam.screenTitle,
+            currentParam.movieImageUrl
         )
     }
 
@@ -113,8 +124,8 @@ class RateMovieViewModel @Inject constructor(
     private fun fetchMovieState(movieId: Double, movieTitle: String, movieImageUrl: String) {
         withMovieDetailsInteractor { fetchMovieRating(movieId) }
         _viewState.value = RateMovieViewState.showLoading(
-                movieTitle,
-                movieImageUrl
+            movieTitle,
+            movieImageUrl
         )
     }
 
@@ -134,16 +145,20 @@ class RateMovieViewModel @Inject constructor(
      * Process the [MovieState] provided producing a [RateMovieViewState] that contains
      * the data to be shown to the user.
      */
-    private fun processMovieStateUpdate(movieState: MovieState, screenTitle: String, movieImageUrl: String) {
+    private fun processMovieStateUpdate(
+        movieState: MovieState,
+        screenTitle: String,
+        movieImageUrl: String
+    ) {
         _viewState.value = movieState.rated.value?.toFloat()?.let {
             RateMovieViewState.showRated(
-                    screenTitle,
-                    movieImageUrl,
-                    scaleDownRatingValue(it)
+                screenTitle,
+                movieImageUrl,
+                scaleDownRatingValue(it)
             )
         } ?: RateMovieViewState.showNoRated(
-                screenTitle,
-                movieImageUrl
+            screenTitle,
+            movieImageUrl
         )
     }
 
