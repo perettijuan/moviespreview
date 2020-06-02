@@ -5,9 +5,11 @@ package com.jpp.mp.main.movies
  */
 interface MovieListNavigator {
 
-    fun navigateToMovieDetails(movieId: String,
-                               movieImageUrl: String,
-                               movieTitle: String)
+    fun navigateToMovieDetails(
+        movieId: String,
+        movieImageUrl: String,
+        movieTitle: String
+    )
 
     fun navigateToSearch()
     fun navigateToAboutSection()

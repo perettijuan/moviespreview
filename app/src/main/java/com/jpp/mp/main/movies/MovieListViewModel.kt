@@ -20,11 +20,11 @@ import kotlinx.coroutines.withContext
  * given moment.
  */
 class MovieListViewModel(
-        private val getMoviePageUseCase: GetMoviePageUseCase,
-        private val configureMovieImagesPathUseCase: ConfigureMovieImagesPathUseCase,
-        private val navigator: MovieListNavigator,
-        private val ioDispatcher: CoroutineDispatcher,
-        private val savedStateHandle: SavedStateHandle
+    private val getMoviePageUseCase: GetMoviePageUseCase,
+    private val configureMovieImagesPathUseCase: ConfigureMovieImagesPathUseCase,
+    private val navigator: MovieListNavigator,
+    private val ioDispatcher: CoroutineDispatcher,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private var movieSection: MovieSection?
@@ -82,9 +82,9 @@ class MovieListViewModel(
      */
     fun onMovieSelected(item: MovieListItem) {
         navigator.navigateToMovieDetails(
-                item.movieId.toString(),
-                item.contentImageUrl,
-                item.title
+            item.movieId.toString(),
+            item.contentImageUrl,
+            item.title
         )
     }
 
@@ -133,12 +133,12 @@ class MovieListViewModel(
 
             val movieList = withContext(ioDispatcher) {
                 moviePage.results
-                        .map { movie -> movie.configurePath() }
-                        .map { configuredMovie -> configuredMovie.mapToListItem() }
+                    .map { movie -> movie.configurePath() }
+                    .map { configuredMovie -> configuredMovie.mapToListItem() }
             }
 
             _viewState.value = viewState.value?.showMovieList(
-                    movieList = movieList
+                movieList = movieList
             )
         }
     }
@@ -148,14 +148,14 @@ class MovieListViewModel(
     }
 
     private fun Movie.mapToListItem() =
-            MovieListItem(
-                    movieId = id,
-                    headerImageUrl = backdrop_path ?: "emptyPath",
-                    title = title,
-                    contentImageUrl = poster_path ?: "emptyPath",
-                    popularity = popularity.toString(),
-                    voteCount = vote_count.toString()
-            )
+        MovieListItem(
+            movieId = id,
+            headerImageUrl = backdrop_path ?: "emptyPath",
+            title = title,
+            contentImageUrl = poster_path ?: "emptyPath",
+            popularity = popularity.toString(),
+            voteCount = vote_count.toString()
+        )
 
     private companion object {
         const val MOVIE_SECTION_KEY = "MOVIE_SECTION_KEY"
