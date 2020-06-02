@@ -17,36 +17,37 @@ class MainNavigator : MovieListNavigator {
     private var navController: NavController? = null
 
     override fun navigateToMovieDetails(
-            movieId: String,
-            movieImageUrl: String,
-            movieTitle: String
+        movieId: String,
+        movieImageUrl: String,
+        movieTitle: String
     ) {
-        navController?.navigate(R.id.movie_details_nav,
-                NavigationMovieDetails.navArgs(
-                        movieId,
-                        movieImageUrl,
-                        movieTitle
-                ),
-                buildAnimationNavOptions()
+        navController?.navigate(
+            R.id.movie_details_nav,
+            NavigationMovieDetails.navArgs(
+                movieId,
+                movieImageUrl,
+                movieTitle
+            ),
+            buildAnimationNavOptions()
         )
 
     }
 
     override fun navigateToSearch() {
         navController?.navigate(
-                object : NavDirections {
-                    override fun getArguments() = Bundle()
-                    override fun getActionId() = R.id.search_nav
-                },
-                buildAnimationNavOptions()
+            object : NavDirections {
+                override fun getArguments() = Bundle()
+                override fun getActionId() = R.id.search_nav
+            },
+            buildAnimationNavOptions()
         )
     }
 
     override fun navigateToAboutSection() {
         navController?.navigate(
-                R.id.about_nav,
-                null,
-                buildAnimationNavOptions()
+            R.id.about_nav,
+            null,
+            buildAnimationNavOptions()
         )
     }
 
@@ -59,9 +60,9 @@ class MainNavigator : MovieListNavigator {
     }
 
     private fun buildAnimationNavOptions() = NavOptions.Builder()
-            .setEnterAnim(R.anim.fragment_enter_slide_right)
-            .setExitAnim(R.anim.fragment_exit_slide_right)
-            .setPopEnterAnim(R.anim.fragment_enter_slide_left)
-            .setPopExitAnim(R.anim.fragment_exit_slide_left)
-            .build()
+        .setEnterAnim(R.anim.fragment_enter_slide_right)
+        .setExitAnim(R.anim.fragment_exit_slide_right)
+        .setPopEnterAnim(R.anim.fragment_enter_slide_left)
+        .setPopExitAnim(R.anim.fragment_exit_slide_left)
+        .build()
 }

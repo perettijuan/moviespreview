@@ -25,9 +25,9 @@ open class MPApp : Application(), HasActivityInjector {
     override fun onCreate() {
         super.onCreate()
         DaggerAppComponent.builder()
-                .appModule(AppModule(this))
-                .build()
-                .inject(this)
+            .appModule(AppModule(this))
+            .build()
+            .inject(this)
 
         Fabric.with(this, Crashlytics())
         /*
