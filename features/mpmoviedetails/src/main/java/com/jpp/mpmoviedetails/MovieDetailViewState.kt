@@ -16,12 +16,14 @@ data class MovieDetailViewState(
 
     fun showUnknownError(errorHandler: () -> Unit): MovieDetailViewState {
         return copy(
+            loadingVisibility = View.INVISIBLE,
             errorViewState = ErrorViewState.asUnknownError(errorHandler)
         )
     }
 
     fun showNoConnectivityError(errorHandler: () -> Unit): MovieDetailViewState {
         return copy(
+            loadingVisibility = View.INVISIBLE,
             errorViewState = ErrorViewState.asConnectivity(errorHandler)
         )
     }
@@ -35,6 +37,7 @@ data class MovieDetailViewState(
         releaseDate: String
     ): MovieDetailViewState {
         return copy(
+            loadingVisibility = View.INVISIBLE,
             movieImageUrl = movieImageUrl,
             contentViewState = MovieDetailContentViewState.buildVisible(
                 overview,

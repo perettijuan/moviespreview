@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mpdesign.ext.setInvisible
@@ -65,30 +65,12 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
         setupViews(view)
 
         withViewModel {
-            viewState.observe(viewLifecycleOwner, Observer { viewState ->
-                viewBinding.viewState = viewState
-                viewBinding.executePendingBindings()
-
-                // horizontal
-                viewBinding.detailGenresRv?.layoutManager =
-                    LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-                viewBinding.detailGenresRv?.adapter =
-                    MovieDetailsGenreAdapter(viewState.contentViewState.genres)
-
-                // vertical
-                viewBinding.movieDetailContent?.detailGenresRv?.layoutManager =
-                    LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-                viewBinding.movieDetailContent?.detailGenresRv?.adapter =
-                    MovieDetailsGenreAdapter(viewState.contentViewState.genres)
-            })
-
+            viewState.observeValue(viewLifecycleOwner, ::renderViewState)
             onInit(MovieDetailsParam.fromArguments(arguments))
         }
 
         withActionsViewModel {
-            viewState.observe(
-                viewLifecycleOwner,
-                Observer { viewState -> renderActionViewState(viewState) })
+            viewState.observeValue(viewLifecycleOwner, ::renderActionViewState)
             onInit(movieId(arguments).toDouble())
         }
     }
@@ -128,6 +110,24 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
         viewBinding.movieDetailRateFab.setOnClickListener { withViewModel { onRateMovieSelected() } }
         viewBinding.movieDetailReloadActionFab.setOnClickListener { withActionsViewModel { onRetry() } }
     }
+
+    private fun renderViewState(viewState: MovieDetailViewState) {
+        viewBinding.viewState = viewState
+        viewBinding.executePendingBindings()
+
+        // horizontal
+        viewBinding.detailGenresRv?.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        viewBinding.detailGenresRv?.adapter =
+            MovieDetailsGenreAdapter(viewState.contentViewState.genres)
+
+        // vertical
+        viewBinding.movieDetailContent?.detailGenresRv?.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        viewBinding.movieDetailContent?.detailGenresRv?.adapter =
+            MovieDetailsGenreAdapter(viewState.contentViewState.genres)
+    }
+
 
     private fun renderActionViewState(actionViewState: MovieDetailActionViewState) {
         when (actionViewState) {
