@@ -1,24 +1,8 @@
 package com.jpp.mpmoviedetails
 
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mpdomain.Connectivity
-import com.jpp.mpdomain.MovieDetail
-import com.jpp.mpdomain.MovieState
-import com.jpp.mpdomain.Session
-import com.jpp.mpdomain.SupportedLanguage
-import com.jpp.mpdomain.UserAccount
-import com.jpp.mpdomain.repository.AccountRepository
-import com.jpp.mpdomain.repository.ConnectivityRepository
-import com.jpp.mpdomain.repository.LanguageRepository
-import com.jpp.mpdomain.repository.MovieDetailRepository
-import com.jpp.mpdomain.repository.MoviePageRepository
-import com.jpp.mpdomain.repository.MovieStateRepository
-import com.jpp.mpdomain.repository.SessionRepository
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.AppLanguageChanged
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.NotConnectedToNetwork
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.Success
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.UnknownError
+import com.jpp.mpdomain.*
+import com.jpp.mpdomain.repository.*
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
@@ -69,61 +53,6 @@ class MovieDetailsInteractorTest {
                 accountRepository,
                 movieStateRepository,
                 moviePageRepository)
-
-        /*
-         * Since the ViewModel uses a MediatorLiveData, we need to have
-         * an observer on the view states attached all the time in order
-         * to get notifications.
-         */
-        subject.movieDetailEvents.observeForever { }
-    }
-
-    @Test
-    fun `Should post not connected event when disconnected from network`() {
-        var eventPosted: MovieDetailEvent? = null
-
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
-
-        subject.movieDetailEvents.observeWith { eventPosted = it }
-
-        subject.fetchMovieDetail(12.0)
-
-        assertEquals(NotConnectedToNetwork, eventPosted)
-        verify(exactly = 0) { movieDetailRepository.getMovieDetails(any(), any()) }
-    }
-
-    @Test
-    fun `Should post error unknown event when connected to network but fails to fetch movie details`() {
-        var eventPosted: MovieDetailEvent? = null
-
-        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { movieDetailRepository.getMovieDetails(any(), any()) } returns null
-
-        subject.movieDetailEvents.observeWith { eventPosted = it }
-
-        subject.fetchMovieDetail(12.0)
-
-        assertEquals(UnknownError, eventPosted)
-        verify { movieDetailRepository.getMovieDetails(12.0, SupportedLanguage.English) }
-    }
-
-    @Test
-    fun `Should success when fetches movie details`() {
-        var eventPosted: MovieDetailEvent? = null
-        val movieDetail = mockk<MovieDetail>()
-        val expected = Success(movieDetail)
-
-        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { movieDetailRepository.getMovieDetails(any(), any()) } returns movieDetail
-
-        subject.movieDetailEvents.observeWith { eventPosted = it }
-
-        subject.fetchMovieDetail(12.0)
-
-        assertEquals(expected, eventPosted)
-        verify { movieDetailRepository.getMovieDetails(12.0, SupportedLanguage.English) }
     }
 
     @Test
@@ -285,17 +214,6 @@ class MovieDetailsInteractorTest {
         assertEquals(expected, eventPosted)
         verify { movieStateRepository.updateWatchlistMovieState(12.0, true, userAccount, session) }
         verify { moviePageRepository.flushWatchlistMoviePages() }
-    }
-
-    @Test
-    fun `Should post AppLanguageChanged when language changes`() {
-        var eventPosted: MovieDetailEvent? = null
-
-        subject.movieDetailEvents.observeWith { eventPosted = it }
-
-        languageUpdates.value = SupportedLanguage.Spanish
-
-        assertEquals(AppLanguageChanged, eventPosted)
     }
 
     @Test

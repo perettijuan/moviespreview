@@ -1,7 +1,7 @@
 package com.jpp.mpmoviedetails
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.navigation.Destination
@@ -25,14 +25,12 @@ import com.jpp.mpdomain.MovieGenre.GenresId.THRILLER_GENRE_ID
 import com.jpp.mpdomain.MovieGenre.GenresId.TV_MOVIE_GENRE_ID
 import com.jpp.mpdomain.MovieGenre.GenresId.WAR_GENRE_ID
 import com.jpp.mpdomain.MovieGenre.GenresId.WESTERN_GENRE_ID
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.AppLanguageChanged
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.NotConnectedToNetwork
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.Success
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieDetailEvent.UnknownError
+import com.jpp.mpdomain.usecase.GetMovieDetailUseCase
+import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * [MPViewModel] that supports the movie details section (only the static data, not the actions
@@ -46,30 +44,16 @@ import kotlinx.coroutines.withContext
  * and the view state being shown to the user.
  */
 class MovieDetailsViewModel @Inject constructor(
-        private val movieDetailsInteractor: MovieDetailsInteractor,
+        private val getMovieDetailUseCase: GetMovieDetailUseCase,
         private val ioDispatcher: CoroutineDispatcher
 ) : MPViewModel() {
 
-    private val _viewState = MediatorLiveData<MovieDetailViewState>()
+    private val _viewState = MutableLiveData<MovieDetailViewState>()
     val viewState: LiveData<MovieDetailViewState> get() = _viewState
 
     private lateinit var currentParam: MovieDetailsParam
 
     private val retry: () -> Unit = { fetchMovieDetails(currentParam.movieId, currentParam.movieTitle) }
-
-    /*
-     * Map the business logic coming from the interactor into view layer logic.
-     */
-    init {
-        _viewState.addSource(movieDetailsInteractor.movieDetailEvents) { event ->
-            when (event) {
-                is NotConnectedToNetwork -> _viewState.value = MovieDetailViewState.showNoConnectivityError(retry)
-                is UnknownError -> _viewState.value = MovieDetailViewState.showUnknownError(retry)
-                is Success -> mapMovieDetails(event.data, currentParam.movieImageUrl)
-                is AppLanguageChanged -> refreshDetailsData(currentParam.movieId, currentParam.movieTitle)
-            }
-        }
-    }
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -80,10 +64,7 @@ class MovieDetailsViewModel @Inject constructor(
     fun onInit(param: MovieDetailsParam) {
         currentParam = param
         updateCurrentDestination(Destination.ReachedDestination(currentParam.movieTitle))
-        fetchMovieDetails(
-                currentParam.movieId,
-                currentParam.movieImageUrl
-        )
+        fetchMovieDetails(currentParam.movieId, currentParam.movieImageUrl)
     }
 
     /**
@@ -126,61 +107,46 @@ class MovieDetailsViewModel @Inject constructor(
      * based on the result posted by the interactor.
      */
     private fun fetchMovieDetails(movieId: Double, movieImageUrl: String) {
-        withMovieDetailsInteractor { fetchMovieDetail(movieId) }
         _viewState.value = MovieDetailViewState.showLoading(movieImageUrl)
-    }
-
-    /**
-     * Starts a refresh data process by indicating to the interactor that new data needs
-     * to be fetched for the movie details being shown. This is executed in a background
-     * task while the view state is updated with the loading state.
-     */
-    private fun refreshDetailsData(movieId: Double, movieImageUrl: String) {
-        withMovieDetailsInteractor {
-            flushMovieDetailsData()
-            fetchMovieDetail(movieId)
-        }
-        _viewState.value = MovieDetailViewState.showLoading(movieImageUrl)
-    }
-
-    /**
-     * Helper function to execute an [action] in the [movieDetailsInteractor] instance
-     * on a background task.
-     */
-    private fun withMovieDetailsInteractor(action: MovieDetailsInteractor.() -> Unit) {
         viewModelScope.launch {
-            withContext(ioDispatcher) {
-                action(movieDetailsInteractor)
+            val result = withContext(ioDispatcher) {
+                getMovieDetailUseCase.execute(movieId)
+            }
+            when (result) {
+                is Try.Failure -> processFailure(result.cause)
+                is Try.Success -> processMovieDetails(result.value)
             }
         }
     }
 
-    /**
-     * Maps a domain [MovieDetail] into a UI [MovieDetailViewState] and updates
-     * the state of the UI to show the details of the movie.
-     */
-    private fun mapMovieDetails(domainDetail: MovieDetail, imageUrl: String) {
-        viewModelScope.launch {
-            withContext(ioDispatcher) {
-                with(domainDetail) {
-                    MovieDetailViewState.showDetails(
-                            movieImageUrl = imageUrl,
-                            overview = overview,
-                            releaseDate = release_date,
-                            voteCount = vote_count.toString(),
-                            popularity = popularity.toString(),
-                            genres = genres.map { genre -> mapGenreToIcon(genre) }
-                    )
-                }
-            }.let { _viewState.value = it }
+    private fun processFailure(failure: Try.FailureCause) {
+        _viewState.value = when (failure) {
+            is Try.FailureCause.NoConnectivity -> MovieDetailViewState.showNoConnectivityError(retry)
+            is Try.FailureCause.Unknown -> MovieDetailViewState.showUnknownError(retry)
         }
     }
 
-    /**
-     * Maps all the known genres with a given icon.
-     */
-    private fun mapGenreToIcon(domainGenre: MovieGenre): MovieGenreItem {
-        when (domainGenre.id) {
+    private fun processMovieDetails(movieDetail: MovieDetail) {
+        val imageUrl = _viewState.value?.movieImageUrl ?: return
+
+        viewModelScope.launch {
+            val mappedGenres = withContext(ioDispatcher) {
+                movieDetail.genres.map { genre -> genre.mapToGenreItem() }
+            }
+
+            _viewState.value = MovieDetailViewState.showDetails(
+                movieImageUrl = imageUrl,
+                overview = movieDetail.overview,
+                releaseDate = movieDetail.release_date,
+                voteCount = movieDetail.vote_count.toString(),
+                popularity = movieDetail.popularity.toString(),
+                genres = mappedGenres
+            )
+        }
+    }
+
+    private fun MovieGenre.mapToGenreItem(): MovieGenreItem {
+        when (id) {
             ACTION_GENRE_ID -> return MovieGenreItem.Action
             ADVENTURE_GENRE_ID -> return MovieGenreItem.Adventure
             ANIMATION_GENRE_ID -> return MovieGenreItem.Animation
