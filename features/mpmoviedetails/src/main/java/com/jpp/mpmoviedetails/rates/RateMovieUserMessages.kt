@@ -6,7 +6,7 @@ import com.jpp.mpmoviedetails.R
 /**
  * Represents the messages that can be shown to the user when the rate action is completed.
  */
-enum class RateMovieUserMessages(@StringRes val messageRes: Int) {
+internal enum class RateMovieUserMessages(@StringRes val messageRes: Int) {
     RATE_SUCCESS(R.string.rate_movie_success_message),
     RATE_ERROR(R.string.rate_movie_error_message),
     DELETE_SUCCESS(R.string.rate_movie_deletion_success_message),

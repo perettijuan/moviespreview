@@ -31,10 +31,10 @@ class RateMovieViewModel @Inject constructor(
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<RateMovieViewState>()
-    val viewState: LiveData<RateMovieViewState> get() = _viewState
+    internal val viewState: LiveData<RateMovieViewState> get() = _viewState
 
     private val _userMessages = MediatorLiveData<HandledEvent<RateMovieUserMessages>>()
-    val userMessages: LiveData<HandledEvent<RateMovieUserMessages>> get() = _userMessages
+    internal val userMessages: LiveData<HandledEvent<RateMovieUserMessages>> get() = _userMessages
 
     private lateinit var currentParam: RateMovieParam
 
@@ -77,7 +77,7 @@ class RateMovieViewModel @Inject constructor(
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit(param: RateMovieParam) {
+    internal fun onInit(param: RateMovieParam) {
         currentParam = param
         fetchMovieState(
             param.movieId,
@@ -89,7 +89,7 @@ class RateMovieViewModel @Inject constructor(
     /**
      * Rates the current movie being shown with the provided [rating].
      */
-    fun onRateMovie(rating: Float) {
+    internal fun onRateMovie(rating: Float) {
         if (_viewState.value?.rating != rating) {
             withMovieDetailsInteractor {
                 rateMovie(
@@ -108,7 +108,7 @@ class RateMovieViewModel @Inject constructor(
      * Called when the user attempts to delete a previously rating set for the movie
      * being shown.
      */
-    fun onDeleteMovieRating() {
+    internal fun onDeleteMovieRating() {
         withMovieDetailsInteractor { deleteMovieRating(currentParam.movieId) }
         _viewState.value = RateMovieViewState.showLoading(
             currentParam.screenTitle,

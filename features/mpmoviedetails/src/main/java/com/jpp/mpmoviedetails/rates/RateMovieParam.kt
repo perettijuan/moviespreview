@@ -7,7 +7,7 @@ import com.jpp.mp.common.extensions.getStringOrFail
  * The initialization parameter used for
  * [RateMovieViewModel].
  */
-data class RateMovieParam(
+internal data class RateMovieParam(
     val movieId: Double,
     val screenTitle: String,
     val movieImageUrl: String
