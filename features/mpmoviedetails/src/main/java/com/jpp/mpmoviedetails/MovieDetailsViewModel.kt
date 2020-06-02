@@ -122,8 +122,8 @@ class MovieDetailsViewModel @Inject constructor(
 
     private fun processFailure(failure: Try.FailureCause) {
         _viewState.value = when (failure) {
-            is Try.FailureCause.NoConnectivity -> MovieDetailViewState.showNoConnectivityError(retry)
-            is Try.FailureCause.Unknown -> MovieDetailViewState.showUnknownError(retry)
+            is Try.FailureCause.NoConnectivity -> _viewState.value?.showNoConnectivityError(retry)
+            is Try.FailureCause.Unknown -> _viewState.value?.showUnknownError(retry)
         }
     }
 
@@ -135,7 +135,7 @@ class MovieDetailsViewModel @Inject constructor(
                 movieDetail.genres.map { genre -> genre.mapToGenreItem() }
             }
 
-            _viewState.value = MovieDetailViewState.showDetails(
+            _viewState.value = _viewState.value?.showDetails(
                 movieImageUrl = imageUrl,
                 overview = movieDetail.overview,
                 releaseDate = movieDetail.release_date,

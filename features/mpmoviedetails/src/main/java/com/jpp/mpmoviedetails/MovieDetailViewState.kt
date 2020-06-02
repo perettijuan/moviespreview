@@ -14,29 +14,27 @@ data class MovieDetailViewState(
     val contentViewState: MovieDetailContentViewState = MovieDetailContentViewState()
 ) {
 
-    companion object {
-        fun showLoading(movieImageUrl: String) = MovieDetailViewState(
-            loadingVisibility =
-            View.VISIBLE,
-            movieImageUrl = movieImageUrl
-        )
-
-        fun showUnknownError(errorHandler: () -> Unit) = MovieDetailViewState(
+    fun showUnknownError(errorHandler: () -> Unit): MovieDetailViewState {
+        return copy(
             errorViewState = ErrorViewState.asUnknownError(errorHandler)
         )
+    }
 
-        fun showNoConnectivityError(errorHandler: () -> Unit) = MovieDetailViewState(
+    fun showNoConnectivityError(errorHandler: () -> Unit): MovieDetailViewState {
+        return copy(
             errorViewState = ErrorViewState.asConnectivity(errorHandler)
         )
+    }
 
-        fun showDetails(
-            movieImageUrl: String,
-            overview: String,
-            genres: List<MovieGenreItem>,
-            popularity: String,
-            voteCount: String,
-            releaseDate: String
-        ) = MovieDetailViewState(
+    fun showDetails(
+        movieImageUrl: String,
+        overview: String,
+        genres: List<MovieGenreItem>,
+        popularity: String,
+        voteCount: String,
+        releaseDate: String
+    ): MovieDetailViewState {
+        return copy(
             movieImageUrl = movieImageUrl,
             contentViewState = MovieDetailContentViewState.buildVisible(
                 overview,
@@ -45,6 +43,14 @@ data class MovieDetailViewState(
                 voteCount,
                 releaseDate
             )
+        )
+    }
+
+    companion object {
+        fun showLoading(movieImageUrl: String) = MovieDetailViewState(
+            loadingVisibility =
+            View.VISIBLE,
+            movieImageUrl = movieImageUrl
         )
     }
 }
