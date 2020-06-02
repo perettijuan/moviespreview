@@ -38,7 +38,7 @@ class MovieDetailsActionViewModel @Inject constructor(
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<MovieDetailActionViewState>()
-    val viewState: LiveData<MovieDetailActionViewState> get() = _viewState
+    internal val viewState: LiveData<MovieDetailActionViewState> get() = _viewState
 
     private var currentMovieId: Double = 0.0
     private lateinit var currentMovieState: MovieState

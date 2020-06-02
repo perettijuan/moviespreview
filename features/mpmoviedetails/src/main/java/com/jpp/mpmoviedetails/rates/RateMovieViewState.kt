@@ -6,7 +6,7 @@ import android.view.View
 /**
  * Represents the view states that the movie detail view can assume.
  */
-data class RateMovieViewState(
+internal data class RateMovieViewState(
     val loadingVisibility: Int = View.INVISIBLE,
     val deleteVisibility: Int = View.INVISIBLE,
     val submitVisibility: Int = View.INVISIBLE,

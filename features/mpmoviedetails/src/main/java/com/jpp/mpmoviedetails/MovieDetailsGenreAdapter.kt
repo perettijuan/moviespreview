@@ -6,7 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mpmoviedetails.databinding.ListItemMovieDetailGenreBinding
 
-class MovieDetailsGenreAdapter(private val genres: List<MovieGenreItem>) :
+internal class MovieDetailsGenreAdapter(private val genres: List<MovieGenreItem>) :
     RecyclerView.Adapter<MovieDetailsGenreAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
