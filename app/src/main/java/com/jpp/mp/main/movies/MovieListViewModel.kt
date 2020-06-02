@@ -41,12 +41,11 @@ class MovieListViewModel(
             }
         }
 
-    private var currentPage: Int
-        set(value) {
-            savedStateHandle.set(MOVIE_PAGE_KEY, value)
-        }
-        get() = savedStateHandle.get(MOVIE_PAGE_KEY) ?: 0
-
+    /*
+     * Not stored in SavedStateHandle b/c we want to recreate
+     * the whole paging when app killed.
+     */
+    private var currentPage: Int = 0
 
     private var maxPage: Int
         set(value) {
@@ -159,7 +158,6 @@ class MovieListViewModel(
 
     private companion object {
         const val MOVIE_SECTION_KEY = "MOVIE_SECTION_KEY"
-        const val MOVIE_PAGE_KEY = "MOVIE_PAGE_KEY"
         const val MAX_MOVIE_PAGE_KEY = "MAX_MOVIE_PAGE_KEY"
         const val FIRST_PAGE = 1
     }

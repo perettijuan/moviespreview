@@ -15,20 +15,22 @@ data class HeaderViewState(
 ) {
     companion object {
         fun showLoading() = HeaderViewState(loadingVisibility = View.VISIBLE)
-        fun showLogin() = HeaderViewState(loginButtonViewState = LoginButtonViewState(visibility = View.VISIBLE))
+        fun showLogin() =
+            HeaderViewState(loginButtonViewState = LoginButtonViewState(visibility = View.VISIBLE))
+
         fun showAccountWithAvatar(
             userName: String,
             accountName: String,
             avatarUrl: String,
             avatarCallback: (() -> Unit)
         ) = HeaderViewState(
-                accountViewState = AccountViewState.createWithAvatar(
-                        userName,
-                        accountName,
-                        avatarUrl,
-                        avatarCallback
-                ),
-                detailsViewState = AccountDetailsViewState(visibility = View.VISIBLE)
+            accountViewState = AccountViewState.createWithAvatar(
+                userName,
+                accountName,
+                avatarUrl,
+                avatarCallback
+            ),
+            detailsViewState = AccountDetailsViewState(visibility = View.VISIBLE)
         )
 
         fun showAccountWithLetter(
@@ -36,12 +38,12 @@ data class HeaderViewState(
             accountName: String,
             defaultLetter: String
         ) = HeaderViewState(
-                accountViewState = AccountViewState.createWithDefaultLetter(
-                        userName,
-                        accountName,
-                        defaultLetter
-                ),
-                detailsViewState = AccountDetailsViewState(visibility = View.VISIBLE)
+            accountViewState = AccountViewState.createWithDefaultLetter(
+                userName,
+                accountName,
+                defaultLetter
+            ),
+            detailsViewState = AccountDetailsViewState(visibility = View.VISIBLE)
         )
     }
 }
@@ -78,10 +80,10 @@ data class AccountViewState(
             avatarUrl: String,
             avatarCallback: (() -> Unit)
         ) = AccountViewState(
-                visibility = View.VISIBLE,
-                userName = userName,
-                accountName = accountName,
-                avatarViewState = AccountAvatarViewState.createAvatar(avatarUrl, avatarCallback)
+            visibility = View.VISIBLE,
+            userName = userName,
+            accountName = accountName,
+            avatarViewState = AccountAvatarViewState.createAvatar(avatarUrl, avatarCallback)
         )
 
         fun createWithDefaultLetter(
@@ -89,10 +91,10 @@ data class AccountViewState(
             accountName: String,
             defaultLetter: String
         ) = AccountViewState(
-                visibility = View.VISIBLE,
-                userName = userName,
-                accountName = accountName,
-                avatarViewState = AccountAvatarViewState.createLetter(defaultLetter)
+            visibility = View.VISIBLE,
+            userName = userName,
+            accountName = accountName,
+            avatarViewState = AccountAvatarViewState.createLetter(defaultLetter)
         )
     }
 }
@@ -111,7 +113,16 @@ data class AccountAvatarViewState(
     val defaultLetterVisibility: Int = View.GONE
 ) {
     companion object {
-        fun createAvatar(avatarUrl: String, callback: (() -> Unit)) = AccountAvatarViewState(avatarUrl = avatarUrl, avatarVisibility = View.VISIBLE, avatarErrorCallback = callback)
-        fun createLetter(defaultLetter: String) = AccountAvatarViewState(defaultLetter = defaultLetter, defaultLetterVisibility = View.VISIBLE, avatarVisibility = View.INVISIBLE)
+        fun createAvatar(avatarUrl: String, callback: (() -> Unit)) = AccountAvatarViewState(
+            avatarUrl = avatarUrl,
+            avatarVisibility = View.VISIBLE,
+            avatarErrorCallback = callback
+        )
+
+        fun createLetter(defaultLetter: String) = AccountAvatarViewState(
+            defaultLetter = defaultLetter,
+            defaultLetterVisibility = View.VISIBLE,
+            avatarVisibility = View.INVISIBLE
+        )
     }
 }

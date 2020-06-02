@@ -5,15 +5,13 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.navigation.Destination
-import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.Success
-import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.UnknownError
-import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.UserNotLogged
+import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.*
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * [MPViewModel] that supports the [NavigationHeaderFragment] behavior. It retrieves the
@@ -74,10 +72,10 @@ class NavigationHeaderViewModel @Inject constructor(
      */
     private fun mapAccountInfo(userAccount: UserAccount): HeaderViewState = with(userAccount) {
         HeaderViewState.showAccountWithAvatar(
-                avatarUrl = Gravatar.BASE_URL + avatar.gravatar.hash + Gravatar.REDIRECT,
-                userName = if (name.isEmpty()) username else name,
-                accountName = username,
-                avatarCallback = { mapAccountInfoWithoutAvatar(userAccount) }
+            avatarUrl = Gravatar.BASE_URL + avatar.gravatar.hash + Gravatar.REDIRECT,
+            userName = if (name.isEmpty()) username else name,
+            accountName = username,
+            avatarCallback = { mapAccountInfoWithoutAvatar(userAccount) }
         )
     }
 
@@ -88,9 +86,10 @@ class NavigationHeaderViewModel @Inject constructor(
      */
     private fun mapAccountInfoWithoutAvatar(userAccount: UserAccount) {
         _viewState.value = HeaderViewState.showAccountWithLetter(
-                userName = if (userAccount.name.isEmpty()) userAccount.username else userAccount.name,
-                accountName = userAccount.username,
-                defaultLetter = (if (userAccount.name.isEmpty()) userAccount.username.first().toString() else userAccount.name.first().toString()).toUpperCase()
+            userName = if (userAccount.name.isEmpty()) userAccount.username else userAccount.name,
+            accountName = userAccount.username,
+            defaultLetter = (if (userAccount.name.isEmpty()) userAccount.username.first()
+                .toString() else userAccount.name.first().toString()).toUpperCase()
         )
     }
 }

@@ -21,8 +21,13 @@ class NavigationHeaderFragment : MPFragment<NavigationHeaderViewModel>() {
 
     private lateinit var viewBinding: FragmentNavHeaderBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_nav_header, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        viewBinding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_nav_header, container, false)
         return viewBinding.root
     }
 
@@ -38,10 +43,13 @@ class NavigationHeaderFragment : MPFragment<NavigationHeaderViewModel>() {
         }
 
         withViewModel {
-            viewState.observe(this@NavigationHeaderFragment.viewLifecycleOwner, Observer { viewState -> viewBinding.viewState = viewState })
+            viewState.observe(
+                this@NavigationHeaderFragment.viewLifecycleOwner,
+                Observer { viewState -> viewBinding.viewState = viewState })
             onInit()
         }
     }
 
-    override fun withViewModel(action: NavigationHeaderViewModel.() -> Unit) = withViewModel<NavigationHeaderViewModel>(viewModelFactory) { action() }
+    override fun withViewModel(action: NavigationHeaderViewModel.() -> Unit) =
+        withViewModel<NavigationHeaderViewModel>(viewModelFactory) { action() }
 }

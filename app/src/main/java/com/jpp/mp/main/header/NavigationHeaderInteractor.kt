@@ -2,9 +2,7 @@ package com.jpp.mp.main.header
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.Success
-import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.UnknownError
-import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.UserNotLogged
+import com.jpp.mp.main.header.NavigationHeaderInteractor.HeaderDataEvent.*
 import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.repository.AccountRepository
