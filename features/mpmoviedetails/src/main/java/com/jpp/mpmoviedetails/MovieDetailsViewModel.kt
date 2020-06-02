@@ -64,10 +64,7 @@ class MovieDetailsViewModel @Inject constructor(
     fun onInit(param: MovieDetailsParam) {
         currentParam = param
         updateCurrentDestination(Destination.ReachedDestination(currentParam.movieTitle))
-        fetchMovieDetails(
-                currentParam.movieId,
-                currentParam.movieImageUrl
-        )
+        fetchMovieDetails(currentParam.movieId, currentParam.movieImageUrl)
     }
 
     /**
@@ -147,7 +144,7 @@ class MovieDetailsViewModel @Inject constructor(
             )
         }
     }
-    
+
     private fun MovieGenre.mapToGenreItem(): MovieGenreItem {
         when (id) {
             ACTION_GENRE_ID -> return MovieGenreItem.Action
