@@ -49,7 +49,7 @@ class MovieDetailsViewModel @Inject constructor(
 ) : MPViewModel() {
 
     private val _viewState = MutableLiveData<MovieDetailViewState>()
-    val viewState: LiveData<MovieDetailViewState> get() = _viewState
+    internal val viewState: LiveData<MovieDetailViewState> get() = _viewState
 
     private lateinit var currentParam: MovieDetailsParam
 
@@ -60,7 +60,7 @@ class MovieDetailsViewModel @Inject constructor(
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit(param: MovieDetailsParam) {
+    internal fun onInit(param: MovieDetailsParam) {
         currentParam = param
         updateCurrentDestination(Destination.ReachedDestination(currentParam.movieTitle))
         fetchMovieDetails(currentParam.movieId, currentParam.movieImageUrl)
@@ -69,14 +69,14 @@ class MovieDetailsViewModel @Inject constructor(
     /**
      * Called when the user request to login from the details actions.
      */
-    fun onUserRequestedLogin() {
+    internal fun onUserRequestedLogin() {
         navigateTo(Destination.MPAccount)
     }
 
     /**
      * Called when the user wants to navigate to the movie credits section.
      */
-    fun onMovieCreditsSelected() {
+    internal fun onMovieCreditsSelected() {
         navigateTo(
             Destination.MPCredits(
                 currentParam.movieId,
@@ -88,7 +88,7 @@ class MovieDetailsViewModel @Inject constructor(
     /**
      * Called when the user selects the rate movie option.
      */
-    fun onRateMovieSelected() {
+    internal fun onRateMovieSelected() {
         navigateTo(
             Destination.InnerDestination(
                 MovieDetailsFragmentDirections.rateMovie(

@@ -5,7 +5,7 @@ package com.jpp.mpmoviedetails
  * [animate] indicates if the actions section should perform the animation.
  * [expanded] indicates if the actions section should be shown expanded or not.
  */
-sealed class MovieDetailActionViewState(val animate: Boolean, val expanded: Boolean) {
+internal sealed class MovieDetailActionViewState(val animate: Boolean, val expanded: Boolean) {
     /*
      * Shows the loading state in the actions section.
      */
@@ -52,7 +52,7 @@ sealed class MovieDetailActionViewState(val animate: Boolean, val expanded: Bool
 /**
  * Represents the state of the action buttons show to the user.
  */
-sealed class ActionButtonState {
+internal sealed class ActionButtonState {
     object ShowAsFilled : ActionButtonState()
     object ShowAsEmpty : ActionButtonState()
     object ShowAsLoading : ActionButtonState()

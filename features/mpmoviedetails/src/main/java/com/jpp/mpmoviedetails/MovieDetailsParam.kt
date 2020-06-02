@@ -5,7 +5,7 @@ import android.os.Bundle
 /**
  * The initialization parameter for the [MovieDetailsViewModel.onInit] method.
  */
-data class MovieDetailsParam(
+internal data class MovieDetailsParam(
     val movieId: Double,
     val movieTitle: String,
     val movieImageUrl: String

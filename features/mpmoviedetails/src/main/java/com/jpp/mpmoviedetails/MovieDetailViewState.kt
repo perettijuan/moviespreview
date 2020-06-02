@@ -7,7 +7,7 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 /**
  * Represents the view states that the movie detail view can assume.
  */
-data class MovieDetailViewState(
+internal data class MovieDetailViewState(
     val loadingVisibility: Int = View.INVISIBLE,
     val movieImageUrl: String = "emptyUrl",
     val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
@@ -61,7 +61,7 @@ data class MovieDetailViewState(
 /**
  * Represents the view state of the details content.
  */
-data class MovieDetailContentViewState(
+internal data class MovieDetailContentViewState(
     val visibility: Int = View.INVISIBLE,
     @StringRes val overviewTitle: Int = R.string.overview_title,
     val overview: String = "",

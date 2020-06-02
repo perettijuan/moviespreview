@@ -6,7 +6,7 @@ import androidx.annotation.StringRes
 /**
  * Represents an item in the list of genres that a movie can belong to.
  */
-enum class MovieGenreItem(@DrawableRes val icon: Int, @StringRes val nameRes: Int) {
+internal enum class MovieGenreItem(@DrawableRes val icon: Int, @StringRes val nameRes: Int) {
     Action(R.drawable.ic_action, R.string.action_genre),
     Adventure(R.drawable.ic_adventure, R.string.adventure_genre),
     Animation(R.drawable.ic_animation, R.string.animation_genre),
