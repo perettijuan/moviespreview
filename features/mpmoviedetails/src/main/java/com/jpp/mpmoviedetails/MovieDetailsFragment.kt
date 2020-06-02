@@ -19,6 +19,7 @@ import com.jpp.mpdesign.ext.snackBar
 import com.jpp.mpdesign.ext.snackBarNoAction
 import com.jpp.mpdesign.views.MPFloatingActionButton
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieId
+import com.jpp.mpmoviedetails.NavigationMovieDetails.paramsFromBundle
 import com.jpp.mpmoviedetails.databinding.FragmentMovieDetailsBinding
 
 /**
@@ -66,7 +67,7 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
 
         withViewModel {
             viewState.observeValue(viewLifecycleOwner, ::renderViewState)
-            onInit(MovieDetailsParam.fromArguments(arguments))
+            onInit(paramsFromBundle(arguments))
         }
 
         withActionsViewModel {

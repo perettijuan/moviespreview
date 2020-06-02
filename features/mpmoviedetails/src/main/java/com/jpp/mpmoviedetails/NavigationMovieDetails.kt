@@ -21,4 +21,10 @@ object NavigationMovieDetails {
     fun movieId(args: Bundle?) = args.getStringOrFail("movieId")
     fun movieImageUrl(args: Bundle?) = args.getStringOrFail("movieImageUrl")
     fun movieTitle(args: Bundle?) = args.getStringOrFail("movieTitle")
+
+    internal fun paramsFromBundle(arguments: Bundle?) = MovieDetailsParam(
+        movieId(arguments).toDouble(),
+        movieTitle(arguments),
+        movieImageUrl(arguments)
+    )
 }
