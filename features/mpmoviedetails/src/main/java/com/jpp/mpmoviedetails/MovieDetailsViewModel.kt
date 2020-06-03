@@ -2,6 +2,7 @@ package com.jpp.mpmoviedetails
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.navigation.Destination
@@ -44,14 +45,41 @@ import kotlinx.coroutines.withContext
  */
 class MovieDetailsViewModel(
     private val getMovieDetailUseCase: GetMovieDetailUseCase,
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
+    private val savedStateHandle: SavedStateHandle
 ) : MPViewModel() {
 
+    private var movieId: Double
+        set(value) {
+            savedStateHandle.set(MOVIE_ID_KEY, value)
+        }
+        get() {
+            return savedStateHandle.get(MOVIE_ID_KEY)
+                ?: throw IllegalStateException("Trying to access MOVIE_ID_KEY when it is not yet set")
+        }
+
+
+    private var movieTitle: String
+        set(value) {
+            savedStateHandle.set(MOVIE_TITLE_KEY, value)
+        }
+        get() {
+            return savedStateHandle.get(MOVIE_TITLE_KEY)
+                ?: throw IllegalStateException("Trying to access MOVIE_TITLE_KEY when it is not yet set")
+        }
+
+
+    private var movieImageUrl: String
+        set(value) {
+            savedStateHandle.set(MOVIE_IMAGE_URL_KEY, value)
+        }
+        get() {
+            return savedStateHandle.get(MOVIE_IMAGE_URL_KEY)
+                ?: throw IllegalStateException("Trying to access MOVIE_IMAGE_URL_KEY when it is not yet set")
+        }
+
     private val _viewState = MutableLiveData<MovieDetailViewState>()
-    internal val viewState: LiveData<MovieDetailViewState> get() = _viewState
-
-    private lateinit var currentParam: MovieDetailsParam
-
+    internal val viewState: LiveData<MovieDetailViewState> = _viewState
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -60,9 +88,11 @@ class MovieDetailsViewModel(
      * on it.
      */
     internal fun onInit(param: MovieDetailsParam) {
-        currentParam = param
-        updateCurrentDestination(Destination.ReachedDestination(currentParam.movieTitle))
-        fetchMovieDetails(currentParam.movieId, currentParam.movieImageUrl)
+        movieId = param.movieId
+        movieTitle = param.movieTitle
+        movieImageUrl = param.movieImageUrl
+        updateCurrentDestination(Destination.ReachedDestination(movieTitle))
+        fetchMovieDetails(movieId, movieImageUrl)
     }
 
     /**
@@ -78,8 +108,8 @@ class MovieDetailsViewModel(
     internal fun onMovieCreditsSelected() {
         navigateTo(
             Destination.MPCredits(
-                currentParam.movieId,
-                currentParam.movieTitle
+                movieId,
+                movieTitle
             )
         )
     }
@@ -91,19 +121,14 @@ class MovieDetailsViewModel(
         navigateTo(
             Destination.InnerDestination(
                 MovieDetailsFragmentDirections.rateMovie(
-                    currentParam.movieId.toString(),
-                    currentParam.movieImageUrl,
-                    currentParam.movieTitle
+                    movieId.toString(),
+                    movieImageUrl,
+                    movieTitle
                 )
             )
         )
     }
 
-    /**
-     * When called, this method will push the loading view state and will fetch the details
-     * of the movie being shown. When the fetching process is done, the view state will be updated
-     * based on the result posted by the interactor.
-     */
     private fun fetchMovieDetails(movieId: Double, movieImageUrl: String) {
         _viewState.value = MovieDetailViewState.showLoading(movieImageUrl)
         viewModelScope.launch {
@@ -121,14 +146,14 @@ class MovieDetailsViewModel(
         _viewState.value = when (failure) {
             is Try.FailureCause.NoConnectivity -> _viewState.value?.showNoConnectivityError {
                 fetchMovieDetails(
-                    currentParam.movieId,
-                    currentParam.movieTitle
+                    movieId,
+                    movieTitle
                 )
             }
             is Try.FailureCause.Unknown -> _viewState.value?.showUnknownError {
                 fetchMovieDetails(
-                    currentParam.movieId,
-                    currentParam.movieTitle
+                    movieId,
+                    movieTitle
                 )
             }
         }
@@ -175,5 +200,11 @@ class MovieDetailsViewModel(
             WESTERN_GENRE_ID -> return MovieGenreItem.Western
             else -> return MovieGenreItem.Generic
         }
+    }
+
+    private companion object {
+        const val MOVIE_ID_KEY = "MOVIE_ID_KEY"
+        const val MOVIE_TITLE_KEY = "MOVIE_TITLE_KEY"
+        const val MOVIE_IMAGE_URL_KEY = "MOVIE_IMAGE_URL_KEY"
     }
 }

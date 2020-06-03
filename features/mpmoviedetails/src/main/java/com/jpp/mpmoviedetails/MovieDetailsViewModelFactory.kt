@@ -18,7 +18,8 @@ class MovieDetailsViewModelFactory @Inject constructor(
     override fun create(handle: SavedStateHandle): MovieDetailsViewModel {
         return MovieDetailsViewModel(
             getMovieDetailUseCase,
-            ioDispatcher
+            ioDispatcher,
+            handle
         )
     }
 }
