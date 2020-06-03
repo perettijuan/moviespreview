@@ -30,7 +30,7 @@ import org.junit.jupiter.params.provider.MethodSource
         InstantTaskExecutorExtension::class,
         CoroutineTestExtension::class
 )
-class RateMovieViewModelTest {
+internal class RateMovieViewModelTest {
 
     @RelaxedMockK
     private lateinit var movieDetailsInteractor: MovieDetailsInteractor

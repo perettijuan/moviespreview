@@ -1,5 +1,6 @@
 package com.jpp.mpmoviedetails
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,12 +8,15 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.extensions.withViewModel
-import com.jpp.mp.common.fragments.MPFragment
+import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mpdesign.ext.setInvisible
 import com.jpp.mpdesign.ext.setVisible
 import com.jpp.mpdesign.ext.snackBar
@@ -21,6 +25,8 @@ import com.jpp.mpdesign.views.MPFloatingActionButton
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieId
 import com.jpp.mpmoviedetails.NavigationMovieDetails.paramsFromBundle
 import com.jpp.mpmoviedetails.databinding.FragmentMovieDetailsBinding
+import dagger.android.support.AndroidSupportInjection
+import javax.inject.Inject
 
 /**
  * Fragment used to show the details of a particular movie selected by the user.
@@ -38,9 +44,23 @@ import com.jpp.mpmoviedetails.databinding.FragmentMovieDetailsBinding
  *       manner.
  *
  */
-class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
+class MovieDetailsFragment : Fragment() {
+
+    @Inject
+    lateinit var movieDetailsViewModelFactory: MovieDetailsViewModelFactory
+
+    //This will be removed once MovieDetailsActionViewModel is properly created
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var viewBinding: FragmentMovieDetailsBinding
+
+    private val viewModel: MovieDetailsViewModel by viewModels {
+        MPGenericSavedStateViewModelFactory(
+            movieDetailsViewModelFactory,
+            this
+        )
+    }
 
     private var detailsContent: CoordinatorLayout? = null
     private var movieDetailFavoritesFab: MPFloatingActionButton? = null
@@ -50,6 +70,10 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
     private var movieDetailActionFab: FloatingActionButton? = null
     private var movieDetailActionsLoadingView: ProgressBar? = null
 
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,10 +89,8 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         setupViews(view)
 
-        withViewModel {
-            viewState.observeValue(viewLifecycleOwner, ::renderViewState)
-            onInit(paramsFromBundle(arguments))
-        }
+        viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
+        viewModel.onInit(paramsFromBundle(arguments))
 
         withActionsViewModel {
             viewState.observeValue(viewLifecycleOwner, ::renderActionViewState)
@@ -87,9 +109,6 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
         super.onDestroyView()
     }
 
-    override fun withViewModel(action: MovieDetailsViewModel.() -> Unit) =
-        withViewModel<MovieDetailsViewModel>(viewModelFactory) { action() }
-
     private fun withActionsViewModel(action: MovieDetailsActionViewModel.() -> Unit) =
         withViewModel<MovieDetailsActionViewModel>(viewModelFactory) { action() }
 
@@ -106,9 +125,9 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
         viewBinding.movieDetailActionFab.setOnClickListener { withActionsViewModel { onMainActionSelected() } }
         viewBinding.movieDetailFavoritesFab.setOnClickListener { withActionsViewModel { onFavoriteStateChanged() } }
         viewBinding.movieDetailWatchlistFab.setOnClickListener { withActionsViewModel { onWatchlistStateChanged() } }
-        viewBinding.detailCreditsSelectionView?.setOnClickListener { withViewModel { onMovieCreditsSelected() } }
-        viewBinding.movieDetailContent?.detailCreditsSelectionView?.setOnClickListener { withViewModel { onMovieCreditsSelected() } }
-        viewBinding.movieDetailRateFab.setOnClickListener { withViewModel { onRateMovieSelected() } }
+        viewBinding.detailCreditsSelectionView?.setOnClickListener { viewModel.onMovieCreditsSelected() }
+        viewBinding.movieDetailContent?.detailCreditsSelectionView?.setOnClickListener { viewModel.onMovieCreditsSelected() }
+        viewBinding.movieDetailRateFab.setOnClickListener { viewModel.onRateMovieSelected() }
         viewBinding.movieDetailReloadActionFab.setOnClickListener { withActionsViewModel { onRetry() } }
     }
 
@@ -152,7 +171,7 @@ class MovieDetailsFragment : MPFragment<MovieDetailsViewModel>() {
                         R.string.account_need_to_login,
                         R.string.login_generic
                     ) {
-                        withViewModel { onUserRequestedLogin() }
+                        viewModel.onUserRequestedLogin()
                     }
                 }
             }
