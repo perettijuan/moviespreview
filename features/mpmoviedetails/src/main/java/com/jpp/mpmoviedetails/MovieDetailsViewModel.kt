@@ -30,7 +30,6 @@ import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] that supports the movie details section (only the static data, not the actions
@@ -43,7 +42,7 @@ import javax.inject.Inject
  * VM is notified about such event and executes a refresh of both: the data stored by the application
  * and the view state being shown to the user.
  */
-class MovieDetailsViewModel @Inject constructor(
+class MovieDetailsViewModel(
     private val getMovieDetailUseCase: GetMovieDetailUseCase,
     private val ioDispatcher: CoroutineDispatcher
 ) : MPViewModel() {
