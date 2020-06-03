@@ -6,6 +6,8 @@ import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import com.jpp.mp.R
 import com.jpp.mp.main.movies.MovieListNavigator
+import com.jpp.mpcredits.NavigationCredits
+import com.jpp.mpmoviedetails.MovieDetailsFragmentDirections
 import com.jpp.mpmoviedetails.MovieDetailsNavigator
 import com.jpp.mpmoviedetails.NavigationMovieDetails
 
@@ -53,15 +55,32 @@ class MainNavigator : MovieListNavigator, MovieDetailsNavigator {
     }
 
     override fun navigateToUserAccount() {
-        TODO("Not yet implemented")
+        navController?.navigate(
+            R.id.user_account_nav,
+            null,
+            buildAnimationNavOptions()
+        )
     }
 
     override fun navigateToMovieCredits(movieId: Double, movieTitle: String) {
-        TODO("Not yet implemented")
+        navController?.navigate(
+            R.id.credits_nav,
+            NavigationCredits.navArgs(
+                movieId,
+                movieTitle
+            ),
+            buildAnimationNavOptions()
+        )
     }
 
     override fun navigateToRateMovie(movieId: Double, movieImageUrl: String, movieTitle: String) {
-        TODO("Not yet implemented")
+        navController?.navigate(
+            MovieDetailsFragmentDirections.rateMovie(
+                movieId.toString(),
+                movieImageUrl,
+                movieTitle
+            )
+        )
     }
 
     fun bind(newNavController: NavController) {

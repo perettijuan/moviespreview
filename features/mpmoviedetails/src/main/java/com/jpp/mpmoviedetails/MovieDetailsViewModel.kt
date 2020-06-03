@@ -45,6 +45,7 @@ import kotlinx.coroutines.withContext
  */
 class MovieDetailsViewModel(
     private val getMovieDetailUseCase: GetMovieDetailUseCase,
+    private val navigator: MovieDetailsNavigator,
     private val ioDispatcher: CoroutineDispatcher,
     private val savedStateHandle: SavedStateHandle
 ) : MPViewModel() {
@@ -99,18 +100,16 @@ class MovieDetailsViewModel(
      * Called when the user request to login from the details actions.
      */
     internal fun onUserRequestedLogin() {
-        navigateTo(Destination.MPAccount)
+        navigator.navigateToUserAccount()
     }
 
     /**
      * Called when the user wants to navigate to the movie credits section.
      */
     internal fun onMovieCreditsSelected() {
-        navigateTo(
-            Destination.MPCredits(
-                movieId,
-                movieTitle
-            )
+        navigator.navigateToMovieCredits(
+            movieId,
+            movieTitle
         )
     }
 
@@ -118,14 +117,10 @@ class MovieDetailsViewModel(
      * Called when the user selects the rate movie option.
      */
     internal fun onRateMovieSelected() {
-        navigateTo(
-            Destination.InnerDestination(
-                MovieDetailsFragmentDirections.rateMovie(
-                    movieId.toString(),
-                    movieImageUrl,
-                    movieTitle
-                )
-            )
+        navigator.navigateToRateMovie(
+            movieId,
+            movieImageUrl,
+            movieTitle
         )
     }
 
