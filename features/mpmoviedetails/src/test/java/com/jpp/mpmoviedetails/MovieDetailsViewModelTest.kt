@@ -1,6 +1,7 @@
 package com.jpp.mpmoviedetails
 
 import android.view.View
+import androidx.lifecycle.SavedStateHandle
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
@@ -30,13 +31,18 @@ class MovieDetailsViewModelTest {
     @RelaxedMockK
     private lateinit var getMovieDetailUseCase: GetMovieDetailUseCase
 
+    private val savedStateHandle: SavedStateHandle by lazy {
+        SavedStateHandle()
+    }
+
     private lateinit var subject: MovieDetailsViewModel
 
     @BeforeEach
     fun setUp() {
         subject = MovieDetailsViewModel(
             getMovieDetailUseCase,
-            CoroutineTestExtension.testDispatcher
+            CoroutineTestExtension.testDispatcher,
+            savedStateHandle
         )
     }
 
