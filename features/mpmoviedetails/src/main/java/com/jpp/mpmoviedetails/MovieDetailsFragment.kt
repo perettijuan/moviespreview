@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.jpp.mp.common.extensions.observeValue
+import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mpdesign.ext.setInvisible
@@ -132,6 +133,8 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun renderViewState(viewState: MovieDetailViewState) {
+        setScreenTitle(viewState.screenTitle)
+
         viewBinding.viewState = viewState
         viewBinding.executePendingBindings()
 

@@ -9,6 +9,7 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
  */
 internal data class MovieDetailViewState(
     val loadingVisibility: Int = View.INVISIBLE,
+    val screenTitle: String,
     val movieImageUrl: String = "emptyUrl",
     val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
     val contentViewState: MovieDetailContentViewState = MovieDetailContentViewState()
@@ -50,9 +51,9 @@ internal data class MovieDetailViewState(
     }
 
     companion object {
-        fun showLoading(movieImageUrl: String) = MovieDetailViewState(
-            loadingVisibility =
-            View.VISIBLE,
+        fun showLoading(screenTitle: String, movieImageUrl: String) = MovieDetailViewState(
+            loadingVisibility = View.VISIBLE,
+            screenTitle = screenTitle,
             movieImageUrl = movieImageUrl
         )
     }

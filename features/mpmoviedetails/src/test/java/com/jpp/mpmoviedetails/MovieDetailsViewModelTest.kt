@@ -2,7 +2,6 @@ package com.jpp.mpmoviedetails
 
 import android.view.View
 import androidx.lifecycle.SavedStateHandle
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.usecase.GetMovieDetailUseCase
@@ -105,7 +104,7 @@ class MovieDetailsViewModelTest {
             )
         )
 
-        val expected = MovieDetailViewState.showLoading("aUrl").showDetails(
+        val expected = MovieDetailViewState.showLoading("aTitle", "aUrl").showDetails(
             movieImageUrl = "aUrl",
             overview = domainDetail.overview,
             releaseDate = domainDetail.release_date,
@@ -120,21 +119,9 @@ class MovieDetailsViewModelTest {
         coEvery { getMovieDetailUseCase.execute(movieDetailId) } returns Try.Success(domainDetail)
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
-        subject.onInit(MovieDetailsParam(movieDetailId, "aMovie", "aUrl"))
+        subject.onInit(MovieDetailsParam(movieDetailId, "aTitle", "aUrl"))
 
         assertEquals(expected, viewStatePosted)
-    }
-
-    @Test
-    fun `Should update reached destination in onInit`() {
-        var destinationReached: Destination? = null
-        val expected = Destination.ReachedDestination("aMovie")
-
-        subject.destinationEvents.observeWith { destinationReached = it }
-
-        subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
-
-        assertEquals(expected, destinationReached)
     }
 
     @Test
