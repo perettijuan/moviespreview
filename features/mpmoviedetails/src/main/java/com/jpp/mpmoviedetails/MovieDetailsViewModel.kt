@@ -136,7 +136,7 @@ class MovieDetailsViewModel(
             is Try.FailureCause.NoConnectivity -> _viewState.value?.showNoConnectivityError {
                 fetchMovieDetails()
             }
-            is Try.FailureCause.Unknown -> _viewState.value?.showUnknownError {
+            else -> _viewState.value?.showUnknownError {
                 fetchMovieDetails()
             }
         }
