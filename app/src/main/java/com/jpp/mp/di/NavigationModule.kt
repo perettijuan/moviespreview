@@ -2,6 +2,7 @@ package com.jpp.mp.di
 
 import com.jpp.mp.main.MainNavigator
 import com.jpp.mp.main.movies.MovieListNavigator
+import com.jpp.mpmoviedetails.MovieDetailsNavigator
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -16,7 +17,9 @@ class NavigationModule {
     @Singleton
     fun providesMainNavigator(): MainNavigator = MainNavigator()
 
-
     @Provides
     fun providesMovieListNavigator(mainNavigator: MainNavigator): MovieListNavigator = mainNavigator
+
+    @Provides
+    fun providesMovieDetailsNavigator(mainNavigator: MainNavigator): MovieDetailsNavigator = mainNavigator
 }

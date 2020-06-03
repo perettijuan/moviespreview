@@ -6,13 +6,16 @@ import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import com.jpp.mp.R
 import com.jpp.mp.main.movies.MovieListNavigator
+import com.jpp.mpcredits.NavigationCredits
+import com.jpp.mpmoviedetails.MovieDetailsFragmentDirections
+import com.jpp.mpmoviedetails.MovieDetailsNavigator
 import com.jpp.mpmoviedetails.NavigationMovieDetails
 
 /**
  * Provides navigation to the main module and also to each individual
  * feature module.
  */
-class MainNavigator : MovieListNavigator {
+class MainNavigator : MovieListNavigator, MovieDetailsNavigator {
 
     private var navController: NavController? = null
 
@@ -48,6 +51,35 @@ class MainNavigator : MovieListNavigator {
             R.id.about_nav,
             null,
             buildAnimationNavOptions()
+        )
+    }
+
+    override fun navigateToUserAccount() {
+        navController?.navigate(
+            R.id.user_account_nav,
+            null,
+            buildAnimationNavOptions()
+        )
+    }
+
+    override fun navigateToMovieCredits(movieId: Double, movieTitle: String) {
+        navController?.navigate(
+            R.id.credits_nav,
+            NavigationCredits.navArgs(
+                movieId,
+                movieTitle
+            ),
+            buildAnimationNavOptions()
+        )
+    }
+
+    override fun navigateToRateMovie(movieId: Double, movieImageUrl: String, movieTitle: String) {
+        navController?.navigate(
+            MovieDetailsFragmentDirections.rateMovie(
+                movieId.toString(),
+                movieImageUrl,
+                movieTitle
+            )
         )
     }
 

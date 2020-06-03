@@ -13,6 +13,7 @@ import com.jpp.mptestutils.observeWith
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -31,6 +32,9 @@ class MovieDetailsViewModelTest {
     @RelaxedMockK
     private lateinit var getMovieDetailUseCase: GetMovieDetailUseCase
 
+    @RelaxedMockK
+    private lateinit var navigator: MovieDetailsNavigator
+
     private val savedStateHandle: SavedStateHandle by lazy {
         SavedStateHandle()
     }
@@ -41,6 +45,7 @@ class MovieDetailsViewModelTest {
     fun setUp() {
         subject = MovieDetailsViewModel(
             getMovieDetailUseCase,
+            navigator,
             CoroutineTestExtension.testDispatcher,
             savedStateHandle
         )
@@ -130,5 +135,36 @@ class MovieDetailsViewModelTest {
         subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
 
         assertEquals(expected, destinationReached)
+    }
+
+    @Test
+    fun `Should navigate to user account when login requested`() {
+        subject.onUserRequestedLogin()
+
+        verify { navigator.navigateToUserAccount() }
+    }
+
+    @Test
+    fun `Should navigate to credits`() {
+        val movieId = 10.toDouble()
+        val movieTitle = "aMovie"
+        // pre-condition
+        subject.onInit(MovieDetailsParam(movieId, movieTitle, "aUrl"))
+        subject.onMovieCreditsSelected()
+
+        verify { navigator.navigateToMovieCredits(movieId, movieTitle) }
+    }
+
+    @Test
+    fun `Should navigate to rate movie`() {
+        val movieId = 10.toDouble()
+        val movieTitle = "aMovie"
+        val movieImageUrl = "aUrl"
+
+        // pre-condition
+        subject.onInit(MovieDetailsParam(movieId, movieTitle, movieImageUrl))
+        subject.onRateMovieSelected()
+
+        verify { navigator.navigateToRateMovie(movieId, movieImageUrl, movieTitle) }
     }
 }
