@@ -1,7 +1,6 @@
 package com.jpp.mpmoviedetails
 
 import androidx.lifecycle.*
-import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.MovieGenre.GenresId.ACTION_GENRE_ID
@@ -29,7 +28,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * [MPViewModel] that supports the movie details section (only the static data, not the actions
+ * [ViewModel] that supports the movie details section (only the static data, not the actions
  * that the user can perform - for the actions, check [MovieDetailsActionViewModel]). The VM retrieves
  * the data from the underlying layers using the provided [MovieDetailsInteractor] and maps the business
  * data to UI data, producing a [MovieDetailViewState] that represents the configuration of the view
