@@ -1,11 +1,7 @@
 package com.jpp.mpmoviedetails
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.jpp.mp.common.coroutines.MPViewModel
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.MovieGenre.GenresId.ACTION_GENRE_ID
@@ -48,7 +44,7 @@ class MovieDetailsViewModel(
     private val navigator: MovieDetailsNavigator,
     private val ioDispatcher: CoroutineDispatcher,
     private val savedStateHandle: SavedStateHandle
-) : MPViewModel() {
+) : ViewModel() {
 
     private var movieId: Double
         set(value) {
@@ -92,8 +88,7 @@ class MovieDetailsViewModel(
         movieId = param.movieId
         movieTitle = param.movieTitle
         movieImageUrl = param.movieImageUrl
-        updateCurrentDestination(Destination.ReachedDestination(movieTitle))
-        fetchMovieDetails(movieId, movieImageUrl)
+        fetchMovieDetails()
     }
 
     /**
@@ -124,8 +119,8 @@ class MovieDetailsViewModel(
         )
     }
 
-    private fun fetchMovieDetails(movieId: Double, movieImageUrl: String) {
-        _viewState.value = MovieDetailViewState.showLoading(movieImageUrl)
+    private fun fetchMovieDetails() {
+        _viewState.value = MovieDetailViewState.showLoading(movieTitle, movieImageUrl)
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {
                 getMovieDetailUseCase.execute(movieId)
@@ -140,16 +135,10 @@ class MovieDetailsViewModel(
     private fun processFailure(failure: Try.FailureCause) {
         _viewState.value = when (failure) {
             is Try.FailureCause.NoConnectivity -> _viewState.value?.showNoConnectivityError {
-                fetchMovieDetails(
-                    movieId,
-                    movieTitle
-                )
+                fetchMovieDetails()
             }
             is Try.FailureCause.Unknown -> _viewState.value?.showUnknownError {
-                fetchMovieDetails(
-                    movieId,
-                    movieTitle
-                )
+                fetchMovieDetails()
             }
         }
     }
