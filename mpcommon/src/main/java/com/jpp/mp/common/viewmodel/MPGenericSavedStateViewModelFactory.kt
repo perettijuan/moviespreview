@@ -1,4 +1,4 @@
-package com.jpp.mp.di
+package com.jpp.mp.common.viewmodel
 
 import android.os.Bundle
 import androidx.lifecycle.AbstractSavedStateViewModelFactory

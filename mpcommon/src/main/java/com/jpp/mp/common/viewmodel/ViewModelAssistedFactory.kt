@@ -1,4 +1,4 @@
-package com.jpp.mp.di
+package com.jpp.mp.common.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

@@ -14,7 +14,7 @@ import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.paging.MPVerticalPagingHandler
 import com.jpp.mp.databinding.FragmentMovieListBinding
-import com.jpp.mp.di.MPGenericSavedStateViewModelFactory
+import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mpdomain.MovieSection
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
@@ -46,7 +46,10 @@ abstract class MovieListFragment : Fragment() {
     private lateinit var viewBinding: FragmentMovieListBinding
 
     private val viewModel: MovieListViewModel by viewModels {
-        MPGenericSavedStateViewModelFactory(movieListViewModelFactory, this)
+        MPGenericSavedStateViewModelFactory(
+            movieListViewModelFactory,
+            this
+        )
     }
 
     private var movieListRv: RecyclerView? = null

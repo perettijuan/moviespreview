@@ -1,7 +1,7 @@
 package com.jpp.mp.main.movies
 
 import androidx.lifecycle.SavedStateHandle
-import com.jpp.mp.di.ViewModelAssistedFactory
+import com.jpp.mp.common.viewmodel.ViewModelAssistedFactory
 import com.jpp.mpdomain.usecase.ConfigureMovieImagesPathUseCase
 import com.jpp.mpdomain.usecase.GetMoviePageUseCase
 import kotlinx.coroutines.CoroutineDispatcher
