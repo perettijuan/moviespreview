@@ -34,7 +34,7 @@ class MovieDetailsActionViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _viewState = MutableLiveData<MovieDetailActionViewState>()
-    internal val viewState: LiveData<MovieDetailActionViewState>  = _viewState
+    internal val viewState: LiveData<MovieDetailActionViewState> = _viewState
 
     private var currentMovieId: Double = 0.0
     private lateinit var currentMovieState: MovieState
@@ -83,26 +83,22 @@ class MovieDetailsActionViewModel @Inject constructor(
      * the movie being handled.
      */
     fun onFavoriteStateChanged() {
-        executeMovieStateUpdate({
+        val copyLoadingStateFunction: (ShowMovieState) -> ShowMovieState = { currentShowingState ->
+            currentShowingState.copy(favorite = ActionButtonState.ShowAsLoading)
+        }
+        val stateUpdateFunction: () -> Unit = {
             viewModelScope.launch {
                 val result = withContext(ioDispatcher) {
                     updateFavoriteUseCase.execute(currentMovieState.id, !currentMovieState.favorite)
                 }
 
                 _viewState.value = when (result) {
-                    is Try.Failure -> {
-                        when (result.cause) {
-                            is Try.FailureCause.UserNotLogged -> processUserNotLogged()
-                            else -> updateErrorState()
-                        }
-                    }
+                    is Try.Failure -> processStateChangedError(result.cause)
                     is Try.Success -> processUpdateFavorite(result.value)
                 }
-
             }
-        }, { currentShowingState ->
-            currentShowingState.copy(favorite = ActionButtonState.ShowAsLoading)
-        })
+        }
+        executeMovieStateUpdate(stateUpdateFunction, copyLoadingStateFunction)
     }
 
     /**
@@ -110,7 +106,10 @@ class MovieDetailsActionViewModel @Inject constructor(
      * movie being handled.
      */
     fun onWatchlistStateChanged() {
-        executeMovieStateUpdate({
+        val copyLoadingStateFunction: (ShowMovieState) -> ShowMovieState = { currentShowingState ->
+            currentShowingState.copy(isInWatchlist = ActionButtonState.ShowAsLoading)
+        }
+        val stateUpdateFunction: () -> Unit = {
             viewModelScope.launch {
                 val result = withContext(ioDispatcher) {
                     updateWatchListUseCase.execute(
@@ -120,18 +119,12 @@ class MovieDetailsActionViewModel @Inject constructor(
                 }
 
                 _viewState.value = when (result) {
-                    is Try.Failure -> {
-                        when (result.cause) {
-                            is Try.FailureCause.UserNotLogged -> processUserNotLogged()
-                            else -> updateErrorState()
-                        }
-                    }
+                    is Try.Failure -> processStateChangedError(result.cause)
                     is Try.Success -> processUpdateWatchlist(result.value)
                 }
             }
-        }, { currentShowingState ->
-            currentShowingState.copy(isInWatchlist = ActionButtonState.ShowAsLoading)
-        })
+        }
+        executeMovieStateUpdate(stateUpdateFunction, copyLoadingStateFunction)
     }
 
 
@@ -143,7 +136,7 @@ class MovieDetailsActionViewModel @Inject constructor(
             }
 
             _viewState.value = when (result) {
-                is Try.Failure -> updateErrorState()
+                is Try.Failure -> processErrorState()
                 is Try.Success -> processMovieStateUpdate(result.value)
             }
         }
@@ -200,10 +193,17 @@ class MovieDetailsActionViewModel @Inject constructor(
     }
 
 
-    private fun updateErrorState(): MovieDetailActionViewState {
+    private fun processErrorState(): MovieDetailActionViewState {
         return viewState.value?.let { currentViewState ->
             ShowReloadState(currentViewState.expanded)
         } ?: ShowReloadState(false)
+    }
+
+    private fun processStateChangedError(errorCause: Try.FailureCause): MovieDetailActionViewState {
+        return when (errorCause) {
+            is Try.FailureCause.UserNotLogged -> processUserNotLogged()
+            else -> processErrorState()
+        }
     }
 
     /**
