@@ -2,22 +2,21 @@ package com.jpp.mpmoviedetails
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpdomain.usecase.GetMovieStateUseCase
 import com.jpp.mpdomain.usecase.Try
 import com.jpp.mpdomain.usecase.UpdateFavoriteMovieStateUseCase
+import com.jpp.mpdomain.usecase.UpdateWatchlistMovieStateUseCase
 import com.jpp.mpmoviedetails.MovieDetailActionViewState.*
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UpdateFavorite
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UpdateWatchlist
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * [MPViewModel] that supports the movie details actions (the data shown by the UI that is not
+ * [ViewModel] that supports the movie details actions (the data shown by the UI that is not
  * related to the actions that the user can perform is controlled by [MovieDetailsViewModel]). The VM retrieves
  * the data from the underlying layers using the provided [MovieDetailsInteractor] and maps the business
  * data to UI data, producing a [MovieDetailViewState] that represents the configuration of the view
@@ -30,28 +29,16 @@ import javax.inject.Inject
 class MovieDetailsActionViewModel @Inject constructor(
     private val getMovieStateUseCase: GetMovieStateUseCase,
     private val updateFavoriteUseCase: UpdateFavoriteMovieStateUseCase,
+    private val updateWatchListUseCase: UpdateWatchlistMovieStateUseCase,
     private val ioDispatcher: CoroutineDispatcher
-) : MPViewModel() {
+) : ViewModel() {
 
     private val _viewState = MutableLiveData<MovieDetailActionViewState>()
-    internal val viewState: LiveData<MovieDetailActionViewState> get() = _viewState
+    internal val viewState: LiveData<MovieDetailActionViewState>  = _viewState
 
     private var currentMovieId: Double = 0.0
     private lateinit var currentMovieState: MovieState
 
-//    init {
-//        _viewState.addSource(movieDetailsInteractor.movieStateEvents) { event ->
-//            when (event) {
-//                is NoStateFound -> _viewState.value = ShowNoMovieState(false, false)
-//                is NotConnectedToNetwork -> _viewState.value = processErrorState()
-//                is UserNotLogged -> _viewState.value = processUserNotLogged()
-//                is UnknownError -> _viewState.value = processErrorState()
-//                is FetchSuccess -> _viewState.value = processMovieStateUpdate(event.data)
-//                is UpdateFavorite -> _viewState.value = processUpdateFavorite(event)
-//                is UpdateWatchlist -> _viewState.value = processUpdateWatchlist(event)
-//            }
-//        }
-//    }
 
     /**
      * Called when the view is initialized.
@@ -123,14 +110,28 @@ class MovieDetailsActionViewModel @Inject constructor(
      * movie being handled.
      */
     fun onWatchlistStateChanged() {
-//        executeMovieStateUpdate({
-//            updateWatchlistMovieState(
-//                movieId = currentMovieState.id,
-//                inWatchlist = !currentMovieState.watchlist
-//            )
-//        }, { currentShowingState ->
-//            currentShowingState.copy(isInWatchlist = ActionButtonState.ShowAsLoading)
-//        })
+        executeMovieStateUpdate({
+            viewModelScope.launch {
+                val result = withContext(ioDispatcher) {
+                    updateWatchListUseCase.execute(
+                        currentMovieState.id,
+                        !currentMovieState.watchlist
+                    )
+                }
+
+                _viewState.value = when (result) {
+                    is Try.Failure -> {
+                        when (result.cause) {
+                            is Try.FailureCause.UserNotLogged -> processUserNotLogged()
+                            else -> updateErrorState()
+                        }
+                    }
+                    is Try.Success -> processUpdateWatchlist(result.value)
+                }
+            }
+        }, { currentShowingState ->
+            currentShowingState.copy(isInWatchlist = ActionButtonState.ShowAsLoading)
+        })
     }
 
 
@@ -182,8 +183,8 @@ class MovieDetailsActionViewModel @Inject constructor(
         }
     }
 
-    private fun processUpdateWatchlist(updateWatchlist: UpdateWatchlist): MovieDetailActionViewState {
-        return when (updateWatchlist.success) {
+    private fun processUpdateWatchlist(success: Boolean): MovieDetailActionViewState {
+        return when (success) {
             true -> processMovieStateUpdate(currentMovieState.copy(watchlist = !currentMovieState.watchlist))
             false -> processMovieStateUpdate(currentMovieState)
         }
