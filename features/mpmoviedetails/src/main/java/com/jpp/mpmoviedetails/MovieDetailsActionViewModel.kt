@@ -5,6 +5,8 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mpdomain.MovieState
+import com.jpp.mpdomain.usecase.GetMovieStateUseCase
+import com.jpp.mpdomain.usecase.Try
 import com.jpp.mpmoviedetails.MovieDetailActionViewState.ShowLoading
 import com.jpp.mpmoviedetails.MovieDetailActionViewState.ShowMovieState
 import com.jpp.mpmoviedetails.MovieDetailActionViewState.ShowNoMovieState
@@ -17,6 +19,7 @@ import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UnknownErro
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UpdateFavorite
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UpdateWatchlist
 import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent.UserNotLogged
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,7 +37,8 @@ import kotlinx.coroutines.withContext
  * state of the business layer.
  */
 class MovieDetailsActionViewModel @Inject constructor(
-    private val movieDetailsInteractor: MovieDetailsInteractor
+    private val getMovieStateUseCase: GetMovieStateUseCase,
+    private val ioDispatcher: CoroutineDispatcher
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<MovieDetailActionViewState>()
@@ -43,19 +47,19 @@ class MovieDetailsActionViewModel @Inject constructor(
     private var currentMovieId: Double = 0.0
     private lateinit var currentMovieState: MovieState
 
-    init {
-        _viewState.addSource(movieDetailsInteractor.movieStateEvents) { event ->
-            when (event) {
-                is NoStateFound -> _viewState.value = ShowNoMovieState(false, false)
-                is NotConnectedToNetwork -> _viewState.value = processErrorState()
-                is UserNotLogged -> _viewState.value = processUserNotLogged()
-                is UnknownError -> _viewState.value = processErrorState()
-                is FetchSuccess -> _viewState.value = processMovieStateUpdate(event.data)
-                is UpdateFavorite -> _viewState.value = processUpdateFavorite(event)
-                is UpdateWatchlist -> _viewState.value = processUpdateWatchlist(event)
-            }
-        }
-    }
+//    init {
+//        _viewState.addSource(movieDetailsInteractor.movieStateEvents) { event ->
+//            when (event) {
+//                is NoStateFound -> _viewState.value = ShowNoMovieState(false, false)
+//                is NotConnectedToNetwork -> _viewState.value = processErrorState()
+//                is UserNotLogged -> _viewState.value = processUserNotLogged()
+//                is UnknownError -> _viewState.value = processErrorState()
+//                is FetchSuccess -> _viewState.value = processMovieStateUpdate(event.data)
+//                is UpdateFavorite -> _viewState.value = processUpdateFavorite(event)
+//                is UpdateWatchlist -> _viewState.value = processUpdateWatchlist(event)
+//            }
+//        }
+//    }
 
     /**
      * Called when the view is initialized.
@@ -125,14 +129,19 @@ class MovieDetailsActionViewModel @Inject constructor(
         })
     }
 
-    /**
-     * When called, this method will push the loading view state and will fetch the movie state
-     * of the movie being shown. When the fetching process is done, the view state will be updated
-     * based on the result posted by the interactor.
-     */
+
     private fun fetchMovieState(movieId: Double) {
-        withMovieDetailsInteractor { fetchMovieState(movieId) }
         _viewState.value = ShowLoading
+        viewModelScope.launch {
+            val result = withContext(ioDispatcher) {
+                getMovieStateUseCase.execute(movieId)
+            }
+
+            _viewState.value = when (result) {
+                is Try.Failure -> updateErrorState()
+                is Try.Success -> processMovieStateUpdate(result.value)
+            }
+        }
     }
 
     /**
@@ -185,19 +194,8 @@ class MovieDetailsActionViewModel @Inject constructor(
         } ?: ShowUserNotLogged(false, false)
     }
 
-    /**
-     * Helper function to execute an [action] in the [movieDetailsInteractor] instance
-     * on a background task.
-     */
-    private fun withMovieDetailsInteractor(action: MovieDetailsInteractor.() -> Unit) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                action(movieDetailsInteractor)
-            }
-        }
-    }
 
-    private fun processErrorState(): MovieDetailActionViewState {
+    private fun updateErrorState(): MovieDetailActionViewState {
         return viewState.value?.let { currentViewState ->
             ShowReloadState(currentViewState.expanded)
         } ?: ShowReloadState(false)
@@ -219,18 +217,18 @@ class MovieDetailsActionViewModel @Inject constructor(
         stateUpdateFunction: MovieDetailsInteractor.() -> Unit,
         copyLoadingStateFunction: (ShowMovieState) -> ShowMovieState
     ) {
-        when (val currentState = viewState.value) {
-            is ShowMovieState -> {
-                _viewState.value = copyLoadingStateFunction(currentState)
-                withMovieDetailsInteractor { stateUpdateFunction() }
-            }
-            is ShowNoMovieState -> {
-                _viewState.value = ShowUserNotLogged(
-                    showActionsExpanded = currentState.expanded,
-                    animateActionsExpanded = false
-                )
-            }
-            is ShowUserNotLogged -> _viewState.value = currentState
-        }
+//        when (val currentState = viewState.value) {
+//            is ShowMovieState -> {
+//                _viewState.value = copyLoadingStateFunction(currentState)
+//                withMovieDetailsInteractor { stateUpdateFunction() }
+//            }
+//            is ShowNoMovieState -> {
+//                _viewState.value = ShowUserNotLogged(
+//                    showActionsExpanded = currentState.expanded,
+//                    animateActionsExpanded = false
+//                )
+//            }
+//            is ShowUserNotLogged -> _viewState.value = currentState
+//        }
     }
 }
