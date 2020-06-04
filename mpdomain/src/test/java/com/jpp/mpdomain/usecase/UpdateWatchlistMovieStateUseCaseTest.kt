@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
-class UpdateFavoriteMovieStateUseCaseTest {
+class UpdateWatchlistMovieStateUseCaseTest {
 
     @MockK
     private lateinit var movieStateRepository: MovieStateRepository
@@ -35,11 +35,11 @@ class UpdateFavoriteMovieStateUseCaseTest {
     @MockK
     private lateinit var connectivityRepository: ConnectivityRepository
 
-    private lateinit var subject: UpdateFavoriteMovieStateUseCase
+    private lateinit var subject: UpdateWatchlistMovieStateUseCase
 
     @BeforeEach
     fun setUp() {
-        subject = UpdateFavoriteMovieStateUseCase(
+        subject = UpdateWatchlistMovieStateUseCase(
             movieStateRepository,
             moviePageRepository,
             sessionRepository,
@@ -87,7 +87,7 @@ class UpdateFavoriteMovieStateUseCaseTest {
         every { sessionRepository.getCurrentSession() } returns mockk()
         every { accountRepository.getUserAccount(any()) } returns mockk()
         every {
-            movieStateRepository.updateFavoriteMovieState(
+            movieStateRepository.updateWatchlistMovieState(
                 any(),
                 any(),
                 any(),
@@ -102,9 +102,9 @@ class UpdateFavoriteMovieStateUseCaseTest {
     }
 
     @Test
-    fun `Should update favorite movie state and flush favorites from page`() = runBlocking {
+    fun `Should update watchlist movie state and flush watchlist from page`() = runBlocking {
         val movieId = 1.toDouble()
-        val asFavorite = true
+        val inWatchlist = true
         val session = mockk<Session>()
         val userAccount = mockk<UserAccount>()
 
@@ -113,9 +113,9 @@ class UpdateFavoriteMovieStateUseCaseTest {
         every { sessionRepository.getCurrentSession() } returns session
         every { accountRepository.getUserAccount(session) } returns userAccount
         every {
-            movieStateRepository.updateFavoriteMovieState(
+            movieStateRepository.updateWatchlistMovieState(
                 movieId,
-                asFavorite,
+                inWatchlist,
                 userAccount,
                 session
             )
@@ -126,6 +126,6 @@ class UpdateFavoriteMovieStateUseCaseTest {
         assertTrue(actual is Try.Success)
         assertEquals(true, actual.getOrNull())
 
-        verify { moviePageRepository.flushFavoriteMoviePages() }
+        verify { moviePageRepository.flushWatchlistMoviePages() }
     }
 }

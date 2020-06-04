@@ -1,0 +1,43 @@
+package com.jpp.mpdomain.usecase
+
+import com.jpp.mpdomain.Connectivity
+import com.jpp.mpdomain.repository.*
+
+/**
+ * Use case to update the watchlist state of a movie.
+ */
+class UpdateWatchlistMovieStateUseCase(
+    private val movieStateRepository: MovieStateRepository,
+    private val moviePageRepository: MoviePageRepository,
+    private val sessionRepository: SessionRepository,
+    private val accountRepository: AccountRepository,
+    private val connectivityRepository: ConnectivityRepository
+) {
+
+    suspend fun execute(movieId: Double, inWatchlist: Boolean): Try<Boolean> {
+        if (connectivityRepository.getCurrentConnectivity() is Connectivity.Disconnected) {
+            return Try.Failure(Try.FailureCause.NoConnectivity)
+        }
+
+        val currentSession = sessionRepository.getCurrentSession()
+            ?: return Try.Failure(Try.FailureCause.UserNotLogged)
+
+        val userAccount = accountRepository.getUserAccount(currentSession)
+            ?: return Try.Failure(Try.FailureCause.UserNotLogged)
+
+        val result = movieStateRepository.updateWatchlistMovieState(
+            movieId,
+            inWatchlist,
+            userAccount,
+            currentSession
+        ).also {
+            moviePageRepository.flushWatchlistMoviePages()
+        }
+
+        return if (result) {
+            Try.Success(result)
+        } else {
+            Try.Failure(Try.FailureCause.Unknown)
+        }
+    }
+}
