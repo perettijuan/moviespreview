@@ -1,59 +1,119 @@
 package com.jpp.mpmoviedetails
 
+import android.view.View
+
 /**
  * Represents the view state that the action item in the movie detail can assume.
  * [animate] indicates if the actions section should perform the animation.
  * [expanded] indicates if the actions section should be shown expanded or not.
  */
-internal sealed class MovieDetailActionViewState(val animate: Boolean, val expanded: Boolean) {
-    /*
-     * Shows the loading state in the actions section.
-     */
-    object ShowLoading : MovieDetailActionViewState(animate = false, expanded = false)
+internal data class MovieDetailActionViewState(
+    val loadingVisibility: Int = View.INVISIBLE,
+    val reloadButtonVisibility: Int = View.INVISIBLE,
+    val actionButtonVisibility: Int = View.INVISIBLE,
+    val rateButtonState: ActionButtonState = ActionButtonState(),
+    val watchListButtonState: ActionButtonState = ActionButtonState(),
+    val favoriteButtonState: ActionButtonState = ActionButtonState(),
+    val animate: Boolean = false,
+    val expanded: Boolean = false
+) {
 
-    /*
-     * Shows the view state when there's no movie state to render. i.e.: the user is
-     * not logged.
-     */
-    data class ShowNoMovieState(
-        val showActionsExpanded: Boolean,
-        val animateActionsExpanded: Boolean
-    ) :
-        MovieDetailActionViewState(animate = animateActionsExpanded, expanded = showActionsExpanded)
 
-    /*
-     * Shows the view state when there's an error and the user needs to reload the data.
-     */
-    data class ShowReloadState(val animateActionsExpanded: Boolean) :
-        MovieDetailActionViewState(animate = animateActionsExpanded, expanded = false)
+    fun showLoaded(
+        watchListButtonState: ActionButtonState,
+        favoriteButtonState: ActionButtonState
+    ): MovieDetailActionViewState {
+        return copy(
+            loadingVisibility = View.INVISIBLE,
+            reloadButtonVisibility = View.INVISIBLE,
+            actionButtonVisibility = View.VISIBLE,
+            rateButtonState = rateButtonState.asVisible(),
+            watchListButtonState = watchListButtonState,
+            favoriteButtonState = favoriteButtonState,
+            animate = false,
+            expanded = false
+        )
+    }
 
-    /*
-     * Shows the user not logged view state.
-     */
-    data class ShowUserNotLogged(
-        val showActionsExpanded: Boolean,
-        val animateActionsExpanded: Boolean
-    ) :
-        MovieDetailActionViewState(animate = animateActionsExpanded, expanded = showActionsExpanded)
+    fun showReload(): MovieDetailActionViewState {
+        return copy(
+            loadingVisibility = View.INVISIBLE,
+            reloadButtonVisibility = View.VISIBLE,
+            actionButtonVisibility = View.INVISIBLE,
+            rateButtonState = rateButtonState.asInVisible(),
+            watchListButtonState = watchListButtonState.asInVisible(),
+            favoriteButtonState = favoriteButtonState.asInVisible(),
+            animate = false,
+            expanded = false
+        )
+    }
 
-    /*
-     * Renders the movie state with the provided data.
-     */
-    data class ShowMovieState(
-        val showActionsExpanded: Boolean,
-        val animateActionsExpanded: Boolean,
-        val favorite: ActionButtonState,
-        val isRated: Boolean,
-        val isInWatchlist: ActionButtonState
-    ) :
-        MovieDetailActionViewState(animate = animateActionsExpanded, expanded = showActionsExpanded)
+    fun showLoadingFavorite(): MovieDetailActionViewState {
+        return copy(
+            favoriteButtonState = favoriteButtonState.asLoading()
+        )
+    }
+
+    fun showLoadingWatchlist(): MovieDetailActionViewState {
+        return copy(
+            watchListButtonState = watchListButtonState.asLoading()
+        )
+    }
+
+
+    companion object {
+        fun showLoading(): MovieDetailActionViewState =
+            MovieDetailActionViewState(loadingVisibility = View.VISIBLE)
+    }
 }
 
 /**
  * Represents the state of the action buttons show to the user.
  */
-internal sealed class ActionButtonState {
-    object ShowAsFilled : ActionButtonState()
-    object ShowAsEmpty : ActionButtonState()
-    object ShowAsLoading : ActionButtonState()
+internal data class ActionButtonState(
+    val visibility: Int = View.INVISIBLE,
+    val animateLoading: Boolean = false,
+    val asFilled: Boolean = false,
+    val asClickable: Boolean = false
+) {
+    fun asVisible(): ActionButtonState {
+        return copy(visibility = View.VISIBLE)
+    }
+
+    fun asInVisible(): ActionButtonState {
+        return copy(visibility = View.VISIBLE)
+    }
+
+    fun asFilled(): ActionButtonState {
+        return copy(
+            visibility= View.VISIBLE,
+            asFilled = true,
+            asClickable = true,
+            animateLoading = false
+        )
+    }
+
+    fun asEmpty(): ActionButtonState {
+        return copy(
+            visibility= View.VISIBLE,
+            asFilled = false,
+            asClickable = true,
+            animateLoading = false
+        )
+    }
+
+    fun asLoading(): ActionButtonState {
+        return copy(
+            animateLoading = true,
+            asClickable = false
+        )
+    }
+
+    fun flipState(): ActionButtonState {
+        return copy(
+            animateLoading = false,
+            asClickable = true,
+            asFilled = !this.asFilled
+        )
+    }
 }

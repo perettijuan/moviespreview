@@ -28,7 +28,11 @@ class MPFloatingActionButton : FloatingActionButton {
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         with(context.obtainStyledAttributes(attrs, R.styleable.MPFloatingActionButton)) {
             filledIcon = getDrawable(R.styleable.MPFloatingActionButton_fillIcon)
             emptyIcon = getDrawable(R.styleable.MPFloatingActionButton_emptyIcon)
@@ -38,25 +42,24 @@ class MPFloatingActionButton : FloatingActionButton {
         setImageDrawable(emptyIcon)
     }
 
-    fun asFilled() {
-        setImageDrawable(filledIcon)
+    fun setFilled(filled: Boolean) {
+        if (filled) {
+            setImageDrawable(filledIcon)
+        } else {
+            setImageDrawable(emptyIcon)
+        }
     }
 
-    fun asEmpty() {
-        setImageDrawable(emptyIcon)
-    }
-
-    fun asClickable() {
-        isAsClickable = true
+    fun setAsClickable(clickable: Boolean) {
+        isAsClickable = clickable
         syncClickableState()
     }
 
-    fun asNonClickable() {
-        isAsClickable = false
-        syncClickableState()
-    }
+    fun doAnimation(loading: Boolean) {
+        if (!loading) {
+            return
+        }
 
-    fun doAnimation() {
         val degrees = if (isRotated) {
             isRotated = false
             0F
@@ -66,19 +69,19 @@ class MPFloatingActionButton : FloatingActionButton {
         }
 
         animate()
-                .rotation(degrees)
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        isAnimating = false
-                        syncClickableState()
-                    }
+            .rotation(degrees)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    isAnimating = false
+                    syncClickableState()
+                }
 
-                    override fun onAnimationStart(animation: Animator?) {
-                        isAnimating = true
-                        syncClickableState()
-                    }
-                })
-                .start()
+                override fun onAnimationStart(animation: Animator?) {
+                    isAnimating = true
+                    syncClickableState()
+                }
+            })
+            .start()
     }
 
     private fun syncClickableState() {

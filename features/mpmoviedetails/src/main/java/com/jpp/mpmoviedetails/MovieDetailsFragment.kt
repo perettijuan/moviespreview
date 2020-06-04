@@ -16,10 +16,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
-import com.jpp.mpdesign.ext.setInvisible
-import com.jpp.mpdesign.ext.setVisible
-import com.jpp.mpdesign.ext.snackBar
-import com.jpp.mpdesign.ext.snackBarNoAction
 import com.jpp.mpdesign.views.MPFloatingActionButton
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieId
 import com.jpp.mpmoviedetails.NavigationMovieDetails.paramsFromBundle
@@ -151,39 +147,73 @@ class MovieDetailsFragment : Fragment() {
 
 
     private fun renderActionViewState(actionViewState: MovieDetailActionViewState) {
-        when (actionViewState) {
-            is MovieDetailActionViewState.ShowLoading -> renderLoadingActions()
-            is MovieDetailActionViewState.ShowReloadState -> {
-                disableActions()
-                movieDetailReloadActionFab?.setVisible()
-                movieDetailActionFab?.setInvisible()
-                view?.let { snackBarNoAction(it, R.string.unexpected_action_error) }
-            }
-            is MovieDetailActionViewState.ShowNoMovieState -> renderVisibleActions()
-            is MovieDetailActionViewState.ShowMovieState -> {
-                movieDetailReloadActionFab?.setInvisible()
-                movieDetailActionFab?.setVisible()
-                renderMovieState(actionViewState)
-            }
-            is MovieDetailActionViewState.ShowUserNotLogged -> {
-                detailsContent?.let {
-                    snackBar(
-                        it,
-                        R.string.account_need_to_login,
-                        R.string.login_generic
-                    ) {
-                        viewModel.onUserRequestedLogin()
-                    }
-                }
-            }
+        movieDetailActionFab?.visibility = actionViewState.actionButtonVisibility
+        movieDetailReloadActionFab?.visibility = actionViewState.reloadButtonVisibility
+        movieDetailActionsLoadingView?.visibility = actionViewState.loadingVisibility
+
+
+        movieDetailFavoritesFab?.apply {
+            visibility = actionViewState.favoriteButtonState.visibility
+            setAsClickable(actionViewState.favoriteButtonState.asClickable)
+            setFilled(actionViewState.favoriteButtonState.asFilled)
+            doAnimation(actionViewState.favoriteButtonState.animateLoading)
+        }
+
+        movieDetailWatchlistFab?.apply {
+            visibility = actionViewState.watchListButtonState.visibility
+            setAsClickable(actionViewState.watchListButtonState.asClickable)
+            setFilled(actionViewState.watchListButtonState.asFilled)
+            doAnimation(actionViewState.watchListButtonState.animateLoading)
+        }
+
+        movieDetailRateFab?.apply {
+            visibility = actionViewState.rateButtonState.visibility
+            setAsClickable(actionViewState.rateButtonState.asClickable)
+            setFilled(actionViewState.rateButtonState.asFilled)
+            doAnimation(actionViewState.rateButtonState.animateLoading)
         }
 
         if (actionViewState.animate) {
             when (actionViewState.expanded) {
                 true -> renderExpandedActions()
-                false -> renderClosedActions()
+                else -> renderClosedActions()
             }
         }
+
+
+//        when (actionViewState) {
+//            is MovieDetailActionViewState.ShowLoading -> renderLoadingActions()
+//            is MovieDetailActionViewState.ShowReloadState -> {
+//                disableActions()
+//                movieDetailReloadActionFab?.setVisible()
+//                movieDetailActionFab?.setInvisible()
+//                view?.let { snackBarNoAction(it, R.string.unexpected_action_error) }
+//            }
+//            is MovieDetailActionViewState.ShowNoMovieState -> renderVisibleActions()
+//            is MovieDetailActionViewState.ShowMovieState -> {
+//                movieDetailReloadActionFab?.setInvisible()
+//                movieDetailActionFab?.setVisible()
+//                renderMovieState(actionViewState)
+//            }
+//            is MovieDetailActionViewState.ShowUserNotLogged -> {
+//                detailsContent?.let {
+//                    snackBar(
+//                        it,
+//                        R.string.account_need_to_login,
+//                        R.string.login_generic
+//                    ) {
+//                        viewModel.onUserRequestedLogin()
+//                    }
+//                }
+//            }
+//        }
+//
+//        if (actionViewState.animate) {
+//            when (actionViewState.expanded) {
+//                true -> renderExpandedActions()
+//                false -> renderClosedActions()
+//            }
+//        }
     }
 
     private fun renderExpandedActions() {
@@ -206,75 +236,75 @@ class MovieDetailsFragment : Fragment() {
         movieDetailWatchlistFab?.animate()?.translationY(0F)?.alpha(0F)
         movieDetailRateFab?.animate()?.translationY(0F)?.alpha(0F)
     }
-
-    private fun renderVisibleActions() {
-        movieDetailActionsLoadingView?.setInvisible()
-
-        movieDetailFavoritesFab?.setVisible()
-        movieDetailWatchlistFab?.setVisible()
-        movieDetailRateFab?.setVisible()
-        movieDetailActionFab?.setVisible()
-    }
-
-    private fun renderLoadingActions() {
-        movieDetailActionFab?.setInvisible()
-        movieDetailFavoritesFab?.setInvisible()
-        movieDetailWatchlistFab?.setInvisible()
-        movieDetailRateFab?.setInvisible()
-        movieDetailReloadActionFab?.setInvisible()
-
-        movieDetailActionsLoadingView?.setVisible()
-    }
-
-    private fun disableActions() {
-        movieDetailFavoritesFab?.asNonClickable()
-        movieDetailWatchlistFab?.asNonClickable()
-        movieDetailRateFab?.asNonClickable()
-    }
-
-    private fun renderMovieState(movieState: MovieDetailActionViewState.ShowMovieState) {
-        when (movieState.favorite) {
-            is ActionButtonState.ShowAsEmpty -> {
-                movieDetailFavoritesFab?.asClickable()
-                movieDetailFavoritesFab?.asEmpty()
-            }
-            is ActionButtonState.ShowAsFilled -> {
-                movieDetailFavoritesFab?.asClickable()
-                movieDetailFavoritesFab?.asFilled()
-            }
-            is ActionButtonState.ShowAsLoading -> {
-                movieDetailFavoritesFab?.asNonClickable()
-                movieDetailFavoritesFab?.doAnimation()
-            }
-        }
-
-        when (movieState.isInWatchlist) {
-            is ActionButtonState.ShowAsEmpty -> {
-                movieDetailWatchlistFab?.asClickable()
-                movieDetailWatchlistFab?.asEmpty()
-            }
-            is ActionButtonState.ShowAsFilled -> {
-                movieDetailWatchlistFab?.asClickable()
-                movieDetailWatchlistFab?.asFilled()
-            }
-            is ActionButtonState.ShowAsLoading -> {
-                movieDetailWatchlistFab?.asNonClickable()
-                movieDetailWatchlistFab?.doAnimation()
-            }
-        }
-
-        when (movieState.isRated) {
-            true -> movieDetailRateFab?.asFilled()
-            false -> movieDetailRateFab?.asEmpty()
-        }.also {
-            movieDetailRateFab?.asClickable()
-        }
-
-        movieDetailActionsLoadingView?.setInvisible()
-
-        movieDetailActionFab?.setVisible()
-        movieDetailFavoritesFab?.setVisible()
-        movieDetailWatchlistFab?.setVisible()
-        movieDetailRateFab?.setVisible()
-    }
+//
+//    private fun renderVisibleActions() {
+//        movieDetailActionsLoadingView?.setInvisible()
+//
+//        movieDetailFavoritesFab?.setVisible()
+//        movieDetailWatchlistFab?.setVisible()
+//        movieDetailRateFab?.setVisible()
+//        movieDetailActionFab?.setVisible()
+//    }
+//
+//    private fun renderLoadingActions() {
+//        movieDetailActionFab?.setInvisible()
+//        movieDetailFavoritesFab?.setInvisible()
+//        movieDetailWatchlistFab?.setInvisible()
+//        movieDetailRateFab?.setInvisible()
+//        movieDetailReloadActionFab?.setInvisible()
+//
+//        movieDetailActionsLoadingView?.setVisible()
+//    }
+//
+//    private fun disableActions() {
+//        movieDetailFavoritesFab?.asNonClickable()
+//        movieDetailWatchlistFab?.asNonClickable()
+//        movieDetailRateFab?.asNonClickable()
+//    }
+//
+//    private fun renderMovieState(movieState: MovieDetailActionViewState.ShowMovieState) {
+//        when (movieState.favorite) {
+//            is ActionButtonState.ShowAsEmpty -> {
+//                movieDetailFavoritesFab?.asClickable()
+//                movieDetailFavoritesFab?.asEmpty()
+//            }
+//            is ActionButtonState.ShowAsFilled -> {
+//                movieDetailFavoritesFab?.asClickable()
+//                movieDetailFavoritesFab?.asFilled()
+//            }
+//            is ActionButtonState.ShowAsLoading -> {
+//                movieDetailFavoritesFab?.asNonClickable()
+//                movieDetailFavoritesFab?.doAnimation()
+//            }
+//        }
+//
+//        when (movieState.isInWatchlist) {
+//            is ActionButtonState.ShowAsEmpty -> {
+//                movieDetailWatchlistFab?.asClickable()
+//                movieDetailWatchlistFab?.asEmpty()
+//            }
+//            is ActionButtonState.ShowAsFilled -> {
+//                movieDetailWatchlistFab?.asClickable()
+//                movieDetailWatchlistFab?.asFilled()
+//            }
+//            is ActionButtonState.ShowAsLoading -> {
+//                movieDetailWatchlistFab?.asNonClickable()
+//                movieDetailWatchlistFab?.doAnimation()
+//            }
+//        }
+//
+//        when (movieState.isRated) {
+//            true -> movieDetailRateFab?.asFilled()
+//            false -> movieDetailRateFab?.asEmpty()
+//        }.also {
+//            movieDetailRateFab?.asClickable()
+//        }
+//
+//        movieDetailActionsLoadingView?.setInvisible()
+//
+//        movieDetailActionFab?.setVisible()
+//        movieDetailFavoritesFab?.setVisible()
+//        movieDetailWatchlistFab?.setVisible()
+//        movieDetailRateFab?.setVisible()
+//    }
 }

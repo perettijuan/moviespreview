@@ -9,7 +9,6 @@ import com.jpp.mpdomain.usecase.GetMovieStateUseCase
 import com.jpp.mpdomain.usecase.Try
 import com.jpp.mpdomain.usecase.UpdateFavoriteMovieStateUseCase
 import com.jpp.mpdomain.usecase.UpdateWatchlistMovieStateUseCase
-import com.jpp.mpmoviedetails.MovieDetailActionViewState.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -36,8 +35,6 @@ class MovieDetailsActionViewModel(
     internal val viewState: LiveData<MovieDetailActionViewState> = _viewState
 
     private var currentMovieId: Double = 0.0
-    private lateinit var currentMovieState: MovieState
-
 
     /**
      * Called when the view is initialized.
@@ -58,22 +55,10 @@ class MovieDetailsActionViewModel(
      */
     fun onMainActionSelected() {
         viewState.value?.let { currentViewState ->
-            _viewState.value = when (currentViewState) {
-                is ShowReloadState -> ShowReloadState(currentViewState.expanded)
-                is ShowLoading -> ShowLoading
-                is ShowUserNotLogged -> currentViewState.copy(
-                    animateActionsExpanded = true,
-                    showActionsExpanded = !currentViewState.showActionsExpanded
-                )
-                is ShowNoMovieState -> currentViewState.copy(
-                    animateActionsExpanded = true,
-                    showActionsExpanded = !currentViewState.showActionsExpanded
-                )
-                is ShowMovieState -> currentViewState.copy(
-                    animateActionsExpanded = true,
-                    showActionsExpanded = !currentViewState.showActionsExpanded
-                )
-            }
+            _viewState.value = currentViewState.copy(
+                animate = true,
+                expanded = !currentViewState.expanded
+            )
         }
     }
 
@@ -82,22 +67,20 @@ class MovieDetailsActionViewModel(
      * the movie being handled.
      */
     fun onFavoriteStateChanged() {
-        val copyLoadingStateFunction: (ShowMovieState) -> ShowMovieState = { currentShowingState ->
-            currentShowingState.copy(favorite = ActionButtonState.ShowAsLoading)
-        }
-        val stateUpdateFunction: () -> Unit = {
-            viewModelScope.launch {
-                val result = withContext(ioDispatcher) {
-                    updateFavoriteUseCase.execute(currentMovieState.id, !currentMovieState.favorite)
-                }
+        val currentFavorite = _viewState.value?.favoriteButtonState?.asFilled ?: return
 
-                _viewState.value = when (result) {
-                    is Try.Failure -> processStateChangedError(result.cause)
-                    is Try.Success -> processUpdateFavorite(result.value)
-                }
+        _viewState.value = _viewState.value?.showLoadingFavorite()
+
+        viewModelScope.launch {
+            val result = withContext(ioDispatcher) {
+                updateFavoriteUseCase.execute(currentMovieId, !currentFavorite)
+            }
+
+            when (result) {
+                is Try.Failure -> processStateChangedError(result.cause)
+                is Try.Success -> processUpdateFavorite(result.value)
             }
         }
-        executeMovieStateUpdate(stateUpdateFunction, copyLoadingStateFunction)
     }
 
     /**
@@ -105,37 +88,32 @@ class MovieDetailsActionViewModel(
      * movie being handled.
      */
     fun onWatchlistStateChanged() {
-        val copyLoadingStateFunction: (ShowMovieState) -> ShowMovieState = { currentShowingState ->
-            currentShowingState.copy(isInWatchlist = ActionButtonState.ShowAsLoading)
-        }
-        val stateUpdateFunction: () -> Unit = {
-            viewModelScope.launch {
-                val result = withContext(ioDispatcher) {
-                    updateWatchListUseCase.execute(
-                        currentMovieState.id,
-                        !currentMovieState.watchlist
-                    )
-                }
+        val currentWatchlist = _viewState.value?.watchListButtonState?.asFilled ?: return
 
-                _viewState.value = when (result) {
-                    is Try.Failure -> processStateChangedError(result.cause)
-                    is Try.Success -> processUpdateWatchlist(result.value)
-                }
+        _viewState.value = _viewState.value?.showLoadingWatchlist()
+
+        viewModelScope.launch {
+            val result = withContext(ioDispatcher) {
+                updateWatchListUseCase.execute(currentMovieId, !currentWatchlist)
+            }
+
+            when (result) {
+                is Try.Failure -> processStateChangedError(result.cause)
+                is Try.Success -> processUpdateWatchlist(result.value)
             }
         }
-        executeMovieStateUpdate(stateUpdateFunction, copyLoadingStateFunction)
     }
 
 
     private fun fetchMovieState(movieId: Double) {
-        _viewState.value = ShowLoading
+        _viewState.value = MovieDetailActionViewState.showLoading()
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {
                 getMovieStateUseCase.execute(movieId)
             }
 
             _viewState.value = when (result) {
-                is Try.Failure -> processErrorState()
+                is Try.Failure -> _viewState.value?.showReload()
                 is Try.Success -> processMovieStateUpdate(result.value)
             }
         }
@@ -146,93 +124,59 @@ class MovieDetailsActionViewModel(
      * Syncs the [currentMovieState] with [movieState] and produces a new
      * view state to be rendered.
      */
-    private fun processMovieStateUpdate(movieState: MovieState): MovieDetailActionViewState {
-        currentMovieState = movieState
-
-        val favState = when (movieState.favorite) {
-            true -> ActionButtonState.ShowAsFilled
-            false -> ActionButtonState.ShowAsEmpty
-        }
-
-        val watchlistState = when (movieState.watchlist) {
-            true -> ActionButtonState.ShowAsFilled
-            false -> ActionButtonState.ShowAsEmpty
-        }
-
-        return ShowMovieState(
-            showActionsExpanded = false,
-            animateActionsExpanded = false,
-            favorite = favState,
-            isInWatchlist = watchlistState,
-            isRated = movieState.rated.isRated
-        )
-    }
-
-    private fun processUpdateFavorite(success: Boolean): MovieDetailActionViewState {
-        return when (success) {
-            true -> processMovieStateUpdate(currentMovieState.copy(favorite = !currentMovieState.favorite))
-            false -> processMovieStateUpdate(currentMovieState)
-        }
-    }
-
-    private fun processUpdateWatchlist(success: Boolean): MovieDetailActionViewState {
-        return when (success) {
-            true -> processMovieStateUpdate(currentMovieState.copy(watchlist = !currentMovieState.watchlist))
-            false -> processMovieStateUpdate(currentMovieState)
-        }
-    }
-
-    private fun processUserNotLogged(): MovieDetailActionViewState {
-        return viewState.value?.let {
-            ShowUserNotLogged(
-                showActionsExpanded = it.expanded,
-                animateActionsExpanded = it.animate
-            )
-        } ?: ShowUserNotLogged(false, false)
-    }
-
-
-    private fun processErrorState(): MovieDetailActionViewState {
+    private fun processMovieStateUpdate(movieState: MovieState): MovieDetailActionViewState? {
         return viewState.value?.let { currentViewState ->
-            ShowReloadState(currentViewState.expanded)
-        } ?: ShowReloadState(false)
+            val watchListButtonState = if (movieState.watchlist) {
+                currentViewState.watchListButtonState.asFilled()
+            } else {
+                currentViewState.watchListButtonState.asEmpty()
+            }
+
+            val favoriteButtonState = if (movieState.favorite) {
+                currentViewState.favoriteButtonState.asFilled()
+            } else {
+                currentViewState.favoriteButtonState.asEmpty()
+            }
+
+            currentViewState.showLoaded(
+                watchListButtonState,
+                favoriteButtonState
+            )
+        }
     }
 
-    private fun processStateChangedError(errorCause: Try.FailureCause): MovieDetailActionViewState {
+    private fun processUpdateFavorite(success: Boolean) {
+        viewState.value?.let { currentViewState ->
+            _viewState.value = if (success) {
+                currentViewState.copy(favoriteButtonState = currentViewState.favoriteButtonState.flipState())
+            } else {
+                currentViewState.copy()
+            }
+        }
+    }
+
+    private fun processUpdateWatchlist(success: Boolean) {
+        viewState.value?.let { currentViewState ->
+            _viewState.value = if (success) {
+                currentViewState.copy(watchListButtonState = currentViewState.watchListButtonState.flipState())
+            } else {
+                currentViewState.copy()
+            }
+        }
+    }
+
+    private fun processUserNotLogged() {
+        //TODO here we should send a single event to show the toast
+    }
+
+    private fun processErrorState() {
+        //TODO here we should send a single event to show the toast
+    }
+
+    private fun processStateChangedError(errorCause: Try.FailureCause) {
         return when (errorCause) {
             is Try.FailureCause.UserNotLogged -> processUserNotLogged()
             else -> processErrorState()
-        }
-    }
-
-    /**
-     * Inner helper function that triggers an update on the movie state being shown, based
-     * on the current UI state.
-     * It receives two arguments:
-     *  - [stateUpdateFunction] is the function that will be executed on the [MovieDetailsInteractor]
-     *    instance to trigger the state update.
-     *  - [copyLoadingStateFunction] a copy function that will provide a next UI state [ShowMovieState]
-     *    based on the current one.
-     *
-     * Based on the current state being shown to the user, this function will allow
-     * to update the state of the movie (via interactor) and update the UI state.
-     */
-    private fun executeMovieStateUpdate(
-        stateUpdateFunction: () -> Unit,
-        copyLoadingStateFunction: (ShowMovieState) -> ShowMovieState
-    ) {
-        when (val currentState = viewState.value) {
-            is ShowMovieState -> {
-                _viewState.value = copyLoadingStateFunction(currentState)
-                stateUpdateFunction()
-            }
-            is ShowNoMovieState -> {
-                _viewState.value = ShowUserNotLogged(
-                    showActionsExpanded = currentState.expanded,
-                    animateActionsExpanded = false
-                )
-            }
-            is ShowUserNotLogged -> _viewState.value = currentState
         }
     }
 }
