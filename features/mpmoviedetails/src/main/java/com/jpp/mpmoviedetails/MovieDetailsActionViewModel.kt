@@ -13,7 +13,6 @@ import com.jpp.mpmoviedetails.MovieDetailActionViewState.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [ViewModel] that supports the movie details actions (the data shown by the UI that is not
@@ -26,7 +25,7 @@ import javax.inject.Inject
  * of the movie internally and in the server side and updates the view layer according to the new
  * state of the business layer.
  */
-class MovieDetailsActionViewModel @Inject constructor(
+class MovieDetailsActionViewModel(
     private val getMovieStateUseCase: GetMovieStateUseCase,
     private val updateFavoriteUseCase: UpdateFavoriteMovieStateUseCase,
     private val updateWatchListUseCase: UpdateWatchlistMovieStateUseCase,
