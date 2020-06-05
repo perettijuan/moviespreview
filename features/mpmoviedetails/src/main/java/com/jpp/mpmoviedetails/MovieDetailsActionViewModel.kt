@@ -80,8 +80,8 @@ class MovieDetailsActionViewModel(
             }
 
             when (result) {
-                is Try.Failure -> processStateChangedError(result.cause)
                 is Try.Success -> processUpdateFavorite(result.value)
+                is Try.Failure -> processStateChangedError(result.cause)
             }
         }
     }

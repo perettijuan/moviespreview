@@ -6,7 +6,7 @@ import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpdomain.MovieStateRate
 import com.jpp.mpmoviedetails.MovieDetailsInteractor
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.MovieStateEvent
+
 import com.jpp.mptestutils.CoroutineTestExtension
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
@@ -35,14 +35,14 @@ internal class RateMovieViewModelTest {
     @RelaxedMockK
     private lateinit var movieDetailsInteractor: MovieDetailsInteractor
 
-    private val lvInteractorEvents = MutableLiveData<MovieStateEvent>()
+
     private val lvRateMovieEvents = MutableLiveData<MovieDetailsInteractor.RateMovieEvent>()
 
     private lateinit var subject: RateMovieViewModel
 
     @BeforeEach
     fun setUp() {
-        every { movieDetailsInteractor.movieStateEvents } returns lvInteractorEvents
+
         every { movieDetailsInteractor.rateMovieEvents } returns lvRateMovieEvents
 
         subject = RateMovieViewModel(movieDetailsInteractor)
@@ -210,7 +210,6 @@ internal class RateMovieViewModelTest {
                 movieImageUrl = "aUrl"
         ))
 
-        lvInteractorEvents.postValue(MovieStateEvent.FetchSuccess(movieState))
 
         subject.onRateMovie(5.5F)
 

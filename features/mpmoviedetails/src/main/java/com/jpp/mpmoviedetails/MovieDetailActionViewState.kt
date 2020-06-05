@@ -93,16 +93,19 @@ internal data class ActionButtonState(
     val asClickable: Boolean = false
 ) {
     fun asVisible(): ActionButtonState {
-        return copy(visibility = View.VISIBLE)
+        return copy(
+            visibility = View.VISIBLE,
+            asClickable = true
+        )
     }
 
     fun asInVisible(): ActionButtonState {
-        return copy(visibility = View.VISIBLE)
+        return copy(visibility = View.INVISIBLE)
     }
 
     fun asFilled(): ActionButtonState {
         return copy(
-            visibility= View.VISIBLE,
+            visibility = View.VISIBLE,
             asFilled = true,
             asClickable = true,
             animateLoading = false
@@ -111,7 +114,7 @@ internal data class ActionButtonState(
 
     fun asEmpty(): ActionButtonState {
         return copy(
-            visibility= View.VISIBLE,
+            visibility = View.VISIBLE,
             asFilled = false,
             asClickable = true,
             animateLoading = false
@@ -139,6 +142,6 @@ internal data class ActionButtonState(
  */
 internal sealed class ErrorState {
     object None : ErrorState()
-    object UserNotLogged: ErrorState()
+    object UserNotLogged : ErrorState()
     object UnknownError : ErrorState()
 }
