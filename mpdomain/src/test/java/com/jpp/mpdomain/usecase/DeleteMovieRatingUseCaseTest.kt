@@ -11,6 +11,7 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -18,7 +19,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
-class RateMovieUseCaseTest {
+class DeleteMovieRatingUseCaseTest {
 
     @MockK
     private lateinit var movieStateRepository: MovieStateRepository
@@ -30,20 +31,16 @@ class RateMovieUseCaseTest {
     private lateinit var sessionRepository: SessionRepository
 
     @MockK
-    private lateinit var accountRepository: AccountRepository
-
-    @MockK
     private lateinit var connectivityRepository: ConnectivityRepository
 
-    private lateinit var subject: RateMovieUseCase
+    private lateinit var subject: DeleteMovieRatingUseCase
 
     @BeforeEach
     fun setUp() {
-        subject = RateMovieUseCase(
+        subject = DeleteMovieRatingUseCase(
             sessionRepository,
             moviePageRepository,
             movieStateRepository,
-            accountRepository,
             connectivityRepository
         )
     }
@@ -52,7 +49,7 @@ class RateMovieUseCaseTest {
     fun `Should fail with no connectivity message`() = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
-        val actual = subject.execute(1.0, 5F)
+        val actual = subject.execute(1.0)
 
         assertTrue(actual is Try.Failure)
         assertEquals(Try.FailureCause.NoConnectivity, (actual as Try.Failure).cause)
@@ -63,19 +60,7 @@ class RateMovieUseCaseTest {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getCurrentSession() } returns null
 
-        val actual = subject.execute(1.0, 5F)
-
-        assertTrue(actual is Try.Failure)
-        assertEquals(Try.FailureCause.UserNotLogged, (actual as Try.Failure).cause)
-    }
-
-    @Test
-    fun `Should fail with user not logged when no account available`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getCurrentSession() } returns mockk()
-        every { accountRepository.getUserAccount(any()) } returns null
-
-        val actual = subject.execute(1.0, 5F)
+        val actual = subject.execute(1.0)
 
         assertTrue(actual is Try.Failure)
         assertEquals(Try.FailureCause.UserNotLogged, (actual as Try.Failure).cause)
@@ -85,43 +70,34 @@ class RateMovieUseCaseTest {
     fun `Should fail with unknown reason`() = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getCurrentSession() } returns mockk()
-        every { accountRepository.getUserAccount(any()) } returns mockk()
         every {
-            movieStateRepository.rateMovie(
-                any(),
-                any(),
+            movieStateRepository.deleteMovieRate(
                 any(),
                 any()
             )
         } returns false
 
-        val actual = subject.execute(1.0, 5f)
+        val actual = subject.execute(1.0)
 
         assertTrue(actual is Try.Failure)
         assertEquals(Try.FailureCause.Unknown, (actual as Try.Failure).cause)
     }
 
     @Test
-    fun `Should update movie rating and flush favorites from page`() = runBlocking {
+    fun `Should delete movie rating and flush favorites from page`() = runBlocking {
         val movieId = 1.toDouble()
-        val newRating = 5F
         val session = mockk<Session>()
-        val userAccount = mockk<UserAccount>()
-
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getCurrentSession() } returns session
-        every { accountRepository.getUserAccount(session) } returns userAccount
         every {
-            movieStateRepository.rateMovie(
+            movieStateRepository.deleteMovieRate(
                 movieId,
-                newRating,
-                userAccount,
                 session
             )
         } returns true
 
-        val actual = subject.execute(movieId, newRating)
+        val actual = subject.execute(movieId)
 
         assertTrue(actual is Try.Success)
 
