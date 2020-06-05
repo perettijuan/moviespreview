@@ -14,6 +14,7 @@ internal data class MovieDetailActionViewState(
     val rateButtonState: ActionButtonState = ActionButtonState(),
     val watchListButtonState: ActionButtonState = ActionButtonState(),
     val favoriteButtonState: ActionButtonState = ActionButtonState(),
+    val errorState: ErrorState = ErrorState.None,
     val animate: Boolean = false,
     val expanded: Boolean = false
 ) {
@@ -30,6 +31,7 @@ internal data class MovieDetailActionViewState(
             rateButtonState = rateButtonState.asVisible(),
             watchListButtonState = watchListButtonState,
             favoriteButtonState = favoriteButtonState,
+            errorState = ErrorState.None,
             animate = false,
             expanded = false
         )
@@ -43,6 +45,7 @@ internal data class MovieDetailActionViewState(
             rateButtonState = rateButtonState.asInVisible(),
             watchListButtonState = watchListButtonState.asInVisible(),
             favoriteButtonState = favoriteButtonState.asInVisible(),
+            errorState = ErrorState.UnknownError,
             animate = false,
             expanded = false
         )
@@ -60,6 +63,19 @@ internal data class MovieDetailActionViewState(
         )
     }
 
+    fun showUserNotLogged(): MovieDetailActionViewState {
+        return copy(
+            loadingVisibility = View.INVISIBLE,
+            reloadButtonVisibility = View.INVISIBLE,
+            actionButtonVisibility = View.INVISIBLE,
+            rateButtonState = rateButtonState.asInVisible(),
+            watchListButtonState = watchListButtonState.asInVisible(),
+            favoriteButtonState = favoriteButtonState.asInVisible(),
+            errorState = ErrorState.UserNotLogged,
+            animate = true,
+            expanded = false
+        )
+    }
 
     companion object {
         fun showLoading(): MovieDetailActionViewState =
@@ -116,4 +132,13 @@ internal data class ActionButtonState(
             asFilled = !this.asFilled
         )
     }
+}
+
+/**
+ * Represents the error states that the actions section can assume.
+ */
+internal sealed class ErrorState {
+    object None : ErrorState()
+    object UserNotLogged: ErrorState()
+    object UnknownError : ErrorState()
 }

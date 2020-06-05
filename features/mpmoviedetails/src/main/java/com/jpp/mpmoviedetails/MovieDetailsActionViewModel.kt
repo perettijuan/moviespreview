@@ -68,9 +68,7 @@ class MovieDetailsActionViewModel(
      */
     fun onFavoriteStateChanged() {
         val currentFavorite = _viewState.value?.favoriteButtonState?.asFilled ?: return
-
         _viewState.value = _viewState.value?.showLoadingFavorite()
-
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {
                 updateFavoriteUseCase.execute(currentMovieId, !currentFavorite)
@@ -89,9 +87,7 @@ class MovieDetailsActionViewModel(
      */
     fun onWatchlistStateChanged() {
         val currentWatchlist = _viewState.value?.watchListButtonState?.asFilled ?: return
-
         _viewState.value = _viewState.value?.showLoadingWatchlist()
-
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {
                 updateWatchListUseCase.execute(currentMovieId, !currentWatchlist)
@@ -112,27 +108,24 @@ class MovieDetailsActionViewModel(
                 getMovieStateUseCase.execute(movieId)
             }
 
-            _viewState.value = when (result) {
-                is Try.Failure -> _viewState.value?.showReload()
-                is Try.Success -> processMovieStateUpdate(result.value)
-            }
+            _viewState.value = processMovieStateUpdate(result.getOrNull())
         }
     }
 
     /**
      * Internally called when a new [MovieState] is ready to be processed.
-     * Syncs the [currentMovieState] with [movieState] and produces a new
+     * Syncs the current view state with [movieState] and produces a new
      * view state to be rendered.
      */
-    private fun processMovieStateUpdate(movieState: MovieState): MovieDetailActionViewState? {
+    private fun processMovieStateUpdate(movieState: MovieState?): MovieDetailActionViewState? {
         return viewState.value?.let { currentViewState ->
-            val watchListButtonState = if (movieState.watchlist) {
+            val watchListButtonState = if (movieState != null && movieState.watchlist) {
                 currentViewState.watchListButtonState.asFilled()
             } else {
                 currentViewState.watchListButtonState.asEmpty()
             }
 
-            val favoriteButtonState = if (movieState.favorite) {
+            val favoriteButtonState = if (movieState != null && movieState.favorite) {
                 currentViewState.favoriteButtonState.asFilled()
             } else {
                 currentViewState.favoriteButtonState.asEmpty()
@@ -165,18 +158,10 @@ class MovieDetailsActionViewModel(
         }
     }
 
-    private fun processUserNotLogged() {
-        //TODO here we should send a single event to show the toast
-    }
-
-    private fun processErrorState() {
-        //TODO here we should send a single event to show the toast
-    }
-
     private fun processStateChangedError(errorCause: Try.FailureCause) {
-        return when (errorCause) {
-            is Try.FailureCause.UserNotLogged -> processUserNotLogged()
-            else -> processErrorState()
+        _viewState.value = when (errorCause) {
+            is Try.FailureCause.UserNotLogged -> _viewState.value?.showUserNotLogged()
+            else -> _viewState.value?.showReload()
         }
     }
 }
