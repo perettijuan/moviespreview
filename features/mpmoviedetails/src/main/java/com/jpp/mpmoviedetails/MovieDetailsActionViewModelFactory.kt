@@ -24,7 +24,8 @@ class MovieDetailsActionViewModelFactory @Inject constructor(
             getMovieStateUseCase,
             updateFavoriteUseCase,
             updateWatchListUseCase,
-            ioDispatcher
+            ioDispatcher,
+            handle
         )
     }
 }

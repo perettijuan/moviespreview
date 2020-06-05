@@ -1,9 +1,6 @@
 package com.jpp.mpmoviedetails
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpdomain.usecase.GetMovieStateUseCase
 import com.jpp.mpdomain.usecase.Try
@@ -28,24 +25,32 @@ class MovieDetailsActionViewModel(
     private val getMovieStateUseCase: GetMovieStateUseCase,
     private val updateFavoriteUseCase: UpdateFavoriteMovieStateUseCase,
     private val updateWatchListUseCase: UpdateWatchlistMovieStateUseCase,
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _viewState = MutableLiveData<MovieDetailActionViewState>()
     internal val viewState: LiveData<MovieDetailActionViewState> = _viewState
 
-    private var currentMovieId: Double = 0.0
+    private var movieId: Double
+        set(value) {
+            savedStateHandle.set(MOVIE_ID_KEY, value)
+        }
+        get() {
+            return savedStateHandle.get(MOVIE_ID_KEY)
+                ?: throw IllegalStateException("Trying to access MOVIE_ID_KEY when it is not yet set")
+        }
 
     /**
      * Called when the view is initialized.
      */
     fun onInit(movieId: Double) {
-        currentMovieId = movieId
+        this.movieId = movieId
         fetchMovieState(movieId)
     }
 
     fun onRetry() {
-        fetchMovieState(currentMovieId)
+        fetchMovieState(movieId)
     }
 
     /**
@@ -71,7 +76,7 @@ class MovieDetailsActionViewModel(
         _viewState.value = _viewState.value?.showLoadingFavorite()
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {
-                updateFavoriteUseCase.execute(currentMovieId, !currentFavorite)
+                updateFavoriteUseCase.execute(movieId, !currentFavorite)
             }
 
             when (result) {
@@ -90,7 +95,7 @@ class MovieDetailsActionViewModel(
         _viewState.value = _viewState.value?.showLoadingWatchlist()
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {
-                updateWatchListUseCase.execute(currentMovieId, !currentWatchlist)
+                updateWatchListUseCase.execute(movieId, !currentWatchlist)
             }
 
             when (result) {
@@ -163,5 +168,9 @@ class MovieDetailsActionViewModel(
             is Try.FailureCause.UserNotLogged -> _viewState.value?.showUserNotLogged()
             else -> _viewState.value?.showReload()
         }
+    }
+
+    private companion object {
+        const val MOVIE_ID_KEY = "MOVIE_ID_KEY"
     }
 }
