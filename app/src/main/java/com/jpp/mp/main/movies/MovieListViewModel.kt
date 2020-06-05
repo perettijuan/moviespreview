@@ -121,7 +121,7 @@ class MovieListViewModel(
     private fun processFailure(failure: Try.FailureCause) {
         _viewState.value = when (failure) {
             is Try.FailureCause.NoConnectivity -> _viewState.value?.showNoConnectivityError { onNextMoviePage() }
-            is Try.FailureCause.Unknown -> _viewState.value?.showUnknownError { onNextMoviePage() }
+            else -> _viewState.value?.showUnknownError { onNextMoviePage() }
         }
     }
 

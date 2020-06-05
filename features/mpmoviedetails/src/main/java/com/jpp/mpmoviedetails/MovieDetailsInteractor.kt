@@ -27,19 +27,7 @@ class MovieDetailsInteractor @Inject constructor(
     private val movieStateRepository: MovieStateRepository,
     private val moviePageRepository: MoviePageRepository
 ) {
-    /**
-     * Represents the events related to movie states that this interactor
-     * can route to the upper layers.
-     */
-    sealed class MovieStateEvent {
-        object NoStateFound : MovieStateEvent()
-        object NotConnectedToNetwork : MovieStateEvent()
-        object UnknownError : MovieStateEvent()
-        object UserNotLogged : MovieStateEvent()
-        data class UpdateFavorite(val success: Boolean) : MovieStateEvent()
-        data class UpdateWatchlist(val success: Boolean) : MovieStateEvent()
-        data class FetchSuccess(val data: MovieState) : MovieStateEvent()
-    }
+
 
     /**
      * Represents the events related to movie ratings that this interactor
@@ -54,56 +42,9 @@ class MovieDetailsInteractor @Inject constructor(
         data class RatingDeleted(val success: Boolean) : RateMovieEvent()
     }
 
-    private val _movieStateEvents = MutableLiveData<MovieStateEvent>()
-    val movieStateEvents: LiveData<MovieStateEvent> get() = _movieStateEvents
-
     private val _rateMovieEvents = MutableLiveData<RateMovieEvent>()
     val rateMovieEvents: LiveData<RateMovieEvent> get() = _rateMovieEvents
 
-
-    /**
-     * Fetches the [MovieState] that corresponds to the movie identified by [movieId].
-     * It will post a new event to [movieStateEvents] indicating the result of the action.
-     */
-    fun fetchMovieState(movieId: Double) {
-        whenConnected {
-            sessionRepository.getCurrentSession()?.let { session ->
-                movieStateRepository.getStateForMovie(movieId, session)?.let { movieState ->
-                    _movieStateEvents.postValue(MovieStateEvent.FetchSuccess(movieState))
-                } ?: _movieStateEvents.postValue(MovieStateEvent.UnknownError)
-            } ?: _movieStateEvents.postValue(MovieStateEvent.NoStateFound)
-        }
-    }
-
-    /**
-     * Updates the favorite state of the movie identified with [movieId] to [asFavorite].
-     */
-    fun updateFavoriteMovieState(movieId: Double, asFavorite: Boolean) {
-        whenConnected {
-            withAccountData { session, userAccount ->
-                movieStateRepository
-                        .updateFavoriteMovieState(movieId, asFavorite, userAccount, session)
-                        .let { MovieStateEvent.UpdateFavorite(it) }
-                        .also { moviePageRepository.flushFavoriteMoviePages() }
-                        .let { _movieStateEvents.postValue(it) }
-            }
-        }
-    }
-
-    /**
-     * Updates the watchlist state of the movie identified with [movieId] to [inWatchlist].
-     */
-    fun updateWatchlistMovieState(movieId: Double, inWatchlist: Boolean) {
-        whenConnected {
-            withAccountData { session, userAccount ->
-                movieStateRepository
-                        .updateWatchlistMovieState(movieId, inWatchlist, userAccount, session)
-                        .let { MovieStateEvent.UpdateWatchlist(it) }
-                        .also { moviePageRepository.flushWatchlistMoviePages() }
-                        .let { _movieStateEvents.postValue(it) }
-            }
-        }
-    }
 
     /**
      * Fetches the [MovieState] that corresponds to the movie identified by [movieId].
@@ -128,10 +69,10 @@ class MovieDetailsInteractor @Inject constructor(
             is Disconnected -> _rateMovieEvents.postValue(RateMovieEvent.NotConnectedToNetwork)
             is Connected -> withAccountData { session, userAccount ->
                 movieStateRepository
-                        .rateMovie(movieId, rating, userAccount, session)
-                        .let { RateMovieEvent.RateMovie(it) }
-                        .also { moviePageRepository.flushRatedMoviePages() }
-                        .let { _rateMovieEvents.postValue(it) }
+                    .rateMovie(movieId, rating, userAccount, session)
+                    .let { RateMovieEvent.RateMovie(it) }
+                    .also { moviePageRepository.flushRatedMoviePages() }
+                    .let { _rateMovieEvents.postValue(it) }
             }
         }
     }
@@ -145,10 +86,10 @@ class MovieDetailsInteractor @Inject constructor(
             is Disconnected -> _rateMovieEvents.postValue(RateMovieEvent.NotConnectedToNetwork)
             is Connected -> withAccountData { session, _ ->
                 movieStateRepository
-                        .deleteMovieRate(movieId, session)
-                        .let { RateMovieEvent.RatingDeleted(it) }
-                        .also { moviePageRepository.flushRatedMoviePages() }
-                        .let { _rateMovieEvents.postValue(it) }
+                    .deleteMovieRate(movieId, session)
+                    .let { RateMovieEvent.RatingDeleted(it) }
+                    .also { moviePageRepository.flushRatedMoviePages() }
+                    .let { _rateMovieEvents.postValue(it) }
             }
         }
     }
@@ -160,20 +101,8 @@ class MovieDetailsInteractor @Inject constructor(
         movieDetailRepository.flushMovieDetailsData()
     }
 
-    private fun whenConnected(action: () -> Unit) {
-        when (connectivityRepository.getCurrentConnectivity()) {
-            is Disconnected -> _movieStateEvents.postValue(MovieStateEvent.NotConnectedToNetwork)
-            is Connected -> action()
-        }
-    }
 
     private fun withAccountData(callback: (Session, UserAccount) -> Unit) {
-        when (val session = sessionRepository.getCurrentSession()) {
-            null -> _movieStateEvents.postValue(MovieStateEvent.UserNotLogged)
-            else -> when (val account = accountRepository.getUserAccount(session)) {
-                null -> _movieStateEvents.postValue(MovieStateEvent.UserNotLogged)
-                else -> callback(session, account)
-            }
-        }
+
     }
 }

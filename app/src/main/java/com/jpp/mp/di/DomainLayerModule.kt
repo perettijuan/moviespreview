@@ -2,9 +2,7 @@ package com.jpp.mp.di
 
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mpdomain.repository.*
-import com.jpp.mpdomain.usecase.ConfigureMovieImagesPathUseCase
-import com.jpp.mpdomain.usecase.GetMovieDetailUseCase
-import com.jpp.mpdomain.usecase.GetMoviePageUseCase
+import com.jpp.mpdomain.usecase.*
 import dagger.Module
 import dagger.Provides
 
@@ -39,5 +37,43 @@ class DomainLayerModule {
         languageRepository: LanguageRepository
     ): GetMovieDetailUseCase =
         GetMovieDetailUseCase(movieDetailRepository, connectivityRepository, languageRepository)
+
+    @Provides
+    fun providesGetMovieStateUseCase(
+        sessionRepository: SessionRepository,
+        movieStateRepository: MovieStateRepository,
+        connectivityRepository: ConnectivityRepository
+    ): GetMovieStateUseCase =
+        GetMovieStateUseCase(sessionRepository, movieStateRepository, connectivityRepository)
+
+    @Provides
+    fun providesUpdateFavoriteMovieStateUseCase(
+        movieStateRepository: MovieStateRepository,
+        moviePageRepository: MoviePageRepository,
+        sessionRepository: SessionRepository,
+        accountRepository: AccountRepository,
+        connectivityRepository: ConnectivityRepository
+    ): UpdateFavoriteMovieStateUseCase = UpdateFavoriteMovieStateUseCase(
+        movieStateRepository,
+        moviePageRepository,
+        sessionRepository,
+        accountRepository,
+        connectivityRepository
+    )
+
+    @Provides
+    fun providesUpdateWatchlistMovieStateUseCase(
+        movieStateRepository: MovieStateRepository,
+        moviePageRepository: MoviePageRepository,
+        sessionRepository: SessionRepository,
+        accountRepository: AccountRepository,
+        connectivityRepository: ConnectivityRepository
+    ): UpdateWatchlistMovieStateUseCase = UpdateWatchlistMovieStateUseCase(
+        movieStateRepository,
+        moviePageRepository,
+        sessionRepository,
+        accountRepository,
+        connectivityRepository
+    )
 
 }
