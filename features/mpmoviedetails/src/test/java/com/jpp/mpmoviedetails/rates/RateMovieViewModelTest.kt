@@ -2,7 +2,6 @@ package com.jpp.mpmoviedetails.rates
 
 import android.view.View
 import androidx.lifecycle.SavedStateHandle
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpdomain.MovieStateRate
 import com.jpp.mpdomain.usecase.DeleteMovieRatingUseCase
@@ -15,6 +14,7 @@ import com.jpp.mptestutils.observeWith
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -39,6 +39,9 @@ internal class RateMovieViewModelTest {
     @MockK
     private lateinit var deleteMovieRatingUseCase: DeleteMovieRatingUseCase
 
+    @MockK
+    private lateinit var rateMovieNavigator: RateMovieNavigator
+
     private val savedStateHandle: SavedStateHandle by lazy {
         SavedStateHandle()
     }
@@ -57,6 +60,7 @@ internal class RateMovieViewModelTest {
             getMovieStateUseCase,
             rateMovieUseCase,
             deleteMovieRatingUseCase,
+            rateMovieNavigator,
             CoroutineTestExtension.testDispatcher,
             savedStateHandle
         )
@@ -125,16 +129,10 @@ internal class RateMovieViewModelTest {
     @Test
     fun `Should post user not logged and exit`() {
         var userMessagePosted: RateMovieUserMessages? = null
-        var postedDestination: Destination? = null
 
         subject.userMessages.observeWith {
             it.actionIfNotHandled { userMessage ->
                 userMessagePosted = userMessage
-            }
-        }
-        subject.navigationEvents.observeWith {
-            it.actionIfNotHandled { destination ->
-                postedDestination = destination
             }
         }
 
@@ -143,22 +141,16 @@ internal class RateMovieViewModelTest {
         subject.onInit(param)
 
         assertEquals(RateMovieUserMessages.USER_NOT_LOGGED, userMessagePosted)
-        assertEquals(Destination.PreviousDestination, postedDestination)
+        verify { rateMovieNavigator.navigateBack() }
     }
 
     @Test
     fun `Should post error and exit`() {
         var userMessagePosted: RateMovieUserMessages? = null
-        var postedDestination: Destination? = null
 
         subject.userMessages.observeWith {
             it.actionIfNotHandled { userMessage ->
                 userMessagePosted = userMessage
-            }
-        }
-        subject.navigationEvents.observeWith {
-            it.actionIfNotHandled { destination ->
-                postedDestination = destination
             }
         }
 
@@ -167,13 +159,12 @@ internal class RateMovieViewModelTest {
         subject.onInit(param)
 
         assertEquals(RateMovieUserMessages.ERROR_FETCHING_DATA, userMessagePosted)
-        assertEquals(Destination.PreviousDestination, postedDestination)
+        verify { rateMovieNavigator.navigateBack() }
     }
 
     @Test
     fun `Should rate movie and exit`() {
         var userMessagePosted: RateMovieUserMessages? = null
-        var postedDestination: Destination? = null
 
         val movieState = MovieState(
             id = 12.0,
@@ -188,11 +179,6 @@ internal class RateMovieViewModelTest {
         subject.userMessages.observeWith {
             it.actionIfNotHandled { userMessage ->
                 userMessagePosted = userMessage
-            }
-        }
-        subject.navigationEvents.observeWith {
-            it.actionIfNotHandled { destination ->
-                postedDestination = destination
             }
         }
 
@@ -203,13 +189,12 @@ internal class RateMovieViewModelTest {
         subject.onRateMovie(4F)
 
         assertEquals(RateMovieUserMessages.RATE_SUCCESS, userMessagePosted)
-        assertEquals(Destination.PreviousDestination, postedDestination)
+        verify { rateMovieNavigator.navigateBack() }
     }
 
     @Test
     fun `Should post error when adding rate and exit`() {
         var userMessagePosted: RateMovieUserMessages? = null
-        var postedDestination: Destination? = null
 
         val movieState = MovieState(
             id = 12.0,
@@ -226,11 +211,6 @@ internal class RateMovieViewModelTest {
                 userMessagePosted = userMessage
             }
         }
-        subject.navigationEvents.observeWith {
-            it.actionIfNotHandled { destination ->
-                postedDestination = destination
-            }
-        }
 
         coEvery { getMovieStateUseCase.execute(12.0) } returns Try.Success(movieState)
         coEvery { rateMovieUseCase.execute(12.0, 8F) } returns Try.Failure(Try.FailureCause.Unknown)
@@ -239,6 +219,6 @@ internal class RateMovieViewModelTest {
         subject.onRateMovie(4F)
 
         assertEquals(RateMovieUserMessages.RATE_ERROR, userMessagePosted)
-        assertEquals(Destination.PreviousDestination, postedDestination)
+        verify { rateMovieNavigator.navigateBack() }
     }
 }

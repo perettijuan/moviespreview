@@ -1,13 +1,8 @@
 package com.jpp.mpmoviedetails.rates
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPViewModel
+import androidx.lifecycle.*
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpdomain.usecase.DeleteMovieRatingUseCase
 import com.jpp.mpdomain.usecase.GetMovieStateUseCase
@@ -18,7 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * [MPViewModel] that supports the movie movie rating feature. The VM retrieves
+ * [ViewModel] that supports the movie movie rating feature. The VM retrieves
  * the data from the underlying layers and maps the business
  * data to UI data, producing a [RateMovieViewState] that represents the configuration of the view
  * at any given moment. It also exposes message updates as [RateMovieUserMessages] in order to notify
@@ -32,9 +27,10 @@ class RateMovieViewModel(
     private val getMovieStateUseCase: GetMovieStateUseCase,
     private val rateMovieUseCase: RateMovieUseCase,
     private val deleteMovieRatingUseCase: DeleteMovieRatingUseCase,
+    private val navigator: RateMovieNavigator,
     private val ioDispatcher: CoroutineDispatcher,
     private val savedStateHandle: SavedStateHandle
-) : MPViewModel() {
+) : ViewModel() {
 
     private val _viewState = MediatorLiveData<RateMovieViewState>()
     internal val viewState: LiveData<RateMovieViewState> = _viewState
@@ -156,7 +152,7 @@ class RateMovieViewModel(
      */
     private fun postUserMessageAndExit(message: RateMovieUserMessages) {
         _userMessages.value = of(message)
-        navigateTo(Destination.PreviousDestination)
+        navigator.navigateBack()
     }
 
     /**

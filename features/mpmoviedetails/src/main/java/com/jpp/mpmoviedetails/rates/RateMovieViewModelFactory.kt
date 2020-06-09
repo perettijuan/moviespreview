@@ -15,6 +15,7 @@ import javax.inject.Inject
 class RateMovieViewModelFactory @Inject constructor(
     private val getMovieStateUseCase: GetMovieStateUseCase,
     private val rateMovieUseCase: RateMovieUseCase,
+    private val rateMovieNavigator: RateMovieNavigator,
     private val deleteMovieRatingUseCase: DeleteMovieRatingUseCase,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModelAssistedFactory<RateMovieViewModel> {
@@ -24,6 +25,7 @@ class RateMovieViewModelFactory @Inject constructor(
             getMovieStateUseCase,
             rateMovieUseCase,
             deleteMovieRatingUseCase,
+            rateMovieNavigator,
             ioDispatcher,
             handle
         )
