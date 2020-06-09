@@ -1,5 +1,6 @@
 package com.jpp.mpmoviedetails.rates
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,21 +8,43 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.RatingBar
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.viewModels
 import com.jpp.mp.common.extensions.observeHandledEvent
 import com.jpp.mp.common.extensions.observeValue
-import com.jpp.mp.common.extensions.withViewModel
-import com.jpp.mp.common.fragments.MPDialogFragment
+import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mpdesign.ext.mpToast
 import com.jpp.mpmoviedetails.R
 import com.jpp.mpmoviedetails.databinding.FragmentRateMovieBinding
+import dagger.android.support.AndroidSupportInjection
+import javax.inject.Inject
 
-class RateMovieDialogFragment : MPDialogFragment<RateMovieViewModel>() {
+/**
+ * [DialogFragment] that shows the rating information to the user and allows to update
+ * and delete that rating.
+ */
+class RateMovieDialogFragment : DialogFragment() {
+
+    @Inject
+    lateinit var rateMovieViewModelFactory: RateMovieViewModelFactory
 
     private lateinit var viewBinding: FragmentRateMovieBinding
+
+    private val viewModel: RateMovieViewModel by viewModels {
+        MPGenericSavedStateViewModelFactory(
+            rateMovieViewModelFactory,
+            this
+        )
+    }
 
     private var rateBtn: Button? = null
     private var deleteRateBtn: Button? = null
     private var movieRatingBar: RatingBar? = null
+
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,26 +59,19 @@ class RateMovieDialogFragment : MPDialogFragment<RateMovieViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews(view)
-    }
 
+        dialog?.window?.attributes?.windowAnimations = R.style.RateMovieDialogAnim
+
+        viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
+        viewModel.userMessages.observeHandledEvent(viewLifecycleOwner, ::handleUserMessage)
+        viewModel.onInit(RateMovieParam.fromArguments(arguments))
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         rateBtn = null
         deleteRateBtn = null
         movieRatingBar = null
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        dialog?.window?.attributes?.windowAnimations = R.style.RateMovieDialogAnim
-
-        withViewModel {
-            viewState.observeValue(viewLifecycleOwner, ::renderViewState)
-            userMessages.observeHandledEvent(viewLifecycleOwner, ::handleUserMessage)
-            onInit(RateMovieParam.fromArguments(arguments))
-        }
     }
 
     private fun renderViewState(viewState: RateMovieViewState) {
@@ -72,17 +88,12 @@ class RateMovieDialogFragment : MPDialogFragment<RateMovieViewModel>() {
         movieRatingBar = view.findViewById(R.id.movieRatingBar)
 
         rateBtn?.setOnClickListener {
-            withViewModel {
-                val value = movieRatingBar?.rating ?: 0F
-                onRateMovie(value)
-            }
+            val value = movieRatingBar?.rating ?: 0F
+            viewModel.onRateMovie(value)
         }
 
         deleteRateBtn?.setOnClickListener {
-            withViewModel { onDeleteMovieRating() }
+            viewModel.onDeleteMovieRating()
         }
     }
-
-    override fun withViewModel(action: RateMovieViewModel.() -> Unit): RateMovieViewModel =
-        withViewModel(viewModelFactory) { action() }
 }

@@ -15,7 +15,6 @@ import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] that supports the movie movie rating feature. The VM retrieves
@@ -28,7 +27,7 @@ import javax.inject.Inject
  * of the movie internally and in the server side and updates the view layer according to the new
  * state of the business layer.
  */
-class RateMovieViewModel @Inject constructor(
+class RateMovieViewModel(
     private val getMovieStateUseCase: GetMovieStateUseCase,
     private val rateMovieUseCase: RateMovieUseCase,
     private val deleteMovieRatingUseCase: DeleteMovieRatingUseCase,
@@ -41,7 +40,7 @@ class RateMovieViewModel @Inject constructor(
     private val _userMessages = MediatorLiveData<HandledEvent<RateMovieUserMessages>>()
     internal val userMessages: LiveData<HandledEvent<RateMovieUserMessages>> = _userMessages
 
-    private lateinit var currentParam: RateMovieParam
+    private var movieId: Double = 0.0
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -50,7 +49,7 @@ class RateMovieViewModel @Inject constructor(
      * on it.
      */
     internal fun onInit(param: RateMovieParam) {
-        currentParam = param
+        movieId = param.movieId
         fetchMovieState(
             param.movieId,
             param.screenTitle,
@@ -68,7 +67,7 @@ class RateMovieViewModel @Inject constructor(
             viewModelScope.launch {
                 val scaledRating = scaleUpRatingValue(rating)
                 val result = withContext(ioDispatcher) {
-                    rateMovieUseCase.execute(currentParam.movieId, scaledRating)
+                    rateMovieUseCase.execute(movieId, scaledRating)
                 }
 
                 when (result) {
@@ -88,7 +87,7 @@ class RateMovieViewModel @Inject constructor(
 
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {
-                deleteMovieRatingUseCase.execute(currentParam.movieId)
+                deleteMovieRatingUseCase.execute(movieId)
             }
 
             when (result) {
