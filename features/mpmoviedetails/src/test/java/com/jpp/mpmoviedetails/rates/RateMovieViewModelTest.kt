@@ -1,267 +1,238 @@
 package com.jpp.mpmoviedetails.rates
 
 import android.view.View
-import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpdomain.MovieStateRate
-import com.jpp.mpmoviedetails.MovieDetailsInteractor
-
+import com.jpp.mpdomain.usecase.DeleteMovieRatingUseCase
+import com.jpp.mpdomain.usecase.GetMovieStateUseCase
+import com.jpp.mpdomain.usecase.RateMovieUseCase
+import com.jpp.mpdomain.usecase.Try
 import com.jpp.mptestutils.CoroutineTestExtension
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
-import io.mockk.every
-import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.coEvery
+import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments.arguments
-import org.junit.jupiter.params.provider.MethodSource
 
 @ExperimentalCoroutinesApi
 @ExtendWith(
-        MockKExtension::class,
-        InstantTaskExecutorExtension::class,
-        CoroutineTestExtension::class
+    MockKExtension::class,
+    InstantTaskExecutorExtension::class,
+    CoroutineTestExtension::class
 )
 internal class RateMovieViewModelTest {
 
-    @RelaxedMockK
-    private lateinit var movieDetailsInteractor: MovieDetailsInteractor
+    @MockK
+    private lateinit var getMovieStateUseCase: GetMovieStateUseCase
 
+    @MockK
+    private lateinit var rateMovieUseCase: RateMovieUseCase
 
-    private val lvRateMovieEvents = MutableLiveData<MovieDetailsInteractor.RateMovieEvent>()
+    @MockK
+    private lateinit var deleteMovieRatingUseCase: DeleteMovieRatingUseCase
+
+    private val param = RateMovieParam(
+        movieId = 12.0,
+        screenTitle = "aMovie",
+        movieImageUrl = "aUrl"
+    )
 
     private lateinit var subject: RateMovieViewModel
 
     @BeforeEach
     fun setUp() {
-
-        every { movieDetailsInteractor.rateMovieEvents } returns lvRateMovieEvents
-
-        subject = RateMovieViewModel(movieDetailsInteractor)
+        subject = RateMovieViewModel(
+            getMovieStateUseCase,
+            rateMovieUseCase,
+            deleteMovieRatingUseCase,
+            CoroutineTestExtension.testDispatcher
+        )
     }
 
-    @ParameterizedTest
-    @MethodSource("rateMovieEvents")
-    fun `Map interactor events to user messages and exit`(expected: RateMovieUserMessages, pushed: MovieDetailsInteractor.RateMovieEvent) {
+    @Test
+    fun `Should fetch and show rated movie on init`() {
+        var viewStatePosted: RateMovieViewState? = null
+
+        val movieState = MovieState(
+            id = 12.0,
+            favorite = false,
+            watchlist = true,
+            rated = MovieStateRate(
+                isRated = true,
+                value = "5.5"
+            )
+        )
+
+        coEvery { getMovieStateUseCase.execute(12.0) } returns Try.Success(movieState)
+
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+
+        subject.onInit(param)
+
+        assertNotNull(viewStatePosted)
+        assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
+        assertEquals(View.VISIBLE, viewStatePosted?.ratingBarVisibility)
+        assertEquals(View.VISIBLE, viewStatePosted?.deleteVisibility)
+        assertEquals(View.VISIBLE, viewStatePosted?.submitVisibility)
+        assertEquals("aMovie", viewStatePosted?.movieTitle)
+        assertEquals("aUrl", viewStatePosted?.movieImageUrl)
+        assertEquals(2.75F, viewStatePosted?.rating)
+    }
+
+    @Test
+    fun `Should fetch and show not rated movie on init`() {
+        var viewStatePosted: RateMovieViewState? = null
+
+        val movieState = MovieState(
+            id = 12.0,
+            favorite = false,
+            watchlist = true,
+            rated = MovieStateRate(
+                isRated = false,
+                value = null
+            )
+        )
+
+        coEvery { getMovieStateUseCase.execute(12.0) } returns Try.Success(movieState)
+
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+
+        subject.onInit(param)
+
+        assertNotNull(viewStatePosted)
+        assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
+        assertEquals(View.INVISIBLE, viewStatePosted?.deleteVisibility)
+        assertEquals(View.VISIBLE, viewStatePosted?.ratingBarVisibility)
+        assertEquals(View.VISIBLE, viewStatePosted?.submitVisibility)
+        assertEquals("aMovie", viewStatePosted?.movieTitle)
+        assertEquals("aUrl", viewStatePosted?.movieImageUrl)
+        assertEquals(0.0F, viewStatePosted?.rating)
+    }
+
+    @Test
+    fun `Should post user not logged and exit`() {
         var userMessagePosted: RateMovieUserMessages? = null
         var postedDestination: Destination? = null
 
-        subject.userMessages.observeWith { it.actionIfNotHandled { userMessage -> userMessagePosted = userMessage } }
-        subject.navigationEvents.observeWith { it.actionIfNotHandled { destination -> postedDestination = destination } }
+        subject.userMessages.observeWith {
+            it.actionIfNotHandled { userMessage ->
+                userMessagePosted = userMessage
+            }
+        }
+        subject.navigationEvents.observeWith {
+            it.actionIfNotHandled { destination ->
+                postedDestination = destination
+            }
+        }
 
-        lvRateMovieEvents.postValue(pushed)
+        coEvery { getMovieStateUseCase.execute(12.0) } returns Try.Failure(Try.FailureCause.UserNotLogged)
 
-        assertEquals(expected, userMessagePosted)
+        subject.onInit(param)
+
+        assertEquals(RateMovieUserMessages.USER_NOT_LOGGED, userMessagePosted)
         assertEquals(Destination.PreviousDestination, postedDestination)
     }
 
     @Test
-    fun `Should map interactor FetchSuccess event to ViewState`() {
-        var postedViewState: RateMovieViewState? = null
+    fun `Should post error and exit`() {
+        var userMessagePosted: RateMovieUserMessages? = null
+        var postedDestination: Destination? = null
 
-        val param = RateMovieParam(
-                movieId = 12.0,
-                screenTitle = "aMovie",
-                movieImageUrl = "aUrl"
-        )
+        subject.userMessages.observeWith {
+            it.actionIfNotHandled { userMessage ->
+                userMessagePosted = userMessage
+            }
+        }
+        subject.navigationEvents.observeWith {
+            it.actionIfNotHandled { destination ->
+                postedDestination = destination
+            }
+        }
 
-        val rating = MovieStateRate(
+        coEvery { getMovieStateUseCase.execute(12.0) } returns Try.Failure(Try.FailureCause.Unknown)
+
+        subject.onInit(param)
+
+        assertEquals(RateMovieUserMessages.ERROR_FETCHING_DATA, userMessagePosted)
+        assertEquals(Destination.PreviousDestination, postedDestination)
+    }
+
+    @Test
+    fun `Should rate movie and exit`() {
+        var userMessagePosted: RateMovieUserMessages? = null
+        var postedDestination: Destination? = null
+
+        val movieState = MovieState(
+            id = 12.0,
+            favorite = false,
+            watchlist = true,
+            rated = MovieStateRate(
                 isRated = true,
                 value = "5.5"
+            )
         )
+
+        subject.userMessages.observeWith {
+            it.actionIfNotHandled { userMessage ->
+                userMessagePosted = userMessage
+            }
+        }
+        subject.navigationEvents.observeWith {
+            it.actionIfNotHandled { destination ->
+                postedDestination = destination
+            }
+        }
+
+        coEvery { getMovieStateUseCase.execute(12.0) } returns Try.Success(movieState)
+        coEvery { rateMovieUseCase.execute(12.0, 8F) } returns Try.Success(Unit)
+
+        subject.onInit(param)
+        subject.onRateMovie(4F)
+
+        assertEquals(RateMovieUserMessages.RATE_SUCCESS, userMessagePosted)
+        assertEquals(Destination.PreviousDestination, postedDestination)
+    }
+
+    @Test
+    fun `Should post error when adding rate and exit`() {
+        var userMessagePosted: RateMovieUserMessages? = null
+        var postedDestination: Destination? = null
+
         val movieState = MovieState(
-                id = 12.0,
-                favorite = false,
-                rated = rating,
-                watchlist = false
-        )
-
-        subject.viewState.observeWith { viewState -> postedViewState = viewState }
-
-        subject.onInit(param)
-
-        lvRateMovieEvents.postValue(MovieDetailsInteractor.RateMovieEvent.FetchSuccess(movieState))
-
-        assertNotNull(postedViewState)
-        assertEquals(View.INVISIBLE, postedViewState?.loadingVisibility)
-        assertEquals(View.VISIBLE, postedViewState?.ratingBarVisibility)
-        assertEquals(View.VISIBLE, postedViewState?.deleteVisibility)
-        assertEquals(View.VISIBLE, postedViewState?.submitVisibility)
-        assertEquals("aMovie", postedViewState?.movieTitle)
-        assertEquals("aUrl", postedViewState?.movieImageUrl)
-        assertEquals(2.75F, postedViewState?.rating)
-    }
-
-    @Test
-    fun `Should map interactor FetchSuccess movie not rated event to ViewState`() {
-        var postedViewState: RateMovieViewState? = null
-
-        val param = RateMovieParam(
-                movieId = 12.0,
-                screenTitle = "aMovie",
-                movieImageUrl = "aUrl"
-        )
-
-        val rating = MovieStateRate(
-                isRated = false,
-                value = null
-        )
-        val movieState = MovieState(
-                id = 12.0,
-                favorite = false,
-                rated = rating,
-                watchlist = false
-        )
-
-        subject.viewState.observeWith { viewState -> postedViewState = viewState }
-
-        subject.onInit(param)
-
-        lvRateMovieEvents.postValue(MovieDetailsInteractor.RateMovieEvent.FetchSuccess(movieState))
-
-        assertNotNull(postedViewState)
-        assertEquals(View.INVISIBLE, postedViewState?.loadingVisibility)
-        assertEquals(View.VISIBLE, postedViewState?.ratingBarVisibility)
-        assertEquals(View.INVISIBLE, postedViewState?.deleteVisibility)
-        assertEquals(View.VISIBLE, postedViewState?.submitVisibility)
-        assertEquals("aMovie", postedViewState?.movieTitle)
-        assertEquals("aUrl", postedViewState?.movieImageUrl)
-        assertEquals(0.0F, postedViewState?.rating)
-    }
-
-    @Test
-    fun `Should fetch movie state and post loading in onInit`() {
-        var postedViewState: RateMovieViewState? = null
-
-        subject.viewState.observeWith { viewState -> postedViewState = viewState }
-
-        val param = RateMovieParam(
-                movieId = 12.0,
-                screenTitle = "aMovie",
-                movieImageUrl = "aUrl"
-        )
-
-        subject.onInit(param)
-
-        assertNotNull(postedViewState)
-        assertEquals(View.VISIBLE, postedViewState?.loadingVisibility)
-        assertEquals(View.INVISIBLE, postedViewState?.ratingBarVisibility)
-        assertEquals(View.INVISIBLE, postedViewState?.deleteVisibility)
-        assertEquals(View.INVISIBLE, postedViewState?.submitVisibility)
-        assertEquals("aMovie", postedViewState?.movieTitle)
-        assertEquals("aUrl", postedViewState?.movieImageUrl)
-        assertEquals(0.0F, postedViewState?.rating)
-
-        verify { movieDetailsInteractor.fetchMovieRating(12.0) }
-    }
-
-    @Test
-    fun `Should rate movie and post loading when onRateMovie`() {
-        var postedViewState: RateMovieViewState? = null
-
-        subject.viewState.observeWith { viewState -> postedViewState = viewState }
-
-        subject.onInit(RateMovieParam(
-                movieId = 12.0,
-                screenTitle = "aMovie",
-                movieImageUrl = "aUrl"
-        ))
-
-        subject.onRateMovie(2F)
-
-        assertNotNull(postedViewState)
-        assertEquals(View.VISIBLE, postedViewState?.loadingVisibility)
-        assertEquals(View.INVISIBLE, postedViewState?.ratingBarVisibility)
-        assertEquals(View.INVISIBLE, postedViewState?.deleteVisibility)
-        assertEquals(View.INVISIBLE, postedViewState?.submitVisibility)
-        assertEquals("aMovie", postedViewState?.movieTitle)
-        assertEquals("aUrl", postedViewState?.movieImageUrl)
-        assertEquals(0.0F, postedViewState?.rating)
-
-        verify { movieDetailsInteractor.rateMovie(12.0, 4F) }
-    }
-
-    @Test
-    fun `Should NOT rate movie onRateMovie when it has been rated with same value`() {
-        subject.viewState.observeForever { }
-
-        val rating = MovieStateRate(
+            id = 12.0,
+            favorite = false,
+            watchlist = true,
+            rated = MovieStateRate(
                 isRated = true,
                 value = "5.5"
-        )
-        val movieState = MovieState(
-                id = 12.0,
-                favorite = false,
-                rated = rating,
-                watchlist = false
+            )
         )
 
-        subject.onInit(RateMovieParam(
-                movieId = 12.0,
-                screenTitle = "aMovie",
-                movieImageUrl = "aUrl"
-        ))
+        subject.userMessages.observeWith {
+            it.actionIfNotHandled { userMessage ->
+                userMessagePosted = userMessage
+            }
+        }
+        subject.navigationEvents.observeWith {
+            it.actionIfNotHandled { destination ->
+                postedDestination = destination
+            }
+        }
 
+        coEvery { getMovieStateUseCase.execute(12.0) } returns Try.Success(movieState)
+        coEvery { rateMovieUseCase.execute(12.0, 8F) } returns Try.Failure(Try.FailureCause.Unknown)
 
-        subject.onRateMovie(5.5F)
+        subject.onInit(param)
+        subject.onRateMovie(4F)
 
-        verify(exactly = 0) { movieDetailsInteractor.rateMovie(12.0, 4F) }
-    }
-
-    @Test
-    fun `Should delete movie rating and post loading when onDeleteMovieRating`() {
-        var postedViewState: RateMovieViewState? = null
-
-        subject.viewState.observeWith { viewState -> postedViewState = viewState }
-
-        subject.onInit(RateMovieParam(
-                movieId = 12.0,
-                screenTitle = "aMovie",
-                movieImageUrl = "aUrl"
-        ))
-
-        subject.onDeleteMovieRating()
-
-        assertNotNull(postedViewState)
-        assertEquals(View.VISIBLE, postedViewState?.loadingVisibility)
-        assertEquals(View.INVISIBLE, postedViewState?.ratingBarVisibility)
-        assertEquals(View.INVISIBLE, postedViewState?.deleteVisibility)
-        assertEquals(View.INVISIBLE, postedViewState?.submitVisibility)
-        assertEquals("aMovie", postedViewState?.movieTitle)
-        assertEquals("aUrl", postedViewState?.movieImageUrl)
-        assertEquals(0.0F, postedViewState?.rating)
-
-        verify { movieDetailsInteractor.deleteMovieRating(12.0) }
-    }
-
-    companion object {
-
-        @JvmStatic
-        fun rateMovieEvents() = listOf(
-                arguments(
-                        RateMovieUserMessages.RATE_SUCCESS,
-                        MovieDetailsInteractor.RateMovieEvent.RateMovie(true)
-                ),
-                arguments(
-                        RateMovieUserMessages.RATE_ERROR,
-                        MovieDetailsInteractor.RateMovieEvent.RateMovie(false)
-                ),
-                arguments(
-                        RateMovieUserMessages.DELETE_SUCCESS,
-                        MovieDetailsInteractor.RateMovieEvent.RatingDeleted(true)
-                ),
-                arguments(
-                        RateMovieUserMessages.DELETE_ERROR,
-                        MovieDetailsInteractor.RateMovieEvent.RatingDeleted(false)
-                )
-        )
+        assertEquals(RateMovieUserMessages.RATE_ERROR, userMessagePosted)
+        assertEquals(Destination.PreviousDestination, postedDestination)
     }
 }

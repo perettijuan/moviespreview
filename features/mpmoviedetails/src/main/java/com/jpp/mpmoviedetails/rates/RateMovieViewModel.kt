@@ -101,8 +101,7 @@ class RateMovieViewModel @Inject constructor(
 
     /**
      * When called, this method will push the loading view state and will fetch the movie state
-     * of the movie being shown. When the fetching process is done, the view state will be updated
-     * based on the result posted by the interactor.
+     * of the movie being shown.
      */
     private fun fetchMovieState(movieId: Double, movieTitle: String, movieImageUrl: String) {
         _viewState.value = RateMovieViewState.createLoading(
