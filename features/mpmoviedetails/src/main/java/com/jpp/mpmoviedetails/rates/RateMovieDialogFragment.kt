@@ -63,7 +63,7 @@ class RateMovieDialogFragment : DialogFragment() {
         dialog?.window?.attributes?.windowAnimations = R.style.RateMovieDialogAnim
 
         viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
-        viewModel.userMessages.observeHandledEvent(viewLifecycleOwner, ::handleUserMessage)
+        viewModel.event.observeHandledEvent(viewLifecycleOwner, ::handleUserMessage)
         viewModel.onInit(RateMovieParam.fromArguments(arguments))
     }
 
@@ -78,7 +78,7 @@ class RateMovieDialogFragment : DialogFragment() {
         viewBinding.viewState = viewState
     }
 
-    private fun handleUserMessage(message: RateMovieUserMessages) {
+    private fun handleUserMessage(message: RateMovieEvent) {
         mpToast(message.messageRes)
     }
 

@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
  * [ViewModel] that supports the movie movie rating feature. The VM retrieves
  * the data from the underlying layers and maps the business
  * data to UI data, producing a [RateMovieViewState] that represents the configuration of the view
- * at any given moment. It also exposes message updates as [RateMovieUserMessages] in order to notify
+ * at any given moment. It also exposes message updates as [RateMovieEvent] in order to notify
  * particular updates.
  *
  * When the user performs the rating action the VM updates the state
@@ -35,8 +35,8 @@ class RateMovieViewModel(
     private val _viewState = MediatorLiveData<RateMovieViewState>()
     internal val viewState: LiveData<RateMovieViewState> = _viewState
 
-    private val _userMessages = MediatorLiveData<HandledEvent<RateMovieUserMessages>>()
-    internal val userMessages: LiveData<HandledEvent<RateMovieUserMessages>> = _userMessages
+    private val _events = MediatorLiveData<HandledEvent<RateMovieEvent>>()
+    internal val event: LiveData<HandledEvent<RateMovieEvent>> = _events
 
     private var movieId: Double
         set(value) {
@@ -76,8 +76,8 @@ class RateMovieViewModel(
                 }
 
                 when (result) {
-                    is Try.Success -> postUserMessageAndExit(RateMovieUserMessages.RATE_SUCCESS)
-                    is Try.Failure -> postUserMessageAndExit(RateMovieUserMessages.RATE_ERROR)
+                    is Try.Success -> postUserMessageAndExit(RateMovieEvent.RATE_SUCCESS)
+                    is Try.Failure -> postUserMessageAndExit(RateMovieEvent.RATE_ERROR)
                 }
             }
         }
@@ -96,8 +96,8 @@ class RateMovieViewModel(
             }
 
             when (result) {
-                is Try.Success -> postUserMessageAndExit(RateMovieUserMessages.DELETE_SUCCESS)
-                is Try.Failure -> postUserMessageAndExit(RateMovieUserMessages.DELETE_ERROR)
+                is Try.Success -> postUserMessageAndExit(RateMovieEvent.DELETE_SUCCESS)
+                is Try.Failure -> postUserMessageAndExit(RateMovieEvent.DELETE_ERROR)
             }
         }
     }
@@ -142,16 +142,16 @@ class RateMovieViewModel(
 
     private fun processFailure(failure: Try.FailureCause) {
         when (failure) {
-            is Try.FailureCause.UserNotLogged -> postUserMessageAndExit(RateMovieUserMessages.USER_NOT_LOGGED)
-            else -> postUserMessageAndExit(RateMovieUserMessages.ERROR_FETCHING_DATA)
+            is Try.FailureCause.UserNotLogged -> postUserMessageAndExit(RateMovieEvent.USER_NOT_LOGGED)
+            else -> postUserMessageAndExit(RateMovieEvent.ERROR_FETCHING_DATA)
         }
     }
 
     /**
-     * Posts the provided [message] to [userMessages] and exists the current flow.
+     * Posts the provided [message] to [event] and exists the current flow.
      */
-    private fun postUserMessageAndExit(message: RateMovieUserMessages) {
-        _userMessages.value = of(message)
+    private fun postUserMessageAndExit(message: RateMovieEvent) {
+        _events.value = of(message)
         navigator.navigateBack()
     }
 

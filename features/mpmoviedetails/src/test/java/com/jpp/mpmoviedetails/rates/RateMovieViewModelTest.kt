@@ -128,9 +128,9 @@ internal class RateMovieViewModelTest {
 
     @Test
     fun `Should post user not logged and exit`() {
-        var userMessagePosted: RateMovieUserMessages? = null
+        var userMessagePosted: RateMovieEvent? = null
 
-        subject.userMessages.observeWith {
+        subject.event.observeWith {
             it.actionIfNotHandled { userMessage ->
                 userMessagePosted = userMessage
             }
@@ -140,15 +140,15 @@ internal class RateMovieViewModelTest {
 
         subject.onInit(param)
 
-        assertEquals(RateMovieUserMessages.USER_NOT_LOGGED, userMessagePosted)
+        assertEquals(RateMovieEvent.USER_NOT_LOGGED, userMessagePosted)
         verify { rateMovieNavigator.navigateBack() }
     }
 
     @Test
     fun `Should post error and exit`() {
-        var userMessagePosted: RateMovieUserMessages? = null
+        var userMessagePosted: RateMovieEvent? = null
 
-        subject.userMessages.observeWith {
+        subject.event.observeWith {
             it.actionIfNotHandled { userMessage ->
                 userMessagePosted = userMessage
             }
@@ -158,13 +158,13 @@ internal class RateMovieViewModelTest {
 
         subject.onInit(param)
 
-        assertEquals(RateMovieUserMessages.ERROR_FETCHING_DATA, userMessagePosted)
+        assertEquals(RateMovieEvent.ERROR_FETCHING_DATA, userMessagePosted)
         verify { rateMovieNavigator.navigateBack() }
     }
 
     @Test
     fun `Should rate movie and exit`() {
-        var userMessagePosted: RateMovieUserMessages? = null
+        var userMessagePosted: RateMovieEvent? = null
 
         val movieState = MovieState(
             id = 12.0,
@@ -176,7 +176,7 @@ internal class RateMovieViewModelTest {
             )
         )
 
-        subject.userMessages.observeWith {
+        subject.event.observeWith {
             it.actionIfNotHandled { userMessage ->
                 userMessagePosted = userMessage
             }
@@ -188,13 +188,13 @@ internal class RateMovieViewModelTest {
         subject.onInit(param)
         subject.onRateMovie(4F)
 
-        assertEquals(RateMovieUserMessages.RATE_SUCCESS, userMessagePosted)
+        assertEquals(RateMovieEvent.RATE_SUCCESS, userMessagePosted)
         verify { rateMovieNavigator.navigateBack() }
     }
 
     @Test
     fun `Should post error when adding rate and exit`() {
-        var userMessagePosted: RateMovieUserMessages? = null
+        var userMessagePosted: RateMovieEvent? = null
 
         val movieState = MovieState(
             id = 12.0,
@@ -206,7 +206,7 @@ internal class RateMovieViewModelTest {
             )
         )
 
-        subject.userMessages.observeWith {
+        subject.event.observeWith {
             it.actionIfNotHandled { userMessage ->
                 userMessagePosted = userMessage
             }
@@ -218,7 +218,7 @@ internal class RateMovieViewModelTest {
         subject.onInit(param)
         subject.onRateMovie(4F)
 
-        assertEquals(RateMovieUserMessages.RATE_ERROR, userMessagePosted)
+        assertEquals(RateMovieEvent.RATE_ERROR, userMessagePosted)
         verify { rateMovieNavigator.navigateBack() }
     }
 }
