@@ -76,4 +76,32 @@ class DomainLayerModule {
         connectivityRepository
     )
 
+    @Provides
+    fun providesRateMovieUseCase(
+        movieStateRepository: MovieStateRepository,
+        moviePageRepository: MoviePageRepository,
+        sessionRepository: SessionRepository,
+        accountRepository: AccountRepository,
+        connectivityRepository: ConnectivityRepository
+    ): RateMovieUseCase = RateMovieUseCase(
+        sessionRepository,
+        moviePageRepository,
+        movieStateRepository,
+        accountRepository,
+        connectivityRepository
+    )
+
+    @Provides
+    fun providesDeleteMovieRatingUseCase(
+        movieStateRepository: MovieStateRepository,
+        moviePageRepository: MoviePageRepository,
+        sessionRepository: SessionRepository,
+        connectivityRepository: ConnectivityRepository
+    ): DeleteMovieRatingUseCase = DeleteMovieRatingUseCase(
+        sessionRepository,
+        moviePageRepository,
+        movieStateRepository,
+        connectivityRepository
+    )
+
 }

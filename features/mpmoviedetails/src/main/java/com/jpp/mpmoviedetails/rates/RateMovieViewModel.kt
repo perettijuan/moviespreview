@@ -8,9 +8,12 @@ import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.MovieState
+import com.jpp.mpdomain.usecase.DeleteMovieRatingUseCase
+import com.jpp.mpdomain.usecase.GetMovieStateUseCase
+import com.jpp.mpdomain.usecase.RateMovieUseCase
+import com.jpp.mpdomain.usecase.Try
 import com.jpp.mpmoviedetails.MovieDetailsInteractor
-import com.jpp.mpmoviedetails.MovieDetailsInteractor.RateMovieEvent
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -27,49 +30,19 @@ import javax.inject.Inject
  * state of the business layer.
  */
 class RateMovieViewModel @Inject constructor(
-    private val movieDetailsInteractor: MovieDetailsInteractor
+    private val getMovieStateUseCase: GetMovieStateUseCase,
+    private val rateMovieUseCase: RateMovieUseCase,
+    private val deleteMovieRatingUseCase: DeleteMovieRatingUseCase,
+    private val ioDispatcher: CoroutineDispatcher
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<RateMovieViewState>()
-    internal val viewState: LiveData<RateMovieViewState> get() = _viewState
+    internal val viewState: LiveData<RateMovieViewState> = _viewState
 
     private val _userMessages = MediatorLiveData<HandledEvent<RateMovieUserMessages>>()
-    internal val userMessages: LiveData<HandledEvent<RateMovieUserMessages>> get() = _userMessages
+    internal val userMessages: LiveData<HandledEvent<RateMovieUserMessages>> = _userMessages
 
     private lateinit var currentParam: RateMovieParam
-
-    init {
-        _viewState.addSource(movieDetailsInteractor.rateMovieEvents) { event ->
-            when (event) {
-                is RateMovieEvent.NotConnectedToNetwork -> postUserMessageAndExit(
-                    RateMovieUserMessages.ERROR_FETCHING_DATA
-                )
-                is RateMovieEvent.UserNotLogged -> postUserMessageAndExit(RateMovieUserMessages.USER_NOT_LOGGED)
-                is RateMovieEvent.UnknownError -> postUserMessageAndExit(RateMovieUserMessages.ERROR_FETCHING_DATA)
-                is RateMovieEvent.FetchSuccess -> processMovieStateUpdate(
-                    event.data,
-                    currentParam.screenTitle,
-                    currentParam.movieImageUrl
-                )
-            }
-        }
-        _userMessages.addSource(movieDetailsInteractor.rateMovieEvents) { event ->
-            when (event) {
-                is RateMovieEvent.RateMovie -> postUserMessageAndExit(
-                    when (event.success) {
-                        true -> RateMovieUserMessages.RATE_SUCCESS
-                        false -> RateMovieUserMessages.RATE_ERROR
-                    }
-                )
-                is RateMovieEvent.RatingDeleted -> postUserMessageAndExit(
-                    when (event.success) {
-                        true -> RateMovieUserMessages.DELETE_SUCCESS
-                        false -> RateMovieUserMessages.DELETE_ERROR
-                    }
-                )
-            }
-        }
-    }
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -91,16 +64,19 @@ class RateMovieViewModel @Inject constructor(
      */
     internal fun onRateMovie(rating: Float) {
         if (_viewState.value?.rating != rating) {
-            withMovieDetailsInteractor {
-                rateMovie(
-                    currentParam.movieId,
-                    scaleUpRatingValue(rating)
-                )
+            _viewState.value = _viewState.value?.updateLoading()
+
+            viewModelScope.launch {
+                val scaledRating = scaleUpRatingValue(rating)
+                val result = withContext(ioDispatcher) {
+                    rateMovieUseCase.execute(currentParam.movieId, scaledRating)
+                }
+
+                when (result) {
+                    is Try.Success -> postUserMessageAndExit(RateMovieUserMessages.RATE_SUCCESS)
+                    is Try.Failure -> postUserMessageAndExit(RateMovieUserMessages.RATE_ERROR)
+                }
             }
-            _viewState.value = RateMovieViewState.showLoading(
-                currentParam.screenTitle,
-                currentParam.movieImageUrl
-            )
         }
     }
 
@@ -109,11 +85,18 @@ class RateMovieViewModel @Inject constructor(
      * being shown.
      */
     internal fun onDeleteMovieRating() {
-        withMovieDetailsInteractor { deleteMovieRating(currentParam.movieId) }
-        _viewState.value = RateMovieViewState.showLoading(
-            currentParam.screenTitle,
-            currentParam.movieImageUrl
-        )
+        _viewState.value = _viewState.value?.updateLoading()
+
+        viewModelScope.launch {
+            val result = withContext(ioDispatcher) {
+                deleteMovieRatingUseCase.execute(currentParam.movieId)
+            }
+
+            when (result) {
+                is Try.Success -> postUserMessageAndExit(RateMovieUserMessages.DELETE_SUCCESS)
+                is Try.Failure -> postUserMessageAndExit(RateMovieUserMessages.DELETE_ERROR)
+            }
+        }
     }
 
     /**
@@ -122,44 +105,44 @@ class RateMovieViewModel @Inject constructor(
      * based on the result posted by the interactor.
      */
     private fun fetchMovieState(movieId: Double, movieTitle: String, movieImageUrl: String) {
-        withMovieDetailsInteractor { fetchMovieRating(movieId) }
-        _viewState.value = RateMovieViewState.showLoading(
+        _viewState.value = RateMovieViewState.createLoading(
             movieTitle,
             movieImageUrl
         )
-    }
 
-    /**
-     * Helper function to execute an [action] in the [movieDetailsInteractor] instance
-     * on a background task.
-     */
-    private fun withMovieDetailsInteractor(action: MovieDetailsInteractor.() -> Unit) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                action(movieDetailsInteractor)
+            val result = withContext(ioDispatcher) {
+                getMovieStateUseCase.execute(movieId)
+            }
+
+            when (result) {
+                is Try.Success -> processMovieStateUpdate(result.value)
+                is Try.Failure -> processFailure(result.cause)
             }
         }
     }
+
 
     /**
      * Process the [MovieState] provided producing a [RateMovieViewState] that contains
      * the data to be shown to the user.
      */
     private fun processMovieStateUpdate(
-        movieState: MovieState,
-        screenTitle: String,
-        movieImageUrl: String
+        movieState: MovieState
     ) {
-        _viewState.value = movieState.rated.value?.toFloat()?.let {
-            RateMovieViewState.showRated(
-                screenTitle,
-                movieImageUrl,
-                scaleDownRatingValue(it)
-            )
-        } ?: RateMovieViewState.showNoRated(
-            screenTitle,
-            movieImageUrl
-        )
+        val rating = movieState.rated.value?.toFloat()
+        _viewState.value = if (rating == null) {
+            _viewState.value?.showNoRated()
+        } else {
+            _viewState.value?.showRated(scaleDownRatingValue(rating))
+        }
+    }
+
+    private fun processFailure(failure: Try.FailureCause) {
+        when (failure) {
+            is Try.FailureCause.UserNotLogged -> postUserMessageAndExit(RateMovieUserMessages.USER_NOT_LOGGED)
+            else -> postUserMessageAndExit(RateMovieUserMessages.ERROR_FETCHING_DATA)
+        }
     }
 
     /**
