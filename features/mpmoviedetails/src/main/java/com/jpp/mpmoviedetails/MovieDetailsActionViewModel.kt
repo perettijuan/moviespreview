@@ -13,7 +13,7 @@ import kotlinx.coroutines.withContext
 /**
  * [ViewModel] that supports the movie details actions (the data shown by the UI that is not
  * related to the actions that the user can perform is controlled by [MovieDetailsViewModel]). The VM retrieves
- * the data from the underlying layers using the provided [MovieDetailsInteractor] and maps the business
+ * the data from the underlying layers and maps the business
  * data to UI data, producing a [MovieDetailViewState] that represents the configuration of the view
  * at any given moment.
  *

@@ -12,7 +12,6 @@ import com.jpp.mpdomain.usecase.DeleteMovieRatingUseCase
 import com.jpp.mpdomain.usecase.GetMovieStateUseCase
 import com.jpp.mpdomain.usecase.RateMovieUseCase
 import com.jpp.mpdomain.usecase.Try
-import com.jpp.mpmoviedetails.MovieDetailsInteractor
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -20,7 +19,7 @@ import javax.inject.Inject
 
 /**
  * [MPViewModel] that supports the movie movie rating feature. The VM retrieves
- * the data from the underlying layers using the provided [MovieDetailsInteractor] and maps the business
+ * the data from the underlying layers and maps the business
  * data to UI data, producing a [RateMovieViewState] that represents the configuration of the view
  * at any given moment. It also exposes message updates as [RateMovieUserMessages] in order to notify
  * particular updates.
