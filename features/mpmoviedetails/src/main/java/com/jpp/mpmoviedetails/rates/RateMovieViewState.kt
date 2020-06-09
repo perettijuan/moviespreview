@@ -15,30 +15,35 @@ internal data class RateMovieViewState(
     val movieImageUrl: String,
     val rating: Float = 0.0F
 ) {
+
+    fun showRated(rating: Float): RateMovieViewState =
+        copy(
+            loadingVisibility = View.INVISIBLE,
+            ratingBarVisibility = View.VISIBLE,
+            deleteVisibility = View.VISIBLE,
+            submitVisibility = View.VISIBLE,
+            rating = rating
+        )
+
+
+    fun showNoRated(): RateMovieViewState = copy(
+        loadingVisibility = View.INVISIBLE,
+        ratingBarVisibility = View.VISIBLE,
+        submitVisibility = View.VISIBLE
+    )
+
+    fun updateLoading(): RateMovieViewState = copy(
+        loadingVisibility = View.VISIBLE,
+        deleteVisibility = View.INVISIBLE,
+        submitVisibility = View.INVISIBLE,
+        ratingBarVisibility = View.INVISIBLE
+    )
+
     companion object {
-        fun showLoading(movieTitle: String, movieImageUrl: String) = RateMovieViewState(
+        fun createLoading(movieTitle: String, movieImageUrl: String) = RateMovieViewState(
             loadingVisibility = View.VISIBLE,
             movieTitle = movieTitle,
             movieImageUrl = movieImageUrl
         )
-
-        fun showNoRated(movieTitle: String, movieImageUrl: String) = RateMovieViewState(
-            loadingVisibility = View.INVISIBLE,
-            ratingBarVisibility = View.VISIBLE,
-            submitVisibility = View.VISIBLE,
-            movieTitle = movieTitle,
-            movieImageUrl = movieImageUrl
-        )
-
-        fun showRated(movieTitle: String, movieImageUrl: String, rating: Float) =
-            RateMovieViewState(
-                loadingVisibility = View.INVISIBLE,
-                ratingBarVisibility = View.VISIBLE,
-                deleteVisibility = View.VISIBLE,
-                submitVisibility = View.VISIBLE,
-                movieTitle = movieTitle,
-                movieImageUrl = movieImageUrl,
-                rating = rating
-            )
     }
 }

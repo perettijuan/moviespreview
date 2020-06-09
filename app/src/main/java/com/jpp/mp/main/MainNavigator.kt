@@ -10,12 +10,13 @@ import com.jpp.mpcredits.NavigationCredits
 import com.jpp.mpmoviedetails.MovieDetailsFragmentDirections
 import com.jpp.mpmoviedetails.MovieDetailsNavigator
 import com.jpp.mpmoviedetails.NavigationMovieDetails
+import com.jpp.mpmoviedetails.rates.RateMovieNavigator
 
 /**
  * Provides navigation to the main module and also to each individual
  * feature module.
  */
-class MainNavigator : MovieListNavigator, MovieDetailsNavigator {
+class MainNavigator : MovieListNavigator, MovieDetailsNavigator, RateMovieNavigator {
 
     private var navController: NavController? = null
 
@@ -81,6 +82,10 @@ class MainNavigator : MovieListNavigator, MovieDetailsNavigator {
                 movieTitle
             )
         )
+    }
+
+    override fun navigateBack() {
+        navController?.popBackStack()
     }
 
     fun bind(newNavController: NavController) {

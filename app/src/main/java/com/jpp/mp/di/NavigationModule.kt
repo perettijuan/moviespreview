@@ -3,6 +3,7 @@ package com.jpp.mp.di
 import com.jpp.mp.main.MainNavigator
 import com.jpp.mp.main.movies.MovieListNavigator
 import com.jpp.mpmoviedetails.MovieDetailsNavigator
+import com.jpp.mpmoviedetails.rates.RateMovieNavigator
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -22,4 +23,7 @@ class NavigationModule {
 
     @Provides
     fun providesMovieDetailsNavigator(mainNavigator: MainNavigator): MovieDetailsNavigator = mainNavigator
+
+    @Provides
+    fun providesRateMovieNavigator(mainNavigator: MainNavigator): RateMovieNavigator = mainNavigator
 }
