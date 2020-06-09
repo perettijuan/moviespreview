@@ -24,7 +24,8 @@ class RateMovieViewModelFactory @Inject constructor(
             getMovieStateUseCase,
             rateMovieUseCase,
             deleteMovieRatingUseCase,
-            ioDispatcher
+            ioDispatcher,
+            handle
         )
     }
 }

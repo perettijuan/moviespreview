@@ -2,6 +2,7 @@ package com.jpp.mpmoviedetails.rates
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.livedata.HandledEvent
@@ -31,7 +32,8 @@ class RateMovieViewModel(
     private val getMovieStateUseCase: GetMovieStateUseCase,
     private val rateMovieUseCase: RateMovieUseCase,
     private val deleteMovieRatingUseCase: DeleteMovieRatingUseCase,
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
+    private val savedStateHandle: SavedStateHandle
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<RateMovieViewState>()
@@ -40,7 +42,14 @@ class RateMovieViewModel(
     private val _userMessages = MediatorLiveData<HandledEvent<RateMovieUserMessages>>()
     internal val userMessages: LiveData<HandledEvent<RateMovieUserMessages>> = _userMessages
 
-    private var movieId: Double = 0.0
+    private var movieId: Double
+        set(value) {
+            savedStateHandle.set(MOVIE_ID_KEY, value)
+        }
+        get() {
+            return savedStateHandle.get(MOVIE_ID_KEY)
+                ?: throw IllegalStateException("Trying to access MOVIE_ID_KEY when it is not yet set")
+        }
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -159,6 +168,7 @@ class RateMovieViewModel(
     private fun scaleUpRatingValue(value: Float): Float = value * SCALING_FACTOR
 
     private companion object {
-        private const val SCALING_FACTOR = 2
+        const val SCALING_FACTOR = 2
+        const val MOVIE_ID_KEY = "MOVIE_ID_KEY"
     }
 }

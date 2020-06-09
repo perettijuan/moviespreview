@@ -1,6 +1,7 @@
 package com.jpp.mpmoviedetails.rates
 
 import android.view.View
+import androidx.lifecycle.SavedStateHandle
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpdomain.MovieStateRate
@@ -38,6 +39,10 @@ internal class RateMovieViewModelTest {
     @MockK
     private lateinit var deleteMovieRatingUseCase: DeleteMovieRatingUseCase
 
+    private val savedStateHandle: SavedStateHandle by lazy {
+        SavedStateHandle()
+    }
+
     private val param = RateMovieParam(
         movieId = 12.0,
         screenTitle = "aMovie",
@@ -52,7 +57,8 @@ internal class RateMovieViewModelTest {
             getMovieStateUseCase,
             rateMovieUseCase,
             deleteMovieRatingUseCase,
-            CoroutineTestExtension.testDispatcher
+            CoroutineTestExtension.testDispatcher,
+            savedStateHandle
         )
     }
 
