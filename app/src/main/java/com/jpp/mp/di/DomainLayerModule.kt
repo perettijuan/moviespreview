@@ -104,4 +104,11 @@ class DomainLayerModule {
         connectivityRepository
     )
 
+    @Provides
+    fun providesGetCreditsUseCase(
+        creditsRepository: CreditsRepository,
+        configurationRepository: ConfigurationRepository,
+        connectivityRepository: ConnectivityRepository
+    ): GetCreditsUseCase =
+        GetCreditsUseCase(creditsRepository, configurationRepository, connectivityRepository)
 }
