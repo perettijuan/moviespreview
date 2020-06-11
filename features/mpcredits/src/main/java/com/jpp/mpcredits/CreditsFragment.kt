@@ -44,7 +44,11 @@ class CreditsFragment : Fragment() {
         )
     }
 
+    private var movieCreditsRv: RecyclerView? = null
+
     // used to restore the position of the RecyclerView on view re-creation
+    // TODO we can simplify this once RecyclerView 1.2.0 is released
+    //  ==> https://medium.com/androiddevelopers/restore-recyclerview-scroll-position-a8fbdc9a9334
     private var rvState: Parcelable? = null
 
     override fun onAttach(context: Context) {
@@ -52,71 +56,56 @@ class CreditsFragment : Fragment() {
         super.onAttach(context)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         viewBinding = DataBindingUtil.inflate(inflater, R.layout.credits_fragment, container, false)
         return viewBinding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupViews(view)
 
         rvState = savedInstanceState?.getParcelable(CREDITS_RV_STATE_KEY) ?: rvState
 
+        viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
+            movieCreditsRv?.adapter = CreditsAdapter(viewState.creditsViewState.creditItems) {
+                viewModel.onCreditItemSelected(it)
+            }
+            viewBinding.viewState = viewState
+            viewBinding.executePendingBindings()
+        })
+        viewModel.onInit(CreditsInitParam.create(this@CreditsFragment))
+    }
 
-            viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
-                viewBinding.viewState = viewState
-                viewBinding.executePendingBindings()
-
-                withRecyclerView {
-                    layoutManager = LinearLayoutManager(context)
-                    adapter = CreditsAdapter(viewState.creditsViewState.creditItems) { viewModel.onCreditItemSelected(it) }
-                    layoutManager?.onRestoreInstanceState(rvState)
-                    addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
-                }
-            })
-            viewModel.onInit(CreditsInitParam.create(this@CreditsFragment))
+    override fun onDestroyView() {
+        movieCreditsRv = null
+        super.onDestroyView()
     }
 
     override fun onPause() {
-        withRecyclerView { rvState = layoutManager?.onSaveInstanceState() }
+        rvState = movieCreditsRv?.layoutManager?.onSaveInstanceState()
         super.onPause()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        withRecyclerView { outState.putParcelable(CREDITS_RV_STATE_KEY, layoutManager?.onSaveInstanceState()) }
+        outState.putParcelable(
+            CREDITS_RV_STATE_KEY,
+            movieCreditsRv?.layoutManager?.onSaveInstanceState()
+        )
         super.onSaveInstanceState(outState)
     }
 
-    private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.creditsRv)?.let(action)
-
-    /**
-     * Internal [RecyclerView.Adapter] to render the credit list.
-     */
-    class CreditsAdapter(private val credits: List<CreditPerson>, private val selectionListener: (CreditPerson) -> Unit) : RecyclerView.Adapter<CreditsAdapter.ViewHolder>() {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(
-                    DataBindingUtil.inflate(
-                            LayoutInflater.from(parent.context),
-                            R.layout.list_item_credits,
-                            parent,
-                            false
-                    )
+    private fun setupViews(view: View) {
+        movieCreditsRv = view.findViewById<RecyclerView>(R.id.creditsRv).apply {
+            layoutManager = LinearLayoutManager(context)
+            layoutManager?.onRestoreInstanceState(rvState)
+            addItemDecoration(
+                DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation)
             )
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bindCredit(credits[position], selectionListener)
-        }
-
-        override fun getItemCount(): Int = credits.size
-
-        class ViewHolder(private val itemBinding: ListItemCreditsBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-            fun bindCredit(credit: CreditPerson, selectionListener: (CreditPerson) -> Unit) {
-                itemBinding.viewState = credit
-                itemBinding.executePendingBindings()
-                itemView.setOnClickListener { selectionListener(credit) }
-            }
         }
     }
 
