@@ -1,19 +1,23 @@
 package com.jpp.mpcredits
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jpp.mp.common.extensions.withViewModel
-import com.jpp.mp.common.fragments.MPFragment
+import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mpcredits.databinding.CreditsFragmentBinding
 import com.jpp.mpcredits.databinding.ListItemCreditsBinding
+import dagger.android.support.AndroidSupportInjection
+import javax.inject.Inject
 
 /**
  * Fragment used to show the list of credits that belongs to a particular movie selected by the user.
@@ -26,12 +30,27 @@ import com.jpp.mpcredits.databinding.ListItemCreditsBinding
  * Pre-condition: in order to instantiate this Fragment, a movie ID must be provided in the arguments
  * of the Fragment.
  */
-class CreditsFragment : MPFragment<CreditsViewModel>() {
+class CreditsFragment : Fragment() {
+
+    @Inject
+    lateinit var creditsViewModelFactory: CreditsViewModelFactory
 
     private lateinit var viewBinding: CreditsFragmentBinding
 
+    private val viewModel: CreditsViewModel by viewModels {
+        MPGenericSavedStateViewModelFactory(
+            creditsViewModelFactory,
+            this
+        )
+    }
+
     // used to restore the position of the RecyclerView on view re-creation
     private var rvState: Parcelable? = null
+
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewBinding = DataBindingUtil.inflate(inflater, R.layout.credits_fragment, container, false)
@@ -43,20 +62,19 @@ class CreditsFragment : MPFragment<CreditsViewModel>() {
 
         rvState = savedInstanceState?.getParcelable(CREDITS_RV_STATE_KEY) ?: rvState
 
-        withViewModel {
-            viewState.observe(viewLifecycleOwner, Observer { viewState ->
+
+            viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
                 viewBinding.viewState = viewState
                 viewBinding.executePendingBindings()
 
                 withRecyclerView {
                     layoutManager = LinearLayoutManager(context)
-                    adapter = CreditsAdapter(viewState.creditsViewState.creditItems) { withViewModel { onCreditItemSelected(it) } }
+                    adapter = CreditsAdapter(viewState.creditsViewState.creditItems) { viewModel.onCreditItemSelected(it) }
                     layoutManager?.onRestoreInstanceState(rvState)
                     addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
                 }
             })
-            onInit(CreditsInitParam.create(this@CreditsFragment))
-        }
+            viewModel.onInit(CreditsInitParam.create(this@CreditsFragment))
     }
 
     override fun onPause() {
@@ -68,8 +86,6 @@ class CreditsFragment : MPFragment<CreditsViewModel>() {
         withRecyclerView { outState.putParcelable(CREDITS_RV_STATE_KEY, layoutManager?.onSaveInstanceState()) }
         super.onSaveInstanceState(outState)
     }
-
-    override fun withViewModel(action: CreditsViewModel.() -> Unit) = withViewModel<CreditsViewModel>(viewModelFactory) { action() }
 
     private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.creditsRv)?.let(action)
 
