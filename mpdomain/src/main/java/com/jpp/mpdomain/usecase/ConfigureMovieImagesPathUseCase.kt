@@ -9,7 +9,7 @@ import com.jpp.mpdomain.repository.ConfigurationRepository
  * [Movie].
  */
 class ConfigureMovieImagesPathUseCase(
-        private val configurationRepository: ConfigurationRepository
+    private val configurationRepository: ConfigurationRepository
 ) {
 
     suspend fun execute(movie: Movie): Try<Movie> {
@@ -20,18 +20,14 @@ class ConfigureMovieImagesPathUseCase(
 
     private fun Movie.configurePaths(imagesConfig: ImagesConfiguration): Movie {
         return copy(
-                poster_path = poster_path.createUrlForPath(imagesConfig.base_url, imagesConfig.poster_sizes.last()),
-                backdrop_path = poster_path.createUrlForPath(imagesConfig.base_url, imagesConfig.poster_sizes.last())
+            poster_path = poster_path.createUrlForPath(
+                imagesConfig.base_url,
+                imagesConfig.poster_sizes.last()
+            ),
+            backdrop_path = poster_path.createUrlForPath(
+                imagesConfig.base_url,
+                imagesConfig.poster_sizes.last()
+            )
         )
-    }
-
-    private fun String?.createUrlForPath(baseUrl: String, size: String): String? {
-        return this.let {
-            StringBuilder()
-                    .append(baseUrl)
-                    .append(size)
-                    .append(it)
-                    .toString()
-        }
     }
 }
