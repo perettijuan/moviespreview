@@ -27,7 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith
     CoroutineTestExtension::class
 )
 class CreditsViewModelTest {
-    
+
     @MockK
     private lateinit var getCreditsUseCase: GetCreditsUseCase
 
