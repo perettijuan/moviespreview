@@ -14,8 +14,8 @@ import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
 import com.jpp.mpdomain.CrewMember
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -33,7 +33,8 @@ import kotlinx.coroutines.withContext
  */
 class CreditsViewModel @Inject constructor(
     private val creditsInteractor: CreditsInteractor,
-    private val imagesPathInteractor: ImagesPathInteractor
+    private val imagesPathInteractor: ImagesPathInteractor,
+    private val ioDispatcher: CoroutineDispatcher
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<CreditsViewState>()
@@ -112,7 +113,7 @@ class CreditsViewModel @Inject constructor(
      */
     private fun withInteractor(action: CreditsInteractor.() -> Unit) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            withContext(ioDispatcher) {
                 action(creditsInteractor)
             }
         }
@@ -128,7 +129,7 @@ class CreditsViewModel @Inject constructor(
             true -> _viewState.value = CreditsViewState.showNoCreditsAvailable()
             false -> {
                 viewModelScope.launch {
-                    withContext(Dispatchers.IO) {
+                    withContext(ioDispatcher) {
                         CreditsViewState.showCredits(
                                 credits.cast
                                         .map { imagesPathInteractor.configureCastCharacter(currentParam.targetImageSize, it) }
