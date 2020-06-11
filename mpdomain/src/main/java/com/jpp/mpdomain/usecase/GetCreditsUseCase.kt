@@ -1,7 +1,10 @@
 package com.jpp.mpdomain.usecase
 
+import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.Credits
+import com.jpp.mpdomain.ImagesConfiguration
+import com.jpp.mpdomain.repository.ConfigurationRepository
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.CreditsRepository
 
@@ -9,15 +12,37 @@ import com.jpp.mpdomain.repository.CreditsRepository
  * Use case to retrieve the [Credits] of a particular movie.
  */
 class GetCreditsUseCase(
-    private val connectivityRepository: ConnectivityRepository,
-    private val creditsRepository: CreditsRepository
+    private val creditsRepository: CreditsRepository,
+    private val configurationRepository: ConfigurationRepository,
+    private val connectivityRepository: ConnectivityRepository
 ) {
 
-    fun execute(movieId: Double): Try<Credits> {
+    suspend fun execute(movieId: Double): Try<Credits> {
         return when (connectivityRepository.getCurrentConnectivity()) {
             is Connectivity.Disconnected -> Try.Failure(Try.FailureCause.NoConnectivity)
             is Connectivity.Connected -> creditsRepository.getCreditsForMovie(movieId)
-                ?.let { credits -> Try.Success(credits) } ?: Try.Failure(Try.FailureCause.Unknown)
+                ?.let { credits ->
+                    Try.Success(credits.copy(cast = credits.cast.map { character ->
+                        configureCharacterProfilePath(
+                            character
+                        )
+                    }))
+                } ?: Try.Failure(Try.FailureCause.Unknown)
         }
+    }
+
+    private fun configureCharacterProfilePath(castCharacter: CastCharacter): CastCharacter {
+        return configurationRepository.getAppConfiguration()?.let { appConfiguration ->
+            castCharacter.configureProfilePath(appConfiguration.images)
+        } ?: castCharacter
+    }
+
+    private fun CastCharacter.configureProfilePath(imagesConfig: ImagesConfiguration): CastCharacter {
+        return copy(
+            profile_path = profile_path.createUrlForPath(
+                imagesConfig.base_url,
+                imagesConfig.profile_sizes.last()
+            )
+        )
     }
 }
