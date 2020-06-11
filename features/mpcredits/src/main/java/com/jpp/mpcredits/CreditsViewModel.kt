@@ -14,8 +14,8 @@ import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
 import com.jpp.mpdomain.CrewMember
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -33,7 +33,8 @@ import kotlinx.coroutines.withContext
  */
 class CreditsViewModel @Inject constructor(
     private val creditsInteractor: CreditsInteractor,
-    private val imagesPathInteractor: ImagesPathInteractor
+    private val imagesPathInteractor: ImagesPathInteractor,
+    private val ioDispatcher: CoroutineDispatcher
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<CreditsViewState>()
@@ -49,8 +50,8 @@ class CreditsViewModel @Inject constructor(
     init {
         _viewState.addSource(creditsInteractor.events) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewState.value = CreditsViewState.showNoConnectivityError(retry)
-                is UnknownError -> _viewState.value = CreditsViewState.showUnknownError(retry)
+                is NotConnectedToNetwork -> _viewState.value = _viewState.value?.showNoConnectivityError(retry)
+                is UnknownError -> _viewState.value = _viewState.value?.showUnknownError(retry)
                 is Success -> mapCreditsAndPushViewState(event.credits)
                 is AppLanguageChanged -> refreshCreditsData(currentParam.movieId)
             }
@@ -112,7 +113,7 @@ class CreditsViewModel @Inject constructor(
      */
     private fun withInteractor(action: CreditsInteractor.() -> Unit) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            withContext(ioDispatcher) {
                 action(creditsInteractor)
             }
         }
@@ -125,11 +126,11 @@ class CreditsViewModel @Inject constructor(
      */
     private fun mapCreditsAndPushViewState(credits: Credits) {
         when (credits.cast.isEmpty() && credits.crew.isEmpty()) {
-            true -> _viewState.value = CreditsViewState.showNoCreditsAvailable()
+            true -> _viewState.value = _viewState.value?.showNoCreditsAvailable()
             false -> {
                 viewModelScope.launch {
-                    withContext(Dispatchers.IO) {
-                        CreditsViewState.showCredits(
+                    withContext(ioDispatcher) {
+                        _viewState.value?.showCredits(
                                 credits.cast
                                         .map { imagesPathInteractor.configureCastCharacter(currentParam.targetImageSize, it) }
                                         .map { mapCastCharacterToCreditPerson(it) }
