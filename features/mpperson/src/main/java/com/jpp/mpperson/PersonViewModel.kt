@@ -2,8 +2,8 @@ package com.jpp.mpperson
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mpdomain.Person
 import com.jpp.mpperson.PersonInteractor.PersonEvent.*
 import com.jpp.mpperson.PersonRowViewState.Companion.bioRow
@@ -14,10 +14,9 @@ import com.jpp.mpperson.PersonRowViewState.Companion.placeOfBirthRow
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
- * [MPViewModel] that supports the person section. The VM retrieves
+ * [ViewModel] that supports the person section. The VM retrieves
  * the data from the underlying layers using the provided [PersonInteractor] and maps the business
  * data to UI data, producing a [PersonViewState] that represents the configuration of the view.
  *
@@ -25,10 +24,10 @@ import javax.inject.Inject
  * VM is notified about such event and executes a refresh of both: the data stored by the application
  * and the view state being shown to the user.
  */
-class PersonViewModel @Inject constructor(
+class PersonViewModel(
     private val personInteractor: PersonInteractor,
     private val ioDispatcher: CoroutineDispatcher
-) : MPViewModel() {
+) : ViewModel() {
 
     private val _viewState = MediatorLiveData<PersonViewState>()
     internal val viewState: LiveData<PersonViewState> = _viewState
