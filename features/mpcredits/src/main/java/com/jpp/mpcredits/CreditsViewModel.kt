@@ -44,6 +44,15 @@ class CreditsViewModel(
                 ?: throw IllegalStateException("Trying to access MOVIE_ID_KEY when it is not yet set")
         }
 
+    private var movieTitle: String
+        set(value) {
+            savedStateHandle.set(MOVIE_TITLE_KEY, value)
+        }
+        get() {
+            return savedStateHandle.get(MOVIE_TITLE_KEY)
+                ?: throw IllegalStateException("Trying to access MOVIE_TITLE_KEY when it is not yet set")
+        }
+
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
      * indicate that it is ready to start rendering. When the method is called, the VM
@@ -52,7 +61,7 @@ class CreditsViewModel(
      */
     fun onInit(param: CreditsInitParam) {
         movieId = param.movieId
-        updateCurrentDestination(Destination.ReachedDestination(param.movieTitle))
+        movieTitle = param.movieTitle
         fetchMovieCredits()
     }
 
@@ -76,7 +85,7 @@ class CreditsViewModel(
      * of the movie being shown.
      */
     private fun fetchMovieCredits() {
-        _viewState.value = CreditsViewState.showLoading()
+        _viewState.value = CreditsViewState.showLoading(movieTitle)
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {
                 getCreditsUseCase.execute(movieId)
@@ -130,5 +139,6 @@ class CreditsViewModel(
 
     private companion object {
         const val MOVIE_ID_KEY = "MOVIE_ID_KEY"
+        const val MOVIE_TITLE_KEY = "MOVIE_TITLE_KEY"
     }
 }
