@@ -6,7 +6,7 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 /**
  * Represents the view state of the credits screen.
  */
-data class CreditsViewState(
+internal data class CreditsViewState(
     val loadingVisibility: Int = View.INVISIBLE,
     val screenTitle: String,
     val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),

@@ -29,7 +29,7 @@ class CreditsViewModel(
 ) : ViewModel() {
 
     private val _viewState = MediatorLiveData<CreditsViewState>()
-    val viewState: LiveData<CreditsViewState> = _viewState
+    internal val viewState: LiveData<CreditsViewState> = _viewState
 
     private var movieId: Double
         set(value) {
@@ -55,7 +55,7 @@ class CreditsViewModel(
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit(param: CreditsInitParam) {
+    internal fun onInit(param: CreditsInitParam) {
         movieId = param.movieId
         movieTitle = param.movieTitle
         fetchMovieCredits()
@@ -64,7 +64,7 @@ class CreditsViewModel(
     /**
      * Called when an item is selected in the list of credit persons.
      */
-    fun onCreditItemSelected(personItem: CreditPerson) {
+    internal fun onCreditItemSelected(personItem: CreditPerson) {
         navigator.navigateToCreditDetail(
             personItem.id.toString(),
             personItem.profilePath,

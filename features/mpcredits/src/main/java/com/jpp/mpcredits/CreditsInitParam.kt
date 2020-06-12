@@ -4,7 +4,7 @@ package com.jpp.mpcredits
  * The initialization parameter used for
  * CreditsViewModel initialization.
  */
-data class CreditsInitParam(
+internal data class CreditsInitParam(
     val movieTitle: String,
     val movieId: Double
 ) {
