@@ -1,9 +1,6 @@
 package com.jpp.mpperson
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPViewModel
+import androidx.lifecycle.*
 import com.jpp.mpdomain.Person
 import com.jpp.mpperson.PersonInteractor.PersonEvent.*
 import com.jpp.mpperson.PersonRowViewState.Companion.bioRow
@@ -14,10 +11,9 @@ import com.jpp.mpperson.PersonRowViewState.Companion.placeOfBirthRow
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
- * [MPViewModel] that supports the person section. The VM retrieves
+ * [ViewModel] that supports the person section. The VM retrieves
  * the data from the underlying layers using the provided [PersonInteractor] and maps the business
  * data to UI data, producing a [PersonViewState] that represents the configuration of the view.
  *
@@ -25,15 +21,41 @@ import javax.inject.Inject
  * VM is notified about such event and executes a refresh of both: the data stored by the application
  * and the view state being shown to the user.
  */
-class PersonViewModel @Inject constructor(
+class PersonViewModel(
     private val personInteractor: PersonInteractor,
-    private val ioDispatcher: CoroutineDispatcher
-) : MPViewModel() {
+    private val ioDispatcher: CoroutineDispatcher,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
     private val _viewState = MediatorLiveData<PersonViewState>()
     internal val viewState: LiveData<PersonViewState> = _viewState
 
-    private lateinit var currentParam: PersonParam
+    private var personId: Double
+        set(value) {
+            savedStateHandle.set(PERSON_ID_KEY, value)
+        }
+        get() {
+            return savedStateHandle.get(PERSON_ID_KEY)
+                ?: throw IllegalStateException("Trying to access $PERSON_ID_KEY when it is not yet set")
+        }
+
+    private var personName: String
+        set(value) {
+            savedStateHandle.set(PERSON_NAME_KEY, value)
+        }
+        get() {
+            return savedStateHandle.get(PERSON_NAME_KEY)
+                ?: throw IllegalStateException("Trying to access $PERSON_NAME_KEY when it is not yet set")
+        }
+
+    private var personImageUrl: String
+        set(value) {
+            savedStateHandle.set(PERSON_IMAGE_URL_KEY, value)
+        }
+        get() {
+            return savedStateHandle.get(PERSON_IMAGE_URL_KEY)
+                ?: throw IllegalStateException("Trying to access $PERSON_IMAGE_URL_KEY when it is not yet set")
+        }
 
     /*
      * Map the business logic coming from the interactor into view layer logic.
@@ -46,11 +68,11 @@ class PersonViewModel @Inject constructor(
                 is UnknownError -> _viewState.value =
                     _viewState.value?.showUnknownError { fetchPersonData() }
                 is Success -> _viewState.value =
-                    getViewStateFromPersonData(currentParam.imageUrl, event.person)
+                    getViewStateFromPersonData(personImageUrl, event.person)
                 is AppLanguageChanged -> refreshPersonData(
-                    currentParam.personName,
-                    currentParam.imageUrl,
-                    currentParam.personId
+                    personName,
+                    personImageUrl,
+                    personId
                 )
             }
         }
@@ -63,7 +85,9 @@ class PersonViewModel @Inject constructor(
      * on it.
      */
     internal fun onInit(param: PersonParam) {
-        currentParam = param
+        personId = param.personId
+        personName = param.personName
+        personImageUrl = param.imageUrl
         fetchPersonData()
     }
 
@@ -73,9 +97,9 @@ class PersonViewModel @Inject constructor(
      * based on the result posted by the interactor.
      */
     private fun fetchPersonData() {
-        withInteractor { fetchPerson(currentParam.personId) }
+        withInteractor { fetchPerson(personId) }
         _viewState.value =
-            PersonViewState.showLoading(currentParam.personName, currentParam.imageUrl)
+            PersonViewState.showLoading(personName, personImageUrl)
     }
 
     /**
@@ -130,4 +154,10 @@ class PersonViewModel @Inject constructor(
             birthday.isNullOrEmpty() &&
             deathday.isNullOrEmpty() &&
             place_of_birth.isNullOrEmpty()
+
+    private companion object {
+        const val PERSON_ID_KEY = "PERSON_ID_KEY"
+        const val PERSON_NAME_KEY = "PERSON_NAME_KEY"
+        const val PERSON_IMAGE_URL_KEY = "PERSON_IMAGE_URL_KEY"
+    }
 }
