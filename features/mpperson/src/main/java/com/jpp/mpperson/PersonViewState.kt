@@ -14,40 +14,39 @@ data class PersonViewState(
     val contentViewState: PersonContentViewState = PersonContentViewState()
 ) {
 
+    fun showUnknownError(errorHandler: () -> Unit): PersonViewState = copy(
+        loadingVisibility = View.INVISIBLE,
+        errorViewState = ErrorViewState.asUnknownError(errorHandler)
+    )
+
+    fun showNoConnectivityError(errorHandler: () -> Unit): PersonViewState =
+        copy(
+            loadingVisibility = View.INVISIBLE,
+            errorViewState = ErrorViewState.asConnectivity(errorHandler)
+        )
+
+    fun showPerson(
+        imageUrl: String,
+        contentViewStateValue: PersonContentViewState
+    ): PersonViewState = copy(
+        loadingVisibility = View.INVISIBLE,
+        personImageUrl = imageUrl,
+        contentViewState = contentViewStateValue
+    )
+
+    fun showNoDataAvailable(imageUrl: String): PersonViewState = copy(
+        loadingVisibility = View.INVISIBLE,
+        personImageUrl = imageUrl,
+        contentViewState = PersonContentViewState(
+            dataAvailable = PersonRowViewState.noDataAvailableRow()
+        )
+    )
+
     companion object {
         fun showLoading(screenTitle: String, imageUrl: String) = PersonViewState(
             screenTitle = screenTitle,
             personImageUrl = imageUrl,
             loadingVisibility = View.VISIBLE
-        )
-
-        fun showUnknownError(screenTitle: String, errorHandler: () -> Unit) = PersonViewState(
-            screenTitle = screenTitle,
-            errorViewState = ErrorViewState.asUnknownError(errorHandler)
-        )
-
-        fun showNoConnectivityError(screenTitle: String, errorHandler: () -> Unit) =
-            PersonViewState(
-                screenTitle = screenTitle,
-                errorViewState = ErrorViewState.asConnectivity(errorHandler)
-            )
-
-        fun showPerson(
-            screenTitle: String,
-            imageUrl: String,
-            contentViewStateValue: PersonContentViewState
-        ) = PersonViewState(
-            screenTitle = screenTitle,
-            personImageUrl = imageUrl,
-            contentViewState = contentViewStateValue
-        )
-
-        fun showNoDataAvailable(screenTitle: String, imageUrl: String) = PersonViewState(
-            screenTitle = screenTitle,
-            personImageUrl = imageUrl,
-            contentViewState = PersonContentViewState(
-                dataAvailable = PersonRowViewState.noDataAvailableRow()
-            )
         )
     }
 }

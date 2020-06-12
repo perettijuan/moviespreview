@@ -6,19 +6,16 @@ import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.Person
-import com.jpp.mpperson.PersonInteractor.PersonEvent.AppLanguageChanged
-import com.jpp.mpperson.PersonInteractor.PersonEvent.NotConnectedToNetwork
-import com.jpp.mpperson.PersonInteractor.PersonEvent.Success
-import com.jpp.mpperson.PersonInteractor.PersonEvent.UnknownError
+import com.jpp.mpperson.PersonInteractor.PersonEvent.*
 import com.jpp.mpperson.PersonRowViewState.Companion.bioRow
 import com.jpp.mpperson.PersonRowViewState.Companion.birthdayRow
 import com.jpp.mpperson.PersonRowViewState.Companion.deathDayRow
 import com.jpp.mpperson.PersonRowViewState.Companion.emptyRow
 import com.jpp.mpperson.PersonRowViewState.Companion.placeOfBirthRow
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * [MPViewModel] that supports the person section. The VM retrieves
@@ -38,7 +35,8 @@ class PersonViewModel @Inject constructor(
 
     private lateinit var currentParam: PersonParam
 
-    private val retry: () -> Unit = { fetchPersonData(currentParam.personName, currentParam.imageUrl, currentParam.personId) }
+    private val retry: () -> Unit =
+        { fetchPersonData(currentParam.personName, currentParam.imageUrl, currentParam.personId) }
 
     /*
      * Map the business logic coming from the interactor into view layer logic.
@@ -46,10 +44,16 @@ class PersonViewModel @Inject constructor(
     init {
         _viewState.addSource(personInteractor.events) { event ->
             when (event) {
-                is NotConnectedToNetwork -> _viewState.value = PersonViewState.showNoConnectivityError(currentParam.personName, retry)
-                is UnknownError -> _viewState.value = PersonViewState.showUnknownError(currentParam.personName, retry)
-                is Success -> _viewState.value = getViewStateFromPersonData(currentParam.personName, currentParam.imageUrl, event.person)
-                is AppLanguageChanged -> refreshPersonData(currentParam.personName, currentParam.imageUrl, currentParam.personId)
+                is NotConnectedToNetwork -> _viewState.value =
+                    _viewState.value?.showNoConnectivityError(retry)
+                is UnknownError -> _viewState.value = _viewState.value?.showUnknownError(retry)
+                is Success -> _viewState.value =
+                    getViewStateFromPersonData(currentParam.imageUrl, event.person)
+                is AppLanguageChanged -> refreshPersonData(
+                    currentParam.personName,
+                    currentParam.imageUrl,
+                    currentParam.personId
+                )
             }
         }
     }
@@ -105,19 +109,22 @@ class PersonViewModel @Inject constructor(
      * Creates a [PersonViewState] that represents the data to show from the provided
      * [person].
      */
-    private fun getViewStateFromPersonData(personName: String, personImageUrl: String, person: Person): PersonViewState {
+    private fun getViewStateFromPersonData(
+        personImageUrl: String,
+        person: Person
+    ): PersonViewState? {
         return when (person.isEmpty()) {
-            true -> PersonViewState.showNoDataAvailable(personName, personImageUrl)
-            else -> PersonViewState.showPerson(personName, personImageUrl, mapPersonData(person))
+            true -> _viewState.value?.showNoDataAvailable(personImageUrl)
+            else -> _viewState.value?.showPerson(personImageUrl, mapPersonData(person))
         }
     }
 
     private fun mapPersonData(person: Person): PersonContentViewState {
         return PersonContentViewState(
-                birthday = person.birthday?.let { birthdayRow(it) } ?: emptyRow(),
-                placeOfBirth = person.place_of_birth?.let { placeOfBirthRow(it) } ?: emptyRow(),
-                deathDay = person.deathday?.let { deathDayRow(it) } ?: emptyRow(),
-                bio = if (person.biography.isEmpty()) emptyRow() else bioRow(person.biography)
+            birthday = person.birthday?.let { birthdayRow(it) } ?: emptyRow(),
+            placeOfBirth = person.place_of_birth?.let { placeOfBirthRow(it) } ?: emptyRow(),
+            deathDay = person.deathday?.let { deathDayRow(it) } ?: emptyRow(),
+            bio = if (person.biography.isEmpty()) emptyRow() else bioRow(person.biography)
         )
     }
 
