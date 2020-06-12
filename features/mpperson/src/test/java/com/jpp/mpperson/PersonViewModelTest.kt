@@ -2,7 +2,7 @@ package com.jpp.mpperson
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.common.navigation.Destination
+import androidx.lifecycle.SavedStateHandle
 import com.jpp.mpdomain.Person
 import com.jpp.mptestutils.CoroutineTestExtension
 import com.jpp.mptestutils.InstantTaskExecutorExtension
@@ -15,7 +15,6 @@ import io.mockk.verifyOrder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -38,7 +37,8 @@ class PersonViewModelTest {
     fun setUp() {
         every { interactor.events } returns lvInteractorEvents
 
-        subject = PersonViewModel(interactor, CoroutineTestExtension.testDispatcher)
+        subject =
+            PersonViewModel(interactor, CoroutineTestExtension.testDispatcher, SavedStateHandle())
     }
 
     @Test

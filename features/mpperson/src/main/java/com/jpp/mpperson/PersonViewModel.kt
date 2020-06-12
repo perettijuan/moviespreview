@@ -47,7 +47,7 @@ class PersonViewModel(
             return savedStateHandle.get(PERSON_NAME_KEY)
                 ?: throw IllegalStateException("Trying to access $PERSON_NAME_KEY when it is not yet set")
         }
-    
+
     private var personImageUrl: String
         set(value) {
             savedStateHandle.set(PERSON_IMAGE_URL_KEY, value)
