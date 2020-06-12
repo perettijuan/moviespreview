@@ -11,7 +11,7 @@ import com.jpp.mpperson.PersonRowViewState.Companion.birthdayRow
 import com.jpp.mpperson.PersonRowViewState.Companion.deathDayRow
 import com.jpp.mpperson.PersonRowViewState.Companion.emptyRow
 import com.jpp.mpperson.PersonRowViewState.Companion.placeOfBirthRow
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -26,7 +26,8 @@ import javax.inject.Inject
  * and the view state being shown to the user.
  */
 class PersonViewModel @Inject constructor(
-    private val personInteractor: PersonInteractor
+    private val personInteractor: PersonInteractor,
+    private val ioDispatcher: CoroutineDispatcher
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<PersonViewState>()
@@ -96,7 +97,7 @@ class PersonViewModel @Inject constructor(
      */
     private fun withInteractor(action: PersonInteractor.() -> Unit) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            withContext(ioDispatcher) {
                 action(personInteractor)
             }
         }

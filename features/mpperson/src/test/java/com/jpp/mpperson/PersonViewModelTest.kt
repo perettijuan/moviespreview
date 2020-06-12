@@ -13,9 +13,7 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import io.mockk.verifyOrder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.fail
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -23,9 +21,9 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExperimentalCoroutinesApi
 @ExtendWith(
-        MockKExtension::class,
-        InstantTaskExecutorExtension::class,
-        CoroutineTestExtension::class
+    MockKExtension::class,
+    InstantTaskExecutorExtension::class,
+    CoroutineTestExtension::class
 )
 class PersonViewModelTest {
 
@@ -40,7 +38,7 @@ class PersonViewModelTest {
     fun setUp() {
         every { interactor.events } returns lvInteractorEvents
 
-        subject = PersonViewModel(interactor)
+        subject = PersonViewModel(interactor, CoroutineTestExtension.testDispatcher)
     }
 
     @Test
@@ -54,7 +52,7 @@ class PersonViewModelTest {
 
         assertNotNull(viewStatePosted)
         assertEquals("aPerson", viewStatePosted?.screenTitle)
-        assertEquals("emptyUrl", viewStatePosted?.personImageUrl)
+        assertEquals("aUrl", viewStatePosted?.personImageUrl)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.birthday?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.placeOfBirth?.visibility)
@@ -66,13 +64,7 @@ class PersonViewModelTest {
         assertEquals(true, viewStatePosted?.errorViewState?.isConnectivity)
     }
 
-    /*
-     * TODO I need to check exactly what's happening with this UT. Don't want to waste
-     *  time since I'm going to refactor by eliminating the interactor layers.
-     * Fails only in CircleCI ==> https://211-156444935-gh.circle-artifacts.com/0/features/mpperson/build/reports/tests/testDebugUnitTest/classes/com.jpp.mpperson.PersonViewModelTest.html#Should%20retry%20to%20fetch%20data%20when%20not%20connected%20and%20retry%20is%20executed()
-     */
     @Test
-    @Disabled
     fun `Should retry to fetch data when not connected and retry is executed`() {
         var viewStatePosted: PersonViewState? = null
 
@@ -98,7 +90,7 @@ class PersonViewModelTest {
 
         assertNotNull(viewStatePosted)
         assertEquals("aPerson", viewStatePosted?.screenTitle)
-        assertEquals("emptyUrl", viewStatePosted?.personImageUrl)
+        assertEquals("aUrl", viewStatePosted?.personImageUrl)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.birthday?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.placeOfBirth?.visibility)
@@ -180,12 +172,12 @@ class PersonViewModelTest {
     fun `Should post no data available when person data is empty`() {
         var viewStatePosted: PersonViewState? = null
         val person = Person(
-                id = 10.0,
-                name = "aName",
-                biography = "",
-                birthday = "",
-                deathday = null,
-                place_of_birth = null
+            id = 10.0,
+            name = "aName",
+            biography = "",
+            birthday = "",
+            deathday = null,
+            place_of_birth = null
         )
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
@@ -204,19 +196,22 @@ class PersonViewModelTest {
         assertEquals(View.INVISIBLE, viewStatePosted?.contentViewState?.bio?.visibility)
 
         assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.dataAvailable?.visibility)
-        assertEquals(R.string.person_no_details, viewStatePosted?.contentViewState?.dataAvailable?.titleRes)
+        assertEquals(
+            R.string.person_no_details,
+            viewStatePosted?.contentViewState?.dataAvailable?.titleRes
+        )
     }
 
     @Test
     fun `Should post full person data`() {
         var viewStatePosted: PersonViewState? = null
         val person = Person(
-                id = 10.0,
-                name = "aName",
-                biography = "a bio that is long",
-                birthday = "aBirthday",
-                deathday = "aDeathday",
-                place_of_birth = "aPlaceOfBirth"
+            id = 10.0,
+            name = "aName",
+            biography = "a bio that is long",
+            birthday = "aBirthday",
+            deathday = "aDeathday",
+            place_of_birth = "aPlaceOfBirth"
         )
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
@@ -233,34 +228,31 @@ class PersonViewModelTest {
 
         // birthday
         assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.birthday?.visibility)
-        assertEquals(R.string.person_birthday_title, viewStatePosted?.contentViewState?.birthday?.titleRes)
+        assertEquals(
+            R.string.person_birthday_title,
+            viewStatePosted?.contentViewState?.birthday?.titleRes
+        )
         assertEquals("aBirthday", viewStatePosted?.contentViewState?.birthday?.value)
 
         // place of birth
         assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.placeOfBirth?.visibility)
-        assertEquals(R.string.person_birth_place_title, viewStatePosted?.contentViewState?.placeOfBirth?.titleRes)
+        assertEquals(
+            R.string.person_birth_place_title,
+            viewStatePosted?.contentViewState?.placeOfBirth?.titleRes
+        )
         assertEquals("aPlaceOfBirth", viewStatePosted?.contentViewState?.placeOfBirth?.value)
 
         // deathday
         assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.deathDay?.visibility)
-        assertEquals(R.string.person_death_day_title, viewStatePosted?.contentViewState?.deathDay?.titleRes)
+        assertEquals(
+            R.string.person_death_day_title,
+            viewStatePosted?.contentViewState?.deathDay?.titleRes
+        )
         assertEquals("aDeathday", viewStatePosted?.contentViewState?.deathDay?.value)
 
         // bio
         assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.bio?.visibility)
         assertEquals(R.string.person_bio_title, viewStatePosted?.contentViewState?.bio?.titleRes)
         assertEquals("a bio that is long", viewStatePosted?.contentViewState?.bio?.value)
-    }
-
-    @Test
-    fun `Should update reached destination in onInit`() {
-        var destinationReached: Destination? = null
-        val expected = Destination.ReachedDestination("aPerson")
-
-        subject.destinationEvents.observeWith { destinationReached = it }
-
-        subject.onInit(PersonParam(10.0, "aPerson", "aUrl"))
-
-        assertEquals(expected, destinationReached)
     }
 }
