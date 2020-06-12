@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.coroutines.MPViewModel
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.Person
 import com.jpp.mpperson.PersonInteractor.PersonEvent.*
 import com.jpp.mpperson.PersonRowViewState.Companion.bioRow
@@ -31,7 +30,7 @@ class PersonViewModel @Inject constructor(
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<PersonViewState>()
-    val viewState: LiveData<PersonViewState> = _viewState
+    internal val viewState: LiveData<PersonViewState> = _viewState
 
     private lateinit var currentParam: PersonParam
 
@@ -62,8 +61,7 @@ class PersonViewModel @Inject constructor(
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit(param: PersonParam) {
-        updateCurrentDestination(Destination.ReachedDestination(param.personName))
+    internal fun onInit(param: PersonParam) {
         currentParam = param
         fetchPersonData()
     }

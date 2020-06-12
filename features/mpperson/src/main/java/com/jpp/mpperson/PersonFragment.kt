@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.jpp.mp.common.extensions.observeValue
+import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mpperson.databinding.FragmentPersonBinding
@@ -41,6 +42,7 @@ class PersonFragment : MPFragment<PersonViewModel>() {
     override fun withViewModel(action: PersonViewModel.() -> Unit) = withViewModel<PersonViewModel>(viewModelFactory) { action() }
 
     private fun renderViewState(viewState: PersonViewState) {
+        setScreenTitle(viewState.screenTitle)
         viewBinding.viewState = viewState
     }
 }

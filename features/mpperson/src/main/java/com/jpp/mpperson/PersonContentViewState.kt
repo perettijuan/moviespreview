@@ -3,7 +3,7 @@ package com.jpp.mpperson
 /**
  * Represents the view state of the content of the person biography from the UI perspective.
  */
-data class PersonContentViewState(
+internal data class PersonContentViewState(
     val birthday: PersonRowViewState = PersonRowViewState.emptyRow(),
     val placeOfBirth: PersonRowViewState = PersonRowViewState.emptyRow(),
     val deathDay: PersonRowViewState = PersonRowViewState.emptyRow(),

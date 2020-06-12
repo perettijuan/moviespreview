@@ -6,7 +6,7 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 /**
  * Represents the view state of the profile person screen.
  */
-data class PersonViewState(
+internal data class PersonViewState(
     val screenTitle: String,
     val personImageUrl: String = "emptyUrl",
     val loadingVisibility: Int = View.INVISIBLE,

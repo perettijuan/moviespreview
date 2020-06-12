@@ -5,7 +5,7 @@ import android.os.Bundle
 /**
  * The initialization parameter for the [PersonViewModel.onInit] method.
  */
-data class PersonParam(
+internal data class PersonParam(
     val personId: Double,
     val personName: String,
     val imageUrl: String

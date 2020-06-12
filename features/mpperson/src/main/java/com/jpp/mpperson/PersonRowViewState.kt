@@ -5,7 +5,7 @@ import android.view.View
 /**
  * Represents the view state of the rows that are shown in the person's layout.
  */
-data class PersonRowViewState(
+internal data class PersonRowViewState(
     val visibility: Int = View.INVISIBLE,
     val titleRes: Int,
     val value: String
