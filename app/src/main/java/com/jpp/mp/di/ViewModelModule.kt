@@ -11,7 +11,6 @@ import com.jpp.mpabout.licenses.content.LicenseContentViewModel
 import com.jpp.mpaccount.account.UserAccountViewModel
 import com.jpp.mpaccount.account.lists.UserMovieListViewModel
 import com.jpp.mpaccount.login.LoginViewModel
-import com.jpp.mpcredits.CreditsViewModel
 import com.jpp.mpperson.PersonViewModel
 import com.jpp.mpsearch.SearchViewModel
 import dagger.Binds
@@ -81,14 +80,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(PersonViewModel::class)
     internal abstract fun getPersonViewModel(viewModel: PersonViewModel): ViewModel
-
-    /*
-     * Credits feature dependencies
-     */
-    @Binds
-    @IntoMap
-    @ViewModelKey(CreditsViewModel::class)
-    internal abstract fun provideCreditsViewModel(viewModel: CreditsViewModel): ViewModel
 
     /*
      * About feature dependencies

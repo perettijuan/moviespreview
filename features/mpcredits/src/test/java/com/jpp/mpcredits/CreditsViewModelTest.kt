@@ -1,6 +1,7 @@
 package com.jpp.mpcredits
 
 import android.view.View
+import androidx.lifecycle.SavedStateHandle
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
@@ -37,7 +38,8 @@ class CreditsViewModelTest {
     fun setUp() {
         subject = CreditsViewModel(
             getCreditsUseCase,
-            CoroutineTestExtension.testDispatcher
+            CoroutineTestExtension.testDispatcher,
+            SavedStateHandle()
         )
     }
 
@@ -48,7 +50,7 @@ class CreditsViewModelTest {
         coEvery { getCreditsUseCase.execute(any()) } returns Try.Failure(Try.FailureCause.NoConnectivity)
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
-        subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
+        subject.onInit(CreditsInitParam("aMovie", 10.0))
 
         assertNotNull(viewStatePosted)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
@@ -67,7 +69,7 @@ class CreditsViewModelTest {
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
+        subject.onInit(CreditsInitParam("aMovie", 10.0))
 
         viewStatePosted?.let {
             it.errorViewState.errorHandler?.invoke()
@@ -82,7 +84,7 @@ class CreditsViewModelTest {
         coEvery { getCreditsUseCase.execute(any()) } returns Try.Failure(Try.FailureCause.Unknown)
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
-        subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
+        subject.onInit(CreditsInitParam("aMovie", 10.0))
 
         assertNotNull(viewStatePosted)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
@@ -100,7 +102,7 @@ class CreditsViewModelTest {
         coEvery { getCreditsUseCase.execute(any()) } returns Try.Failure(Try.FailureCause.NoConnectivity)
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
-        subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
+        subject.onInit(CreditsInitParam("aMovie", 10.0))
 
         viewStatePosted?.let {
             it.errorViewState.errorHandler?.invoke()
@@ -121,7 +123,7 @@ class CreditsViewModelTest {
         coEvery { getCreditsUseCase.execute(any()) } returns Try.Success(credits)
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
-        subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
+        subject.onInit(CreditsInitParam("aMovie", 10.0))
 
         assertNotNull(viewStatePosted)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
@@ -149,7 +151,7 @@ class CreditsViewModelTest {
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
+        subject.onInit(CreditsInitParam("aMovie", 10.0))
 
         assertNotNull(viewStatePosted)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
@@ -184,7 +186,7 @@ class CreditsViewModelTest {
 
         subject.destinationEvents.observeWith { destinationReached = it }
 
-        subject.onInit(CreditsInitParam("aMovie", 10.0, 12))
+        subject.onInit(CreditsInitParam("aMovie", 10.0))
 
         assertEquals(expected, destinationReached)
     }

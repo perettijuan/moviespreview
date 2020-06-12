@@ -2,6 +2,7 @@ package com.jpp.mpcredits
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.extensions.addAllMapping
@@ -14,7 +15,6 @@ import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] that supports the credits section. The VM retrieves
@@ -26,15 +26,23 @@ import javax.inject.Inject
  * VM is notified about such event and executes a refresh of both: the data stored by the application
  * and the view state being shown to the user.
  */
-class CreditsViewModel @Inject constructor(
+class CreditsViewModel(
     private val getCreditsUseCase: GetCreditsUseCase,
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
+    private val savedStateHandle: SavedStateHandle
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<CreditsViewState>()
-    val viewState: LiveData<CreditsViewState>  = _viewState
+    val viewState: LiveData<CreditsViewState> = _viewState
 
-    private lateinit var currentParam: CreditsInitParam
+    private var movieId: Double
+        set(value) {
+            savedStateHandle.set(MOVIE_ID_KEY, value)
+        }
+        get() {
+            return savedStateHandle.get(MOVIE_ID_KEY)
+                ?: throw IllegalStateException("Trying to access MOVIE_ID_KEY when it is not yet set")
+        }
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -43,8 +51,8 @@ class CreditsViewModel @Inject constructor(
      * on it.
      */
     fun onInit(param: CreditsInitParam) {
-        currentParam = param
-        updateCurrentDestination(Destination.ReachedDestination(currentParam.movieTitle))
+        movieId = param.movieId
+        updateCurrentDestination(Destination.ReachedDestination(param.movieTitle))
         fetchMovieCredits()
     }
 
@@ -71,7 +79,7 @@ class CreditsViewModel @Inject constructor(
         _viewState.value = CreditsViewState.showLoading()
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {
-                getCreditsUseCase.execute(currentParam.movieId)
+                getCreditsUseCase.execute(movieId)
             }
 
             when (result) {
@@ -118,5 +126,9 @@ class CreditsViewModel @Inject constructor(
             title = name,
             subTitle = department
         )
+    }
+
+    private companion object {
+        const val MOVIE_ID_KEY = "MOVIE_ID_KEY"
     }
 }
