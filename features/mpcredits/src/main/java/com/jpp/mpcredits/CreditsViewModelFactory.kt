@@ -18,6 +18,6 @@ class CreditsViewModelFactory @Inject constructor(
 ) : ViewModelAssistedFactory<CreditsViewModel> {
 
     override fun create(handle: SavedStateHandle): CreditsViewModel {
-        return CreditsViewModel(getCreditsUseCase, ioDispatcher)
+        return CreditsViewModel(getCreditsUseCase, ioDispatcher, handle)
     }
 }
