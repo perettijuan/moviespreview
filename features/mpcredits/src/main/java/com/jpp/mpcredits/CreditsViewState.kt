@@ -8,6 +8,7 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
  */
 data class CreditsViewState(
     val loadingVisibility: Int = View.INVISIBLE,
+    val screenTitle: String,
     val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
     val creditsViewState: CreditsContentViewState = CreditsContentViewState(),
     val noCreditsViewState: NoCreditsAvailableViewState = NoCreditsAvailableViewState()
@@ -38,6 +39,7 @@ data class CreditsViewState(
         )
 
     companion object {
-        fun showLoading() = CreditsViewState(loadingVisibility = View.VISIBLE)
+        fun showLoading(screenTitle: String) =
+            CreditsViewState(loadingVisibility = View.VISIBLE, screenTitle = screenTitle)
     }
 }

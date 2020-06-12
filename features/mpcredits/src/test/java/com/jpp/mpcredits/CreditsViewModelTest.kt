@@ -14,7 +14,9 @@ import com.jpp.mptestutils.observeWith
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -32,12 +34,16 @@ class CreditsViewModelTest {
     @MockK
     private lateinit var getCreditsUseCase: GetCreditsUseCase
 
+    @RelaxedMockK
+    private lateinit var navigator: CreditNavigator
+
     private lateinit var subject: CreditsViewModel
 
     @BeforeEach
     fun setUp() {
         subject = CreditsViewModel(
             getCreditsUseCase,
+            navigator,
             CoroutineTestExtension.testDispatcher,
             SavedStateHandle()
         )
@@ -53,6 +59,7 @@ class CreditsViewModelTest {
         subject.onInit(CreditsInitParam("aMovie", 10.0))
 
         assertNotNull(viewStatePosted)
+        assertEquals("aMovie", viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.creditsViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.noCreditsViewState?.visibility)
@@ -87,6 +94,7 @@ class CreditsViewModelTest {
         subject.onInit(CreditsInitParam("aMovie", 10.0))
 
         assertNotNull(viewStatePosted)
+        assertEquals("aMovie", viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.creditsViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.noCreditsViewState?.visibility)
@@ -126,6 +134,7 @@ class CreditsViewModelTest {
         subject.onInit(CreditsInitParam("aMovie", 10.0))
 
         assertNotNull(viewStatePosted)
+        assertEquals("aMovie", viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.creditsViewState?.visibility)
@@ -154,6 +163,7 @@ class CreditsViewModelTest {
         subject.onInit(CreditsInitParam("aMovie", 10.0))
 
         assertNotNull(viewStatePosted)
+        assertEquals("aMovie", viewStatePosted?.screenTitle)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.noCreditsViewState?.visibility)
@@ -180,18 +190,6 @@ class CreditsViewModelTest {
     }
 
     @Test
-    fun `Should update reached destination in onInit`() {
-        var destinationReached: Destination? = null
-        val expected = Destination.ReachedDestination("aMovie")
-
-        subject.destinationEvents.observeWith { destinationReached = it }
-
-        subject.onInit(CreditsInitParam("aMovie", 10.0))
-
-        assertEquals(expected, destinationReached)
-    }
-
-    @Test
     fun `Should request navigation to person details when credit item selected`() {
         val personItem = CreditPerson(
             id = 10.0,
@@ -200,22 +198,9 @@ class CreditsViewModelTest {
             subTitle = "aSubtitle"
         )
 
-        val expectedDestination = Destination.MPPerson(
-            personId = "10.0",
-            personImageUrl = "aProfile",
-            personName = "aSubtitle"
-        )
-
-        var requestedDestination: Destination? = null
-
-        subject.navigationEvents.observeWith {
-            it.actionIfNotHandled { dest ->
-                requestedDestination = dest
-            }
-        }
         subject.onCreditItemSelected(personItem)
 
-        assertEquals(expectedDestination, requestedDestination)
+        verify { navigator.navigateToCreditDetail("10.0", "aProfile", "aSubtitle") }
     }
 
     private companion object {

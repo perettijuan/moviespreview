@@ -9,13 +9,13 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.jpp.mp.common.extensions.observeValue
+import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mpcredits.databinding.CreditsFragmentBinding
-import com.jpp.mpcredits.databinding.ListItemCreditsBinding
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
@@ -71,13 +71,7 @@ class CreditsFragment : Fragment() {
 
         rvState = savedInstanceState?.getParcelable(CREDITS_RV_STATE_KEY) ?: rvState
 
-        viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
-            movieCreditsRv?.adapter = CreditsAdapter(viewState.creditsViewState.creditItems) {
-                viewModel.onCreditItemSelected(it)
-            }
-            viewBinding.viewState = viewState
-            viewBinding.executePendingBindings()
-        })
+        viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
         viewModel.onInit(CreditsInitParam.create(this@CreditsFragment))
     }
 
@@ -107,6 +101,15 @@ class CreditsFragment : Fragment() {
                 DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation)
             )
         }
+    }
+
+    private fun renderViewState(viewState: CreditsViewState) {
+        setScreenTitle(viewState.screenTitle)
+        movieCreditsRv?.adapter = CreditsAdapter(viewState.creditsViewState.creditItems) {
+            viewModel.onCreditItemSelected(it)
+        }
+        viewBinding.viewState = viewState
+        viewBinding.executePendingBindings()
     }
 
     private companion object {
