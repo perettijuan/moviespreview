@@ -15,6 +15,6 @@ class PersonViewModelFactory @Inject constructor(
 ) : ViewModelAssistedFactory<PersonViewModel> {
 
     override fun create(handle: SavedStateHandle): PersonViewModel {
-        return PersonViewModel(personInteractor, ioDispatcher)
+        return PersonViewModel(personInteractor, ioDispatcher, handle)
     }
 }
