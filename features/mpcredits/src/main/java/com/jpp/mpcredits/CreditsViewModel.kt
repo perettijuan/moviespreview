@@ -1,12 +1,7 @@
 package com.jpp.mpcredits
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPViewModel
+import androidx.lifecycle.*
 import com.jpp.mp.common.extensions.addAllMapping
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
 import com.jpp.mpdomain.CrewMember
@@ -17,7 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * [MPViewModel] that supports the credits section. The VM retrieves
+ * [ViewModel] that supports the credits section. The VM retrieves
  * the data from the underlying layers and maps the business
  * data to UI data, producing a [CreditsViewState] that represents the configuration of the view
  * at any given moment.
@@ -28,9 +23,10 @@ import kotlinx.coroutines.withContext
  */
 class CreditsViewModel(
     private val getCreditsUseCase: GetCreditsUseCase,
+    private val navigator: CreditNavigator,
     private val ioDispatcher: CoroutineDispatcher,
     private val savedStateHandle: SavedStateHandle
-) : MPViewModel() {
+) : ViewModel() {
 
     private val _viewState = MediatorLiveData<CreditsViewState>()
     val viewState: LiveData<CreditsViewState> = _viewState
@@ -69,15 +65,11 @@ class CreditsViewModel(
      * Called when an item is selected in the list of credit persons.
      */
     fun onCreditItemSelected(personItem: CreditPerson) {
-        with(personItem) {
-            navigateTo(
-                Destination.MPPerson(
-                    personId = id.toString(),
-                    personImageUrl = profilePath,
-                    personName = subTitle
-                )
-            )
-        }
+        navigator.navigateToCreditDetail(
+            personItem.id.toString(),
+            personItem.profilePath,
+            personItem.subTitle
+        )
     }
 
     /**

@@ -14,10 +14,11 @@ import javax.inject.Inject
  */
 class CreditsViewModelFactory @Inject constructor(
     private val getCreditsUseCase: GetCreditsUseCase,
+    private val creditNavigator: CreditNavigator,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModelAssistedFactory<CreditsViewModel> {
 
     override fun create(handle: SavedStateHandle): CreditsViewModel {
-        return CreditsViewModel(getCreditsUseCase, ioDispatcher, handle)
+        return CreditsViewModel(getCreditsUseCase, creditNavigator, ioDispatcher, handle)
     }
 }
