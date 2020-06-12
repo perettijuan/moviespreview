@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
+import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mpperson.databinding.FragmentPersonBinding
@@ -33,13 +33,14 @@ class PersonFragment : MPFragment<PersonViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         withViewModel {
-            viewState.observe(this@PersonFragment.viewLifecycleOwner, Observer { viewState ->
-                viewBinding.viewState = viewState
-            })
-
+            viewState.observeValue(viewLifecycleOwner, ::renderViewState)
             onInit(PersonParam.fromArguments(arguments))
         }
     }
 
     override fun withViewModel(action: PersonViewModel.() -> Unit) = withViewModel<PersonViewModel>(viewModelFactory) { action() }
+
+    private fun renderViewState(viewState: PersonViewState) {
+        viewBinding.viewState = viewState
+    }
 }
