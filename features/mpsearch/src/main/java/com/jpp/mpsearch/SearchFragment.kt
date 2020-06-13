@@ -31,56 +31,56 @@ class SearchFragment : MPFragment<SearchViewModel>() {
 
     private lateinit var viewBinding: SearchFragmentBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    private var searchResultRv: RecyclerView? = null
+    private var searchView: SearchView? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         viewBinding = DataBindingUtil.inflate(inflater, R.layout.search_fragment, container, false)
         return viewBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        withRecyclerView {
-            layoutManager = LinearLayoutManager(activity)
-            adapter = SearchItemAdapter { item ->
-                withViewModel { onItemSelected(item) }
-            }
-        }
-        setUpSearchView()
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+        setupViews(view)
 
         withViewModel {
             viewState.observe(this@SearchFragment.viewLifecycleOwner, Observer { viewState ->
-                viewBinding.viewState = viewState
-
-                withRecyclerView { (adapter as SearchItemAdapter).submitList(viewState.contentViewState.searchResultList) }
-
-                withSearchView {
-                    setQuery(viewState.searchQuery, false)
-                    clearFocus() // hide keyboard
-                }
+                renderViewState(viewState)
             })
             onInit(getScreenWidthInPixels())
         }
     }
 
-    override fun withViewModel(action: SearchViewModel.() -> Unit) = withViewModel<SearchViewModel>(viewModelFactory) { action() }
-
-    private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.searchResultRv)?.let(action)
-    private fun withSearchView(action: SearchView.() -> Unit) {
-        findSearchView(requireActivity().window.decorView as ViewGroup).action()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        searchResultRv = null
+        searchView = null
     }
 
-    private fun setUpSearchView() {
-        /*
-        * The [SearchView] used to present a search option to the user belongs to the Activity
-        * that contains this Fragment for a variety of reasons:
-        * 1 - In order to provide back and forth navigation with the Android Architecture Components,
-        * the application has only one Activity with different Fragments that are rendered in it.
-        * 2 - To follow the design specs, the SearchView is provided in the Activity's action bar.
-        */
-        withSearchView {
+    override fun withViewModel(action: SearchViewModel.() -> Unit) =
+        withViewModel<SearchViewModel>(viewModelFactory) { action() }
+
+
+    private fun setupViews(view: View) {
+        searchResultRv = view.findViewById<RecyclerView>(R.id.searchResultRv).apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = SearchItemAdapter { item ->
+                withViewModel { onItemSelected(item) }
+            }
+        }
+
+        searchView = findSearchView(requireActivity().window.decorView as ViewGroup).apply {
+            /*
+             * The [SearchView] used to present a search option to the user belongs to the Activity
+             * that contains this Fragment for a variety of reasons:
+             * 1 - In order to provide back and forth navigation with the Android Architecture Components,
+             * the application has only one Activity with different Fragments that are rendered in it.
+             * 2 - To follow the design specs, the SearchView is provided in the Activity's action bar.
+             */
             requestFocus()
             queryHint = getString(R.string.search_hint)
             isIconified = false
@@ -88,6 +88,14 @@ class SearchFragment : MPFragment<SearchViewModel>() {
             setOnQueryTextListener(QuerySubmitter { withViewModel { onSearch(it) } })
             findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener { withViewModel { onClearSearch() } }
         }
+    }
+
+    private fun renderViewState(viewState: SearchViewState) {
+        viewBinding.viewState = viewState
+
+        (searchResultRv?.adapter as SearchItemAdapter).submitList(viewState.contentViewState.searchResultList)
+        searchView?.setQuery(viewState.searchQuery, false)
+        searchView?.clearFocus() // hide keyboard
     }
 
     /**
