@@ -15,7 +15,7 @@ import kotlinx.coroutines.withContext
 
 /**
  * [ViewModel] that supports the person section. The VM retrieves
- * the data from the underlying layers using the provided [PersonInteractor] and maps the business
+ * the data from the underlying layers and maps the business
  * data to UI data, producing a [PersonViewState] that represents the configuration of the view.
  *
  * This VM is language aware, meaning that when the user changes the language of the device, the
