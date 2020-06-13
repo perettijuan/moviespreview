@@ -31,56 +31,56 @@ class SearchFragment : MPFragment<SearchViewModel>() {
 
     private lateinit var viewBinding: SearchFragmentBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    private var searchResultRv: RecyclerView? = null
+    private var searchView: SearchView? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         viewBinding = DataBindingUtil.inflate(inflater, R.layout.search_fragment, container, false)
         return viewBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        withRecyclerView {
-            layoutManager = LinearLayoutManager(activity)
-            adapter = SearchItemAdapter { item ->
-                withViewModel { onItemSelected(item) }
-            }
-        }
-        setUpSearchView()
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+        setupViews(view)
 
         withViewModel {
             viewState.observe(this@SearchFragment.viewLifecycleOwner, Observer { viewState ->
-                viewBinding.viewState = viewState
-
-                withRecyclerView { (adapter as SearchItemAdapter).submitList(viewState.contentViewState.searchResultList) }
-
-                withSearchView {
-                    setQuery(viewState.searchQuery, false)
-                    clearFocus() // hide keyboard
-                }
+                renderViewState(viewState)
             })
             onInit(getScreenWidthInPixels())
         }
     }
 
-    override fun withViewModel(action: SearchViewModel.() -> Unit) = withViewModel<SearchViewModel>(viewModelFactory) { action() }
-
-    private fun withRecyclerView(action: RecyclerView.() -> Unit) = view?.findViewById<RecyclerView>(R.id.searchResultRv)?.let(action)
-    private fun withSearchView(action: SearchView.() -> Unit) {
-        findSearchView(requireActivity().window.decorView as ViewGroup).action()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        searchResultRv = null
+        searchView = null
     }
 
-    private fun setUpSearchView() {
-        /*
-        * The [SearchView] used to present a search option to the user belongs to the Activity
-        * that contains this Fragment for a variety of reasons:
-        * 1 - In order to provide back and forth navigation with the Android Architecture Components,
-        * the application has only one Activity with different Fragments that are rendered in it.
-        * 2 - To follow the design specs, the SearchView is provided in the Activity's action bar.
-        */
-        withSearchView {
+    override fun withViewModel(action: SearchViewModel.() -> Unit) =
+        withViewModel<SearchViewModel>(viewModelFactory) { action() }
+
+
+    private fun setupViews(view: View) {
+        searchResultRv = view.findViewById<RecyclerView>(R.id.searchResultRv).apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = SearchItemAdapter { item ->
+                withViewModel { onItemSelected(item) }
+            }
+        }
+
+        searchView = findSearchView(requireActivity().window.decorView as ViewGroup).apply {
+            /*
+             * The [SearchView] used to present a search option to the user belongs to the Activity
+             * that contains this Fragment for a variety of reasons:
+             * 1 - In order to provide back and forth navigation with the Android Architecture Components,
+             * the application has only one Activity with different Fragments that are rendered in it.
+             * 2 - To follow the design specs, the SearchView is provided in the Activity's action bar.
+             */
             requestFocus()
             queryHint = getString(R.string.search_hint)
             isIconified = false
@@ -88,6 +88,14 @@ class SearchFragment : MPFragment<SearchViewModel>() {
             setOnQueryTextListener(QuerySubmitter { withViewModel { onSearch(it) } })
             findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener { withViewModel { onClearSearch() } }
         }
+    }
+
+    private fun renderViewState(viewState: SearchViewState) {
+        viewBinding.viewState = viewState
+
+        (searchResultRv?.adapter as SearchItemAdapter).submitList(viewState.contentViewState.searchResultList)
+        searchView?.setQuery(viewState.searchQuery, false)
+        searchView?.clearFocus() // hide keyboard
     }
 
     /**
@@ -102,86 +110,5 @@ class SearchFragment : MPFragment<SearchViewModel>() {
             }
         }
         throw IllegalStateException("The container Activity for SearchFragment should provide a SearchView")
-    }
-
-    /**
-     * Inner [SearchView.OnQueryTextListener] implementation to handle the user searchPage over the
-     * SearchView. It waits to submit the query a given amount of time that is based on the size
-     * of the text introduced by the user.
-     *
-     * Note that this custom implementation could be a lot simpler using Android RxBindings, but
-     * I don't want to bring RxJava into the project for this single reason.
-     */
-    private inner class QuerySubmitter(private val callback: (String) -> Unit) : SearchView.OnQueryTextListener {
-
-        private lateinit var queryToSubmit: String
-        private var isTyping = false
-        private val typingTimeout = 1000L // 1 second
-        private val timeoutHandler = Handler(Looper.getMainLooper())
-        private val timeoutTask = Runnable {
-            isTyping = false
-            callback(queryToSubmit)
-        }
-
-        override fun onQueryTextSubmit(query: String): Boolean {
-            timeoutHandler.removeCallbacks(timeoutTask)
-            callback(query)
-            return true
-        }
-
-        override fun onQueryTextChange(newText: String): Boolean {
-            timeoutHandler.removeCallbacks(timeoutTask)
-            if (newText.length > 3) {
-                queryToSubmit = newText
-                timeoutHandler.postDelayed(timeoutTask, typingTimeout)
-            }
-            return true
-        }
-    }
-
-    /**
-     * Internal [PagedListAdapter] to render the list of search results. The fact that this class is a
-     * [PagedListAdapter] indicates that the paging library is being used. Another important
-     * aspect of this class is that it uses Data Binding to update the UI, which differs from the
-     * containing class.
-     */
-    class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem) -> Unit) : PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(
-                    DataBindingUtil.inflate(
-                            LayoutInflater.from(parent.context),
-                            R.layout.list_item_search,
-                            parent,
-                            false
-                    )
-            )
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            getItem(position)?.let {
-                holder.bindSearchItem(it, searchSelectionListener)
-            }
-        }
-
-        class ViewHolder(private val itemBinding: ListItemSearchBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-            fun bindSearchItem(searchItem: SearchResultItem, selectionListener: (SearchResultItem) -> Unit) {
-                with(itemBinding) {
-                    viewState = searchItem
-                    executePendingBindings()
-                }
-                itemView.setOnClickListener { selectionListener(searchItem) }
-            }
-        }
-
-        class SearchResultDiffCallback : DiffUtil.ItemCallback<SearchResultItem>() {
-            override fun areItemsTheSame(oldItem: SearchResultItem, newItem: SearchResultItem): Boolean {
-                return oldItem.id == newItem.id
-            }
-
-            override fun areContentsTheSame(oldItem: SearchResultItem, newItem: SearchResultItem): Boolean {
-                return oldItem.id == newItem.id
-            }
-        }
     }
 }

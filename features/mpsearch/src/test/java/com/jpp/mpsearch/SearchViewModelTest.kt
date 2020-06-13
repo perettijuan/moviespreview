@@ -47,7 +47,8 @@ class SearchViewModelTest {
 
         subject = SearchViewModel(
                 searchInteractor,
-                imagesPathInteractor
+                imagesPathInteractor,
+                CoroutineTestExtension.testDispatcher
         )
 
         /*
@@ -118,13 +119,7 @@ class SearchViewModelTest {
         assertEquals(false, viewStatePosted?.errorViewState?.isConnectivity)
     }
 
-    /*
-     * TODO I need to check exactly what's happening with this UT. Don't want to waste
-     *  time since I'm going to refactor by eliminating the interactor layers.
-     * Fails only in CircleCI ==> https://circleci.com/gh/perettijuan/moviespreview/215?utm_campaign=vcs-integration-link&utm_medium=referral&utm_source=github-build-link
-     */
     @Test
-    @Disabled
     fun `Should refresh data when no search has been performed and language changes`() {
         subject.onSearch("aSearch")
         lvInteractorEvents.value = SearchEvent.AppLanguageChanged
