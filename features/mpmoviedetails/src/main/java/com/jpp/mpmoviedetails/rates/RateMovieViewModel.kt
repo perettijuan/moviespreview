@@ -32,10 +32,10 @@ class RateMovieViewModel(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _viewState = MediatorLiveData<RateMovieViewState>()
+    private val _viewState = MutableLiveData<RateMovieViewState>()
     internal val viewState: LiveData<RateMovieViewState> = _viewState
 
-    private val _events = MediatorLiveData<HandledEvent<RateMovieEvent>>()
+    private val _events = MutableLiveData<HandledEvent<RateMovieEvent>>()
     internal val event: LiveData<HandledEvent<RateMovieEvent>> = _events
 
     private var movieId: Double

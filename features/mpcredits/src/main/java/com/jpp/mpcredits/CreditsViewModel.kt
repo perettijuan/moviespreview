@@ -28,7 +28,7 @@ class CreditsViewModel(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _viewState = MediatorLiveData<CreditsViewState>()
+    private val _viewState = MutableLiveData<CreditsViewState>()
     internal val viewState: LiveData<CreditsViewState> = _viewState
 
     private var movieId: Double
