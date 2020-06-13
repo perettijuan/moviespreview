@@ -14,7 +14,7 @@ import com.jpp.mpsearch.databinding.ListItemSearchBinding
  * aspect of this class is that it uses Data Binding to update the UI, which differs from the
  * containing class.
  */
-class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem) -> Unit) :
+internal class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem) -> Unit) :
     PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

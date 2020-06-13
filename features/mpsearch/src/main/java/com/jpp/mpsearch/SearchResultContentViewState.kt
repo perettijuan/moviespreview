@@ -6,7 +6,7 @@ import androidx.paging.PagedList
 /**
  * Represents the view state of the content shown in the search section.
  */
-data class SearchResultContentViewState(
+internal data class SearchResultContentViewState(
     val searchResultsVisibility: Int = View.INVISIBLE,
     val searchResultList: PagedList<SearchResultItem>? = null,
     val emptySearchResultsVisibility: Int = View.INVISIBLE,

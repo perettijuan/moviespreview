@@ -5,7 +5,7 @@ import android.view.View
 /**
  * Represents the view state of the search placeholder view.
  */
-data class SearchPlaceHolderViewState(
+internal data class SearchPlaceHolderViewState(
     val visibility: Int = View.INVISIBLE,
     val icon: Int = R.drawable.ic_app_icon_black
 )

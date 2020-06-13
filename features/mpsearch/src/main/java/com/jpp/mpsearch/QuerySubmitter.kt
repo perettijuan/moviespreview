@@ -12,7 +12,7 @@ import androidx.appcompat.widget.SearchView
  * Note that this custom implementation could be a lot simpler using Android RxBindings, but
  * I don't want to bring RxJava into the project for this single reason.
  */
-class QuerySubmitter(private val callback: (String) -> Unit) :
+internal class QuerySubmitter(private val callback: (String) -> Unit) :
     SearchView.OnQueryTextListener {
 
     private lateinit var queryToSubmit: String

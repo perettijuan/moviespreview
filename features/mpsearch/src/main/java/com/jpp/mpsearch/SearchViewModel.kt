@@ -39,7 +39,7 @@ class SearchViewModel @Inject constructor(
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<SearchViewState>()
-    val viewState: LiveData<SearchViewState> = _viewState
+    internal val viewState: LiveData<SearchViewState> = _viewState
 
     private var targetImageSize: Int = -1
     private lateinit var searchQuery: String
@@ -62,7 +62,7 @@ class SearchViewModel @Inject constructor(
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit(imageSize: Int) {
+    internal fun onInit(imageSize: Int) {
         targetImageSize = imageSize
         updateCurrentDestination(Destination.MPSearch)
 
@@ -78,7 +78,7 @@ class SearchViewModel @Inject constructor(
      * a result is obtained from the [searchInteractor] a new view state will be
      * posted to [viewState].
      */
-    fun onSearch(query: String) {
+    internal fun onSearch(query: String) {
         if (::searchQuery.isInitialized && query == searchQuery) {
             return
         }
@@ -92,7 +92,7 @@ class SearchViewModel @Inject constructor(
      * The VM clears the inner state and the view state, in order to allow
      * a new search to be done.
      */
-    fun onClearSearch() {
+    internal fun onClearSearch() {
         searchQuery = ""
         _viewState.value = SearchViewState.showCleanState()
     }
@@ -101,7 +101,7 @@ class SearchViewModel @Inject constructor(
      * Called when an item is selected in the list of search results.
      * A new state is posted in [navEvents] in order to handle the event.
      */
-    fun onItemSelected(item: SearchResultItem) {
+    internal fun onItemSelected(item: SearchResultItem) {
         when (item.isMovieType()) {
             true -> navigateTo(Destination.MPMovieDetails(
                     movieId = item.id.toString(),
