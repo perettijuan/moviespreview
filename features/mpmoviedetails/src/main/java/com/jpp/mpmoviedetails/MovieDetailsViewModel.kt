@@ -51,7 +51,7 @@ class MovieDetailsViewModel(
         }
         get() {
             return savedStateHandle.get(MOVIE_ID_KEY)
-                ?: throw IllegalStateException("Trying to access MOVIE_ID_KEY when it is not yet set")
+                ?: throw IllegalStateException("Trying to access $MOVIE_ID_KEY when it is not yet set")
         }
 
 
@@ -61,7 +61,7 @@ class MovieDetailsViewModel(
         }
         get() {
             return savedStateHandle.get(MOVIE_TITLE_KEY)
-                ?: throw IllegalStateException("Trying to access MOVIE_TITLE_KEY when it is not yet set")
+                ?: throw IllegalStateException("Trying to access $MOVIE_TITLE_KEY when it is not yet set")
         }
 
 
@@ -71,7 +71,7 @@ class MovieDetailsViewModel(
         }
         get() {
             return savedStateHandle.get(MOVIE_IMAGE_URL_KEY)
-                ?: throw IllegalStateException("Trying to access MOVIE_IMAGE_URL_KEY when it is not yet set")
+                ?: throw IllegalStateException("Trying to access $MOVIE_IMAGE_URL_KEY when it is not yet set")
         }
 
     private val _viewState = MutableLiveData<MovieDetailViewState>()

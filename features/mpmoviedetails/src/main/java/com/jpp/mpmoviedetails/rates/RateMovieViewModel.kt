@@ -44,7 +44,7 @@ class RateMovieViewModel(
         }
         get() {
             return savedStateHandle.get(MOVIE_ID_KEY)
-                ?: throw IllegalStateException("Trying to access MOVIE_ID_KEY when it is not yet set")
+                ?: throw IllegalStateException("Trying to access $MOVIE_ID_KEY when it is not yet set")
         }
 
     /**
