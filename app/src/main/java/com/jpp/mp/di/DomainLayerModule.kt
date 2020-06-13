@@ -111,4 +111,12 @@ class DomainLayerModule {
         connectivityRepository: ConnectivityRepository
     ): GetCreditsUseCase =
         GetCreditsUseCase(creditsRepository, configurationRepository, connectivityRepository)
+
+    @Provides
+    fun providesGetPersonUseCase(
+        personRepository: PersonRepository,
+        connectivityRepository: ConnectivityRepository,
+        languageRepository: LanguageRepository
+    ): GetPersonUseCase =
+        GetPersonUseCase(personRepository, connectivityRepository, languageRepository)
 }

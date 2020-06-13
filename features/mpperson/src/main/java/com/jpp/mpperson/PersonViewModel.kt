@@ -2,7 +2,8 @@ package com.jpp.mpperson
 
 import androidx.lifecycle.*
 import com.jpp.mpdomain.Person
-import com.jpp.mpperson.PersonInteractor.PersonEvent.*
+import com.jpp.mpdomain.usecase.GetPersonUseCase
+import com.jpp.mpdomain.usecase.Try
 import com.jpp.mpperson.PersonRowViewState.Companion.bioRow
 import com.jpp.mpperson.PersonRowViewState.Companion.birthdayRow
 import com.jpp.mpperson.PersonRowViewState.Companion.deathDayRow
@@ -22,12 +23,12 @@ import kotlinx.coroutines.withContext
  * and the view state being shown to the user.
  */
 class PersonViewModel(
-    private val personInteractor: PersonInteractor,
+    private val getPersonUseCase: GetPersonUseCase,
     private val ioDispatcher: CoroutineDispatcher,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _viewState = MediatorLiveData<PersonViewState>()
+    private val _viewState = MutableLiveData<PersonViewState>()
     internal val viewState: LiveData<PersonViewState> = _viewState
 
     private var personId: Double
@@ -57,27 +58,6 @@ class PersonViewModel(
                 ?: throw IllegalStateException("Trying to access $PERSON_IMAGE_URL_KEY when it is not yet set")
         }
 
-    /*
-     * Map the business logic coming from the interactor into view layer logic.
-     */
-    init {
-        _viewState.addSource(personInteractor.events) { event ->
-            when (event) {
-                is NotConnectedToNetwork -> _viewState.value =
-                    _viewState.value?.showNoConnectivityError { fetchPersonData() }
-                is UnknownError -> _viewState.value =
-                    _viewState.value?.showUnknownError { fetchPersonData() }
-                is Success -> _viewState.value =
-                    getViewStateFromPersonData(personImageUrl, event.person)
-                is AppLanguageChanged -> refreshPersonData(
-                    personName,
-                    personImageUrl,
-                    personId
-                )
-            }
-        }
-    }
-
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
      * indicate that it is ready to start rendering. When the method is called, the VM
@@ -97,45 +77,29 @@ class PersonViewModel(
      * based on the result posted by the interactor.
      */
     private fun fetchPersonData() {
-        withInteractor { fetchPerson(personId) }
         _viewState.value =
             PersonViewState.showLoading(personName, personImageUrl)
-    }
-
-    /**
-     * Starts a refresh data process by indicating to the interactor that new data needs
-     * to be fetched for the person being shown. This is executed in a background
-     * task while the view state is updated with the loading state.
-     */
-    private fun refreshPersonData(personName: String, personImageUrl: String, personId: Double) {
-        withInteractor {
-            flushPersonData()
-            fetchPerson(personId)
-        }
-        _viewState.value = PersonViewState.showLoading(personName, personImageUrl)
-    }
-
-    /**
-     * Helper function to execute an [action] in the [personInteractor] instance
-     * on a background task.
-     */
-    private fun withInteractor(action: PersonInteractor.() -> Unit) {
         viewModelScope.launch {
-            withContext(ioDispatcher) {
-                action(personInteractor)
+            val result = withContext(ioDispatcher) {
+                getPersonUseCase.execute(personId)
+            }
+
+            when (result) {
+                is Try.Failure -> processFailure(result.cause)
+                is Try.Success -> processPersonData(result.value)
             }
         }
     }
 
-    /**
-     * Creates a [PersonViewState] that represents the data to show from the provided
-     * [person].
-     */
-    private fun getViewStateFromPersonData(
-        personImageUrl: String,
-        person: Person
-    ): PersonViewState? {
-        return when (person.isEmpty()) {
+    private fun processFailure(cause: Try.FailureCause) {
+        _viewState.value = when (cause) {
+            is Try.FailureCause.NoConnectivity -> _viewState.value?.showNoConnectivityError { fetchPersonData() }
+            else -> _viewState.value?.showUnknownError { fetchPersonData() }
+        }
+    }
+
+    private fun processPersonData(person: Person) {
+        _viewState.value = when (person.isEmpty()) {
             true -> _viewState.value?.showNoDataAvailable(personImageUrl)
             else -> _viewState.value?.showPerson(personImageUrl, person.mapToViewState())
         }
