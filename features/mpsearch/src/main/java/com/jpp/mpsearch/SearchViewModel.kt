@@ -14,8 +14,8 @@ import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.AppLanguageChanged
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.NotConnectedToNetwork
 import com.jpp.mpsearch.SearchInteractor.SearchEvent.UnknownError
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -35,7 +35,8 @@ import kotlinx.coroutines.withContext
  */
 class SearchViewModel @Inject constructor(
     private val searchInteractor: SearchInteractor,
-    private val imagesPathInteractor: ImagesPathInteractor
+    private val imagesPathInteractor: ImagesPathInteractor,
+    private val ioDispatcher: CoroutineDispatcher
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<SearchViewState>()
@@ -132,7 +133,7 @@ class SearchViewModel @Inject constructor(
      */
     private fun refreshData() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            withContext(ioDispatcher) {
                 searchInteractor.flushCurrentSearch()
             }
             postLoadingAndPerformSearch(searchQuery)
@@ -157,7 +158,7 @@ class SearchViewModel @Inject constructor(
                             .setPrefetchDistance(2)
                             .build()
                     LivePagedListBuilder(it, config)
-                            .setFetchExecutor(CoroutineExecutor(viewModelScope, Dispatchers.IO))
+                            .setFetchExecutor(CoroutineExecutor(viewModelScope, ioDispatcher))
                             .build()
                 }
     }
