@@ -259,7 +259,7 @@ internal class MovieDetailsActionViewModelTest {
         var viewStatePosted: MovieDetailActionViewState? = null
 
         coEvery { getMovieStateUseCase.execute(movieId) } returns Try.Success(movieState)
-        coEvery { updateWatchListUseCase.execute(movieId, !expected.watchListButtonState.asFilled) } returns Try.Success(true)
+        coEvery { updateWatchListUseCase.execute(movieId, !expected.watchListButtonState.asFilled) } returns Try.Success(Unit)
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onInit(movieId)

@@ -14,7 +14,7 @@ class UpdateWatchlistMovieStateUseCase(
     private val connectivityRepository: ConnectivityRepository
 ) {
 
-    suspend fun execute(movieId: Double, inWatchlist: Boolean): Try<Boolean> {
+    suspend fun execute(movieId: Double, inWatchlist: Boolean): Try<Unit> {
         if (connectivityRepository.getCurrentConnectivity() is Connectivity.Disconnected) {
             return Try.Failure(Try.FailureCause.NoConnectivity)
         }
@@ -30,12 +30,11 @@ class UpdateWatchlistMovieStateUseCase(
             inWatchlist,
             userAccount,
             currentSession
-        ).also {
-            moviePageRepository.flushWatchlistMoviePages()
-        }
+        )
 
         return if (result) {
-            Try.Success(result)
+            moviePageRepository.flushWatchlistMoviePages()
+            Try.Success(Unit)
         } else {
             Try.Failure(Try.FailureCause.Unknown)
         }

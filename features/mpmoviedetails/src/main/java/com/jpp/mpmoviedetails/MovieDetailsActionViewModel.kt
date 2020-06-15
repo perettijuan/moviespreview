@@ -99,8 +99,8 @@ class MovieDetailsActionViewModel(
             }
 
             when (result) {
+                is Try.Success -> processUpdateWatchlist()
                 is Try.Failure -> processStateChangedError(result.cause)
-                is Try.Success -> processUpdateWatchlist(result.value)
             }
         }
     }
@@ -150,13 +150,10 @@ class MovieDetailsActionViewModel(
         }
     }
 
-    private fun processUpdateWatchlist(success: Boolean) {
+    private fun processUpdateWatchlist() {
         viewState.value?.let { currentViewState ->
-            _viewState.value = if (success) {
+            _viewState.value =
                 currentViewState.copy(watchListButtonState = currentViewState.watchListButtonState.flipState())
-            } else {
-                currentViewState.copy()
-            }
         }
     }
 

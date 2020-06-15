@@ -124,7 +124,6 @@ class UpdateWatchlistMovieStateUseCaseTest {
         val actual = subject.execute(1.0, true)
 
         assertTrue(actual is Try.Success)
-        assertEquals(true, actual.getOrNull())
 
         verify { moviePageRepository.flushWatchlistMoviePages() }
     }
