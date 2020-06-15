@@ -80,7 +80,7 @@ class MovieDetailsActionViewModel(
             }
 
             when (result) {
-                is Try.Success -> processUpdateFavorite(result.value)
+                is Try.Success -> processUpdateFavorite()
                 is Try.Failure -> processStateChangedError(result.cause)
             }
         }
@@ -143,13 +143,10 @@ class MovieDetailsActionViewModel(
         }
     }
 
-    private fun processUpdateFavorite(success: Boolean) {
+    private fun processUpdateFavorite() {
         viewState.value?.let { currentViewState ->
-            _viewState.value = if (success) {
+            _viewState.value =
                 currentViewState.copy(favoriteButtonState = currentViewState.favoriteButtonState.flipState())
-            } else {
-                currentViewState.copy()
-            }
         }
     }
 

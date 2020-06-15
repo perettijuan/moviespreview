@@ -14,7 +14,7 @@ class UpdateFavoriteMovieStateUseCase(
     private val connectivityRepository: ConnectivityRepository
 ) {
 
-    suspend fun execute(movieId: Double, asFavorite: Boolean): Try<Boolean> {
+    suspend fun execute(movieId: Double, asFavorite: Boolean): Try<Unit> {
         if (connectivityRepository.getCurrentConnectivity() is Connectivity.Disconnected) {
             return Try.Failure(Try.FailureCause.NoConnectivity)
         }
@@ -30,12 +30,11 @@ class UpdateFavoriteMovieStateUseCase(
             asFavorite,
             userAccount,
             currentSession
-        ).also {
-            moviePageRepository.flushFavoriteMoviePages()
-        }
+        )
 
         return if (result) {
-            Try.Success(result)
+            moviePageRepository.flushFavoriteMoviePages()
+            Try.Success(Unit)
         } else {
             Try.Failure(Try.FailureCause.Unknown)
         }
