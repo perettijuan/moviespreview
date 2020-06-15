@@ -1,22 +1,17 @@
 package com.jpp.mpsearch
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.paging.PagedListAdapter
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
-import com.jpp.mpsearch.databinding.ListItemSearchBinding
+import com.jpp.mp.common.paging.MPVerticalPagingHandler
 import com.jpp.mpsearch.databinding.SearchFragmentBinding
 
 /**
@@ -51,7 +46,7 @@ class SearchFragment : MPFragment<SearchViewModel>() {
             viewState.observe(this@SearchFragment.viewLifecycleOwner, Observer { viewState ->
                 renderViewState(viewState)
             })
-            onInit(getScreenWidthInPixels())
+            onInit()
         }
     }
 
@@ -71,6 +66,11 @@ class SearchFragment : MPFragment<SearchViewModel>() {
             adapter = SearchItemAdapter { item ->
                 withViewModel { onItemSelected(item) }
             }
+
+            val pagingHandler = MPVerticalPagingHandler(layoutManager as LinearLayoutManager) {
+                withViewModel { onNextPageRequested() }
+            }
+            addOnScrollListener(pagingHandler)
         }
 
         searchView = findSearchView(requireActivity().window.decorView as ViewGroup).apply {

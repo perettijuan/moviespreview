@@ -33,7 +33,7 @@ internal data class SearchViewState(
             errorViewState = MPErrorView.ErrorViewState.asConnectivity(errorHandler)
         )
 
-        fun showSearchResult(query: String, searchResultList: PagedList<SearchResultItem>) =
+        fun showSearchResult(query: String, searchResultList: List<SearchResultItem>) =
             SearchViewState(
                 searchQuery = query,
                 contentViewState = SearchResultContentViewState.showResults(searchResultList)

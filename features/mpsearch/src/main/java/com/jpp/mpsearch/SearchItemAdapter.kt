@@ -15,7 +15,9 @@ import com.jpp.mpsearch.databinding.ListItemSearchBinding
  * containing class.
  */
 internal class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem) -> Unit) :
-    PagedListAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>(SearchResultDiffCallback()) {
+    RecyclerView.Adapter<SearchItemAdapter.ViewHolder>() {
+
+    private val itemList = ArrayList<SearchResultItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -29,9 +31,15 @@ internal class SearchItemAdapter(private val searchSelectionListener: (SearchRes
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        getItem(position)?.let {
-            holder.bindSearchItem(it, searchSelectionListener)
-        }
+        holder.bindSearchItem(itemList[position], searchSelectionListener)
+    }
+
+    override fun getItemCount(): Int = itemList.size
+
+    fun submitList(newData: List<SearchResultItem>) {
+        val currentLastIndex = itemList.size
+        itemList.addAll(newData)
+        notifyItemRangeChanged(currentLastIndex, itemList.size)
     }
 
     class ViewHolder(private val itemBinding: ListItemSearchBinding) :
@@ -45,22 +53,6 @@ internal class SearchItemAdapter(private val searchSelectionListener: (SearchRes
                 executePendingBindings()
             }
             itemView.setOnClickListener { selectionListener(searchItem) }
-        }
-    }
-
-    class SearchResultDiffCallback : DiffUtil.ItemCallback<SearchResultItem>() {
-        override fun areItemsTheSame(
-            oldItem: SearchResultItem,
-            newItem: SearchResultItem
-        ): Boolean {
-            return oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(
-            oldItem: SearchResultItem,
-            newItem: SearchResultItem
-        ): Boolean {
-            return oldItem.id == newItem.id
         }
     }
 }

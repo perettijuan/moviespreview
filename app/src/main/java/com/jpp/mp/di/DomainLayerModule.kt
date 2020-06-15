@@ -119,4 +119,17 @@ class DomainLayerModule {
         languageRepository: LanguageRepository
     ): GetPersonUseCase =
         GetPersonUseCase(personRepository, connectivityRepository, languageRepository)
+
+    @Provides
+    fun providesSearchUseCase(
+        searchRepository: SearchRepository,
+        configurationRepository: ConfigurationRepository,
+        connectivityRepository: ConnectivityRepository,
+        languageRepository: LanguageRepository
+    ): SearchUseCase = SearchUseCase(
+        searchRepository,
+        configurationRepository,
+        connectivityRepository,
+        languageRepository
+    )
 }
