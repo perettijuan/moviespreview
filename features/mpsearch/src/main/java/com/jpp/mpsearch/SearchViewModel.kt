@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagedList
 import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.navigation.Destination
-import com.jpp.mp.common.paging.MPPagingDataSourceFactory
 import com.jpp.mpdomain.SearchPage
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.usecase.SearchUseCase
@@ -20,15 +19,6 @@ import javax.inject.Inject
  * [MPViewModel] used to support the search section of the application.
  * Produces different [SearchViewState] that represents the entire configuration of the screen at any
  * given moment.
- *
- * Since the UI is using the Android Paging Library, the VM needs a way to map the data retrieved from
- * the [SearchInteractor] to a [PagedList] that can be used by the library. That process is done
- * using the [MPPagingDataSourceFactory] that creates the DataSource and produces a [LiveData] object
- * that is combined with the [viewState] in order to properly map the data into a [SearchViewState].
- *
- * This VM is language aware, meaning that when the user changes the language of the device, the
- * VM is notified about such event and executes a refresh of both: the data stored by the application
- * and the view state being shown to the user.
  */
 class SearchViewModel @Inject constructor(
     private val searchUseCase: SearchUseCase,
@@ -45,10 +35,8 @@ class SearchViewModel @Inject constructor(
     private var retryFunc = { performSearch(searchQuery, currentPage) }
 
     /**
-     * Called on VM initialization. The View (Fragment) should call this method to
-     * indicate that it is ready to start rendering. When the method is called, the VM
-     * internally verifies the state of the application and updates the view state based
-     * on it.
+     * The View (Fragment) should call this method to
+     * indicate that it is ready to start rendering.
      */
     internal fun onInit() {
         updateCurrentDestination(Destination.MPSearch)
@@ -60,10 +48,7 @@ class SearchViewModel @Inject constructor(
     }
 
     /**
-     * Called when the user performs a search. The VM will verify the inner state
-     * of the application and will perform a search of the provided [query]. Once
-     * a result is obtained from the [searchInteractor] a new view state will be
-     * posted to [viewState].
+     * Called when the user performs a search.
      */
     internal fun onSearch(query: String) {
         if (::searchQuery.isInitialized && query == searchQuery) {
@@ -71,10 +56,13 @@ class SearchViewModel @Inject constructor(
         }
 
         searchQuery = query
-        _viewState.value = SearchViewState.showSearching(query)
+        _viewState.value = _viewState.value?.showSearching(query)
         performSearch(query, FIRST_PAGE)
     }
 
+    /**
+     * Called when a new page in the search is requested.
+     */
     internal fun onNextPageRequested() {
         val nextPage = currentPage + 1
         performSearch(searchQuery, nextPage)
@@ -82,8 +70,6 @@ class SearchViewModel @Inject constructor(
 
     /**
      * Called when the user clears the state of the last search performed.
-     * The VM clears the inner state and the view state, in order to allow
-     * a new search to be done.
      */
     internal fun onClearSearch() {
         searchQuery = ""
@@ -92,7 +78,6 @@ class SearchViewModel @Inject constructor(
 
     /**
      * Called when an item is selected in the list of search results.
-     * A new state is posted in [navEvents] in order to handle the event.
      */
     internal fun onItemSelected(item: SearchResultItem) {
         when (item.isMovieType()) {
@@ -135,7 +120,7 @@ class SearchViewModel @Inject constructor(
         maxPage = searchPage.total_pages
 
         if (searchPage.results.isEmpty() && currentPage == FIRST_PAGE) {
-            _viewState.postValue(SearchViewState.showNoResults(searchQuery))
+            _viewState.value = _viewState.value?.showNoResults(searchQuery)
             return
         }
 
@@ -143,16 +128,16 @@ class SearchViewModel @Inject constructor(
             .filter { searchResult -> searchResult.isMovie() || searchResult.isPerson() }
             .map { searchResult -> searchResult.mapToSearchResultItem() }
 
-        _viewState.value = SearchViewState.showSearchResult(searchQuery, searchResults)
+        _viewState.value = _viewState.value?.showSearchResult(searchResults)
     }
 
     private fun processFailure(failure: Try.FailureCause) {
         _viewState.value = when (failure) {
-            is Try.FailureCause.NoConnectivity -> SearchViewState.showNoConnectivityError(
+            is Try.FailureCause.NoConnectivity -> _viewState.value?.showNoConnectivityError(
                 searchQuery,
                 retryFunc
             )
-            else -> SearchViewState.showUnknownError(searchQuery, retryFunc)
+            else -> _viewState.value?.showUnknownError(searchQuery, retryFunc)
         }
     }
 

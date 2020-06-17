@@ -17,7 +17,7 @@ import com.jpp.mpsearch.databinding.ListItemSearchBinding
 internal class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem) -> Unit) :
     RecyclerView.Adapter<SearchItemAdapter.ViewHolder>() {
 
-    private val itemList = ArrayList<SearchResultItem>()
+    private var itemList = emptyList<SearchResultItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -38,7 +38,7 @@ internal class SearchItemAdapter(private val searchSelectionListener: (SearchRes
 
     fun submitList(newData: List<SearchResultItem>) {
         val currentLastIndex = itemList.size
-        itemList.addAll(newData)
+        itemList = newData
         notifyItemRangeChanged(currentLastIndex, itemList.size)
     }
 
@@ -48,10 +48,8 @@ internal class SearchItemAdapter(private val searchSelectionListener: (SearchRes
             searchItem: SearchResultItem,
             selectionListener: (SearchResultItem) -> Unit
         ) {
-            with(itemBinding) {
-                viewState = searchItem
-                executePendingBindings()
-            }
+            itemBinding.viewState = searchItem
+            itemBinding.executePendingBindings()
             itemView.setOnClickListener { selectionListener(searchItem) }
         }
     }
