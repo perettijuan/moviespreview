@@ -1,7 +1,6 @@
 package com.jpp.mpsearch
 
 import android.view.View
-import androidx.paging.PagedList
 import com.jpp.mpdesign.views.MPErrorView
 
 /**
@@ -14,34 +13,36 @@ internal data class SearchViewState(
     val errorViewState: MPErrorView.ErrorViewState = MPErrorView.ErrorViewState.asNotVisible(),
     val contentViewState: SearchResultContentViewState = SearchResultContentViewState()
 ) {
+
+    fun showSearchResult(searchResultList: List<SearchResultItem>): SearchViewState =
+        copy(
+            loadingVisibility = View.INVISIBLE,
+            contentViewState = contentViewState.showResults(searchResultList),
+            errorViewState = MPErrorView.ErrorViewState.asNotVisible()
+        )
+
+    fun showNoResults(query: String): SearchViewState = SearchViewState(
+        searchQuery = query,
+        contentViewState = contentViewState.showNoResults()
+    )
+
+    fun showUnknownError(query: String, errorHandler: () -> Unit) = SearchViewState(
+        searchQuery = query,
+        errorViewState = MPErrorView.ErrorViewState.asUnknownError(errorHandler)
+    )
+
+    fun showNoConnectivityError(query: String, errorHandler: () -> Unit) = SearchViewState(
+        searchQuery = query,
+        errorViewState = MPErrorView.ErrorViewState.asConnectivity(errorHandler)
+    )
+
+    fun showSearching(query: String) =
+        SearchViewState(searchQuery = query, loadingVisibility = View.VISIBLE)
+
     companion object {
         fun showCleanState() = SearchViewState(
             searchQuery = "",
             placeHolderViewState = SearchPlaceHolderViewState(visibility = View.VISIBLE)
-        )
-
-        fun showSearching(query: String) =
-            SearchViewState(searchQuery = query, loadingVisibility = View.VISIBLE)
-
-        fun showUnknownError(query: String, errorHandler: () -> Unit) = SearchViewState(
-            searchQuery = query,
-            errorViewState = MPErrorView.ErrorViewState.asUnknownError(errorHandler)
-        )
-
-        fun showNoConnectivityError(query: String, errorHandler: () -> Unit) = SearchViewState(
-            searchQuery = query,
-            errorViewState = MPErrorView.ErrorViewState.asConnectivity(errorHandler)
-        )
-
-        fun showSearchResult(query: String, searchResultList: PagedList<SearchResultItem>) =
-            SearchViewState(
-                searchQuery = query,
-                contentViewState = SearchResultContentViewState.showResults(searchResultList)
-            )
-
-        fun showNoResults(query: String) = SearchViewState(
-            searchQuery = query,
-            contentViewState = SearchResultContentViewState.showNoResults()
         )
     }
 }
