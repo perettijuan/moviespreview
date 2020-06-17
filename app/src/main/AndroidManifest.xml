@@ -1,29 +1,32 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.jpp.mp">
+    package="com.jpp.mp">
 
-  <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
-  <application
-    android:icon="@mipmap/ic_launcher"
-    android:label="@string/app_name"
-    android:allowBackup="false"
-    android:roundIcon="@mipmap/ic_launcher_round"
-    android:supportsRtl="true"
-    android:theme="@style/MPTheme"
-    android:name="com.jpp.mp.MPApp"
-    android:usesCleartextTraffic="true">
+    <application
+        android:name="com.jpp.mp.MPApp"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/MPTheme"
+        android:usesCleartextTraffic="true">
 
-    <activity android:name="com.jpp.mp.main.MainActivity"
-        android:launchMode="singleTop">
-      <intent-filter>
-        <category android:name="android.intent.category.LAUNCHER"/>
-        <action android:name="android.intent.action.MAIN"/>
-      </intent-filter>
-    </activity>
+        <activity
+            android:name="com.jpp.mp.main.MainActivity"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
 
-    <meta-data
-        android:name="io.fabric.ApiKey"
-        android:value="80d86f5f5c31a9540a95b44d4f628f5a7464dcb2" />
+        <activity android:name="com.jpp.mpsearch.SearchActivity" />
 
-  </application>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="80d86f5f5c31a9540a95b44d4f628f5a7464dcb2" />
+
+    </application>
 </manifest>

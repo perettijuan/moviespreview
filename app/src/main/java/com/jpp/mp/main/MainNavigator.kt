@@ -1,8 +1,6 @@
 package com.jpp.mp.main
 
-import android.os.Bundle
 import androidx.navigation.NavController
-import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import com.jpp.mp.R
 import com.jpp.mp.main.movies.MovieListNavigator
@@ -44,10 +42,8 @@ class MainNavigator : MovieListNavigator,
 
     override fun navigateToSearch() {
         navController?.navigate(
-            object : NavDirections {
-                override fun getArguments() = Bundle()
-                override fun getActionId() = R.id.search_nav
-            },
+            R.id.searchActivity,
+            null,
             buildAnimationNavOptions()
         )
     }

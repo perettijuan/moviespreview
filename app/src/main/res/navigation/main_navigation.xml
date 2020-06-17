@@ -28,4 +28,8 @@
         android:id="@+id/topRatedMoviesFragment"
         android:name="com.jpp.mp.main.movies.fragments.TopRatedMoviesFragment"
         tools:layout="@layout/fragment_movie_list"/>
+    <activity
+        android:id="@+id/searchActivity"
+        android:name="com.jpp.mpsearch.SearchActivity"
+        tools:layout="@layout/search_activity"/>
 </navigation>
