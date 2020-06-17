@@ -32,8 +32,6 @@ class SearchViewModel @Inject constructor(
     private var maxPage: Int = 0
     private lateinit var searchQuery: String
 
-    private var retryFunc = { performSearch(searchQuery, currentPage) }
-
     /**
      * The View (Fragment) should call this method to
      * indicate that it is ready to start rendering.
@@ -134,10 +132,11 @@ class SearchViewModel @Inject constructor(
     private fun processFailure(failure: Try.FailureCause) {
         _viewState.value = when (failure) {
             is Try.FailureCause.NoConnectivity -> _viewState.value?.showNoConnectivityError(
-                searchQuery,
-                retryFunc
-            )
-            else -> _viewState.value?.showUnknownError(searchQuery, retryFunc)
+                searchQuery
+            ) { performSearch(searchQuery, currentPage) }
+            else -> _viewState.value?.showUnknownError(searchQuery) {
+                performSearch(searchQuery, currentPage)
+            }
         }
     }
 
