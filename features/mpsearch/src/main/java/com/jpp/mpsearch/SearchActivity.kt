@@ -7,6 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import dagger.android.AndroidInjection
@@ -31,6 +35,9 @@ class SearchActivity : AppCompatActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var searchViewModelFactory: SearchViewModelFactory
 
+    @Inject
+    lateinit var searchNavigator: SearchNavigator
+
     private val viewModel: SearchViewModel by viewModels {
         MPGenericSavedStateViewModelFactory(
             searchViewModelFactory,
@@ -41,6 +48,8 @@ class SearchActivity : AppCompatActivity(), HasSupportFragmentInjector {
     private var searchToolBar: Toolbar? = null
     private var searchView: SearchView? = null
 
+    private lateinit var appBarConfiguration: AppBarConfiguration
+
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
@@ -49,11 +58,37 @@ class SearchActivity : AppCompatActivity(), HasSupportFragmentInjector {
         setupViews()
 
         setSupportActionBar(searchToolBar)
+
+        setupNavigation()
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
         viewModel.searchViewState.observeValue(this, ::renderViewState)
         viewModel.onInit()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val handled = NavigationUI.navigateUp(
+            findNavController(R.id.searchNavHostFragment),
+            appBarConfiguration
+        )
+        return if (handled) {
+            handled
+        } else {
+            onBackPressed()
+            super.onSupportNavigateUp()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        searchNavigator.bind(findNavController(R.id.searchNavHostFragment))
+    }
+
+    override fun onPause() {
+        super.onPause()
+        searchNavigator.unBind()
     }
 
     override fun onDestroy() {
@@ -64,11 +99,6 @@ class SearchActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> =
         fragmentDispatchingAndroidInjector
-
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
-    }
 
     private fun setupViews() {
         searchToolBar = findViewById(R.id.searchToolBar)
@@ -89,5 +119,25 @@ class SearchActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     private fun SearchView.setFocus(focus: Boolean) {
         if (focus) requestFocus() else clearFocus()
+    }
+
+    /**
+     * Prepare the navigation components by setting the fragments that are going to be used
+     * as top level destinations of the drawer and adding a navigation listener to update
+     * the view state that the ViewModel is showing.
+     */
+    private fun setupNavigation() {
+        findNavController(R.id.searchNavHostFragment).let { navController ->
+            /*
+             * We want several top-level destinations since we're showing the
+             * navigation drawer.
+             */
+            appBarConfiguration = AppBarConfiguration(navController.graph)
+            NavigationUI.setupActionBarWithNavController(
+                this,
+                navController,
+                appBarConfiguration
+            )
+        }
     }
 }

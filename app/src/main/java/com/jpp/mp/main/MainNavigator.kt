@@ -103,6 +103,22 @@ class MainNavigator : MovieListNavigator,
         )
     }
 
+    override fun navigateToPersonDetail(
+        personId: String,
+        personImageUrl: String,
+        personName: String
+    ) {
+        navController?.navigate(
+            R.id.person_nav,
+            NavigationPerson.navArgs(
+                personId,
+                personImageUrl,
+                personName
+            ),
+            buildAnimationNavOptions()
+        )
+    }
+
     override fun navigateBack() {
         navController?.popBackStack()
     }

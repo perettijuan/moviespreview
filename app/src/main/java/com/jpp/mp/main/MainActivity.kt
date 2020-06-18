@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
-import androidx.navigation.Navigation.findNavController
+import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.*
 import com.jpp.mp.R
@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     override fun onResume() {
         super.onResume()
-        mainNavigator.bind(findNavController(this, R.id.mainNavHostFragment))
+        mainNavigator.bind(findNavController(R.id.mainNavHostFragment))
     }
 
     override fun onPause() {
@@ -136,7 +136,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return navigateUp(findNavController(this, R.id.mainNavHostFragment), appBarConfiguration)
+        return navigateUp(findNavController(R.id.mainNavHostFragment), appBarConfiguration)
     }
 
     override fun onBackPressed() {
@@ -156,7 +156,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
      * the view state that the ViewModel is showing.
      */
     private fun setupNavigation() {
-        findNavController(this, R.id.mainNavHostFragment).let { navController ->
+        findNavController(R.id.mainNavHostFragment).let { navController ->
             /*
              * We want several top-level destinations since we're showing the
              * navigation drawer.
@@ -181,7 +181,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     }
 
     private fun withNavController(action: NavController.() -> Unit) {
-        findNavController(this, R.id.mainNavHostFragment).action()
+        findNavController(R.id.mainNavHostFragment).action()
     }
 
     private fun navigateToModuleWithExtras(@IdRes moduleNavId: Int, extras: Bundle) {

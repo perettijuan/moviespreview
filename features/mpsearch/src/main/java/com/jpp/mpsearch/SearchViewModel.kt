@@ -1,11 +1,6 @@
 package com.jpp.mpsearch
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPViewModel
-import com.jpp.mp.common.navigation.Destination
+import androidx.lifecycle.*
 import com.jpp.mpdomain.SearchPage
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.usecase.SearchUseCase
@@ -30,9 +25,10 @@ import kotlinx.coroutines.withContext
  */
 class SearchViewModel(
     private val searchUseCase: SearchUseCase,
+    private val searchNavigator: SearchNavigator,
     private val ioDispatcher: CoroutineDispatcher,
     private val savedStateHandle: SavedStateHandle
-) : MPViewModel() {
+) : ViewModel() {
 
     private val _searchViewState = MutableLiveData<SearchViewViewState>()
     internal val searchViewState: LiveData<SearchViewViewState> = _searchViewState
@@ -63,8 +59,6 @@ class SearchViewModel(
      * Called when the view layer is ready to start rendering.
      */
     internal fun onInit() {
-        updateCurrentDestination(Destination.MPSearch)
-
         if (_searchViewState.value == null &&
             _contentViewState.value == null
         ) {
@@ -111,19 +105,15 @@ class SearchViewModel(
      */
     internal fun onItemSelected(item: SearchResultItem) {
         when (item.isMovieType()) {
-            true -> navigateTo(
-                Destination.MPMovieDetails(
-                    movieId = item.id.toString(),
-                    movieImageUrl = item.imagePath,
-                    movieTitle = item.name
-                )
+            true -> searchNavigator.navigateToMovieDetails(
+                movieId = item.id.toString(),
+                movieImageUrl = item.imagePath,
+                movieTitle = item.name
             )
-            false -> navigateTo(
-                Destination.MPPerson(
-                    personId = item.id.toString(),
-                    personImageUrl = item.imagePath,
-                    personName = item.name
-                )
+            false -> searchNavigator.navigateToPersonDetail(
+                personId = item.id.toString(),
+                personImageUrl = item.imagePath,
+                personName = item.name
             )
         }
     }

@@ -12,10 +12,11 @@ import javax.inject.Inject
  */
 class SearchViewModelFactory @Inject constructor(
     private val searchUseCase: SearchUseCase,
+    private val searchNavigator: SearchNavigator,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModelAssistedFactory<SearchViewModel> {
 
     override fun create(handle: SavedStateHandle): SearchViewModel {
-        return SearchViewModel(searchUseCase, ioDispatcher, handle)
+        return SearchViewModel(searchUseCase, searchNavigator, ioDispatcher, handle)
     }
 }
