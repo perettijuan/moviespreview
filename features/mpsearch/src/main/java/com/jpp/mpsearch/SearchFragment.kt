@@ -73,21 +73,21 @@ class SearchFragment : MPFragment<SearchViewModel>() {
             addOnScrollListener(pagingHandler)
         }
 
-        searchView = findSearchView(requireActivity().window.decorView as ViewGroup).apply {
-            /*
-             * The [SearchView] used to present a search option to the user belongs to the Activity
-             * that contains this Fragment for a variety of reasons:
-             * 1 - In order to provide back and forth navigation with the Android Architecture Components,
-             * the application has only one Activity with different Fragments that are rendered in it.
-             * 2 - To follow the design specs, the SearchView is provided in the Activity's action bar.
-             */
-            requestFocus()
-            queryHint = getString(R.string.search_hint)
-            isIconified = false
-            setIconifiedByDefault(false)
-            setOnQueryTextListener(QuerySubmitter { withViewModel { onSearch(it) } })
-            findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener { withViewModel { onClearSearch() } }
-        }
+//        searchView = findSearchView(requireActivity().window.decorView as ViewGroup).apply {
+//            /*
+//             * The [SearchView] used to present a search option to the user belongs to the Activity
+//             * that contains this Fragment for a variety of reasons:
+//             * 1 - In order to provide back and forth navigation with the Android Architecture Components,
+//             * the application has only one Activity with different Fragments that are rendered in it.
+//             * 2 - To follow the design specs, the SearchView is provided in the Activity's action bar.
+//             */
+//            requestFocus()
+//            queryHint = getString(R.string.search_hint)
+//            isIconified = false
+//            setIconifiedByDefault(false)
+//            setOnQueryTextListener(QuerySubmitter { withViewModel { onSearch(it) } })
+//            findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener { withViewModel { onClearSearch() } }
+//        }
     }
 
     private fun renderViewState(viewState: SearchViewState) {

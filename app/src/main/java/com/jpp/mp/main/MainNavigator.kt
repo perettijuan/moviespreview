@@ -11,6 +11,7 @@ import com.jpp.mpmoviedetails.MovieDetailsNavigator
 import com.jpp.mpmoviedetails.NavigationMovieDetails
 import com.jpp.mpmoviedetails.rates.RateMovieNavigator
 import com.jpp.mpperson.NavigationPerson
+import com.jpp.mpsearch.SearchNavigator
 
 /**
  * Provides navigation to the main module and also to each individual
@@ -19,7 +20,8 @@ import com.jpp.mpperson.NavigationPerson
 class MainNavigator : MovieListNavigator,
     MovieDetailsNavigator,
     RateMovieNavigator,
-    CreditNavigator {
+    CreditNavigator,
+    SearchNavigator {
 
     private var navController: NavController? = null
 
@@ -105,11 +107,11 @@ class MainNavigator : MovieListNavigator,
         navController?.popBackStack()
     }
 
-    fun bind(newNavController: NavController) {
+    override fun bind(newNavController: NavController) {
         navController = newNavController
     }
 
-    fun unBind() {
+    override fun unBind() {
         navController = null
     }
 
