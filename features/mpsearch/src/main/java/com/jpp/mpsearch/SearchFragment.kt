@@ -1,18 +1,25 @@
 package com.jpp.mpsearch
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mp.common.paging.MPVerticalPagingHandler
+import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mpsearch.databinding.SearchFragmentBinding
+import dagger.android.support.AndroidSupportInjection
+import javax.inject.Inject
 
 /**
  * Fragment used to provide search functionality to the application.
@@ -22,12 +29,26 @@ import com.jpp.mpsearch.databinding.SearchFragmentBinding
  * search performed by the user. The ViewModel will perform the search, update the
  * UI states represented by [SearchViewState] and the Fragment will render those state updates.
  */
-class SearchFragment : MPFragment<SearchViewModel>() {
+class SearchFragment : Fragment() {
+
+    @Inject
+    lateinit var searchViewModelFactory: SearchViewModelFactory
 
     private lateinit var viewBinding: SearchFragmentBinding
 
+    private val viewModel: SearchViewModel by activityViewModels {
+        MPGenericSavedStateViewModelFactory(
+            searchViewModelFactory,
+            this
+        )
+    }
+
     private var searchResultRv: RecyclerView? = null
-    private var searchView: SearchView? = null
+
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,73 +63,35 @@ class SearchFragment : MPFragment<SearchViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         setupViews(view)
 
-        withViewModel {
-            viewState.observe(this@SearchFragment.viewLifecycleOwner, Observer { viewState ->
-                renderViewState(viewState)
-            })
-            onInit()
-        }
+        viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         searchResultRv = null
-        searchView = null
+        super.onDestroyView()
     }
-
-    override fun withViewModel(action: SearchViewModel.() -> Unit) =
-        withViewModel<SearchViewModel>(viewModelFactory) { action() }
 
 
     private fun setupViews(view: View) {
         searchResultRv = view.findViewById<RecyclerView>(R.id.searchResultRv).apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = SearchItemAdapter { item ->
-                withViewModel { onItemSelected(item) }
+                viewModel.onItemSelected(item)
             }
 
             val pagingHandler = MPVerticalPagingHandler(layoutManager as LinearLayoutManager) {
-                withViewModel { onNextPageRequested() }
+                viewModel.onNextPageRequested()
             }
             addOnScrollListener(pagingHandler)
         }
-
-//        searchView = findSearchView(requireActivity().window.decorView as ViewGroup).apply {
-//            /*
-//             * The [SearchView] used to present a search option to the user belongs to the Activity
-//             * that contains this Fragment for a variety of reasons:
-//             * 1 - In order to provide back and forth navigation with the Android Architecture Components,
-//             * the application has only one Activity with different Fragments that are rendered in it.
-//             * 2 - To follow the design specs, the SearchView is provided in the Activity's action bar.
-//             */
-//            requestFocus()
-//            queryHint = getString(R.string.search_hint)
-//            isIconified = false
-//            setIconifiedByDefault(false)
-//            setOnQueryTextListener(QuerySubmitter { withViewModel { onSearch(it) } })
-//            findViewById<View>(androidx.appcompat.R.id.search_close_btn).setOnClickListener { withViewModel { onClearSearch() } }
-//        }
     }
 
     private fun renderViewState(viewState: SearchViewState) {
         viewBinding.viewState = viewState
 
         (searchResultRv?.adapter as SearchItemAdapter).submitList(viewState.contentViewState.searchResultList)
-        searchView?.setQuery(viewState.searchQuery, false)
-        searchView?.clearFocus() // hide keyboard
-    }
-
-    /**
-     * Iterates recursively through the provided [ViewGroup] and finds a [SearchView],
-     * if there's one.
-     */
-    private fun findSearchView(viewGroup: ViewGroup): SearchView {
-        for (i in 0..viewGroup.childCount) {
-            when (val view = viewGroup.getChildAt(i)) {
-                is SearchView -> return view
-                is ViewGroup -> return findSearchView(view)
-            }
-        }
-        throw IllegalStateException("The container Activity for SearchFragment should provide a SearchView")
+        //TODO
+        //searchView?.setQuery(viewState.searchQuery, false)
+        //searchView?.clearFocus() // hide keyboard
     }
 }

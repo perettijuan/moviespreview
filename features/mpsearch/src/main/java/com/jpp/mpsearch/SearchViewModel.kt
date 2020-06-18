@@ -12,14 +12,13 @@ import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] used to support the search section of the application.
  * Produces different [SearchViewState] that represents the entire configuration of the screen at any
  * given moment.
  */
-class SearchViewModel @Inject constructor(
+class SearchViewModel(
     private val searchUseCase: SearchUseCase,
     private val ioDispatcher: CoroutineDispatcher
 ) : MPViewModel() {
