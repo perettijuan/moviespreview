@@ -1,7 +1,9 @@
 package com.jpp.mpsearch
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import dagger.android.AndroidInjection
@@ -16,23 +18,41 @@ class SearchActivity : AppCompatActivity(), HasSupportFragmentInjector {
     lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
 
     private var searchToolBar: Toolbar? = null
+    private var searchView: SearchView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_activity)
 
-        searchToolBar = findViewById(R.id.searchToolBar)
+        setupViews()
 
         setSupportActionBar(searchToolBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentDispatchingAndroidInjector
+    override fun onDestroy() {
+        searchToolBar = null
+        searchView = null
+        super.onDestroy()
+    }
+
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> =
+        fragmentDispatchingAndroidInjector
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    private fun setupViews() {
+        searchToolBar = findViewById(R.id.searchToolBar)
+        searchView = findViewById(R.id.searchView)
+
+        searchView?.isIconified = false
+        searchView?.setIconifiedByDefault(false)
+        searchView?.setOnQueryTextListener(QuerySubmitter { })
+        searchView?.findViewById<View>(androidx.appcompat.R.id.search_close_btn)?.setOnClickListener {  }
     }
 }
