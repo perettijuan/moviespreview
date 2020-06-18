@@ -16,6 +16,6 @@ class SearchViewModelFactory @Inject constructor(
 ) : ViewModelAssistedFactory<SearchViewModel> {
 
     override fun create(handle: SavedStateHandle): SearchViewModel {
-        return SearchViewModel(searchUseCase, ioDispatcher)
+        return SearchViewModel(searchUseCase, ioDispatcher, handle)
     }
 }

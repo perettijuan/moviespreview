@@ -2,6 +2,7 @@ package com.jpp.mpsearch
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.navigation.Destination
@@ -29,7 +30,8 @@ import kotlinx.coroutines.withContext
  */
 class SearchViewModel(
     private val searchUseCase: SearchUseCase,
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
+    private val savedStateHandle: SavedStateHandle
 ) : MPViewModel() {
 
     private val _searchViewState = MutableLiveData<SearchViewViewState>()
@@ -38,9 +40,24 @@ class SearchViewModel(
     private val _contentViewState = MutableLiveData<SearchContentViewState>()
     internal val contentViewState: LiveData<SearchContentViewState> = _contentViewState
 
-    private var currentPage: Int = 0
-    private var maxPage: Int = 0
-    private lateinit var searchQuery: String
+    private var currentPage: Int
+        set(value) {
+            savedStateHandle.set(CURRENT_PAGE_KEY, value)
+        }
+        get() = savedStateHandle.get(CURRENT_PAGE_KEY) ?: FIRST_PAGE
+
+
+    private var maxPage: Int
+        set(value) {
+            savedStateHandle.set(MAX_SEARCH_PAGE_KEY, value)
+        }
+        get() = savedStateHandle.get(MAX_SEARCH_PAGE_KEY) ?: 0
+
+    private var searchQuery: String
+        set(value) {
+            savedStateHandle.set(SEARCH_QUERY_KEY, value)
+        }
+        get() = savedStateHandle.get(SEARCH_QUERY_KEY) ?: ""
 
     /**
      * Called when the view layer is ready to start rendering.
@@ -60,7 +77,7 @@ class SearchViewModel(
      * Called when a search is requested from the view layer.
      */
     internal fun onSearch(query: String) {
-        if (::searchQuery.isInitialized && query == searchQuery) {
+        if (query == searchQuery || query.isEmpty()) {
             return
         }
 
@@ -83,6 +100,8 @@ class SearchViewModel(
      */
     internal fun onClearSearch() {
         searchQuery = ""
+        currentPage = 0
+        maxPage = 0
         _searchViewState.value = SearchViewViewState.showCleanState()
         _contentViewState.value = SearchContentViewState.showCleanState()
     }
@@ -108,7 +127,7 @@ class SearchViewModel(
             )
         }
     }
-    
+
     private fun performSearch(query: String, page: Int) {
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {
@@ -179,6 +198,9 @@ class SearchViewModel(
         }
 
     private companion object {
+        const val SEARCH_QUERY_KEY = "SEARCH_QUERY_KEY"
+        const val CURRENT_PAGE_KEY = "CURRENT_PAGE_KEY"
+        const val MAX_SEARCH_PAGE_KEY = "MAX_SEARCH_PAGE_KEY"
         const val FIRST_PAGE = 1
     }
 }
