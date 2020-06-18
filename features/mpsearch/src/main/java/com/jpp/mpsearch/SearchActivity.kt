@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
@@ -14,6 +15,14 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 
+/**
+ * Activity to provide search functionality.
+ *
+ * Interacts with [SearchViewModel] to provide search functionality. Since the [SearchView] that
+ * allows the user to enter a query is located in this Activity's [Toolbar], the ViewModel
+ * updates the state of that [SearchView] using [SearchViewViewState]. The content of the search
+ * and rendered using [SearchFragment].
+ */
 class SearchActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     @Inject
@@ -43,6 +52,7 @@ class SearchActivity : AppCompatActivity(), HasSupportFragmentInjector {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
+        viewModel.searchViewState.observeValue(this, ::renderViewState)
         viewModel.onInit()
     }
 
@@ -66,8 +76,18 @@ class SearchActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
         searchView?.isIconified = false
         searchView?.setIconifiedByDefault(false)
-        searchView?.setOnQueryTextListener(QuerySubmitter { })
+        searchView?.setOnQueryTextListener(QuerySubmitter { query -> viewModel.onSearch(query) })
         searchView?.findViewById<View>(androidx.appcompat.R.id.search_close_btn)
-            ?.setOnClickListener { }
+            ?.setOnClickListener { viewModel.onClearSearch() }
+    }
+
+    private fun renderViewState(viewState: SearchViewViewState) {
+        searchView?.setQuery(viewState.searchQuery, false)
+        searchView?.queryHint = getString(viewState.queryHint)
+        searchView?.setFocus(viewState.focused)
+    }
+
+    private fun SearchView.setFocus(focus: Boolean) {
+        if (focus) requestFocus() else clearFocus()
     }
 }

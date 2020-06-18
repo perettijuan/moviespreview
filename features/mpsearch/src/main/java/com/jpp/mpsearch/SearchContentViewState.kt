@@ -6,42 +6,37 @@ import com.jpp.mpdesign.views.MPErrorView
 /**
  * Represents the view state that the search view ([SearchFragment]) can assume at any given point.
  */
-internal data class SearchViewState(
-    val searchQuery: String = "",
+internal data class SearchContentViewState(
     val loadingVisibility: Int = View.INVISIBLE,
     val placeHolderViewState: SearchPlaceHolderViewState = SearchPlaceHolderViewState(),
     val errorViewState: MPErrorView.ErrorViewState = MPErrorView.ErrorViewState.asNotVisible(),
     val contentViewState: SearchResultContentViewState = SearchResultContentViewState()
 ) {
 
-    fun showSearchResult(searchResultList: List<SearchResultItem>): SearchViewState =
+    fun showSearchResult(searchResultList: List<SearchResultItem>): SearchContentViewState =
         copy(
             loadingVisibility = View.INVISIBLE,
             contentViewState = contentViewState.showResults(searchResultList),
             errorViewState = MPErrorView.ErrorViewState.asNotVisible()
         )
 
-    fun showNoResults(query: String): SearchViewState = SearchViewState(
-        searchQuery = query,
+    fun showNoResults(): SearchContentViewState = SearchContentViewState(
         contentViewState = contentViewState.showNoResults()
     )
 
-    fun showUnknownError(query: String, errorHandler: () -> Unit) = SearchViewState(
-        searchQuery = query,
+    fun showUnknownError(errorHandler: () -> Unit) = SearchContentViewState(
         errorViewState = MPErrorView.ErrorViewState.asUnknownError(errorHandler)
     )
 
-    fun showNoConnectivityError(query: String, errorHandler: () -> Unit) = SearchViewState(
-        searchQuery = query,
+    fun showNoConnectivityError(errorHandler: () -> Unit) = SearchContentViewState(
         errorViewState = MPErrorView.ErrorViewState.asConnectivity(errorHandler)
     )
 
-    fun showSearching(query: String) =
-        SearchViewState(searchQuery = query, loadingVisibility = View.VISIBLE)
+    fun showSearching() =
+        SearchContentViewState(loadingVisibility = View.VISIBLE)
 
     companion object {
-        fun showCleanState() = SearchViewState(
-            searchQuery = "",
+        fun showCleanState() = SearchContentViewState(
             placeHolderViewState = SearchPlaceHolderViewState(visibility = View.VISIBLE)
         )
     }
