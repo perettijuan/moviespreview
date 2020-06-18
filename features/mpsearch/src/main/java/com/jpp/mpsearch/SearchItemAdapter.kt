@@ -6,16 +6,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mpsearch.databinding.ListItemSearchBinding
 
-/**
- * Internal [PagedListAdapter] to render the list of search results. The fact that this class is a
- * [PagedListAdapter] indicates that the paging library is being used. Another important
- * aspect of this class is that it uses Data Binding to update the UI, which differs from the
- * containing class.
- */
 internal class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem) -> Unit) :
     RecyclerView.Adapter<SearchItemAdapter.ViewHolder>() {
 
-    private var itemList = emptyList<SearchResultItem>()
+    private var itemList = ArrayList<SearchResultItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -36,7 +30,8 @@ internal class SearchItemAdapter(private val searchSelectionListener: (SearchRes
 
     fun submitList(newData: List<SearchResultItem>) {
         val currentLastIndex = itemList.size
-        itemList = newData
+        itemList.clear()
+        itemList.addAll(newData)
         notifyItemRangeChanged(currentLastIndex, itemList.size)
     }
 
