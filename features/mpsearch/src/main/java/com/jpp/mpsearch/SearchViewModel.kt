@@ -64,6 +64,8 @@ class SearchViewModel(
         ) {
             _searchViewState.value = SearchViewViewState.showCleanState()
             _contentViewState.value = SearchContentViewState.showCleanState()
+        } else {
+            _searchViewState.value = _searchViewState.value?.show()
         }
     }
 
@@ -104,6 +106,7 @@ class SearchViewModel(
      * Called when an item is selected in the list of search results.
      */
     internal fun onItemSelected(item: SearchResultItem) {
+        _searchViewState.value = _searchViewState.value?.hide()
         when (item.isMovieType()) {
             true -> searchNavigator.navigateToMovieDetails(
                 movieId = item.id.toString(),

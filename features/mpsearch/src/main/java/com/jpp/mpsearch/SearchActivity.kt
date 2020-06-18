@@ -56,16 +56,9 @@ class SearchActivity : AppCompatActivity(), HasSupportFragmentInjector {
         setContentView(R.layout.search_activity)
 
         setupViews()
-
-        setSupportActionBar(searchToolBar)
-
         setupNavigation()
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-
         viewModel.searchViewState.observeValue(this, ::renderViewState)
-        viewModel.onInit()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -102,8 +95,9 @@ class SearchActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     private fun setupViews() {
         searchToolBar = findViewById(R.id.searchToolBar)
-        searchView = findViewById(R.id.searchView)
+        setSupportActionBar(searchToolBar)
 
+        searchView = findViewById(R.id.searchView)
         searchView?.isIconified = false
         searchView?.setIconifiedByDefault(false)
         searchView?.setOnQueryTextListener(QuerySubmitter { query -> viewModel.onSearch(query) })
@@ -112,32 +106,36 @@ class SearchActivity : AppCompatActivity(), HasSupportFragmentInjector {
     }
 
     private fun renderViewState(viewState: SearchViewViewState) {
+        supportActionBar?.title = viewState.screenTitle
+        searchView?.visibility = viewState.visibility
         searchView?.setQuery(viewState.searchQuery, false)
         searchView?.queryHint = getString(viewState.queryHint)
         searchView?.setFocus(viewState.focused)
+        supportActionBar?.setDisplayHomeAsUpEnabled(viewState.displayHomeEnabled)
+        supportActionBar?.setDisplayShowHomeEnabled(viewState.displayHomeEnabled)
     }
 
     private fun SearchView.setFocus(focus: Boolean) {
         if (focus) requestFocus() else clearFocus()
     }
 
-    /**
-     * Prepare the navigation components by setting the fragments that are going to be used
-     * as top level destinations of the drawer and adding a navigation listener to update
-     * the view state that the ViewModel is showing.
-     */
+
     private fun setupNavigation() {
-        findNavController(R.id.searchNavHostFragment).let { navController ->
-            /*
-             * We want several top-level destinations since we're showing the
-             * navigation drawer.
-             */
-            appBarConfiguration = AppBarConfiguration(navController.graph)
-            NavigationUI.setupActionBarWithNavController(
-                this,
-                navController,
-                appBarConfiguration
-            )
+        val navController = findNavController(R.id.searchNavHostFragment)
+        appBarConfiguration = AppBarConfiguration(navController.graph)
+        setupActionBarWithNavController(
+            navController,
+            appBarConfiguration
+        )
+
+        /*
+         * We need to detect when the starting node of the destination tree of
+         * the search module is shown and update the action bar to show the back arrow icon.
+         */
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id == R.id.searchFragment) {
+                viewModel.onInit()
+            }
         }
     }
 }
