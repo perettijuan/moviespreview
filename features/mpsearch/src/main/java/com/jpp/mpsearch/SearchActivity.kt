@@ -55,6 +55,10 @@ class SearchActivity : AppCompatActivity(), HasSupportFragmentInjector {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_activity)
 
+        // Important to avoid blinks in transitions.
+        // Source -> https://stackoverflow.com/questions/28364106/blinking-screen-on-image-transition-between-activities
+        window.enterTransition = null
+
         setupViews()
         setupNavigation()
 

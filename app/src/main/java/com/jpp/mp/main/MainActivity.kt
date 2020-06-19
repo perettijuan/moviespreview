@@ -1,5 +1,7 @@
 package com.jpp.mp.main
 
+import android.app.ActivityOptions
+import android.content.Intent
 import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +20,7 @@ import com.jpp.mp.R
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mpdesign.ext.closeDrawerIfOpen
+import com.jpp.mpsearch.SearchActivity
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -63,6 +66,10 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Important to avoid blinks in transitions.
+        // Source -> https://stackoverflow.com/questions/28364106/blinking-screen-on-image-transition-between-activities
+        window.exitTransition = null
 
         mainToolbar = findViewById(R.id.mainToolbar)
 
@@ -217,5 +224,13 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
          */
         invalidateOptionsMenu()
         mainDrawerLayout.closeDrawerIfOpen()
+    }
+
+    fun navigateToSearch() {
+        val intent = Intent(this, SearchActivity::class.java)
+        val transitionOptions = ActivityOptions.makeSceneTransitionAnimation(
+            this, mainToolbar, getString(R.string.toolbar_search_transition)
+        ).toBundle()
+        startActivity(intent, transitionOptions)
     }
 }

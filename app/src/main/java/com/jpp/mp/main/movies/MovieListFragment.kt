@@ -15,6 +15,7 @@ import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.paging.MPVerticalPagingHandler
 import com.jpp.mp.databinding.FragmentMovieListBinding
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
+import com.jpp.mp.main.MainActivity
 import com.jpp.mpdomain.MovieSection
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
@@ -122,7 +123,8 @@ abstract class MovieListFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.search_menu -> {
-                viewModel.onSearchOptionSelected()
+//                viewModel.onSearchOptionSelected()
+                navigateToSearch()
                 return true
             }
             R.id.about_menu -> {
@@ -154,5 +156,9 @@ abstract class MovieListFragment : Fragment() {
 
     private companion object {
         const val MOVIES_RV_STATE_KEY = "moviesRvStateKey"
+    }
+
+    private fun navigateToSearch() {
+        (requireActivity() as MainActivity).navigateToSearch()
     }
 }
