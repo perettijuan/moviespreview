@@ -5,6 +5,7 @@ import com.jpp.mp.main.movies.MovieListNavigator
 import com.jpp.mpcredits.CreditNavigator
 import com.jpp.mpmoviedetails.MovieDetailsNavigator
 import com.jpp.mpmoviedetails.rates.RateMovieNavigator
+import com.jpp.mpsearch.SearchNavigator
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -30,4 +31,7 @@ class NavigationModule {
 
     @Provides
     fun providesCreditNavigator(mainNavigator: MainNavigator): CreditNavigator = mainNavigator
+
+    @Provides
+    fun providesSearchNavigator(mainNavigator: MainNavigator): SearchNavigator = mainNavigator
 }

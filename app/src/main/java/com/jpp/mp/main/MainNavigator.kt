@@ -1,8 +1,6 @@
 package com.jpp.mp.main
 
-import android.os.Bundle
 import androidx.navigation.NavController
-import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import com.jpp.mp.R
 import com.jpp.mp.main.movies.MovieListNavigator
@@ -13,6 +11,7 @@ import com.jpp.mpmoviedetails.MovieDetailsNavigator
 import com.jpp.mpmoviedetails.NavigationMovieDetails
 import com.jpp.mpmoviedetails.rates.RateMovieNavigator
 import com.jpp.mpperson.NavigationPerson
+import com.jpp.mpsearch.SearchNavigator
 
 /**
  * Provides navigation to the main module and also to each individual
@@ -21,7 +20,8 @@ import com.jpp.mpperson.NavigationPerson
 class MainNavigator : MovieListNavigator,
     MovieDetailsNavigator,
     RateMovieNavigator,
-    CreditNavigator {
+    CreditNavigator,
+    SearchNavigator {
 
     private var navController: NavController? = null
 
@@ -44,10 +44,8 @@ class MainNavigator : MovieListNavigator,
 
     override fun navigateToSearch() {
         navController?.navigate(
-            object : NavDirections {
-                override fun getArguments() = Bundle()
-                override fun getActionId() = R.id.search_nav
-            },
+            R.id.searchActivity,
+            null,
             buildAnimationNavOptions()
         )
     }
@@ -105,15 +103,31 @@ class MainNavigator : MovieListNavigator,
         )
     }
 
+    override fun navigateToPersonDetail(
+        personId: String,
+        personImageUrl: String,
+        personName: String
+    ) {
+        navController?.navigate(
+            R.id.person_nav,
+            NavigationPerson.navArgs(
+                personId,
+                personImageUrl,
+                personName
+            ),
+            buildAnimationNavOptions()
+        )
+    }
+
     override fun navigateBack() {
         navController?.popBackStack()
     }
 
-    fun bind(newNavController: NavController) {
+    override fun bind(newNavController: NavController) {
         navController = newNavController
     }
 
-    fun unBind() {
+    override fun unBind() {
         navController = null
     }
 

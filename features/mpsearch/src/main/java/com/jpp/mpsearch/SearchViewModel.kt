@@ -1,11 +1,6 @@
 package com.jpp.mpsearch
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import androidx.paging.PagedList
-import com.jpp.mp.common.coroutines.MPViewModel
-import com.jpp.mp.common.navigation.Destination
+import androidx.lifecycle.*
 import com.jpp.mpdomain.SearchPage
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.usecase.SearchUseCase
@@ -13,53 +8,83 @@ import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
- * [MPViewModel] used to support the search section of the application.
- * Produces different [SearchViewState] that represents the entire configuration of the screen at any
- * given moment.
+ * [ViewModel] used to support the search section of the application.
+ *
+ * This ViewModel controls two different view states:
+ *  - The [SearchActivity]' SearchView state.
+ *  - The [SearchFragment] content view state.
+ *
+ * It has the responsibility of handling the two view states because the SearchView that
+ * provides searching capabilities is hosted by the [SearchActivity] but the content of the
+ * search is actually rendered by [SearchFragment]. This is designed this way because the search
+ * module must provide navigation to other sections of the application. In order to achieve that,
+ * the application relies in the Navigation Architecture Component that forces to declare a startDestination
+ * when instantiated.
  */
-class SearchViewModel @Inject constructor(
+class SearchViewModel(
     private val searchUseCase: SearchUseCase,
-    private val ioDispatcher: CoroutineDispatcher
-) : MPViewModel() {
+    private val searchNavigator: SearchNavigator,
+    private val ioDispatcher: CoroutineDispatcher,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
-    private val _viewState = MutableLiveData<SearchViewState>()
-    internal val viewState: LiveData<SearchViewState> = _viewState
+    private val _searchViewState = MutableLiveData<SearchViewViewState>()
+    internal val searchViewState: LiveData<SearchViewViewState> = _searchViewState
 
-    private var currentPage: Int = 0
-    private var maxPage: Int = 0
-    private lateinit var searchQuery: String
+    private val _contentViewState = MutableLiveData<SearchContentViewState>()
+    internal val contentViewState: LiveData<SearchContentViewState> = _contentViewState
+
+    private var currentPage: Int
+        set(value) {
+            savedStateHandle.set(CURRENT_PAGE_KEY, value)
+        }
+        get() = savedStateHandle.get(CURRENT_PAGE_KEY) ?: FIRST_PAGE
+
+
+    private var maxPage: Int
+        set(value) {
+            savedStateHandle.set(MAX_SEARCH_PAGE_KEY, value)
+        }
+        get() = savedStateHandle.get(MAX_SEARCH_PAGE_KEY) ?: 0
+
+    private var searchQuery: String
+        set(value) {
+            savedStateHandle.set(SEARCH_QUERY_KEY, value)
+        }
+        get() = savedStateHandle.get(SEARCH_QUERY_KEY) ?: ""
 
     /**
-     * The View (Fragment) should call this method to
-     * indicate that it is ready to start rendering.
+     * Called when the view layer is ready to start rendering.
      */
     internal fun onInit() {
-        updateCurrentDestination(Destination.MPSearch)
-
-        when (val currentState = _viewState.value) {
-            null -> _viewState.value = SearchViewState.showCleanState()
-            else -> _viewState.value = currentState
+        if (_searchViewState.value == null &&
+            _contentViewState.value == null
+        ) {
+            _searchViewState.value = SearchViewViewState.showCleanState()
+            _contentViewState.value = SearchContentViewState.showCleanState()
+        } else {
+            _searchViewState.value = _searchViewState.value?.show()
         }
     }
 
     /**
-     * Called when the user performs a search.
+     * Called when a search is requested from the view layer.
      */
     internal fun onSearch(query: String) {
-        if (::searchQuery.isInitialized && query == searchQuery) {
+        if (query == searchQuery || query.isEmpty()) {
             return
         }
 
         searchQuery = query
-        _viewState.value = _viewState.value?.showSearching(query)
+        _searchViewState.value = SearchViewViewState.showSearching(searchQuery)
+        _contentViewState.value = _contentViewState.value?.showSearching()
         performSearch(query, FIRST_PAGE)
     }
 
     /**
-     * Called when a new page in the search is requested.
+     * Called when a new page in the search is needed.
      */
     internal fun onNextPageRequested() {
         val nextPage = currentPage + 1
@@ -67,39 +92,35 @@ class SearchViewModel @Inject constructor(
     }
 
     /**
-     * Called when the user clears the state of the last search performed.
+     * Called when the current search is cleared.
      */
     internal fun onClearSearch() {
         searchQuery = ""
-        _viewState.value = SearchViewState.showCleanState()
+        currentPage = 0
+        maxPage = 0
+        _searchViewState.value = SearchViewViewState.showCleanState()
+        _contentViewState.value = SearchContentViewState.showCleanState()
     }
 
     /**
      * Called when an item is selected in the list of search results.
      */
     internal fun onItemSelected(item: SearchResultItem) {
+        _searchViewState.value = _searchViewState.value?.hide()
         when (item.isMovieType()) {
-            true -> navigateTo(
-                Destination.MPMovieDetails(
-                    movieId = item.id.toString(),
-                    movieImageUrl = item.imagePath,
-                    movieTitle = item.name
-                )
+            true -> searchNavigator.navigateToMovieDetails(
+                movieId = item.id.toString(),
+                movieImageUrl = item.imagePath,
+                movieTitle = item.name
             )
-            false -> navigateTo(
-                Destination.MPPerson(
-                    personId = item.id.toString(),
-                    personImageUrl = item.imagePath,
-                    personName = item.name
-                )
+            false -> searchNavigator.navigateToPersonDetail(
+                personId = item.id.toString(),
+                personImageUrl = item.imagePath,
+                personName = item.name
             )
         }
     }
 
-    /**
-     * Pushes the Loading view state into the view layer and creates the [PagedList]
-     * of [SearchResultItem] that will be rendered by the view layer.
-     */
     private fun performSearch(query: String, page: Int) {
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {
@@ -118,7 +139,7 @@ class SearchViewModel @Inject constructor(
         maxPage = searchPage.total_pages
 
         if (searchPage.results.isEmpty() && currentPage == FIRST_PAGE) {
-            _viewState.value = _viewState.value?.showNoResults(searchQuery)
+            _contentViewState.value = _contentViewState.value?.showNoResults()
             return
         }
 
@@ -126,20 +147,22 @@ class SearchViewModel @Inject constructor(
             .filter { searchResult -> searchResult.isMovie() || searchResult.isPerson() }
             .map { searchResult -> searchResult.mapToSearchResultItem() }
 
-        _viewState.value = _viewState.value?.showSearchResult(searchResults)
+        _contentViewState.value = _contentViewState.value?.showSearchResult(searchResults)
     }
 
     private fun processFailure(failure: Try.FailureCause) {
-        _viewState.value = when (failure) {
-            is Try.FailureCause.NoConnectivity -> _viewState.value?.showNoConnectivityError(
-                searchQuery
-            ) { performSearch(searchQuery, currentPage) }
-            else -> _viewState.value?.showUnknownError(searchQuery) {
+        _contentViewState.value = when (failure) {
+            is Try.FailureCause.NoConnectivity -> _contentViewState.value?.showNoConnectivityError {
+                performSearch(
+                    searchQuery,
+                    currentPage
+                )
+            }
+            else -> _contentViewState.value?.showUnknownError {
                 performSearch(searchQuery, currentPage)
             }
         }
     }
-
 
     private fun SearchResult.mapToSearchResultItem(): SearchResultItem {
         return SearchResultItem(
@@ -168,6 +191,9 @@ class SearchViewModel @Inject constructor(
         }
 
     private companion object {
+        const val SEARCH_QUERY_KEY = "SEARCH_QUERY_KEY"
+        const val CURRENT_PAGE_KEY = "CURRENT_PAGE_KEY"
+        const val MAX_SEARCH_PAGE_KEY = "MAX_SEARCH_PAGE_KEY"
         const val FIRST_PAGE = 1
     }
 }

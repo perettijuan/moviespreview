@@ -58,8 +58,11 @@ dependencies {
     implementation deps.android.arch.navigation.fragment
     implementation deps.android.arch.navigation.ui
 
-    // Paging library
-    implementation deps.androidx.paging
+    // Features - needs to know them to provide navigation
+    implementation project(path: ':features:mpaccount')
+    implementation project(path: ':features:mpmoviedetails')
+    implementation project(path: ':features:mpperson')
+    implementation project(path: ':features:mpcredits')
 
     // Junit 5
     testImplementation deps.test.junit5.jupiter.api
