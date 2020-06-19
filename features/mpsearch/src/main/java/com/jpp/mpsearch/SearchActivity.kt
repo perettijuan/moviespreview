@@ -1,6 +1,7 @@
 package com.jpp.mpsearch
 
 import android.os.Bundle
+import android.transition.Fade
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -55,9 +56,8 @@ class SearchActivity : AppCompatActivity(), HasSupportFragmentInjector {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_activity)
 
-        // Important to avoid blinks in transitions.
-        // Source -> https://stackoverflow.com/questions/28364106/blinking-screen-on-image-transition-between-activities
-        window.enterTransition = null
+        window.enterTransition = Fade(Fade.IN)
+        window.returnTransition = Fade(Fade.OUT)
 
         setupViews()
         setupNavigation()
