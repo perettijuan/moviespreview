@@ -1,6 +1,7 @@
 package com.jpp.mpsearch
 
 import android.os.Bundle
+import android.transition.Fade
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -54,6 +55,9 @@ class SearchActivity : AppCompatActivity(), HasSupportFragmentInjector {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_activity)
+
+        window.enterTransition = Fade(Fade.IN)
+        window.returnTransition = Fade(Fade.OUT)
 
         setupViews()
         setupNavigation()

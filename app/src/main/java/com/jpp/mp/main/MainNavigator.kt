@@ -24,6 +24,7 @@ class MainNavigator : MovieListNavigator,
     SearchNavigator {
 
     private var navController: NavController? = null
+    private var mainToSearchDelegate: MainToSearchNavigationDelegate? = null
 
     override fun navigateToMovieDetails(
         movieId: String,
@@ -43,11 +44,14 @@ class MainNavigator : MovieListNavigator,
     }
 
     override fun navigateToSearch() {
-        navController?.navigate(
-            R.id.searchActivity,
-            null,
-            buildAnimationNavOptions()
-        )
+        val handled = mainToSearchDelegate?.onNavigateToSearch() ?: false
+        if (!handled) {
+            navController?.navigate(
+                R.id.searchActivity,
+                null,
+                buildAnimationNavOptions()
+            )
+        }
     }
 
     override fun navigateToAboutSection() {
@@ -127,8 +131,14 @@ class MainNavigator : MovieListNavigator,
         navController = newNavController
     }
 
+    internal fun bindDelegate(navigator: MainToSearchNavigationDelegate) {
+        mainToSearchDelegate = navigator
+    }
+
     override fun unBind() {
         navController = null
+        mainToSearchDelegate?.onDestroy()
+        mainToSearchDelegate = null
     }
 
     private fun buildAnimationNavOptions() = NavOptions.Builder()

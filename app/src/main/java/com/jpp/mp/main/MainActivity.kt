@@ -64,6 +64,10 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Important to avoid blinks in transitions.
+        // Source -> https://stackoverflow.com/questions/28364106/blinking-screen-on-image-transition-between-activities
+        window.exitTransition = null
+
         mainToolbar = findViewById(R.id.mainToolbar)
 
         withMainViewModel {
@@ -124,6 +128,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     override fun onResume() {
         super.onResume()
         mainNavigator.bind(findNavController(R.id.mainNavHostFragment))
+        mainNavigator.bindDelegate(MainToSearchNavigationDelegate(this, mainToolbar))
     }
 
     override fun onPause() {

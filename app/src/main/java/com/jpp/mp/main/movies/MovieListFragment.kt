@@ -15,6 +15,7 @@ import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.paging.MPVerticalPagingHandler
 import com.jpp.mp.databinding.FragmentMovieListBinding
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
+import com.jpp.mp.main.MainActivity
 import com.jpp.mpdomain.MovieSection
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject

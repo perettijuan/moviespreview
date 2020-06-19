@@ -9,6 +9,9 @@
 
         <item name="android:windowBackground">@color/windowBackground</item>
 
+        <!-- This is important for the transitions executed between activities-->
+        <item name="android:windowSharedElementsUseOverlay">false</item>
+
         <item name="mpActionBarHeightExpanded">@dimen/action_bar_height_expanded</item>
         <item name="mpActionBarHeightNormal">@dimen/action_bar_height_normal</item>
 

@@ -7,8 +7,9 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/searchToolBar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/mpActionBarHeightNormal"
+        android:layout_height="?attr/mpActionBarHeightExpanded"
         app:contentInsetStart="0dp"
+        android:transitionName="@string/toolbar_search_transition"
         app:contentInsetStartWithNavigation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
