@@ -123,8 +123,7 @@ abstract class MovieListFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.search_menu -> {
-//                viewModel.onSearchOptionSelected()
-                navigateToSearch()
+                viewModel.onSearchOptionSelected()
                 return true
             }
             R.id.about_menu -> {
@@ -156,9 +155,5 @@ abstract class MovieListFragment : Fragment() {
 
     private companion object {
         const val MOVIES_RV_STATE_KEY = "moviesRvStateKey"
-    }
-
-    private fun navigateToSearch() {
-        (requireActivity() as MainActivity).navigateToSearch()
     }
 }
