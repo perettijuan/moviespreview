@@ -1,6 +1,7 @@
 package com.jpp.mpsearch
 
 import android.view.View
+import androidx.lifecycle.SavedStateHandle
 import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.SearchPage
 import com.jpp.mpdomain.SearchResult
@@ -11,10 +12,11 @@ import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -30,28 +32,43 @@ class SearchViewModelTest {
     @MockK
     private lateinit var searchUseCase: SearchUseCase
 
+    @RelaxedMockK
+    private lateinit var searchNavigator: SearchNavigator
+
     private lateinit var subject: SearchViewModel
 
     @BeforeEach
     fun setUp() {
         subject = SearchViewModel(
             searchUseCase,
-            CoroutineTestExtension.testDispatcher
+            searchNavigator,
+            CoroutineTestExtension.testDispatcher,
+            SavedStateHandle()
         )
     }
 
     @Test
     fun `Should post clear state on init`() {
+        var searchViewStatePosted: SearchViewViewState? = null
         var contentViewStatePosted: SearchContentViewState? = null
 
+        subject.searchViewState.observeWith { viewState -> searchViewStatePosted = viewState }
         subject.contentViewState.observeWith { viewState -> contentViewStatePosted = viewState }
 
         subject.onInit()
 
-        assertNotNull(contentViewStatePosted)
+        assertNotNull(searchViewStatePosted)
+        assertEquals("", searchViewStatePosted?.searchQuery)
+        assertEquals(View.VISIBLE, searchViewStatePosted?.visibility)
+        assertEquals(true, searchViewStatePosted?.focused)
+        assertEquals(true, searchViewStatePosted?.displayHomeEnabled)
 
+        assertNotNull(contentViewStatePosted)
         assertEquals(View.INVISIBLE, contentViewStatePosted?.loadingVisibility)
-        assertEquals(View.INVISIBLE, contentViewStatePosted?.contentViewState?.searchResultsVisibility)
+        assertEquals(
+            View.INVISIBLE,
+            contentViewStatePosted?.contentViewState?.searchResultsVisibility
+        )
         assertEquals(
             View.INVISIBLE,
             contentViewStatePosted?.contentViewState?.emptySearchResultsVisibility
@@ -63,6 +80,7 @@ class SearchViewModelTest {
 
     @Test
     fun `Should post no connectivity error when disconnected`() {
+        var searchViewStatePosted: SearchViewViewState? = null
         var contentViewStatePosted: SearchContentViewState? = null
 
         coEvery {
@@ -72,16 +90,24 @@ class SearchViewModelTest {
             )
         } returns Try.Failure(Try.FailureCause.NoConnectivity)
 
+        subject.searchViewState.observeWith { viewState -> searchViewStatePosted = viewState }
         subject.contentViewState.observeWith { viewState -> contentViewStatePosted = viewState }
 
         subject.onInit()
         subject.onSearch("aSearch")
 
-        assertNotNull(contentViewStatePosted)
+        assertNotNull(searchViewStatePosted)
+        assertEquals("aSearch", searchViewStatePosted?.searchQuery)
+        assertEquals(View.VISIBLE, searchViewStatePosted?.visibility)
+        assertEquals(false, searchViewStatePosted?.focused)
+        assertEquals(true, searchViewStatePosted?.displayHomeEnabled)
 
-        assertEquals("aSearch", contentViewStatePosted?.searchQuery)
+        assertNotNull(contentViewStatePosted)
         assertEquals(View.INVISIBLE, contentViewStatePosted?.loadingVisibility)
-        assertEquals(View.INVISIBLE, contentViewStatePosted?.contentViewState?.searchResultsVisibility)
+        assertEquals(
+            View.INVISIBLE,
+            contentViewStatePosted?.contentViewState?.searchResultsVisibility
+        )
         assertEquals(
             View.INVISIBLE,
             contentViewStatePosted?.contentViewState?.emptySearchResultsVisibility
@@ -110,9 +136,11 @@ class SearchViewModelTest {
 
         assertNotNull(contentViewStatePosted)
 
-        assertEquals("aSearch", contentViewStatePosted?.searchQuery)
         assertEquals(View.INVISIBLE, contentViewStatePosted?.loadingVisibility)
-        assertEquals(View.INVISIBLE, contentViewStatePosted?.contentViewState?.searchResultsVisibility)
+        assertEquals(
+            View.INVISIBLE,
+            contentViewStatePosted?.contentViewState?.searchResultsVisibility
+        )
         assertEquals(
             View.INVISIBLE,
             contentViewStatePosted?.contentViewState?.emptySearchResultsVisibility
@@ -123,21 +151,9 @@ class SearchViewModelTest {
         assertEquals(false, contentViewStatePosted?.errorViewState?.isConnectivity)
     }
 
-
-    @Test
-    fun `Should update reached destination in onInit`() {
-        var destinationReached: Destination? = null
-        val expected = Destination.MPSearch
-
-        subject.destinationEvents.observeWith { destinationReached = it }
-
-        subject.onInit()
-
-        assertEquals(expected, destinationReached)
-    }
-
     @Test
     fun `Should request navigation to person details when onItemSelected with person item`() {
+        var searchViewStatePosted: SearchViewViewState? = null
         val personItem = SearchResultItem(
             id = 10.0,
             imagePath = "aPath",
@@ -145,26 +161,27 @@ class SearchViewModelTest {
             icon = SearchResultTypeIcon.Person
         )
 
-        val expectedDestination = Destination.MPPerson(
-            personId = "10.0",
-            personImageUrl = "aPath",
-            personName = "aName"
-        )
+        subject.searchViewState.observeWith { viewState -> searchViewStatePosted = viewState }
 
-        var requestedDestination: Destination? = null
-
-        subject.navigationEvents.observeWith {
-            it.actionIfNotHandled { dest ->
-                requestedDestination = dest
-            }
-        }
+        subject.onInit()
         subject.onItemSelected(personItem)
 
-        assertEquals(expectedDestination, requestedDestination)
+        verify {
+            searchNavigator.navigateToPersonDetail(
+                personId = "10.0",
+                personImageUrl = "aPath",
+                personName = "aName"
+            )
+        }
+
+        assertNotNull(searchViewStatePosted)
+        assertEquals(View.GONE, searchViewStatePosted?.visibility)
+        assertEquals(false, searchViewStatePosted?.displayHomeEnabled)
     }
 
     @Test
     fun `Should request navigation to movie details when onItemSelected with movie item`() {
+        var searchViewStatePosted: SearchViewViewState? = null
         val personItem = SearchResultItem(
             id = 10.0,
             imagePath = "aPath",
@@ -172,22 +189,22 @@ class SearchViewModelTest {
             icon = SearchResultTypeIcon.Movie
         )
 
-        val expectedDestination = Destination.MPMovieDetails(
-            movieId = "10.0",
-            movieImageUrl = "aPath",
-            movieTitle = "aName"
-        )
+        subject.searchViewState.observeWith { viewState -> searchViewStatePosted = viewState }
 
-        var requestedDestination: Destination? = null
-
-        subject.navigationEvents.observeWith {
-            it.actionIfNotHandled { dest ->
-                requestedDestination = dest
-            }
-        }
+        subject.onInit()
         subject.onItemSelected(personItem)
 
-        assertEquals(expectedDestination, requestedDestination)
+        verify {
+            searchNavigator.navigateToMovieDetails(
+                movieId = "10.0",
+                movieImageUrl = "aPath",
+                movieTitle = "aName"
+            )
+        }
+
+        assertNotNull(searchViewStatePosted)
+        assertEquals(View.GONE, searchViewStatePosted?.visibility)
+        assertEquals(false, searchViewStatePosted?.displayHomeEnabled)
     }
 
     @Test
@@ -210,7 +227,6 @@ class SearchViewModelTest {
 
         assertNotNull(contentViewStatePosted)
 
-        assertEquals("aSearch", contentViewStatePosted?.searchQuery)
         assertEquals(View.INVISIBLE, contentViewStatePosted?.loadingVisibility)
         assertEquals(
             View.VISIBLE,
@@ -242,7 +258,6 @@ class SearchViewModelTest {
 
         assertNotNull(contentViewStatePosted)
 
-        assertEquals("aSearch", contentViewStatePosted?.searchQuery)
         assertEquals(View.INVISIBLE, contentViewStatePosted?.loadingVisibility)
         assertEquals(
             View.INVISIBLE,
