@@ -18,8 +18,6 @@ import com.jpp.mp.R
 import com.jpp.mp.common.extensions.withViewModel
 import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mpdesign.ext.closeDrawerIfOpen
-import com.jpp.mpdesign.ext.setGone
-import com.jpp.mpdesign.ext.setVisible
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -57,16 +55,16 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var mainNavigator: MainNavigator
 
-    private lateinit var mpToolbarManager: MPToolbarManager
-
     private lateinit var appBarConfiguration: AppBarConfiguration
+
+    private var mainToolbar: Toolbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mpToolbarManager = MPToolbarManager()
+        mainToolbar = findViewById(R.id.mainToolbar)
 
         withMainViewModel {
             onInit()
@@ -121,8 +119,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
         setSupportActionBar(mainToolbar)
         setupNavigation()
-        //TODO delete this once all Fragments are handling title manually
-        mainSearchView.setGone()
     }
 
     override fun onResume() {
@@ -145,6 +141,11 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         } else {
             super.onBackPressed()
         }
+    }
+
+    override fun onDestroy() {
+        mainToolbar = null
+        super.onDestroy()
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> =
@@ -209,17 +210,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     private fun renderViewState(viewState: MainActivityViewState) {
         supportActionBar?.title = viewState.sectionTitle
-        when (viewState.searchEnabled) {
-            true -> {
-                mainSearchView.setVisible()
-                mpToolbarManager.setInsetStartWithNavigation(0, mainToolbar)
-            }
-            false -> {
-                mainSearchView.setGone()
-                mpToolbarManager.clearInsetStartWithNavigation(mainToolbar)
-            }
-        }
-
         /*
          * Forces to inflate the menu shown in the Toolbar.
          * onCreateOptionsMenu() will be re-executed to hide/show the
@@ -227,30 +217,5 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
          */
         invalidateOptionsMenu()
         mainDrawerLayout.closeDrawerIfOpen()
-    }
-
-    /**
-     * Helper class to remove the space between the arrow image and the
-     * text (or the SearchView) that is shown in the Toolbar.
-     * In some screens (e.g.: searchPage screen) we want to remove this
-     * space to provide more space for the contentViewState shown right next
-     * to the arrow/burger icon.
-     */
-    private inner class MPToolbarManager {
-        private var originalInsetStartWithNavigation = -1
-
-        fun setInsetStartWithNavigation(toSet: Int, toolbar: Toolbar) {
-            originalInsetStartWithNavigation = toSet
-            toolbar.contentInsetStartWithNavigation = toSet
-        }
-
-        fun clearInsetStartWithNavigation(toolbar: Toolbar) {
-            when (originalInsetStartWithNavigation != -1) {
-                true -> {
-                    toolbar.contentInsetStartWithNavigation = originalInsetStartWithNavigation
-                    originalInsetStartWithNavigation = -1
-                }
-            }
-        }
     }
 }
