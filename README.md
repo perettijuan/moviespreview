@@ -1,3 +1,9 @@
+############################################################################################################################################################################################################################################################
+
+### UPDATE (06/01/20200) --- A HUGE REFACTOR IS HAPPENING IN THIS REPOSITORY IN ORDER TO CLEAN_UP THE APPLICATION AND GO FROM A POORLY INTERACTOR IMPLEMENTATION TO A MOST ROBUST USE-CASE BASED ARCHITECTURE.
+
+############################################################################################################################################################################################################################################################
+
 ## MoviesPreview [![Build Status](https://travis-ci.org/perettijuan/moviespreview.svg?branch=master)](https://travis-ci.org/perettijuan/moviespreview)  [![CircleCI](https://circleci.com/gh/perettijuan/moviespreview.svg?style=svg)](https://circleci.com/gh/perettijuan/moviespreview)
 
 MoviesPreview is a typical Android Application that queries The Movie DB API and presents the data available to the user. The user might do different things with that data, besides browsing it. But mainly, MoviesPreview is an ongoing effort to expose my ideas and to try to stay up to date with the development of Android Applications.
