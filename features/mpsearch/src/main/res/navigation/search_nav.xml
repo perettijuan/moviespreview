@@ -8,7 +8,7 @@
     <include app:graph="@navigation/movie_details_nav" />
     <include app:graph="@navigation/person_nav" />
     <include app:graph="@navigation/credits_nav" />
-    <include app:graph="@navigation/about_nav" />
+
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.jpp.mpsearch.SearchFragment"/>
