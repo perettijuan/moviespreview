@@ -52,7 +52,7 @@ class AboutFragment : MPFragment<AboutViewModel>() {
 
             navEvents.observe(viewLifecycleOwner, Observer { it.actionIfNotHandled { navEvent -> processNavEvent(navEvent) } })
 
-            onInit(getString(R.string.about_top_bar_title))
+            onInit()
         }
     }
 
