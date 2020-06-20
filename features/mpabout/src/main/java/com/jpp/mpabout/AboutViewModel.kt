@@ -17,7 +17,7 @@ import javax.inject.Inject
  * the data from the underlying layers using the provided [AboutInteractor] and maps the business
  * data to UI data, producing a [AboutViewState] that represents the configuration of the view.
  */
-class A @Inject constructor(
+class AboutViewModel @Inject constructor(
     private val appVersionRepository: AppVersionRepository,
     private val aboutUrlRepository: AboutUrlRepository
 ) : MPViewModel() {
