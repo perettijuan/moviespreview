@@ -12,13 +12,9 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.jpp.mp.common.extensions.cleanView
-import com.jpp.mp.common.extensions.send
-import com.jpp.mp.common.extensions.setScreenTitle
-import com.jpp.mp.common.extensions.web
+import com.jpp.mp.common.extensions.*
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mpabout.databinding.FragmentAboutBinding
 import com.jpp.mpdesign.ext.getColor
@@ -57,25 +53,24 @@ class AboutFragment : Fragment() {
         return viewBinding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-            viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
-                setScreenTitle(getString(viewState.screenTitle))
-                viewBinding.viewState = viewState
-                aboutRv.apply {
-                    layoutManager = LinearLayoutManager(context)
-                    adapter = AboutItemsAdapter(viewState.content.aboutItems) {viewModel.onUserSelectedAboutItem(it) }
-                    addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
-                }
-            })
-
-            viewModel.navEvents.observe(viewLifecycleOwner, Observer { it.actionIfNotHandled { navEvent -> processNavEvent(navEvent) } })
-
-            viewModel.onInit()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
+        viewModel.navEvents.observeHandledEvent(viewLifecycleOwner, ::handleNavEvent)
+        viewModel.onInit()
     }
 
-    private fun processNavEvent(navEvent: AboutNavEvent) {
+    private fun renderViewState(viewState: AboutViewState) {
+        setScreenTitle(getString(viewState.screenTitle))
+        viewBinding.viewState = viewState
+        aboutRv.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = AboutItemsAdapter(viewState.content.aboutItems) {viewModel.onUserSelectedAboutItem(it) }
+            addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
+        }
+    }
+
+    private fun handleNavEvent(navEvent: AboutNavEvent) {
         when (navEvent) {
             is AboutNavEvent.InnerNavigation -> navigateInnerBrowser(navEvent.url)
             is AboutNavEvent.OpenGooglePlay -> goToRateAppScreen(navEvent.url)
