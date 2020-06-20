@@ -16,13 +16,13 @@ import androidx.annotation.StringRes
  * Represents the view state of the about fragment.
  */
 data class AboutViewState(
+    val screenTitle: Int = R.string.about_top_bar_title,
     val loadingVisibility: Int = View.INVISIBLE,
     val header: AboutHeader = AboutHeader(),
     val content: AboutContent = AboutContent()
 ) {
 
     companion object {
-        fun showLoading() = AboutViewState()
         fun showContent(
             appVersion: String,
             aboutItems: List<AboutItem>

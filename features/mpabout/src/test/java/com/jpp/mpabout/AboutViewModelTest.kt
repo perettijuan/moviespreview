@@ -3,11 +3,15 @@ package com.jpp.mpabout
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.jpp.mp.common.navigation.Destination
+import com.jpp.mpdomain.AboutUrl
 import com.jpp.mpdomain.AppVersion
+import com.jpp.mpdomain.repository.AboutUrlRepository
+import com.jpp.mpdomain.repository.AppVersionRepository
 import com.jpp.mptestutils.CoroutineTestExtension
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
@@ -22,24 +26,23 @@ import org.junit.jupiter.params.provider.MethodSource
 
 @ExperimentalCoroutinesApi
 @ExtendWith(
-        MockKExtension::class,
-        InstantTaskExecutorExtension::class,
-        CoroutineTestExtension::class
+    MockKExtension::class,
+    InstantTaskExecutorExtension::class,
+    CoroutineTestExtension::class
 )
 class AboutViewModelTest {
 
-    @RelaxedMockK
-    private lateinit var aboutInteractor: AboutInteractor
+    @MockK
+    private lateinit var appVersionRepository: AppVersionRepository
 
-    private val lvInteractorEvents = MutableLiveData<AboutInteractor.AboutEvent>()
+    @MockK
+    private lateinit var aboutUrlRepository: AboutUrlRepository
 
     private lateinit var subject: AboutViewModel
 
     @BeforeEach
     fun setUp() {
-        every { aboutInteractor.events } returns lvInteractorEvents
-
-        subject = AboutViewModel(aboutInteractor)
+        subject = AboutViewModel(appVersionRepository, aboutUrlRepository)
     }
 
     @Test
@@ -47,17 +50,19 @@ class AboutViewModelTest {
         var viewStatePosted: AboutViewState? = null
         val expectedAppVersion = "v appVersion"
         val expectedAboutItems = listOf(
-                AboutItem.RateApp,
-                AboutItem.ShareApp,
-                AboutItem.PrivacyPolicy,
-                AboutItem.BrowseAppCode,
-                AboutItem.Licenses,
-                AboutItem.TheMovieDbTermsOfUse
+            AboutItem.RateApp,
+            AboutItem.ShareApp,
+            AboutItem.PrivacyPolicy,
+            AboutItem.BrowseAppCode,
+            AboutItem.Licenses,
+            AboutItem.TheMovieDbTermsOfUse
         )
+
+        every { appVersionRepository.getCurrentAppVersion() } returns AppVersion("appVersion")
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        lvInteractorEvents.postValue(AboutInteractor.AboutEvent.AppVersionEvent(AppVersion("appVersion")))
+        subject.onInit()
 
         assertNotNull(viewStatePosted)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
@@ -67,66 +72,68 @@ class AboutViewModelTest {
         assertEquals(expectedAboutItems, viewStatePosted?.content?.aboutItems)
     }
 
-    @ParameterizedTest
-    @MethodSource("executeInteractionTests")
-    fun `Should request proper URL when navigation item selected`(param: AboutInteractorTestParam) {
+    @Test
+    fun `Should navigate to app code`() {
+        var postedEvent: AboutNavEvent? = null
+        val expected = AboutNavEvent.InnerNavigation("browseAppCode")
 
-        subject.onUserSelectedAboutItem(param.selected)
+        every { aboutUrlRepository.getCodeRepoUrl() } returns AboutUrl("browseAppCode")
+        subject.navEvents.observeWith { handledEvent -> postedEvent = handledEvent.peekContent() }
 
-        param.verification.invoke(aboutInteractor)
+        subject.onUserSelectedAboutItem(AboutItem.BrowseAppCode)
+
+        assertEquals(expected, postedEvent)
     }
 
     @Test
-    fun `Should update reached destination in onInit`() {
-        var destinationReached: Destination? = null
-        val expected = Destination.ReachedDestination("aTitle")
+    fun `Should navigate to terms of use`() {
+        var postedEvent: AboutNavEvent? = null
+        val expected = AboutNavEvent.InnerNavigation("termsOfUse")
 
-        subject.destinationEvents.observeWith { destinationReached = it }
+        every { aboutUrlRepository.getTheMovieDbTermOfUseUrl() } returns AboutUrl("termsOfUse")
+        subject.navEvents.observeWith { handledEvent -> postedEvent = handledEvent.peekContent() }
 
-        subject.onInit("aTitle")
+        subject.onUserSelectedAboutItem(AboutItem.TheMovieDbTermsOfUse)
 
-        assertEquals(expected, destinationReached)
+        assertEquals(expected, postedEvent)
     }
 
-    data class AboutInteractorTestParam(
-        val selected: AboutItem,
-        val verification: (AboutInteractor) -> Unit
-    )
+    @Test
+    fun `Should navigate to privacy policy`() {
+        var postedEvent: AboutNavEvent? = null
+        val expected = AboutNavEvent.OuterNavigation("PrivacyPolicy")
 
-    companion object {
+        every { aboutUrlRepository.getPrivacyPolicyUrl() } returns AboutUrl("PrivacyPolicy")
+        subject.navEvents.observeWith { handledEvent -> postedEvent = handledEvent.peekContent() }
 
-        @JvmStatic
-        fun executeInteractionTests() = listOf(
-                AboutInteractorTestParam(
-                        selected = AboutItem.BrowseAppCode,
-                        verification = { interactor ->
-                            verify { interactor.getRepoUrl() }
-                        }
-                ),
-                AboutInteractorTestParam(
-                        selected = AboutItem.TheMovieDbTermsOfUse,
-                        verification = { interactor ->
-                            verify { interactor.getApiTermOfUseUrl() }
-                        }
-                ),
-                AboutInteractorTestParam(
-                        selected = AboutItem.PrivacyPolicy,
-                        verification = { interactor ->
-                            verify { interactor.getPrivacyPolicyUrl() }
-                        }
-                ),
-                AboutInteractorTestParam(
-                        selected = AboutItem.RateApp,
-                        verification = { interactor ->
-                            verify { interactor.getStoreUrl() }
-                        }
-                ),
-                AboutInteractorTestParam(
-                        selected = AboutItem.ShareApp,
-                        verification = { interactor ->
-                            verify { interactor.getShareUrl() }
-                        }
-                )
-        )
+        subject.onUserSelectedAboutItem(AboutItem.PrivacyPolicy)
+
+        assertEquals(expected, postedEvent)
+    }
+
+    @Test
+    fun `Should navigate to rate app`() {
+        var postedEvent: AboutNavEvent? = null
+        val expected = AboutNavEvent.OpenGooglePlay("RateApp")
+
+        every { aboutUrlRepository.getGPlayAppUrl() } returns AboutUrl("RateApp")
+        subject.navEvents.observeWith { handledEvent -> postedEvent = handledEvent.peekContent() }
+
+        subject.onUserSelectedAboutItem(AboutItem.RateApp)
+
+        assertEquals(expected, postedEvent)
+    }
+
+    @Test
+    fun `Should navigate to share app`() {
+        var postedEvent: AboutNavEvent? = null
+        val expected = AboutNavEvent.OpenSharing("ShareApp")
+
+        every { aboutUrlRepository.getSharingUrl() } returns AboutUrl("ShareApp")
+        subject.navEvents.observeWith { handledEvent -> postedEvent = handledEvent.peekContent() }
+
+        subject.onUserSelectedAboutItem(AboutItem.ShareApp)
+
+        assertEquals(expected, postedEvent)
     }
 }
