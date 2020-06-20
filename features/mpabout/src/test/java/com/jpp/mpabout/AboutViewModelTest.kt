@@ -38,11 +38,14 @@ class AboutViewModelTest {
     @MockK
     private lateinit var aboutUrlRepository: AboutUrlRepository
 
+    @MockK
+    private lateinit var aboutNavigator: AboutNavigator
+
     private lateinit var subject: AboutViewModel
 
     @BeforeEach
     fun setUp() {
-        subject = AboutViewModel(appVersionRepository, aboutUrlRepository)
+        subject = AboutViewModel(appVersionRepository, aboutUrlRepository, aboutNavigator)
     }
 
     @Test
