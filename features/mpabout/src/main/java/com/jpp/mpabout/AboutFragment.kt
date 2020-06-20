@@ -16,10 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jpp.mp.common.extensions.cleanView
-import com.jpp.mp.common.extensions.send
-import com.jpp.mp.common.extensions.web
-import com.jpp.mp.common.extensions.withViewModel
+import com.jpp.mp.common.extensions.*
 import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mpabout.databinding.FragmentAboutBinding
@@ -64,6 +61,7 @@ class AboutFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
             viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
+                setScreenTitle(getString(viewState.screenTitle))
                 viewBinding.viewState = viewState
                 aboutRv.apply {
                     layoutManager = LinearLayoutManager(context)

@@ -4,6 +4,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import com.jpp.mp.R
 import com.jpp.mp.main.movies.MovieListNavigator
+import com.jpp.mpabout.AboutFragmentDirections
+import com.jpp.mpabout.AboutNavigator
 import com.jpp.mpcredits.CreditNavigator
 import com.jpp.mpcredits.NavigationCredits
 import com.jpp.mpmoviedetails.MovieDetailsFragmentDirections
@@ -21,7 +23,8 @@ class MainNavigator : MovieListNavigator,
     MovieDetailsNavigator,
     RateMovieNavigator,
     CreditNavigator,
-    SearchNavigator {
+    SearchNavigator,
+    AboutNavigator {
 
     private var navController: NavController? = null
     private var mainToSearchDelegate: MainToSearchNavigationDelegate? = null
@@ -121,6 +124,10 @@ class MainNavigator : MovieListNavigator,
             ),
             buildAnimationNavOptions()
         )
+    }
+
+    override fun navigateToLicenses() {
+        navController?.navigate(AboutFragmentDirections.licensesFragment())
     }
 
     override fun navigateBack() {

@@ -12,9 +12,10 @@ import javax.inject.Inject
  */
 class AboutViewModelFactory @Inject constructor(
     private val appVersionRepository: AppVersionRepository,
-    private val aboutUrlRepository: AboutUrlRepository
+    private val aboutUrlRepository: AboutUrlRepository,
+    private val aboutNavigator: AboutNavigator
 ) : ViewModelAssistedFactory<AboutViewModel> {
     override fun create(handle: SavedStateHandle): AboutViewModel {
-        return AboutViewModel(appVersionRepository, aboutUrlRepository)
+        return AboutViewModel(appVersionRepository, aboutUrlRepository, aboutNavigator)
     }
 }

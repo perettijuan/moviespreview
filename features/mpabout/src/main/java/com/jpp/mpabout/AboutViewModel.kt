@@ -3,22 +3,22 @@ package com.jpp.mpabout
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.common.coroutines.MPViewModel
+import androidx.lifecycle.ViewModel
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.repository.AboutUrlRepository
 import com.jpp.mpdomain.repository.AppVersionRepository
 
 /**
- * [MPViewModel] that supports the about section. The VM retrieves
- * the data from the underlying layers using the provided [AboutInteractor] and maps the business
+ * [ViewModel] that supports the about section. The VM retrieves
+ * the data from the underlying layers and maps the business
  * data to UI data, producing a [AboutViewState] that represents the configuration of the view.
  */
 class AboutViewModel(
     private val appVersionRepository: AppVersionRepository,
-    private val aboutUrlRepository: AboutUrlRepository
-) : MPViewModel() {
+    private val aboutUrlRepository: AboutUrlRepository,
+    private val aboutNavigator: AboutNavigator
+) : ViewModel() {
 
     private val _viewState = MediatorLiveData<AboutViewState>()
     val viewState: LiveData<AboutViewState> = _viewState
@@ -53,7 +53,7 @@ class AboutViewModel(
      */
     fun onUserSelectedAboutItem(aboutItem: AboutItem) {
         if (aboutItem is AboutItem.Licenses) {
-            navigateTo(Destination.InnerDestination(AboutFragmentDirections.licensesFragment()))
+            aboutNavigator.navigateToLicenses()
             return
         }
 
