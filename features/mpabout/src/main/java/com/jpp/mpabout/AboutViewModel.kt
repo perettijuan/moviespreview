@@ -21,10 +21,10 @@ class AboutViewModel(
 ) : ViewModel() {
 
     private val _viewState = MediatorLiveData<AboutViewState>()
-    val viewState: LiveData<AboutViewState> = _viewState
+    internal val viewState: LiveData<AboutViewState> = _viewState
 
     private val _navEvents = MutableLiveData<HandledEvent<AboutNavEvent>>()
-    val navEvents: LiveData<HandledEvent<AboutNavEvent>> = _navEvents
+    internal val navEvents: LiveData<HandledEvent<AboutNavEvent>> = _navEvents
 
     private val supportedAboutItems = listOf(
         AboutItem.RateApp,
@@ -41,7 +41,7 @@ class AboutViewModel(
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit() {
+    internal fun onInit() {
         _viewState.value = AboutViewState.showContent(
             appVersion = "v ${appVersionRepository.getCurrentAppVersion().version}",
             aboutItems = supportedAboutItems
@@ -51,7 +51,7 @@ class AboutViewModel(
     /**
      * Called when the user has selected an item from the about items section.
      */
-    fun onUserSelectedAboutItem(aboutItem: AboutItem) {
+    internal fun onUserSelectedAboutItem(aboutItem: AboutItem) {
         if (aboutItem is AboutItem.Licenses) {
             aboutNavigator.navigateToLicenses()
             return
@@ -72,7 +72,7 @@ class AboutViewModel(
     /**
      * Called when the app fails to expanded the Google Play app in the device.
      */
-    fun onFailedToOpenPlayStore() {
+    internal fun onFailedToOpenPlayStore() {
         _navEvents.value = of(AboutNavEvent.OpenGooglePlay(aboutUrlRepository.getGPlayWebUrl().url))
     }
 }
