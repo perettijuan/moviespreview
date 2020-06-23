@@ -15,6 +15,6 @@ class LicenseContentViewModelFactory @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModelAssistedFactory<LicenseContentViewModel> {
     override fun create(handle: SavedStateHandle): LicenseContentViewModel {
-        return LicenseContentViewModel(findAppLicenseUseCase, ioDispatcher)
+        return LicenseContentViewModel(findAppLicenseUseCase, ioDispatcher, handle)
     }
 }
