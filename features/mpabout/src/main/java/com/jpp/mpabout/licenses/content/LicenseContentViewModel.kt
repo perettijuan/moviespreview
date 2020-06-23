@@ -9,13 +9,12 @@ import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [ViewModel] that supports the [LicenseContentFragment]. When initialized, the VM
  * takes care of updating the UI state in order to render the content of a particular license.
  */
-class LicenseContentViewModel @Inject constructor(
+class LicenseContentViewModel(
     private val findAppLicenseUseCase: FindAppLicenseUseCase,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
