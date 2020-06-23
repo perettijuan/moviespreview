@@ -13,12 +13,13 @@ internal data class LicensesViewState(
     val content: LicensesContent = LicensesContent()
 ) {
 
+    fun showContent(items: List<LicenseItem>): LicensesViewState =
+        copy(content = LicensesContent.withContent(items))
+
+    fun showError(errorHandler: () -> Unit): LicensesViewState =
+        copy(errorViewState = LicensesErrorViewState.asUnknownError(errorHandler))
+
     companion object {
         fun showLoading() = LicensesViewState(loadingVisibility = View.VISIBLE)
-        fun showContent(items: List<LicenseItem>) =
-            LicensesViewState(content = LicensesContent.withContent(items))
-
-        fun showError(errorHandler: () -> Unit) =
-            LicensesViewState(errorViewState = LicensesErrorViewState.asUnknownError(errorHandler))
     }
 }

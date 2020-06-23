@@ -54,8 +54,8 @@ class LicensesViewModel(
             }
 
             _viewState.value = when (result) {
-                is Try.Success -> LicensesViewState.showContent(result.value.licenses.map { license -> license.toLicenseItem() })
-                else -> LicensesViewState.showError { pushLoadingAndFetchAppLicenses() }
+                is Try.Success -> _viewState.value?.showContent(result.value.licenses.map { license -> license.toLicenseItem() })
+                else -> _viewState.value?.showError { pushLoadingAndFetchAppLicenses() }
             }
         }
     }
