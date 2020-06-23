@@ -149,4 +149,18 @@ class DomainLayerModule {
     ): GetUserAccountUseCase = GetUserAccountUseCase(
         accountRepository, sessionRepository, connectivityRepository
     )
+
+    @Provides
+    fun providesGetAccessTokenUseCase(
+        accessTokenRepository: AccessTokenRepository,
+        connectivityRepository: ConnectivityRepository
+    ): GetAccessTokenUseCase = GetAccessTokenUseCase(accessTokenRepository, connectivityRepository)
+
+    @Provides
+    fun providesLoginUseCase(
+        sessionRepository: SessionRepository,
+        connectivityRepository: ConnectivityRepository
+    ): LoginUseCase = LoginUseCase(
+        sessionRepository, connectivityRepository
+    )
 }
