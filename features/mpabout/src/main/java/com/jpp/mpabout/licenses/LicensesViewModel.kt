@@ -1,13 +1,8 @@
 package com.jpp.mpabout.licenses
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPViewModel
+import androidx.lifecycle.*
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.License
 import com.jpp.mpdomain.usecase.GetAppLicensesUseCase
 import com.jpp.mpdomain.usecase.Try
@@ -16,12 +11,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * [MPViewModel] that supports the list of [License]s that the application uses.
+ * [ViewModel] that supports the list of [License]s that the application uses.
  */
 class LicensesViewModel(
     private val getAppLicensesUseCase: GetAppLicensesUseCase,
     private val ioDispatcher: CoroutineDispatcher
-) : MPViewModel() {
+) : ViewModel() {
 
     private val _viewState = MediatorLiveData<LicensesViewState>()
     internal val viewState: LiveData<LicensesViewState> = _viewState
@@ -35,8 +30,7 @@ class LicensesViewModel(
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    internal fun onInit(screenTitle: String) {
-        updateCurrentDestination(Destination.ReachedDestination(screenTitle))
+    internal fun onInit() {
         pushLoadingAndFetchAppLicenses()
     }
 

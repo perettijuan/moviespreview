@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.observeHandledEvent
 import com.jpp.mp.common.extensions.observeValue
+import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mpabout.R
 import com.jpp.mpabout.databinding.FragmentLicensesBinding
@@ -62,7 +63,7 @@ class LicensesFragment : Fragment() {
         licensesRv = view.findViewById(R.id.licensesRv)
         viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
         viewModel.navEvents.observeHandledEvent(viewLifecycleOwner, ::handleEvent)
-        viewModel.onInit(getString(R.string.about_open_source_action))
+        viewModel.onInit()
     }
 
     override fun onDestroyView() {
@@ -71,6 +72,7 @@ class LicensesFragment : Fragment() {
     }
 
     private fun renderViewState(viewState: LicensesViewState) {
+        setScreenTitle(getString(viewState.screenTitle))
         viewBinding.viewState = viewState
         licensesRv?.apply {
             layoutManager = LinearLayoutManager(context)
