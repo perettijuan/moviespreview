@@ -1,6 +1,9 @@
 package com.jpp.mpabout.licenses
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mpdomain.License
@@ -18,7 +21,7 @@ class LicensesViewModel(
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    private val _viewState = MediatorLiveData<LicensesViewState>()
+    private val _viewState = MutableLiveData<LicensesViewState>()
     internal val viewState: LiveData<LicensesViewState> = _viewState
 
     private val _navEvents = MutableLiveData<HandledEvent<GoToLicenseContentEvent>>()

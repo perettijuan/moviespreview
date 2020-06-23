@@ -14,10 +14,16 @@ internal data class LicensesViewState(
 ) {
 
     fun showContent(items: List<LicenseItem>): LicensesViewState =
-        copy(content = LicensesContent.withContent(items))
+        copy(
+            loadingVisibility = View.INVISIBLE,
+            content = LicensesContent.withContent(items)
+        )
 
     fun showError(errorHandler: () -> Unit): LicensesViewState =
-        copy(errorViewState = LicensesErrorViewState.asUnknownError(errorHandler))
+        copy(
+            loadingVisibility = View.INVISIBLE,
+            errorViewState = LicensesErrorViewState.asUnknownError(errorHandler)
+        )
 
     companion object {
         fun showLoading() = LicensesViewState(loadingVisibility = View.VISIBLE)

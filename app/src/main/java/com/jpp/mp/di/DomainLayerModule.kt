@@ -136,4 +136,8 @@ class DomainLayerModule {
     @Provides
     fun providesGetAppLicensesUseCase(licensesRepository: LicensesRepository): GetAppLicensesUseCase =
         GetAppLicensesUseCase(licensesRepository)
+
+    @Provides
+    fun providesFindAppLicenseUseCase(licensesRepository: LicensesRepository): FindAppLicenseUseCase =
+        FindAppLicenseUseCase(licensesRepository)
 }
