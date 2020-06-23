@@ -21,7 +21,7 @@ class LicenseContentViewModel @Inject constructor(
 ) : MPViewModel() {
 
     private val _viewState = MutableLiveData<LicenseContentViewState>()
-    val viewState: LiveData<LicenseContentViewState> get() = _viewState
+    internal val viewState: LiveData<LicenseContentViewState> get() = _viewState
 
     private var licenseId: Int = 0
 
@@ -31,7 +31,7 @@ class LicenseContentViewModel @Inject constructor(
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit(licenseId: Int) {
+    internal fun onInit(licenseId: Int) {
         this.licenseId = licenseId
         pushLoadingAndFetchAppLicense()
     }
