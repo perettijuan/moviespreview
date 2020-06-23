@@ -23,7 +23,7 @@ class LoginViewModel @Inject constructor(
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<LoginViewState>()
-    val viewState: LiveData<LoginViewState> get() = _viewState
+    internal val viewState: LiveData<LoginViewState> = _viewState
 
     private var loginAccessToken: AccessToken? = null
     private val retry: () -> Unit = { onInit(screenTitle) }
@@ -59,7 +59,7 @@ class LoginViewModel @Inject constructor(
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit(title: String) {
+    internal fun onInit(title: String) {
         screenTitle = title
         updateCurrentDestination(Destination.ReachedDestination(screenTitle))
 
