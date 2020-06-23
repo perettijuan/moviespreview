@@ -2,7 +2,6 @@ package com.jpp.mpaccount.login
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mptestutils.CoroutineTestExtension
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
@@ -12,9 +11,7 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.fail
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -30,6 +27,9 @@ class LoginViewModelTest {
     @RelaxedMockK
     private lateinit var loginInteractor: LoginInteractor
 
+    @RelaxedMockK
+    private lateinit var loginNavigator: LoginNavigator
+
     private val lvLoginEvent = MutableLiveData<LoginInteractor.LoginEvent>()
     private val lvOauthEvent = MutableLiveData<LoginInteractor.OauthEvent>()
 
@@ -40,7 +40,7 @@ class LoginViewModelTest {
         every { loginInteractor.loginEvents } returns lvLoginEvent
         every { loginInteractor.oauthEvents } returns lvOauthEvent
 
-        subject = LoginViewModel(loginInteractor)
+        subject = LoginViewModel(loginInteractor, loginNavigator, CoroutineTestExtension.testDispatcher)
 
         /*
          * Since the ViewModel uses a MediatorLiveData, we need to have
@@ -72,7 +72,7 @@ class LoginViewModelTest {
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInit("aTitle")
+        subject.onInit()
         lvLoginEvent.postValue(LoginInteractor.LoginEvent.NotConnectedToNetwork)
 
         viewStatePosted?.let {
@@ -83,14 +83,9 @@ class LoginViewModelTest {
 
     @Test
     fun `Should navigate to user account screen when login is successful`() {
-        var requestedDestination: Destination? = null
-        val expectedDestination = Destination.InnerDestination(LoginFragmentDirections.toAccountFragment())
-
-        subject.navigationEvents.observeWith { it.actionIfNotHandled { dest -> requestedDestination = dest } }
-
         lvLoginEvent.postValue(LoginInteractor.LoginEvent.LoginSuccessful)
 
-        assertEquals(expectedDestination, requestedDestination)
+        verify { loginNavigator.navigateToUserAccount() }
     }
 
     @Test
@@ -115,7 +110,7 @@ class LoginViewModelTest {
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInit("aTitle")
+        subject.onInit()
         lvLoginEvent.postValue(LoginInteractor.LoginEvent.LoginError)
 
         viewStatePosted?.let {
@@ -187,7 +182,7 @@ class LoginViewModelTest {
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInit("aTitle")
+        subject.onInit()
 
         assertNotNull(viewStatePosted)
         assertEquals(View.INVISIBLE, viewStatePosted?.oauthViewState?.visibility)
@@ -210,17 +205,5 @@ class LoginViewModelTest {
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
 
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
-    }
-
-    @Test
-    fun `Should update reached destination in onInit`() {
-        var destinationReached: Destination? = null
-        val expected = Destination.ReachedDestination("aTitle")
-
-        subject.destinationEvents.observeWith { destinationReached = it }
-
-        subject.onInit("aTitle")
-
-        assertEquals(expected, destinationReached)
     }
 }
