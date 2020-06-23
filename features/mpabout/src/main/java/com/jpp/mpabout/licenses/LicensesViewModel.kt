@@ -8,39 +8,27 @@ import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mp.common.navigation.Destination
-import com.jpp.mpabout.AboutInteractor
-import com.jpp.mpabout.AboutInteractor.LicensesEvent.Success
-import com.jpp.mpabout.AboutInteractor.LicensesEvent.UnknownError
 import com.jpp.mpdomain.License
-import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
+import com.jpp.mpdomain.usecase.GetAppLicensesUseCase
+import com.jpp.mpdomain.usecase.Try
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * [MPViewModel] that supports the list of [License]s that the application uses.
  */
 class LicensesViewModel @Inject constructor(
-    private val aboutInteractor: AboutInteractor
+    private val getAppLicensesUseCase: GetAppLicensesUseCase,
+    private val ioDispatcher: CoroutineDispatcher
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<LicensesViewState>()
-    val viewState: LiveData<LicensesViewState> get() = _viewState
+    val viewState: LiveData<LicensesViewState> = _viewState
 
     private val _navEvents = MutableLiveData<HandledEvent<GoToLicenseContentEvent>>()
-    val navEvents: LiveData<HandledEvent<GoToLicenseContentEvent>> get() = _navEvents
-
-    /*
-     * Map the business logic coming from the interactor into view layer logic.
-     */
-    init {
-        _viewState.addSource(aboutInteractor.licenseEvents) { event ->
-            when (event) {
-                is UnknownError -> LicensesViewState.showError { pushLoadingAndFetchAppLicenses() }
-                is Success -> LicensesViewState.showContent(event.results.licenses.map { mapLicense(it) })
-            }.let { _viewState.value = it }
-        }
-    }
+    val navEvents: LiveData<HandledEvent<GoToLicenseContentEvent>> = _navEvents
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -62,25 +50,22 @@ class LicensesViewModel @Inject constructor(
     }
 
     /**
-     * Helper function to perform an action with the [aboutInteractor] in a background
-     * thread.
-     */
-    private fun withInteractor(action: AboutInteractor.() -> Unit) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                action(aboutInteractor)
-            }
-        }
-    }
-
-    /**
      * Push the loading view state and fetch the application licenses in a
      * background thread.
      */
     private fun pushLoadingAndFetchAppLicenses() {
-        withInteractor { fetchAppLicenses() }
         _viewState.value = LicensesViewState.showLoading()
+        viewModelScope.launch {
+            val result = withContext(ioDispatcher) {
+                getAppLicensesUseCase.execute()
+            }
+
+            _viewState.value = when (result) {
+                is Try.Success -> LicensesViewState.showContent(result.value.licenses.map { license -> license.toLicenseItem() })
+                else -> LicensesViewState.showError { pushLoadingAndFetchAppLicenses() }
+            }
+        }
     }
 
-    private fun mapLicense(license: License): LicenseItem = with(license) { LicenseItem(id = id, name = name) }
+    private fun License.toLicenseItem(): LicenseItem = LicenseItem(id = id, name = name)
 }
