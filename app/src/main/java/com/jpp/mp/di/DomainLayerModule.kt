@@ -132,4 +132,8 @@ class DomainLayerModule {
         connectivityRepository,
         languageRepository
     )
+
+    @Provides
+    fun providesGetAppLicensesUseCase(licensesRepository: LicensesRepository): GetAppLicensesUseCase =
+        GetAppLicensesUseCase(licensesRepository)
 }
