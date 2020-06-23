@@ -6,7 +6,7 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 /**
  * Represents the view state of the login screen.
  */
-data class LoginViewState(
+internal data class LoginViewState(
     val loadingVisibility: Int = View.INVISIBLE,
     val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
     val oauthViewState: OauthViewState = OauthViewState()

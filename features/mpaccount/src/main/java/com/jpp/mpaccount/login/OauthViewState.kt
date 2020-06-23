@@ -5,7 +5,7 @@ import android.view.View
 /**
  * Represents the view state of the Oauth section of the login screen.
  */
-data class OauthViewState(
+internal data class OauthViewState(
     val visibility: Int = View.INVISIBLE,
     val url: String? = null,
     val interceptUrl: String? = null,

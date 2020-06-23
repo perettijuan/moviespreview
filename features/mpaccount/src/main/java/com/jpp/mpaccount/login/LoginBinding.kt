@@ -11,7 +11,7 @@ import androidx.databinding.BindingAdapter
 /**
  * Contains the data binding adapters needed for the login section of the application.
  */
-object LoginBinding {
+internal object LoginBinding {
 
     /**
      * Custom Binding Adapter used to load a [url] into a [WebView] and call
