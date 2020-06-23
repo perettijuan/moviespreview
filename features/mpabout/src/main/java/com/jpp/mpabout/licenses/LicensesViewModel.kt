@@ -14,12 +14,11 @@ import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] that supports the list of [License]s that the application uses.
  */
-class LicensesViewModel @Inject constructor(
+class LicensesViewModel(
     private val getAppLicensesUseCase: GetAppLicensesUseCase,
     private val ioDispatcher: CoroutineDispatcher
 ) : MPViewModel() {
