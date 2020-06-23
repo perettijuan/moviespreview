@@ -1,46 +1,28 @@
 package com.jpp.mpabout.licenses
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPViewModel
+import androidx.lifecycle.*
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
-import com.jpp.mp.common.navigation.Destination
-import com.jpp.mpabout.AboutInteractor
-import com.jpp.mpabout.AboutInteractor.LicensesEvent.Success
-import com.jpp.mpabout.AboutInteractor.LicensesEvent.UnknownError
 import com.jpp.mpdomain.License
-import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
+import com.jpp.mpdomain.usecase.GetAppLicensesUseCase
+import com.jpp.mpdomain.usecase.Try
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * [MPViewModel] that supports the list of [License]s that the application uses.
+ * [ViewModel] that supports the list of [License]s that the application uses.
  */
-class LicensesViewModel @Inject constructor(
-    private val aboutInteractor: AboutInteractor
-) : MPViewModel() {
+class LicensesViewModel(
+    private val getAppLicensesUseCase: GetAppLicensesUseCase,
+    private val ioDispatcher: CoroutineDispatcher
+) : ViewModel() {
 
     private val _viewState = MediatorLiveData<LicensesViewState>()
-    val viewState: LiveData<LicensesViewState> get() = _viewState
+    internal val viewState: LiveData<LicensesViewState> = _viewState
 
     private val _navEvents = MutableLiveData<HandledEvent<GoToLicenseContentEvent>>()
-    val navEvents: LiveData<HandledEvent<GoToLicenseContentEvent>> get() = _navEvents
-
-    /*
-     * Map the business logic coming from the interactor into view layer logic.
-     */
-    init {
-        _viewState.addSource(aboutInteractor.licenseEvents) { event ->
-            when (event) {
-                is UnknownError -> LicensesViewState.showError { pushLoadingAndFetchAppLicenses() }
-                is Success -> LicensesViewState.showContent(event.results.licenses.map { mapLicense(it) })
-            }.let { _viewState.value = it }
-        }
-    }
+    internal val navEvents: LiveData<HandledEvent<GoToLicenseContentEvent>> = _navEvents
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -48,8 +30,7 @@ class LicensesViewModel @Inject constructor(
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit(screenTitle: String) {
-        updateCurrentDestination(Destination.ReachedDestination(screenTitle))
+    internal fun onInit() {
         pushLoadingAndFetchAppLicenses()
     }
 
@@ -57,20 +38,8 @@ class LicensesViewModel @Inject constructor(
      * Called when an item is selected in the list of licenses.
      * A new state is posted in navEvents() in order to handle the event.
      */
-    fun onLicenseSelected(item: LicenseItem) {
+    internal fun onLicenseSelected(item: LicenseItem) {
         _navEvents.value = of(GoToLicenseContentEvent(item.id))
-    }
-
-    /**
-     * Helper function to perform an action with the [aboutInteractor] in a background
-     * thread.
-     */
-    private fun withInteractor(action: AboutInteractor.() -> Unit) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                action(aboutInteractor)
-            }
-        }
     }
 
     /**
@@ -78,9 +47,18 @@ class LicensesViewModel @Inject constructor(
      * background thread.
      */
     private fun pushLoadingAndFetchAppLicenses() {
-        withInteractor { fetchAppLicenses() }
         _viewState.value = LicensesViewState.showLoading()
+        viewModelScope.launch {
+            val result = withContext(ioDispatcher) {
+                getAppLicensesUseCase.execute()
+            }
+
+            _viewState.value = when (result) {
+                is Try.Success -> LicensesViewState.showContent(result.value.licenses.map { license -> license.toLicenseItem() })
+                else -> LicensesViewState.showError { pushLoadingAndFetchAppLicenses() }
+            }
+        }
     }
 
-    private fun mapLicense(license: License): LicenseItem = with(license) { LicenseItem(id = id, name = name) }
+    private fun License.toLicenseItem(): LicenseItem = LicenseItem(id = id, name = name)
 }

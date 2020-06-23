@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.main.MainActivityViewModel
 import com.jpp.mp.main.header.NavigationHeaderViewModel
-import com.jpp.mpabout.licenses.LicensesViewModel
 import com.jpp.mpabout.licenses.content.LicenseContentViewModel
 import com.jpp.mpaccount.account.UserAccountViewModel
 import com.jpp.mpaccount.account.lists.UserMovieListViewModel
@@ -61,11 +60,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(NavigationViewModel::class)
     internal abstract fun getNavigationViewModel(viewModel: NavigationViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(LicensesViewModel::class)
-    internal abstract fun postLicensesViewModel(viewModel: LicensesViewModel): ViewModel
 
     @Binds
     @IntoMap
