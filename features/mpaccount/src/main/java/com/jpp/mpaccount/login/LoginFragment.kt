@@ -8,10 +8,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.jpp.mp.common.extensions.observeValue
-import com.jpp.mp.common.extensions.withViewModel
-import com.jpp.mp.common.fragments.MPFragment
+import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.databinding.FragmentLoginBinding
@@ -57,10 +55,11 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
-        viewModel.onInit(getString(R.string.login_generic))
+        viewModel.onInit()
     }
 
     private fun renderViewState(viewState: LoginViewState) {
+        setScreenTitle(getString(viewState.screenTitle))
         viewBinding.viewState = viewState
         if (viewState.oauthViewState.reminder) {
             snackBarNoAction(loginContent, R.string.user_account_approve_reminder)

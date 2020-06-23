@@ -6,6 +6,8 @@ import com.jpp.mp.R
 import com.jpp.mp.main.movies.MovieListNavigator
 import com.jpp.mpabout.AboutFragmentDirections
 import com.jpp.mpabout.AboutNavigator
+import com.jpp.mpaccount.login.LoginFragmentDirections
+import com.jpp.mpaccount.login.LoginNavigator
 import com.jpp.mpcredits.CreditNavigator
 import com.jpp.mpcredits.NavigationCredits
 import com.jpp.mpmoviedetails.MovieDetailsFragmentDirections
@@ -24,7 +26,8 @@ class MainNavigator : MovieListNavigator,
     RateMovieNavigator,
     CreditNavigator,
     SearchNavigator,
-    AboutNavigator {
+    AboutNavigator,
+    LoginNavigator {
 
     private var navController: NavController? = null
     private var mainToSearchDelegate: MainToSearchNavigationDelegate? = null
@@ -65,7 +68,7 @@ class MainNavigator : MovieListNavigator,
         )
     }
 
-    override fun navigateToUserAccount() {
+    override fun navigateToLogin() {
         navController?.navigate(
             R.id.user_account_nav,
             null,
@@ -132,6 +135,10 @@ class MainNavigator : MovieListNavigator,
 
     override fun navigateBack() {
         navController?.popBackStack()
+    }
+
+    override fun navigateToUserAccount() {
+        navController?.navigate(LoginFragmentDirections.toAccountFragment())
     }
 
     override fun bind(newNavController: NavController) {
