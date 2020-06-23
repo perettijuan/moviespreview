@@ -57,22 +57,4 @@ class LicensesFragment : MPFragment<LicensesViewModel>() {
     private fun showLicenseContent(licenseId: Int) {
         LicenseContentFragment.newInstance(licenseId).show(requireFragmentManager(), "tag")
     }
-
-    class LicensesAdapter(private val items: List<LicenseItem>, private val selectionListener: (LicenseItem) -> Unit) : RecyclerView.Adapter<LicensesAdapter.ViewHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent.inflate(android.R.layout.simple_list_item_1))
-        override fun getItemCount(): Int = items.size
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bindLicense(items[position], selectionListener)
-        }
-
-        class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            fun bindLicense(license: LicenseItem, listener: (LicenseItem) -> Unit) {
-                val textView = itemView.findViewById<TextView>(android.R.id.text1)
-                textView.setTextAppearanceCompat(R.style.MPTextViewSmall)
-                textView.text = license.name
-                itemView.setOnClickListener { listener(license) }
-            }
-        }
-    }
 }

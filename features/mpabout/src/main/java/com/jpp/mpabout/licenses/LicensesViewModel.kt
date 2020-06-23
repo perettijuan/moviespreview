@@ -25,10 +25,10 @@ class LicensesViewModel @Inject constructor(
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<LicensesViewState>()
-    val viewState: LiveData<LicensesViewState> = _viewState
+    internal val viewState: LiveData<LicensesViewState> = _viewState
 
     private val _navEvents = MutableLiveData<HandledEvent<GoToLicenseContentEvent>>()
-    val navEvents: LiveData<HandledEvent<GoToLicenseContentEvent>> = _navEvents
+    internal val navEvents: LiveData<HandledEvent<GoToLicenseContentEvent>> = _navEvents
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -36,7 +36,7 @@ class LicensesViewModel @Inject constructor(
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit(screenTitle: String) {
+    internal fun onInit(screenTitle: String) {
         updateCurrentDestination(Destination.ReachedDestination(screenTitle))
         pushLoadingAndFetchAppLicenses()
     }
@@ -45,7 +45,7 @@ class LicensesViewModel @Inject constructor(
      * Called when an item is selected in the list of licenses.
      * A new state is posted in navEvents() in order to handle the event.
      */
-    fun onLicenseSelected(item: LicenseItem) {
+    internal fun onLicenseSelected(item: LicenseItem) {
         _navEvents.value = of(GoToLicenseContentEvent(item.id))
     }
 
