@@ -37,22 +37,16 @@ class SearchViewModel(
     internal val contentViewState: LiveData<SearchContentViewState> = _contentViewState
 
     private var currentPage: Int
-        set(value) {
-            savedStateHandle.set(CURRENT_PAGE_KEY, value)
-        }
+        set(value) = savedStateHandle.set(CURRENT_PAGE_KEY, value)
         get() = savedStateHandle.get(CURRENT_PAGE_KEY) ?: FIRST_PAGE
 
 
     private var maxPage: Int
-        set(value) {
-            savedStateHandle.set(MAX_SEARCH_PAGE_KEY, value)
-        }
+        set(value) = savedStateHandle.set(MAX_SEARCH_PAGE_KEY, value)
         get() = savedStateHandle.get(MAX_SEARCH_PAGE_KEY) ?: 0
 
     private var searchQuery: String
-        set(value) {
-            savedStateHandle.set(SEARCH_QUERY_KEY, value)
-        }
+        set(value) = savedStateHandle.set(SEARCH_QUERY_KEY, value)
         get() = savedStateHandle.get(SEARCH_QUERY_KEY) ?: ""
 
     /**

@@ -33,13 +33,9 @@ class MovieDetailsActionViewModel(
     internal val viewState: LiveData<MovieDetailActionViewState> = _viewState
 
     private var movieId: Double
-        set(value) {
-            savedStateHandle.set(MOVIE_ID_KEY, value)
-        }
-        get() {
-            return savedStateHandle.get(MOVIE_ID_KEY)
-                ?: throw IllegalStateException("Trying to access $MOVIE_ID_KEY when it is not yet set")
-        }
+        set(value) = savedStateHandle.set(MOVIE_ID_KEY, value)
+        get() = savedStateHandle.get(MOVIE_ID_KEY)
+            ?: throw IllegalStateException("Trying to access $MOVIE_ID_KEY when it is not yet set")
 
     /**
      * Called when the view is initialized.

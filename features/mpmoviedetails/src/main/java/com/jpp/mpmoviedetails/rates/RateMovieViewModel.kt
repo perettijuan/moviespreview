@@ -39,13 +39,9 @@ class RateMovieViewModel(
     internal val event: LiveData<HandledEvent<RateMovieEvent>> = _events
 
     private var movieId: Double
-        set(value) {
-            savedStateHandle.set(MOVIE_ID_KEY, value)
-        }
-        get() {
-            return savedStateHandle.get(MOVIE_ID_KEY)
-                ?: throw IllegalStateException("Trying to access $MOVIE_ID_KEY when it is not yet set")
-        }
+        set(value) = savedStateHandle.set(MOVIE_ID_KEY, value)
+        get() = savedStateHandle.get(MOVIE_ID_KEY)
+            ?: throw IllegalStateException("Trying to access $MOVIE_ID_KEY when it is not yet set")
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to

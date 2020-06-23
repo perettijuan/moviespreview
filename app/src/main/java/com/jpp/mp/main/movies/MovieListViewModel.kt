@@ -28,9 +28,7 @@ class MovieListViewModel(
 ) : ViewModel() {
 
     private var movieSection: MovieSection?
-        set(value) {
-            savedStateHandle.set(MOVIE_SECTION_KEY, value?.name)
-        }
+        set(value) = savedStateHandle.set(MOVIE_SECTION_KEY, value?.name)
         get() {
             return when (val name = (savedStateHandle.get(MOVIE_SECTION_KEY) as String?)) {
                 MovieSection.Playing.name -> MovieSection.Playing
@@ -48,9 +46,7 @@ class MovieListViewModel(
     private var currentPage: Int = 0
 
     private var maxPage: Int
-        set(value) {
-            savedStateHandle.set(MAX_MOVIE_PAGE_KEY, value)
-        }
+        set(value) = savedStateHandle.set(MAX_MOVIE_PAGE_KEY, value)
         get() = savedStateHandle.get(MAX_MOVIE_PAGE_KEY) ?: 0
 
     private val _viewState = MutableLiveData<MovieListViewState>()

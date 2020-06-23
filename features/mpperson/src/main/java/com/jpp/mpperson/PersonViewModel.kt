@@ -32,31 +32,19 @@ class PersonViewModel(
     internal val viewState: LiveData<PersonViewState> = _viewState
 
     private var personId: Double
-        set(value) {
-            savedStateHandle.set(PERSON_ID_KEY, value)
-        }
-        get() {
-            return savedStateHandle.get(PERSON_ID_KEY)
-                ?: throw IllegalStateException("Trying to access $PERSON_ID_KEY when it is not yet set")
-        }
+        set(value) = savedStateHandle.set(PERSON_ID_KEY, value)
+        get() = savedStateHandle.get(PERSON_ID_KEY)
+            ?: throw IllegalStateException("Trying to access $PERSON_ID_KEY when it is not yet set")
 
     private var personName: String
-        set(value) {
-            savedStateHandle.set(PERSON_NAME_KEY, value)
-        }
-        get() {
-            return savedStateHandle.get(PERSON_NAME_KEY)
-                ?: throw IllegalStateException("Trying to access $PERSON_NAME_KEY when it is not yet set")
-        }
+        set(value) = savedStateHandle.set(PERSON_NAME_KEY, value)
+        get() = savedStateHandle.get(PERSON_NAME_KEY)
+            ?: throw IllegalStateException("Trying to access $PERSON_NAME_KEY when it is not yet set")
 
     private var personImageUrl: String
-        set(value) {
-            savedStateHandle.set(PERSON_IMAGE_URL_KEY, value)
-        }
-        get() {
-            return savedStateHandle.get(PERSON_IMAGE_URL_KEY)
-                ?: throw IllegalStateException("Trying to access $PERSON_IMAGE_URL_KEY when it is not yet set")
-        }
+        set(value) = savedStateHandle.set(PERSON_IMAGE_URL_KEY, value)
+        get() = savedStateHandle.get(PERSON_IMAGE_URL_KEY)
+            ?: throw IllegalStateException("Trying to access $PERSON_IMAGE_URL_KEY when it is not yet set")
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to

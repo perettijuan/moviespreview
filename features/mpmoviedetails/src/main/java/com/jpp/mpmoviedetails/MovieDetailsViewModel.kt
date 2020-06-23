@@ -46,33 +46,21 @@ class MovieDetailsViewModel(
 ) : ViewModel() {
 
     private var movieId: Double
-        set(value) {
-            savedStateHandle.set(MOVIE_ID_KEY, value)
-        }
-        get() {
-            return savedStateHandle.get(MOVIE_ID_KEY)
-                ?: throw IllegalStateException("Trying to access $MOVIE_ID_KEY when it is not yet set")
-        }
+        set(value) = savedStateHandle.set(MOVIE_ID_KEY, value)
+        get() = savedStateHandle.get(MOVIE_ID_KEY)
+            ?: throw IllegalStateException("Trying to access $MOVIE_ID_KEY when it is not yet set")
 
 
     private var movieTitle: String
-        set(value) {
-            savedStateHandle.set(MOVIE_TITLE_KEY, value)
-        }
-        get() {
-            return savedStateHandle.get(MOVIE_TITLE_KEY)
-                ?: throw IllegalStateException("Trying to access $MOVIE_TITLE_KEY when it is not yet set")
-        }
+        set(value) = savedStateHandle.set(MOVIE_TITLE_KEY, value)
+        get() = savedStateHandle.get(MOVIE_TITLE_KEY)
+            ?: throw IllegalStateException("Trying to access $MOVIE_TITLE_KEY when it is not yet set")
 
 
     private var movieImageUrl: String
-        set(value) {
-            savedStateHandle.set(MOVIE_IMAGE_URL_KEY, value)
-        }
-        get() {
-            return savedStateHandle.get(MOVIE_IMAGE_URL_KEY)
-                ?: throw IllegalStateException("Trying to access $MOVIE_IMAGE_URL_KEY when it is not yet set")
-        }
+        set(value) = savedStateHandle.set(MOVIE_IMAGE_URL_KEY, value)
+        get() = savedStateHandle.get(MOVIE_IMAGE_URL_KEY)
+            ?: throw IllegalStateException("Trying to access $MOVIE_IMAGE_URL_KEY when it is not yet set")
 
     private val _viewState = MutableLiveData<MovieDetailViewState>()
     internal val viewState: LiveData<MovieDetailViewState> = _viewState
