@@ -7,7 +7,6 @@ import com.jpp.mp.main.MainActivityViewModel
 import com.jpp.mp.main.header.NavigationHeaderViewModel
 import com.jpp.mpaccount.account.UserAccountViewModel
 import com.jpp.mpaccount.account.lists.UserMovieListViewModel
-import com.jpp.mpaccount.login.LoginViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -37,10 +36,6 @@ abstract class ViewModelModule {
     /*
      * User account feature dependencies.
      */
-    @Binds
-    @IntoMap
-    @ViewModelKey(LoginViewModel::class)
-    internal abstract fun getLoginViewModel(viewModel: LoginViewModel): ViewModel
 
     @Binds
     @IntoMap

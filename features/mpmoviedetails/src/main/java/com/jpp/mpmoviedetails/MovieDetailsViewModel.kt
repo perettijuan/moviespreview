@@ -82,7 +82,7 @@ class MovieDetailsViewModel(
      * Called when the user request to login from the details actions.
      */
     internal fun onUserRequestedLogin() {
-        navigator.navigateToUserAccount()
+        navigator.navigateToLogin()
     }
 
     /**

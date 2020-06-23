@@ -128,7 +128,7 @@ class MovieDetailsViewModelTest {
     fun `Should navigate to user account when login requested`() {
         subject.onUserRequestedLogin()
 
-        verify { navigator.navigateToUserAccount() }
+        verify { navigator.navigateToLogin() }
     }
 
     @Test

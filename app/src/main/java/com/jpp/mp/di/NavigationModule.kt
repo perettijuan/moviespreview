@@ -3,6 +3,7 @@ package com.jpp.mp.di
 import com.jpp.mp.main.MainNavigator
 import com.jpp.mp.main.movies.MovieListNavigator
 import com.jpp.mpabout.AboutNavigator
+import com.jpp.mpaccount.login.LoginNavigator
 import com.jpp.mpcredits.CreditNavigator
 import com.jpp.mpmoviedetails.MovieDetailsNavigator
 import com.jpp.mpmoviedetails.rates.RateMovieNavigator
@@ -38,4 +39,7 @@ class NavigationModule {
 
     @Provides
     fun providesAboutNavigator(mainNavigator: MainNavigator): AboutNavigator = mainNavigator
+
+    @Provides
+    fun providesLoginNavigator(mainNavigator: MainNavigator): LoginNavigator = mainNavigator
 }

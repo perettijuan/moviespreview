@@ -2,33 +2,31 @@ package com.jpp.mpaccount.login
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPViewModel
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpaccount.login.LoginInteractor.LoginEvent
 import com.jpp.mpaccount.login.LoginInteractor.OauthEvent
 import com.jpp.mpdomain.AccessToken
-import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * [MPViewModel] that supports the login process. The login implementation is implemented using
+ * [ViewModel] that supports the login process. The login implementation is implemented using
  * Oauth - therefore, this VM takes care of updating the view state of the [LoginFragment] in order
  * to properly render the view state needed to support Oauth.
  */
-class LoginViewModel @Inject constructor(
-    private val loginInteractor: LoginInteractor
-) : MPViewModel() {
+class LoginViewModel(
+    private val loginInteractor: LoginInteractor,
+    private val loginNavigator: LoginNavigator,
+    private val ioDispatcher: CoroutineDispatcher
+) : ViewModel() {
 
     private val _viewState = MediatorLiveData<LoginViewState>()
     internal val viewState: LiveData<LoginViewState> = _viewState
 
     private var loginAccessToken: AccessToken? = null
-    private val retry: () -> Unit = { onInit(screenTitle) }
-
-    private lateinit var screenTitle: String
+    private val retry: () -> Unit = { onInit() }
 
     /*
      * Map the business logic coming from the interactor into view layer logic.
@@ -36,19 +34,23 @@ class LoginViewModel @Inject constructor(
     init {
         _viewState.addSource(loginInteractor.loginEvents) { loginEvent ->
             when (loginEvent) {
-                is LoginEvent.NotConnectedToNetwork -> _viewState.value = LoginViewState.showNoConnectivityError(retry)
-                is LoginEvent.LoginSuccessful -> continueToUserAccount()
-                is LoginEvent.LoginError -> _viewState.value = LoginViewState.showUnknownError(retry)
-                is LoginEvent.UserAlreadyLogged -> continueToUserAccount()
+                is LoginEvent.NotConnectedToNetwork -> _viewState.value =
+                    LoginViewState.showNoConnectivityError(retry)
+                is LoginEvent.LoginSuccessful -> loginNavigator.navigateToUserAccount()
+                is LoginEvent.LoginError -> _viewState.value =
+                    LoginViewState.showUnknownError(retry)
+                is LoginEvent.UserAlreadyLogged -> loginNavigator.navigateToUserAccount()
                 is LoginEvent.ReadyToLogin -> executeOauth()
             }
         }
 
         _viewState.addSource(loginInteractor.oauthEvents) { oauthEvent ->
             when (oauthEvent) {
-                is OauthEvent.NotConnectedToNetwork -> _viewState.value = LoginViewState.showNoConnectivityError(retry)
+                is OauthEvent.NotConnectedToNetwork -> _viewState.value =
+                    LoginViewState.showNoConnectivityError(retry)
                 is OauthEvent.OauthSuccessful -> _viewState.value = createOauthViewState(oauthEvent)
-                is OauthEvent.OauthError -> _viewState.value = LoginViewState.showUnknownError(retry)
+                is OauthEvent.OauthError -> _viewState.value =
+                    LoginViewState.showUnknownError(retry)
             }
         }
     }
@@ -59,10 +61,7 @@ class LoginViewModel @Inject constructor(
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    internal fun onInit(title: String) {
-        screenTitle = title
-        updateCurrentDestination(Destination.ReachedDestination(screenTitle))
-
+    internal fun onInit() {
         loginAccessToken = null
         withLoginInteractor { verifyUserLogged() }
         _viewState.value = LoginViewState.showLoading()
@@ -93,7 +92,7 @@ class LoginViewModel @Inject constructor(
 
     private fun withLoginInteractor(action: LoginInteractor.() -> Unit) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            withContext(ioDispatcher) {
                 action(loginInteractor)
             }
         }
@@ -103,14 +102,10 @@ class LoginViewModel @Inject constructor(
         val asReminder = loginAccessToken != null
         loginAccessToken = oauthEvent.accessToken
         return LoginViewState.showOauth(
-                url = oauthEvent.url,
-                interceptUrl = oauthEvent.interceptUrl,
-                reminder = asReminder,
-                redirectListener = { onUserRedirectedToUrl(it) }
+            url = oauthEvent.url,
+            interceptUrl = oauthEvent.interceptUrl,
+            reminder = asReminder,
+            redirectListener = { onUserRedirectedToUrl(it) }
         )
-    }
-
-    private fun continueToUserAccount() {
-        navigateTo(Destination.InnerDestination(LoginFragmentDirections.toAccountFragment()))
     }
 }

@@ -5,7 +5,7 @@ package com.jpp.mpmoviedetails
  */
 interface MovieDetailsNavigator {
 
-    fun navigateToUserAccount()
+    fun navigateToLogin()
     fun navigateToMovieCredits(
         movieId: Double,
         movieTitle: String
