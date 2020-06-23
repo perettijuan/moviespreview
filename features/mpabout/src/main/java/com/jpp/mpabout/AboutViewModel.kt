@@ -1,7 +1,6 @@
 package com.jpp.mpabout
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.jpp.mp.common.livedata.HandledEvent
@@ -20,7 +19,7 @@ class AboutViewModel(
     private val aboutNavigator: AboutNavigator
 ) : ViewModel() {
 
-    private val _viewState = MediatorLiveData<AboutViewState>()
+    private val _viewState = MutableLiveData<AboutViewState>()
     internal val viewState: LiveData<AboutViewState> = _viewState
 
     private val _navEvents = MutableLiveData<HandledEvent<AboutNavEvent>>()

@@ -1,41 +1,28 @@
 package com.jpp.mpabout.licenses.content
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPViewModel
-import com.jpp.mpabout.AboutInteractor
-import com.jpp.mpabout.AboutInteractor.LicensesEvent.Success
-import com.jpp.mpabout.AboutInteractor.LicensesEvent.UnknownError
-import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
+import androidx.lifecycle.*
+import com.jpp.mpdomain.usecase.FindAppLicenseUseCase
+import com.jpp.mpdomain.usecase.Try
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * [MPViewModel] that supports the [LicenseContentFragment]. When initialized, the VM
+ * [ViewModel] that supports the [LicenseContentFragment]. When initialized, the VM
  * takes care of updating the UI state in order to render the content of a particular license.
  */
-class LicenseContentViewModel @Inject constructor(
-    private val aboutInteractor: AboutInteractor
-) : MPViewModel() {
+class LicenseContentViewModel(
+    private val findAppLicenseUseCase: FindAppLicenseUseCase,
+    private val ioDispatcher: CoroutineDispatcher,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
-    private val _viewState = MediatorLiveData<LicenseContentViewState>()
-    val viewState: LiveData<LicenseContentViewState> get() = _viewState
+    private val _viewState = MutableLiveData<LicenseContentViewState>()
+    internal val viewState: LiveData<LicenseContentViewState> = _viewState
 
-    private var licenseId: Int = 0
-
-    /*
-     * Map the business logic coming from the interactor into view layer logic.
-     */
-    init {
-        _viewState.addSource(aboutInteractor.licenseEvents) { event ->
-            when (event) {
-                is UnknownError -> LicenseContentViewState.showError { pushLoadingAndFetchAppLicenses() }
-                is Success -> LicenseContentViewState.showContent(event.results.licenses.first { license -> license.id == licenseId }.url)
-            }.let { _viewState.value = it }
-        }
-    }
+    private var licenseId: Int
+        set(value) = savedStateHandle.set(LICENSE_ID_KEY, value)
+        get() = savedStateHandle.get(LICENSE_ID_KEY) ?: 0
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -43,21 +30,26 @@ class LicenseContentViewModel @Inject constructor(
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit(licenseId: Int) {
+    internal fun onInit(licenseId: Int) {
         this.licenseId = licenseId
-        pushLoadingAndFetchAppLicenses()
+        pushLoadingAndFetchAppLicense()
     }
 
-    private fun withInteractor(action: AboutInteractor.() -> Unit) {
+    private fun pushLoadingAndFetchAppLicense() {
+        _viewState.value = LicenseContentViewState.showLoading()
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                action(aboutInteractor)
+            val result = withContext(ioDispatcher) {
+                findAppLicenseUseCase.execute(licenseId)
+            }
+
+            _viewState.value = when (result) {
+                is Try.Success -> LicenseContentViewState.showContent(result.value.url)
+                else -> LicenseContentViewState.showError { pushLoadingAndFetchAppLicense() }
             }
         }
     }
 
-    private fun pushLoadingAndFetchAppLicenses() {
-        withInteractor { fetchAppLicenses() }
-        _viewState.value = LicenseContentViewState.showLoading()
+    private companion object {
+        const val LICENSE_ID_KEY = "LICENSE_ID_KEY"
     }
 }

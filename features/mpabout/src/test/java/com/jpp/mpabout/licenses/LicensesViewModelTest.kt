@@ -1,7 +1,6 @@
 package com.jpp.mpabout.licenses
 
 import android.view.View
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.License
 import com.jpp.mpdomain.Licenses
 import com.jpp.mpdomain.usecase.GetAppLicensesUseCase
@@ -54,7 +53,7 @@ class LicensesViewModelTest {
         coEvery { getAppLicensesUseCase.execute() } returns Try.Success(Licenses(availableLicenses))
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInit("aTitle")
+        subject.onInit()
 
         assertNotNull(viewStatePosted)
 
@@ -63,18 +62,6 @@ class LicensesViewModelTest {
 
         assertEquals(View.VISIBLE, viewStatePosted?.content?.visibility)
         assertEquals(expectedLicenses, viewStatePosted?.content?.licenseItems)
-    }
-
-    @Test
-    fun `Should update reached destination in onInit`() {
-        var destinationReached: Destination? = null
-        val expected = Destination.ReachedDestination("aTitle")
-
-        subject.destinationEvents.observeWith { destinationReached = it }
-
-        subject.onInit("aTitle")
-
-        assertEquals(expected, destinationReached)
     }
 
     private companion object {
