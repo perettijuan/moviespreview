@@ -2,8 +2,8 @@ package com.jpp.mpabout.licenses.content
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mpdomain.usecase.FindAppLicenseUseCase
 import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
@@ -12,13 +12,13 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * [MPViewModel] that supports the [LicenseContentFragment]. When initialized, the VM
+ * [ViewModel] that supports the [LicenseContentFragment]. When initialized, the VM
  * takes care of updating the UI state in order to render the content of a particular license.
  */
 class LicenseContentViewModel @Inject constructor(
     private val findAppLicenseUseCase: FindAppLicenseUseCase,
     private val ioDispatcher: CoroutineDispatcher
-) : MPViewModel() {
+) : ViewModel() {
 
     private val _viewState = MutableLiveData<LicenseContentViewState>()
     internal val viewState: LiveData<LicenseContentViewState> get() = _viewState
