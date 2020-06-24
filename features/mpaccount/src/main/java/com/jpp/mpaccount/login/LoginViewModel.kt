@@ -1,9 +1,6 @@
 package com.jpp.mpaccount.login
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.jpp.mpdomain.AccessToken
 import com.jpp.mpdomain.usecase.GetAccessTokenUseCase
 import com.jpp.mpdomain.usecase.GetUserAccountUseCase
@@ -23,13 +20,27 @@ class LoginViewModel(
     private val getAccessTokenUseCase: GetAccessTokenUseCase,
     private val loginUseCase: LoginUseCase,
     private val loginNavigator: LoginNavigator,
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _viewState = MutableLiveData<LoginViewState>()
     internal val viewState: LiveData<LoginViewState> = _viewState
 
-    private var loginAccessToken: AccessToken? = null
+    // Do not make AccessToken parcelable b/c it belongs to the domain.
+    private var loginAccessToken: AccessToken?
+        set(value) {
+            savedStateHandle.set(KEY_AT_SUCCESS, value?.success)
+            savedStateHandle.set(KEY_AT_EXPIRES, value?.expires_at)
+            savedStateHandle.set(KEY_AT_REQUEST_TOKEN, value?.request_token)
+        }
+        get() {
+            val success = savedStateHandle.get<Boolean>(KEY_AT_SUCCESS) ?: return null
+            val expiresAt = savedStateHandle.get<String>(KEY_AT_EXPIRES) ?: return null
+            val requestToken = savedStateHandle.get<String>(KEY_AT_REQUEST_TOKEN) ?: return null
+
+            return AccessToken(success, expiresAt, requestToken)
+        }
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -138,5 +149,9 @@ class LoginViewModel(
     private companion object {
         const val authUrl = "https://www.themoviedb.org/authenticate"
         const val redirectUrl = "http://www.mp.com/approved"
+
+        const val KEY_AT_SUCCESS = "KEY_AT_SUCCESS"
+        const val KEY_AT_EXPIRES = "KEY_AT_EXPIRES"
+        const val KEY_AT_REQUEST_TOKEN = "KEY_AT_REQUEST_TOKEN"
     }
 }

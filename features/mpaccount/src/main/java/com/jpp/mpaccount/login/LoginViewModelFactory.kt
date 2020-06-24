@@ -25,7 +25,8 @@ class LoginViewModelFactory @Inject constructor(
             getAccessTokenUseCase,
             loginUseCase,
             loginNavigator,
-            ioDispatcher
+            ioDispatcher,
+            handle
         )
     }
 }
