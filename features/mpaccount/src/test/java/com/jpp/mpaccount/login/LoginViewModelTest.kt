@@ -1,15 +1,20 @@
 package com.jpp.mpaccount.login
 
 import android.view.View
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import com.jpp.mpdomain.AccessToken
+import com.jpp.mpdomain.usecase.GetAccessTokenUseCase
+import com.jpp.mpdomain.usecase.GetUserAccountUseCase
+import com.jpp.mpdomain.usecase.LoginUseCase
+import com.jpp.mpdomain.usecase.Try
 import com.jpp.mptestutils.CoroutineTestExtension
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
-import io.mockk.every
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -18,45 +23,47 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExperimentalCoroutinesApi
 @ExtendWith(
-        MockKExtension::class,
-        InstantTaskExecutorExtension::class,
-        CoroutineTestExtension::class
+    MockKExtension::class,
+    InstantTaskExecutorExtension::class,
+    CoroutineTestExtension::class
 )
 class LoginViewModelTest {
 
     @RelaxedMockK
-    private lateinit var loginInteractor: LoginInteractor
+    private lateinit var getUserAccountUseCase: GetUserAccountUseCase
+
+    @RelaxedMockK
+    private lateinit var getAccessTokenUseCase: GetAccessTokenUseCase
+
+    @RelaxedMockK
+    private lateinit var loginUseCase: LoginUseCase
 
     @RelaxedMockK
     private lateinit var loginNavigator: LoginNavigator
-
-    private val lvLoginEvent = MutableLiveData<LoginInteractor.LoginEvent>()
-    private val lvOauthEvent = MutableLiveData<LoginInteractor.OauthEvent>()
 
     private lateinit var subject: LoginViewModel
 
     @BeforeEach
     fun setUp() {
-        every { loginInteractor.loginEvents } returns lvLoginEvent
-        every { loginInteractor.oauthEvents } returns lvOauthEvent
-
-        subject = LoginViewModel(loginInteractor, loginNavigator, CoroutineTestExtension.testDispatcher)
-
-        /*
-         * Since the ViewModel uses a MediatorLiveData, we need to have
-         * an observer on the view states attached all the time in order
-         * to get notifications.
-         */
-        subject.viewState.observeForever { }
+        subject = LoginViewModel(
+            getUserAccountUseCase,
+            getAccessTokenUseCase,
+            loginUseCase,
+            loginNavigator,
+            CoroutineTestExtension.testDispatcher,
+            SavedStateHandle()
+        )
     }
 
     @Test
-    fun `Should show not connected when disconnection detected during login`() {
+    fun `Should show not connected when not connected while verifying user logged in`() {
         var viewStatePosted: LoginViewState? = null
+
+        coEvery { getUserAccountUseCase.execute() } returns Try.Failure(Try.FailureCause.NoConnectivity)
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        lvLoginEvent.postValue(LoginInteractor.LoginEvent.NotConnectedToNetwork)
+        subject.onInit()
 
         assertNotNull(viewStatePosted)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
@@ -67,34 +74,14 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `Should retry to fetch data when not connected and retry is executed`() {
+    fun `Should show unknown error when verifying user logged in`() {
         var viewStatePosted: LoginViewState? = null
+
+        coEvery { getUserAccountUseCase.execute() } returns Try.Failure(Try.FailureCause.Unknown)
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit()
-        lvLoginEvent.postValue(LoginInteractor.LoginEvent.NotConnectedToNetwork)
-
-        viewStatePosted?.let {
-            it.errorViewState.errorHandler?.invoke()
-            verify { loginInteractor.verifyUserLogged() }
-        } ?: fail()
-    }
-
-    @Test
-    fun `Should navigate to user account screen when login is successful`() {
-        lvLoginEvent.postValue(LoginInteractor.LoginEvent.LoginSuccessful)
-
-        verify { loginNavigator.navigateToUserAccount() }
-    }
-
-    @Test
-    fun `Should show login error when error detected during login`() {
-        var viewStatePosted: LoginViewState? = null
-
-        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
-
-        lvLoginEvent.postValue(LoginInteractor.LoginEvent.LoginError)
 
         assertNotNull(viewStatePosted)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
@@ -105,17 +92,27 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `Should retry to fetch data when error unknown and retry is executed`() {
+    fun `Should redirect to user account when user logged in`() {
+        coEvery { getUserAccountUseCase.execute() } returns Try.Success(mockk())
+
+        subject.onInit()
+
+        loginNavigator.navigateToUserAccount()
+    }
+
+    @Test
+    fun `Should retry to fetch data when not connected and retry is executed`() {
         var viewStatePosted: LoginViewState? = null
+
+        coEvery { getUserAccountUseCase.execute() } returns Try.Failure(Try.FailureCause.Unknown)
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit()
-        lvLoginEvent.postValue(LoginInteractor.LoginEvent.LoginError)
 
         viewStatePosted?.let {
             it.errorViewState.errorHandler?.invoke()
-            verify { loginInteractor.verifyUserLogged() }
+            coVerify(exactly = 2) { getUserAccountUseCase.execute() }
         } ?: fail()
     }
 
@@ -123,9 +120,12 @@ class LoginViewModelTest {
     fun `Should show not connected when disconnection detected during oauth`() {
         var viewStatePosted: LoginViewState? = null
 
+        coEvery { getUserAccountUseCase.execute() } returns Try.Failure(Try.FailureCause.UserNotLogged)
+        coEvery { getAccessTokenUseCase.execute() } returns Try.Failure(Try.FailureCause.NoConnectivity)
+
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        lvOauthEvent.postValue(LoginInteractor.OauthEvent.NotConnectedToNetwork)
+        subject.onInit()
 
         assertNotNull(viewStatePosted)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
@@ -136,37 +136,15 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `Should show oauth state when oauth data becomes available`() {
+    fun `Should show unknown error when disconnection detected during oauth`() {
         var viewStatePosted: LoginViewState? = null
 
-        val oauthEvent = LoginInteractor.OauthEvent.OauthSuccessful(
-                url = "aUrl",
-                interceptUrl = "anInterceptUrl",
-                accessToken = mockk()
-        )
+        coEvery { getUserAccountUseCase.execute() } returns Try.Failure(Try.FailureCause.UserNotLogged)
+        coEvery { getAccessTokenUseCase.execute() } returns Try.Failure(Try.FailureCause.Unknown)
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        lvOauthEvent.postValue(oauthEvent)
-
-        assertNotNull(viewStatePosted)
-        assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
-        assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
-        assertEquals(false, viewStatePosted?.errorViewState?.isConnectivity)
-
-        assertEquals(View.VISIBLE, viewStatePosted?.oauthViewState?.visibility)
-        assertEquals("aUrl", viewStatePosted?.oauthViewState?.url)
-        assertEquals("anInterceptUrl", viewStatePosted?.oauthViewState?.interceptUrl)
-        assertEquals(false, viewStatePosted?.oauthViewState?.reminder)
-    }
-
-    @Test
-    fun `Should show login error when error detected during oauth`() {
-        var viewStatePosted: LoginViewState? = null
-
-        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
-
-        lvOauthEvent.postValue(LoginInteractor.OauthEvent.OauthError)
+        subject.onInit()
 
         assertNotNull(viewStatePosted)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
@@ -177,33 +155,35 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `Should verify user logged in and push loading state in onInit`() {
+    fun `Should show oauth state when oauth data becomes available`() {
         var viewStatePosted: LoginViewState? = null
+
+        val expectedUrl =
+            "https://www.themoviedb.org/authenticate/aRequestToken?redirect_to=http://www.mp.com/approved"
+        val expectedRedirectUrl = "http://www.mp.com/approved"
+
+        val accessToken = AccessToken(
+            success = true,
+            expires_at = "anExpiration",
+            request_token = "aRequestToken"
+        )
+
+        coEvery { getUserAccountUseCase.execute() } returns Try.Failure(Try.FailureCause.UserNotLogged)
+        coEvery { getAccessTokenUseCase.execute() } returns Try.Success(accessToken)
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
         subject.onInit()
 
         assertNotNull(viewStatePosted)
-        assertEquals(View.INVISIBLE, viewStatePosted?.oauthViewState?.visibility)
+        assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
+        assertEquals(false, viewStatePosted?.errorViewState?.isConnectivity)
 
-        assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
-        verify { loginInteractor.verifyUserLogged() }
+        assertEquals(View.VISIBLE, viewStatePosted?.oauthViewState?.visibility)
+        assertEquals(expectedUrl, viewStatePosted?.oauthViewState?.url)
+        assertEquals(expectedRedirectUrl, viewStatePosted?.oauthViewState?.interceptUrl)
+        assertEquals(false, viewStatePosted?.oauthViewState?.reminder)
     }
 
-    @Test
-    fun `Should fetch oauth data when user is ready to login`() {
-        var viewStatePosted: LoginViewState? = null
-
-        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
-
-        lvLoginEvent.postValue(LoginInteractor.LoginEvent.ReadyToLogin)
-
-        assertNotNull(viewStatePosted)
-        assertEquals(View.INVISIBLE, viewStatePosted?.oauthViewState?.visibility)
-        assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
-
-        assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
-    }
 }
