@@ -9,7 +9,7 @@ import com.jpp.mpaccount.account.UserAccountInteractor.UserMoviesState
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -27,7 +27,8 @@ import kotlinx.coroutines.withContext
 class UserAccountViewModel(
     private val accountInteractor: UserAccountInteractor,
     private val imagesPathInteractor: ImagesPathInteractor,
-    private val navigator: UserAccountNavigator
+    private val navigator: UserAccountNavigator,
+    private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _viewState = MediatorLiveData<UserAccountViewState>()
@@ -148,7 +149,7 @@ class UserAccountViewModel(
 
     private fun withAccountInteractor(action: UserAccountInteractor.() -> Unit) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            withContext(ioDispatcher) {
                 action(accountInteractor)
             }
         }
@@ -157,7 +158,7 @@ class UserAccountViewModel(
     private suspend fun getUserMoviesViewState(
         userMovieState: UserMoviesState,
         emptyCreator: () -> UserMoviesViewState
-    ) = withContext(Dispatchers.IO) {
+    ) = withContext(ioDispatcher) {
         when (userMovieState) {
             is UserMoviesState.UnknownError -> UserMoviesViewState.createError()
             is UserMoviesState.Success -> {

@@ -3,6 +3,7 @@ package com.jpp.mpaccount.account
 import androidx.lifecycle.SavedStateHandle
 import com.jpp.mp.common.viewmodel.ViewModelAssistedFactory
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 /**
@@ -12,9 +13,15 @@ import javax.inject.Inject
 class UserAccountViewModelFactory @Inject constructor(
     private val accountInteractor: UserAccountInteractor,
     private val imagesPathInteractor: ImagesPathInteractor,
-    private val userAccountNavigator: UserAccountNavigator
+    private val userAccountNavigator: UserAccountNavigator,
+    private val ioDispatcher: CoroutineDispatcher
 ) : ViewModelAssistedFactory<UserAccountViewModel> {
     override fun create(handle: SavedStateHandle): UserAccountViewModel {
-        return UserAccountViewModel(accountInteractor, imagesPathInteractor, userAccountNavigator)
+        return UserAccountViewModel(
+            accountInteractor,
+            imagesPathInteractor,
+            userAccountNavigator,
+            ioDispatcher
+        )
     }
 }
