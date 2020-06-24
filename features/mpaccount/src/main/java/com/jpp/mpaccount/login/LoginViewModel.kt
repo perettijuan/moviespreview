@@ -1,12 +1,14 @@
 package com.jpp.mpaccount.login
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jpp.mpaccount.login.LoginInteractor.LoginEvent
-import com.jpp.mpaccount.login.LoginInteractor.OauthEvent
 import com.jpp.mpdomain.AccessToken
+import com.jpp.mpdomain.usecase.GetAccessTokenUseCase
+import com.jpp.mpdomain.usecase.GetUserAccountUseCase
+import com.jpp.mpdomain.usecase.LoginUseCase
+import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -14,46 +16,20 @@ import kotlinx.coroutines.withContext
 /**
  * [ViewModel] that supports the login process. The login implementation is implemented using
  * Oauth - therefore, this VM takes care of updating the view state of the [LoginFragment] in order
- * to properly render the view state needed to support Oauth.
+ * to properly render the state needed to support Oauth.
  */
 class LoginViewModel(
-    private val loginInteractor: LoginInteractor,
+    private val getUserAccountUseCase: GetUserAccountUseCase,
+    private val getAccessTokenUseCase: GetAccessTokenUseCase,
+    private val loginUseCase: LoginUseCase,
     private val loginNavigator: LoginNavigator,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    private val _viewState = MediatorLiveData<LoginViewState>()
+    private val _viewState = MutableLiveData<LoginViewState>()
     internal val viewState: LiveData<LoginViewState> = _viewState
 
     private var loginAccessToken: AccessToken? = null
-    private val retry: () -> Unit = { onInit() }
-
-    /*
-     * Map the business logic coming from the interactor into view layer logic.
-     */
-    init {
-        _viewState.addSource(loginInteractor.loginEvents) { loginEvent ->
-            when (loginEvent) {
-                is LoginEvent.NotConnectedToNetwork -> _viewState.value =
-                    LoginViewState.showNoConnectivityError(retry)
-                is LoginEvent.LoginSuccessful -> loginNavigator.navigateToUserAccount()
-                is LoginEvent.LoginError -> _viewState.value =
-                    LoginViewState.showUnknownError(retry)
-                is LoginEvent.UserAlreadyLogged -> loginNavigator.navigateToUserAccount()
-                is LoginEvent.ReadyToLogin -> executeOauth()
-            }
-        }
-
-        _viewState.addSource(loginInteractor.oauthEvents) { oauthEvent ->
-            when (oauthEvent) {
-                is OauthEvent.NotConnectedToNetwork -> _viewState.value =
-                    LoginViewState.showNoConnectivityError(retry)
-                is OauthEvent.OauthSuccessful -> _viewState.value = createOauthViewState(oauthEvent)
-                is OauthEvent.OauthError -> _viewState.value =
-                    LoginViewState.showUnknownError(retry)
-            }
-        }
-    }
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -63,8 +39,8 @@ class LoginViewModel(
      */
     internal fun onInit() {
         loginAccessToken = null
-        withLoginInteractor { verifyUserLogged() }
         _viewState.value = LoginViewState.showLoading()
+        verifyUserLoggedAndContinueToAccount()
     }
 
     /**
@@ -73,39 +49,95 @@ class LoginViewModel(
     private fun onUserRedirectedToUrl(redirectUrl: String) {
         when {
             redirectUrl.contains("approved=true") -> loginUser()
-            redirectUrl.contains("denied=true") -> executeOauth()
-            else -> _viewState.value = LoginViewState.showUnknownError(retry)
+            redirectUrl.contains("denied=true") -> initiateOauthProcess()
+            else -> _viewState.value = LoginViewState.showUnknownError { onInit() }
         }
     }
 
-    private fun executeOauth() {
-        withLoginInteractor { fetchOauthData() }
-        _viewState.value = LoginViewState.showLoading()
-    }
-
     private fun loginUser() {
-        _viewState.value = loginAccessToken?.let {
-            withLoginInteractor { loginUser(it) }
-            LoginViewState.showLoading()
-        } ?: LoginViewState.showUnknownError(retry)
-    }
+        val accessToken = loginAccessToken
 
-    private fun withLoginInteractor(action: LoginInteractor.() -> Unit) {
+        if (accessToken == null) {
+            _viewState.value = LoginViewState.showUnknownError { onInit() }
+            return
+        }
+
         viewModelScope.launch {
-            withContext(ioDispatcher) {
-                action(loginInteractor)
+            _viewState.value = LoginViewState.showLoading()
+
+            val loginResult = withContext(ioDispatcher) {
+                loginUseCase.execute(accessToken)
+            }
+
+            when (loginResult) {
+                is Try.Success -> loginNavigator.navigateToUserAccount()
+                is Try.Failure -> processFailure(loginResult.cause)
             }
         }
     }
 
-    private fun createOauthViewState(oauthEvent: OauthEvent.OauthSuccessful): LoginViewState {
+    private fun verifyUserLoggedAndContinueToAccount() {
+        viewModelScope.launch {
+            val result = withContext(ioDispatcher) {
+                getUserAccountUseCase.execute()
+            }
+
+            when (result) {
+                is Try.Success -> loginNavigator.navigateToUserAccount()
+                is Try.Failure -> processLoginVerificationFailure(result.cause)
+            }
+        }
+    }
+
+    private fun processLoginVerificationFailure(cause: Try.FailureCause) {
+        when (cause) {
+            is Try.FailureCause.NoConnectivity -> _viewState.value =
+                LoginViewState.showNoConnectivityError { onInit() }
+            is Try.FailureCause.Unknown -> _viewState.value =
+                LoginViewState.showUnknownError { onInit() }
+            is Try.FailureCause.UserNotLogged -> initiateOauthProcess()
+        }
+    }
+
+    private fun initiateOauthProcess() {
+        viewModelScope.launch {
+            val accessTokenResult = withContext(ioDispatcher) {
+                getAccessTokenUseCase.execute()
+            }
+
+            when (accessTokenResult) {
+                is Try.Success -> processAccessToken(accessTokenResult.value)
+                is Try.Failure -> processFailure(accessTokenResult.cause)
+            }
+        }
+    }
+
+
+    private fun processAccessToken(accessToken: AccessToken) {
         val asReminder = loginAccessToken != null
-        loginAccessToken = oauthEvent.accessToken
-        return LoginViewState.showOauth(
-            url = oauthEvent.url,
-            interceptUrl = oauthEvent.interceptUrl,
+        loginAccessToken = accessToken
+        _viewState.value = LoginViewState.showOauth(
+            url = accessToken.generateAuthenticationUrl(),
+            interceptUrl = redirectUrl,
             reminder = asReminder,
             redirectListener = { onUserRedirectedToUrl(it) }
         )
+    }
+
+    private fun processFailure(cause: Try.FailureCause) {
+        when (cause) {
+            is Try.FailureCause.NoConnectivity -> _viewState.value =
+                LoginViewState.showNoConnectivityError { onInit() }
+            else -> _viewState.value = LoginViewState.showUnknownError { onInit() }
+        }
+    }
+
+    private fun AccessToken.generateAuthenticationUrl(): String {
+        return "$authUrl/${request_token}?redirect_to=$redirectUrl"
+    }
+
+    private companion object {
+        const val authUrl = "https://www.themoviedb.org/authenticate"
+        const val redirectUrl = "http://www.mp.com/approved"
     }
 }
