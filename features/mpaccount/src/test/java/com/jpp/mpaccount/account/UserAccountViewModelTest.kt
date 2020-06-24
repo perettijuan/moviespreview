@@ -2,7 +2,6 @@ package com.jpp.mpaccount.account
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpaccount.R
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.MoviePage
@@ -37,6 +36,8 @@ class UserAccountViewModelTest {
     private lateinit var accountInteractor: UserAccountInteractor
     @RelaxedMockK
     private lateinit var imagesPathInteractor: ImagesPathInteractor
+    @RelaxedMockK
+    private lateinit var userAccountNavigator: UserAccountNavigator
 
     private val lvInteractorEvents = MutableLiveData<UserAccountInteractor.UserAccountEvent>()
 
@@ -47,8 +48,10 @@ class UserAccountViewModelTest {
         every { accountInteractor.userAccountEvents } returns lvInteractorEvents
 
         subject = UserAccountViewModel(
-                accountInteractor,
-                imagesPathInteractor
+            accountInteractor,
+            imagesPathInteractor,
+            userAccountNavigator,
+            CoroutineTestExtension.testDispatcher
         )
 
         /*
@@ -93,34 +96,17 @@ class UserAccountViewModelTest {
 
     @Test
     fun `Should redirect when user not logged in`() {
-        val expectedDestination = Destination.PreviousDestination
-        var requestedDestination: Destination? = null
-
-        subject.navigationEvents.observeWith { it.actionIfNotHandled { dest -> requestedDestination = dest } }
-
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.UserNotLogged)
-
-        assertEquals(expectedDestination, requestedDestination)
+        verify { userAccountNavigator.navigateToLogin() }
     }
 
     @Test
     fun `Should redirect to main when user data cleared`() {
-        val expectedDestination = Destination.PreviousDestination
-        var requestedDestination: Destination? = null
-
-        subject.navigationEvents.observeWith { it.actionIfNotHandled { dest -> requestedDestination = dest } }
-
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.UserDataCleared)
-
-        assertEquals(expectedDestination, requestedDestination)
+        verify { userAccountNavigator.navigateToLogin() }
     }
 
-    /*
-     * TODO I need to check exactly what's happening with this UT. Don't want to waste
-     *  time since I'm going to refactor by eliminating the interactor layers.
-     */
     @Test
-    @Disabled
     fun `Should map user account data and post data into view when user account is fetched`() {
         val userGravatar = Gravatar("someHash")
         val userAccount = UserAccount(
@@ -154,12 +140,7 @@ class UserAccountViewModelTest {
         assertEquals(R.string.user_account_favorite_movies_error, viewStatePosted?.contentViewState?.watchListState?.errorText)
     }
 
-    /*
-     * TODO I need to check exactly what's happening with this UT. Don't want to waste
-     *  time since I'm going to refactor by eliminating the interactor layers.
-     */
     @Test
-    @Disabled
     fun `Should map user account data - without name - and post data into view when user account is fetched`() {
         val userGravatar = Gravatar("someHash")
         val userAccount = UserAccount(
@@ -194,12 +175,7 @@ class UserAccountViewModelTest {
         assertEquals(R.string.user_account_favorite_movies_error, viewStatePosted?.contentViewState?.watchListState?.errorText)
     }
 
-    /*
-     * TODO I need to check exactly what's happening with this UT. Don't want to waste
-     *  time since I'm going to refactor by eliminating the interactor layers.
-     */
     @Test
-    @Disabled
     fun `Should map user movies`() {
         val userGravatar = Gravatar("someHash")
         val userAccount = UserAccount(
@@ -233,7 +209,7 @@ class UserAccountViewModelTest {
         every { imagesPathInteractor.configurePathMovie(any(), any(), any()) } returns mockk(relaxed = true)
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
-        subject.onInit(UserAccountParam("aTitle", 10))
+        subject.onInit(10)
 
         lvInteractorEvents.postValue(
                 UserAccountInteractor.UserAccountEvent.Success(
@@ -261,7 +237,7 @@ class UserAccountViewModelTest {
         var viewStatePosted: UserAccountViewState? = null
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
-        subject.onInit(UserAccountParam("aTitle", 10))
+        subject.onInit(10)
 
         assertNotNull(viewStatePosted)
         assertEquals(View.VISIBLE, viewStatePosted?.loadingVisibility)
@@ -286,13 +262,7 @@ class UserAccountViewModelTest {
         verify { accountInteractor.clearUserAccountData() }
     }
 
-    /*
-     * TODO I need to check exactly what's happening with this UT. Don't want to waste
-     *  time since I'm going to refactor by eliminating the interactor layers.
-     * Fails only in Travis ==> https://travis-ci.org/github/perettijuan/moviespreview/builds/689788730
-     */
     @Test
-    @Disabled
     fun `Should post loading and refresh user data when language changed`() {
         var viewStatePosted: UserAccountViewState? = null
 
@@ -305,17 +275,5 @@ class UserAccountViewModelTest {
         assertEquals(View.INVISIBLE, viewStatePosted?.errorViewState?.visibility)
 
         verify { accountInteractor.refreshUserAccountData() }
-    }
-
-    @Test
-    fun `Should update reached destination in onInit`() {
-        var destinationReached: Destination? = null
-        val expected = Destination.ReachedDestination("aTitle")
-
-        subject.destinationEvents.observeWith { destinationReached = it }
-
-        subject.onInit(UserAccountParam("aTitle", 10))
-
-        assertEquals(expected, destinationReached)
     }
 }

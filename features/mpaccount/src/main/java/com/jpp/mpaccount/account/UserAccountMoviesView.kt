@@ -14,6 +14,11 @@ import com.jpp.mpdesign.ext.setVisible
 import kotlinx.android.synthetic.main.layout_user_account_movies.view.*
 import kotlinx.android.synthetic.main.list_item_user_account_movies.view.*
 
+/**
+ * Custom [ConstraintLayout] used in the account section to show the list
+ * of user's movies (Favorite, Rated and/or in WatchList) in a horizontal
+ * list.
+ */
 class UserAccountMoviesView : ConstraintLayout {
 
     /**
@@ -25,7 +30,11 @@ class UserAccountMoviesView : ConstraintLayout {
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         init()
 
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.UserAccountMoviesView)
@@ -72,9 +81,11 @@ class UserAccountMoviesView : ConstraintLayout {
         }
     }
 
-    class AccountMovieAdapter(private val items: List<UserAccountMovieItem>) : RecyclerView.Adapter<AccountMovieAdapter.ViewHolder>() {
+    class AccountMovieAdapter(private val items: List<UserAccountMovieItem>) :
+        RecyclerView.Adapter<AccountMovieAdapter.ViewHolder>() {
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent.inflate(R.layout.list_item_user_account_movies))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+            ViewHolder(parent.inflate(R.layout.list_item_user_account_movies))
 
         override fun getItemCount(): Int = items.size
 

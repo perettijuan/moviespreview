@@ -3,9 +3,13 @@ package com.jpp.mp.main
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import com.jpp.mp.R
+import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.main.movies.MovieListNavigator
 import com.jpp.mpabout.AboutFragmentDirections
 import com.jpp.mpabout.AboutNavigator
+import com.jpp.mpaccount.account.UserAccountFragmentDirections
+import com.jpp.mpaccount.account.UserAccountNavigator
+import com.jpp.mpaccount.account.lists.UserMovieListType
 import com.jpp.mpaccount.login.LoginFragmentDirections
 import com.jpp.mpaccount.login.LoginNavigator
 import com.jpp.mpcredits.CreditNavigator
@@ -27,7 +31,8 @@ class MainNavigator : MovieListNavigator,
     CreditNavigator,
     SearchNavigator,
     AboutNavigator,
-    LoginNavigator {
+    LoginNavigator,
+    UserAccountNavigator {
 
     private var navController: NavController? = null
     private var mainToSearchDelegate: MainToSearchNavigationDelegate? = null
@@ -46,7 +51,6 @@ class MainNavigator : MovieListNavigator,
             ),
             buildAnimationNavOptions()
         )
-
     }
 
     override fun navigateToSearch() {
@@ -139,6 +143,33 @@ class MainNavigator : MovieListNavigator,
 
     override fun navigateToUserAccount() {
         navController?.navigate(LoginFragmentDirections.toAccountFragment())
+    }
+
+    override fun navigateToFavorites() {
+        navController?.navigate(
+            UserAccountFragmentDirections.userMovieListFragment(
+                UserMovieListType.FAVORITE_LIST
+            ),
+            buildAnimationNavOptions()
+        )
+    }
+
+    override fun navigateToRated() {
+        navController?.navigate(
+            UserAccountFragmentDirections.userMovieListFragment(
+                UserMovieListType.RATED_LIST
+            ),
+            buildAnimationNavOptions()
+        )
+    }
+
+    override fun navigateToWatchList() {
+        navController?.navigate(
+            UserAccountFragmentDirections.userMovieListFragment(
+                UserMovieListType.WATCH_LIST
+            ),
+            buildAnimationNavOptions()
+        )
     }
 
     override fun bind(newNavController: NavController) {
