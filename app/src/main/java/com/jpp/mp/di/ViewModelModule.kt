@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.main.MainActivityViewModel
 import com.jpp.mp.main.header.NavigationHeaderViewModel
-import com.jpp.mpaccount.account.UserAccountViewModel
 import com.jpp.mpaccount.account.lists.UserMovieListViewModel
 import dagger.Binds
 import dagger.Module
@@ -36,11 +35,6 @@ abstract class ViewModelModule {
     /*
      * User account feature dependencies.
      */
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(UserAccountViewModel::class)
-    internal abstract fun getUserAccountViewModel(viewModel: UserAccountViewModel): ViewModel
 
     @Binds
     @IntoMap

@@ -12,7 +12,6 @@ import com.jpp.mpaccount.account.lists.UserMovieListType
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,7 +27,7 @@ import kotlinx.coroutines.withContext
  * This VM consumes data from two interactors - [UserAccountInteractor] and [ImagesPathInteractor] -
  * because it needs to map the URL of the movies to be shown before rendering the data.
  */
-class UserAccountViewModel @Inject constructor(
+class UserAccountViewModel(
     private val accountInteractor: UserAccountInteractor,
     private val imagesPathInteractor: ImagesPathInteractor
 ) : MPViewModel() {
