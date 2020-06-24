@@ -2,13 +2,10 @@ package com.jpp.mpaccount.account
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPViewModel
-import com.jpp.mp.common.navigation.Destination
-import com.jpp.mpaccount.account.UserAccountFragmentDirections.userMovieListFragment
 import com.jpp.mpaccount.account.UserAccountInteractor.UserAccountEvent
 import com.jpp.mpaccount.account.UserAccountInteractor.UserMoviesState
-import com.jpp.mpaccount.account.lists.UserMovieListType
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
@@ -17,7 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * [MPViewModel] to handle the state of the [UserAccountFragment]. It is a coroutine-scoped
+ * [ViewModel] to handle the state of the [UserAccountFragment]. It is a coroutine-scoped
  * ViewModel, which indicates that some work will be executed in a background context and synced
  * to the main context when over.
  *
@@ -29,8 +26,9 @@ import kotlinx.coroutines.withContext
  */
 class UserAccountViewModel(
     private val accountInteractor: UserAccountInteractor,
-    private val imagesPathInteractor: ImagesPathInteractor
-) : MPViewModel() {
+    private val imagesPathInteractor: ImagesPathInteractor,
+    private val navigator: UserAccountNavigator
+) : ViewModel() {
 
     private val _viewState = MediatorLiveData<UserAccountViewState>()
     internal val viewState: LiveData<UserAccountViewState> = _viewState
@@ -47,8 +45,8 @@ class UserAccountViewModel(
             when (event) {
                 is UserAccountEvent.NotConnectedToNetwork -> _viewState.value = UserAccountViewState.showNoConnectivityError(retry)
                 is UserAccountEvent.UnknownError -> _viewState.value = UserAccountViewState.showUnknownError(retry)
-                is UserAccountEvent.UserNotLogged -> navigateTo(Destination.PreviousDestination)
-                is UserAccountEvent.UserDataCleared -> navigateTo(Destination.PreviousDestination)
+                is UserAccountEvent.UserNotLogged -> navigator.navigateToLogin()
+                is UserAccountEvent.UserDataCleared -> navigator.navigateToLogin()
                 is UserAccountEvent.UserChangedLanguage -> refreshData()
                 is UserAccountEvent.Success -> mapAccountInfo(event)
             }
@@ -79,21 +77,21 @@ class UserAccountViewModel(
      * Called when the user wants to see the favorites movies.
      */
     internal fun onFavorites() {
-        navigateTo(Destination.InnerDestination(userMovieListFragment(UserMovieListType.FAVORITE_LIST)))
+        navigator.navigateToFavorites()
     }
 
     /**
      * Called when the user wants to see the rated movies.
      */
     internal fun onRated() {
-        navigateTo(Destination.InnerDestination(userMovieListFragment(UserMovieListType.RATED_LIST)))
+        navigator.navigateToRated()
     }
 
     /**
      * Called when the user wants to see the watchlist.
      */
     internal fun onWatchlist() {
-        navigateTo(Destination.InnerDestination(userMovieListFragment(UserMovieListType.WATCH_LIST)))
+        navigator.navigateToWatchList()
     }
 
     private fun refreshData() {
