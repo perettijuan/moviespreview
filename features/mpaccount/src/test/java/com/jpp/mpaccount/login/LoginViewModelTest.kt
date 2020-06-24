@@ -1,6 +1,7 @@
 package com.jpp.mpaccount.login
 
 import android.view.View
+import androidx.lifecycle.SavedStateHandle
 import com.jpp.mpdomain.AccessToken
 import com.jpp.mpdomain.usecase.GetAccessTokenUseCase
 import com.jpp.mpdomain.usecase.GetUserAccountUseCase
@@ -49,7 +50,8 @@ class LoginViewModelTest {
             getAccessTokenUseCase,
             loginUseCase,
             loginNavigator,
-            CoroutineTestExtension.testDispatcher
+            CoroutineTestExtension.testDispatcher,
+            SavedStateHandle()
         )
     }
 
