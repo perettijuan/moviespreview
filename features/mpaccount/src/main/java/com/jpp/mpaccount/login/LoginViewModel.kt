@@ -54,6 +54,32 @@ class LoginViewModel(
         }
     }
 
+    private fun verifyUserLoggedAndContinueToAccount() {
+        viewModelScope.launch {
+            val result = withContext(ioDispatcher) {
+                getUserAccountUseCase.execute()
+            }
+
+            when (result) {
+                is Try.Success -> loginNavigator.navigateToUserAccount()
+                is Try.Failure -> processLoginVerificationFailure(result.cause)
+            }
+        }
+    }
+
+    private fun initiateOauthProcess() {
+        viewModelScope.launch {
+            val accessTokenResult = withContext(ioDispatcher) {
+                getAccessTokenUseCase.execute()
+            }
+
+            when (accessTokenResult) {
+                is Try.Success -> processAccessToken(accessTokenResult.value)
+                is Try.Failure -> processFailure(accessTokenResult.cause)
+            }
+        }
+    }
+
     private fun loginUser() {
         val accessToken = loginAccessToken
 
@@ -76,17 +102,15 @@ class LoginViewModel(
         }
     }
 
-    private fun verifyUserLoggedAndContinueToAccount() {
-        viewModelScope.launch {
-            val result = withContext(ioDispatcher) {
-                getUserAccountUseCase.execute()
-            }
-
-            when (result) {
-                is Try.Success -> loginNavigator.navigateToUserAccount()
-                is Try.Failure -> processLoginVerificationFailure(result.cause)
-            }
-        }
+    private fun processAccessToken(accessToken: AccessToken) {
+        val asReminder = loginAccessToken != null
+        loginAccessToken = accessToken
+        _viewState.value = LoginViewState.showOauth(
+            url = accessToken.generateAuthenticationUrl(),
+            interceptUrl = redirectUrl,
+            reminder = asReminder,
+            redirectListener = { onUserRedirectedToUrl(it) }
+        )
     }
 
     private fun processLoginVerificationFailure(cause: Try.FailureCause) {
@@ -97,31 +121,6 @@ class LoginViewModel(
                 LoginViewState.showUnknownError { onInit() }
             is Try.FailureCause.UserNotLogged -> initiateOauthProcess()
         }
-    }
-
-    private fun initiateOauthProcess() {
-        viewModelScope.launch {
-            val accessTokenResult = withContext(ioDispatcher) {
-                getAccessTokenUseCase.execute()
-            }
-
-            when (accessTokenResult) {
-                is Try.Success -> processAccessToken(accessTokenResult.value)
-                is Try.Failure -> processFailure(accessTokenResult.cause)
-            }
-        }
-    }
-
-
-    private fun processAccessToken(accessToken: AccessToken) {
-        val asReminder = loginAccessToken != null
-        loginAccessToken = accessToken
-        _viewState.value = LoginViewState.showOauth(
-            url = accessToken.generateAuthenticationUrl(),
-            interceptUrl = redirectUrl,
-            reminder = asReminder,
-            redirectListener = { onUserRedirectedToUrl(it) }
-        )
     }
 
     private fun processFailure(cause: Try.FailureCause) {
