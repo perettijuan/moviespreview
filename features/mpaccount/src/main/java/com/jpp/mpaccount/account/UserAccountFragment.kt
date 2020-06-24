@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.observeValue
+import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mpaccount.R
 import com.jpp.mpaccount.databinding.FragmentUserAccountBinding
@@ -60,7 +61,7 @@ class UserAccountFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpViews(view)
         viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
-        viewModel.onInit(UserAccountParam.create(resources, getScreenWidthInPixels()))
+        viewModel.onInit(getScreenWidthInPixels())
     }
 
     override fun onDestroyView() {
@@ -96,6 +97,7 @@ class UserAccountFragment : Fragment() {
     }
 
     private fun renderViewState(viewState: UserAccountViewState) {
+        setScreenTitle(getString(viewState.screenTitle))
         viewBinding.viewState = viewState
     }
 }

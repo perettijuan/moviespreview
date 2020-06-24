@@ -35,9 +35,9 @@ class UserAccountViewModel(
     private val _viewState = MediatorLiveData<UserAccountViewState>()
     internal val viewState: LiveData<UserAccountViewState> = _viewState
 
-    private val retry: () -> Unit = { onInit(currentParam) }
+    private val retry: () -> Unit = { onInit(posterSize) }
 
-    private lateinit var currentParam: UserAccountParam
+    private var posterSize: Int = 0
 
     /*
      * Map the business logic coming from the interactor into view layer logic.
@@ -61,9 +61,8 @@ class UserAccountViewModel(
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    internal fun onInit(param: UserAccountParam) {
-        updateCurrentDestination(Destination.ReachedDestination(param.screenTitle))
-        currentParam = param
+    internal fun onInit(posterSizeToUse: Int) {
+        posterSize = posterSizeToUse
         withAccountInteractor { fetchUserAccountData() }
         _viewState.value = UserAccountViewState.showLoading()
     }
@@ -167,7 +166,7 @@ class UserAccountViewModel(
                 when {
                     userMovieState.data.results.isEmpty() -> emptyCreator()
                     else -> userMovieState.data.results
-                            .map { imagesPathInteractor.configurePathMovie(currentParam.posterSize, currentParam.posterSize, it) }
+                            .map { imagesPathInteractor.configurePathMovie(posterSize, posterSize, it) }
                             .map { UserMovieItem(image = it.poster_path ?: "noPath") }
                             .let { UserMoviesViewState.createWithItems(it) }
                 }

@@ -1,12 +1,14 @@
 package com.jpp.mpaccount.account
 
 import android.view.View
+import com.jpp.mpaccount.R
 import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 
 /**
  * Represents the view state that the user account view can assume at any given moment.
  */
 internal data class UserAccountViewState(
+    val screenTitle: Int = R.string.account_title,
     val loadingVisibility: Int = View.INVISIBLE,
     val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
     val contentViewState: UserAccountContentViewState = UserAccountContentViewState()
