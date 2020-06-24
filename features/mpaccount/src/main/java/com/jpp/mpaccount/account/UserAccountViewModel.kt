@@ -34,7 +34,7 @@ class UserAccountViewModel @Inject constructor(
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<UserAccountViewState>()
-    val viewState: LiveData<UserAccountViewState> get() = _viewState
+    internal val viewState: LiveData<UserAccountViewState> = _viewState
 
     private val retry: () -> Unit = { onInit(currentParam) }
 
@@ -62,7 +62,7 @@ class UserAccountViewModel @Inject constructor(
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit(param: UserAccountParam) {
+    internal fun onInit(param: UserAccountParam) {
         updateCurrentDestination(Destination.ReachedDestination(param.screenTitle))
         currentParam = param
         withAccountInteractor { fetchUserAccountData() }
@@ -72,7 +72,7 @@ class UserAccountViewModel @Inject constructor(
     /**
      * Called when the user wants to perform the logout of the application.
      */
-    fun onLogout() {
+    internal fun onLogout() {
         withAccountInteractor { clearUserAccountData() }
         _viewState.value = UserAccountViewState.showLoading()
     }
@@ -80,21 +80,21 @@ class UserAccountViewModel @Inject constructor(
     /**
      * Called when the user wants to see the favorites movies.
      */
-    fun onFavorites() {
+    internal fun onFavorites() {
         navigateTo(Destination.InnerDestination(userMovieListFragment(UserMovieListType.FAVORITE_LIST)))
     }
 
     /**
      * Called when the user wants to see the rated movies.
      */
-    fun onRated() {
+    internal fun onRated() {
         navigateTo(Destination.InnerDestination(userMovieListFragment(UserMovieListType.RATED_LIST)))
     }
 
     /**
      * Called when the user wants to see the watchlist.
      */
-    fun onWatchlist() {
+    internal fun onWatchlist() {
         navigateTo(Destination.InnerDestination(userMovieListFragment(UserMovieListType.WATCH_LIST)))
     }
 
