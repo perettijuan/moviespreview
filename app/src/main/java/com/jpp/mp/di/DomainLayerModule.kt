@@ -165,48 +165,14 @@ class DomainLayerModule {
     )
 
     @Provides
-    fun providesGetFavoriteMoviePageUseCase(
+    fun providesGetUserAccountMoviePageUseCase(
         moviePageRepository: MoviePageRepository,
         sessionRepository: SessionRepository,
         accountRepository: AccountRepository,
         configurationRepository: ConfigurationRepository,
         languageRepository: LanguageRepository,
         connectivityRepository: ConnectivityRepository
-    ): GetFavoriteMoviePageUseCase = GetFavoriteMoviePageUseCase(
-        moviePageRepository,
-        sessionRepository,
-        accountRepository,
-        configurationRepository,
-        languageRepository,
-        connectivityRepository
-    )
-
-    @Provides
-    fun providesGetRatedMoviesUseCase(
-        moviePageRepository: MoviePageRepository,
-        sessionRepository: SessionRepository,
-        accountRepository: AccountRepository,
-        configurationRepository: ConfigurationRepository,
-        languageRepository: LanguageRepository,
-        connectivityRepository: ConnectivityRepository
-    ): GetRatedMoviesUseCase = GetRatedMoviesUseCase(
-        moviePageRepository,
-        sessionRepository,
-        accountRepository,
-        configurationRepository,
-        languageRepository,
-        connectivityRepository
-    )
-
-    @Provides
-    fun providesGetWatchListMoviePage(
-        moviePageRepository: MoviePageRepository,
-        sessionRepository: SessionRepository,
-        accountRepository: AccountRepository,
-        configurationRepository: ConfigurationRepository,
-        languageRepository: LanguageRepository,
-        connectivityRepository: ConnectivityRepository
-    ): GetWatchListMoviePage = GetWatchListMoviePage(
+    ): GetUserAccountMoviePageUseCase = GetUserAccountMoviePageUseCase(
         moviePageRepository,
         sessionRepository,
         accountRepository,
