@@ -197,4 +197,21 @@ class DomainLayerModule {
         languageRepository,
         connectivityRepository
     )
+
+    @Provides
+    fun providesGetWatchListMoviePage(
+        moviePageRepository: MoviePageRepository,
+        sessionRepository: SessionRepository,
+        accountRepository: AccountRepository,
+        configurationRepository: ConfigurationRepository,
+        languageRepository: LanguageRepository,
+        connectivityRepository: ConnectivityRepository
+    ): GetWatchListMoviePage = GetWatchListMoviePage(
+        moviePageRepository,
+        sessionRepository,
+        accountRepository,
+        configurationRepository,
+        languageRepository,
+        connectivityRepository
+    )
 }
