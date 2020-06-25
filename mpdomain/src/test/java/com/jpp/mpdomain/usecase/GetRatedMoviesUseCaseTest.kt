@@ -1,5 +1,6 @@
 package com.jpp.mpdomain.usecase
 
+
 import com.jpp.mpdomain.*
 import com.jpp.mpdomain.repository.*
 import io.mockk.every
@@ -14,7 +15,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
-class GetFavoriteMoviePageUseCaseTest {
+class GetRatedMoviesUseCaseTest {
 
     @MockK
     private lateinit var moviePageRepository: MoviePageRepository
@@ -34,11 +35,11 @@ class GetFavoriteMoviePageUseCaseTest {
     @MockK
     private lateinit var connectivityRepository: ConnectivityRepository
 
-    private lateinit var subject: GetFavoriteMoviePageUseCase
+    private lateinit var subject: GetRatedMoviesUseCase
 
     @BeforeEach
     fun setUp() {
-        subject = GetFavoriteMoviePageUseCase(
+        subject = GetRatedMoviesUseCase(
             moviePageRepository,
             sessionRepository,
             accountRepository,
@@ -88,7 +89,7 @@ class GetFavoriteMoviePageUseCaseTest {
         every { accountRepository.getUserAccount(any()) } returns mockk()
         every { languageRepository.getCurrentAppLanguage() } returns mockk()
         every {
-            moviePageRepository.getFavoriteMoviePage(any(), any(), any(), any())
+            moviePageRepository.getRatedMoviePage(any(), any(), any(), any())
         } returns null
 
         val actual = subject.execute(1)
@@ -117,7 +118,7 @@ class GetFavoriteMoviePageUseCaseTest {
         every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
         every { configurationRepository.getAppConfiguration() } returns AppConfiguration(imagesConfig)
         every {
-            moviePageRepository.getFavoriteMoviePage(
+            moviePageRepository.getRatedMoviePage(
                 page = 1,
                 session = session,
                 userAccount = account,
@@ -148,7 +149,7 @@ class GetFavoriteMoviePageUseCaseTest {
         every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
         every { configurationRepository.getAppConfiguration() } returns null
         every {
-            moviePageRepository.getFavoriteMoviePage(
+            moviePageRepository.getRatedMoviePage(
                 page = 1,
                 session = session,
                 userAccount = account,
