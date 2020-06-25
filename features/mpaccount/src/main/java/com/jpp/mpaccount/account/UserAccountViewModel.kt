@@ -47,6 +47,9 @@ class UserAccountViewModel(
                 is Try.Success -> processUserAccount(result.value)
                 is Try.Failure -> processFailureCause(result.cause)
             }
+
+
+
         }
     }
 

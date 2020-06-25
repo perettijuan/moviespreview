@@ -33,7 +33,11 @@ class GetUserAccountMoviePageUseCase(
             userAccount,
             languageRepository.getCurrentAppLanguage()
         )?.let { favPage ->
-            Try.Success(favPage.copy(results = favPage.results.configureMovieImages()))
+            Try.Success(
+                favPage.copy(
+                    results = favPage.results.configureMovieImages(configurationRepository.getAppConfiguration())
+                )
+            )
         } ?: Try.Failure(Try.FailureCause.Unknown)
     }
 
@@ -64,10 +68,5 @@ class GetUserAccountMoviePageUseCase(
                 language = language
             )
         }
-    }
-
-    private fun List<Movie>.configureMovieImages(): List<Movie> {
-        val imagesConfig = configurationRepository.getAppConfiguration()?.images ?: return this
-        return toMutableList().map { movie -> movie.configurePaths(imagesConfig) }
     }
 }

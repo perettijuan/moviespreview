@@ -1,5 +1,6 @@
 package com.jpp.mpdomain.usecase
 
+import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.ImagesConfiguration
 import com.jpp.mpdomain.Movie
 
@@ -30,4 +31,12 @@ internal fun Movie.configurePaths(imagesConfig: ImagesConfiguration): Movie {
             imagesConfig.poster_sizes.last()
         )
     )
+}
+
+/**
+ * Extension to configure the paths of a list of movies.
+ */
+internal fun List<Movie>.configureMovieImages(appConfiguration: AppConfiguration?): List<Movie> {
+    val imagesConfig = appConfiguration?.images ?: return this
+    return toMutableList().map { movie -> movie.configurePaths(imagesConfig) }
 }

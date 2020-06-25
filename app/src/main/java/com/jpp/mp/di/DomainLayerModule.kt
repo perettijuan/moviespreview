@@ -180,4 +180,21 @@ class DomainLayerModule {
         languageRepository,
         connectivityRepository
     )
+
+    @Provides
+    fun providesGetUserAccountMoviesUseCase(
+        moviePageRepository: MoviePageRepository,
+        sessionRepository: SessionRepository,
+        accountRepository: AccountRepository,
+        configurationRepository: ConfigurationRepository,
+        languageRepository: LanguageRepository,
+        connectivityRepository: ConnectivityRepository
+    ): GetUserAccountMoviesUseCase = GetUserAccountMoviesUseCase(
+        moviePageRepository,
+        sessionRepository,
+        accountRepository,
+        configurationRepository,
+        languageRepository,
+        connectivityRepository
+    )
 }
