@@ -13,53 +13,47 @@ internal data class UserAccountViewState(
     val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
     val contentViewState: UserAccountContentViewState = UserAccountContentViewState()
 ) {
-    companion object {
-        fun showLoading() = UserAccountViewState(loadingVisibility = View.VISIBLE)
-        fun showNoConnectivityError(errorHandler: () -> Unit) = UserAccountViewState(
-            errorViewState = ErrorViewState.asConnectivity(errorHandler)
-        )
 
-        fun showUnknownError(errorHandler: () -> Unit) = UserAccountViewState(
-            errorViewState = ErrorViewState.asUnknownError(errorHandler)
-        )
-
-        fun showContentWithAvatar(
-            userName: String,
-            accountName: String,
-            favoriteMovieState: UserMoviesViewState,
-            ratedMovieState: UserMoviesViewState,
-            watchListState: UserMoviesViewState,
-            avatarUrl: String,
-            avatarCallback: (() -> Unit)
-        ) = UserAccountViewState(
-            contentViewState = UserAccountContentViewState.withAvatar(
+    fun showAccountDataWithAvatar(
+        userName: String,
+        accountName: String,
+        avatarUrl: String,
+        avatarCallback: (() -> Unit)
+    ): UserAccountViewState {
+        return copy(
+            loadingVisibility = View.INVISIBLE,
+            contentViewState = contentViewState.withAvatar(
                 userName,
                 accountName,
-                favoriteMovieState,
-                ratedMovieState,
-                watchListState,
                 avatarUrl,
                 avatarCallback
             )
         )
+    }
 
-        fun showContentWithLetter(
-            userName: String,
-            accountName: String,
-            favoriteMovieState: UserMoviesViewState,
-            ratedMovieState: UserMoviesViewState,
-            watchListState: UserMoviesViewState,
-            defaultLetter: String
-        ) = UserAccountViewState(
-            contentViewState = UserAccountContentViewState.withLetter(
-                userName,
-                accountName,
-                favoriteMovieState,
-                ratedMovieState,
-                watchListState,
-                defaultLetter
-            )
-        )
+    fun showAccountDataWithLetter(
+        userName: String,
+        accountName: String,
+        defaultLetter: String
+    ) = UserAccountViewState(
+        loadingVisibility = View.INVISIBLE,
+        contentViewState = contentViewState.withLetter(userName, accountName, defaultLetter)
+    )
+
+    fun showNoConnectivityError(errorHandler: () -> Unit): UserAccountViewState = copy(
+        loadingVisibility = View.INVISIBLE,
+        errorViewState = ErrorViewState.asConnectivity(errorHandler)
+    )
+
+    fun showUnknownError(errorHandler: () -> Unit): UserAccountViewState = copy(
+        loadingVisibility = View.INVISIBLE,
+        errorViewState = ErrorViewState.asUnknownError(errorHandler)
+    )
+
+    companion object {
+        fun showLoading() = UserAccountViewState(loadingVisibility = View.VISIBLE)
+
+
     }
 }
 

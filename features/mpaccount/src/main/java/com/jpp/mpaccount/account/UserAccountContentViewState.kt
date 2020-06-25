@@ -14,40 +14,27 @@ internal data class UserAccountContentViewState(
     val ratedMovieState: UserMoviesViewState = UserMoviesViewState(),
     val watchListState: UserMoviesViewState = UserMoviesViewState()
 ) {
-    companion object {
-        fun withAvatar(
-            userName: String,
-            accountName: String,
-            favoriteMovieState: UserMoviesViewState,
-            ratedMovieState: UserMoviesViewState,
-            watchListState: UserMoviesViewState,
-            avatarUrl: String,
-            avatarCallback: (() -> Unit)
-        ) = UserAccountContentViewState(
-            visibility = View.VISIBLE,
-            userName = userName,
-            accountName = accountName,
-            avatarViewState = AccountAvatarViewState.createAvatar(avatarUrl, avatarCallback),
-            favoriteMovieState = favoriteMovieState,
-            ratedMovieState = ratedMovieState,
-            watchListState = watchListState
-        )
 
-        fun withLetter(
-            userName: String,
-            accountName: String,
-            favoriteMovieState: UserMoviesViewState,
-            ratedMovieState: UserMoviesViewState,
-            watchListState: UserMoviesViewState,
-            defaultLetter: String
-        ) = UserAccountContentViewState(
-            visibility = View.VISIBLE,
-            userName = userName,
-            accountName = accountName,
-            avatarViewState = AccountAvatarViewState.createLetter(defaultLetter),
-            favoriteMovieState = favoriteMovieState,
-            ratedMovieState = ratedMovieState,
-            watchListState = watchListState
-        )
-    }
+    fun withAvatar(
+        userName: String,
+        accountName: String,
+        avatarUrl: String,
+        avatarCallback: (() -> Unit)
+    ) = UserAccountContentViewState(
+        visibility = View.VISIBLE,
+        userName = userName,
+        accountName = accountName,
+        avatarViewState = avatarViewState.createAvatar(avatarUrl, avatarCallback)
+    )
+
+    fun withLetter(
+        userName: String,
+        accountName: String,
+        defaultLetter: String
+    ) = UserAccountContentViewState(
+        visibility = View.VISIBLE,
+        userName = userName,
+        accountName = accountName,
+        avatarViewState = avatarViewState.createLetter(defaultLetter)
+    )
 }

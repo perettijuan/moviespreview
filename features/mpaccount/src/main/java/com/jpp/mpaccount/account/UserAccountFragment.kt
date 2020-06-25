@@ -10,7 +10,6 @@ import android.widget.Button
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
@@ -61,7 +60,7 @@ class UserAccountFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpViews(view)
         viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
-        viewModel.onInit(getScreenWidthInPixels())
+        viewModel.onInit()
     }
 
     override fun onDestroyView() {

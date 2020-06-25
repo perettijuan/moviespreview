@@ -1,6 +1,7 @@
 package com.jpp.mpaccount.account
 
 import android.view.View
+
 /**
  * ViewState that represents the state of the avatar. If the avatar can be downloaded
  * as an image, then [avatarVisibility] will view [View.VISIBLE] and the default letter
@@ -14,15 +15,15 @@ internal data class AccountAvatarViewState(
     val defaultLetter: String = "",
     val defaultLetterVisibility: Int = View.INVISIBLE
 ) {
-    companion object {
-        fun createAvatar(avatarUrl: String, callback: (() -> Unit)) = AccountAvatarViewState(
-            avatarUrl = avatarUrl,
-            avatarVisibility = View.VISIBLE,
-            avatarErrorCallback = callback)
+    fun createAvatar(avatarUrl: String, callback: (() -> Unit)): AccountAvatarViewState = copy(
+        avatarUrl = avatarUrl,
+        avatarVisibility = View.VISIBLE,
+        avatarErrorCallback = callback
+    )
 
-        fun createLetter(defaultLetter: String) = AccountAvatarViewState(
-            defaultLetter = defaultLetter,
-            defaultLetterVisibility = View.VISIBLE,
-            avatarVisibility = View.INVISIBLE)
-    }
+    fun createLetter(defaultLetter: String): AccountAvatarViewState = copy(
+        defaultLetter = defaultLetter,
+        defaultLetterVisibility = View.VISIBLE,
+        avatarVisibility = View.INVISIBLE
+    )
 }
