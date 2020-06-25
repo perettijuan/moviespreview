@@ -163,4 +163,21 @@ class DomainLayerModule {
     ): LoginUseCase = LoginUseCase(
         sessionRepository, connectivityRepository
     )
+
+    @Provides
+    fun providesGetFavoriteMoviePageUseCase(
+        moviePageRepository: MoviePageRepository,
+        sessionRepository: SessionRepository,
+        accountRepository: AccountRepository,
+        configurationRepository: ConfigurationRepository,
+        languageRepository: LanguageRepository,
+        connectivityRepository: ConnectivityRepository
+    ): GetFavoriteMoviePageUseCase = GetFavoriteMoviePageUseCase(
+        moviePageRepository,
+        sessionRepository,
+        accountRepository,
+        configurationRepository,
+        languageRepository,
+        connectivityRepository
+    )
 }

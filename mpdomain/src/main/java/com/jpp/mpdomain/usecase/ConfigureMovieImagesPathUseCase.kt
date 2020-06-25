@@ -17,17 +17,4 @@ class ConfigureMovieImagesPathUseCase(
             Try.Success(movie.configurePaths(appConfiguration.images))
         } ?: Try.Failure(Try.FailureCause.Unknown)
     }
-
-    private fun Movie.configurePaths(imagesConfig: ImagesConfiguration): Movie {
-        return copy(
-            poster_path = poster_path.createUrlForPath(
-                imagesConfig.base_url,
-                imagesConfig.poster_sizes.last()
-            ),
-            backdrop_path = poster_path.createUrlForPath(
-                imagesConfig.base_url,
-                imagesConfig.poster_sizes.last()
-            )
-        )
-    }
 }
