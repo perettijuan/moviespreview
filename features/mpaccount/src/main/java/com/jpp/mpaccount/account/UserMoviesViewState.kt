@@ -14,27 +14,27 @@ internal data class UserMoviesViewState(
 ) {
     companion object {
         fun createFavoriteEmpty() = UserMoviesViewState(
-            visibility = View.VISIBLE,
+            visibility =  View.VISIBLE,
             errorText = R.string.user_account_no_favorite_movies
         )
 
         fun createRatedEmpty() = UserMoviesViewState(
-            visibility = View.VISIBLE,
+            visibility =  View.VISIBLE,
             errorText = R.string.user_account_no_rated_movies
         )
 
         fun createWatchlistEmpty() = UserMoviesViewState(
-            visibility = View.VISIBLE,
+            visibility =  View.VISIBLE,
             errorText = R.string.user_account_no_watchlist_movies
         )
 
         fun createError() = UserMoviesViewState(
-            visibility = View.VISIBLE,
+            visibility =  View.VISIBLE,
             errorText = R.string.user_account_favorite_movies_error
         )
 
         fun createWithItems(items: List<UserMovieItem>) = UserMoviesViewState(
-            visibility = View.VISIBLE,
+            visibility =  View.VISIBLE,
             items = items
         )
     }

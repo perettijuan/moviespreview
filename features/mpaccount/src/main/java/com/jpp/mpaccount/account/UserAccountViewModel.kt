@@ -1,7 +1,7 @@
 package com.jpp.mpaccount.account
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jpp.mpdomain.*
@@ -24,9 +24,11 @@ class UserAccountViewModel(
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    private val _viewState = MediatorLiveData<UserAccountViewState>()
-    internal val viewState: LiveData<UserAccountViewState> = _viewState
+    private val _headerViewState = MutableLiveData<UserAccountHeaderState>()
+    internal val headerViewState: LiveData<UserAccountHeaderState> = _headerViewState
 
+    private val _bodyViewState = MutableLiveData<UserAccountBodyViewState>()
+    internal val bodyViewState: LiveData<UserAccountBodyViewState> = _bodyViewState
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -35,7 +37,8 @@ class UserAccountViewModel(
      * on it.
      */
     internal fun onInit() {
-        _viewState.value = UserAccountViewState.showLoading()
+        _headerViewState.value = UserAccountHeaderState.showLoading()
+        _bodyViewState.value = UserAccountBodyViewState.showLoading()
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {
                 getUserAccountUseCase.execute()
@@ -43,7 +46,7 @@ class UserAccountViewModel(
 
             when (result) {
                 is Try.Success -> processUserAccount(result.value)
-                is Try.Failure -> processFailureCause(result.cause)
+                is Try.Failure -> processFailureCause()
             }
 
             val moviesResult = withContext(ioDispatcher) {
@@ -63,7 +66,7 @@ class UserAccountViewModel(
     internal fun onLogout() {
         TODO("Implement ME")
         //withAccountInteractor { clearUserAccountData() }
-        _viewState.value = UserAccountViewState.showLoading()
+        _headerViewState.value = UserAccountHeaderState.showLoading()
     }
 
     /**
@@ -88,7 +91,7 @@ class UserAccountViewModel(
     }
 
     private fun processUserAccount(account: UserAccount) {
-        _viewState.value = _viewState.value?.showAccountDataWithAvatar(
+        _headerViewState.value = _headerViewState.value?.withAvatar(
             userName = account.getUserName(),
             accountName = account.username,
             avatarUrl = account.avatar.getFulUrl(),
@@ -96,18 +99,12 @@ class UserAccountViewModel(
         )
     }
 
-    private fun processFailureCause(cause: Try.FailureCause) {
-        when (cause) {
-            is Try.FailureCause.NoConnectivity -> _viewState.value =
-                _viewState.value?.showNoConnectivityError { onInit() }
-            is Try.FailureCause.Unknown -> _viewState.value =
-                _viewState.value?.showUnknownError { onInit() }
-            is Try.FailureCause.UserNotLogged -> navigator.navigateToLogin()
-        }
+    private fun processFailureCause() {
+        _headerViewState.value = _headerViewState.value?.hide()
     }
 
     private fun userAvatarCallback(account: UserAccount) {
-        _viewState.value = _viewState.value?.showAccountDataWithLetter(
+        _headerViewState.value = _headerViewState.value?.withLetter(
             userName = account.getUserName(),
             accountName = account.username,
             defaultLetter = account.getUserLetter()
@@ -115,28 +112,43 @@ class UserAccountViewModel(
     }
 
     private fun processMoviesPageResult(result: Map<AccountMovieType, MoviePage>) {
-        val viewStateMapper: (MoviePage?) -> UserMoviesViewState =
-            { page ->
+        val viewStateMapper: (MoviePage?, UserMoviesViewState) -> UserMoviesViewState =
+            { page, emptyViewState ->
                 when {
                     page == null -> UserMoviesViewState.createError()
-                    page.results.isEmpty() -> UserMoviesViewState.createFavoriteEmpty() //TODO JPP handle this case
+                    page.results.isEmpty() -> emptyViewState
                     else -> UserMoviesViewState.createWithItems(page.results.mapToUserMovieItem())
                 }
             }
 
-        val favoritesViewState = viewStateMapper(result[AccountMovieType.Favorite])
-        val watchListViewState = viewStateMapper(result[AccountMovieType.Watchlist])
-        val ratedViewState = viewStateMapper(result[AccountMovieType.Rated])
+        val favoritesViewState = viewStateMapper(
+            result[AccountMovieType.Favorite],
+            UserMoviesViewState.createFavoriteEmpty()
+        )
+        val watchListViewState = viewStateMapper(
+            result[AccountMovieType.Watchlist],
+            UserMoviesViewState.createWatchlistEmpty()
+        )
+        val ratedViewState = viewStateMapper(
+            result[AccountMovieType.Rated],
+            UserMoviesViewState.createRatedEmpty()
+        )
 
-        _viewState.value = _viewState.value?.showAccountMovies(
-            favoritesViewState,
-            watchListViewState,
-            ratedViewState
+        _bodyViewState.value = _bodyViewState.value?.showContentWithMovies(
+            favoriteMovieState = favoritesViewState,
+            ratedMovieState = ratedViewState,
+            watchListState = watchListViewState
         )
     }
 
     private fun processMoviesPageFailureCause(cause: Try.FailureCause) {
-        TODO("This is next")
+        when (cause) {
+            is Try.FailureCause.NoConnectivity -> _bodyViewState.value =
+                _bodyViewState.value?.showNoConnectivityError { onInit() }
+            is Try.FailureCause.Unknown -> _bodyViewState.value =
+                _bodyViewState.value?.showUnknownError { onInit() }
+            is Try.FailureCause.UserNotLogged -> navigator.navigateToLogin()
+        }
     }
 
 

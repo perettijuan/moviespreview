@@ -4,7 +4,7 @@
     <data>
         <variable
             name="viewState"
-            type="com.jpp.mpaccount.account.UserAccountContentViewState" />
+            type="com.jpp.mpaccount.account.UserAccountHeaderState"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
+        android:visibility="@{viewState.visibility}"
         android:background="@drawable/bg_account_content">
 
         <com.jpp.mpdesign.views.MPImageView

@@ -20,7 +20,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -59,14 +58,14 @@ class UserAccountViewModelTest {
          * an observer on the view states attached all the time in order
          * to get notifications.
          */
-        subject.viewState.observeForever { }
+        subject.headerViewState.observeForever { }
     }
 
     @Test
     fun `Should post no connectivity error when disconnected`() {
-        var viewStatePosted: UserAccountViewState? = null
+        var viewStatePosted: UserAccountHeaderState? = null
 
-        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+        subject.headerViewState.observeWith { viewState -> viewStatePosted = viewState }
 
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.NotConnectedToNetwork)
 
@@ -80,9 +79,9 @@ class UserAccountViewModelTest {
 
     @Test
     fun `Should post error when failing to fetch user account data`() {
-        var viewStatePosted: UserAccountViewState? = null
+        var viewStatePosted: UserAccountHeaderState? = null
 
-        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+        subject.headerViewState.observeWith { viewState -> viewStatePosted = viewState }
 
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.UnknownError)
 
@@ -115,9 +114,9 @@ class UserAccountViewModelTest {
                 name = "aName",
                 username = "aUserName"
         )
-        var viewStatePosted: UserAccountViewState? = null
+        var viewStatePosted: UserAccountHeaderState? = null
 
-        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+        subject.headerViewState.observeWith { viewState -> viewStatePosted = viewState }
 
         lvInteractorEvents.postValue(
                 UserAccountInteractor.UserAccountEvent.Success(
@@ -150,9 +149,9 @@ class UserAccountViewModelTest {
                 username = "UserName"
         )
 
-        var viewStatePosted: UserAccountViewState? = null
+        var viewStatePosted: UserAccountHeaderState? = null
 
-        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+        subject.headerViewState.observeWith { viewState -> viewStatePosted = viewState }
 
         lvInteractorEvents.postValue(
                 UserAccountInteractor.UserAccountEvent.Success(
@@ -184,7 +183,7 @@ class UserAccountViewModelTest {
                 name = "",
                 username = "UserName"
         )
-        var viewStatePosted: UserAccountViewState? = null
+        var viewStatePosted: UserAccountHeaderState? = null
         val favMoviePage = MoviePage(
                 page = 1,
                 results = mutableListOf(mockk(), mockk(), mockk(), mockk(), mockk()),
@@ -208,7 +207,7 @@ class UserAccountViewModelTest {
 
         every { imagesPathInteractor.configurePathMovie(any(), any(), any()) } returns mockk(relaxed = true)
 
-        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+        subject.headerViewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onInit(10)
 
         lvInteractorEvents.postValue(
@@ -234,9 +233,9 @@ class UserAccountViewModelTest {
 
     @Test
     fun `Should post loading and fetch user account onInit`() {
-        var viewStatePosted: UserAccountViewState? = null
+        var viewStatePosted: UserAccountHeaderState? = null
 
-        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+        subject.headerViewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onInit(10)
 
         assertNotNull(viewStatePosted)
@@ -249,9 +248,9 @@ class UserAccountViewModelTest {
 
     @Test
     fun `Should post loading and clear user data onLogout`() {
-        var viewStatePosted: UserAccountViewState? = null
+        var viewStatePosted: UserAccountHeaderState? = null
 
-        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+        subject.headerViewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.onLogout()
 
         assertNotNull(viewStatePosted)
@@ -264,9 +263,9 @@ class UserAccountViewModelTest {
 
     @Test
     fun `Should post loading and refresh user data when language changed`() {
-        var viewStatePosted: UserAccountViewState? = null
+        var viewStatePosted: UserAccountHeaderState? = null
 
-        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+        subject.headerViewState.observeWith { viewState -> viewStatePosted = viewState }
         lvInteractorEvents.postValue(UserAccountInteractor.UserAccountEvent.UserChangedLanguage)
 
         assertNotNull(viewStatePosted)

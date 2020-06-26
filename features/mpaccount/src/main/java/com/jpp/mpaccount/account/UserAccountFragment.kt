@@ -27,7 +27,7 @@ class UserAccountFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: UserAccountViewModelFactory
 
-    private lateinit var viewBinding: FragmentUserAccountBinding
+    private var viewBinding: FragmentUserAccountBinding? = null
 
     private val viewModel: UserAccountViewModel by viewModels {
         MPGenericSavedStateViewModelFactory(
@@ -53,17 +53,19 @@ class UserAccountFragment : Fragment() {
     ): View? {
         viewBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_user_account, container, false)
-        return viewBinding.root
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpViews(view)
-        viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
+        viewModel.headerViewState.observeValue(viewLifecycleOwner, ::renderHeaderViewState)
+        viewModel.bodyViewState.observeValue(viewLifecycleOwner, ::renderBodyViewState)
         viewModel.onInit()
     }
 
     override fun onDestroyView() {
+        viewBinding = null
         userAccountLogoutBtn = null
         userAccountFavoriteMovies = null
         userAccountRatedMovies = null
@@ -95,8 +97,12 @@ class UserAccountFragment : Fragment() {
         }
     }
 
-    private fun renderViewState(viewState: UserAccountViewState) {
-        setScreenTitle(getString(viewState.screenTitle))
-        viewBinding.viewState = viewState
+    private fun renderHeaderViewState(headerViewState: UserAccountHeaderState) {
+        setScreenTitle(getString(headerViewState.screenTitle))
+        viewBinding?.headerViewState = headerViewState
+    }
+
+    private fun renderBodyViewState(bodyViewState: UserAccountBodyViewState) {
+        viewBinding?.bodyViewState = bodyViewState
     }
 }
