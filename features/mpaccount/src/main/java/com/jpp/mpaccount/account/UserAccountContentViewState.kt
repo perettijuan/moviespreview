@@ -7,6 +7,7 @@ import android.view.View
  */
 internal data class UserAccountContentViewState(
     val visibility: Int = View.INVISIBLE,
+    val loadingMoviesVisibility: Int = View.VISIBLE,
     val userName: String = "",
     val accountName: String = "",
     val avatarViewState: AccountAvatarViewState = AccountAvatarViewState(),
@@ -36,5 +37,17 @@ internal data class UserAccountContentViewState(
         userName = userName,
         accountName = accountName,
         avatarViewState = avatarViewState.createLetter(defaultLetter)
+    )
+
+    fun withMovieState(
+        favoriteMovieState: UserMoviesViewState,
+        ratedMovieState: UserMoviesViewState,
+        watchListState: UserMoviesViewState
+    ) = UserAccountContentViewState(
+        visibility = View.VISIBLE,
+        loadingMoviesVisibility = View.INVISIBLE,
+        favoriteMovieState = favoriteMovieState,
+        ratedMovieState = ratedMovieState,
+        watchListState = watchListState
     )
 }

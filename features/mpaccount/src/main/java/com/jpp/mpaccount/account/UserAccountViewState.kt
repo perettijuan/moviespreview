@@ -40,6 +40,19 @@ internal data class UserAccountViewState(
         contentViewState = contentViewState.withLetter(userName, accountName, defaultLetter)
     )
 
+    fun showAccountMovies(
+        favoriteMovieState: UserMoviesViewState,
+        ratedMovieState: UserMoviesViewState,
+        watchListState: UserMoviesViewState
+    ): UserAccountViewState = copy(
+        loadingVisibility = View.INVISIBLE,
+        contentViewState = contentViewState.withMovieState(
+            favoriteMovieState,
+            ratedMovieState,
+            watchListState
+        )
+    )
+
     fun showNoConnectivityError(errorHandler: () -> Unit): UserAccountViewState = copy(
         loadingVisibility = View.INVISIBLE,
         errorViewState = ErrorViewState.asConnectivity(errorHandler)

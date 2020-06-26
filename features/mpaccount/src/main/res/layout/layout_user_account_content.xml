@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -33,31 +33,55 @@
                     layout="@layout/layout_user_account_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    bind:viewState="@{viewState}"/>
+                    bind:viewState="@{viewState}"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <ProgressBar
+                    android:id="@+id/userAccountLoadingView"
+                    style="@style/MPProgressBar"
+                    android:visibility="@{viewState.loadingMoviesVisibility}"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_user_account_header"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/userAccountLogoutBtn"/>
 
                 <com.jpp.mpaccount.account.UserAccountMoviesView
                     android:id="@+id/userAccountFavoriteMovies"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="@{viewState.favoriteMovieState.visibility}"
                     app:items="@{viewState.favoriteMovieState.items}"
                     app:errorMessage="@{viewState.favoriteMovieState.errorText}"
-                    app:accountMoviesTitleText="@string/user_account_favorite_title" />
+                    app:accountMoviesTitleText="@string/user_account_favorite_title"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_user_account_header"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
                 <com.jpp.mpaccount.account.UserAccountMoviesView
                     android:id="@+id/userAccountRatedMovies"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="@{viewState.ratedMovieState.visibility}"
                     app:items="@{viewState.ratedMovieState.items}"
                     app:errorMessage="@{viewState.ratedMovieState.errorText}"
-                    app:accountMoviesTitleText="@string/user_account_rated_title" />
+                    app:accountMoviesTitleText="@string/user_account_rated_title"
+                    app:layout_constraintTop_toBottomOf="@+id/userAccountFavoriteMovies"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
                 <com.jpp.mpaccount.account.UserAccountMoviesView
                     android:id="@+id/userAccountWatchlist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="@{viewState.watchListState.visibility}"
                     app:items="@{viewState.watchListState.items}"
                     app:errorMessage="@{viewState.watchListState.errorText}"
-                    app:accountMoviesTitleText="@string/user_account_watchlist_title" />
+                    app:accountMoviesTitleText="@string/user_account_watchlist_title"
+                    app:layout_constraintTop_toBottomOf="@+id/userAccountRatedMovies"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
                 <Button
                     android:id="@+id/userAccountLogoutBtn"
@@ -66,9 +90,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:background="@drawable/bg_login_button"
-                    android:text="@string/user_account_logout" />
+                    android:text="@string/user_account_logout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/userAccountWatchlist"/>
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>

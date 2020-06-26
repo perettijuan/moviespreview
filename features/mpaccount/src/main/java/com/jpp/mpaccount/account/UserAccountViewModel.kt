@@ -4,10 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jpp.mpdomain.Gravatar
-import com.jpp.mpdomain.UserAccount
-import com.jpp.mpdomain.UserAvatar
-import com.jpp.mpdomain.usecase.GetUserAccountMoviePageUseCase
+import com.jpp.mpdomain.*
+import com.jpp.mpdomain.usecase.GetUserAccountMoviesUseCase
 import com.jpp.mpdomain.usecase.GetUserAccountUseCase
 import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
@@ -21,7 +19,7 @@ import kotlinx.coroutines.withContext
  */
 class UserAccountViewModel(
     private val getUserAccountUseCase: GetUserAccountUseCase,
-    private val getUserAccountMoviePageUseCase: GetUserAccountMoviePageUseCase,
+    private val getMoviesUseCase: GetUserAccountMoviesUseCase,
     private val navigator: UserAccountNavigator,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
@@ -48,8 +46,14 @@ class UserAccountViewModel(
                 is Try.Failure -> processFailureCause(result.cause)
             }
 
+            val moviesResult = withContext(ioDispatcher) {
+                getMoviesUseCase.execute(FIRST_PAGE)
+            }
 
-
+            when (moviesResult) {
+                is Try.Success -> processMoviesPageResult(moviesResult.value)
+                is Try.Failure -> processMoviesPageFailureCause(moviesResult.cause)
+            }
         }
     }
 
@@ -57,6 +61,7 @@ class UserAccountViewModel(
      * Called when the user wants to perform the logout of the application.
      */
     internal fun onLogout() {
+        TODO("Implement ME")
         //withAccountInteractor { clearUserAccountData() }
         _viewState.value = UserAccountViewState.showLoading()
     }
@@ -81,77 +86,6 @@ class UserAccountViewModel(
     internal fun onWatchlist() {
         navigator.navigateToWatchList()
     }
-
-
-//    private fun mapAccountInfo(successState: UserAccountEvent.Success) {
-//        viewModelScope.launch {
-//            with(successState.data) {
-//                val favoriteMovieState =
-//                    getUserMoviesViewState(successState.favoriteMovies) { UserMoviesViewState.createFavoriteEmpty() }
-//                val ratedMovieState =
-//                    getUserMoviesViewState(successState.ratedMovies) { UserMoviesViewState.createRatedEmpty() }
-//                val watchListState =
-//                    getUserMoviesViewState(successState.watchList) { UserMoviesViewState.createWatchlistEmpty() }
-//
-//                UserAccountViewState.showContentWithAvatar(
-//                    userName = if (name.isEmpty()) username else name,
-//                    accountName = username,
-//                    favoriteMovieState = favoriteMovieState,
-//                    ratedMovieState = ratedMovieState,
-//                    watchListState = watchListState,
-//                    avatarUrl = Gravatar.BASE_URL + avatar.gravatar.hash + Gravatar.REDIRECT
-//                ) {
-//                    mapAccountInfoWithoutAvatar(
-//                        successState.data,
-//                        favoriteMovieState,
-//                        ratedMovieState,
-//                        watchListState
-//                    )
-//                }
-//            }.let { _viewState.value = it }
-//        }
-//    }
-
-//    /**
-//     * Method called when the UI is unable to download the user avatar. The VM
-//     * will render a new [UserAccountViewState] that will show the user's name letter
-//     * instead of the user's avatar.
-//     */
-//    private fun mapAccountInfoWithoutAvatar(
-//        userAccount: UserAccount,
-//        favViewState: UserMoviesViewState,
-//        ratedViewState: UserMoviesViewState,
-//        watchViewState: UserMoviesViewState
-//    ) {
-//        _viewState.value = UserAccountViewState.showContentWithLetter(
-//            userName = if (userAccount.name.isEmpty()) userAccount.username else userAccount.name,
-//            accountName = userAccount.username,
-//            favoriteMovieState = favViewState,
-//            ratedMovieState = ratedViewState,
-//            watchListState = watchViewState,
-//            defaultLetter = if (userAccount.name.isEmpty()) userAccount.username.first()
-//                .toString() else userAccount.name.first().toString()
-//        )
-//    }
-//
-//
-//    private suspend fun getUserMoviesViewState(
-//        userMovieState: UserMoviesState,
-//        emptyCreator: () -> UserMoviesViewState
-//    ) = withContext(ioDispatcher) {
-//        when (userMovieState) {
-//            is UserMoviesState.UnknownError -> UserMoviesViewState.createError()
-//            is UserMoviesState.Success -> {
-//                when {
-//                    userMovieState.data.results.isEmpty() -> emptyCreator()
-//                    else -> userMovieState.data.results
-//                        .map { imagesPathInteractor.configurePathMovie(posterSize, posterSize, it) }
-//                        .map { UserMovieItem(image = it.poster_path ?: "noPath") }
-//                        .let { UserMoviesViewState.createWithItems(it) }
-//                }
-//            }
-//        }
-//    }
 
     private fun processUserAccount(account: UserAccount) {
         _viewState.value = _viewState.value?.showAccountDataWithAvatar(
@@ -180,24 +114,44 @@ class UserAccountViewModel(
         )
     }
 
-    private fun UserAccount.getUserName(): String {
-        return if (name.isEmpty()) {
-            username
-        } else {
-            name
-        }
+    private fun processMoviesPageResult(result: Map<AccountMovieType, MoviePage>) {
+        val viewStateMapper: (MoviePage?) -> UserMoviesViewState =
+            { page ->
+                when {
+                    page == null -> UserMoviesViewState.createError()
+                    page.results.isEmpty() -> UserMoviesViewState.createFavoriteEmpty() //TODO JPP handle this case
+                    else -> UserMoviesViewState.createWithItems(page.results.mapToUserMovieItem())
+                }
+            }
+
+        val favoritesViewState = viewStateMapper(result[AccountMovieType.Favorite])
+        val watchListViewState = viewStateMapper(result[AccountMovieType.Watchlist])
+        val ratedViewState = viewStateMapper(result[AccountMovieType.Rated])
+
+        _viewState.value = _viewState.value?.showAccountMovies(
+            favoritesViewState,
+            watchListViewState,
+            ratedViewState
+        )
     }
 
-    private fun UserAccount.getUserLetter(): String {
-        return if (name.isEmpty()) {
-            username.first().toString()
-        } else {
-            name.first().toString()
-        }
+    private fun processMoviesPageFailureCause(cause: Try.FailureCause) {
+        TODO("This is next")
     }
 
-    private fun UserAvatar.getFulUrl(): String {
-        return Gravatar.BASE_URL + gravatar.hash + Gravatar.REDIRECT
+
+    private fun UserAccount.getUserName(): String = if (name.isEmpty()) username else name
+    private fun UserAccount.getUserLetter(): String =
+        if (name.isEmpty()) username.first().toString() else name.first().toString()
+
+    private fun UserAvatar.getFulUrl(): String =
+        Gravatar.BASE_URL + gravatar.hash + Gravatar.REDIRECT
+
+    private fun List<Movie>.mapToUserMovieItem(): List<UserMovieItem> {
+        return toMutableList().map { movie -> UserMovieItem(movie.poster_path ?: "noPath") }
     }
 
+    private companion object {
+        const val FIRST_PAGE = 1
+    }
 }

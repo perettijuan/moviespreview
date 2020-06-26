@@ -3,6 +3,7 @@ package com.jpp.mpaccount.account
 import androidx.lifecycle.SavedStateHandle
 import com.jpp.mp.common.viewmodel.ViewModelAssistedFactory
 import com.jpp.mpdomain.usecase.GetUserAccountMoviePageUseCase
+import com.jpp.mpdomain.usecase.GetUserAccountMoviesUseCase
 import com.jpp.mpdomain.usecase.GetUserAccountUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
@@ -13,14 +14,14 @@ import javax.inject.Inject
  */
 class UserAccountViewModelFactory @Inject constructor(
     private val getUserAccountUseCase: GetUserAccountUseCase,
-    private val getUserAccountMoviePageUseCase: GetUserAccountMoviePageUseCase,
+    private val getMoviesUseCase: GetUserAccountMoviesUseCase,
     private val userAccountNavigator: UserAccountNavigator,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModelAssistedFactory<UserAccountViewModel> {
     override fun create(handle: SavedStateHandle): UserAccountViewModel {
         return UserAccountViewModel(
             getUserAccountUseCase,
-            getUserAccountMoviePageUseCase,
+            getMoviesUseCase,
             userAccountNavigator,
             ioDispatcher
         )
