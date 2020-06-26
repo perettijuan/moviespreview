@@ -7,9 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.jpp.mpdomain.*
 import com.jpp.mpdomain.usecase.GetUserAccountMoviesUseCase
 import com.jpp.mpdomain.usecase.GetUserAccountUseCase
+import com.jpp.mpdomain.usecase.LogOutUseCase
 import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -20,7 +20,6 @@ import kotlinx.coroutines.withContext
  */
 /*
  * TODO
- *  1 - parallelize
  *  2 - logout
  *  3 - delete interactor
  *  4 - fix tests
@@ -28,6 +27,7 @@ import kotlinx.coroutines.withContext
 class UserAccountViewModel(
     private val getUserAccountUseCase: GetUserAccountUseCase,
     private val getMoviesUseCase: GetUserAccountMoviesUseCase,
+    private val logOutUseCase: LogOutUseCase,
     private val navigator: UserAccountNavigator,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
@@ -54,9 +54,12 @@ class UserAccountViewModel(
      * Called when the user wants to perform the logout of the application.
      */
     internal fun onLogout() {
-        TODO("Implement ME")
-        //withAccountInteractor { clearUserAccountData() }
         _headerViewState.value = UserAccountHeaderState.showLoading()
+        _bodyViewState.value = UserAccountBodyViewState.showLoading()
+        viewModelScope.launch {
+            logOutUseCase.execute() // result is not important
+            navigator.navigateHome()
+        }
     }
 
     /**
@@ -83,7 +86,6 @@ class UserAccountViewModel(
     private suspend fun fetchUserAccountHeader() {
         _headerViewState.value = UserAccountHeaderState.showLoading()
         val result = withContext(ioDispatcher) {
-            delay(5000)
             getUserAccountUseCase.execute()
         }
 
@@ -160,7 +162,7 @@ class UserAccountViewModel(
                 _bodyViewState.value?.showNoConnectivityError { onInit() }
             is Try.FailureCause.Unknown -> _bodyViewState.value =
                 _bodyViewState.value?.showUnknownError { onInit() }
-            is Try.FailureCause.UserNotLogged -> navigator.navigateToLogin()
+            is Try.FailureCause.UserNotLogged -> navigator.navigateHome()
         }
     }
 

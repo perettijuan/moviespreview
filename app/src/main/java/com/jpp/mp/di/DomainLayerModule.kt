@@ -197,4 +197,11 @@ class DomainLayerModule {
         languageRepository,
         connectivityRepository
     )
+
+    @Provides
+    fun providesLogOutUseCase(
+        sessionRepository: SessionRepository,
+        accountRepository: AccountRepository,
+        moviePageRepository: MoviePageRepository
+    ): LogOutUseCase = LogOutUseCase(sessionRepository, accountRepository, moviePageRepository)
 }

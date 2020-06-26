@@ -138,11 +138,15 @@ class MainNavigator : MovieListNavigator,
     }
 
     override fun navigateBack() {
-        navController?.popBackStack()
+        navController?.popBackStack(R.id.user_account_nav, true)
     }
 
     override fun navigateToUserAccount() {
         navController?.navigate(LoginFragmentDirections.toAccountFragment())
+    }
+
+    override fun navigateHome() {
+        navController?.popBackStack()
     }
 
     override fun navigateToFavorites() {

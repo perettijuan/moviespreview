@@ -5,6 +5,7 @@ import com.jpp.mp.common.viewmodel.ViewModelAssistedFactory
 import com.jpp.mpdomain.usecase.GetUserAccountMoviePageUseCase
 import com.jpp.mpdomain.usecase.GetUserAccountMoviesUseCase
 import com.jpp.mpdomain.usecase.GetUserAccountUseCase
+import com.jpp.mpdomain.usecase.LogOutUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
@@ -15,6 +16,7 @@ import javax.inject.Inject
 class UserAccountViewModelFactory @Inject constructor(
     private val getUserAccountUseCase: GetUserAccountUseCase,
     private val getMoviesUseCase: GetUserAccountMoviesUseCase,
+    private val logOutUseCase: LogOutUseCase,
     private val userAccountNavigator: UserAccountNavigator,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModelAssistedFactory<UserAccountViewModel> {
@@ -22,6 +24,7 @@ class UserAccountViewModelFactory @Inject constructor(
         return UserAccountViewModel(
             getUserAccountUseCase,
             getMoviesUseCase,
+            logOutUseCase,
             userAccountNavigator,
             ioDispatcher
         )
