@@ -9,6 +9,7 @@ import com.jpp.mpdomain.usecase.GetUserAccountMoviesUseCase
 import com.jpp.mpdomain.usecase.GetUserAccountUseCase
 import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -16,6 +17,13 @@ import kotlinx.coroutines.withContext
  * [ViewModel] to handle the state of the [UserAccountFragment].
  * It consumes data coming from the lower layers
  * and maps that data to view logic.
+ */
+/*
+ * TODO
+ *  1 - parallelize
+ *  2 - logout
+ *  3 - delete interactor
+ *  4 - fix tests
  */
 class UserAccountViewModel(
     private val getUserAccountUseCase: GetUserAccountUseCase,
@@ -37,27 +45,9 @@ class UserAccountViewModel(
      * on it.
      */
     internal fun onInit() {
-        _headerViewState.value = UserAccountHeaderState.showLoading()
-        _bodyViewState.value = UserAccountBodyViewState.showLoading()
-        viewModelScope.launch {
-            val result = withContext(ioDispatcher) {
-                getUserAccountUseCase.execute()
-            }
-
-            when (result) {
-                is Try.Success -> processUserAccount(result.value)
-                is Try.Failure -> processFailureCause()
-            }
-
-            val moviesResult = withContext(ioDispatcher) {
-                getMoviesUseCase.execute(FIRST_PAGE)
-            }
-
-            when (moviesResult) {
-                is Try.Success -> processMoviesPageResult(moviesResult.value)
-                is Try.Failure -> processMoviesPageFailureCause(moviesResult.cause)
-            }
-        }
+        //launch in parallel
+        viewModelScope.launch { fetchUserAccountHeader() }
+        viewModelScope.launch { fetchUserAccountBody() }
     }
 
     /**
@@ -90,6 +80,33 @@ class UserAccountViewModel(
         navigator.navigateToWatchList()
     }
 
+    private suspend fun fetchUserAccountHeader() {
+        _headerViewState.value = UserAccountHeaderState.showLoading()
+        val result = withContext(ioDispatcher) {
+            delay(5000)
+            getUserAccountUseCase.execute()
+        }
+
+        when (result) {
+            is Try.Success -> processUserAccount(result.value)
+            is Try.Failure -> _headerViewState.value = _headerViewState.value?.hide()
+        }
+    }
+
+    private suspend fun fetchUserAccountBody() {
+        _bodyViewState.value = UserAccountBodyViewState.showLoading()
+
+        val moviesResult = withContext(ioDispatcher) {
+            getMoviesUseCase.execute(FIRST_PAGE)
+        }
+
+        when (moviesResult) {
+            is Try.Success -> processMoviesPageResult(moviesResult.value)
+            is Try.Failure -> processMoviesPageFailureCause(moviesResult.cause)
+        }
+    }
+
+
     private fun processUserAccount(account: UserAccount) {
         _headerViewState.value = _headerViewState.value?.withAvatar(
             userName = account.getUserName(),
@@ -97,10 +114,6 @@ class UserAccountViewModel(
             avatarUrl = account.avatar.getFulUrl(),
             avatarCallback = { userAvatarCallback(account) }
         )
-    }
-
-    private fun processFailureCause() {
-        _headerViewState.value = _headerViewState.value?.hide()
     }
 
     private fun userAvatarCallback(account: UserAccount) {
