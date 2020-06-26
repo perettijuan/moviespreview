@@ -20,7 +20,6 @@ import kotlinx.coroutines.withContext
  */
 /*
  * TODO
- *  2 - logout
  *  3 - delete interactor
  *  4 - fix tests
  */

@@ -20,7 +20,7 @@ internal data class UserAccountHeaderState(
         avatarUrl: String,
         avatarCallback: (() -> Unit)
     ) = UserAccountHeaderState(
-        visibility = View.INVISIBLE,
+        visibility = View.VISIBLE,
         userName = userName,
         accountName = accountName,
         avatarViewState = avatarViewState.createAvatar(avatarUrl, avatarCallback)
