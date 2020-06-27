@@ -1,26 +1,24 @@
 package com.jpp.mpaccount.account.lists
 
 import android.view.View
-import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.common.navigation.Destination
-import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent
+import androidx.lifecycle.SavedStateHandle
+import com.jpp.mpdomain.AccountMovieType
 import com.jpp.mpdomain.Movie
-import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import com.jpp.mpdomain.MoviePage
+import com.jpp.mpdomain.usecase.GetUserAccountMoviePageUseCase
+import com.jpp.mpdomain.usecase.Try
 import com.jpp.mptestutils.CoroutineTestExtension
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
-import io.mockk.every
-import io.mockk.impl.annotations.MockK
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.fail
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments.arguments
@@ -28,47 +26,47 @@ import org.junit.jupiter.params.provider.MethodSource
 
 @ExperimentalCoroutinesApi
 @ExtendWith(
-        MockKExtension::class,
-        InstantTaskExecutorExtension::class,
-        CoroutineTestExtension::class
+    MockKExtension::class,
+    InstantTaskExecutorExtension::class,
+    CoroutineTestExtension::class
 )
 class UserMovieListViewModelTest {
 
     @RelaxedMockK
-    private lateinit var userMovieListInteractor: UserMovieListInteractor
-    @MockK
-    private lateinit var imagesPathInteractor: ImagesPathInteractor
+    private lateinit var getMoviesUseCase: GetUserAccountMoviePageUseCase
 
-    private val lvInteractorEvents = MutableLiveData<UserMovieListEvent>()
+    @RelaxedMockK
+    private lateinit var navigator: UserMovieListNavigator
 
     private lateinit var subject: UserMovieListViewModel
 
     @BeforeEach
     fun setUp() {
-        every { userMovieListInteractor.userAccountEvents } returns lvInteractorEvents
-
         subject = UserMovieListViewModel(
-                userMovieListInteractor,
-                imagesPathInteractor
+            getMoviesUseCase,
+            navigator,
+            CoroutineTestExtension.testDispatcher,
+            SavedStateHandle()
         )
-
-        /*
-         * Since the ViewModel uses a MediatorLiveData, we need to have
-         * an observer on the view states attached all the time in order
-         * to get notifications.
-         */
-        subject.viewState.observeForever { }
     }
 
     @ParameterizedTest
     @MethodSource("userMovieListTestParams")
-    fun `Should post no connectivity error when disconnected`(param: UserMovieListParam) {
+    fun `Should post no connectivity error when disconnected`(
+        uiType: UserMovieListType,
+        domainType: AccountMovieType
+    ) {
         var viewStatePosted: UserMovieListViewState? = null
 
-        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
-        subject.onInit(param)
+        coEvery {
+            getMoviesUseCase.execute(
+                any(),
+                domainType
+            )
+        } returns Try.Failure(Try.FailureCause.NoConnectivity)
 
-        lvInteractorEvents.postValue(UserMovieListEvent.NotConnectedToNetwork)
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+        subject.onInit(uiType)
 
         assertNotNull(viewStatePosted)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
@@ -80,33 +78,46 @@ class UserMovieListViewModelTest {
 
     @ParameterizedTest
     @MethodSource("userMovieListTestParams")
-    fun `Should retry to fetch data when not connected and retry is executed`(param: UserMovieListParam) {
+    fun `Should retry to fetch data when not connected and retry is executed`(
+        uiType: UserMovieListType,
+        domainType: AccountMovieType
+    ) {
         var viewStatePosted: UserMovieListViewState? = null
+
+        coEvery {
+            getMoviesUseCase.execute(
+                any(),
+                domainType
+            )
+        } returns Try.Failure(Try.FailureCause.NoConnectivity)
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInit(param)
-        lvInteractorEvents.postValue(UserMovieListEvent.NotConnectedToNetwork)
+        subject.onInit(uiType)
 
         viewStatePosted?.let {
             it.errorViewState.errorHandler?.invoke()
-            when (param.section) {
-                UserMovieListType.FAVORITE_LIST -> verify(exactly = 2) { userMovieListInteractor.fetchFavoriteMovies(any(), any()) }
-                UserMovieListType.RATED_LIST -> verify(exactly = 2) { userMovieListInteractor.fetchRatedMovies(any(), any()) }
-                UserMovieListType.WATCH_LIST -> verify(exactly = 2) { userMovieListInteractor.fetchWatchlist(any(), any()) }
-            }
+            coVerify(exactly = 2) { getMoviesUseCase.execute(1, domainType) }
         } ?: fail()
     }
 
     @ParameterizedTest
     @MethodSource("userMovieListTestParams")
-    fun `Should post error when failing to fetch user account data`(param: UserMovieListParam) {
+    fun `Should post unknown error`(
+        uiType: UserMovieListType,
+        domainType: AccountMovieType
+    ) {
         var viewStatePosted: UserMovieListViewState? = null
 
-        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
-        subject.onInit(param)
+        coEvery {
+            getMoviesUseCase.execute(
+                any(),
+                domainType
+            )
+        } returns Try.Failure(Try.FailureCause.Unknown)
 
-        lvInteractorEvents.postValue(UserMovieListEvent.UnknownError)
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+        subject.onInit(uiType)
 
         assertNotNull(viewStatePosted)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
@@ -118,46 +129,49 @@ class UserMovieListViewModelTest {
 
     @ParameterizedTest
     @MethodSource("userMovieListTestParams")
-    fun `Should retry to fetch data when error unknown and retry is executed`(param: UserMovieListParam) {
+    fun `Should retry to fetch data when error unknown and retry is executed`(
+        uiType: UserMovieListType,
+        domainType: AccountMovieType
+    ) {
         var viewStatePosted: UserMovieListViewState? = null
 
-        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
-        subject.onInit(param)
+        coEvery {
+            getMoviesUseCase.execute(
+                any(),
+                domainType
+            )
+        } returns Try.Failure(Try.FailureCause.Unknown)
 
-        lvInteractorEvents.postValue(UserMovieListEvent.UnknownError)
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+
+        subject.onInit(uiType)
 
         viewStatePosted?.let {
             it.errorViewState.errorHandler?.invoke()
-            when (param.section) {
-                UserMovieListType.FAVORITE_LIST -> verify(exactly = 2) { userMovieListInteractor.fetchFavoriteMovies(any(), any()) }
-                UserMovieListType.RATED_LIST -> verify(exactly = 2) { userMovieListInteractor.fetchRatedMovies(any(), any()) }
-                UserMovieListType.WATCH_LIST -> verify(exactly = 2) { userMovieListInteractor.fetchWatchlist(any(), any()) }
-            }
+            coVerify(exactly = 2) { getMoviesUseCase.execute(1, domainType) }
         } ?: fail()
     }
 
-    /*
-     * TODO I need to check exactly what's happening with this UT. Don't want to waste
-     *  time since I'm going to refactor by eliminating the interactor layers.
-     */
-    @Disabled
     @ParameterizedTest
     @MethodSource("userMovieListTestParams")
-    fun `Should fetch movies, adapt result to UI and post value`(param: UserMovieListParam) {
+    fun `Should fetch movies, adapt result to UI and post value`(
+        uiType: UserMovieListType,
+        domainType: AccountMovieType
+    ) {
         var viewStatePosted: UserMovieListViewState? = null
         val mockedList = getMockedMovies()
-        val slot = slot<(List<Movie>) -> Unit>()
+        val moviePage = MoviePage(
+            page = 1,
+            results = mockedList,
+            total_results = 10,
+            total_pages = 500
+        )
 
-        when (param.section) {
-            UserMovieListType.FAVORITE_LIST -> every { userMovieListInteractor.fetchFavoriteMovies(any(), capture(slot)) } answers { slot.captured.invoke(mockedList) }
-            UserMovieListType.RATED_LIST -> every { userMovieListInteractor.fetchRatedMovies(any(), capture(slot)) } answers { slot.captured.invoke(mockedList) }
-            UserMovieListType.WATCH_LIST -> every { userMovieListInteractor.fetchWatchlist(any(), capture(slot)) } answers { slot.captured.invoke(mockedList) }
-        }
-        every { imagesPathInteractor.configurePathMovie(any(), any(), any()) } answers { arg(2) }
+        coEvery { getMoviesUseCase.execute(1, domainType) } returns Try.Success(moviePage)
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
-        subject.onInit(param)
+        subject.onInit(uiType)
 
         assertNotNull(viewStatePosted)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
@@ -165,68 +179,46 @@ class UserMovieListViewModelTest {
 
         assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.visibility)
         assertEquals(mockedList.size, viewStatePosted?.contentViewState?.movieList?.size)
-
-        when (param.section) {
-            UserMovieListType.FAVORITE_LIST -> verify { userMovieListInteractor.fetchFavoriteMovies(any(), any()) }
-            UserMovieListType.RATED_LIST -> verify { userMovieListInteractor.fetchRatedMovies(any(), any()) }
-            UserMovieListType.WATCH_LIST -> verify { userMovieListInteractor.fetchWatchlist(any(), any()) }
-        }
-        verify(exactly = mockedList.size) { imagesPathInteractor.configurePathMovie(10, 10, any()) }
     }
 
-    @ParameterizedTest
-    @MethodSource("userMovieListTestParams")
-    fun `Should update reached destination in onInit`(param: UserMovieListParam) {
-        var destinationReached: Destination? = null
-        val expected = Destination.ReachedDestination(param.screenTitle)
 
-        subject.destinationEvents.observeWith { destinationReached = it }
-
-        subject.onInit(param)
-
-        assertEquals(expected, destinationReached)
-    }
-
-    @ParameterizedTest
-    @MethodSource("userMovieListTestParams")
-    fun `Should request navigation to movie details when movie item selected`(param: UserMovieListParam) {
+    @Test
+    fun `Should request navigation to movie details when movie item selected`() {
         val movieItem = UserMovieItem(
-                movieId = 10.0,
-                headerImageUrl = "aHeaderImageUrl",
-                title = "aTitle",
-                contentImageUrl = "aContentPath"
+            movieId = 10.0,
+            headerImageUrl = "aHeaderImageUrl",
+            title = "aTitle",
+            contentImageUrl = "aContentPath"
         )
 
-        val expectedDestination = Destination.MPMovieDetails(
-                movieId = "10.0",
-                movieImageUrl = "aContentPath",
-                movieTitle = "aTitle")
-
-        var requestedDestination: Destination? = null
-
-        subject.navigationEvents.observeWith { it.actionIfNotHandled { dest -> requestedDestination = dest } }
         subject.onMovieSelected(movieItem)
 
-        assertEquals(expectedDestination, requestedDestination)
+        verify {
+            navigator.navigateToMovieDetails(
+                movieId = "10.0",
+                movieImageUrl = "aContentPath",
+                movieTitle = "aTitle"
+            )
+        }
     }
 
     private fun getMockedMovies(): List<Movie> {
         return mutableListOf<Movie>().apply {
             for (i in 0..50) {
                 add(
-                        Movie(
-                                id = i.toDouble(),
-                                title = "titleRes$i",
-                                original_language = "oTitle$i",
-                                overview = "overview$i",
-                                release_date = "releaseDate$i",
-                                original_title = "originalLanguage$i",
-                                poster_path = "posterPath$i",
-                                backdrop_path = "backdropPath$i",
-                                vote_count = i.toDouble(),
-                                vote_average = i.toFloat(),
-                                popularity = i.toFloat()
-                        )
+                    Movie(
+                        id = i.toDouble(),
+                        title = "titleRes$i",
+                        original_language = "oTitle$i",
+                        overview = "overview$i",
+                        release_date = "releaseDate$i",
+                        original_title = "originalLanguage$i",
+                        poster_path = "posterPath$i",
+                        backdrop_path = "backdropPath$i",
+                        vote_count = i.toDouble(),
+                        vote_average = i.toFloat(),
+                        popularity = i.toFloat()
+                    )
                 )
             }
         }
@@ -236,9 +228,9 @@ class UserMovieListViewModelTest {
 
         @JvmStatic
         fun userMovieListTestParams() = listOf(
-                arguments(UserMovieListParam(UserMovieListType.FAVORITE_LIST, "Favorites", 10, 10)),
-                arguments(UserMovieListParam(UserMovieListType.RATED_LIST, "Rated", 10, 10)),
-                arguments(UserMovieListParam(UserMovieListType.WATCH_LIST, "Watchlist", 10, 10))
+            arguments(UserMovieListType.FAVORITE_LIST, AccountMovieType.Favorite),
+            arguments(UserMovieListType.RATED_LIST, AccountMovieType.Rated),
+            arguments(UserMovieListType.WATCH_LIST, AccountMovieType.Watchlist)
         )
     }
 }
