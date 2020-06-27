@@ -58,9 +58,6 @@ dependencies {
     implementation deps.android.arch.navigation.fragment
     implementation deps.android.arch.navigation.ui
 
-    // Paging library
-    implementation deps.androidx.paging
-
     // Junit 5
     testImplementation deps.test.junit5.jupiter.api
     testImplementation deps.test.junit5.jupiter.params

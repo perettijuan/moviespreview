@@ -87,9 +87,6 @@ dependencies {
     implementation deps.androidx.lifecycle.extensions
     kapt deps.androidx.lifecycle.compiler
 
-    // Paging library
-    implementation deps.androidx.paging
-
     // Dagger
     implementation deps.dagger.dagger
     implementation deps.dagger.android

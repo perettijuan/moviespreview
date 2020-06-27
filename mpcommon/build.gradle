@@ -33,8 +33,6 @@ dependencies {
     implementation deps.androidx.lifecycle.extensions
     kapt deps.androidx.lifecycle.compiler
 
-    // Paging library
-    implementation deps.androidx.paging
 
     // Navigation Components
     implementation deps.android.arch.navigation.fragment
