@@ -160,6 +160,15 @@ sealed class MovieSection(val name: String) {
 }
 
 /**
+ * Represents the type of movies associated with a user account.
+ */
+sealed class AccountMovieType(val name: String) {
+    object Favorite : AccountMovieType("favorite")
+    object Watchlist : AccountMovieType("watchlist")
+    object Rated : AccountMovieType("rated")
+}
+
+/**
  * Represents a page of results of a searchFirstPage retrieved from the backend.
  * [page] - the page number.
  * [results] - the list of [SearchResult] contained by the page.

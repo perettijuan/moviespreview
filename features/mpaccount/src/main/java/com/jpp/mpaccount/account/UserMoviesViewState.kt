@@ -1,5 +1,6 @@
 package com.jpp.mpaccount.account
 
+import android.view.View
 import com.jpp.mpaccount.R
 
 /**
@@ -7,29 +8,34 @@ import com.jpp.mpaccount.R
  * the favorite list, in the rated list and/or in the watchlist.
  */
 internal data class UserMoviesViewState(
+    val visibility: Int = View.INVISIBLE,
     val errorText: Int = 0,
     val items: List<UserMovieItem>? = null
 ) {
     companion object {
-
         fun createFavoriteEmpty() = UserMoviesViewState(
+            visibility =  View.VISIBLE,
             errorText = R.string.user_account_no_favorite_movies
         )
 
         fun createRatedEmpty() = UserMoviesViewState(
+            visibility =  View.VISIBLE,
             errorText = R.string.user_account_no_rated_movies
         )
 
         fun createWatchlistEmpty() = UserMoviesViewState(
+            visibility =  View.VISIBLE,
             errorText = R.string.user_account_no_watchlist_movies
         )
 
-        fun createWithItems(items: List<UserMovieItem>) = UserMoviesViewState(
-            items = items
+        fun createError() = UserMoviesViewState(
+            visibility =  View.VISIBLE,
+            errorText = R.string.user_account_favorite_movies_error
         )
 
-        fun createError() = UserMoviesViewState(
-            errorText = R.string.user_account_favorite_movies_error
+        fun createWithItems(items: List<UserMovieItem>) = UserMoviesViewState(
+            visibility =  View.VISIBLE,
+            items = items
         )
     }
 }

@@ -163,4 +163,45 @@ class DomainLayerModule {
     ): LoginUseCase = LoginUseCase(
         sessionRepository, connectivityRepository
     )
+
+    @Provides
+    fun providesGetUserAccountMoviePageUseCase(
+        moviePageRepository: MoviePageRepository,
+        sessionRepository: SessionRepository,
+        accountRepository: AccountRepository,
+        configurationRepository: ConfigurationRepository,
+        languageRepository: LanguageRepository,
+        connectivityRepository: ConnectivityRepository
+    ): GetUserAccountMoviePageUseCase = GetUserAccountMoviePageUseCase(
+        moviePageRepository,
+        sessionRepository,
+        accountRepository,
+        configurationRepository,
+        languageRepository,
+        connectivityRepository
+    )
+
+    @Provides
+    fun providesGetUserAccountMoviesUseCase(
+        moviePageRepository: MoviePageRepository,
+        sessionRepository: SessionRepository,
+        accountRepository: AccountRepository,
+        configurationRepository: ConfigurationRepository,
+        languageRepository: LanguageRepository,
+        connectivityRepository: ConnectivityRepository
+    ): GetUserAccountMoviesUseCase = GetUserAccountMoviesUseCase(
+        moviePageRepository,
+        sessionRepository,
+        accountRepository,
+        configurationRepository,
+        languageRepository,
+        connectivityRepository
+    )
+
+    @Provides
+    fun providesLogOutUseCase(
+        sessionRepository: SessionRepository,
+        accountRepository: AccountRepository,
+        moviePageRepository: MoviePageRepository
+    ): LogOutUseCase = LogOutUseCase(sessionRepository, accountRepository, moviePageRepository)
 }
