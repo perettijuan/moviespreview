@@ -58,9 +58,6 @@ dependencies {
     implementation deps.android.arch.navigation.fragment
     implementation deps.android.arch.navigation.ui
 
-    // Paging library
-    implementation deps.androidx.paging
-
     // Custom tabs
     implementation "androidx.browser:browser:1.0.0"
 
