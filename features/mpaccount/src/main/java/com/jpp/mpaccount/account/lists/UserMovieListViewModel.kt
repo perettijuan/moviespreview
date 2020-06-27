@@ -1,9 +1,6 @@
 package com.jpp.mpaccount.account.lists
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.jpp.mpdomain.AccountMovieType
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
@@ -25,15 +22,21 @@ import kotlinx.coroutines.withContext
 class UserMovieListViewModel(
     private val getMoviesUseCase: GetUserAccountMoviePageUseCase,
     private val navigator: UserMovieListNavigator,
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _viewState = MutableLiveData<UserMovieListViewState>()
     internal val viewState: LiveData<UserMovieListViewState> = _viewState
 
-    private var currentPage: Int = FIRST_PAGE
-    private lateinit var listType: UserMovieListType
+    private var currentPage: Int
+        set(value) = savedStateHandle.set(CURRENT_PAGE_KEY, value)
+        get() = savedStateHandle.get(CURRENT_PAGE_KEY) ?: FIRST_PAGE
 
+    private var listType: UserMovieListType
+        set(value) = savedStateHandle.set(MOVIE_LIST_TYPE, value)
+        get() = savedStateHandle.get(MOVIE_LIST_TYPE)
+            ?: throw IllegalStateException("list type not initialized yet")
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
      * indicate that it is ready to start rendering. When the method is called, the VM
@@ -99,7 +102,7 @@ class UserMovieListViewModel(
                 _viewState.value?.showUnknownError {
                     fetchMoviePage(currentPage, listType)
                 }
-             is Try.FailureCause.UserNotLogged -> navigator.navigateHome()
+            is Try.FailureCause.UserNotLogged -> navigator.navigateHome()
         }
     }
 
@@ -117,6 +120,8 @@ class UserMovieListViewModel(
     )
 
     private companion object {
+        const val CURRENT_PAGE_KEY = "CURRENT_PAGE_KEY"
+        const val MOVIE_LIST_TYPE = "MOVIE_LIST_TYPE"
         const val FIRST_PAGE = 1
     }
 }

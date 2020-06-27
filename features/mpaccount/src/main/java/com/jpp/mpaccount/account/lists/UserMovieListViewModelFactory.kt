@@ -16,6 +16,6 @@ class UserMovieListViewModelFactory @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModelAssistedFactory<UserMovieListViewModel> {
     override fun create(handle: SavedStateHandle): UserMovieListViewModel {
-        return UserMovieListViewModel(getMoviesUseCase, navigator, ioDispatcher)
+        return UserMovieListViewModel(getMoviesUseCase, navigator, ioDispatcher, handle)
     }
 }

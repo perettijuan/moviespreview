@@ -16,7 +16,8 @@ internal data class UserMovieListViewState(
     fun showMovieList(movieList: List<UserMovieItem>): UserMovieListViewState =
         copy(
             loadingVisibility = View.INVISIBLE,
-            contentViewState = contentViewState.showMovieList(movieList)
+            contentViewState = contentViewState.showMovieList(movieList),
+            errorViewState = ErrorViewState.asNotVisible()
         )
 
     fun showNoConnectivityError(errorHandler: () -> Unit): UserMovieListViewState =
