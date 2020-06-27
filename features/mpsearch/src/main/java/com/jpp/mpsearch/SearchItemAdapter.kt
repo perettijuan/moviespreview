@@ -4,12 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.jpp.mpdesign.adapters.MPRecyclerViewAdapter
 import com.jpp.mpsearch.databinding.ListItemSearchBinding
 
 internal class SearchItemAdapter(private val searchSelectionListener: (SearchResultItem) -> Unit) :
-    RecyclerView.Adapter<SearchItemAdapter.ViewHolder>() {
-
-    private var itemList = ArrayList<SearchResultItem>()
+    MPRecyclerViewAdapter<SearchResultItem, SearchItemAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -23,16 +22,7 @@ internal class SearchItemAdapter(private val searchSelectionListener: (SearchRes
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bindSearchItem(itemList[position], searchSelectionListener)
-    }
-
-    override fun getItemCount(): Int = itemList.size
-
-    fun submitList(newData: List<SearchResultItem>) {
-        val currentLastIndex = itemList.size
-        itemList.clear()
-        itemList.addAll(newData)
-        notifyItemRangeChanged(currentLastIndex, itemList.size)
+        holder.bindSearchItem(getItem(position), searchSelectionListener)
     }
 
     class ViewHolder(private val itemBinding: ListItemSearchBinding) :
