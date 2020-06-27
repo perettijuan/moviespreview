@@ -8,6 +8,8 @@ import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.UserAvatar
 import com.jpp.mpdomain.interactors.ImagesPathInteractor
+import com.jpp.mpdomain.usecase.GetUserAccountMoviesUseCase
+import com.jpp.mpdomain.usecase.GetUserAccountUseCase
 import com.jpp.mptestutils.CoroutineTestExtension
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
@@ -32,9 +34,9 @@ import org.junit.jupiter.api.extension.ExtendWith
 class UserAccountViewModelTest {
 
     @RelaxedMockK
-    private lateinit var accountInteractor: UserAccountInteractor
+    private lateinit var getUserAccountUseCase: GetUserAccountUseCase
     @RelaxedMockK
-    private lateinit var imagesPathInteractor: ImagesPathInteractor
+    private lateinit var getMoviesUseCase: GetUserAccountMoviesUseCase
     @RelaxedMockK
     private lateinit var userAccountNavigator: UserAccountNavigator
 
