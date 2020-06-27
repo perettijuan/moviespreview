@@ -13,7 +13,6 @@ import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * [MPViewModel] used to support the user's movie list section of the application.
@@ -24,7 +23,7 @@ import javax.inject.Inject
  * VM is notified about such event and executes a refresh of both: the data stored by the application
  * and the view state being shown to the user.
  */
-class UserMovieListViewModel @Inject constructor(
+class UserMovieListViewModel(
     private val getMoviesUseCase: GetUserAccountMoviePageUseCase,
     private val ioDispatcher: CoroutineDispatcher
 ) : MPViewModel() {
