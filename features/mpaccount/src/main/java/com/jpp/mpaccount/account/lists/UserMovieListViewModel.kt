@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mpdomain.AccountMovieType
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
@@ -15,7 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * [MPViewModel] used to support the user's movie list section of the application.
+ * [ViewModel] used to support the user's movie list section of the application.
  * Produces different [UserMovieListViewState] that represents the entire configuration of the screen at any
  * given moment.
  *
@@ -25,6 +24,7 @@ import kotlinx.coroutines.withContext
  */
 class UserMovieListViewModel(
     private val getMoviesUseCase: GetUserAccountMoviePageUseCase,
+    private val navigator: UserMovieListNavigator,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
@@ -60,16 +60,11 @@ class UserMovieListViewModel(
      * A new state is posted in navEvents() in order to handle the event.
      */
     internal fun onMovieSelected(movieItem: UserMovieItem) {
-        //TODO
-//        with(movieItem) {
-//            navigateTo(
-//                Destination.MPMovieDetails(
-//                    movieId = movieId.toString(),
-//                    movieImageUrl = contentImageUrl,
-//                    movieTitle = title
-//                )
-//            )
-//        }
+        navigator.navigateToMovieDetails(
+            movieId = movieItem.movieId.toString(),
+            movieImageUrl = movieItem.contentImageUrl,
+            movieTitle = movieItem.title
+        )
     }
 
     private fun fetchMoviePage(
@@ -104,7 +99,7 @@ class UserMovieListViewModel(
                 _viewState.value?.showUnknownError {
                     fetchMoviePage(currentPage, listType)
                 }
-           // is Try.FailureCause.UserNotLogged -> //TODO navigateTo(Destination.PreviousDestination)
+             is Try.FailureCause.UserNotLogged -> navigator.navigateHome()
         }
     }
 

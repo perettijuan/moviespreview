@@ -9,6 +9,7 @@ import com.jpp.mpabout.AboutFragmentDirections
 import com.jpp.mpabout.AboutNavigator
 import com.jpp.mpaccount.account.UserAccountFragmentDirections
 import com.jpp.mpaccount.account.UserAccountNavigator
+import com.jpp.mpaccount.account.lists.UserMovieListNavigator
 import com.jpp.mpaccount.account.lists.UserMovieListType
 import com.jpp.mpaccount.login.LoginFragmentDirections
 import com.jpp.mpaccount.login.LoginNavigator
@@ -32,7 +33,8 @@ class MainNavigator : MovieListNavigator,
     SearchNavigator,
     AboutNavigator,
     LoginNavigator,
-    UserAccountNavigator {
+    UserAccountNavigator,
+    UserMovieListNavigator {
 
     private var navController: NavController? = null
     private var mainToSearchDelegate: MainToSearchNavigationDelegate? = null
