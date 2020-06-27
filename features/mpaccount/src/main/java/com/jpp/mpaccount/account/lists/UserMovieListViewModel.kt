@@ -2,9 +2,9 @@ package com.jpp.mpaccount.account.lists
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.coroutines.MPViewModel
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.AccountMovieType
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
@@ -26,13 +26,13 @@ import kotlinx.coroutines.withContext
 class UserMovieListViewModel(
     private val getMoviesUseCase: GetUserAccountMoviePageUseCase,
     private val ioDispatcher: CoroutineDispatcher
-) : MPViewModel() {
+) : ViewModel() {
 
     private val _viewState = MutableLiveData<UserMovieListViewState>()
     internal val viewState: LiveData<UserMovieListViewState> = _viewState
 
     private var currentPage: Int = FIRST_PAGE
-    private lateinit var currentParam: UserMovieListParam
+    private lateinit var listType: UserMovieListType
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -40,12 +40,11 @@ class UserMovieListViewModel(
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    internal fun onInit(param: UserMovieListParam) {
+    internal fun onInit(listType: UserMovieListType) {
         currentPage = FIRST_PAGE
-        currentParam = param
-        updateCurrentDestination(Destination.ReachedDestination(param.screenTitle))
-        _viewState.value = UserMovieListViewState.showLoading()
-        fetchMoviePage(currentPage, param.section)
+        this.listType = listType
+        _viewState.value = UserMovieListViewState.showLoading(listType.titleRes)
+        fetchMoviePage(currentPage, listType)
     }
 
     /**
@@ -53,7 +52,7 @@ class UserMovieListViewModel(
      */
     internal fun onNextPageRequested() {
         val nextPage = currentPage + 1
-        fetchMoviePage(nextPage, currentParam.section)
+        fetchMoviePage(nextPage, listType)
     }
 
     /**
@@ -61,15 +60,16 @@ class UserMovieListViewModel(
      * A new state is posted in navEvents() in order to handle the event.
      */
     internal fun onMovieSelected(movieItem: UserMovieItem) {
-        with(movieItem) {
-            navigateTo(
-                Destination.MPMovieDetails(
-                    movieId = movieId.toString(),
-                    movieImageUrl = contentImageUrl,
-                    movieTitle = title
-                )
-            )
-        }
+        //TODO
+//        with(movieItem) {
+//            navigateTo(
+//                Destination.MPMovieDetails(
+//                    movieId = movieId.toString(),
+//                    movieImageUrl = contentImageUrl,
+//                    movieTitle = title
+//                )
+//            )
+//        }
     }
 
     private fun fetchMoviePage(
@@ -98,13 +98,13 @@ class UserMovieListViewModel(
         when (cause) {
             is Try.FailureCause.NoConnectivity -> _viewState.value =
                 _viewState.value?.showNoConnectivityError {
-                    fetchMoviePage(currentPage, currentParam.section)
+                    fetchMoviePage(currentPage, listType)
                 }
             is Try.FailureCause.Unknown -> _viewState.value =
                 _viewState.value?.showUnknownError {
-                    fetchMoviePage(currentPage, currentParam.section)
+                    fetchMoviePage(currentPage, listType)
                 }
-            is Try.FailureCause.UserNotLogged -> navigateTo(Destination.PreviousDestination)
+           // is Try.FailureCause.UserNotLogged -> //TODO navigateTo(Destination.PreviousDestination)
         }
     }
 

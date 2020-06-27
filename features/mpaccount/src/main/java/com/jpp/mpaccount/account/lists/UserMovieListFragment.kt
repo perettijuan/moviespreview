@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.getScreenWidthInPixels
 import com.jpp.mp.common.extensions.observeValue
+import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.paging.MPVerticalPagingHandler
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mpaccount.R
@@ -64,14 +65,7 @@ class UserMovieListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpViews(view)
         viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
-        viewModel.onInit(
-            UserMovieListParam.fromArguments(
-                arguments,
-                resources,
-                getScreenWidthInPixels(),
-                getScreenWidthInPixels()
-            )
-        )
+        viewModel.onInit(UserMovieListType.fromArguments(arguments))
     }
 
     override fun onDestroyView() {
@@ -92,6 +86,7 @@ class UserMovieListFragment : Fragment() {
     }
 
     private fun renderViewState(viewState: UserMovieListViewState) {
+        setScreenTitle(getString(viewState.screenTitle))
         viewBinding?.viewState = viewState
         viewBinding?.executePendingBindings()
         (userMoviesList?.adapter as UserMoviesAdapter).submitList(viewState.contentViewState.movieList)
