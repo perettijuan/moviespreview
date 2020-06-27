@@ -1,6 +1,5 @@
 package com.jpp.mp.di
 
-import com.jpp.mpdomain.interactors.ImagesPathInteractor
 import com.jpp.mpdomain.repository.*
 import com.jpp.mpdomain.usecase.*
 import dagger.Module
@@ -11,11 +10,6 @@ import dagger.Provides
  */
 @Module
 class DomainLayerModule {
-
-    @Provides
-    fun providesImagesPathInteractor(configurationRepository: ConfigurationRepository):
-            ImagesPathInteractor = ImagesPathInteractor.Impl(configurationRepository)
-
 
     @Provides
     fun providesConfigureMovieImagesPathUseCase(
