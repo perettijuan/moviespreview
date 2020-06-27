@@ -9,13 +9,15 @@ import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
  */
 internal data class UserMovieListViewState(
     val loadingVisibility: Int = View.INVISIBLE,
+    val screenTitle: Int = 0,
     val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
     val contentViewState: UserMovieListContentViewState = UserMovieListContentViewState()
 ) {
     fun showMovieList(movieList: List<UserMovieItem>): UserMovieListViewState =
         copy(
             loadingVisibility = View.INVISIBLE,
-            contentViewState = contentViewState.showMovieList(movieList)
+            contentViewState = contentViewState.showMovieList(movieList),
+            errorViewState = ErrorViewState.asNotVisible()
         )
 
     fun showNoConnectivityError(errorHandler: () -> Unit): UserMovieListViewState =
@@ -31,7 +33,8 @@ internal data class UserMovieListViewState(
         )
 
     companion object {
-        fun showLoading() = UserMovieListViewState(loadingVisibility = View.VISIBLE)
+        fun showLoading(screenTitle: Int) =
+            UserMovieListViewState(screenTitle = screenTitle, loadingVisibility = View.VISIBLE)
     }
 }
 

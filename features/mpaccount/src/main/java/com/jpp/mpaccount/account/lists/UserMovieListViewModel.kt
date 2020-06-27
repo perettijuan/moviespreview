@@ -1,10 +1,6 @@
 package com.jpp.mpaccount.account.lists
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPViewModel
-import com.jpp.mp.common.navigation.Destination
+import androidx.lifecycle.*
 import com.jpp.mpdomain.AccountMovieType
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
@@ -13,10 +9,9 @@ import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
- * [MPViewModel] used to support the user's movie list section of the application.
+ * [ViewModel] used to support the user's movie list section of the application.
  * Produces different [UserMovieListViewState] that represents the entire configuration of the screen at any
  * given moment.
  *
@@ -24,29 +19,35 @@ import javax.inject.Inject
  * VM is notified about such event and executes a refresh of both: the data stored by the application
  * and the view state being shown to the user.
  */
-class UserMovieListViewModel @Inject constructor(
+class UserMovieListViewModel(
     private val getMoviesUseCase: GetUserAccountMoviePageUseCase,
-    private val ioDispatcher: CoroutineDispatcher
-) : MPViewModel() {
+    private val navigator: UserMovieListNavigator,
+    private val ioDispatcher: CoroutineDispatcher,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
     private val _viewState = MutableLiveData<UserMovieListViewState>()
     internal val viewState: LiveData<UserMovieListViewState> = _viewState
 
-    private var currentPage: Int = FIRST_PAGE
-    private lateinit var currentParam: UserMovieListParam
+    private var currentPage: Int
+        set(value) = savedStateHandle.set(CURRENT_PAGE_KEY, value)
+        get() = savedStateHandle.get(CURRENT_PAGE_KEY) ?: FIRST_PAGE
 
+    private var listType: UserMovieListType
+        set(value) = savedStateHandle.set(MOVIE_LIST_TYPE, value)
+        get() = savedStateHandle.get(MOVIE_LIST_TYPE)
+            ?: throw IllegalStateException("list type not initialized yet")
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
      * indicate that it is ready to start rendering. When the method is called, the VM
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    internal fun onInit(param: UserMovieListParam) {
+    internal fun onInit(listType: UserMovieListType) {
         currentPage = FIRST_PAGE
-        currentParam = param
-        updateCurrentDestination(Destination.ReachedDestination(param.screenTitle))
-        _viewState.value = UserMovieListViewState.showLoading()
-        fetchMoviePage(currentPage, param.section)
+        this.listType = listType
+        _viewState.value = UserMovieListViewState.showLoading(listType.titleRes)
+        fetchMoviePage(currentPage, listType)
     }
 
     /**
@@ -54,7 +55,7 @@ class UserMovieListViewModel @Inject constructor(
      */
     internal fun onNextPageRequested() {
         val nextPage = currentPage + 1
-        fetchMoviePage(nextPage, currentParam.section)
+        fetchMoviePage(nextPage, listType)
     }
 
     /**
@@ -62,15 +63,11 @@ class UserMovieListViewModel @Inject constructor(
      * A new state is posted in navEvents() in order to handle the event.
      */
     internal fun onMovieSelected(movieItem: UserMovieItem) {
-        with(movieItem) {
-            navigateTo(
-                Destination.MPMovieDetails(
-                    movieId = movieId.toString(),
-                    movieImageUrl = contentImageUrl,
-                    movieTitle = title
-                )
-            )
-        }
+        navigator.navigateToMovieDetails(
+            movieId = movieItem.movieId.toString(),
+            movieImageUrl = movieItem.contentImageUrl,
+            movieTitle = movieItem.title
+        )
     }
 
     private fun fetchMoviePage(
@@ -99,13 +96,13 @@ class UserMovieListViewModel @Inject constructor(
         when (cause) {
             is Try.FailureCause.NoConnectivity -> _viewState.value =
                 _viewState.value?.showNoConnectivityError {
-                    fetchMoviePage(currentPage, currentParam.section)
+                    fetchMoviePage(currentPage, listType)
                 }
             is Try.FailureCause.Unknown -> _viewState.value =
                 _viewState.value?.showUnknownError {
-                    fetchMoviePage(currentPage, currentParam.section)
+                    fetchMoviePage(currentPage, listType)
                 }
-            is Try.FailureCause.UserNotLogged -> navigateTo(Destination.PreviousDestination)
+            is Try.FailureCause.UserNotLogged -> navigator.navigateHome()
         }
     }
 
@@ -123,6 +120,8 @@ class UserMovieListViewModel @Inject constructor(
     )
 
     private companion object {
+        const val CURRENT_PAGE_KEY = "CURRENT_PAGE_KEY"
+        const val MOVIE_LIST_TYPE = "MOVIE_LIST_TYPE"
         const val FIRST_PAGE = 1
     }
 }

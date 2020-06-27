@@ -4,6 +4,7 @@ import com.jpp.mp.main.MainNavigator
 import com.jpp.mp.main.movies.MovieListNavigator
 import com.jpp.mpabout.AboutNavigator
 import com.jpp.mpaccount.account.UserAccountNavigator
+import com.jpp.mpaccount.account.lists.UserMovieListNavigator
 import com.jpp.mpaccount.login.LoginNavigator
 import com.jpp.mpcredits.CreditNavigator
 import com.jpp.mpmoviedetails.MovieDetailsNavigator
@@ -46,4 +47,7 @@ class NavigationModule {
 
     @Provides
     fun providesUserAccountNavigator(mainNavigator: MainNavigator): UserAccountNavigator = mainNavigator
+
+    @Provides
+    fun providesUserMovieListNavigator(mainNavigator: MainNavigator): UserMovieListNavigator = mainNavigator
 }
