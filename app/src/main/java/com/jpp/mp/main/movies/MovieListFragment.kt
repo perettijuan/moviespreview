@@ -13,9 +13,8 @@ import com.jpp.mp.R
 import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.paging.MPVerticalPagingHandler
-import com.jpp.mp.databinding.FragmentMovieListBinding
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
-import com.jpp.mp.main.MainActivity
+import com.jpp.mp.databinding.FragmentMovieListBinding
 import com.jpp.mpdomain.MovieSection
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
@@ -44,7 +43,7 @@ abstract class MovieListFragment : Fragment() {
     @Inject
     lateinit var movieListViewModelFactory: MovieListViewModelFactory
 
-    private lateinit var viewBinding: FragmentMovieListBinding
+    private var viewBinding: FragmentMovieListBinding? = null
 
     private val viewModel: MovieListViewModel by viewModels {
         MPGenericSavedStateViewModelFactory(
@@ -85,7 +84,7 @@ abstract class MovieListFragment : Fragment() {
             container,
             false
         )
-        return viewBinding.root
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -99,6 +98,7 @@ abstract class MovieListFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        viewBinding = null
         movieListRv = null
         super.onDestroyView()
     }
@@ -148,7 +148,7 @@ abstract class MovieListFragment : Fragment() {
 
     private fun renderViewState(viewState: MovieListViewState) {
         setScreenTitle(viewState.screenTitle)
-        viewBinding.viewState = viewState
+        viewBinding?.viewState = viewState
         (movieListRv?.adapter as MoviesAdapter).updateDataList(viewState.contentViewState.movieList)
         movieListRv?.layoutManager?.onRestoreInstanceState(rvState)
     }

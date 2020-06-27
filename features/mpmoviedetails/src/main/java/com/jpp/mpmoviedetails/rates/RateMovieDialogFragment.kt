@@ -28,7 +28,7 @@ class RateMovieDialogFragment : DialogFragment() {
     @Inject
     lateinit var rateMovieViewModelFactory: RateMovieViewModelFactory
 
-    private lateinit var viewBinding: FragmentRateMovieBinding
+    private var viewBinding: FragmentRateMovieBinding? = null
 
     private val viewModel: RateMovieViewModel by viewModels {
         MPGenericSavedStateViewModelFactory(
@@ -53,7 +53,7 @@ class RateMovieDialogFragment : DialogFragment() {
     ): View? {
         viewBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_rate_movie, container, false)
-        return viewBinding.root
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,14 +68,15 @@ class RateMovieDialogFragment : DialogFragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
+        viewBinding = null
         rateBtn = null
         deleteRateBtn = null
         movieRatingBar = null
+        super.onDestroyView()
     }
 
     private fun renderViewState(viewState: RateMovieViewState) {
-        viewBinding.viewState = viewState
+        viewBinding?.viewState = viewState
     }
 
     private fun handleUserMessage(message: RateMovieEvent) {

@@ -33,7 +33,7 @@ class PersonFragment : Fragment() {
     @Inject
     lateinit var personViewModelFactory: PersonViewModelFactory
 
-    lateinit var viewBinding: FragmentPersonBinding
+    private var viewBinding: FragmentPersonBinding? = null
 
     private val viewModel: PersonViewModel by viewModels {
         MPGenericSavedStateViewModelFactory(
@@ -49,7 +49,7 @@ class PersonFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_person, container, false)
-        return viewBinding.root
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,8 +58,13 @@ class PersonFragment : Fragment() {
         viewModel.onInit(PersonParam.fromArguments(arguments))
     }
 
+    override fun onDestroyView() {
+        viewBinding = null
+        super.onDestroyView()
+    }
+
     private fun renderViewState(viewState: PersonViewState) {
         setScreenTitle(viewState.screenTitle)
-        viewBinding.viewState = viewState
+        viewBinding?.viewState = viewState
     }
 }

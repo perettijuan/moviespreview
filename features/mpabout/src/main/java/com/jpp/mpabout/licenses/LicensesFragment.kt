@@ -32,7 +32,7 @@ class LicensesFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: LicensesViewModelFactory
 
-    private lateinit var viewBinding: FragmentLicensesBinding
+    private var viewBinding: FragmentLicensesBinding? = null
 
     private val viewModel: LicensesViewModel by viewModels {
         MPGenericSavedStateViewModelFactory(
@@ -55,7 +55,7 @@ class LicensesFragment : Fragment() {
     ): View? {
         viewBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_licenses, container, false)
-        return viewBinding.root
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,13 +67,14 @@ class LicensesFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        viewBinding = null
         licensesRv = null
         super.onDestroyView()
     }
 
     private fun renderViewState(viewState: LicensesViewState) {
         setScreenTitle(getString(viewState.screenTitle))
-        viewBinding.viewState = viewState
+        viewBinding?.viewState = viewState
         licensesRv?.apply {
             layoutManager = LinearLayoutManager(context)
             adapter =

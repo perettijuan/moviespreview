@@ -50,7 +50,7 @@ class MovieDetailsFragment : Fragment() {
     @Inject
     lateinit var movieDetailsActionViewModelFactory: MovieDetailsActionViewModelFactory
 
-    private lateinit var viewBinding: FragmentMovieDetailsBinding
+    private var viewBinding: FragmentMovieDetailsBinding? = null
 
     private val viewModel: MovieDetailsViewModel by viewModels {
         MPGenericSavedStateViewModelFactory(
@@ -86,7 +86,7 @@ class MovieDetailsFragment : Fragment() {
     ): View? {
         viewBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_movie_details, container, false)
-        return viewBinding.root
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,6 +101,7 @@ class MovieDetailsFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        viewBinding = null
         detailsContent = null
         movieDetailFavoritesFab = null
         movieDetailWatchlistFab = null
@@ -120,31 +121,31 @@ class MovieDetailsFragment : Fragment() {
         movieDetailActionFab = view.findViewById(R.id.movieDetailActionFab)
         movieDetailActionsLoadingView = view.findViewById(R.id.movieDetailActionsLoadingView)
 
-        viewBinding.movieDetailActionFab.setOnClickListener { actionsViewModel.onMainActionSelected() }
-        viewBinding.movieDetailFavoritesFab.setOnClickListener { actionsViewModel.onFavoriteStateChanged() }
-        viewBinding.movieDetailWatchlistFab.setOnClickListener { actionsViewModel.onWatchlistStateChanged() }
-        viewBinding.detailCreditsSelectionView?.setOnClickListener { viewModel.onMovieCreditsSelected() }
-        viewBinding.movieDetailContent?.detailCreditsSelectionView?.setOnClickListener { viewModel.onMovieCreditsSelected() }
-        viewBinding.movieDetailRateFab.setOnClickListener { viewModel.onRateMovieSelected() }
-        viewBinding.movieDetailReloadActionFab.setOnClickListener { actionsViewModel.onRetry() }
+        viewBinding?.movieDetailActionFab?.setOnClickListener { actionsViewModel.onMainActionSelected() }
+        viewBinding?.movieDetailFavoritesFab?.setOnClickListener { actionsViewModel.onFavoriteStateChanged() }
+        viewBinding?.movieDetailWatchlistFab?.setOnClickListener { actionsViewModel.onWatchlistStateChanged() }
+        viewBinding?.detailCreditsSelectionView?.setOnClickListener { viewModel.onMovieCreditsSelected() }
+        viewBinding?.movieDetailContent?.detailCreditsSelectionView?.setOnClickListener { viewModel.onMovieCreditsSelected() }
+        viewBinding?.movieDetailRateFab?.setOnClickListener { viewModel.onRateMovieSelected() }
+        viewBinding?.movieDetailReloadActionFab?.setOnClickListener { actionsViewModel.onRetry() }
     }
 
     private fun renderViewState(viewState: MovieDetailViewState) {
         setScreenTitle(viewState.screenTitle)
 
-        viewBinding.viewState = viewState
-        viewBinding.executePendingBindings()
+        viewBinding?.viewState = viewState
+        viewBinding?.executePendingBindings()
 
         // horizontal
-        viewBinding.detailGenresRv?.layoutManager =
+        viewBinding?.detailGenresRv?.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        viewBinding.detailGenresRv?.adapter =
+        viewBinding?.detailGenresRv?.adapter =
             MovieDetailsGenreAdapter(viewState.contentViewState.genres)
 
         // vertical
-        viewBinding.movieDetailContent?.detailGenresRv?.layoutManager =
+        viewBinding?.movieDetailContent?.detailGenresRv?.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        viewBinding.movieDetailContent?.detailGenresRv?.adapter =
+        viewBinding?.movieDetailContent?.detailGenresRv?.adapter =
             MovieDetailsGenreAdapter(viewState.contentViewState.genres)
     }
 

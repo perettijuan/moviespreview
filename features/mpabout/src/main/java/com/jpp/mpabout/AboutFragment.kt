@@ -34,7 +34,7 @@ class AboutFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: AboutViewModelFactory
 
-    private lateinit var viewBinding: FragmentAboutBinding
+    private var viewBinding: FragmentAboutBinding? = null
 
     private val viewModel: AboutViewModel by viewModels {
         MPGenericSavedStateViewModelFactory(
@@ -50,7 +50,7 @@ class AboutFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_about, container, false)
-        return viewBinding.root
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,9 +60,14 @@ class AboutFragment : Fragment() {
         viewModel.onInit()
     }
 
+    override fun onDestroyView() {
+        viewBinding = null
+        super.onDestroyView()
+    }
+
     private fun renderViewState(viewState: AboutViewState) {
         setScreenTitle(getString(viewState.screenTitle))
-        viewBinding.viewState = viewState
+        viewBinding?.viewState = viewState
         aboutRv.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = AboutItemsAdapter(viewState.content.aboutItems) {viewModel.onUserSelectedAboutItem(it) }

@@ -27,7 +27,7 @@ class SearchFragment : Fragment() {
     @Inject
     lateinit var searchViewModelFactory: SearchViewModelFactory
 
-    private lateinit var viewBinding: SearchFragmentBinding
+    private var viewBinding: SearchFragmentBinding? = null
 
     private val viewModel: SearchViewModel by activityViewModels {
         MPGenericSavedStateViewModelFactory(
@@ -49,17 +49,17 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         viewBinding = DataBindingUtil.inflate(inflater, R.layout.search_fragment, container, false)
-        return viewBinding.root
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews(view)
-
         viewModel.contentViewState.observeValue(viewLifecycleOwner, ::renderViewState)
     }
 
     override fun onDestroyView() {
+        viewBinding = null
         searchResultRv = null
         super.onDestroyView()
     }
@@ -79,8 +79,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun renderViewState(viewState: SearchContentViewState) {
-        viewBinding.viewState = viewState
-
+        viewBinding?.viewState = viewState
         (searchResultRv?.adapter as SearchItemAdapter).submitList(viewState.contentViewState.searchResultList)
     }
 }

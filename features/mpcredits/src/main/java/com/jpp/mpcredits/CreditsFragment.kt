@@ -35,7 +35,7 @@ class CreditsFragment : Fragment() {
     @Inject
     lateinit var creditsViewModelFactory: CreditsViewModelFactory
 
-    private lateinit var viewBinding: CreditsFragmentBinding
+    private var viewBinding: CreditsFragmentBinding? = null
 
     private val viewModel: CreditsViewModel by viewModels {
         MPGenericSavedStateViewModelFactory(
@@ -62,7 +62,7 @@ class CreditsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         viewBinding = DataBindingUtil.inflate(inflater, R.layout.credits_fragment, container, false)
-        return viewBinding.root
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,6 +76,7 @@ class CreditsFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        viewBinding = null
         movieCreditsRv = null
         super.onDestroyView()
     }
@@ -108,8 +109,8 @@ class CreditsFragment : Fragment() {
         movieCreditsRv?.adapter = CreditsAdapter(viewState.creditsViewState.creditItems) {
             viewModel.onCreditItemSelected(it)
         }
-        viewBinding.viewState = viewState
-        viewBinding.executePendingBindings()
+        viewBinding?.viewState = viewState
+        viewBinding?.executePendingBindings()
     }
 
     private companion object {

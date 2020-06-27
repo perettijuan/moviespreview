@@ -30,7 +30,7 @@ class LicenseContentFragment : BottomSheetDialogFragment() {
     @Inject
     lateinit var viewModelFactory: LicenseContentViewModelFactory
 
-    lateinit var viewBinding: FragmentLicenseContentBinding
+    private var viewBinding: FragmentLicenseContentBinding? = null
 
     private val viewModel: LicenseContentViewModel by viewModels {
         MPGenericSavedStateViewModelFactory(
@@ -51,7 +51,7 @@ class LicenseContentFragment : BottomSheetDialogFragment() {
     ): View? {
         viewBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_license_content, container, false)
-        return viewBinding.root
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,8 +60,13 @@ class LicenseContentFragment : BottomSheetDialogFragment() {
         viewModel.onInit(getFragmentArgument("licenseIdKey"))
     }
 
+    override fun onDestroyView() {
+        viewBinding = null
+        super.onDestroyView()
+    }
+
     private fun renderViewState(viewState: LicenseContentViewState) {
-        viewBinding.viewState = viewState
+        viewBinding?.viewState = viewState
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

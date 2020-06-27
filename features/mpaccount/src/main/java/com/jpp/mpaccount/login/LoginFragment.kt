@@ -33,7 +33,7 @@ class LoginFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: LoginViewModelFactory
 
-    private lateinit var viewBinding: FragmentLoginBinding
+    private var viewBinding: FragmentLoginBinding? = null
 
     private val viewModel: LoginViewModel by viewModels {
         MPGenericSavedStateViewModelFactory(
@@ -49,7 +49,7 @@ class LoginFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
-        return viewBinding.root
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,9 +58,14 @@ class LoginFragment : Fragment() {
         viewModel.onInit()
     }
 
+    override fun onDestroyView() {
+        viewBinding = null
+        super.onDestroyView()
+    }
+
     private fun renderViewState(viewState: LoginViewState) {
         setScreenTitle(getString(viewState.screenTitle))
-        viewBinding.viewState = viewState
+        viewBinding?.viewState = viewState
         if (viewState.oauthViewState.reminder) {
             snackBarNoAction(loginContent, R.string.user_account_approve_reminder)
         }
