@@ -1,14 +1,10 @@
 package com.jpp.mpaccount.account.lists
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagedList
 import com.jpp.mp.common.coroutines.MPViewModel
 import com.jpp.mp.common.navigation.Destination
-import com.jpp.mp.common.paging.MPPagingDataSourceFactory
-import com.jpp.mpaccount.account.lists.UserMovieListInteractor.UserMovieListEvent.*
 import com.jpp.mpdomain.AccountMovieType
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
