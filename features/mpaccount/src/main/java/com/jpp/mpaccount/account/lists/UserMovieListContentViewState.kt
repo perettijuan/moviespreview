@@ -1,12 +1,17 @@
 package com.jpp.mpaccount.account.lists
 
 import android.view.View
-import androidx.paging.PagedList
+import com.jpp.mp.common.extensions.addList
 
 /**
  * Represents the view state of the content shown in the movie list view.
  */
 internal data class UserMovieListContentViewState(
     val visibility: Int = View.INVISIBLE,
-    val movieList: PagedList<UserMovieItem>? = null
-)
+    val movieList: List<UserMovieItem> = emptyList()
+) {
+    fun showMovieList(movies: List<UserMovieItem>): UserMovieListContentViewState = copy(
+        visibility = View.VISIBLE,
+        movieList = movieList.toMutableList().addList(movies)
+    )
+}

@@ -1,7 +1,6 @@
 package com.jpp.mpaccount.account.lists
 
 import android.view.View
-import androidx.paging.PagedList
 import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 
 /**
@@ -13,20 +12,26 @@ internal data class UserMovieListViewState(
     val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
     val contentViewState: UserMovieListContentViewState = UserMovieListContentViewState()
 ) {
+    fun showMovieList(movieList: List<UserMovieItem>): UserMovieListViewState =
+        copy(
+            loadingVisibility = View.INVISIBLE,
+            contentViewState = contentViewState.showMovieList(movieList)
+        )
+
+    fun showNoConnectivityError(errorHandler: () -> Unit): UserMovieListViewState =
+        copy(
+            loadingVisibility = View.INVISIBLE,
+            errorViewState = ErrorViewState.asConnectivity(errorHandler)
+        )
+
+    fun showUnknownError(errorHandler: () -> Unit): UserMovieListViewState =
+        copy(
+            loadingVisibility = View.INVISIBLE,
+            errorViewState = ErrorViewState.asUnknownError(errorHandler)
+        )
+
     companion object {
         fun showLoading() = UserMovieListViewState(loadingVisibility = View.VISIBLE)
-        fun showUnknownError(errorHandler: () -> Unit) =
-            UserMovieListViewState(errorViewState = ErrorViewState.asUnknownError(errorHandler))
-
-        fun showNoConnectivityError(errorHandler: () -> Unit) =
-            UserMovieListViewState(errorViewState = ErrorViewState.asConnectivity(errorHandler))
-
-        fun showMovieList(pagedList: PagedList<UserMovieItem>) = UserMovieListViewState(
-            contentViewState = UserMovieListContentViewState(
-                visibility = View.VISIBLE,
-                movieList = pagedList
-            )
-        )
     }
 }
 
