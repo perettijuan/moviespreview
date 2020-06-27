@@ -18,11 +18,6 @@ import kotlinx.coroutines.withContext
  * It consumes data coming from the lower layers
  * and maps that data to view logic.
  */
-/*
- * TODO
- *  3 - delete interactor
- *  4 - fix tests
- */
 class UserAccountViewModel(
     private val getUserAccountUseCase: GetUserAccountUseCase,
     private val getMoviesUseCase: GetUserAccountMoviesUseCase,
@@ -112,7 +107,7 @@ class UserAccountViewModel(
         _headerViewState.value = _headerViewState.value?.withAvatar(
             userName = account.getUserName(),
             accountName = account.username,
-            avatarUrl = account.avatar.getFulUrl(),
+            avatarUrl = account.avatar.getFullUrl(),
             avatarCallback = { userAvatarCallback(account) }
         )
     }
@@ -170,7 +165,7 @@ class UserAccountViewModel(
     private fun UserAccount.getUserLetter(): String =
         if (name.isEmpty()) username.first().toString() else name.first().toString()
 
-    private fun UserAvatar.getFulUrl(): String =
+    private fun UserAvatar.getFullUrl(): String =
         Gravatar.BASE_URL + gravatar.hash + Gravatar.REDIRECT
 
     private fun List<Movie>.mapToUserMovieItem(): List<UserMovieItem> {
