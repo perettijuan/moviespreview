@@ -40,7 +40,7 @@ class UserMovieListViewModel @Inject constructor(
 ) : MPViewModel() {
 
     private val _viewState = MediatorLiveData<UserMovieListViewState>()
-    val viewState: LiveData<UserMovieListViewState> get() = _viewState
+    internal val viewState: LiveData<UserMovieListViewState> get() = _viewState
 
     private lateinit var currentParam: UserMovieListParam
 
@@ -72,7 +72,7 @@ class UserMovieListViewModel @Inject constructor(
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit(param: UserMovieListParam) {
+    internal fun onInit(param: UserMovieListParam) {
         currentParam = param
         updateCurrentDestination(Destination.ReachedDestination(param.screenTitle))
 
@@ -87,7 +87,7 @@ class UserMovieListViewModel @Inject constructor(
      * Called when an item is selected in the list of movies.
      * A new state is posted in navEvents() in order to handle the event.
      */
-    fun onMovieSelected(movieItem: UserMovieItem) {
+    internal fun onMovieSelected(movieItem: UserMovieItem) {
         with(movieItem) {
             navigateTo(Destination.MPMovieDetails(
                     movieId = movieId.toString(),
