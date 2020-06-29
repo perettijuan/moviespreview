@@ -2,25 +2,25 @@ package com.jpp.mp.main.header
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jpp.mp.common.coroutines.MPViewModel
-import com.jpp.mp.common.navigation.Destination
+import com.jpp.mp.main.MainNavigator
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.usecase.GetUserAccountUseCase
 import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
- * [MPViewModel] that supports the [NavigationHeaderFragment] behavior. It retrieves the
+ * [ViewModel] that supports the [NavigationHeaderFragment] behavior. It retrieves the
  * user account data and updates the view state that the Fragment takes care of rendering.
  */
-class NavigationHeaderViewModel @Inject constructor(
+class NavigationHeaderViewModel(
     private val getUserAccountUseCase: GetUserAccountUseCase,
+    private val mainNavigator: MainNavigator,
     private val ioDispatcher: CoroutineDispatcher
-) : MPViewModel() {
+) : ViewModel() {
 
     private val _viewState = MutableLiveData<HeaderViewState>()
     internal val viewState: LiveData<HeaderViewState> = _viewState
@@ -49,14 +49,14 @@ class NavigationHeaderViewModel @Inject constructor(
      * Called when the the navigate to login option is selected in the UI.
      */
     internal fun onNavigateToLoginSelected() {
-        navigateTo(Destination.MPAccount)
+        mainNavigator.navigateToLogin()
     }
 
     /**
      * Called when the user attempts to navigate to the account details.
      */
     internal fun onNavigateToAccountDetailsSelected() {
-        navigateTo(Destination.MPAccount)
+        mainNavigator.navigateToLogin()
     }
 
     private fun processUserAccount(userAccount: UserAccount) {
