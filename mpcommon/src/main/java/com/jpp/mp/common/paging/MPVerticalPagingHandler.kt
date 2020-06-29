@@ -8,9 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
  * to be loaded into the underlying [RecyclerView].
  */
 class MPVerticalPagingHandler(
-        private val layoutManager: LinearLayoutManager,
-        private val nextPageItemThreshold: Int = 2,
-        private val listener: (() -> Unit)?) : RecyclerView.OnScrollListener() {
+    private val layoutManager: LinearLayoutManager,
+    private val nextPageItemThreshold: Int = 2,
+    private val listener: (() -> Unit)?
+) : RecyclerView.OnScrollListener() {
 
     private var previousTotal = 0
     private var loading = true
@@ -38,6 +39,5 @@ class MPVerticalPagingHandler(
             listener?.invoke()
             loading = true
         }
-
     }
 }

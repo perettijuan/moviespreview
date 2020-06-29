@@ -9,7 +9,6 @@ inline fun <T> MutableList<T>.addAllMapping(mapper: () -> List<T>): List<T> {
     return this
 }
 
-
 /**
  * Adds all the provided elements in [toAdd] to this list and return
  * the the whole list.

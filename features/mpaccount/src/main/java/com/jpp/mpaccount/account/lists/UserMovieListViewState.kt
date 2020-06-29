@@ -37,8 +37,3 @@ internal data class UserMovieListViewState(
             UserMovieListViewState(screenTitle = screenTitle, loadingVisibility = View.VISIBLE)
     }
 }
-
-
-
-
-

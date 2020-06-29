@@ -4,9 +4,9 @@ import android.content.Context
 import com.jpp.mp.MPApp
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import javax.inject.Singleton
 
 /**
  * Provides general purpose dependencies.

@@ -9,7 +9,9 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI.*
+import androidx.navigation.ui.NavigationUI.navigateUp
+import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
+import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.jpp.mp.R
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory

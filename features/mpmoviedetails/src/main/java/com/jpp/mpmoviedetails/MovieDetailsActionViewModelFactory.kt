@@ -5,8 +5,8 @@ import com.jpp.mp.common.viewmodel.ViewModelAssistedFactory
 import com.jpp.mpdomain.usecase.GetMovieStateUseCase
 import com.jpp.mpdomain.usecase.UpdateFavoriteMovieStateUseCase
 import com.jpp.mpdomain.usecase.UpdateWatchlistMovieStateUseCase
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * [ViewModelAssistedFactory] to create specific [MovieDetailsActionViewModel] instances

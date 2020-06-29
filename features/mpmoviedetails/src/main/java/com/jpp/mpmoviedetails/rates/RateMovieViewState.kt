@@ -2,7 +2,6 @@ package com.jpp.mpmoviedetails.rates
 
 import android.view.View
 
-
 /**
  * Represents the view states that the movie detail view can assume.
  */
@@ -24,7 +23,6 @@ internal data class RateMovieViewState(
             submitVisibility = View.VISIBLE,
             rating = rating
         )
-
 
     fun showNoRated(): RateMovieViewState = copy(
         loadingVisibility = View.INVISIBLE,

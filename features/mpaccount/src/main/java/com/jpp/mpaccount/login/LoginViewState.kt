@@ -39,4 +39,3 @@ internal data class LoginViewState(
         )
     }
 }
-

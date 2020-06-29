@@ -3,7 +3,12 @@ package com.jpp.mp.main.movies
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -56,7 +61,6 @@ abstract class MovieListFragment : Fragment() {
 
     protected abstract val movieSection: MovieSection
     protected abstract val screenTitle: String
-
 
     // used to restore the position of the RecyclerView on view re-creation
     // TODO we can simplify this once RecyclerView 1.2.0 is released

@@ -4,8 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import com.jpp.mp.common.viewmodel.ViewModelAssistedFactory
 import com.jpp.mpdomain.usecase.ConfigureMovieImagesPathUseCase
 import com.jpp.mpdomain.usecase.GetMoviePageUseCase
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * [ViewModelAssistedFactory] to create specific [MovieListViewModel] instances

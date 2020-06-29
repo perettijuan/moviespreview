@@ -3,8 +3,8 @@ package com.jpp.mpperson
 import androidx.lifecycle.SavedStateHandle
 import com.jpp.mp.common.viewmodel.ViewModelAssistedFactory
 import com.jpp.mpdomain.usecase.GetPersonUseCase
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * [ViewModelAssistedFactory] to create specific [PersonViewModel] instances

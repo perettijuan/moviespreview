@@ -22,5 +22,3 @@ internal data class AboutViewState(
         )
     }
 }
-
-

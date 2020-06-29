@@ -1,6 +1,10 @@
 package com.jpp.mpmoviedetails
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.MovieGenre.GenresId.ACTION_GENRE_ID
@@ -50,12 +54,10 @@ class MovieDetailsViewModel(
         get() = savedStateHandle.get(MOVIE_ID_KEY)
             ?: throw IllegalStateException("Trying to access $MOVIE_ID_KEY when it is not yet set")
 
-
     private var movieTitle: String
         set(value) = savedStateHandle.set(MOVIE_TITLE_KEY, value)
         get() = savedStateHandle.get(MOVIE_TITLE_KEY)
             ?: throw IllegalStateException("Trying to access $MOVIE_TITLE_KEY when it is not yet set")
-
 
     private var movieImageUrl: String
         set(value) = savedStateHandle.set(MOVIE_IMAGE_URL_KEY, value)

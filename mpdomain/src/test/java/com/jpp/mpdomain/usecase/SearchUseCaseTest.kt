@@ -1,6 +1,11 @@
 package com.jpp.mpdomain.usecase
 
-import com.jpp.mpdomain.*
+import com.jpp.mpdomain.AppConfiguration
+import com.jpp.mpdomain.Connectivity
+import com.jpp.mpdomain.ImagesConfiguration
+import com.jpp.mpdomain.SearchPage
+import com.jpp.mpdomain.SearchResult
+import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.repository.ConfigurationRepository
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
@@ -9,11 +14,11 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 
 @ExtendWith(MockKExtension::class)
 class SearchUseCaseTest {
@@ -143,7 +148,6 @@ class SearchUseCaseTest {
         assertEquals(4, result.getOrNull()?.results?.size)
         assertEquals(SEARCH_RESULTS, result.getOrNull()?.results)
     }
-
 
     private companion object {
         val SEARCH_RESULTS = listOf(

@@ -41,4 +41,3 @@ internal data class SearchContentViewState(
         )
     }
 }
-

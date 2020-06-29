@@ -30,7 +30,6 @@ class GetPersonUseCaseTest {
 
     private lateinit var subject: GetPersonUseCase
 
-
     @BeforeEach
     fun setUp() {
         subject = GetPersonUseCase(personRepository, connectivityRepository, languageRepository)
@@ -78,5 +77,4 @@ class GetPersonUseCaseTest {
         assertTrue(actual is Try.Success)
         assertEquals(person, actual.getOrNull())
     }
-
 }

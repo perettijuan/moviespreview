@@ -3,7 +3,11 @@ package com.jpp.mpdomain.usecase
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.UserAccount
-import com.jpp.mpdomain.repository.*
+import com.jpp.mpdomain.repository.AccountRepository
+import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.MoviePageRepository
+import com.jpp.mpdomain.repository.MovieStateRepository
+import com.jpp.mpdomain.repository.SessionRepository
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
@@ -107,7 +111,6 @@ class UpdateWatchlistMovieStateUseCaseTest {
         val inWatchlist = true
         val session = mockk<Session>()
         val userAccount = mockk<UserAccount>()
-
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         every { sessionRepository.getCurrentSession() } returns session

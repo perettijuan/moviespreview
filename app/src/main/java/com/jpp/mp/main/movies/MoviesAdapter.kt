@@ -6,14 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
 import com.jpp.mp.databinding.ListItemMovieBinding
-import java.util.*
 
-/**
- * Internal [PagedListAdapter] to render the list of movies. The fact that this class is a
- * [PagedListAdapter] indicates that the paging library is being used. Another important
- * aspect of this class is that it uses Data Binding to update the UI, which differs from the
- * containing class.
- */
 class MoviesAdapter(private val movieSelectionListener: (MovieListItem) -> Unit) :
     RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
 

@@ -40,7 +40,6 @@ class LicenseContentViewModelTest {
         )
     }
 
-
     @Test
     fun `Should map show content with url for selected license`() {
         var viewStatePosted: LicenseContentViewState? = null

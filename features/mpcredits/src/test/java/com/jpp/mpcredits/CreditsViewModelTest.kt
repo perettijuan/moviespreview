@@ -2,7 +2,6 @@ package com.jpp.mpcredits
 
 import android.view.View
 import androidx.lifecycle.SavedStateHandle
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
 import com.jpp.mpdomain.CrewMember
@@ -18,7 +17,9 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -117,7 +118,6 @@ class CreditsViewModelTest {
             coVerify(exactly = 2) { getCreditsUseCase.execute(10.0) }
         } ?: fail()
     }
-
 
     @Test
     fun `Should post no data available when crew and cast data is empty`() {

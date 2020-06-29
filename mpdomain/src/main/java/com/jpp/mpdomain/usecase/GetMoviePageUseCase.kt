@@ -11,9 +11,10 @@ import com.jpp.mpdomain.repository.MoviePageRepository
  * Use case that retrieves a [MoviePage].
  */
 class GetMoviePageUseCase(
-        private val moviePageRepository: MoviePageRepository,
-        private val connectivityRepository: ConnectivityRepository,
-        private val languageRepository: LanguageRepository) {
+    private val moviePageRepository: MoviePageRepository,
+    private val connectivityRepository: ConnectivityRepository,
+    private val languageRepository: LanguageRepository
+) {
 
     suspend fun execute(page: Int, section: MovieSection): Try<MoviePage> {
         return when (connectivityRepository.getCurrentConnectivity()) {

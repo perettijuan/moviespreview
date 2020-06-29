@@ -1,8 +1,6 @@
 package com.jpp.mpabout
 
 import android.view.View
-import androidx.lifecycle.MutableLiveData
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.AboutUrl
 import com.jpp.mpdomain.AppVersion
 import com.jpp.mpdomain.repository.AboutUrlRepository
@@ -12,17 +10,13 @@ import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.MethodSource
 
 @ExperimentalCoroutinesApi
 @ExtendWith(

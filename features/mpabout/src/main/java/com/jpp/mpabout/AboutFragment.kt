@@ -15,7 +15,12 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jpp.mp.common.extensions.*
+import com.jpp.mp.common.extensions.cleanView
+import com.jpp.mp.common.extensions.observeHandledEvent
+import com.jpp.mp.common.extensions.observeValue
+import com.jpp.mp.common.extensions.send
+import com.jpp.mp.common.extensions.setScreenTitle
+import com.jpp.mp.common.extensions.web
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mpabout.databinding.FragmentAboutBinding
 import com.jpp.mpdesign.ext.getColor
@@ -74,7 +79,7 @@ class AboutFragment : Fragment() {
         viewBinding?.viewState = viewState
         aboutRv?.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = AboutItemsAdapter(viewState.content.aboutItems) {viewModel.onUserSelectedAboutItem(it) }
+            adapter = AboutItemsAdapter(viewState.content.aboutItems) { viewModel.onUserSelectedAboutItem(it) }
             addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
         }
     }

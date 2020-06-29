@@ -149,13 +149,11 @@ class MovieDetailsFragment : Fragment() {
             MovieDetailsGenreAdapter(viewState.contentViewState.genres)
     }
 
-
     @SuppressLint("RestrictedApi")
     private fun renderActionViewState(actionViewState: MovieDetailActionViewState) {
         movieDetailActionFab?.visibility = actionViewState.actionButtonVisibility
         movieDetailReloadActionFab?.visibility = actionViewState.reloadButtonVisibility
         movieDetailActionsLoadingView?.visibility = actionViewState.loadingVisibility
-
 
         movieDetailFavoritesFab?.apply {
             visibility = actionViewState.favoriteButtonState.visibility

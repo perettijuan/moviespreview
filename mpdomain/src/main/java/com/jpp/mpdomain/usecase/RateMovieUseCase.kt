@@ -1,7 +1,11 @@
 package com.jpp.mpdomain.usecase
 
 import com.jpp.mpdomain.Connectivity
-import com.jpp.mpdomain.repository.*
+import com.jpp.mpdomain.repository.AccountRepository
+import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.MoviePageRepository
+import com.jpp.mpdomain.repository.MovieStateRepository
+import com.jpp.mpdomain.repository.SessionRepository
 
 /**
  * Use case to rate a specific movie.
@@ -24,7 +28,6 @@ class RateMovieUseCase(
 
         val userAccount = accountRepository.getUserAccount(currentSession)
             ?: return Try.Failure(Try.FailureCause.UserNotLogged)
-
 
         val success = movieStateRepository.rateMovie(
             movieId, rating, userAccount, currentSession

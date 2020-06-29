@@ -2,8 +2,10 @@ package com.jpp.mpdomain.usecase
 
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.Session
-import com.jpp.mpdomain.UserAccount
-import com.jpp.mpdomain.repository.*
+import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.MoviePageRepository
+import com.jpp.mpdomain.repository.MovieStateRepository
+import com.jpp.mpdomain.repository.SessionRepository
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
@@ -11,7 +13,6 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach

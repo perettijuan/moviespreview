@@ -29,5 +29,4 @@ class GetMovieStateUseCase(
             Try.Success(movieState)
         } ?: Try.Failure(Try.FailureCause.Unknown)
     }
-
 }
