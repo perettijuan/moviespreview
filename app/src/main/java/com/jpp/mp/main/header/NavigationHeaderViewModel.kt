@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jpp.mp.main.MainNavigator
+import com.jpp.mp.main.Navigator
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.usecase.GetUserAccountUseCase
 import com.jpp.mpdomain.usecase.Try
@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
  */
 class NavigationHeaderViewModel(
     private val getUserAccountUseCase: GetUserAccountUseCase,
-    private val mainNavigator: MainNavigator,
+    private val navigator: Navigator,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
@@ -49,14 +49,14 @@ class NavigationHeaderViewModel(
      * Called when the the navigate to login option is selected in the UI.
      */
     internal fun onNavigateToLoginSelected() {
-        mainNavigator.navigateToLogin()
+        navigator.navigateToLogin()
     }
 
     /**
      * Called when the user attempts to navigate to the account details.
      */
     internal fun onNavigateToAccountDetailsSelected() {
-        mainNavigator.navigateToLogin()
+        navigator.navigateToLogin()
     }
 
     private fun processUserAccount(userAccount: UserAccount) {

@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var mainNavigator: MainNavigator
+    lateinit var navigator: Navigator
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -127,13 +127,13 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     override fun onResume() {
         super.onResume()
-        mainNavigator.bind(findNavController(R.id.mainNavHostFragment))
-        mainNavigator.bindDelegate(MainToSearchNavigationDelegate(this, mainToolbar))
+        navigator.bind(findNavController(R.id.mainNavHostFragment))
+        navigator.bindDelegate(MainToSearchNavigationDelegate(this, mainToolbar))
     }
 
     override fun onPause() {
         super.onPause()
-        mainNavigator.unBind()
+        navigator.unBind()
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -26,7 +26,7 @@ import com.jpp.mpsearch.SearchNavigator
  * Provides navigation to the main module and also to each individual
  * feature module.
  */
-class MainNavigator : MovieListNavigator,
+class Navigator : MovieListNavigator,
     MovieDetailsNavigator,
     RateMovieNavigator,
     CreditNavigator,
