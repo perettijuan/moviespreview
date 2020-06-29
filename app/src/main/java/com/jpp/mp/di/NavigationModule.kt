@@ -1,6 +1,7 @@
 package com.jpp.mp.di
 
-import com.jpp.mp.main.MainNavigator
+import com.jpp.mp.main.Navigator
+import com.jpp.mp.main.header.HeaderNavigator
 import com.jpp.mp.main.movies.MovieListNavigator
 import com.jpp.mpabout.AboutNavigator
 import com.jpp.mpaccount.account.UserAccountNavigator
@@ -22,32 +23,35 @@ class NavigationModule {
 
     @Provides
     @Singleton
-    fun providesMainNavigator(): MainNavigator = MainNavigator()
+    fun providesMainNavigator(): Navigator = Navigator()
 
     @Provides
-    fun providesMovieListNavigator(mainNavigator: MainNavigator): MovieListNavigator = mainNavigator
+    fun providesMovieListNavigator(navigator: Navigator): MovieListNavigator = navigator
 
     @Provides
-    fun providesMovieDetailsNavigator(mainNavigator: MainNavigator): MovieDetailsNavigator = mainNavigator
+    fun providesHeaderNavigator(navigator: Navigator): HeaderNavigator = navigator
 
     @Provides
-    fun providesRateMovieNavigator(mainNavigator: MainNavigator): RateMovieNavigator = mainNavigator
+    fun providesMovieDetailsNavigator(navigator: Navigator): MovieDetailsNavigator = navigator
 
     @Provides
-    fun providesCreditNavigator(mainNavigator: MainNavigator): CreditNavigator = mainNavigator
+    fun providesRateMovieNavigator(navigator: Navigator): RateMovieNavigator = navigator
 
     @Provides
-    fun providesSearchNavigator(mainNavigator: MainNavigator): SearchNavigator = mainNavigator
+    fun providesCreditNavigator(navigator: Navigator): CreditNavigator = navigator
 
     @Provides
-    fun providesAboutNavigator(mainNavigator: MainNavigator): AboutNavigator = mainNavigator
+    fun providesSearchNavigator(navigator: Navigator): SearchNavigator = navigator
 
     @Provides
-    fun providesLoginNavigator(mainNavigator: MainNavigator): LoginNavigator = mainNavigator
+    fun providesAboutNavigator(navigator: Navigator): AboutNavigator = navigator
 
     @Provides
-    fun providesUserAccountNavigator(mainNavigator: MainNavigator): UserAccountNavigator = mainNavigator
+    fun providesLoginNavigator(navigator: Navigator): LoginNavigator = navigator
 
     @Provides
-    fun providesUserMovieListNavigator(mainNavigator: MainNavigator): UserMovieListNavigator = mainNavigator
+    fun providesUserAccountNavigator(navigator: Navigator): UserAccountNavigator = navigator
+
+    @Provides
+    fun providesUserMovieListNavigator(navigator: Navigator): UserMovieListNavigator = navigator
 }

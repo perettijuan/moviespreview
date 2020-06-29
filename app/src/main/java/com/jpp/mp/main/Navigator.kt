@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import com.jpp.mp.R
 import com.jpp.mp.common.navigation.Destination
+import com.jpp.mp.main.header.HeaderNavigator
 import com.jpp.mp.main.movies.MovieListNavigator
 import com.jpp.mpabout.AboutFragmentDirections
 import com.jpp.mpabout.AboutNavigator
@@ -26,7 +27,8 @@ import com.jpp.mpsearch.SearchNavigator
  * Provides navigation to the main module and also to each individual
  * feature module.
  */
-class MainNavigator : MovieListNavigator,
+class Navigator : MovieListNavigator,
+    HeaderNavigator,
     MovieDetailsNavigator,
     RateMovieNavigator,
     CreditNavigator,
