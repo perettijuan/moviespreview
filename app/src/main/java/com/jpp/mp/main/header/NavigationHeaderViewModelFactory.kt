@@ -13,7 +13,7 @@ import javax.inject.Inject
  */
 class NavigationHeaderViewModelFactory @Inject constructor(
     private val getUserAccountUseCase: GetUserAccountUseCase,
-    private val navigator: Navigator,
+    private val navigator: HeaderNavigator,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModelAssistedFactory<NavigationHeaderViewModel> {
     override fun create(handle: SavedStateHandle): NavigationHeaderViewModel {

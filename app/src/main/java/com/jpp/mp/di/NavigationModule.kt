@@ -1,6 +1,7 @@
 package com.jpp.mp.di
 
 import com.jpp.mp.main.Navigator
+import com.jpp.mp.main.header.HeaderNavigator
 import com.jpp.mp.main.movies.MovieListNavigator
 import com.jpp.mpabout.AboutNavigator
 import com.jpp.mpaccount.account.UserAccountNavigator
@@ -26,6 +27,9 @@ class NavigationModule {
 
     @Provides
     fun providesMovieListNavigator(navigator: Navigator): MovieListNavigator = navigator
+
+    @Provides
+    fun providesHeaderNavigator(navigator: Navigator): HeaderNavigator = navigator
 
     @Provides
     fun providesMovieDetailsNavigator(navigator: Navigator): MovieDetailsNavigator = navigator

@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jpp.mp.main.Navigator
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.usecase.GetUserAccountUseCase
 import com.jpp.mpdomain.usecase.Try
@@ -18,7 +17,7 @@ import kotlinx.coroutines.withContext
  */
 class NavigationHeaderViewModel(
     private val getUserAccountUseCase: GetUserAccountUseCase,
-    private val navigator: Navigator,
+    private val navigator: HeaderNavigator,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
