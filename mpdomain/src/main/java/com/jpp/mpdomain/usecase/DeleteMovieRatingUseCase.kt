@@ -16,7 +16,7 @@ class DeleteMovieRatingUseCase(
     private val connectivityRepository: ConnectivityRepository
 ) {
 
-    fun execute(movieId: Double): Try<Unit> {
+    suspend fun execute(movieId: Double): Try<Unit> {
         if (connectivityRepository.getCurrentConnectivity() is Connectivity.Disconnected) {
             return Try.Failure(Try.FailureCause.NoConnectivity)
         }

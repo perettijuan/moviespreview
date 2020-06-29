@@ -31,7 +31,7 @@ class GetCreditsUseCase(
         }
     }
 
-    private fun configureCharacterProfilePath(castCharacter: CastCharacter): CastCharacter {
+    private suspend fun configureCharacterProfilePath(castCharacter: CastCharacter): CastCharacter {
         return configurationRepository.getAppConfiguration()?.let { appConfiguration ->
             castCharacter.configureProfilePath(appConfiguration.images)
         } ?: castCharacter

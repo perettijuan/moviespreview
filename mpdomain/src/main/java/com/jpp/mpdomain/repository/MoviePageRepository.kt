@@ -16,43 +16,43 @@ interface MoviePageRepository {
      * @return The [MoviePage] indicated by [page] if any [MoviePage] exists for it.
      * Otherwise, null.
      */
-    fun getMoviePageForSection(page: Int, section: MovieSection, language: SupportedLanguage): MoviePage?
+    suspend fun getMoviePageForSection(page: Int, section: MovieSection, language: SupportedLanguage): MoviePage?
 
     /**
      * Flushes out any [MoviePage] data stored locally
      */
-    fun flushMoviePagesForSection(section: MovieSection)
+    suspend fun flushMoviePagesForSection(section: MovieSection)
 
     /**
      * Retrieves a [MoviePage] with the favorite movies that the user has.
      * @return a [MoviePage] indicated by [page] only if the user has movies as favorites.
      */
-    fun getFavoriteMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
+    suspend fun getFavoriteMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
 
     /**
      * Retrieves a [MoviePage] with the movies that the user has rated.
      * @return a [MoviePage] indicated by [page] only if the user has movies rated.
      */
-    fun getRatedMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
+    suspend fun getRatedMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
 
     /**
      * Retrieves a [MoviePage] from the user's watchlist.
      * @return a [MoviePage] indicated by [page] only if the user has one in the watchlist.
      */
-    fun getWatchlistMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
+    suspend fun getWatchlistMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
 
     /**
      * Flushes out any favorite [MoviePage] data stored locally on the device.
      */
-    fun flushFavoriteMoviePages()
+    suspend fun flushFavoriteMoviePages()
 
     /**
      * Flushes out any rated [MoviePage] data stored locally on the device.
      */
-    fun flushRatedMoviePages()
+    suspend fun flushRatedMoviePages()
 
     /**
      * Flushes out any watchlist [MoviePage] data stored locally on the device.
      */
-    fun flushWatchlistMoviePages()
+    suspend fun flushWatchlistMoviePages()
 }

@@ -8,13 +8,13 @@ class PersonRepositoryImpl(
     private val personApi: PersonApi,
     private val personDb: PersonDb
 ) : PersonRepository {
-    override fun getPerson(personId: Double, language: SupportedLanguage): Person? {
+    override suspend fun getPerson(personId: Double, language: SupportedLanguage): Person? {
         return personDb.getPerson(personId) ?: run {
             personApi.getPerson(personId, language)?.also { personDb.savePerson(it) }
         }
     }
 
-    override fun flushPersonData() {
+    override suspend fun flushPersonData() {
         personDb.clearAllData()
     }
 }

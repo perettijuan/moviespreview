@@ -11,12 +11,12 @@ class MovieDetailRepositoryImpl(
     private val movieDetailDb: MovieDetailDb
 ) : MovieDetailRepository {
 
-    override fun getMovieDetails(movieId: Double, language: SupportedLanguage): MovieDetail? {
+    override suspend fun getMovieDetails(movieId: Double, language: SupportedLanguage): MovieDetail? {
         return movieDetailDb.getMovieDetails(movieId)
                 ?: movieDetailApi.getMovieDetails(movieId, language)?.also { movieDetailDb.saveMovieDetails(it) }
     }
 
-    override fun flushMovieDetailsData() {
+    override suspend fun flushMovieDetailsData() {
         movieDetailDb.flushData()
     }
 }

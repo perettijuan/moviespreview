@@ -10,5 +10,5 @@ interface AccessTokenRepository {
      * Retrieves an [AccessToken] to be used in the login process.
      * It will post a new update to [data] when the process is done.
      */
-    fun getAccessToken(): AccessToken?
+    suspend fun getAccessToken(): AccessToken?
 }

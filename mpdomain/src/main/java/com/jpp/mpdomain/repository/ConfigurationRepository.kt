@@ -10,5 +10,5 @@ interface ConfigurationRepository {
      * Retrieves the [AppConfiguration] that defines the current configuration of the
      * application.
      */
-    fun getAppConfiguration(): AppConfiguration?
+    suspend fun getAppConfiguration(): AppConfiguration?
 }

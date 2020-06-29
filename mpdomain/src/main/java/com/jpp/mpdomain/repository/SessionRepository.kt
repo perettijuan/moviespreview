@@ -13,20 +13,20 @@ interface SessionRepository {
      * Subscribe to this LiveData object when interested on getting updates
      * about session creation/deletion.
      */
-    fun sessionStateUpdates(): LiveData<Session?>
+    suspend fun sessionStateUpdates(): LiveData<Session?>
 
     /**
      * @return the current [Session] being used - if any.
      */
-    fun getCurrentSession(): Session?
+    suspend fun getCurrentSession(): Session?
 
     /**
      * Deletes the current [Session] being used - if any.
      */
-    fun deleteCurrentSession()
+    suspend fun deleteCurrentSession()
 
     /**
      * Creates a new [Session] for the provided [AccessToken].
      */
-    fun createSession(accessToken: AccessToken): Session?
+    suspend fun createSession(accessToken: AccessToken): Session?
 }

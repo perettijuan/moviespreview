@@ -13,7 +13,7 @@ class LoginUseCase(
     private val connectivityRepository: ConnectivityRepository
 ) {
 
-    fun execute(accessToken: AccessToken): Try<Unit> {
+    suspend fun execute(accessToken: AccessToken): Try<Unit> {
         return when (connectivityRepository.getCurrentConnectivity()) {
             is Connectivity.Disconnected -> Try.Failure(Try.FailureCause.NoConnectivity)
             is Connectivity.Connected -> sessionRepository.createSession(accessToken)?.let {

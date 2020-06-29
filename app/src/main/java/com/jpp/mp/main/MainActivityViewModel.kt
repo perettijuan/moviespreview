@@ -1,8 +1,12 @@
 package com.jpp.mp.main
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jpp.mpdata.datasources.language.LanguageMonitor
 import com.jpp.mpdomain.repository.LanguageRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * ViewModel used by [MainActivity].
@@ -10,7 +14,8 @@ import com.jpp.mpdomain.repository.LanguageRepository
  */
 class MainActivityViewModel(
     private val languageMonitor: LanguageMonitor,
-    private val languageRepository: LanguageRepository
+    private val languageRepository: LanguageRepository,
+    private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     /**
@@ -19,7 +24,9 @@ class MainActivityViewModel(
      * When [onCleared] is called, the monitoring will be stopped.
      */
     fun onInit() {
-        languageRepository.syncPlatformLanguage()
+        viewModelScope.launch {
+            withContext(ioDispatcher) { languageRepository.syncPlatformLanguage() }
+        }
         languageMonitor.startMonitoring()
     }
 

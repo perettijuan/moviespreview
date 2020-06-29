@@ -32,12 +32,12 @@ class LanguageRepositoryImpl(
 
     override fun updates(): LiveData<SupportedLanguage> = stateUpdates
 
-    override fun getCurrentAppLanguage(): SupportedLanguage {
+    override suspend fun getCurrentAppLanguage(): SupportedLanguage {
         return languageDb.getStoredLanguageString()?.let { mapFrom(locale.localeFrom(it)) }
                 ?: mapFrom(locale.getDefault()).also { languageDb.updateLanguageString(it.id) }
     }
 
-    override fun syncPlatformLanguage() {
+    override suspend fun syncPlatformLanguage() {
         mapFrom(locale.getDefault()).let {
             if (it != getCurrentAppLanguage()) {
                 languageDb.updateLanguageString(it.id)

@@ -15,18 +15,18 @@ class SessionRepositoryImpl(
 
     private val sessionUpdates = MutableLiveData<Session?>()
 
-    override fun sessionStateUpdates(): LiveData<Session?> = sessionUpdates
+    override suspend fun sessionStateUpdates(): LiveData<Session?> = sessionUpdates
 
-    override fun getCurrentSession(): Session? = sessionDb.getSession()
+    override suspend fun getCurrentSession(): Session? = sessionDb.getSession()
 
-    override fun createSession(accessToken: AccessToken): Session? {
+    override suspend fun createSession(accessToken: AccessToken): Session? {
         return sessionApi.createSession(accessToken)?.also {
             sessionDb.updateSession(it)
             sessionUpdates.postValue(it)
         }
     }
 
-    override fun deleteCurrentSession() {
+    override suspend fun deleteCurrentSession() {
         sessionDb.flushData()
         sessionUpdates.postValue(null)
     }
