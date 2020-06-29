@@ -60,7 +60,6 @@ class ConfigureMovieImagesPathUseCaseTest {
         assertEquals(expected, result.getOrNull())
     }
 
-
     private val originalMovie = Movie(
         id = 15.toDouble(),
         poster_path = "/m110vLaDDOCca4hfOcS5mK5cDke.jpg",
@@ -100,5 +99,4 @@ class ConfigureMovieImagesPathUseCaseTest {
         )
 
     )
-
 }

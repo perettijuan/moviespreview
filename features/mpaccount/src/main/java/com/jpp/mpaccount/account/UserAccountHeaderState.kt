@@ -43,6 +43,3 @@ internal data class UserAccountHeaderState(
         fun showLoading() = UserAccountHeaderState(visibility = View.VISIBLE)
     }
 }
-
-
-

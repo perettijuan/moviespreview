@@ -1,6 +1,10 @@
 package com.jpp.mpsearch
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jpp.mpdomain.SearchPage
 import com.jpp.mpdomain.SearchResult
 import com.jpp.mpdomain.usecase.SearchUseCase
@@ -39,7 +43,6 @@ class SearchViewModel(
     private var currentPage: Int
         set(value) = savedStateHandle.set(CURRENT_PAGE_KEY, value)
         get() = savedStateHandle.get(CURRENT_PAGE_KEY) ?: FIRST_PAGE
-
 
     private var maxPage: Int
         set(value) = savedStateHandle.set(MAX_SEARCH_PAGE_KEY, value)

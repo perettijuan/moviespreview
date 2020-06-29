@@ -123,7 +123,6 @@ class SearchActivity : AppCompatActivity(), HasSupportFragmentInjector {
         if (focus) requestFocus() else clearFocus()
     }
 
-
     private fun setupNavigation() {
         val navController = findNavController(R.id.searchNavHostFragment)
         appBarConfiguration = AppBarConfiguration(navController.graph)

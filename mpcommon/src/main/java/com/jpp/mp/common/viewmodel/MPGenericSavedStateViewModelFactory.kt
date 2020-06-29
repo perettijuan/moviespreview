@@ -22,7 +22,8 @@ class MPGenericSavedStateViewModelFactory<out V : ViewModel>(
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(
         key: String,
-        modelClass: Class<T>, handle: SavedStateHandle
+        modelClass: Class<T>,
+        handle: SavedStateHandle
     ): T {
         return viewModelFactory.create(handle) as T
     }

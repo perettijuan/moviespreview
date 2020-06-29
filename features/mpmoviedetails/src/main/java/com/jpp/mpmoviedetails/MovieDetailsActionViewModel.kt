@@ -1,6 +1,10 @@
 package com.jpp.mpmoviedetails
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpdomain.usecase.GetMovieStateUseCase
 import com.jpp.mpdomain.usecase.Try
@@ -100,7 +104,6 @@ class MovieDetailsActionViewModel(
             }
         }
     }
-
 
     private fun fetchMovieState(movieId: Double) {
         _viewState.value = MovieDetailActionViewState.showLoading()

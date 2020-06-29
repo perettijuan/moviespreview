@@ -88,5 +88,4 @@ class GetMovieStateUseCaseTest {
         assertTrue(actual is Try.Success)
         assertEquals(expected, actual.getOrNull())
     }
-
 }

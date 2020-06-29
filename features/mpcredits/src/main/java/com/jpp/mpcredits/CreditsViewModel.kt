@@ -1,6 +1,10 @@
 package com.jpp.mpcredits
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.extensions.addAllMapping
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits

@@ -1,6 +1,10 @@
 package com.jpp.mpmoviedetails.rates
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mpdomain.MovieState
@@ -119,7 +123,6 @@ class RateMovieViewModel(
             }
         }
     }
-
 
     /**
      * Process the [MovieState] provided producing a [RateMovieViewState] that contains

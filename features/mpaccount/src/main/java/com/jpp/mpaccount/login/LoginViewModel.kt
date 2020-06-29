@@ -1,6 +1,10 @@
 package com.jpp.mpaccount.login
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jpp.mpdomain.AccessToken
 import com.jpp.mpdomain.usecase.GetAccessTokenUseCase
 import com.jpp.mpdomain.usecase.GetUserAccountUseCase
@@ -143,7 +147,7 @@ class LoginViewModel(
     }
 
     private fun AccessToken.generateAuthenticationUrl(): String {
-        return "$authUrl/${request_token}?redirect_to=$redirectUrl"
+        return "$authUrl/$request_token?redirect_to=$redirectUrl"
     }
 
     private companion object {

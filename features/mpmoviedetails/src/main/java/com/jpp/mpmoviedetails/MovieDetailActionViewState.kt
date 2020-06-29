@@ -19,7 +19,6 @@ internal data class MovieDetailActionViewState(
     val expanded: Boolean = false
 ) {
 
-
     fun showLoaded(
         watchListButtonState: ActionButtonState,
         favoriteButtonState: ActionButtonState

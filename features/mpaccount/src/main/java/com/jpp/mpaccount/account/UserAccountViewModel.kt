@@ -4,7 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jpp.mpdomain.*
+import com.jpp.mpdomain.AccountMovieType
+import com.jpp.mpdomain.Movie
+import com.jpp.mpdomain.MoviePage
+import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.usecase.GetUserAccountMoviesUseCase
 import com.jpp.mpdomain.usecase.GetUserAccountUseCase
 import com.jpp.mpdomain.usecase.LogOutUseCase
@@ -39,7 +42,7 @@ class UserAccountViewModel(
      * on it.
      */
     internal fun onInit() {
-        //launch in parallel
+        // launch in parallel
         viewModelScope.launch { fetchUserAccountHeader() }
         viewModelScope.launch { fetchUserAccountBody() }
     }
@@ -102,7 +105,6 @@ class UserAccountViewModel(
         }
     }
 
-
     private fun processUserAccount(account: UserAccount) {
         _headerViewState.value = _headerViewState.value?.withAvatar(
             userName = account.getUserName(),
@@ -159,7 +161,6 @@ class UserAccountViewModel(
             is Try.FailureCause.UserNotLogged -> navigator.navigateHome()
         }
     }
-
 
     private fun List<Movie>.mapToUserMovieItem(): List<UserMovieItem> {
         return toMutableList().map { movie -> UserMovieItem(movie.poster_path ?: "noPath") }

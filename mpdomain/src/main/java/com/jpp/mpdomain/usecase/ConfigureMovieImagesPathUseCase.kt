@@ -1,6 +1,5 @@
 package com.jpp.mpdomain.usecase
 
-import com.jpp.mpdomain.ImagesConfiguration
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.repository.ConfigurationRepository
 

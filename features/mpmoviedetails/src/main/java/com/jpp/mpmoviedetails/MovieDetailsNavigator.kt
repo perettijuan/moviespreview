@@ -16,5 +16,4 @@ interface MovieDetailsNavigator {
         movieImageUrl: String,
         movieTitle: String
     )
-
 }

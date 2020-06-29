@@ -1,6 +1,10 @@
 package com.jpp.mpperson
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jpp.mpdomain.Person
 import com.jpp.mpdomain.usecase.GetPersonUseCase
 import com.jpp.mpdomain.usecase.Try

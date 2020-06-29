@@ -3,7 +3,12 @@ package com.jpp.mp.di
 import android.content.Context
 import androidx.room.Room
 import com.jpp.mpdata.api.MPApi
-import com.jpp.mpdata.cache.*
+import com.jpp.mpdata.cache.CacheTimestampHelper
+import com.jpp.mpdata.cache.ConfigurationCache
+import com.jpp.mpdata.cache.CreditsCache
+import com.jpp.mpdata.cache.MovieDetailCache
+import com.jpp.mpdata.cache.MoviesCache
+import com.jpp.mpdata.cache.SupportCache
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdata.datasources.account.AccountApi
@@ -44,7 +49,22 @@ import com.jpp.mpdata.repository.session.SessionRepositoryImpl
 import com.jpp.mpdata.repository.support.SupportDb
 import com.jpp.mpdata.repository.support.SupportRepositoryImpl
 import com.jpp.mpdata.repository.tokens.AccessTokenRepositoryImpl
-import com.jpp.mpdomain.repository.*
+import com.jpp.mpdomain.repository.AboutUrlRepository
+import com.jpp.mpdomain.repository.AccessTokenRepository
+import com.jpp.mpdomain.repository.AccountRepository
+import com.jpp.mpdomain.repository.AppVersionRepository
+import com.jpp.mpdomain.repository.ConfigurationRepository
+import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.CreditsRepository
+import com.jpp.mpdomain.repository.LanguageRepository
+import com.jpp.mpdomain.repository.LicensesRepository
+import com.jpp.mpdomain.repository.MovieDetailRepository
+import com.jpp.mpdomain.repository.MoviePageRepository
+import com.jpp.mpdomain.repository.MovieStateRepository
+import com.jpp.mpdomain.repository.PersonRepository
+import com.jpp.mpdomain.repository.SearchRepository
+import com.jpp.mpdomain.repository.SessionRepository
+import com.jpp.mpdomain.repository.SupportRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -101,8 +121,7 @@ class DataLayerModule {
         roomDb: MPRoomDataBase,
         adapter: RoomModelAdapter,
         timestampHelper: CacheTimestampHelper
-    ):
-            MoviesDb = MoviesCache(roomDb, adapter, timestampHelper)
+    ): MoviesDb = MoviesCache(roomDb, adapter, timestampHelper)
 
     @Singleton
     @Provides
@@ -123,8 +142,7 @@ class DataLayerModule {
         roomDb: MPRoomDataBase,
         adapter: RoomModelAdapter,
         timestampHelper: CacheTimestampHelper
-    ):
-            ConfigurationDb = ConfigurationCache(roomDb, adapter, timestampHelper)
+    ): ConfigurationDb = ConfigurationCache(roomDb, adapter, timestampHelper)
 
     @Singleton
     @Provides
@@ -177,8 +195,7 @@ class DataLayerModule {
         roomDatabase: MPRoomDataBase,
         adapter: RoomModelAdapter,
         timestampHelper: CacheTimestampHelper
-    ):
-            CreditsDb = CreditsCache(roomDatabase, adapter, timestampHelper)
+    ): CreditsDb = CreditsCache(roomDatabase, adapter, timestampHelper)
 
     @Singleton
     @Provides

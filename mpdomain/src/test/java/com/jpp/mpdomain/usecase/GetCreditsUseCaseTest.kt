@@ -1,6 +1,10 @@
 package com.jpp.mpdomain.usecase
 
-import com.jpp.mpdomain.*
+import com.jpp.mpdomain.AppConfiguration
+import com.jpp.mpdomain.CastCharacter
+import com.jpp.mpdomain.Connectivity
+import com.jpp.mpdomain.Credits
+import com.jpp.mpdomain.ImagesConfiguration
 import com.jpp.mpdomain.repository.ConfigurationRepository
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.CreditsRepository
@@ -83,7 +87,6 @@ class GetCreditsUseCaseTest {
         assertTrue(actual is Try.Success)
         assertEquals(expected, actual.getOrNull())
     }
-
 
     private companion object {
 
@@ -198,5 +201,4 @@ class GetCreditsUseCaseTest {
             )
         )
     }
-
 }

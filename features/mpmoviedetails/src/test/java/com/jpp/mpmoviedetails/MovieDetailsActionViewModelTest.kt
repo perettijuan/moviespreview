@@ -131,7 +131,6 @@ internal class MovieDetailsActionViewModelTest {
         assertEquals(true, viewStatePosted?.watchListButtonState?.asClickable)
     }
 
-
     @ParameterizedTest
     @MethodSource("movieActionEvents")
     fun `Should animate expanded - not expanded`(
@@ -299,7 +298,6 @@ internal class MovieDetailsActionViewModelTest {
         assertEquals(View.INVISIBLE, viewStatePosted?.favoriteButtonState?.visibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.watchListButtonState?.visibility)
     }
-
 
     companion object {
 

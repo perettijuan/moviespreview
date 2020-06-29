@@ -1,7 +1,11 @@
 package com.jpp.mpdomain.usecase
 
 import com.jpp.mpdomain.Connectivity
-import com.jpp.mpdomain.repository.*
+import com.jpp.mpdomain.repository.AccountRepository
+import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.MoviePageRepository
+import com.jpp.mpdomain.repository.MovieStateRepository
+import com.jpp.mpdomain.repository.SessionRepository
 
 /**
  * Use case to update the watchlist state of a movie.

@@ -24,7 +24,6 @@ class DeleteMovieRatingUseCase(
         val currentSession = sessionRepository.getCurrentSession()
             ?: return Try.Failure(Try.FailureCause.UserNotLogged)
 
-
         val success = movieStateRepository.deleteMovieRate(
             movieId, currentSession
         )

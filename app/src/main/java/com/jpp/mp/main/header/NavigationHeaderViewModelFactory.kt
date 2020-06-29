@@ -2,10 +2,9 @@ package com.jpp.mp.main.header
 
 import androidx.lifecycle.SavedStateHandle
 import com.jpp.mp.common.viewmodel.ViewModelAssistedFactory
-import com.jpp.mp.main.Navigator
 import com.jpp.mpdomain.usecase.GetUserAccountUseCase
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * [ViewModelAssistedFactory] to create specific [NavigationHeaderViewModel] instances

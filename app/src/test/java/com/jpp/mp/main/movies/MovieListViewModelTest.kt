@@ -18,7 +18,9 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -43,10 +45,6 @@ class MovieListViewModelTest {
     @RelaxedMockK
     private lateinit var navigator: MovieListNavigator
 
-    private val savedStateHandle: SavedStateHandle by lazy {
-        SavedStateHandle()
-    }
-
     private lateinit var subject: MovieListViewModel
 
     @BeforeEach
@@ -56,7 +54,7 @@ class MovieListViewModelTest {
                 configureMovieImagesPathUseCase,
                 navigator,
                 CoroutineTestExtension.testDispatcher,
-                savedStateHandle
+                SavedStateHandle()
         )
     }
 
@@ -160,7 +158,6 @@ class MovieListViewModelTest {
 
         assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.visibility)
         assertEquals(mockedList.size, viewStatePosted?.contentViewState?.movieList?.size)
-
     }
 
     @ParameterizedTest

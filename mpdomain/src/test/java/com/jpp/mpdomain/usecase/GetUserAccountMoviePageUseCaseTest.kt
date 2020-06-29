@@ -1,7 +1,18 @@
 package com.jpp.mpdomain.usecase
 
-import com.jpp.mpdomain.*
-import com.jpp.mpdomain.repository.*
+import com.jpp.mpdomain.AccountMovieType
+import com.jpp.mpdomain.AppConfiguration
+import com.jpp.mpdomain.Connectivity
+import com.jpp.mpdomain.MoviePage
+import com.jpp.mpdomain.Session
+import com.jpp.mpdomain.SupportedLanguage
+import com.jpp.mpdomain.UserAccount
+import com.jpp.mpdomain.repository.AccountRepository
+import com.jpp.mpdomain.repository.ConfigurationRepository
+import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.LanguageRepository
+import com.jpp.mpdomain.repository.MoviePageRepository
+import com.jpp.mpdomain.repository.SessionRepository
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -183,7 +194,6 @@ class GetUserAccountMoviePageUseCaseTest {
         assertTrue(actual is Try.Success)
         assertEquals(moviePage, actual.getOrNull())
     }
-
 
     data class TestParam(
         val type: AccountMovieType,

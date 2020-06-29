@@ -2,7 +2,6 @@ package com.jpp.mp.main.header
 
 import android.view.View
 import com.jpp.mp.R
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mpdomain.Gravatar
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.UserAvatar
@@ -15,7 +14,10 @@ import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -137,30 +139,5 @@ class NavigationHeaderViewModelTest {
         assertEquals(View.VISIBLE, viewStatePosted?.accountViewState?.avatarViewState?.defaultLetterVisibility)
         assertEquals("A", viewStatePosted?.accountViewState?.avatarViewState?.defaultLetter)
         assertEquals(View.VISIBLE, viewStatePosted?.detailsViewState?.visibility)
-    }
-
-
-    @Test
-    fun `Should request navigation to account details when onNavigateToLoginSelected`() {
-        val expectedDestination = Destination.MPAccount
-
-        var requestedDestination: Destination? = null
-
-        subject.navigationEvents.observeWith { it.actionIfNotHandled { dest -> requestedDestination = dest } }
-        subject.onNavigateToLoginSelected()
-
-        assertEquals(expectedDestination, requestedDestination)
-    }
-
-    @Test
-    fun `Should request navigation to account details when onNavigateToAccountDetailsSelected`() {
-        val expectedDestination = Destination.MPAccount
-
-        var requestedDestination: Destination? = null
-
-        subject.navigationEvents.observeWith { it.actionIfNotHandled { dest -> requestedDestination = dest } }
-        subject.onNavigateToAccountDetailsSelected()
-
-        assertEquals(expectedDestination, requestedDestination)
     }
 }

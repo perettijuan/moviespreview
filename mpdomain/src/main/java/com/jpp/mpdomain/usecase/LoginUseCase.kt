@@ -18,7 +18,7 @@ class LoginUseCase(
             is Connectivity.Disconnected -> Try.Failure(Try.FailureCause.NoConnectivity)
             is Connectivity.Connected -> sessionRepository.createSession(accessToken)?.let {
                 Try.Success(Unit)
-            }?: Try.Failure(Try.FailureCause.Unknown)
+            } ?: Try.Failure(Try.FailureCause.Unknown)
         }
     }
 }

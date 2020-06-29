@@ -1,7 +1,18 @@
 package com.jpp.mpdomain.usecase
 
-import com.jpp.mpdomain.*
-import com.jpp.mpdomain.repository.*
+import com.jpp.mpdomain.AccountMovieType
+import com.jpp.mpdomain.AppConfiguration
+import com.jpp.mpdomain.Connectivity
+import com.jpp.mpdomain.MoviePage
+import com.jpp.mpdomain.Session
+import com.jpp.mpdomain.SupportedLanguage
+import com.jpp.mpdomain.UserAccount
+import com.jpp.mpdomain.repository.AccountRepository
+import com.jpp.mpdomain.repository.ConfigurationRepository
+import com.jpp.mpdomain.repository.ConnectivityRepository
+import com.jpp.mpdomain.repository.LanguageRepository
+import com.jpp.mpdomain.repository.MoviePageRepository
+import com.jpp.mpdomain.repository.SessionRepository
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -12,11 +23,9 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.MethodSource
 
 @ExtendWith(MockKExtension::class)
-class GetUserAccountMoviesUseCaseTest  {
+class GetUserAccountMoviesUseCaseTest {
 
     @MockK
     private lateinit var moviePageRepository: MoviePageRepository
@@ -203,13 +212,13 @@ class GetUserAccountMoviesUseCaseTest  {
         every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
         every { configurationRepository.getAppConfiguration() } returns AppConfiguration(imagesConfig)
         every {
-            moviePageRepository.getFavoriteMoviePage(1, account, session,  SupportedLanguage.English)
+            moviePageRepository.getFavoriteMoviePage(1, account, session, SupportedLanguage.English)
         } returns moviePageFav
         every {
-            moviePageRepository.getWatchlistMoviePage(1, account, session,  SupportedLanguage.English)
+            moviePageRepository.getWatchlistMoviePage(1, account, session, SupportedLanguage.English)
         } returns moviePageWatch
         every {
-            moviePageRepository.getRatedMoviePage(1, account, session,  SupportedLanguage.English)
+            moviePageRepository.getRatedMoviePage(1, account, session, SupportedLanguage.English)
         } returns moviePageRated
 
         val actual = subject.execute(1)
@@ -252,7 +261,4 @@ class GetUserAccountMoviesUseCaseTest  {
 //        assertTrue(actual is Try.Success)
 //        assertEquals(moviePage, actual.getOrNull())
 //    }
-
-
-
 }
