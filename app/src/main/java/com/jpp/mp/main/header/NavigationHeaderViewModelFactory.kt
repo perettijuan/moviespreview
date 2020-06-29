@@ -4,9 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import com.jpp.mp.common.viewmodel.ViewModelAssistedFactory
 import com.jpp.mpdomain.repository.SessionRepository
 import com.jpp.mpdomain.usecase.GetUserAccountUseCase
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import javax.inject.Inject
 
 /**
  * [ViewModelAssistedFactory] to create specific [NavigationHeaderViewModel] instances

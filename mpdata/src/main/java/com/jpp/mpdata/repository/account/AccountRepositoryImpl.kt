@@ -14,7 +14,6 @@ class AccountRepositoryImpl(
     private val accountDb: AccountDb
 ) : AccountRepository {
 
-
     override suspend fun getUserAccount(session: Session): UserAccount? {
         return accountDb.getUserAccountInfo() ?: accountApi.getUserAccountInfo(session)?.also {
             accountDb.storeUserAccountInfo(it)

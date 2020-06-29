@@ -15,8 +15,8 @@ import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mp.databinding.FragmentNavHeaderBinding
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * The application's UI shows a drawer navigation to allow the user redirect the app flow to different
