@@ -363,7 +363,10 @@ data class Gravatar(val hash: String) {
  * Check this for more details: https://www.themoviedb.org/talk/59f23ec292514148be02d73a
  * [gravatar] represents the Gravatar of the user.
  */
-data class UserAvatar(val gravatar: Gravatar)
+data class UserAvatar(val gravatar: Gravatar) {
+    fun getFullUrl(): String =
+        Gravatar.BASE_URL + gravatar.hash + Gravatar.REDIRECT
+}
 
 /**
  * Represents the details of the user's account.
@@ -377,7 +380,11 @@ data class UserAccount(
     val id: Double,
     val name: String,
     val username: String
-)
+) {
+    fun getUserName(): String = if (name.isEmpty()) username else name
+    fun getUserLetter(): String =
+        if (name.isEmpty()) username.first().toString() else name.first().toString().toUpperCase()
+}
 
 /**
  * Represents the state of a movie from the user's account perspective.

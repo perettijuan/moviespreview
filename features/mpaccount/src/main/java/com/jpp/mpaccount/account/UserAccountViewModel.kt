@@ -161,13 +161,6 @@ class UserAccountViewModel(
     }
 
 
-    private fun UserAccount.getUserName(): String = if (name.isEmpty()) username else name
-    private fun UserAccount.getUserLetter(): String =
-        if (name.isEmpty()) username.first().toString() else name.first().toString()
-
-    private fun UserAvatar.getFullUrl(): String =
-        Gravatar.BASE_URL + gravatar.hash + Gravatar.REDIRECT
-
     private fun List<Movie>.mapToUserMovieItem(): List<UserMovieItem> {
         return toMutableList().map { movie -> UserMovieItem(movie.poster_path ?: "noPath") }
     }
