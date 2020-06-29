@@ -1,18 +1,18 @@
 package com.jpp.mp.main
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.*
 import com.google.android.material.navigation.NavigationView
 import com.jpp.mp.R
-import com.jpp.mp.common.extensions.withViewModel
+import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mpdesign.ext.closeDrawerIfOpen
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
@@ -45,10 +45,17 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: MainActivityViewModelFactory
 
     @Inject
     lateinit var navigator: Navigator
+
+    private val viewModel: MainActivityViewModel by viewModels {
+        MPGenericSavedStateViewModelFactory(
+            viewModelFactory,
+            this
+        )
+    }
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -69,10 +76,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         mainDrawerLayout = findViewById(R.id.mainDrawerLayout)
         mainNavigationView = findViewById(R.id.mainNavigationView)
 
-        withMainViewModel {
-            onInit()
-        }
-
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.playingMoviesFragment,
@@ -85,6 +88,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
         setSupportActionBar(mainToolbar)
         setupNavigation()
+        viewModel.onInit()
     }
 
     override fun onResume() {
@@ -140,7 +144,4 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
             mainDrawerLayout?.closeDrawerIfOpen()
         }
     }
-
-    private fun withMainViewModel(action: MainActivityViewModel.() -> Unit) =
-        withViewModel<MainActivityViewModel>(viewModelFactory) { action() }
 }
