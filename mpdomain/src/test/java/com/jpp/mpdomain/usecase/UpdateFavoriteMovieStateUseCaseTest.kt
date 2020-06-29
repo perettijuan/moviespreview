@@ -13,7 +13,6 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -106,7 +105,7 @@ class UpdateFavoriteMovieStateUseCaseTest {
     }
 
     @Test
-    fun `Should update favorite movie state and flush favorites from page`() = runBlocking {
+    fun `Should update favorite movie state`() = runBlocking {
         val movieId = 1.toDouble()
         val asFavorite = true
         val session = mockk<Session>()
@@ -127,8 +126,5 @@ class UpdateFavoriteMovieStateUseCaseTest {
         val actual = subject.execute(1.0, true)
 
         assertTrue(actual is Try.Success)
-        assertEquals(true, actual.getOrNull())
-
-        verify { moviePageRepository.flushFavoriteMoviePages() }
     }
 }

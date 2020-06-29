@@ -33,11 +33,18 @@ class NavigationHeaderViewModelTest {
     @RelaxedMockK
     private lateinit var getUserAccountUseCase: GetUserAccountUseCase
 
+    @RelaxedMockK
+    private lateinit var navigator: HeaderNavigator
+
     private lateinit var subject: NavigationHeaderViewModel
 
     @BeforeEach
     fun setUp() {
-        subject = NavigationHeaderViewModel(getUserAccountUseCase, CoroutineTestExtension.testDispatcher)
+        subject = NavigationHeaderViewModel(
+            getUserAccountUseCase,
+            navigator,
+            CoroutineTestExtension.testDispatcher
+        )
     }
 
     @Test

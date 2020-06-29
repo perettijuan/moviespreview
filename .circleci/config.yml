@@ -195,7 +195,7 @@ jobs:
           path: features/mpcredits/mpdomain/build/test-results
       - run:
           name: Run mpaccount Module Unit Tests
-          command: ./gradlew :features:mpcredits:test
+          command: ./gradlew :features:mpaccount:test
       - store_artifacts:
           path: features/mpaccount/build/reports
       - store_test_results:
