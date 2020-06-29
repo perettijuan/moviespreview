@@ -10,8 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.extensions.setScreenTitle
-import com.jpp.mp.common.extensions.withViewModel
-import com.jpp.mp.common.fragments.MPFragment
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mpperson.databinding.FragmentPersonBinding
 import dagger.android.support.AndroidSupportInjection

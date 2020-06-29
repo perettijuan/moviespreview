@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,8 +13,7 @@ import com.jpp.mpaccount.R
 import com.jpp.mpdesign.ext.inflate
 import com.jpp.mpdesign.ext.setInvisible
 import com.jpp.mpdesign.ext.setVisible
-import kotlinx.android.synthetic.main.layout_user_account_movies.view.*
-import kotlinx.android.synthetic.main.list_item_user_account_movies.view.*
+import com.jpp.mpdesign.views.MPImageView
 
 /**
  * Custom [ConstraintLayout] used in the account section to show the list
@@ -27,6 +28,11 @@ class UserAccountMoviesView : ConstraintLayout {
     interface UserAccountMovieItem {
         fun getImageUrl(): String
     }
+
+    private var userAccountMoviesTitle: TextView? = null
+    private var userAccountMoviesList: RecyclerView? = null
+    private var userAccountMoviesError: TextView? = null
+    private var userAccountMoviesMoreIv: ImageView? = null
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -47,10 +53,14 @@ class UserAccountMoviesView : ConstraintLayout {
 
     private fun init() {
         inflate(context, R.layout.layout_user_account_movies, this)
+        userAccountMoviesTitle = findViewById(R.id.userAccountMoviesTitle)
+        userAccountMoviesList = findViewById(R.id.userAccountMoviesList)
+        userAccountMoviesError = findViewById(R.id.userAccountMoviesError)
+        userAccountMoviesMoreIv = findViewById(R.id.userAccountMoviesMoreIv)
     }
 
     fun setTitle(title: CharSequence) {
-        userAccountMoviesTitle.text = title
+        userAccountMoviesTitle?.text = title
     }
 
     fun items(movies: List<UserAccountMovieItem>?) {
@@ -58,13 +68,13 @@ class UserAccountMoviesView : ConstraintLayout {
             return
         }
 
-        userAccountMoviesList.apply {
+        userAccountMoviesList?.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             adapter = AccountMovieAdapter(movies)
             setVisible()
         }
 
-        userAccountMoviesError.setInvisible()
+        userAccountMoviesError?.setInvisible()
     }
 
     fun errorMessage(message: Int) {
@@ -72,10 +82,10 @@ class UserAccountMoviesView : ConstraintLayout {
             return
         }
 
-        userAccountMoviesMoreIv.setInvisible()
-        userAccountMoviesList.setInvisible()
+        userAccountMoviesMoreIv?.setInvisible()
+        userAccountMoviesList?.setInvisible()
 
-        userAccountMoviesError.apply {
+        userAccountMoviesError?.apply {
             setText(message)
             setVisible()
         }
@@ -95,7 +105,9 @@ class UserAccountMoviesView : ConstraintLayout {
 
         class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             fun bind(item: UserAccountMovieItem) {
-                itemView.userAccountMoviesItemIv.imageUrl(item.getImageUrl())
+                val userAccountMoviesItemIv: MPImageView =
+                    itemView.findViewById(R.id.userAccountMoviesItemIv)
+                userAccountMoviesItemIv.imageUrl(item.getImageUrl())
             }
         }
     }

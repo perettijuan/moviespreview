@@ -3,7 +3,6 @@ package com.jpp.mp.main
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import com.jpp.mp.R
-import com.jpp.mp.common.navigation.Destination
 import com.jpp.mp.main.header.HeaderNavigator
 import com.jpp.mp.main.movies.MovieListNavigator
 import com.jpp.mpabout.AboutFragmentDirections

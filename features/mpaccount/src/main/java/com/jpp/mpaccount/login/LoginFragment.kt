@@ -15,7 +15,6 @@ import com.jpp.mpaccount.R
 import com.jpp.mpaccount.databinding.FragmentLoginBinding
 import com.jpp.mpdesign.ext.snackBarNoAction
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_login.*
 import javax.inject.Inject
 
 /**
@@ -42,6 +41,8 @@ class LoginFragment : Fragment() {
         )
     }
 
+    private var loginContent: View? = null
+
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -54,11 +55,13 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loginContent = view.findViewById(R.id.loginContent)
         viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
         viewModel.onInit()
     }
 
     override fun onDestroyView() {
+        loginContent = null
         viewBinding = null
         super.onDestroyView()
     }

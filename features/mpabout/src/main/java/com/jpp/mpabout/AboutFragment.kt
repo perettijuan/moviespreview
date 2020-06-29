@@ -14,12 +14,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.common.extensions.*
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mpabout.databinding.FragmentAboutBinding
 import com.jpp.mpdesign.ext.getColor
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_about.*
 import javax.inject.Inject
 
 /**
@@ -43,6 +43,8 @@ class AboutFragment : Fragment() {
         )
     }
 
+    private var aboutRv: RecyclerView? = null
+
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -55,6 +57,7 @@ class AboutFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        aboutRv = view.findViewById(R.id.aboutRv)
         viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
         viewModel.navEvents.observeHandledEvent(viewLifecycleOwner, ::handleNavEvent)
         viewModel.onInit()
@@ -62,13 +65,14 @@ class AboutFragment : Fragment() {
 
     override fun onDestroyView() {
         viewBinding = null
+        aboutRv = null
         super.onDestroyView()
     }
 
     private fun renderViewState(viewState: AboutViewState) {
         setScreenTitle(getString(viewState.screenTitle))
         viewBinding?.viewState = viewState
-        aboutRv.apply {
+        aboutRv?.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = AboutItemsAdapter(viewState.content.aboutItems) {viewModel.onUserSelectedAboutItem(it) }
             addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))

@@ -1,28 +1,23 @@
 package com.jpp.mp.main
 
 import android.os.Bundle
-import androidx.annotation.IdRes
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
-import androidx.navigation.NavDirections
-import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.*
+import com.google.android.material.navigation.NavigationView
 import com.jpp.mp.R
-import com.jpp.mp.common.extensions.withViewModel
-import com.jpp.mp.common.navigation.NavigationViewModel
+import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mpdesign.ext.closeDrawerIfOpen
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
-import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 /**
@@ -50,14 +45,23 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: MainActivityViewModelFactory
 
     @Inject
     lateinit var navigator: Navigator
 
+    private val viewModel: MainActivityViewModel by viewModels {
+        MPGenericSavedStateViewModelFactory(
+            viewModelFactory,
+            this
+        )
+    }
+
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     private var mainToolbar: Toolbar? = null
+    private var mainDrawerLayout: DrawerLayout? = null
+    private var mainNavigationView: NavigationView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -69,47 +73,8 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         window.exitTransition = null
 
         mainToolbar = findViewById(R.id.mainToolbar)
-
-        withMainViewModel {
-            onInit()
-
-            viewState.observe(
-                this@MainActivity,
-                Observer { viewState -> renderViewState(viewState) })
-
-            moduleNavEvents.observe(this@MainActivity, Observer {
-                it.actionIfNotHandled { navEvent ->
-                    when (navEvent) {
-                        is ModuleNavigationEvent.NavigateToNodeWithDirections -> innerNavigateTo(
-                            navEvent.directions
-                        )
-                        is ModuleNavigationEvent.NavigateToNodeWithId -> interModuleNavigationTo(
-                            navEvent.nodeId
-                        )
-                        is ModuleNavigationEvent.NavigateToNodeWithExtras -> navigateToModuleWithExtras(
-                            navEvent.nodeId,
-                            navEvent.extras
-                        )
-                        is ModuleNavigationEvent.NavigateToPrevious -> withNavController { popBackStack() }
-                    }
-                }
-            })
-        }
-
-        withNavigationViewModel {
-            navEvents.observe(
-                this@MainActivity,
-                Observer {
-                    it.actionIfNotHandled { destination ->
-                        withMainViewModel {
-                            onRequestToNavigateToDestination(destination)
-                        }
-                    }
-                })
-            reachedDestinations.observe(
-                this@MainActivity,
-                Observer { withMainViewModel { onDestinationReached(it) } })
-        }
+        mainDrawerLayout = findViewById(R.id.mainDrawerLayout)
+        mainNavigationView = findViewById(R.id.mainNavigationView)
 
         appBarConfiguration = AppBarConfiguration(
             setOf(
@@ -123,6 +88,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
         setSupportActionBar(mainToolbar)
         setupNavigation()
+        viewModel.onInit()
     }
 
     override fun onResume() {
@@ -141,14 +107,17 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     }
 
     override fun onBackPressed() {
-        if (mainDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mainDrawerLayout.closeDrawer(GravityCompat.START)
+        val drawerOpen = mainDrawerLayout?.isDrawerOpen(GravityCompat.START) ?: false
+        if (drawerOpen) {
+            mainDrawerLayout?.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
         }
     }
 
     override fun onDestroy() {
+        mainNavigationView = null
+        mainDrawerLayout = null
         mainToolbar = null
         super.onDestroy()
     }
@@ -162,65 +131,17 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
      * the view state that the ViewModel is showing.
      */
     private fun setupNavigation() {
-        findNavController(R.id.mainNavHostFragment).let { navController ->
-            /*
-             * We want several top-level destinations since we're showing the
-             * navigation drawer.
-             */
-            setupActionBarWithNavController(
-                this,
-                navController,
-                appBarConfiguration
-            )
-            setupWithNavController(mainNavigationView, navController)
+        val navView = mainNavigationView ?: return
+        val navController = findNavController(R.id.mainNavHostFragment)
+
+        setupActionBarWithNavController(
+            this,
+            navController,
+            appBarConfiguration
+        )
+        setupWithNavController(navView, navController)
+        navController.addOnDestinationChangedListener { _, _, _ ->
+            mainDrawerLayout?.closeDrawerIfOpen()
         }
-    }
-
-    private fun interModuleNavigationTo(@IdRes resId: Int) {
-        withNavController {
-            navigate(resId, null, buildAnimationNavOptions())
-        }
-    }
-
-    private fun innerNavigateTo(directions: NavDirections) {
-        withNavController { navigate(directions) }
-    }
-
-    private fun withNavController(action: NavController.() -> Unit) {
-        findNavController(R.id.mainNavHostFragment).action()
-    }
-
-    private fun navigateToModuleWithExtras(@IdRes moduleNavId: Int, extras: Bundle) {
-        withNavController {
-            navigate(
-                moduleNavId,
-                extras,
-                buildAnimationNavOptions()
-            )
-        }
-    }
-
-    private fun buildAnimationNavOptions() = NavOptions.Builder()
-        .setEnterAnim(R.anim.fragment_enter_slide_right)
-        .setExitAnim(R.anim.fragment_exit_slide_right)
-        .setPopEnterAnim(R.anim.fragment_enter_slide_left)
-        .setPopExitAnim(R.anim.fragment_exit_slide_left)
-        .build()
-
-    private fun withMainViewModel(action: MainActivityViewModel.() -> Unit) =
-        withViewModel<MainActivityViewModel>(viewModelFactory) { action() }
-
-    private fun withNavigationViewModel(action: NavigationViewModel.() -> Unit) =
-        withViewModel<NavigationViewModel>(viewModelFactory) { action() }
-
-    private fun renderViewState(viewState: MainActivityViewState) {
-        supportActionBar?.title = viewState.sectionTitle
-        /*
-         * Forces to inflate the menu shown in the Toolbar.
-         * onCreateOptionsMenu() will be re-executed to hide/show the
-         * menu options
-         */
-        invalidateOptionsMenu()
-        mainDrawerLayout.closeDrawerIfOpen()
     }
 }
