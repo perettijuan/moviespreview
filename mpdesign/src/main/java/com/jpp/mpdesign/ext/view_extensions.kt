@@ -30,13 +30,6 @@ fun View.setVisible() {
 }
 
 /**
- * Extension function for the View class to make a View gone
- */
-fun View.setGone() {
-    this.visibility = View.GONE
-}
-
-/**
  * Extension function for the View class to make a View invisible
  */
 fun View.setInvisible() {

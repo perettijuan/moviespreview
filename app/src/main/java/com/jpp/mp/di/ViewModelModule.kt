@@ -24,12 +24,4 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MainActivityViewModel::class)
     internal abstract fun postMainActivityViewModel(viewModel: MainActivityViewModel): ViewModel
-
-    /*
-     * Navigation dependencies.
-     */
-    @Binds
-    @IntoMap
-    @ViewModelKey(NavigationViewModel::class)
-    internal abstract fun getNavigationViewModel(viewModel: NavigationViewModel): ViewModel
 }
