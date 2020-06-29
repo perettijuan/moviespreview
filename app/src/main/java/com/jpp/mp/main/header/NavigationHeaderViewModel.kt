@@ -23,7 +23,7 @@ class NavigationHeaderViewModel @Inject constructor(
 ) : MPViewModel() {
 
     private val _viewState = MutableLiveData<HeaderViewState>()
-    val viewState: LiveData<HeaderViewState> = _viewState
+    internal val viewState: LiveData<HeaderViewState> = _viewState
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -31,7 +31,7 @@ class NavigationHeaderViewModel @Inject constructor(
      * internally verifies the state of the application and updates the view state based
      * on it.
      */
-    fun onInit() {
+    internal fun onInit() {
         _viewState.value = HeaderViewState.showLoading()
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {
@@ -48,14 +48,14 @@ class NavigationHeaderViewModel @Inject constructor(
     /**
      * Called when the the navigate to login option is selected in the UI.
      */
-    fun onNavigateToLoginSelected() {
+    internal fun onNavigateToLoginSelected() {
         navigateTo(Destination.MPAccount)
     }
 
     /**
      * Called when the user attempts to navigate to the account details.
      */
-    fun onNavigateToAccountDetailsSelected() {
+    internal fun onNavigateToAccountDetailsSelected() {
         navigateTo(Destination.MPAccount)
     }
 
