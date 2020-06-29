@@ -2,7 +2,6 @@ package com.jpp.mp.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.jpp.mp.common.navigation.NavigationViewModel
 import com.jpp.mp.main.MainActivityViewModel
 import dagger.Binds
 import dagger.Module
