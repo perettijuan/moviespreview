@@ -9,13 +9,6 @@ import kotlinx.coroutines.flow.Flow
  * Repository definition to support [UserAccount] data.
  */
 interface AccountRepository {
-
-    /**
-     * Subscribe to this LiveData object when interested on getting updates
-     * about [UserAccount] changes.
-     */
-    fun userAccountUpdates(): Channel<UserAccount>
-
     /**
      * Retrieves a [UserAccount] for the provided [session].
      */

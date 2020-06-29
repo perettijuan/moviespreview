@@ -5,9 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jpp.mpdomain.UserAccount
+import com.jpp.mpdomain.repository.SessionRepository
 import com.jpp.mpdomain.usecase.GetUserAccountUseCase
 import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -15,14 +18,24 @@ import kotlinx.coroutines.withContext
  * [ViewModel] that supports the [NavigationHeaderFragment] behavior. It retrieves the
  * user account data and updates the view state that the Fragment takes care of rendering.
  */
+@ExperimentalCoroutinesApi
 class NavigationHeaderViewModel(
     private val getUserAccountUseCase: GetUserAccountUseCase,
     private val navigator: HeaderNavigator,
+    private val sessionRepository: SessionRepository,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _viewState = MutableLiveData<HeaderViewState>()
     internal val viewState: LiveData<HeaderViewState> = _viewState
+
+    init {
+        viewModelScope.launch {
+            sessionRepository.sessionStateUpdates().consumeEach {
+                fetchAccountData()
+            }
+        }
+    }
 
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
@@ -32,16 +45,7 @@ class NavigationHeaderViewModel(
      */
     internal fun onInit() {
         _viewState.value = HeaderViewState.showLoading()
-        viewModelScope.launch {
-            val result = withContext(ioDispatcher) {
-                getUserAccountUseCase.execute()
-            }
-
-            when (result) {
-                is Try.Success -> processUserAccount(result.value)
-                is Try.Failure -> processFailureCase()
-            }
-        }
+        fetchAccountData()
     }
 
     /**
@@ -56,6 +60,19 @@ class NavigationHeaderViewModel(
      */
     internal fun onNavigateToAccountDetailsSelected() {
         navigator.navigateToLogin()
+    }
+
+    private fun fetchAccountData() {
+        viewModelScope.launch {
+            val result = withContext(ioDispatcher) {
+                getUserAccountUseCase.execute()
+            }
+
+            when (result) {
+                is Try.Success -> processUserAccount(result.value)
+                is Try.Failure -> processFailureCase()
+            }
+        }
     }
 
     private fun processUserAccount(userAccount: UserAccount) {
