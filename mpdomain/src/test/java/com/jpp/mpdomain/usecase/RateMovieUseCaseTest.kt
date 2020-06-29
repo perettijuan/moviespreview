@@ -8,12 +8,10 @@ import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.MoviePageRepository
 import com.jpp.mpdomain.repository.MovieStateRepository
 import com.jpp.mpdomain.repository.SessionRepository
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -65,7 +63,7 @@ class RateMovieUseCaseTest {
     @Test
     fun `Should fail with user not logged`() = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getCurrentSession() } returns null
+        coEvery { sessionRepository.getCurrentSession() } returns null
 
         val actual = subject.execute(1.0, 5F)
 
@@ -76,8 +74,8 @@ class RateMovieUseCaseTest {
     @Test
     fun `Should fail with user not logged when no account available`() = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getCurrentSession() } returns mockk()
-        every { accountRepository.getUserAccount(any()) } returns null
+        coEvery { sessionRepository.getCurrentSession() } returns mockk()
+        coEvery { accountRepository.getUserAccount(any()) } returns null
 
         val actual = subject.execute(1.0, 5F)
 
@@ -88,9 +86,9 @@ class RateMovieUseCaseTest {
     @Test
     fun `Should fail with unknown reason`() = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getCurrentSession() } returns mockk()
-        every { accountRepository.getUserAccount(any()) } returns mockk()
-        every {
+        coEvery { sessionRepository.getCurrentSession() } returns mockk()
+        coEvery { accountRepository.getUserAccount(any()) } returns mockk()
+        coEvery {
             movieStateRepository.rateMovie(
                 any(),
                 any(),
@@ -113,9 +111,9 @@ class RateMovieUseCaseTest {
         val userAccount = mockk<UserAccount>()
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getCurrentSession() } returns session
-        every { accountRepository.getUserAccount(session) } returns userAccount
-        every {
+        coEvery { sessionRepository.getCurrentSession() } returns session
+        coEvery { accountRepository.getUserAccount(session) } returns userAccount
+        coEvery {
             movieStateRepository.rateMovie(
                 movieId,
                 newRating,
@@ -128,6 +126,6 @@ class RateMovieUseCaseTest {
 
         assertTrue(actual is Try.Success)
 
-        verify { moviePageRepository.flushRatedMoviePages() }
+        coVerify { moviePageRepository.flushRatedMoviePages() }
     }
 }

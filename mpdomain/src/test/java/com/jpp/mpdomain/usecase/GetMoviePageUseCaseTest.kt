@@ -7,6 +7,7 @@ import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.MoviePageRepository
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -57,9 +58,9 @@ class GetMoviePageUseCaseTest {
     @MethodSource("movieSections")
     fun `Should retrieve return unknown error`(movieSection: MovieSection) = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+        coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
 
-        every {
+        coEvery {
             moviePageRepository.getMoviePageForSection(1, movieSection, SupportedLanguage.English)
         } returns null
 
@@ -75,9 +76,9 @@ class GetMoviePageUseCaseTest {
         val expected: MoviePage = mockk()
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+        coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
 
-        every {
+        coEvery {
             moviePageRepository.getMoviePageForSection(1, movieSection, SupportedLanguage.English)
         } returns expected
 

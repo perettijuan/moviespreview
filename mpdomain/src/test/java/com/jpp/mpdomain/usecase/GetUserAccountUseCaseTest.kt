@@ -6,6 +6,7 @@ import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.repository.AccountRepository
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.SessionRepository
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -53,7 +54,7 @@ class GetUserAccountUseCaseTest {
     @Test
     fun `Should fail with user not logged`() = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getCurrentSession() } returns null
+        coEvery { sessionRepository.getCurrentSession() } returns null
 
         val actual = subject.execute()
 
@@ -64,8 +65,8 @@ class GetUserAccountUseCaseTest {
     @Test
     fun `Should fail with unknown reason`() = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getCurrentSession() } returns mockk()
-        every { accountRepository.getUserAccount(any()) } returns null
+        coEvery { sessionRepository.getCurrentSession() } returns mockk()
+        coEvery { accountRepository.getUserAccount(any()) } returns null
 
         val actual = subject.execute()
 
@@ -79,8 +80,8 @@ class GetUserAccountUseCaseTest {
         val expected: UserAccount = mockk()
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getCurrentSession() } returns currentSession
-        every { accountRepository.getUserAccount(currentSession) } returns expected
+        coEvery { sessionRepository.getCurrentSession() } returns currentSession
+        coEvery { accountRepository.getUserAccount(currentSession) } returns expected
 
         val actual = subject.execute()
 

@@ -13,6 +13,7 @@ import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.MoviePageRepository
 import com.jpp.mpdomain.repository.SessionRepository
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -72,7 +73,7 @@ class GetUserAccountMoviesUseCaseTest {
     @Test
     fun `Should fail with user not logged`() = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getCurrentSession() } returns null
+        coEvery { sessionRepository.getCurrentSession() } returns null
 
         val actual = subject.execute(1)
 
@@ -84,8 +85,8 @@ class GetUserAccountMoviesUseCaseTest {
     fun `Should fail with user not logged when no account available`() =
         runBlocking {
             every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-            every { sessionRepository.getCurrentSession() } returns mockk()
-            every { accountRepository.getUserAccount(any()) } returns null
+            coEvery { sessionRepository.getCurrentSession() } returns mockk()
+            coEvery { accountRepository.getUserAccount(any()) } returns null
 
             val actual = subject.execute(1)
 
@@ -99,17 +100,17 @@ class GetUserAccountMoviesUseCaseTest {
         val account = mockk<UserAccount>()
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getCurrentSession() } returns session
-        every { accountRepository.getUserAccount(any()) } returns account
-        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
-        every { configurationRepository.getAppConfiguration() } returns AppConfiguration(imagesConfig)
-        every {
+        coEvery { sessionRepository.getCurrentSession() } returns session
+        coEvery { accountRepository.getUserAccount(any()) } returns account
+        coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+        coEvery { configurationRepository.getAppConfiguration() } returns AppConfiguration(imagesConfig)
+        coEvery {
             moviePageRepository.getWatchlistMoviePage(any(), any(), any(), any())
         } returns MoviePage(1, mockedMovieList, 10, 100)
-        every {
+        coEvery {
             moviePageRepository.getRatedMoviePage(any(), any(), any(), any())
         } returns MoviePage(1, mockedMovieList, 10, 100)
-        every {
+        coEvery {
             moviePageRepository.getFavoriteMoviePage(any(), any(), any(), any())
         } returns null
 
@@ -125,17 +126,17 @@ class GetUserAccountMoviesUseCaseTest {
         val account = mockk<UserAccount>()
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getCurrentSession() } returns session
-        every { accountRepository.getUserAccount(any()) } returns account
-        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
-        every { configurationRepository.getAppConfiguration() } returns AppConfiguration(imagesConfig)
-        every {
+        coEvery { sessionRepository.getCurrentSession() } returns session
+        coEvery { accountRepository.getUserAccount(any()) } returns account
+        coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+        coEvery { configurationRepository.getAppConfiguration() } returns AppConfiguration(imagesConfig)
+        coEvery {
             moviePageRepository.getFavoriteMoviePage(any(), any(), any(), any())
         } returns MoviePage(1, mockedMovieList, 10, 100)
-        every {
+        coEvery {
             moviePageRepository.getRatedMoviePage(any(), any(), any(), any())
         } returns MoviePage(1, mockedMovieList, 10, 100)
-        every {
+        coEvery {
             moviePageRepository.getWatchlistMoviePage(any(), any(), any(), any())
         } returns null
 
@@ -151,17 +152,17 @@ class GetUserAccountMoviesUseCaseTest {
         val account = mockk<UserAccount>()
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getCurrentSession() } returns session
-        every { accountRepository.getUserAccount(any()) } returns account
-        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
-        every { configurationRepository.getAppConfiguration() } returns AppConfiguration(imagesConfig)
-        every {
+        coEvery { sessionRepository.getCurrentSession() } returns session
+        coEvery { accountRepository.getUserAccount(any()) } returns account
+        coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+        coEvery { configurationRepository.getAppConfiguration() } returns AppConfiguration(imagesConfig)
+        coEvery {
             moviePageRepository.getFavoriteMoviePage(any(), any(), any(), any())
         } returns MoviePage(1, mockedMovieList, 10, 100)
-        every {
+        coEvery {
             moviePageRepository.getWatchlistMoviePage(any(), any(), any(), any())
         } returns MoviePage(1, mockedMovieList, 10, 100)
-        every {
+        coEvery {
             moviePageRepository.getRatedMoviePage(any(), any(), any(), any())
         } returns null
 
@@ -207,17 +208,17 @@ class GetUserAccountMoviesUseCaseTest {
         )
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getCurrentSession() } returns session
-        every { accountRepository.getUserAccount(any()) } returns account
-        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
-        every { configurationRepository.getAppConfiguration() } returns AppConfiguration(imagesConfig)
-        every {
+        coEvery { sessionRepository.getCurrentSession() } returns session
+        coEvery { accountRepository.getUserAccount(any()) } returns account
+        coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+        coEvery { configurationRepository.getAppConfiguration() } returns AppConfiguration(imagesConfig)
+        coEvery {
             moviePageRepository.getFavoriteMoviePage(1, account, session, SupportedLanguage.English)
         } returns moviePageFav
-        every {
+        coEvery {
             moviePageRepository.getWatchlistMoviePage(1, account, session, SupportedLanguage.English)
         } returns moviePageWatch
-        every {
+        coEvery {
             moviePageRepository.getRatedMoviePage(1, account, session, SupportedLanguage.English)
         } returns moviePageRated
 
@@ -228,37 +229,4 @@ class GetUserAccountMoviesUseCaseTest {
         assertEquals(expectedRated, actual.getOrNull()?.get(AccountMovieType.Rated))
         assertEquals(expectedWatch, actual.getOrNull()?.get(AccountMovieType.Watchlist))
     }
-//
-//    @ParameterizedTest
-//    @MethodSource("testParams")
-//    fun `Should retrieve when no app configuration available`(param: TestParam) = runBlocking {
-//        val session = mockk<Session>()
-//        val account = mockk<UserAccount>()
-//        val moviePage = MoviePage(
-//            page = 1,
-//            results = mockedMovieList,
-//            total_pages = 10,
-//            total_results = 500
-//        )
-//
-//        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-//        every { sessionRepository.getCurrentSession() } returns session
-//        every { accountRepository.getUserAccount(session) } returns account
-//        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
-//        every { configurationRepository.getAppConfiguration() } returns null
-//
-//        param.preCondition(
-//            moviePageRepository,
-//            1,
-//            session,
-//            account,
-//            SupportedLanguage.English,
-//            moviePage
-//        )
-//
-//        val actual = subject.execute(1, param.type)
-//
-//        assertTrue(actual is Try.Success)
-//        assertEquals(moviePage, actual.getOrNull())
-//    }
 }

@@ -7,6 +7,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -29,7 +30,7 @@ class CreditsRepositoryTest {
     }
 
     @Test
-    fun `Should never get from API when data is in cache`() {
+    fun `Should never get from API when data is in cache`() = runBlocking {
         every { creditsDb.getCreditsForMovie(any()) } returns mockk()
 
         subject.getCreditsForMovie(movieId)
@@ -40,7 +41,7 @@ class CreditsRepositoryTest {
     }
 
     @Test
-    fun `Should update cache when data retrieved from API`() {
+    fun `Should update cache when data retrieved from API`() = runBlocking {
         val credits = mockk<Credits>()
         every { creditsDb.getCreditsForMovie(any()) } returns null
         every { creditsApi.getCreditsForMovie(any()) } returns credits
@@ -52,7 +53,7 @@ class CreditsRepositoryTest {
     }
 
     @Test
-    fun `Should return null when it fails`() {
+    fun `Should return null when it fails`() = runBlocking {
         every { creditsDb.getCreditsForMovie(any()) } returns null
         every { creditsApi.getCreditsForMovie(any()) } returns null
 

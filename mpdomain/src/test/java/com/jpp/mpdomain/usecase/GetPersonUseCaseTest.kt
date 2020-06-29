@@ -6,6 +6,7 @@ import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.PersonRepository
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -48,8 +49,8 @@ class GetPersonUseCaseTest {
     @Test
     fun `Should fail with unknown reason`() = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
-        every { personRepository.getPerson(any(), any()) } returns null
+        coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+        coEvery { personRepository.getPerson(any(), any()) } returns null
 
         val actual = subject.execute(1.0)
 
@@ -69,8 +70,8 @@ class GetPersonUseCaseTest {
         )
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
-        every { personRepository.getPerson(12.0, SupportedLanguage.English) } returns person
+        coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+        coEvery { personRepository.getPerson(12.0, SupportedLanguage.English) } returns person
 
         val actual = subject.execute(12.0)
 

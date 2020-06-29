@@ -6,6 +6,7 @@ import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.MovieDetailRepository
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -53,8 +54,8 @@ class GetMovieDetailUseCaseTest {
     @Test
     fun `Should fail with unknown reason`() = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { languageRepository.getCurrentAppLanguage() } returns mockk()
-        every { movieDetailRepository.getMovieDetails(any(), any()) } returns null
+        coEvery { languageRepository.getCurrentAppLanguage() } returns mockk()
+        coEvery { movieDetailRepository.getMovieDetails(any(), any()) } returns null
 
         val actual = subject.execute(1.0)
 
@@ -76,8 +77,8 @@ class GetMovieDetailUseCaseTest {
             vote_count = 50.0
         )
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
-        every {
+        coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+        coEvery {
             movieDetailRepository.getMovieDetails(
                 1.0,
                 SupportedLanguage.English

@@ -8,6 +8,7 @@ import com.jpp.mpdomain.ImagesConfiguration
 import com.jpp.mpdomain.repository.ConfigurationRepository
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.CreditsRepository
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -54,7 +55,7 @@ class GetCreditsUseCaseTest {
     @Test
     fun `Should fail with unknown reason`() = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { creditsRepository.getCreditsForMovie(any()) } returns null
+        coEvery { creditsRepository.getCreditsForMovie(any()) } returns null
 
         val actual = subject.execute(1.0)
 
@@ -77,8 +78,8 @@ class GetCreditsUseCaseTest {
         )
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { creditsRepository.getCreditsForMovie(1.0) } returns credits
-        every { configurationRepository.getAppConfiguration() } returns AppConfiguration(
+        coEvery { creditsRepository.getCreditsForMovie(1.0) } returns credits
+        coEvery { configurationRepository.getAppConfiguration() } returns AppConfiguration(
             IMAGES_CONFIG
         )
 

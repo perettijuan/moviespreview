@@ -9,6 +9,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -30,7 +31,7 @@ class ConfigurationRepositoryTest {
     }
 
     @Test
-    fun `Should never get from API when data is in cache`() {
+    fun `Should never get from API when data is in cache`() = runBlocking {
         every { configurationDb.getAppConfiguration() } returns mockk()
 
         subject.getAppConfiguration()
@@ -41,7 +42,7 @@ class ConfigurationRepositoryTest {
     }
 
     @Test
-    fun `Should update cache when data retrieved from API`() {
+    fun `Should update cache when data retrieved from API`() = runBlocking {
         val appConfig = mockk<AppConfiguration>()
         every { configurationDb.getAppConfiguration() } returns null
         every { configurationApi.getAppConfiguration() } returns appConfig
@@ -53,7 +54,7 @@ class ConfigurationRepositoryTest {
     }
 
     @Test
-    fun `Should return null when it fails`() {
+    fun `Should return null when it fails`() = runBlocking {
         every { configurationDb.getAppConfiguration() } returns null
         every { configurationApi.getAppConfiguration() } returns null
 

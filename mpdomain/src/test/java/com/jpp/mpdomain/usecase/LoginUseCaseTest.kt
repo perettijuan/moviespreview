@@ -4,6 +4,7 @@ import com.jpp.mpdomain.AccessToken
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.SessionRepository
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -47,7 +48,7 @@ class LoginUseCaseTest {
     @Test
     fun `Should fail with unknown reason`() = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.createSession(accessToken) } returns null
+        coEvery { sessionRepository.createSession(accessToken) } returns null
 
         val actual = subject.execute(accessToken)
 
@@ -58,7 +59,7 @@ class LoginUseCaseTest {
     @Test
     fun `Should retrieve access token successfully`() = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.createSession(accessToken) } returns mockk()
+        coEvery { sessionRepository.createSession(accessToken) } returns mockk()
 
         val actual = subject.execute(accessToken)
 

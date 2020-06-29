@@ -32,7 +32,7 @@ class NavigationHeaderViewModel(
     init {
         viewModelScope.launch {
             sessionRepository.sessionStateUpdates().consumeEach {
-                fetchAccountData()
+                    fetchAccountData()
             }
         }
     }

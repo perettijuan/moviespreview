@@ -10,6 +10,7 @@ import com.jpp.mpdomain.repository.ConfigurationRepository
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.SearchRepository
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -60,8 +61,8 @@ class SearchUseCaseTest {
     @Test
     fun `Should fail with unknown reason`() = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
-        every { searchRepository.searchPage(any(), any(), any()) } returns null
+        coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+        coEvery { searchRepository.searchPage(any(), any(), any()) } returns null
 
         val actual = subject.execute("aQuery", 1)
 
@@ -72,11 +73,11 @@ class SearchUseCaseTest {
     @Test
     fun `Should perform search and configure search results`() = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
-        every { configurationRepository.getAppConfiguration() } returns AppConfiguration(
+        coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+        coEvery { configurationRepository.getAppConfiguration() } returns AppConfiguration(
             IMAGES_CONFIG
         )
-        every {
+        coEvery {
             searchRepository.searchPage(
                 "aQuery",
                 1,
@@ -123,10 +124,10 @@ class SearchUseCaseTest {
     @Test
     fun `Should perform search but not configure search results`() = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
-        every { configurationRepository.getAppConfiguration() } returns null
+        coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+        coEvery { configurationRepository.getAppConfiguration() } returns null
 
-        every {
+        coEvery {
             searchRepository.searchPage(
                 "aQuery",
                 1,

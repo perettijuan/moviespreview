@@ -4,6 +4,7 @@ import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.ImagesConfiguration
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.repository.ConfigurationRepository
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -29,7 +30,7 @@ class ConfigureMovieImagesPathUseCaseTest {
 
     @Test
     fun `Should fail if there is no AppConfiguration available`() = runBlocking {
-        every { configurationRepository.getAppConfiguration() } returns null
+        coEvery { configurationRepository.getAppConfiguration() } returns null
 
         val result = subject.execute(movie = originalMovie)
 
@@ -38,7 +39,7 @@ class ConfigureMovieImagesPathUseCaseTest {
 
     @Test
     fun `Should configure movie with the last available size`() = runBlocking {
-        every { configurationRepository.getAppConfiguration() } returns AppConfiguration(
+        coEvery { configurationRepository.getAppConfiguration() } returns AppConfiguration(
             imagesConfig
         )
         val expected = Movie(

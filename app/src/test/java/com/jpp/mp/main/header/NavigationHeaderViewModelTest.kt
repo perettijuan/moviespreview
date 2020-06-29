@@ -3,17 +3,23 @@ package com.jpp.mp.main.header
 import android.view.View
 import com.jpp.mp.R
 import com.jpp.mpdomain.Gravatar
+import com.jpp.mpdomain.Session
 import com.jpp.mpdomain.UserAccount
 import com.jpp.mpdomain.UserAvatar
+import com.jpp.mpdomain.repository.SessionRepository
 import com.jpp.mpdomain.usecase.GetUserAccountUseCase
 import com.jpp.mpdomain.usecase.Try
 import com.jpp.mptestutils.CoroutineTestExtension
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
@@ -36,13 +42,20 @@ class NavigationHeaderViewModelTest {
     @RelaxedMockK
     private lateinit var navigator: HeaderNavigator
 
+    @RelaxedMockK
+    private lateinit var sessionRepository: SessionRepository
+
+    private val sessionRepositoryUpdates: Channel<Session?> = Channel()
+
     private lateinit var subject: NavigationHeaderViewModel
 
     @BeforeEach
     fun setUp() {
+        coEvery { sessionRepository.sessionStateUpdates() } returns sessionRepositoryUpdates
         subject = NavigationHeaderViewModel(
             getUserAccountUseCase,
             navigator,
+            sessionRepository,
             CoroutineTestExtension.testDispatcher
         )
     }
@@ -146,5 +159,17 @@ class NavigationHeaderViewModelTest {
         assertEquals(View.VISIBLE, viewStatePosted?.accountViewState?.avatarViewState?.defaultLetterVisibility)
         assertEquals("A", viewStatePosted?.accountViewState?.avatarViewState?.defaultLetter)
         assertEquals(View.VISIBLE, viewStatePosted?.detailsViewState?.visibility)
+    }
+
+    @Test
+    fun `Should refresh data when user logs out`() = runBlocking {
+        sessionRepositoryUpdates.send(null)
+        coVerify { getUserAccountUseCase.execute() }
+    }
+
+    @Test
+    fun `Should refresh data when user logs in`() = runBlocking {
+        sessionRepositoryUpdates.send(mockk())
+        coVerify { getUserAccountUseCase.execute() }
     }
 }

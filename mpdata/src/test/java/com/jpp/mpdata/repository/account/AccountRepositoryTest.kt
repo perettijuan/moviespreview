@@ -11,6 +11,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -21,6 +22,7 @@ class AccountRepositoryTest {
 
     @RelaxedMockK
     private lateinit var accountApi: AccountApi
+
     @RelaxedMockK
     private lateinit var accountDb: AccountDb
 
@@ -32,7 +34,7 @@ class AccountRepositoryTest {
     }
 
     @Test
-    fun `Should not fetch data from API if present in DB`() {
+    fun `Should not fetch data from API if present in DB`() = runBlocking {
         val expected = mockk<UserAccount>()
         val session = mockk<Session>()
 
@@ -45,7 +47,7 @@ class AccountRepositoryTest {
     }
 
     @Test
-    fun `Should update DB if data fetched from API`() {
+    fun `Should update DB if data fetched from API`() = runBlocking {
         val expected = mockk<UserAccount>()
         val session = mockk<Session>()
 
