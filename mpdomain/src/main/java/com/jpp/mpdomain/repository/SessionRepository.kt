@@ -10,8 +10,12 @@ import kotlinx.coroutines.channels.Channel
 interface SessionRepository {
 
     /**
-     * Subscribe to this LiveData object when interested on getting updates
-     * about session creation/deletion.
+     * Subscribe to this channel in order to receive updates when the [Session]
+     * is affected some-how.
+     *
+     * Reminder: decided to use a Channel instead of a Flow because Flows are
+     * 'cold' in the sense that data is lost if no consumer is attached
+     * to the Flow.
      */
     suspend fun sessionStateUpdates(): Channel<Session?>
 
