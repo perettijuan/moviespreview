@@ -39,9 +39,10 @@ fun Fragment.snackBar(
  * Creates and shows a [Snackbar] styled with the application resources.
  */
 fun Fragment.snackBarNoAction(
-    contentView: View,
+    contentView: View?,
     @StringRes message: Int
 ) {
+    if (contentView == null) return
     activity?.let {
         Snackbar.make(
                 contentView,

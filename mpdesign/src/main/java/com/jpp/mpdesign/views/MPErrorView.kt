@@ -3,18 +3,24 @@ package com.jpp.mpdesign.views
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.jpp.mpdesign.R
 import com.jpp.mpdesign.ext.getStringFromResources
-import kotlinx.android.synthetic.main.layout_mp_error_view.view.*
 
 /**
  * Custom [ConstraintLayout] implementation to wrap the error views that are shown in the application
  * when an error is detected.
  */
 class MPErrorView : ConstraintLayout {
+
+    private var errorActionButton: Button? = null
+    private var errorImageView: ImageView? = null
+    private var errorTitleTextView: TextView? = null
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -24,6 +30,9 @@ class MPErrorView : ConstraintLayout {
 
     private fun init() {
         inflate(context, R.layout.layout_mp_error_view, this)
+        errorActionButton = findViewById(R.id.errorActionButton)
+        errorImageView = findViewById(R.id.errorImageView)
+        errorTitleTextView = findViewById(R.id.errorTitleTextView)
     }
 
     /**
@@ -51,7 +60,7 @@ class MPErrorView : ConstraintLayout {
      * Set a retry action on the button shown in the view.
      */
     fun onRetry(retryAction: (() -> Unit)?) {
-        errorActionButton.setOnClickListener { retryAction?.invoke() }
+        errorActionButton?.setOnClickListener { retryAction?.invoke() }
     }
 
     /**
@@ -77,9 +86,9 @@ class MPErrorView : ConstraintLayout {
         @StringRes errorButton: Int,
         retryAction: () -> Unit
     ) {
-        errorImageView.setImageResource(errorImageIcon)
-        errorTitleTextView.apply { text = getStringFromResources(errorTitle) }
-        errorActionButton.apply {
+        errorImageView?.setImageResource(errorImageIcon)
+        errorTitleTextView?.apply { text = getStringFromResources(errorTitle) }
+        errorActionButton?.apply {
             text = getStringFromResources(errorButton)
             setOnClickListener { retryAction.invoke() }
         }
@@ -90,9 +99,9 @@ class MPErrorView : ConstraintLayout {
         @StringRes errorTitle: Int,
         @StringRes errorButton: Int
     ) {
-        errorImageView.setImageResource(errorImageIcon)
-        errorTitleTextView.apply { text = getStringFromResources(errorTitle) }
-        errorActionButton.apply {
+        errorImageView?.setImageResource(errorImageIcon)
+        errorTitleTextView?.apply { text = getStringFromResources(errorTitle) }
+        errorActionButton?.apply {
             text = getStringFromResources(errorButton)
         }
     }
