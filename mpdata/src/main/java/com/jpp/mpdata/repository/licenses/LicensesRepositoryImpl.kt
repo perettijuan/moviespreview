@@ -9,7 +9,7 @@ import java.io.IOException
 
 class LicensesRepositoryImpl(private val context: Context) : LicensesRepository {
 
-    override fun loadLicences(): Licenses? = try {
+    override suspend fun loadLicences(): Licenses? = try {
         val input = context.assets.open(LICENSES_FILE_LOCATION)
         val size = input.available()
         val buffer = ByteArray(size)

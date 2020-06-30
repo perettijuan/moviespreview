@@ -63,11 +63,6 @@ class PersonViewModel(
         fetchPersonData()
     }
 
-    /**
-     * When called, this method will push the loading view state and will fetch the data
-     * of the person identified by [personId]. When the fetching process is done, the view state will be updated
-     * based on the result posted by the interactor.
-     */
     private fun fetchPersonData() {
         _viewState.value =
             PersonViewState.showLoading(personName, personImageUrl)

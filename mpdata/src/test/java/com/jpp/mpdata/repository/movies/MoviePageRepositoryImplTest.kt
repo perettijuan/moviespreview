@@ -11,6 +11,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
@@ -37,7 +38,7 @@ class MoviePageRepositoryImplTest {
 
     @ParameterizedTest
     @MethodSource("allMovieSections")
-    fun `Should not retrieve from API when valid movie page in DB`(section: MovieSection) {
+    fun `Should not retrieve from API when valid movie page in DB`(section: MovieSection) = runBlocking {
         val expected = mockk<MoviePage>()
 
         every { moviesDb.getMoviePageForSection(any(), any()) } returns expected
@@ -50,7 +51,7 @@ class MoviePageRepositoryImplTest {
 
     @ParameterizedTest
     @MethodSource("movieSectionsAndCount")
-    fun `Should retrieve from API and update DB when movie page not in DB`(section: MovieSection, countInput: MoviesRepositoryTestInput) {
+    fun `Should retrieve from API and update DB when movie page not in DB`(section: MovieSection, countInput: MoviesRepositoryTestInput) = runBlocking {
         val expected = mockk<MoviePage>()
 
         every { moviesDb.getMoviePageForSection(any(), any()) } returns null
@@ -73,7 +74,7 @@ class MoviePageRepositoryImplTest {
 
     @ParameterizedTest
     @MethodSource("movieSectionsAndCount")
-    fun `Should not attempt to store null responses from API when fetching movie page`(section: MovieSection, countInput: MoviesRepositoryTestInput) {
+    fun `Should not attempt to store null responses from API when fetching movie page`(section: MovieSection, countInput: MoviesRepositoryTestInput) = runBlocking {
         every { moviesDb.getMoviePageForSection(any(), any()) } returns null
         every { moviesApi.getNowPlayingMoviePage(any(), any()) } returns null
         every { moviesApi.getPopularMoviePage(any(), any()) } returns null
@@ -93,7 +94,7 @@ class MoviePageRepositoryImplTest {
     }
 
     @Test
-    fun `Should not retrieve favorite movie from API when stored in DB`() {
+    fun `Should not retrieve favorite movie from API when stored in DB`() = runBlocking {
         val moviePage = mockk<MoviePage>()
 
         every { moviesDb.getFavoriteMovies(1) } returns moviePage
@@ -105,7 +106,7 @@ class MoviePageRepositoryImplTest {
     }
 
     @Test
-    fun `Should retrieve favorite movie from API and store it in DB`() {
+    fun `Should retrieve favorite movie from API and store it in DB`() = runBlocking {
         val moviePage = mockk<MoviePage>()
 
         every { moviesDb.getFavoriteMovies(1) } returns null
@@ -119,7 +120,7 @@ class MoviePageRepositoryImplTest {
     }
 
     @Test
-    fun `Should return null and not attempt to save favorite movie when API returns null`() {
+    fun `Should return null and not attempt to save favorite movie when API returns null`() = runBlocking {
         every { moviesDb.getFavoriteMovies(1) } returns null
         every { moviesApi.getFavoriteMoviePage(1, any(), any(), any()) } returns null
 
@@ -131,7 +132,7 @@ class MoviePageRepositoryImplTest {
     }
 
     @Test
-    fun `Should not retrieve rated movie from API when stored in DB`() {
+    fun `Should not retrieve rated movie from API when stored in DB`() = runBlocking {
         val moviePage = mockk<MoviePage>()
 
         every { moviesDb.getRatedMovies(1) } returns moviePage
@@ -143,7 +144,7 @@ class MoviePageRepositoryImplTest {
     }
 
     @Test
-    fun `Should retrieve rated movie from API and store it in DB`() {
+    fun `Should retrieve rated movie from API and store it in DB`() = runBlocking {
         val moviePage = mockk<MoviePage>()
 
         every { moviesDb.getRatedMovies(1) } returns null
@@ -157,7 +158,7 @@ class MoviePageRepositoryImplTest {
     }
 
     @Test
-    fun `Should return null and not attempt to save rated movie when API returns null`() {
+    fun `Should return null and not attempt to save rated movie when API returns null`() = runBlocking {
         every { moviesDb.getRatedMovies(1) } returns null
         every { moviesApi.getRatedMoviePage(1, any(), any(), any()) } returns null
 
@@ -169,7 +170,7 @@ class MoviePageRepositoryImplTest {
     }
 
     @Test
-    fun `Should not retrieve watchlist page from API when stored in DB`() {
+    fun `Should not retrieve watchlist page from API when stored in DB`() = runBlocking {
         val moviePage = mockk<MoviePage>()
 
         every { moviesDb.getWatchlistMoviePage(1) } returns moviePage
@@ -181,7 +182,7 @@ class MoviePageRepositoryImplTest {
     }
 
     @Test
-    fun `Should retrieve watchlist page from API and store it in DB`() {
+    fun `Should retrieve watchlist page from API and store it in DB`() = runBlocking {
         val moviePage = mockk<MoviePage>()
 
         every { moviesDb.getWatchlistMoviePage(1) } returns null
@@ -195,7 +196,7 @@ class MoviePageRepositoryImplTest {
     }
 
     @Test
-    fun `Should return null and not attempt to save watchlist page when API returns null`() {
+    fun `Should return null and not attempt to save watchlist page when API returns null`() = runBlocking {
         every { moviesDb.getWatchlistMoviePage(1) } returns null
         every { moviesApi.getWatchlistMoviePage(1, any(), any(), any()) } returns null
 

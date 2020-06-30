@@ -51,7 +51,7 @@ class GetUserAccountMoviePageUseCase(
         } ?: Try.Failure(Try.FailureCause.Unknown)
     }
 
-    private fun getMoviePage(
+    private suspend fun getMoviePage(
         page: Int,
         type: AccountMovieType,
         session: Session,

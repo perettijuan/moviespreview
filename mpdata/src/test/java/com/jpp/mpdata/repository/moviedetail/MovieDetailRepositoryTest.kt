@@ -10,6 +10,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
@@ -32,7 +33,7 @@ class MovieDetailRepositoryTest {
     }
 
     @Test
-    fun `Should not get data from API when details is in DB`() {
+    fun `Should not get data from API when details is in DB`() = runBlocking {
         val movieDetail = mockk<MovieDetail>()
         every { moviesDetailDb.getMovieDetails(any()) } returns movieDetail
 
@@ -44,7 +45,7 @@ class MovieDetailRepositoryTest {
     }
 
     @Test
-    fun `Should get data from API and update the DB when details is not in DB`() {
+    fun `Should get data from API and update the DB when details is not in DB`() = runBlocking {
         val movieDetail = mockk<MovieDetail>()
         every { moviesDetailDb.getMovieDetails(any()) } returns null
         every { moviesDetailApi.getMovieDetails(any(), any()) } returns movieDetail
@@ -58,7 +59,7 @@ class MovieDetailRepositoryTest {
     }
 
     @Test
-    fun `Should not attempt to store null responses from API when fetching movie details`() {
+    fun `Should not attempt to store null responses from API when fetching movie details`() = runBlocking {
         every { moviesDetailDb.getMovieDetails(any()) } returns null
         every { moviesDetailApi.getMovieDetails(any(), any()) } returns null
 

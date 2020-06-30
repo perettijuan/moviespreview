@@ -12,10 +12,10 @@ interface MovieDetailRepository {
      * @return a [MovieDetail] instance if a detail can be found for the provided [movieId],
      * null in any other case.
      */
-    fun getMovieDetails(movieId: Double, language: SupportedLanguage): MovieDetail?
+    suspend fun getMovieDetails(movieId: Double, language: SupportedLanguage): MovieDetail?
 
     /**
      * Flushes out any stored data related to movie details.
      */
-    fun flushMovieDetailsData()
+    suspend fun flushMovieDetailsData()
 }

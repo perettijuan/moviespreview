@@ -17,10 +17,10 @@ interface LanguageRepository {
      * Called in order to synchronize the stored language with the language currently
      * used in the application.
      */
-    fun syncPlatformLanguage()
+    suspend fun syncPlatformLanguage()
 
     /**
      * @return the [SupportedLanguage] that the application is currently configured with.
      */
-    fun getCurrentAppLanguage(): SupportedLanguage
+    suspend fun getCurrentAppLanguage(): SupportedLanguage
 }

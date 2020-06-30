@@ -8,5 +8,5 @@ import com.jpp.mpdomain.repository.AccessTokenRepository
  * [AccessTokenRepository] implementation to retrieve data related to [AccessToken]s.
  */
 class AccessTokenRepositoryImpl(private val accessTokenApi: AccessTokenApi) : AccessTokenRepository {
-    override fun getAccessToken(): AccessToken? = accessTokenApi.getAccessToken()
+    override suspend fun getAccessToken(): AccessToken? = accessTokenApi.getAccessToken()
 }

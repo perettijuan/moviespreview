@@ -34,7 +34,7 @@ class SearchUseCase(
         }
     }
 
-    private fun configureSearchResultPaths(searchResult: SearchResult): SearchResult {
+    private suspend fun configureSearchResultPaths(searchResult: SearchResult): SearchResult {
         return configurationRepository.getAppConfiguration()?.let { appConfiguration ->
             searchResult.configureImagesPath(appConfiguration.images)
         } ?: searchResult

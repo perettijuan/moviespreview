@@ -11,10 +11,10 @@ interface CreditsRepository {
      * @return a [Credits] instance when credits for the movie can be found,
      * null any other case.
      */
-    fun getCreditsForMovie(movieId: Double): Credits?
+    suspend fun getCreditsForMovie(movieId: Double): Credits?
 
     /**
      * Clear all data stored in the credits section.
      */
-    fun flushCreditsData()
+    suspend fun flushCreditsData()
 }

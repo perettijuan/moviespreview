@@ -16,12 +16,14 @@ import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mp.databinding.FragmentNavHeaderBinding
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * The application's UI shows a drawer navigation to allow the user redirect the app flow to different
  * places. This particular Fragment takes care of rendering the header of the drawer and allows the
  * user to login into the system or to be redirected to the account details.
  */
+@ExperimentalCoroutinesApi
 class NavigationHeaderFragment : Fragment() {
 
     @Inject

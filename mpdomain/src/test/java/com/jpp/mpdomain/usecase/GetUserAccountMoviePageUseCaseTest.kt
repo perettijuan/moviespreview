@@ -13,6 +13,7 @@ import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.MoviePageRepository
 import com.jpp.mpdomain.repository.SessionRepository
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -75,7 +76,7 @@ class GetUserAccountMoviePageUseCaseTest {
     @MethodSource("testParams")
     fun `Should fail with user not logged`(param: TestParam) = runBlocking {
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getCurrentSession() } returns null
+        coEvery { sessionRepository.getCurrentSession() } returns null
 
         val actual = subject.execute(1, param.type)
 
@@ -88,8 +89,8 @@ class GetUserAccountMoviePageUseCaseTest {
     fun `Should fail with user not logged when no account available`(param: TestParam) =
         runBlocking {
             every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-            every { sessionRepository.getCurrentSession() } returns mockk()
-            every { accountRepository.getUserAccount(any()) } returns null
+            coEvery { sessionRepository.getCurrentSession() } returns mockk()
+            coEvery { accountRepository.getUserAccount(any()) } returns null
 
             val actual = subject.execute(1, param.type)
 
@@ -103,10 +104,10 @@ class GetUserAccountMoviePageUseCaseTest {
         val session = mockk<Session>()
         val account = mockk<UserAccount>()
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getCurrentSession() } returns session
-        every { accountRepository.getUserAccount(any()) } returns account
-        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
-        every {
+        coEvery { sessionRepository.getCurrentSession() } returns session
+        coEvery { accountRepository.getUserAccount(any()) } returns account
+        coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+        coEvery {
             moviePageRepository.getFavoriteMoviePage(any(), any(), any(), any())
         } returns null
 
@@ -141,10 +142,10 @@ class GetUserAccountMoviePageUseCaseTest {
         )
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getCurrentSession() } returns session
-        every { accountRepository.getUserAccount(session) } returns account
-        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
-        every { configurationRepository.getAppConfiguration() } returns AppConfiguration(
+        coEvery { sessionRepository.getCurrentSession() } returns session
+        coEvery { accountRepository.getUserAccount(session) } returns account
+        coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+        coEvery { configurationRepository.getAppConfiguration() } returns AppConfiguration(
             imagesConfig
         )
         param.preCondition(
@@ -175,10 +176,10 @@ class GetUserAccountMoviePageUseCaseTest {
         )
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
-        every { sessionRepository.getCurrentSession() } returns session
-        every { accountRepository.getUserAccount(session) } returns account
-        every { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
-        every { configurationRepository.getAppConfiguration() } returns null
+        coEvery { sessionRepository.getCurrentSession() } returns session
+        coEvery { accountRepository.getUserAccount(session) } returns account
+        coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+        coEvery { configurationRepository.getAppConfiguration() } returns null
 
         param.preCondition(
             moviePageRepository,
@@ -206,7 +207,7 @@ class GetUserAccountMoviePageUseCaseTest {
             TestParam(
                 type = AccountMovieType.Favorite,
                 preCondition = { repository, page, session, userAccount, language, moviePage ->
-                    every {
+                    coEvery {
                         repository.getFavoriteMoviePage(
                             page,
                             userAccount,
@@ -219,7 +220,7 @@ class GetUserAccountMoviePageUseCaseTest {
             TestParam(
                 type = AccountMovieType.Watchlist,
                 preCondition = { repository, page, session, userAccount, language, moviePage ->
-                    every {
+                    coEvery {
                         repository.getWatchlistMoviePage(
                             page,
                             userAccount,
@@ -232,7 +233,7 @@ class GetUserAccountMoviePageUseCaseTest {
             TestParam(
                 type = AccountMovieType.Rated,
                 preCondition = { repository, page, session, userAccount, language, moviePage ->
-                    every {
+                    coEvery {
                         repository.getRatedMoviePage(
                             page,
                             userAccount,

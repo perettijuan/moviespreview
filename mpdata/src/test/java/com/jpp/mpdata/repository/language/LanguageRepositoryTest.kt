@@ -13,6 +13,7 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import java.util.Locale
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -63,7 +64,7 @@ class LanguageRepositoryTest {
     }
 
     @Test
-    fun `Should return language from DB if exists`() {
+    fun `Should return language from DB if exists`() = runBlocking {
         val localeEn = mockk<Locale>()
 
         every { languageDb.getStoredLanguageString() } returns "en"
@@ -76,7 +77,7 @@ class LanguageRepositoryTest {
     }
 
     @Test
-    fun `Should update locale in DB and return it when no one is stored`() {
+    fun `Should update locale in DB and return it when no one is stored`() = runBlocking {
         val localeEn = mockk<Locale>()
 
         every { localeWrapper.getDefault() } returns Locale.ENGLISH

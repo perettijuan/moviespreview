@@ -8,7 +8,7 @@ class CreditsRepositoryImpl(
     private val creditsDb: CreditsDb
 ) : CreditsRepository {
 
-    override fun getCreditsForMovie(movieId: Double): Credits? {
+    override suspend fun getCreditsForMovie(movieId: Double): Credits? {
         return creditsDb.getCreditsForMovie(movieId) ?: run {
             creditsApi.getCreditsForMovie(movieId)?.also {
                 creditsDb.storeCredits(it)
@@ -16,7 +16,7 @@ class CreditsRepositoryImpl(
         }
     }
 
-    override fun flushCreditsData() {
+    override suspend fun flushCreditsData() {
         creditsDb.clearAllData()
     }
 }

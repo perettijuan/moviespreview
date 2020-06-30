@@ -45,6 +45,10 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
 
+    // Kotlin coroutines
+    implementation deps.coroutines.core
+    implementation deps.coroutines.android
+
     // ViewModel and LiveData
     implementation deps.androidx.lifecycle.extensions
     kapt deps.androidx.lifecycle.compiler
