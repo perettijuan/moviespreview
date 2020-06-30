@@ -1,4 +1,4 @@
-package com.jpp.mpdata.repository.language
+package com.jpp.mp.main
 
 import java.util.Locale
 
@@ -7,8 +7,6 @@ import java.util.Locale
  * Locale.XXX directly in production code.
  */
 class LocaleWrapper {
-
     fun getDefault(): Locale = Locale.getDefault()
-
     fun localeFrom(from: String) = Locale(from)
 }

@@ -5,7 +5,6 @@ import com.jpp.mpdata.datasources.language.LanguageMonitor
 import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mptestutils.InstantTaskExecutorExtension
-import com.jpp.mptestutils.observeWith
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
@@ -29,7 +28,7 @@ class LanguageRepositoryTest {
     private lateinit var languageMonitor: LanguageMonitor
 
     @RelaxedMockK
-    private lateinit var localeWrapper: LocaleWrapper
+    private lateinit var localeWrapper: com.jpp.mp.main.LocaleWrapper
 
     private val lambdaSlot = slot<() -> Unit>()
 

@@ -236,8 +236,8 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesLanguageRepository(languageDb: LanguageDb, languageMonitor: LanguageMonitor):
-            LanguageRepository = LanguageRepositoryImpl(languageDb, languageMonitor)
+    fun providesLanguageRepository(languageDb: LanguageDb):
+            LanguageRepository = LanguageRepositoryImpl(languageDb)
 
     @Singleton
     @Provides

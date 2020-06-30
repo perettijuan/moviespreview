@@ -3,10 +3,13 @@ package com.jpp.mp.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jpp.mpdata.datasources.language.LanguageMonitor
+import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.repository.LanguageRepository
+import com.jpp.mpdomain.repository.SupportRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Locale
 
 /**
  * ViewModel used by [MainActivity].
@@ -15,6 +18,8 @@ import kotlinx.coroutines.withContext
 class MainActivityViewModel(
     private val languageMonitor: LanguageMonitor,
     private val languageRepository: LanguageRepository,
+    private val supportRepository: SupportRepository,
+    private val locale: LocaleWrapper,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
@@ -24,10 +29,9 @@ class MainActivityViewModel(
      * When [onCleared] is called, the monitoring will be stopped.
      */
     fun onInit() {
-        viewModelScope.launch {
-            withContext(ioDispatcher) { languageRepository.syncPlatformLanguage() }
-        }
+        syncAppLanguage()
         languageMonitor.startMonitoring()
+        languageMonitor.addListener { syncAppLanguage() }
     }
 
     /**
@@ -35,5 +39,28 @@ class MainActivityViewModel(
      */
     override fun onCleared() {
         languageMonitor.stopMonitoring()
+    }
+
+    private fun syncAppLanguage() {
+        viewModelScope.launch {
+            val platformLanguage = locale.getDefault().mapToSupportedLanguage()
+            val appLanguage = withContext(ioDispatcher) {
+                languageRepository.getCurrentAppLanguage()
+            }
+
+            if (platformLanguage != appLanguage) {
+                withContext(ioDispatcher) {
+                    supportRepository.clearAllData()
+                    languageRepository.updateCurrentLanguage(platformLanguage)
+                }
+            }
+        }
+    }
+
+    private fun Locale.mapToSupportedLanguage(): SupportedLanguage {
+        return when (language) {
+            locale.localeFrom(SupportedLanguage.Spanish.id).language -> SupportedLanguage.Spanish
+            else -> SupportedLanguage.English
+        }
     }
 }
