@@ -6,10 +6,10 @@ import com.jpp.mpdata.datasources.language.LanguageMonitor
 import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.SupportRepository
+import java.util.Locale
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Locale
 
 /**
  * ViewModel used by [MainActivity].

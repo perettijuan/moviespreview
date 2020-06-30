@@ -5,8 +5,8 @@ import com.jpp.mp.common.viewmodel.ViewModelAssistedFactory
 import com.jpp.mpdata.datasources.language.LanguageMonitor
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.SupportRepository
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * [ViewModelAssistedFactory] to create specific [MainActivityViewModel] instances
