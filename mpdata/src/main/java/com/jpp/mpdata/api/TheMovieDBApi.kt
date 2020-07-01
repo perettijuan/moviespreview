@@ -21,7 +21,7 @@ import retrofit2.http.Query
 /**
  * API definition to use with Retrofit in order to execute requests to the backend.
  */
-interface TheMovieDBApi {
+internal interface TheMovieDBApi {
 
     /**
      * Retrieves the current configuration from the server.
