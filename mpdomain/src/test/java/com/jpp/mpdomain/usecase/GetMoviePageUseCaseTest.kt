@@ -4,6 +4,7 @@ import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
 import com.jpp.mpdomain.SupportedLanguage
+import com.jpp.mpdomain.repository.ConfigurationRepository
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.MoviePageRepository
@@ -11,7 +12,6 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -31,6 +31,9 @@ class GetMoviePageUseCaseTest {
     private lateinit var connectivityRepository: ConnectivityRepository
 
     @MockK
+    private lateinit var configurationRepository: ConfigurationRepository
+
+    @MockK
     private lateinit var languageRepository: LanguageRepository
 
     private lateinit var subject: GetMoviePageUseCase
@@ -39,6 +42,7 @@ class GetMoviePageUseCaseTest {
     fun setUp() {
         subject = GetMoviePageUseCase(
             moviePageRepository,
+            configurationRepository,
             connectivityRepository,
             languageRepository
         )
@@ -73,19 +77,25 @@ class GetMoviePageUseCaseTest {
     @ParameterizedTest
     @MethodSource("movieSections")
     fun `Should retrieve proper movie page`(movieSection: MovieSection) = runBlocking {
-        val expected: MoviePage = mockk()
+        val moviePage = MoviePage(
+            page = 1,
+            results = mockedMovieList,
+            total_pages = 10,
+            total_results = 500
+        )
 
         every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
+        coEvery { configurationRepository.getAppConfiguration() } returns null
 
         coEvery {
             moviePageRepository.getMoviePageForSection(1, movieSection, SupportedLanguage.English)
-        } returns expected
+        } returns moviePage
 
         val result = subject.execute(1, movieSection)
 
         assertTrue(result is Try.Success)
-        assertEquals(expected, result.getOrNull())
+        assertEquals(moviePage, result.getOrNull())
     }
 
     companion object {

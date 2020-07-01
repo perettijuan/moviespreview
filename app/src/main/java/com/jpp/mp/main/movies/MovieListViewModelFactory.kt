@@ -2,7 +2,6 @@ package com.jpp.mp.main.movies
 
 import androidx.lifecycle.SavedStateHandle
 import com.jpp.mp.common.viewmodel.ViewModelAssistedFactory
-import com.jpp.mpdomain.usecase.ConfigureMovieImagesPathUseCase
 import com.jpp.mpdomain.usecase.GetMoviePageUseCase
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -15,7 +14,6 @@ import kotlinx.coroutines.CoroutineDispatcher
  */
 class MovieListViewModelFactory @Inject constructor(
     private val getMoviePageUseCase: GetMoviePageUseCase,
-    private val configureMovieImagesPathUseCase: ConfigureMovieImagesPathUseCase,
     private val navigator: MovieListNavigator,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModelAssistedFactory<MovieListViewModel> {
@@ -23,7 +21,6 @@ class MovieListViewModelFactory @Inject constructor(
     override fun create(handle: SavedStateHandle): MovieListViewModel {
         return MovieListViewModel(
             getMoviePageUseCase,
-            configureMovieImagesPathUseCase,
             navigator,
             ioDispatcher,
             handle
