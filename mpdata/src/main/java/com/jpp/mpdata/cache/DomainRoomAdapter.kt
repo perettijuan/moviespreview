@@ -1,20 +1,15 @@
 package com.jpp.mpdata.cache
 
-import com.jpp.mpdata.cache.room.DBMovie
-import com.jpp.mpdata.cache.room.DBMovieDetail
-import com.jpp.mpdata.cache.room.DBMovieGenre
-import com.jpp.mpdata.cache.room.DBMoviePage
-import com.jpp.mpdomain.Movie
-import com.jpp.mpdomain.MovieDetail
-import com.jpp.mpdomain.MovieGenre
-import com.jpp.mpdomain.MoviePage
+import com.jpp.mp.common.extensions.addAllMapping
+import com.jpp.mpdata.cache.room.*
+import com.jpp.mpdomain.*
 
 class DomainRoomAdapter {
 
     /**
      * [MoviePage] to [DBMoviePage].
      */
-    fun moviePage(
+    internal fun moviePage(
         dataMoviePage: MoviePage,
         sectionName: String,
         dueDate: Long
@@ -29,7 +24,7 @@ class DomainRoomAdapter {
     /**
      * [Movie] to [DBMovie].
      */
-    fun movie(dataMovie: Movie, pageId: Long): DBMovie = DBMovie(
+    internal fun movie(dataMovie: Movie, pageId: Long): DBMovie = DBMovie(
         movieId = dataMovie.id,
         title = dataMovie.title,
         originalTile = dataMovie.original_title,
@@ -47,7 +42,7 @@ class DomainRoomAdapter {
     /**
      * [MovieDetail] to [DBMovieDetail].
      */
-    fun movieDetail(
+    internal fun movieDetail(
         dataMovieDetail: MovieDetail,
         dueDate: Long
     ): DBMovieDetail = DBMovieDetail(
@@ -65,7 +60,7 @@ class DomainRoomAdapter {
     /**
      * [MovieGenre] to [DBMovieGenre].
      */
-    fun genre(
+    internal fun genre(
         dataMovieGenre: MovieGenre,
         detailId: Double
     ): DBMovieGenre = DBMovieGenre(
@@ -73,4 +68,80 @@ class DomainRoomAdapter {
         name = dataMovieGenre.name,
         movieDetailId = detailId
     )
+
+    /**
+     * [CastCharacter] to [DBCastCharacter].
+     */
+    internal fun castCharacter(
+        castCharacter: CastCharacter,
+        movieId: Double,
+        dueDate: Long
+    ): DBCastCharacter = DBCastCharacter(
+        id = castCharacter.cast_id,
+        character = castCharacter.character,
+        creditId = castCharacter.credit_id,
+        gender = castCharacter.gender,
+        personId = castCharacter.id,
+        name = castCharacter.name,
+        order = castCharacter.order,
+        profilePath = castCharacter.profile_path,
+        movieId = movieId,
+        dueDate = dueDate
+    )
+
+    /**
+     * [CrewMember] to [DBCrewPerson].
+     */
+    internal fun crewPerson(
+        crewMember: CrewMember,
+        movieId: Double,
+        dueDate: Long
+    ): DBCrewPerson = DBCrewPerson(
+        id = crewMember.id,
+        department = crewMember.department,
+        gender = crewMember.gender,
+        creditId = crewMember.credit_id,
+        job = crewMember.job,
+        name = crewMember.name,
+        profilePath = crewMember.profile_path,
+        movieId = movieId,
+        dueDate = dueDate
+    )
+
+    /**
+     * [AppConfiguration] to a list of [DBImageSize].
+     */
+    internal fun imageSizes(
+        appConfiguration: AppConfiguration,
+        dueDate: Long
+    ): List<DBImageSize> {
+        return appConfiguration.images.poster_sizes
+            .map {
+                DBImageSize(
+                    baseUrl = appConfiguration.images.base_url,
+                    size = it,
+                    imageType = ImageTypes.PosterType.id, dueDate = dueDate
+                )
+            }
+            .toMutableList()
+            .addAllMapping {
+                appConfiguration.images.profile_sizes.map { posterSize ->
+                    DBImageSize(
+                        baseUrl = appConfiguration.images.base_url,
+                        size = posterSize,
+                        imageType = ImageTypes.ProfileType.id, dueDate = dueDate
+                    )
+                }
+            }
+            .toMutableList()
+            .addAllMapping {
+                appConfiguration.images.backdrop_sizes.map { backdropSize ->
+                    DBImageSize(
+                        baseUrl = appConfiguration.images.base_url,
+                        size = backdropSize,
+                        imageType = ImageTypes.BackdropType.id, dueDate = dueDate
+                    )
+                }
+            }
+    }
 }

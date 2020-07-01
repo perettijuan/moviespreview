@@ -1,6 +1,5 @@
 package com.jpp.mpdata.cache.room
 
-import com.jpp.mp.common.extensions.addAllMapping
 import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
@@ -19,46 +18,9 @@ import com.jpp.mpdomain.MoviePage
 class RoomDomainAdapter {
 
     /**
-     * Adapts the provided [appConfiguration] to a list of [DBImageSize].
+     * [DBImageSize] to [AppConfiguration]
      */
-    fun adaptAppConfigurationToImageSizes(
-        appConfiguration: AppConfiguration,
-        dueDate: Long
-    ): List<DBImageSize> {
-        return appConfiguration.images.poster_sizes
-            .map {
-                DBImageSize(
-                    baseUrl = appConfiguration.images.base_url,
-                    size = it,
-                    imageType = ImageTypes.PosterType.id, dueDate = dueDate
-                )
-            }
-            .toMutableList()
-            .addAllMapping {
-                appConfiguration.images.profile_sizes.map { posterSize ->
-                    DBImageSize(
-                        baseUrl = appConfiguration.images.base_url,
-                        size = posterSize,
-                        imageType = ImageTypes.ProfileType.id, dueDate = dueDate
-                    )
-                }
-            }
-            .toMutableList()
-            .addAllMapping {
-                appConfiguration.images.backdrop_sizes.map { backdropSize ->
-                    DBImageSize(
-                        baseUrl = appConfiguration.images.base_url,
-                        size = backdropSize,
-                        imageType = ImageTypes.BackdropType.id, dueDate = dueDate
-                    )
-                }
-            }
-    }
-
-    /**
-     * Creates an [AppConfiguration] instance using the provided [dbSizes].
-     */
-    fun adaptImageSizesToAppConfiguration(dbSizes: List<DBImageSize>): AppConfiguration {
+    internal fun adaptImageSizesToAppConfiguration(dbSizes: List<DBImageSize>): AppConfiguration {
         return AppConfiguration(ImagesConfiguration(
             base_url = dbSizes[0].baseUrl,
             poster_sizes = dbSizes
@@ -76,7 +38,7 @@ class RoomDomainAdapter {
     /**
      * [DBMoviePage] to [MoviePage].
      */
-    fun moviePage(dbMoviePage: DBMoviePage, movies: List<DBMovie>): MoviePage = MoviePage(
+    internal fun moviePage(dbMoviePage: DBMoviePage, movies: List<DBMovie>): MoviePage = MoviePage(
         page = dbMoviePage.page,
         results = movies.map { adaptDBMovieToDataMovie(it) },
         total_pages = dbMoviePage.totalPages,
@@ -105,7 +67,7 @@ class RoomDomainAdapter {
     /**
      * [DBMovieDetail] to [MovieDetail].
      */
-    fun movieDetail(
+    internal fun movieDetail(
         dbMovieDetail: DBMovieDetail,
         genres: List<DBMovieGenre>
     ): MovieDetail = MovieDetail(
@@ -132,54 +94,9 @@ class RoomDomainAdapter {
         }
 
     /**
-     * Adapts a list of [CastCharacter] to a list of [DBCastCharacter].
+     * [DBCastCharacter] and [DBCrewPerson] to [Credits].
      */
-    fun adaptDomainCastCharacterListToDB(
-        castCharacterList: List<CastCharacter>,
-        movieId: Double,
-        dueDate: Long
-    ): List<DBCastCharacter> =
-        castCharacterList.map {
-            DBCastCharacter(
-                id = it.cast_id,
-                character = it.character,
-                creditId = it.credit_id,
-                gender = it.gender,
-                personId = it.id,
-                name = it.name,
-                order = it.order,
-                profilePath = it.profile_path,
-                movieId = movieId,
-                dueDate = dueDate
-            )
-        }
-
-    /**
-     * Adapts a list of [CrewMember] to a list of [DBCrewPerson].
-     */
-    fun adaptDomainCrewMemberListToDB(
-        crewMembers: List<CrewMember>,
-        movieId: Double,
-        dueDate: Long
-    ): List<DBCrewPerson> =
-        crewMembers.map {
-            DBCrewPerson(
-                id = it.id,
-                department = it.department,
-                gender = it.gender,
-                creditId = it.credit_id,
-                job = it.job,
-                name = it.name,
-                profilePath = it.profile_path,
-                movieId = movieId,
-                dueDate = dueDate
-            )
-        }
-
-    /**
-     * Adapts the provided [castCharacters] and [crewMembers] to a [Credits] instance with the provided [creditId].
-     */
-    fun adaptDBCreditsToDomain(
+    internal fun credits(
         castCharacters: List<DBCastCharacter>,
         crewMembers: List<DBCrewPerson>,
         creditId: Double
@@ -210,12 +127,4 @@ class RoomDomainAdapter {
                 )
             }
         )
-
-    private companion object {
-        sealed class ImageTypes(val id: Int) {
-            object PosterType : ImageTypes(11)
-            object ProfileType : ImageTypes(22)
-            object BackdropType : ImageTypes(33)
-        }
-    }
 }

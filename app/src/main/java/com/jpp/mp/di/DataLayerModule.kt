@@ -126,17 +126,17 @@ class DataLayerModule {
     @Provides
     fun providesConfigurationDb(
         roomDb: MPRoomDataBase,
-        adapter: RoomDomainAdapter,
+        toDomainAdapter: RoomDomainAdapter,
+        toRoomAdapter: DomainRoomAdapter,
         timestampHelper: CacheTimestampHelper
-    ): ConfigurationDb = ConfigurationCache(roomDb, adapter, timestampHelper)
+    ): ConfigurationDb = ConfigurationCache(roomDb, toDomainAdapter, toRoomAdapter, timestampHelper)
 
     @Singleton
     @Provides
     fun providesConfigurationRepository(
         configurationApi: ConfigurationApi,
         configurationDb: ConfigurationDb
-    ):
-            ConfigurationRepository = ConfigurationRepositoryImpl(configurationApi, configurationDb)
+    ): ConfigurationRepository = ConfigurationRepositoryImpl(configurationApi, configurationDb)
 
     /**********************************
      ****** SEARCH DEPENDENCIES *******
@@ -179,9 +179,10 @@ class DataLayerModule {
     @Provides
     fun provideCreditsDb(
         roomDatabase: MPRoomDataBase,
-        adapter: RoomDomainAdapter,
+        toDomainAdapter: RoomDomainAdapter,
+        toRoomAdapter: DomainRoomAdapter,
         timestampHelper: CacheTimestampHelper
-    ): CreditsDb = CreditsCache(roomDatabase, adapter, timestampHelper)
+    ): CreditsDb = CreditsCache(roomDatabase, toDomainAdapter, toRoomAdapter, timestampHelper)
 
     @Singleton
     @Provides

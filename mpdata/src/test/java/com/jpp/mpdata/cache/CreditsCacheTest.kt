@@ -84,14 +84,14 @@ class CreditsCacheTest {
         every { timestampHelper.creditsRefreshTime() } returns 1
         every { creditsDao.getMovieCastCharacters(any(), any()) } returns dbCharacters
         every { creditsDao.getMovieCrew(any(), any()) } returns dbCrew
-        every { roomModelAdapter.adaptDBCreditsToDomain(any(), any(), any()) } returns expectedCredits
+        every { roomModelAdapter.credits(any(), any(), any()) } returns expectedCredits
 
         val result = subject.getCreditsForMovie(movieId)
 
         assertEquals(expectedCredits, result)
         verify { creditsDao.getMovieCastCharacters(movieId, now) }
         verify { creditsDao.getMovieCrew(movieId, now) }
-        verify { roomModelAdapter.adaptDBCreditsToDomain(dbCharacters, dbCrew, movieId) }
+        verify { roomModelAdapter.credits(dbCharacters, dbCrew, movieId) }
     }
 
     @Test

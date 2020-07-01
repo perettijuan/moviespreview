@@ -1,6 +1,5 @@
 package com.jpp.mpdata.cache
 
-import com.jpp.mpdata.cache.room.ImageSizeDAO
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.RoomDomainAdapter
 import com.jpp.mpdata.datasources.configuration.ConfigurationDb
@@ -11,45 +10,31 @@ import com.jpp.mpdomain.AppConfiguration
  * is valid after a period of time.
  */
 class ConfigurationCache(
-    private val roomDatabase: MPRoomDataBase,
-    private val adapter: RoomDomainAdapter,
-    private val timestampHelper: CacheTimestampHelper
+    roomDatabase: MPRoomDataBase,
+    private val toDomain: RoomDomainAdapter,
+    private val toRoom: DomainRoomAdapter,
+    private val timestamp: CacheTimestampHelper
 ) : ConfigurationDb {
 
-    override fun getAppConfiguration(): AppConfiguration? {
-        return withImageSizeDAO { getImageSizes(now()) }
-                .let {
-                    when (it.isNotEmpty()) {
-                        true -> { transformWithAdapter { adaptImageSizesToAppConfiguration(it) } }
-                        false -> null
-                    }
-                }
-    }
+    private val imageSizeDao = roomDatabase.imageSizeDao()
 
-    override fun saveAppConfiguration(appConfiguration: AppConfiguration) {
-        withImageSizeDAO {
-            insertImageSizes(transformWithAdapter { adaptAppConfigurationToImageSizes(appConfiguration, appConfigRefreshTime()) })
+    override fun getAppConfiguration(): AppConfiguration? {
+        val dbImageSizes = imageSizeDao.getImageSizes(timestamp.now())
+        return if (dbImageSizes.isNotEmpty()) {
+            toDomain.adaptImageSizesToAppConfiguration(dbImageSizes)
+        } else {
+            null
         }
     }
 
-    /**
-     * Helper function to execute a [transformation] in with the [RoomDomainAdapter] instance.
-     */
-    private fun <T> transformWithAdapter(transformation: RoomDomainAdapter.() -> T): T = with(adapter) { transformation.invoke(this) }
-
-    /**
-     * Helper function to execute an [action] with the [ImageSizeDAO] instance obtained from [MPRoomDataBase].
-     */
-    private fun <T> withImageSizeDAO(action: ImageSizeDAO.() -> T): T = with(roomDatabase.imageSizeDao()) { action.invoke(this) }
-
-    /**
-     * @return a Long that represents the current time.
-     */
-    private fun now() = timestampHelper.now()
+    override fun saveAppConfiguration(appConfiguration: AppConfiguration) {
+        val dbImageSizes = toRoom.imageSizes(appConfiguration, timestamp.appConfigDueDate())
+        imageSizeDao.insertImageSizes(dbImageSizes)
+    }
 
     /**
      * @return a Long that represents the expiration date of the configuration data stored in the
      * device.
      */
-    private fun appConfigRefreshTime() = with(timestampHelper) { now() + appConfigRefreshTime() }
+    private fun CacheTimestampHelper.appConfigDueDate() = now() + appConfigRefreshTime()
 }
