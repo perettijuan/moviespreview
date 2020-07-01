@@ -111,7 +111,7 @@ internal class MovieDetailsActionViewModelTest {
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.reloadButtonVisibility)
         assertEquals(View.VISIBLE, viewStatePosted?.actionButtonVisibility)
-        assertEquals(ErrorState.None, viewStatePosted?.errorState)
+        assertEquals(ActionErrorViewState.None, viewStatePosted?.errorState)
         assertEquals(false, viewStatePosted?.animate)
         assertEquals(false, viewStatePosted?.expanded)
 
@@ -239,7 +239,7 @@ internal class MovieDetailsActionViewModelTest {
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.reloadButtonVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.actionButtonVisibility)
-        assertEquals(ErrorState.UserNotLogged, viewStatePosted?.errorState)
+        assertEquals(ActionErrorViewState.UserNotLogged, viewStatePosted?.errorState)
         assertEquals(true, viewStatePosted?.animate)
         assertEquals(false, viewStatePosted?.expanded)
 
@@ -290,7 +290,7 @@ internal class MovieDetailsActionViewModelTest {
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.reloadButtonVisibility)
         assertEquals(View.INVISIBLE, viewStatePosted?.actionButtonVisibility)
-        assertEquals(ErrorState.UserNotLogged, viewStatePosted?.errorState)
+        assertEquals(ActionErrorViewState.UserNotLogged, viewStatePosted?.errorState)
         assertEquals(true, viewStatePosted?.animate)
         assertEquals(false, viewStatePosted?.expanded)
 

@@ -18,6 +18,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -45,7 +46,7 @@ class NavigationHeaderViewModelTest {
     @RelaxedMockK
     private lateinit var sessionRepository: SessionRepository
 
-    private val sessionRepositoryUpdates: Channel<Session?> = Channel()
+    private val sessionRepositoryUpdates: BroadcastChannel<Session?> = BroadcastChannel(Channel.CONFLATED)
 
     private lateinit var subject: NavigationHeaderViewModel
 

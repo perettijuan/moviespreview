@@ -81,6 +81,7 @@ class RateMovieDialogFragment : DialogFragment() {
 
     private fun handleUserMessage(message: RateMovieEvent) {
         mpToast(message.messageRes)
+        dismiss()
     }
 
     private fun setupViews(view: View) {
