@@ -8,7 +8,6 @@ import com.jpp.mpdomain.repository.SessionRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.SendChannel
 
 @ExperimentalCoroutinesApi
 class SessionRepositoryImpl(

@@ -1,7 +1,6 @@
 package com.jpp.mpmoviedetails
 
 import android.view.View
-import androidx.annotation.StringRes
 import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 
 /**

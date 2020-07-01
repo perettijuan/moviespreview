@@ -5,7 +5,6 @@ import com.jpp.mpdomain.Session
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.SendChannel
 
 /**
  * Repository that handles all [Session] related data.
