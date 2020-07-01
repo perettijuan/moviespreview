@@ -184,12 +184,12 @@ class MovieDetailsFragment : Fragment() {
         }
 
         when (actionViewState.errorState) {
-            is ErrorState.UserNotLogged -> detailsContent?.let {
+            is ActionErrorViewState.UserNotLogged -> detailsContent?.let {
                 snackBar(it, R.string.account_need_to_login, R.string.login_generic) {
                     viewModel.onUserRequestedLogin()
                 }
             }
-            is ErrorState.UnknownError -> {
+            is ActionErrorViewState.UnknownError -> {
                 detailsContent?.let { snackBarNoAction(it, R.string.unexpected_action_error) }
             }
         }
