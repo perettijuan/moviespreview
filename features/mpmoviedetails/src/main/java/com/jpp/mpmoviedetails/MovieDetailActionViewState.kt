@@ -66,7 +66,7 @@ internal data class MovieDetailActionViewState(
         return copy(
             loadingVisibility = View.INVISIBLE,
             reloadButtonVisibility = View.INVISIBLE,
-            actionButtonVisibility = View.INVISIBLE,
+            actionButtonVisibility = View.INVISIBLE, // IMPORTANT: this might be interpreted as a bug, but it is desired to hide the button.
             rateButtonState = rateButtonState.asInVisible(),
             watchListButtonState = watchListButtonState.asInVisible(),
             favoriteButtonState = favoriteButtonState.asInVisible(),
