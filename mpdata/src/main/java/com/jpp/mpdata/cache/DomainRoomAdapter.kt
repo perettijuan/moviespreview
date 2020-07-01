@@ -1,14 +1,18 @@
 package com.jpp.mpdata.cache
 
 import com.jpp.mpdata.cache.room.DBMovie
+import com.jpp.mpdata.cache.room.DBMovieDetail
+import com.jpp.mpdata.cache.room.DBMovieGenre
 import com.jpp.mpdata.cache.room.DBMoviePage
 import com.jpp.mpdomain.Movie
+import com.jpp.mpdomain.MovieDetail
+import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.MoviePage
 
 class DomainRoomAdapter {
 
     /**
-     * Adapts the provided [MoviePage] to a [DBMoviePage] with the same data.
+     * [MoviePage] to [DBMoviePage].
      */
     fun moviePage(
         dataMoviePage: MoviePage,
@@ -23,7 +27,7 @@ class DomainRoomAdapter {
     )
 
     /**
-     * Adapts the provided [Movie] to a [DBMovie] with the respective data.
+     * [Movie] to [DBMovie].
      */
     fun movie(dataMovie: Movie, pageId: Long): DBMovie = DBMovie(
         movieId = dataMovie.id,
@@ -38,5 +42,35 @@ class DomainRoomAdapter {
         voteAverage = dataMovie.vote_average,
         popularity = dataMovie.popularity,
         pageId = pageId
+    )
+
+    /**
+     * [MovieDetail] to [DBMovieDetail].
+     */
+    fun movieDetail(
+        dataMovieDetail: MovieDetail,
+        dueDate: Long
+    ): DBMovieDetail = DBMovieDetail(
+        id = dataMovieDetail.id,
+        title = dataMovieDetail.title,
+        overview = dataMovieDetail.overview,
+        releaseDate = dataMovieDetail.release_date,
+        posterPath = dataMovieDetail.poster_path,
+        voteCount = dataMovieDetail.vote_count,
+        voteAverage = dataMovieDetail.vote_average,
+        popularity = dataMovieDetail.popularity,
+        dueDate = dueDate
+    )
+
+    /**
+     * [MovieGenre] to [DBMovieGenre].
+     */
+    fun genre(
+        dataMovieGenre: MovieGenre,
+        detailId: Double
+    ): DBMovieGenre = DBMovieGenre(
+        id = dataMovieGenre.id,
+        name = dataMovieGenre.name,
+        movieDetailId = detailId
     )
 }

@@ -15,7 +15,7 @@ class MoviesCache(
     roomDatabase: MPRoomDataBase,
     private val toDomain: RoomDomainAdapter,
     private val toRoom: DomainRoomAdapter,
-    private val timestampHelper: CacheTimestampHelper
+    private val timestamp: CacheTimestampHelper
 ) : MoviesDb {
 
     private val moviesDao = roomDatabase.moviesDao()
@@ -24,8 +24,7 @@ class MoviesCache(
     private val watchlist = SparseArray<MoviePage>()
 
     override fun getMoviePageForSection(page: Int, section: MovieSection): MoviePage? {
-        val dbMoviePage =
-            moviesDao.getMoviePage(page, section.name, timestampHelper.now()) ?: return null
+        val dbMoviePage = moviesDao.getMoviePage(page, section.name, timestamp.now()) ?: return null
         val dbMoviesInPage = moviesDao.getMoviesFromPage(dbMoviePage.id) ?: return null
         return toDomain.moviePage(dbMoviePage, dbMoviesInPage)
     }
@@ -38,7 +37,7 @@ class MoviesCache(
         val dbMoviePage = toRoom.moviePage(
             dataMoviePage = moviePage,
             sectionName = section.name,
-            dueDate = timestampHelper.moviePagesRefreshTimestamp()
+            dueDate = timestamp.moviePagesRefreshTimestamp()
         )
         val pageId = moviesDao.insertMoviePage(dbMoviePage)
         val dbMovies = moviePage.results.map { domainMovie ->

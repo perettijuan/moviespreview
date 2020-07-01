@@ -74,7 +74,7 @@ class RoomDomainAdapter {
     }
 
     /**
-     * Adapts the provided [DBMoviePage] to a data layer [MoviePage] with the same data.
+     * [DBMoviePage] to [MoviePage].
      */
     fun moviePage(dbMoviePage: DBMoviePage, movies: List<DBMovie>): MoviePage = MoviePage(
         page = dbMoviePage.page,
@@ -102,60 +102,23 @@ class RoomDomainAdapter {
         )
     }
 
-
     /**
-     * Adapts the provided [MovieDetail] to a [DBMovieDetail] with the respective data.
+     * [DBMovieDetail] to [MovieDetail].
      */
-    fun adaptDataMovieDetailToDBMovieDetail(
-        dataMovieDetail: MovieDetail,
-        dueDate: Long
-    ): DBMovieDetail = with(dataMovieDetail) {
-        DBMovieDetail(
-            id = id,
-            title = title,
-            overview = overview,
-            releaseDate = release_date,
-            posterPath = poster_path,
-            voteCount = vote_count,
-            voteAverage = vote_average,
-            popularity = popularity,
-            dueDate = dueDate
-        )
-    }
-
-    /**
-     * Adapts the provided [MovieGenre] to a [DBMovieGenre] with the respective data.
-     */
-    fun adaptDataMovieGenreToDBMovieGenre(
-        dataMovieGenre: MovieGenre,
-        detailId: Double
-    ): DBMovieGenre = with(dataMovieGenre) {
-        DBMovieGenre(
-            id = id,
-            name = name,
-            movieDetailId = detailId
-        )
-    }
-
-    /**
-     * Adapts the provided [DBMovieDetail] to the respective [MovieDetail].
-     */
-    fun adaptDBMovieDetailToDataMovieDetail(
+    fun movieDetail(
         dbMovieDetail: DBMovieDetail,
         genres: List<DBMovieGenre>
-    ): MovieDetail = with(dbMovieDetail) {
-        MovieDetail(
-            id = id,
-            title = title,
-            overview = overview,
-            release_date = releaseDate,
-            poster_path = posterPath,
-            genres = genres.map { adaptDBMovieGenreToDataMovieGenre(it) },
-            vote_count = voteCount,
-            vote_average = voteAverage,
-            popularity = popularity
-        )
-    }
+    ): MovieDetail = MovieDetail(
+        id = dbMovieDetail.id,
+        title = dbMovieDetail.title,
+        overview = dbMovieDetail.overview,
+        release_date = dbMovieDetail.releaseDate,
+        poster_path = dbMovieDetail.posterPath,
+        genres = genres.map { adaptDBMovieGenreToDataMovieGenre(it) },
+        vote_count = dbMovieDetail.voteCount,
+        vote_average = dbMovieDetail.voteAverage,
+        popularity = dbMovieDetail.popularity
+    )
 
     /**
      * Adapts the provided [DBMovieGenre] to the respective [MovieGenre].

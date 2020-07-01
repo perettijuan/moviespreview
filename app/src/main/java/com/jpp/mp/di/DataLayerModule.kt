@@ -44,22 +44,7 @@ import com.jpp.mpdata.repository.session.SessionRepositoryImpl
 import com.jpp.mpdata.repository.support.SupportDb
 import com.jpp.mpdata.repository.support.SupportRepositoryImpl
 import com.jpp.mpdata.repository.tokens.AccessTokenRepositoryImpl
-import com.jpp.mpdomain.repository.AboutUrlRepository
-import com.jpp.mpdomain.repository.AccessTokenRepository
-import com.jpp.mpdomain.repository.AccountRepository
-import com.jpp.mpdomain.repository.AppVersionRepository
-import com.jpp.mpdomain.repository.ConfigurationRepository
-import com.jpp.mpdomain.repository.ConnectivityRepository
-import com.jpp.mpdomain.repository.CreditsRepository
-import com.jpp.mpdomain.repository.LanguageRepository
-import com.jpp.mpdomain.repository.LicensesRepository
-import com.jpp.mpdomain.repository.MovieDetailRepository
-import com.jpp.mpdomain.repository.MoviePageRepository
-import com.jpp.mpdomain.repository.MovieStateRepository
-import com.jpp.mpdomain.repository.PersonRepository
-import com.jpp.mpdomain.repository.SearchRepository
-import com.jpp.mpdomain.repository.SessionRepository
-import com.jpp.mpdomain.repository.SupportRepository
+import com.jpp.mpdomain.repository.*
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -308,9 +293,10 @@ class DataLayerModule {
     @Provides
     fun providesMovieDetailDb(
         roomDb: MPRoomDataBase,
-        adapter: RoomDomainAdapter,
+        toDomainAdapter: RoomDomainAdapter,
+        toRoomAdapter: DomainRoomAdapter,
         timestampHelper: CacheTimestampHelper
-    ): MovieDetailDb = MovieDetailCache(roomDb, adapter, timestampHelper)
+    ): MovieDetailDb = MovieDetailCache(roomDb, toDomainAdapter, toRoomAdapter, timestampHelper)
 
     @Singleton
     @Provides

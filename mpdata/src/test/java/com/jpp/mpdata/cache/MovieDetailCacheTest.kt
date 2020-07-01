@@ -73,13 +73,13 @@ class MovieDetailCacheTest {
         every { timestampHelper.now() } returns now
         every { detailsDAO.getMovieDetail(any(), any()) } returns dbMovieDetail
         every { detailsDAO.getGenresForDetailId(any()) } returns dbGenres
-        every { roomModelAdapter.adaptDBMovieDetailToDataMovieDetail(any(), any()) } returns movieDetail
+        every { roomModelAdapter.movieDetail(any(), any()) } returns movieDetail
 
         val result = subject.getMovieDetails(10.toDouble())
 
         Assertions.assertEquals(movieDetail, result)
         verify { detailsDAO.getMovieDetail(10.toDouble(), now) }
         verify { detailsDAO.getGenresForDetailId(dbMovieDetailId) }
-        verify { roomModelAdapter.adaptDBMovieDetailToDataMovieDetail(dbMovieDetail, dbGenres) }
+        verify { roomModelAdapter.movieDetail(dbMovieDetail, dbGenres) }
     }
 }
