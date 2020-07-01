@@ -3,7 +3,7 @@ package com.jpp.mpdata.cache
 import com.jpp.mpdata.cache.room.DBImageSize
 import com.jpp.mpdata.cache.room.ImageSizeDAO
 import com.jpp.mpdata.cache.room.MPRoomDataBase
-import com.jpp.mpdata.cache.room.RoomModelAdapter
+import com.jpp.mpdata.cache.room.RoomDomainAdapter
 import com.jpp.mpdomain.AppConfiguration
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -23,7 +23,7 @@ class ConfigurationCacheTest {
     @RelaxedMockK
     private lateinit var imageSizeDAO: ImageSizeDAO
     @MockK
-    private lateinit var roomModelAdapter: RoomModelAdapter
+    private lateinit var roomModelAdapter: RoomDomainAdapter
     @MockK
     private lateinit var timestampHelper: CacheTimestampHelper
 

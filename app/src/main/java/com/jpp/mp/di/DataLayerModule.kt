@@ -3,14 +3,9 @@ package com.jpp.mp.di
 import android.content.Context
 import androidx.room.Room
 import com.jpp.mpdata.api.MPApi
-import com.jpp.mpdata.cache.CacheTimestampHelper
-import com.jpp.mpdata.cache.ConfigurationCache
-import com.jpp.mpdata.cache.CreditsCache
-import com.jpp.mpdata.cache.MovieDetailCache
-import com.jpp.mpdata.cache.MoviesCache
-import com.jpp.mpdata.cache.SupportCache
+import com.jpp.mpdata.cache.*
 import com.jpp.mpdata.cache.room.MPRoomDataBase
-import com.jpp.mpdata.cache.room.RoomModelAdapter
+import com.jpp.mpdata.cache.room.RoomDomainAdapter
 import com.jpp.mpdata.datasources.account.AccountApi
 import com.jpp.mpdata.datasources.account.AccountDb
 import com.jpp.mpdata.datasources.configuration.ConfigurationApi
@@ -92,7 +87,12 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesRoomModelAdapter() = RoomModelAdapter()
+    fun providesRoomDomainAdapter() = RoomDomainAdapter()
+
+    @Singleton
+    @Provides
+    fun providesDomainRoomAdapter() = DomainRoomAdapter()
+
 
     @Singleton
     @Provides
@@ -119,9 +119,10 @@ class DataLayerModule {
     @Provides
     fun providesMoviesDb(
         roomDb: MPRoomDataBase,
-        adapter: RoomModelAdapter,
+        toDomainAdapter: RoomDomainAdapter,
+        toRoomAdapter: DomainRoomAdapter,
         timestampHelper: CacheTimestampHelper
-    ): MoviesDb = MoviesCache(roomDb, adapter, timestampHelper)
+    ): MoviesDb = MoviesCache(roomDb, toDomainAdapter, toRoomAdapter, timestampHelper)
 
     @Singleton
     @Provides
@@ -140,7 +141,7 @@ class DataLayerModule {
     @Provides
     fun providesConfigurationDb(
         roomDb: MPRoomDataBase,
-        adapter: RoomModelAdapter,
+        adapter: RoomDomainAdapter,
         timestampHelper: CacheTimestampHelper
     ): ConfigurationDb = ConfigurationCache(roomDb, adapter, timestampHelper)
 
@@ -193,7 +194,7 @@ class DataLayerModule {
     @Provides
     fun provideCreditsDb(
         roomDatabase: MPRoomDataBase,
-        adapter: RoomModelAdapter,
+        adapter: RoomDomainAdapter,
         timestampHelper: CacheTimestampHelper
     ): CreditsDb = CreditsCache(roomDatabase, adapter, timestampHelper)
 
@@ -307,7 +308,7 @@ class DataLayerModule {
     @Provides
     fun providesMovieDetailDb(
         roomDb: MPRoomDataBase,
-        adapter: RoomModelAdapter,
+        adapter: RoomDomainAdapter,
         timestampHelper: CacheTimestampHelper
     ): MovieDetailDb = MovieDetailCache(roomDb, adapter, timestampHelper)
 

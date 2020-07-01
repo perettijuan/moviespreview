@@ -5,7 +5,7 @@ import com.jpp.mpdata.cache.room.DBMoviePage
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.MovieDAO
 import com.jpp.mpdata.cache.room.MovieDetailDAO
-import com.jpp.mpdata.cache.room.RoomModelAdapter
+import com.jpp.mpdata.cache.room.RoomDomainAdapter
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
@@ -29,7 +29,7 @@ class MoviesCacheTest {
     @RelaxedMockK
     private lateinit var detailsDAO: MovieDetailDAO
     @MockK
-    private lateinit var roomModelAdapter: RoomModelAdapter
+    private lateinit var roomModelAdapter: RoomDomainAdapter
     @MockK
     private lateinit var timestampHelper: CacheTimestampHelper
 
@@ -82,7 +82,7 @@ class MoviesCacheTest {
         every { timestampHelper.now() } returns now
         every { movieDAO.getMoviePage(page, section.name, now) } returns dbMoviePage
         every { movieDAO.getMoviesFromPage(dbMoviePage.id) } returns dbMovieList
-        every { roomModelAdapter.adaptDBMoviePageToDataMoviePage(dbMoviePage, dbMovieList) } returns mappedMoviePage
+        every { roomModelAdapter.moviePage(dbMoviePage, dbMovieList) } returns mappedMoviePage
 
         val result = subject.getMoviePageForSection(page, section)
 
@@ -103,13 +103,13 @@ class MoviesCacheTest {
         every { timestampHelper.now() } returns now
         every { timestampHelper.moviePagesRefreshTime() } returns movieRefreshTime
         every { roomModelAdapter.adaptDataMoviePageToDBMoviePage(any(), any(), any()) } returns dbMoviePage
-        every { roomModelAdapter.adaptDataMovieToDBMovie(any(), any()) } returns mockk()
+        every { roomModelAdapter.movieToDB(any(), any()) } returns mockk()
         every { movieDAO.insertMoviePage(any()) } returns insertedMoviePageId
 
         subject.saveMoviePageForSection(moviePage, section)
 
         verify { roomModelAdapter.adaptDataMoviePageToDBMoviePage(moviePage, section.name, expectedDueDate) }
-        verify(exactly = 3) { roomModelAdapter.adaptDataMovieToDBMovie(any(), insertedMoviePageId) }
+        verify(exactly = 3) { roomModelAdapter.movieToDB(any(), insertedMoviePageId) }
         verify { movieDAO.insertMoviePage(dbMoviePage) }
         verify { movieDAO.insertMovies(any()) }
     }

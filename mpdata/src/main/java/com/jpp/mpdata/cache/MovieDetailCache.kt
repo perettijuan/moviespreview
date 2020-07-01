@@ -2,7 +2,7 @@ package com.jpp.mpdata.cache
 
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.MovieDetailDAO
-import com.jpp.mpdata.cache.room.RoomModelAdapter
+import com.jpp.mpdata.cache.room.RoomDomainAdapter
 import com.jpp.mpdata.datasources.moviedetail.MovieDetailDb
 import com.jpp.mpdomain.MovieDetail
 
@@ -12,7 +12,7 @@ import com.jpp.mpdomain.MovieDetail
  */
 class MovieDetailCache(
     private val roomDatabase: MPRoomDataBase,
-    private val adapter: RoomModelAdapter,
+    private val adapter: RoomDomainAdapter,
     private val timestampHelper: CacheTimestampHelper
 ) : MovieDetailDb {
 
@@ -20,7 +20,7 @@ class MovieDetailCache(
         return withMovieDetailsDao {
             getMovieDetail(movieId, now())?.let { dbMovieDetails ->
                 getGenresForDetailId(dbMovieDetails.id)?.let { dbGenres ->
-                    transformWithAdapter { adaptDBMovieDetailToDataMovieDetail(dbMovieDetails, dbGenres) }
+                    adapter.adaptDBMovieDetailToDataMovieDetail(dbMovieDetails, dbGenres)
                 }
             }
         }
@@ -28,8 +28,8 @@ class MovieDetailCache(
 
     override fun saveMovieDetails(movieDetail: MovieDetail) {
         withMovieDetailsDao {
-            insertMovieDetail(transformWithAdapter { adaptDataMovieDetailToDBMovieDetail(movieDetail, movieDetailsRefreshTime()) })
-            insertMovieGenres(movieDetail.genres.map { transformWithAdapter { adaptDataMovieGenreToDBMovieGenre(it, movieDetail.id) } })
+            insertMovieDetail(adapter.adaptDataMovieDetailToDBMovieDetail(movieDetail, movieDetailsRefreshTime()))
+            insertMovieGenres(movieDetail.genres.map { adapter.adaptDataMovieGenreToDBMovieGenre(it, movieDetail.id) })
         }
     }
 
@@ -37,10 +37,7 @@ class MovieDetailCache(
         withMovieDetailsDao { deleteAll() }
     }
 
-    /**
-     * Helper function to execute a [transformation] in with the [RoomModelAdapter] instance.
-     */
-    private fun <T> transformWithAdapter(transformation: RoomModelAdapter.() -> T): T = with(adapter) { transformation.invoke(this) }
+
 
     /**
      * Helper function to execute an [action] with the [MovieDetailDAO] instance obtained from [MPRoomDataBase].

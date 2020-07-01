@@ -4,7 +4,7 @@ import com.jpp.mpdata.cache.room.CreditsDao
 import com.jpp.mpdata.cache.room.DBCastCharacter
 import com.jpp.mpdata.cache.room.DBCrewPerson
 import com.jpp.mpdata.cache.room.MPRoomDataBase
-import com.jpp.mpdata.cache.room.RoomModelAdapter
+import com.jpp.mpdata.cache.room.RoomDomainAdapter
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits
 import com.jpp.mpdomain.CrewMember
@@ -25,7 +25,7 @@ class CreditsCacheTest {
     @RelaxedMockK
     private lateinit var creditsDao: CreditsDao
     @RelaxedMockK
-    private lateinit var roomModelAdapter: RoomModelAdapter
+    private lateinit var roomModelAdapter: RoomDomainAdapter
     @RelaxedMockK
     private lateinit var timestampHelper: CacheTimestampHelper
 

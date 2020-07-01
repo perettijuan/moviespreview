@@ -2,7 +2,7 @@ package com.jpp.mpdata.cache
 
 import com.jpp.mpdata.cache.room.CreditsDao
 import com.jpp.mpdata.cache.room.MPRoomDataBase
-import com.jpp.mpdata.cache.room.RoomModelAdapter
+import com.jpp.mpdata.cache.room.RoomDomainAdapter
 import com.jpp.mpdata.repository.credits.CreditsDb
 import com.jpp.mpdomain.Credits
 
@@ -12,7 +12,7 @@ import com.jpp.mpdomain.Credits
  */
 class CreditsCache(
     private val roomDatabase: MPRoomDataBase,
-    private val adapter: RoomModelAdapter,
+    private val adapter: RoomDomainAdapter,
     private val timestampHelper: CacheTimestampHelper
 ) : CreditsDb {
 
@@ -43,9 +43,9 @@ class CreditsCache(
     }
 
     /**
-     * Helper function to execute a [transformation] in with the [RoomModelAdapter] instance.
+     * Helper function to execute a [transformation] in with the [RoomDomainAdapter] instance.
      */
-    private fun <T> transformWithAdapter(transformation: RoomModelAdapter.() -> T): T = with(adapter) { transformation.invoke(this) }
+    private fun <T> transformWithAdapter(transformation: RoomDomainAdapter.() -> T): T = with(adapter) { transformation.invoke(this) }
 
     /**
      * Helper function to execute an [action] with the [CreditsDao] instance obtained from [MPRoomDataBase].

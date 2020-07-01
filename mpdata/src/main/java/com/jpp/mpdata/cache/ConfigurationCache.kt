@@ -2,7 +2,7 @@ package com.jpp.mpdata.cache
 
 import com.jpp.mpdata.cache.room.ImageSizeDAO
 import com.jpp.mpdata.cache.room.MPRoomDataBase
-import com.jpp.mpdata.cache.room.RoomModelAdapter
+import com.jpp.mpdata.cache.room.RoomDomainAdapter
 import com.jpp.mpdata.datasources.configuration.ConfigurationDb
 import com.jpp.mpdomain.AppConfiguration
 
@@ -12,7 +12,7 @@ import com.jpp.mpdomain.AppConfiguration
  */
 class ConfigurationCache(
     private val roomDatabase: MPRoomDataBase,
-    private val adapter: RoomModelAdapter,
+    private val adapter: RoomDomainAdapter,
     private val timestampHelper: CacheTimestampHelper
 ) : ConfigurationDb {
 
@@ -33,9 +33,9 @@ class ConfigurationCache(
     }
 
     /**
-     * Helper function to execute a [transformation] in with the [RoomModelAdapter] instance.
+     * Helper function to execute a [transformation] in with the [RoomDomainAdapter] instance.
      */
-    private fun <T> transformWithAdapter(transformation: RoomModelAdapter.() -> T): T = with(adapter) { transformation.invoke(this) }
+    private fun <T> transformWithAdapter(transformation: RoomDomainAdapter.() -> T): T = with(adapter) { transformation.invoke(this) }
 
     /**
      * Helper function to execute an [action] with the [ImageSizeDAO] instance obtained from [MPRoomDataBase].
