@@ -5,7 +5,6 @@ import androidx.lifecycle.SavedStateHandle
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
-import com.jpp.mpdomain.usecase.ConfigureMovieImagesPathUseCase
 import com.jpp.mpdomain.usecase.GetMoviePageUseCase
 import com.jpp.mpdomain.usecase.Try
 import com.jpp.mptestutils.CoroutineTestExtension
@@ -39,9 +38,6 @@ class MovieListViewModelTest {
     @MockK
     private lateinit var getMoviePageUseCase: GetMoviePageUseCase
 
-    @MockK
-    private lateinit var configureMovieImagesPathUseCase: ConfigureMovieImagesPathUseCase
-
     @RelaxedMockK
     private lateinit var navigator: MovieListNavigator
 
@@ -51,7 +47,6 @@ class MovieListViewModelTest {
     fun setUp() {
         subject = MovieListViewModel(
                 getMoviePageUseCase,
-                configureMovieImagesPathUseCase,
                 navigator,
                 CoroutineTestExtension.testDispatcher,
                 SavedStateHandle()
@@ -144,7 +139,6 @@ class MovieListViewModelTest {
         )
 
         coEvery { getMoviePageUseCase.execute(any(), section) } returns Try.Success(moviePage)
-        coEvery { configureMovieImagesPathUseCase.execute(any()) } answers { Try.Success(arg(0)) }
 
         subject.onInit(section, screenTitle)
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }

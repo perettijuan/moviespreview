@@ -1,14 +1,9 @@
 package com.jpp.mp.main.movies
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
-import com.jpp.mpdomain.usecase.ConfigureMovieImagesPathUseCase
 import com.jpp.mpdomain.usecase.GetMoviePageUseCase
 import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,7 +20,6 @@ import kotlinx.coroutines.withContext
  */
 class MovieListViewModel(
     private val getMoviePageUseCase: GetMoviePageUseCase,
-    private val configureMovieImagesPathUseCase: ConfigureMovieImagesPathUseCase,
     private val navigator: MovieListNavigator,
     private val ioDispatcher: CoroutineDispatcher,
     private val savedStateHandle: SavedStateHandle
@@ -132,7 +126,6 @@ class MovieListViewModel(
 
             val movieList = withContext(ioDispatcher) {
                 moviePage.results
-                    .map { movie -> movie.configurePath() }
                     .map { configuredMovie -> configuredMovie.mapToListItem() }
             }
 
@@ -140,10 +133,6 @@ class MovieListViewModel(
                 movieList = movieList
             )
         }
-    }
-
-    private suspend fun Movie.configurePath(): Movie {
-        return configureMovieImagesPathUseCase.execute(this).getOrNull() ?: this
     }
 
     private fun Movie.mapToListItem() =

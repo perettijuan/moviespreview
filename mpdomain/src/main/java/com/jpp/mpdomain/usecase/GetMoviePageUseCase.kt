@@ -3,6 +3,7 @@ package com.jpp.mpdomain.usecase
 import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
+import com.jpp.mpdomain.repository.ConfigurationRepository
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.MoviePageRepository
@@ -12,6 +13,7 @@ import com.jpp.mpdomain.repository.MoviePageRepository
  */
 class GetMoviePageUseCase(
     private val moviePageRepository: MoviePageRepository,
+    private val configurationRepository: ConfigurationRepository,
     private val connectivityRepository: ConnectivityRepository,
     private val languageRepository: LanguageRepository
 ) {
@@ -21,11 +23,17 @@ class GetMoviePageUseCase(
             is Connectivity.Disconnected -> Try.Failure(Try.FailureCause.NoConnectivity)
             is Connectivity.Connected ->
                 moviePageRepository.getMoviePageForSection(
-                        page,
-                        section,
-                        languageRepository.getCurrentAppLanguage()
+                    page,
+                    section,
+                    languageRepository.getCurrentAppLanguage()
                 )?.let { moviePage ->
-                    Try.Success(moviePage)
+                    Try.Success(
+                        moviePage.copy(
+                            results = moviePage.results.configureMovieImages(
+                                configurationRepository.getAppConfiguration()
+                            )
+                        )
+                    )
                 } ?: Try.Failure(Try.FailureCause.Unknown)
         }
     }

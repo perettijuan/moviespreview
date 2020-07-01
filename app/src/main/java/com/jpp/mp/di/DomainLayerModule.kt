@@ -13,7 +13,6 @@ import com.jpp.mpdomain.repository.MovieStateRepository
 import com.jpp.mpdomain.repository.PersonRepository
 import com.jpp.mpdomain.repository.SearchRepository
 import com.jpp.mpdomain.repository.SessionRepository
-import com.jpp.mpdomain.usecase.ConfigureMovieImagesPathUseCase
 import com.jpp.mpdomain.usecase.DeleteMovieRatingUseCase
 import com.jpp.mpdomain.usecase.FindAppLicenseUseCase
 import com.jpp.mpdomain.usecase.GetAccessTokenUseCase
@@ -42,17 +41,18 @@ import dagger.Provides
 class DomainLayerModule {
 
     @Provides
-    fun providesConfigureMovieImagesPathUseCase(
-        configurationRepository: ConfigurationRepository
-    ): ConfigureMovieImagesPathUseCase = ConfigureMovieImagesPathUseCase(configurationRepository)
-
-    @Provides
     fun providesGetMoviePageUseCase(
         moviePageRepository: MoviePageRepository,
+        configurationRepository: ConfigurationRepository,
         connectivityRepository: ConnectivityRepository,
         languageRepository: LanguageRepository
     ): GetMoviePageUseCase =
-        GetMoviePageUseCase(moviePageRepository, connectivityRepository, languageRepository)
+        GetMoviePageUseCase(
+            moviePageRepository,
+            configurationRepository,
+            connectivityRepository,
+            languageRepository
+        )
 
     @Provides
     fun providesGetMovieDetailUseCase(
