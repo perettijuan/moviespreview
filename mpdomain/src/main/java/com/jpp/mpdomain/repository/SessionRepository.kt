@@ -9,7 +9,6 @@ import kotlinx.coroutines.channels.Channel
 /**
  * Repository that handles all [Session] related data.
  */
-@ExperimentalCoroutinesApi
 interface SessionRepository {
 
     /**
@@ -24,6 +23,7 @@ interface SessionRepository {
      * blocks the coroutine (like if the thread was blocked) and I want to implement
      * a fire and forget mechanism.
      */
+    @ExperimentalCoroutinesApi
     suspend fun sessionStateUpdates(): BroadcastChannel<Session?>
 
     /**
