@@ -1,5 +1,6 @@
 package com.jpp.mpdata.cache
 
+import com.jpp.mpdata.cache.adapter.DomainRoomAdapter
 import com.jpp.mpdata.cache.adapter.RoomDomainAdapter
 import com.jpp.mpdata.cache.room.DBImageSize
 import com.jpp.mpdata.cache.room.ImageSizeDAO
@@ -22,8 +23,13 @@ class ConfigurationCacheTest {
 
     @RelaxedMockK
     private lateinit var imageSizeDAO: ImageSizeDAO
+
     @MockK
-    private lateinit var roomModelAdapter: RoomDomainAdapter
+    private lateinit var toDomain: RoomDomainAdapter
+
+    @MockK
+    private lateinit var toRoom: DomainRoomAdapter
+
     @MockK
     private lateinit var timestampHelper: CacheTimestampHelper
 
@@ -33,7 +39,7 @@ class ConfigurationCacheTest {
     fun setUp() {
         val roomDatabase = mockk<MPRoomDataBase>()
         every { roomDatabase.imageSizeDao() } returns imageSizeDAO
-        subject = ConfigurationCache(roomDatabase, roomModelAdapter, timestampHelper)
+        subject = ConfigurationCache(roomDatabase, toDomain, toRoom, timestampHelper)
     }
 
     @Test
@@ -56,12 +62,11 @@ class ConfigurationCacheTest {
 
         every { timestampHelper.now() } returns now
         every { imageSizeDAO.getImageSizes(now) } returns dbImageSizes
-        every { roomModelAdapter.adaptImageSizesToAppConfiguration(any()) } returns appConfiguration
+        every { toDomain.adaptImageSizesToAppConfiguration(any()) } returns appConfiguration
 
         val result = subject.getAppConfiguration()
 
         assertEquals(result, appConfiguration)
-        verify { roomModelAdapter.adaptImageSizesToAppConfiguration(dbImageSizes) }
     }
 
     @Test
@@ -74,11 +79,10 @@ class ConfigurationCacheTest {
 
         every { timestampHelper.now() } returns now
         every { timestampHelper.appConfigRefreshTime() } returns movieRefreshTime
-        every { roomModelAdapter.adaptAppConfigurationToImageSizes(any(), any()) } returns dbImageSizes
+        every { toRoom.imageSizes(any(), any()) } returns dbImageSizes
 
         subject.saveAppConfiguration(appConfiguration)
 
-        verify { roomModelAdapter.adaptAppConfigurationToImageSizes(appConfiguration, expectedDueDate) }
         verify { imageSizeDAO.insertImageSizes(dbImageSizes) }
     }
 }
