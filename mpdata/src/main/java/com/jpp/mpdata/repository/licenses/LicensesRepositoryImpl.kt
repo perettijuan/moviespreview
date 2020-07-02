@@ -15,18 +15,16 @@ class LicensesRepositoryImpl(private val context: Context) : LicensesRepository 
         val buffer = ByteArray(size)
         input.read(buffer)
         input.close()
-        gsonLoader.fromJson(String(buffer))
+        GSON.fromJson(String(buffer))
     } catch (e: IOException) {
         null
     }
 
-    /**
-     * Helper class to load an object from GSON
-     */
-    private inline fun <reified T> Gson.fromJson(json: String) = this.fromJson<T>(json, object : TypeToken<T>() {}.type)!!
+    private inline fun <reified T> Gson.fromJson(json: String) =
+        this.fromJson<T>(json, object : TypeToken<T>() {}.type)
 
     private companion object {
         const val LICENSES_FILE_LOCATION = "licenses/licenses.json"
-        val gsonLoader by lazy { Gson() }
+        val GSON by lazy { Gson() }
     }
 }

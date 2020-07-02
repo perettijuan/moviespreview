@@ -1,19 +1,20 @@
 package com.jpp.mpdata.cache
 
+import com.jpp.mpdata.cache.adapter.DomainRoomAdapter
+import com.jpp.mpdata.cache.adapter.RoomDomainAdapter
 import com.jpp.mpdata.cache.room.DBMovieDetail
 import com.jpp.mpdata.cache.room.DBMovieGenre
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.MovieDAO
 import com.jpp.mpdata.cache.room.MovieDetailDAO
-import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdomain.MovieDetail
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
-import io.mockk.verify
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -23,10 +24,16 @@ class MovieDetailCacheTest {
 
     @RelaxedMockK
     private lateinit var movieDAO: MovieDAO
+
     @RelaxedMockK
     private lateinit var detailsDAO: MovieDetailDAO
+
     @MockK
-    private lateinit var roomModelAdapter: RoomModelAdapter
+    private lateinit var toDomain: RoomDomainAdapter
+
+    @RelaxedMockK
+    private lateinit var toRoom: DomainRoomAdapter
+
     @MockK
     private lateinit var timestampHelper: CacheTimestampHelper
 
@@ -37,7 +44,7 @@ class MovieDetailCacheTest {
         val roomDatabase = mockk<MPRoomDataBase>()
         every { roomDatabase.moviesDao() } returns movieDAO
         every { roomDatabase.movieDetailsDao() } returns detailsDAO
-        subject = MovieDetailCache(roomDatabase, roomModelAdapter, timestampHelper)
+        subject = MovieDetailCache(roomDatabase, toDomain, toRoom, timestampHelper)
     }
 
     @Test
@@ -47,7 +54,7 @@ class MovieDetailCacheTest {
 
         val result = subject.getMovieDetails(10.toDouble())
 
-        Assertions.assertNull(result)
+        assertNull(result)
     }
 
     @Test
@@ -58,7 +65,7 @@ class MovieDetailCacheTest {
 
         val result = subject.getMovieDetails(10.toDouble())
 
-        Assertions.assertNull(result)
+        assertNull(result)
     }
 
     @Test
@@ -73,13 +80,10 @@ class MovieDetailCacheTest {
         every { timestampHelper.now() } returns now
         every { detailsDAO.getMovieDetail(any(), any()) } returns dbMovieDetail
         every { detailsDAO.getGenresForDetailId(any()) } returns dbGenres
-        every { roomModelAdapter.adaptDBMovieDetailToDataMovieDetail(any(), any()) } returns movieDetail
+        every { toDomain.movieDetail(any(), any()) } returns movieDetail
 
         val result = subject.getMovieDetails(10.toDouble())
 
-        Assertions.assertEquals(movieDetail, result)
-        verify { detailsDAO.getMovieDetail(10.toDouble(), now) }
-        verify { detailsDAO.getGenresForDetailId(dbMovieDetailId) }
-        verify { roomModelAdapter.adaptDBMovieDetailToDataMovieDetail(dbMovieDetail, dbGenres) }
+        assertEquals(movieDetail, result)
     }
 }

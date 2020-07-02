@@ -11,7 +11,7 @@ import java.lang.reflect.Type
  * Since the value in [MovieState] can assume different types, we're forced to add
  * a custom deserializer to parse the proper value.
  */
-class MovieStateRateJsonDeserializer : JsonDeserializer<MovieStateRate> {
+internal class MovieStateRateJsonDeserializer : JsonDeserializer<MovieStateRate> {
 
     override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): MovieStateRate {
         return try {

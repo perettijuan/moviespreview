@@ -1,4 +1,4 @@
-package com.jpp.mpdata.repository.credits
+package com.jpp.mpdata.datasources.credits
 
 import com.jpp.mpdomain.Credits
 

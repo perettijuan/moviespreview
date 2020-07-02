@@ -1,5 +1,7 @@
 package com.jpp.mpdata.repository.credits
 
+import com.jpp.mpdata.datasources.credits.CreditsApi
+import com.jpp.mpdata.datasources.credits.CreditsDb
 import com.jpp.mpdomain.Credits
 import com.jpp.mpdomain.repository.CreditsRepository
 

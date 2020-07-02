@@ -14,28 +14,51 @@ class MoviePageRepositoryImpl(
     private val moviesDb: MoviesDb
 ) : MoviePageRepository {
 
-    override suspend fun getMoviePageForSection(page: Int, section: MovieSection, language: SupportedLanguage): MoviePage? {
+    override suspend fun getMoviePageForSection(
+        page: Int,
+        section: MovieSection,
+        language: SupportedLanguage
+    ): MoviePage? {
         return moviesDb.getMoviePageForSection(page, section)
-                ?: getFromApi(page, section, language)?.also { moviesDb.saveMoviePageForSection(it, section) }
+            ?: getFromApi(page, section, language)
+                ?.also { moviePage -> moviesDb.saveMoviePageForSection(moviePage, section) }
     }
 
     override suspend fun flushMoviePagesForSection(section: MovieSection) {
         moviesDb.flushAllPagesInSection(section)
     }
 
-    override suspend fun getFavoriteMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
+    override suspend fun getFavoriteMoviePage(
+        page: Int,
+        userAccount: UserAccount,
+        session: Session,
+        language: SupportedLanguage
+    ): MoviePage? {
         return moviesDb.getFavoriteMovies(page)
-                ?: moviesApi.getFavoriteMoviePage(page, userAccount, session, language)?.also { moviesDb.saveFavoriteMoviesPage(page, it) }
+            ?: moviesApi.getFavoriteMoviePage(page, userAccount, session, language)
+                ?.also { moviePage -> moviesDb.saveFavoriteMoviesPage(page, moviePage) }
     }
 
-    override suspend fun getRatedMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
+    override suspend fun getRatedMoviePage(
+        page: Int,
+        userAccount: UserAccount,
+        session: Session,
+        language: SupportedLanguage
+    ): MoviePage? {
         return moviesDb.getRatedMovies(page)
-                ?: moviesApi.getRatedMoviePage(page, userAccount, session, language)?.also { moviesDb.saveRatedMoviesPage(page, it) }
+            ?: moviesApi.getRatedMoviePage(page, userAccount, session, language)
+                ?.also { moviePage -> moviesDb.saveRatedMoviesPage(page, moviePage) }
     }
 
-    override suspend fun getWatchlistMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
+    override suspend fun getWatchlistMoviePage(
+        page: Int,
+        userAccount: UserAccount,
+        session: Session,
+        language: SupportedLanguage
+    ): MoviePage? {
         return moviesDb.getWatchlistMoviePage(page)
-                ?: moviesApi.getWatchlistMoviePage(page, userAccount, session, language)?.also { moviesDb.saveWatchlistMoviePage(page, it) }
+            ?: moviesApi.getWatchlistMoviePage(page, userAccount, session, language)
+                ?.also { moviePage -> moviesDb.saveWatchlistMoviePage(page, moviePage) }
     }
 
     override suspend fun flushFavoriteMoviePages() {
@@ -50,7 +73,11 @@ class MoviePageRepositoryImpl(
         moviesDb.flushWatchlistMoviePages()
     }
 
-    private fun getFromApi(page: Int, section: MovieSection, language: SupportedLanguage): MoviePage? = with(moviesApi) {
+    private fun getFromApi(
+        page: Int,
+        section: MovieSection,
+        language: SupportedLanguage
+    ): MoviePage? = with(moviesApi) {
         when (section) {
             MovieSection.Playing -> getNowPlayingMoviePage(page, language)
             MovieSection.TopRated -> getTopRatedMoviePage(page, language)

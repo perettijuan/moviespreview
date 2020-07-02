@@ -1,9 +1,9 @@
 package com.jpp.mpdata.cache
 
-import com.jpp.mpdata.cache.room.CreditsDao
+import com.jpp.mpdata.cache.adapter.DomainRoomAdapter
+import com.jpp.mpdata.cache.adapter.RoomDomainAdapter
 import com.jpp.mpdata.cache.room.MPRoomDataBase
-import com.jpp.mpdata.cache.room.RoomModelAdapter
-import com.jpp.mpdata.repository.credits.CreditsDb
+import com.jpp.mpdata.datasources.credits.CreditsDb
 import com.jpp.mpdomain.Credits
 
 /**
@@ -11,55 +11,43 @@ import com.jpp.mpdomain.Credits
  * is valid after a period of time.
  */
 class CreditsCache(
-    private val roomDatabase: MPRoomDataBase,
-    private val adapter: RoomModelAdapter,
-    private val timestampHelper: CacheTimestampHelper
+    roomDatabase: MPRoomDataBase,
+    private val toDomain: RoomDomainAdapter,
+    private val toRoom: DomainRoomAdapter,
+    private val timestamp: CacheTimestampHelper
 ) : CreditsDb {
 
+    private val creditsDao = roomDatabase.creditsDao()
+
     override fun getCreditsForMovie(movieId: Double): Credits? {
-        return withCreditsDao {
-            val cast = getMovieCastCharacters(movieId, now())
-            val crew = getMovieCrew(movieId, now())
-            if (cast != null && cast.isNotEmpty() && crew != null && crew.isNotEmpty()) {
-                transformWithAdapter { adaptDBCreditsToDomain(cast, crew, movieId) }
-            } else {
-                null
-            }
+        val dbCast = creditsDao.getMovieCastCharacters(movieId, timestamp.now()) ?: return null
+        val dbCrew = creditsDao.getMovieCrew(movieId, timestamp.now()) ?: return null
+        return if (dbCast.isNotEmpty() && dbCrew.isNotEmpty()) {
+            toDomain.credits(dbCast, dbCrew, movieId)
+        } else {
+            null
         }
     }
 
     override fun storeCredits(credits: Credits) {
-        withCreditsDao {
-            insertCastCharacters(transformWithAdapter { adaptDomainCastCharacterListToDB(credits.cast, credits.id, creditsRefreshTime()) })
-            insertCrew(transformWithAdapter { adaptDomainCrewMemberListToDB(credits.crew, credits.id, creditsRefreshTime()) })
+        val dbCharacters = credits.cast.map { domainCharacter ->
+            toRoom.castCharacter(domainCharacter, credits.id, timestamp.creditsDueDate())
         }
+        val dbCrew = credits.crew.map { crewMember ->
+            toRoom.crewPerson(crewMember, credits.id, timestamp.creditsDueDate())
+        }
+        creditsDao.insertCastCharacters(dbCharacters)
+        creditsDao.insertCrew(dbCrew)
     }
 
     override fun clearAllData() {
-        withCreditsDao {
-            deleteAllCastCharacters()
-            deleteAllCrew()
-        }
+        creditsDao.deleteAllCastCharacters()
+        creditsDao.deleteAllCrew()
     }
-
-    /**
-     * Helper function to execute a [transformation] in with the [RoomModelAdapter] instance.
-     */
-    private fun <T> transformWithAdapter(transformation: RoomModelAdapter.() -> T): T = with(adapter) { transformation.invoke(this) }
-
-    /**
-     * Helper function to execute an [action] with the [CreditsDao] instance obtained from [MPRoomDataBase].
-     */
-    private fun <T> withCreditsDao(action: CreditsDao.() -> T): T = with(roomDatabase.creditsDao()) { action.invoke(this) }
-
-    /**
-     * @return a Long that represents the current time.
-     */
-    private fun now() = timestampHelper.now()
 
     /**
      * @return a Long that represents the expiration date of the credits data stored in the
      * device.
      */
-    private fun creditsRefreshTime() = with(timestampHelper) { now() + creditsRefreshTime() }
+    private fun CacheTimestampHelper.creditsDueDate() = now() + creditsRefreshTime()
 }

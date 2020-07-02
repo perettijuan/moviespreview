@@ -1,8 +1,8 @@
 package com.jpp.mpdata.cache
 
+import com.jpp.mpdata.cache.adapter.DomainRoomAdapter
+import com.jpp.mpdata.cache.adapter.RoomDomainAdapter
 import com.jpp.mpdata.cache.room.MPRoomDataBase
-import com.jpp.mpdata.cache.room.MovieDetailDAO
-import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdata.datasources.moviedetail.MovieDetailDb
 import com.jpp.mpdomain.MovieDetail
 
@@ -11,50 +11,34 @@ import com.jpp.mpdomain.MovieDetail
  * is valid after a period of time.
  */
 class MovieDetailCache(
-    private val roomDatabase: MPRoomDataBase,
-    private val adapter: RoomModelAdapter,
-    private val timestampHelper: CacheTimestampHelper
+    roomDatabase: MPRoomDataBase,
+    private val toDomain: RoomDomainAdapter,
+    private val toRoom: DomainRoomAdapter,
+    private val timestamp: CacheTimestampHelper
 ) : MovieDetailDb {
 
+    private val detailsDao = roomDatabase.movieDetailsDao()
+
     override fun getMovieDetails(movieId: Double): MovieDetail? {
-        return withMovieDetailsDao {
-            getMovieDetail(movieId, now())?.let { dbMovieDetails ->
-                getGenresForDetailId(dbMovieDetails.id)?.let { dbGenres ->
-                    transformWithAdapter { adaptDBMovieDetailToDataMovieDetail(dbMovieDetails, dbGenres) }
-                }
-            }
-        }
+        val dbMovieDetails = detailsDao.getMovieDetail(movieId, timestamp.now()) ?: return null
+        val dbMovieGenres = detailsDao.getGenresForDetailId(dbMovieDetails.id) ?: return null
+        return toDomain.movieDetail(dbMovieDetails, dbMovieGenres)
     }
 
     override fun saveMovieDetails(movieDetail: MovieDetail) {
-        withMovieDetailsDao {
-            insertMovieDetail(transformWithAdapter { adaptDataMovieDetailToDBMovieDetail(movieDetail, movieDetailsRefreshTime()) })
-            insertMovieGenres(movieDetail.genres.map { transformWithAdapter { adaptDataMovieGenreToDBMovieGenre(it, movieDetail.id) } })
-        }
+        val dbMovieDetails = toRoom.movieDetail(movieDetail, timestamp.refreshTimestamp())
+        val dbGenres = movieDetail.genres.map { toRoom.genre(it, movieDetail.id) }
+        detailsDao.insertMovieDetail(dbMovieDetails)
+        detailsDao.insertMovieGenres(dbGenres)
     }
 
     override fun flushData() {
-        withMovieDetailsDao { deleteAll() }
+        detailsDao.deleteAll()
     }
-
-    /**
-     * Helper function to execute a [transformation] in with the [RoomModelAdapter] instance.
-     */
-    private fun <T> transformWithAdapter(transformation: RoomModelAdapter.() -> T): T = with(adapter) { transformation.invoke(this) }
-
-    /**
-     * Helper function to execute an [action] with the [MovieDetailDAO] instance obtained from [MPRoomDataBase].
-     */
-    private fun <T> withMovieDetailsDao(action: MovieDetailDAO.() -> T): T = with(roomDatabase.movieDetailsDao()) { action.invoke(this) }
-
-    /**
-     * @return a Long that represents the current time.
-     */
-    private fun now() = timestampHelper.now()
 
     /**
      * @return a Long that represents the expiration date of the movie details data stored in the
      * device.
      */
-    private fun movieDetailsRefreshTime() = with(timestampHelper) { now() + movieDetailsRefreshTime() }
+    private fun CacheTimestampHelper.refreshTimestamp(): Long = now() + movieDetailsRefreshTime()
 }

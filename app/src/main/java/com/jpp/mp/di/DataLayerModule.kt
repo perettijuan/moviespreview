@@ -9,12 +9,15 @@ import com.jpp.mpdata.cache.CreditsCache
 import com.jpp.mpdata.cache.MovieDetailCache
 import com.jpp.mpdata.cache.MoviesCache
 import com.jpp.mpdata.cache.SupportCache
+import com.jpp.mpdata.cache.adapter.DomainRoomAdapter
+import com.jpp.mpdata.cache.adapter.RoomDomainAdapter
 import com.jpp.mpdata.cache.room.MPRoomDataBase
-import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdata.datasources.account.AccountApi
 import com.jpp.mpdata.datasources.account.AccountDb
 import com.jpp.mpdata.datasources.configuration.ConfigurationApi
 import com.jpp.mpdata.datasources.configuration.ConfigurationDb
+import com.jpp.mpdata.datasources.credits.CreditsApi
+import com.jpp.mpdata.datasources.credits.CreditsDb
 import com.jpp.mpdata.datasources.language.LanguageDb
 import com.jpp.mpdata.datasources.language.LanguageMonitor
 import com.jpp.mpdata.datasources.moviedetail.MovieDetailApi
@@ -22,8 +25,12 @@ import com.jpp.mpdata.datasources.moviedetail.MovieDetailDb
 import com.jpp.mpdata.datasources.moviepage.MoviesApi
 import com.jpp.mpdata.datasources.moviepage.MoviesDb
 import com.jpp.mpdata.datasources.moviestate.MovieStateApi
+import com.jpp.mpdata.datasources.person.PersonApi
+import com.jpp.mpdata.datasources.person.PersonDb
+import com.jpp.mpdata.datasources.search.SearchApi
 import com.jpp.mpdata.datasources.session.SessionApi
 import com.jpp.mpdata.datasources.session.SessionDb
+import com.jpp.mpdata.datasources.support.SupportDb
 import com.jpp.mpdata.datasources.tokens.AccessTokenApi
 import com.jpp.mpdata.preferences.LanguageDbImpl
 import com.jpp.mpdata.preferences.SessionDbImpl
@@ -32,21 +39,15 @@ import com.jpp.mpdata.repository.account.AccountRepositoryImpl
 import com.jpp.mpdata.repository.appversion.AppVersionRepositoryImpl
 import com.jpp.mpdata.repository.configuration.ConfigurationRepositoryImpl
 import com.jpp.mpdata.repository.connectivity.ConnectivityRepositoryImpl
-import com.jpp.mpdata.repository.credits.CreditsApi
-import com.jpp.mpdata.repository.credits.CreditsDb
 import com.jpp.mpdata.repository.credits.CreditsRepositoryImpl
 import com.jpp.mpdata.repository.language.LanguageRepositoryImpl
 import com.jpp.mpdata.repository.licenses.LicensesRepositoryImpl
 import com.jpp.mpdata.repository.moviedetail.MovieDetailRepositoryImpl
 import com.jpp.mpdata.repository.movies.MoviePageRepositoryImpl
 import com.jpp.mpdata.repository.moviestate.MovieStateRepositoryImpl
-import com.jpp.mpdata.repository.person.PersonApi
-import com.jpp.mpdata.repository.person.PersonDb
 import com.jpp.mpdata.repository.person.PersonRepositoryImpl
-import com.jpp.mpdata.repository.search.SearchApi
 import com.jpp.mpdata.repository.search.SearchRepositoryImpl
 import com.jpp.mpdata.repository.session.SessionRepositoryImpl
-import com.jpp.mpdata.repository.support.SupportDb
 import com.jpp.mpdata.repository.support.SupportRepositoryImpl
 import com.jpp.mpdata.repository.tokens.AccessTokenRepositoryImpl
 import com.jpp.mpdomain.repository.AboutUrlRepository
@@ -92,7 +93,13 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesRoomModelAdapter() = RoomModelAdapter()
+    fun providesRoomDomainAdapter() =
+        RoomDomainAdapter()
+
+    @Singleton
+    @Provides
+    fun providesDomainRoomAdapter() =
+        DomainRoomAdapter()
 
     @Singleton
     @Provides
@@ -119,9 +126,10 @@ class DataLayerModule {
     @Provides
     fun providesMoviesDb(
         roomDb: MPRoomDataBase,
-        adapter: RoomModelAdapter,
+        toDomainAdapter: RoomDomainAdapter,
+        toRoomAdapter: DomainRoomAdapter,
         timestampHelper: CacheTimestampHelper
-    ): MoviesDb = MoviesCache(roomDb, adapter, timestampHelper)
+    ): MoviesDb = MoviesCache(roomDb, toDomainAdapter, toRoomAdapter, timestampHelper)
 
     @Singleton
     @Provides
@@ -140,17 +148,17 @@ class DataLayerModule {
     @Provides
     fun providesConfigurationDb(
         roomDb: MPRoomDataBase,
-        adapter: RoomModelAdapter,
+        toDomainAdapter: RoomDomainAdapter,
+        toRoomAdapter: DomainRoomAdapter,
         timestampHelper: CacheTimestampHelper
-    ): ConfigurationDb = ConfigurationCache(roomDb, adapter, timestampHelper)
+    ): ConfigurationDb = ConfigurationCache(roomDb, toDomainAdapter, toRoomAdapter, timestampHelper)
 
     @Singleton
     @Provides
     fun providesConfigurationRepository(
         configurationApi: ConfigurationApi,
         configurationDb: ConfigurationDb
-    ):
-            ConfigurationRepository = ConfigurationRepositoryImpl(configurationApi, configurationDb)
+    ): ConfigurationRepository = ConfigurationRepositoryImpl(configurationApi, configurationDb)
 
     /**********************************
      ****** SEARCH DEPENDENCIES *******
@@ -193,9 +201,10 @@ class DataLayerModule {
     @Provides
     fun provideCreditsDb(
         roomDatabase: MPRoomDataBase,
-        adapter: RoomModelAdapter,
+        toDomainAdapter: RoomDomainAdapter,
+        toRoomAdapter: DomainRoomAdapter,
         timestampHelper: CacheTimestampHelper
-    ): CreditsDb = CreditsCache(roomDatabase, adapter, timestampHelper)
+    ): CreditsDb = CreditsCache(roomDatabase, toDomainAdapter, toRoomAdapter, timestampHelper)
 
     @Singleton
     @Provides
@@ -307,9 +316,10 @@ class DataLayerModule {
     @Provides
     fun providesMovieDetailDb(
         roomDb: MPRoomDataBase,
-        adapter: RoomModelAdapter,
+        toDomainAdapter: RoomDomainAdapter,
+        toRoomAdapter: DomainRoomAdapter,
         timestampHelper: CacheTimestampHelper
-    ): MovieDetailDb = MovieDetailCache(roomDb, adapter, timestampHelper)
+    ): MovieDetailDb = MovieDetailCache(roomDb, toDomainAdapter, toRoomAdapter, timestampHelper)
 
     @Singleton
     @Provides

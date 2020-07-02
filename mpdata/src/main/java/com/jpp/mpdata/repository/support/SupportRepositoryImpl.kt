@@ -1,6 +1,7 @@
 package com.jpp.mpdata.repository.support
 
-import com.jpp.mpdata.repository.person.PersonDb
+import com.jpp.mpdata.datasources.person.PersonDb
+import com.jpp.mpdata.datasources.support.SupportDb
 import com.jpp.mpdomain.repository.SupportRepository
 
 class SupportRepositoryImpl(

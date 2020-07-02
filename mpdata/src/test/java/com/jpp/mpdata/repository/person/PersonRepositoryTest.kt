@@ -1,5 +1,7 @@
 package com.jpp.mpdata.repository.person
 
+import com.jpp.mpdata.datasources.person.PersonApi
+import com.jpp.mpdata.datasources.person.PersonDb
 import com.jpp.mpdomain.Person
 import com.jpp.mpdomain.SupportedLanguage
 import com.jpp.mpdomain.repository.PersonRepository

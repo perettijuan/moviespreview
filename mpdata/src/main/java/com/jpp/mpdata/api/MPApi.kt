@@ -4,14 +4,14 @@ import com.google.gson.GsonBuilder
 import com.jpp.mpdata.BuildConfig
 import com.jpp.mpdata.datasources.account.AccountApi
 import com.jpp.mpdata.datasources.configuration.ConfigurationApi
+import com.jpp.mpdata.datasources.credits.CreditsApi
 import com.jpp.mpdata.datasources.moviedetail.MovieDetailApi
 import com.jpp.mpdata.datasources.moviepage.MoviesApi
 import com.jpp.mpdata.datasources.moviestate.MovieStateApi
+import com.jpp.mpdata.datasources.person.PersonApi
+import com.jpp.mpdata.datasources.search.SearchApi
 import com.jpp.mpdata.datasources.session.SessionApi
 import com.jpp.mpdata.datasources.tokens.AccessTokenApi
-import com.jpp.mpdata.repository.credits.CreditsApi
-import com.jpp.mpdata.repository.person.PersonApi
-import com.jpp.mpdata.repository.search.SearchApi
 import com.jpp.mpdomain.AccessToken
 import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.Credits
@@ -37,9 +37,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 open class MPApi :
         ConfigurationApi,
         MoviesApi,
-        SearchApi,
-        PersonApi,
-        CreditsApi,
+    SearchApi,
+    PersonApi,
+    CreditsApi,
         SessionApi,
         AccountApi,
         AccessTokenApi,

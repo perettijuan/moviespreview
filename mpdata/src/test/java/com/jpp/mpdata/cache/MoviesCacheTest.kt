@@ -1,11 +1,12 @@
 package com.jpp.mpdata.cache
 
+import com.jpp.mpdata.cache.adapter.DomainRoomAdapter
+import com.jpp.mpdata.cache.adapter.RoomDomainAdapter
 import com.jpp.mpdata.cache.room.DBMovie
 import com.jpp.mpdata.cache.room.DBMoviePage
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.MovieDAO
 import com.jpp.mpdata.cache.room.MovieDetailDAO
-import com.jpp.mpdata.cache.room.RoomModelAdapter
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
@@ -26,10 +27,16 @@ class MoviesCacheTest {
 
     @RelaxedMockK
     private lateinit var movieDAO: MovieDAO
+
     @RelaxedMockK
     private lateinit var detailsDAO: MovieDetailDAO
+
     @MockK
-    private lateinit var roomModelAdapter: RoomModelAdapter
+    private lateinit var toDomain: RoomDomainAdapter
+
+    @MockK
+    private lateinit var toRoom: DomainRoomAdapter
+
     @MockK
     private lateinit var timestampHelper: CacheTimestampHelper
 
@@ -42,7 +49,7 @@ class MoviesCacheTest {
         val roomDatabase = mockk<MPRoomDataBase>()
         every { roomDatabase.moviesDao() } returns movieDAO
         every { roomDatabase.movieDetailsDao() } returns detailsDAO
-        subject = MoviesCache(roomDatabase, roomModelAdapter, timestampHelper)
+        subject = MoviesCache(roomDatabase, toDomain, toRoom, timestampHelper)
     }
 
     @Test
@@ -69,7 +76,6 @@ class MoviesCacheTest {
         val result = subject.getMoviePageForSection(page, section)
 
         assertNull(result)
-        verify { movieDAO.getMoviesFromPage(moviePage.id) }
     }
 
     @Test
@@ -82,7 +88,7 @@ class MoviesCacheTest {
         every { timestampHelper.now() } returns now
         every { movieDAO.getMoviePage(page, section.name, now) } returns dbMoviePage
         every { movieDAO.getMoviesFromPage(dbMoviePage.id) } returns dbMovieList
-        every { roomModelAdapter.adaptDBMoviePageToDataMoviePage(dbMoviePage, dbMovieList) } returns mappedMoviePage
+        every { toDomain.moviePage(dbMoviePage, dbMovieList) } returns mappedMoviePage
 
         val result = subject.getMoviePageForSection(page, section)
 
@@ -96,20 +102,23 @@ class MoviesCacheTest {
         val dbMoviePage = mockk<DBMoviePage>(relaxed = true)
         val now = 12L
         val movieRefreshTime = 10L
-        val expectedDueDate = 22L
         val insertedMoviePageId = 1L
 
         every { moviePage.results } returns movieList
         every { timestampHelper.now() } returns now
         every { timestampHelper.moviePagesRefreshTime() } returns movieRefreshTime
-        every { roomModelAdapter.adaptDataMoviePageToDBMoviePage(any(), any(), any()) } returns dbMoviePage
-        every { roomModelAdapter.adaptDataMovieToDBMovie(any(), any()) } returns mockk()
+        every {
+            toRoom.moviePage(
+                any(),
+                any(),
+                any()
+            )
+        } returns dbMoviePage
+        every { toRoom.movie(any(), any()) } returns mockk()
         every { movieDAO.insertMoviePage(any()) } returns insertedMoviePageId
 
         subject.saveMoviePageForSection(moviePage, section)
 
-        verify { roomModelAdapter.adaptDataMoviePageToDBMoviePage(moviePage, section.name, expectedDueDate) }
-        verify(exactly = 3) { roomModelAdapter.adaptDataMovieToDBMovie(any(), insertedMoviePageId) }
         verify { movieDAO.insertMoviePage(dbMoviePage) }
         verify { movieDAO.insertMovies(any()) }
     }
