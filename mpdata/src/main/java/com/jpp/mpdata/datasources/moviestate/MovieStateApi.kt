@@ -18,19 +18,34 @@ interface MovieStateApi {
      * Updates the favorite state of the provided [movieId] for the current user.
      * @return true if the favorite state can be updated, false any other case.
      */
-    fun updateFavoriteMovieState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean?
+    fun updateFavoriteMovieState(
+        movieId: Double,
+        asFavorite: Boolean,
+        userAccount: UserAccount,
+        session: Session
+    ): Boolean?
 
     /**
      * Updates the watchlist state of the provided [movieId] for the current user.
      * @return true if the watchlist state of the movie can be updated, false any other case.
      */
-    fun updateWatchlistMovieState(movieId: Double, inWatchList: Boolean, userAccount: UserAccount, session: Session): Boolean?
+    fun updateWatchlistMovieState(
+        movieId: Double,
+        inWatchList: Boolean,
+        userAccount: UserAccount,
+        session: Session
+    ): Boolean?
 
     /**
      * Rates the movie identified by [movieId] with the provided [rating].
      * @return true if the movie has been rated, false any other case.
      */
-    fun rateMovie(movieId: Double, rating: Float, userAccount: UserAccount, session: Session): Boolean?
+    fun rateMovie(
+        movieId: Double,
+        rating: Float,
+        userAccount: UserAccount,
+        session: Session
+    ): Boolean?
 
     /**
      * Deletes the rating that the user has set for the movie identified by [movieId].

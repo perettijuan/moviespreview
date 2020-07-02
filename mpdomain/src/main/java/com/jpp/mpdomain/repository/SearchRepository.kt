@@ -16,9 +16,4 @@ interface SearchRepository {
      * no one can be found.
      */
     suspend fun searchPage(query: String, page: Int, language: SupportedLanguage): SearchPage?
-
-    /**
-     * Flushes out any inner data stored related to a search in progress.
-     */
-    suspend fun flushSearch()
 }

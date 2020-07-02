@@ -1,4 +1,4 @@
-package com.jpp.mpdata.repository.person
+package com.jpp.mpdata.datasources.person
 
 import com.jpp.mpdomain.Person
 import com.jpp.mpdomain.SupportedLanguage

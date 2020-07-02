@@ -3,7 +3,7 @@ package com.jpp.mpdata.cache
 import com.jpp.mpdata.cache.adapter.DomainRoomAdapter
 import com.jpp.mpdata.cache.adapter.RoomDomainAdapter
 import com.jpp.mpdata.cache.room.MPRoomDataBase
-import com.jpp.mpdata.repository.credits.CreditsDb
+import com.jpp.mpdata.datasources.credits.CreditsDb
 import com.jpp.mpdomain.Credits
 
 /**

@@ -10,8 +10,7 @@ class ConfigurationRepositoryImpl(
     private val configurationDb: ConfigurationDb
 ) : ConfigurationRepository {
     override suspend fun getAppConfiguration(): AppConfiguration? {
-        return configurationDb.getAppConfiguration() ?: run {
-            configurationApi.getAppConfiguration()?.also { configurationDb.saveAppConfiguration(it) }
-        }
+        return configurationDb.getAppConfiguration() ?: configurationApi.getAppConfiguration()
+            ?.also { configurationDb.saveAppConfiguration(it) }
     }
 }

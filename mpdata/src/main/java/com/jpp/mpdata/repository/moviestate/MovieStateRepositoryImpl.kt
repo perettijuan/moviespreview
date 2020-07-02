@@ -17,27 +17,38 @@ class MovieStateRepositoryImpl(private val movieStateApi: MovieStateApi) : Movie
         return movieStateApi.getMovieAccountState(movieId, session)
     }
 
-    override suspend fun updateFavoriteMovieState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean {
+    override suspend fun updateFavoriteMovieState(
+        movieId: Double,
+        asFavorite: Boolean,
+        userAccount: UserAccount,
+        session: Session
+    ): Boolean {
         return movieStateApi
-                .updateFavoriteMovieState(movieId, asFavorite, userAccount, session)?.let { true }
-                ?: false
+            .updateFavoriteMovieState(movieId, asFavorite, userAccount, session) ?: false
     }
 
-    override suspend fun updateWatchlistMovieState(movieId: Double, inWatchList: Boolean, userAccount: UserAccount, session: Session): Boolean {
+    override suspend fun updateWatchlistMovieState(
+        movieId: Double,
+        inWatchList: Boolean,
+        userAccount: UserAccount,
+        session: Session
+    ): Boolean {
         return movieStateApi
-                .updateWatchlistMovieState(movieId, inWatchList, userAccount, session)?.let { true }
-                ?: false
+            .updateWatchlistMovieState(movieId, inWatchList, userAccount, session) ?: false
     }
 
-    override suspend fun rateMovie(movieId: Double, rating: Float, userAccount: UserAccount, session: Session): Boolean {
+    override suspend fun rateMovie(
+        movieId: Double,
+        rating: Float,
+        userAccount: UserAccount,
+        session: Session
+    ): Boolean {
         return movieStateApi
-                .rateMovie(movieId, rating, userAccount, session)
-                ?: false
+            .rateMovie(movieId, rating, userAccount, session) ?: false
     }
 
     override suspend fun deleteMovieRate(movieId: Double, session: Session): Boolean {
         return movieStateApi
-                .deleteMovieRating(movieId, session)
-                ?: false
+            .deleteMovieRating(movieId, session) ?: false
     }
 }
