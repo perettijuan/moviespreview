@@ -1,4 +1,4 @@
-package com.jpp.mpdata.cache
+package com.jpp.mpdata.cache.adapter
 
 import com.jpp.mp.common.extensions.addAllMapping
 import com.jpp.mpdata.cache.room.*

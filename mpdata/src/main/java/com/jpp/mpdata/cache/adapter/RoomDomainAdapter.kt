@@ -1,5 +1,7 @@
-package com.jpp.mpdata.cache.room
+package com.jpp.mpdata.cache.adapter
 
+import com.jpp.mpdata.cache.room.*
+import com.jpp.mpdata.cache.room.ImageTypes
 import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.CastCharacter
 import com.jpp.mpdomain.Credits

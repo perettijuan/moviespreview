@@ -1,7 +1,8 @@
 package com.jpp.mpdata.cache
 
+import com.jpp.mpdata.cache.adapter.DomainRoomAdapter
+import com.jpp.mpdata.cache.adapter.RoomDomainAdapter
 import com.jpp.mpdata.cache.room.MPRoomDataBase
-import com.jpp.mpdata.cache.room.RoomDomainAdapter
 import com.jpp.mpdata.datasources.configuration.ConfigurationDb
 import com.jpp.mpdomain.AppConfiguration
 

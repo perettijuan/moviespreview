@@ -5,7 +5,8 @@ import androidx.room.Room
 import com.jpp.mpdata.api.MPApi
 import com.jpp.mpdata.cache.*
 import com.jpp.mpdata.cache.room.MPRoomDataBase
-import com.jpp.mpdata.cache.room.RoomDomainAdapter
+import com.jpp.mpdata.cache.adapter.RoomDomainAdapter
+import com.jpp.mpdata.cache.adapter.DomainRoomAdapter
 import com.jpp.mpdata.datasources.account.AccountApi
 import com.jpp.mpdata.datasources.account.AccountDb
 import com.jpp.mpdata.datasources.configuration.ConfigurationApi
@@ -72,11 +73,13 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesRoomDomainAdapter() = RoomDomainAdapter()
+    fun providesRoomDomainAdapter() =
+        RoomDomainAdapter()
 
     @Singleton
     @Provides
-    fun providesDomainRoomAdapter() = DomainRoomAdapter()
+    fun providesDomainRoomAdapter() =
+        DomainRoomAdapter()
 
 
     @Singleton

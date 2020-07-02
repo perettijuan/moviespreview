@@ -1,8 +1,9 @@
 package com.jpp.mpdata.cache
 
 import android.util.SparseArray
+import com.jpp.mpdata.cache.adapter.DomainRoomAdapter
+import com.jpp.mpdata.cache.adapter.RoomDomainAdapter
 import com.jpp.mpdata.cache.room.MPRoomDataBase
-import com.jpp.mpdata.cache.room.RoomDomainAdapter
 import com.jpp.mpdata.datasources.moviepage.MoviesDb
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
