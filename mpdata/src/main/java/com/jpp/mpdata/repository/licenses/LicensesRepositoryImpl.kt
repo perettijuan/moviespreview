@@ -20,7 +20,6 @@ class LicensesRepositoryImpl(private val context: Context) : LicensesRepository 
         null
     }
 
-
     private inline fun <reified T> Gson.fromJson(json: String) =
         this.fromJson<T>(json, object : TypeToken<T>() {}.type)
 

@@ -1,6 +1,12 @@
 package com.jpp.mpdata.cache.adapter
 
-import com.jpp.mpdata.cache.room.*
+import com.jpp.mpdata.cache.room.DBCastCharacter
+import com.jpp.mpdata.cache.room.DBCrewPerson
+import com.jpp.mpdata.cache.room.DBImageSize
+import com.jpp.mpdata.cache.room.DBMovie
+import com.jpp.mpdata.cache.room.DBMovieDetail
+import com.jpp.mpdata.cache.room.DBMovieGenre
+import com.jpp.mpdata.cache.room.DBMoviePage
 import com.jpp.mpdata.cache.room.ImageTypes
 import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.CastCharacter
@@ -50,21 +56,20 @@ class RoomDomainAdapter {
     /**
      * Adapts the provided [DBMovie] to a data layer [Movie] with the same data.
      */
-    private fun adaptDBMovieToDataMovie(dbMovie: DBMovie): Movie = with(dbMovie) {
+    private fun adaptDBMovieToDataMovie(dbMovie: DBMovie): Movie =
         Movie(
-            id = movieId,
-            title = title,
-            original_title = originalTile,
-            overview = overview,
-            release_date = releaseDate,
-            original_language = originalLanguage,
-            poster_path = posterPath,
-            backdrop_path = backdropPath,
-            vote_count = voteCount,
-            vote_average = voteAverage,
-            popularity = popularity
+            id = dbMovie.movieId,
+            title = dbMovie.title,
+            original_title = dbMovie.originalTile,
+            overview = dbMovie.overview,
+            release_date = dbMovie.releaseDate,
+            original_language = dbMovie.originalLanguage,
+            poster_path = dbMovie.posterPath,
+            backdrop_path = dbMovie.backdropPath,
+            vote_count = dbMovie.voteCount,
+            vote_average = dbMovie.voteAverage,
+            popularity = dbMovie.popularity
         )
-    }
 
     /**
      * [DBMovieDetail] to [MovieDetail].
@@ -88,12 +93,7 @@ class RoomDomainAdapter {
      * Adapts the provided [DBMovieGenre] to the respective [MovieGenre].
      */
     private fun adaptDBMovieGenreToDataMovieGenre(dbMovieGenre: DBMovieGenre): MovieGenre =
-        with(dbMovieGenre) {
-            MovieGenre(
-                id = id,
-                name = name
-            )
-        }
+        MovieGenre(id = dbMovieGenre.id, name = dbMovieGenre.name)
 
     /**
      * [DBCastCharacter] and [DBCrewPerson] to [Credits].

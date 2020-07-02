@@ -1,8 +1,21 @@
 package com.jpp.mpdata.cache.adapter
 
 import com.jpp.mp.common.extensions.addAllMapping
-import com.jpp.mpdata.cache.room.*
-import com.jpp.mpdomain.*
+import com.jpp.mpdata.cache.room.DBCastCharacter
+import com.jpp.mpdata.cache.room.DBCrewPerson
+import com.jpp.mpdata.cache.room.DBImageSize
+import com.jpp.mpdata.cache.room.DBMovie
+import com.jpp.mpdata.cache.room.DBMovieDetail
+import com.jpp.mpdata.cache.room.DBMovieGenre
+import com.jpp.mpdata.cache.room.DBMoviePage
+import com.jpp.mpdata.cache.room.ImageTypes
+import com.jpp.mpdomain.AppConfiguration
+import com.jpp.mpdomain.CastCharacter
+import com.jpp.mpdomain.CrewMember
+import com.jpp.mpdomain.Movie
+import com.jpp.mpdomain.MovieDetail
+import com.jpp.mpdomain.MovieGenre
+import com.jpp.mpdomain.MoviePage
 
 class DomainRoomAdapter {
 
