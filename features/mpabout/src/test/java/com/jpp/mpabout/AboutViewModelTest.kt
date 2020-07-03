@@ -9,7 +9,6 @@ import com.jpp.mptestutils.CoroutineTestExtension
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -61,7 +60,7 @@ class AboutViewModelTest {
             AboutItem.TheMovieDbTermsOfUse
         )
 
-        every { appVersionRepository.getCurrentAppVersion() } returns AppVersion("appVersion")
+        coEvery { appVersionRepository.getCurrentAppVersion() } returns AppVersion("appVersion")
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 

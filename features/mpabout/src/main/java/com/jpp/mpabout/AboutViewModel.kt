@@ -46,10 +46,17 @@ class AboutViewModel(
      * on it.
      */
     internal fun onInit() {
-        _viewState.value = AboutViewState.showContent(
-            appVersion = "v ${appVersionRepository.getCurrentAppVersion().version}",
-            aboutItems = supportedAboutItems
-        )
+        viewModelScope.launch {
+            _viewState.value = AboutViewState.showLoading()
+
+            val currentAppVersion = withContext(ioDispatcher) {
+                appVersionRepository.getCurrentAppVersion().version
+            }
+            _viewState.value = _viewState.value?.showContent(
+                appVersion = "v $currentAppVersion",
+                aboutItems = supportedAboutItems
+            )
+        }
     }
 
     /**

@@ -9,5 +9,5 @@ interface AppVersionRepository {
     /**
      * @return the [AppVersion] that represents the current version of the application.
      */
-    fun getCurrentAppVersion(): AppVersion
+    suspend fun getCurrentAppVersion(): AppVersion
 }
