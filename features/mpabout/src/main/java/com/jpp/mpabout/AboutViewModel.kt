@@ -3,10 +3,14 @@ package com.jpp.mpabout
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mpdomain.repository.AboutUrlRepository
 import com.jpp.mpdomain.repository.AppVersionRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * [ViewModel] that supports the about section. The VM retrieves
@@ -16,7 +20,8 @@ import com.jpp.mpdomain.repository.AppVersionRepository
 class AboutViewModel(
     private val appVersionRepository: AppVersionRepository,
     private val aboutUrlRepository: AboutUrlRepository,
-    private val aboutNavigator: AboutNavigator
+    private val aboutNavigator: AboutNavigator,
+    private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _viewState = MutableLiveData<AboutViewState>()
@@ -56,15 +61,18 @@ class AboutViewModel(
             return
         }
 
-        when (aboutItem) {
-            is AboutItem.BrowseAppCode -> AboutNavEvent.InnerNavigation(aboutUrlRepository.getCodeRepoUrl().url)
-            is AboutItem.TheMovieDbTermsOfUse -> AboutNavEvent.InnerNavigation(aboutUrlRepository.getTheMovieDbTermOfUseUrl().url)
-            is AboutItem.PrivacyPolicy -> AboutNavEvent.OuterNavigation(aboutUrlRepository.getPrivacyPolicyUrl().url)
-            is AboutItem.RateApp -> AboutNavEvent.OpenGooglePlay(aboutUrlRepository.getGPlayAppUrl().url)
-            is AboutItem.ShareApp -> AboutNavEvent.OpenSharing(aboutUrlRepository.getSharingUrl().url)
-            else -> throw IllegalStateException("Unknown item selected $aboutItem")
-        }.let { selectedItem ->
-            _navEvents.value = of(selectedItem)
+        viewModelScope.launch {
+            val navEvent = withContext(ioDispatcher) {
+                when (aboutItem) {
+                    is AboutItem.BrowseAppCode -> AboutNavEvent.InnerNavigation(aboutUrlRepository.getCodeRepoUrl().url)
+                    is AboutItem.TheMovieDbTermsOfUse -> AboutNavEvent.InnerNavigation(aboutUrlRepository.getTheMovieDbTermOfUseUrl().url)
+                    is AboutItem.PrivacyPolicy -> AboutNavEvent.OuterNavigation(aboutUrlRepository.getPrivacyPolicyUrl().url)
+                    is AboutItem.RateApp -> AboutNavEvent.OpenGooglePlay(aboutUrlRepository.getGPlayAppUrl().url)
+                    is AboutItem.ShareApp -> AboutNavEvent.OpenSharing(aboutUrlRepository.getSharingUrl().url)
+                    else -> throw IllegalStateException("Unknown item selected $aboutItem")
+                }
+            }
+            _navEvents.value = of(navEvent)
         }
     }
 
@@ -72,6 +80,11 @@ class AboutViewModel(
      * Called when the app fails to expanded the Google Play app in the device.
      */
     internal fun onFailedToOpenPlayStore() {
-        _navEvents.value = of(AboutNavEvent.OpenGooglePlay(aboutUrlRepository.getGPlayWebUrl().url))
+        viewModelScope.launch {
+            val aboutUrl = withContext(ioDispatcher) {
+                aboutUrlRepository.getGPlayWebUrl()
+            }
+            _navEvents.value = of(AboutNavEvent.OpenGooglePlay(aboutUrl.url))
+        }
     }
 }
