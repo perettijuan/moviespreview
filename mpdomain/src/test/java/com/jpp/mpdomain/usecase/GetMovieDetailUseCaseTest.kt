@@ -7,7 +7,6 @@ import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.MovieDetailRepository
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
@@ -43,7 +42,7 @@ class GetMovieDetailUseCaseTest {
 
     @Test
     fun `Should fail with no connectivity message`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
         val actual = subject.execute(1.0)
 
@@ -53,7 +52,7 @@ class GetMovieDetailUseCaseTest {
 
     @Test
     fun `Should fail with unknown reason`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { languageRepository.getCurrentAppLanguage() } returns mockk()
         coEvery { movieDetailRepository.getMovieDetails(any(), any()) } returns null
 
@@ -76,7 +75,7 @@ class GetMovieDetailUseCaseTest {
             vote_average = 11F,
             vote_count = 50.0
         )
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
         coEvery {
             movieDetailRepository.getMovieDetails(

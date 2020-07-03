@@ -7,7 +7,6 @@ import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.MovieStateRepository
 import com.jpp.mpdomain.repository.SessionRepository
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
@@ -43,7 +42,7 @@ class GetMovieStateUseCaseTest {
 
     @Test
     fun `Should fail with no connectivity message`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
         val actual = subject.execute(1.0)
 
@@ -53,7 +52,7 @@ class GetMovieStateUseCaseTest {
 
     @Test
     fun `Should fail with user not logged`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { sessionRepository.getCurrentSession() } returns null
 
         val actual = subject.execute(1.0)
@@ -64,7 +63,7 @@ class GetMovieStateUseCaseTest {
 
     @Test
     fun `Should fail with unknown reason`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { sessionRepository.getCurrentSession() } returns mockk()
         coEvery { movieStateRepository.getStateForMovie(any(), any()) } returns null
 
@@ -80,7 +79,7 @@ class GetMovieStateUseCaseTest {
         val currentSession = mockk<Session>()
         val expected = mockk<MovieState>()
 
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { sessionRepository.getCurrentSession() } returns currentSession
         coEvery { movieStateRepository.getStateForMovie(movieId, currentSession) } returns expected
 

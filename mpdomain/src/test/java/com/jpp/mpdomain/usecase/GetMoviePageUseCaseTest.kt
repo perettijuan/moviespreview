@@ -9,7 +9,6 @@ import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.MoviePageRepository
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.runBlocking
@@ -50,7 +49,7 @@ class GetMoviePageUseCaseTest {
 
     @Test
     fun `Should fail with no connectivity message`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
         val actual = subject.execute(1, MovieSection.Playing)
 
@@ -61,7 +60,7 @@ class GetMoviePageUseCaseTest {
     @ParameterizedTest
     @MethodSource("movieSections")
     fun `Should retrieve return unknown error`(movieSection: MovieSection) = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
 
         coEvery {
@@ -84,7 +83,7 @@ class GetMoviePageUseCaseTest {
             total_results = 500
         )
 
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
         coEvery { configurationRepository.getAppConfiguration() } returns null
 

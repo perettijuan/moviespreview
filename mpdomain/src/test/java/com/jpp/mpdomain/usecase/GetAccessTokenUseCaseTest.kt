@@ -5,7 +5,6 @@ import com.jpp.mpdomain.Connectivity
 import com.jpp.mpdomain.repository.AccessTokenRepository
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
@@ -34,7 +33,7 @@ class GetAccessTokenUseCaseTest {
 
     @Test
     fun `Should fail with no connectivity message`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
         val actual = subject.execute()
 
@@ -44,7 +43,7 @@ class GetAccessTokenUseCaseTest {
 
     @Test
     fun `Should fail with unknown reason`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { accessTokenRepository.getAccessToken() } returns null
 
         val actual = subject.execute()
@@ -57,7 +56,7 @@ class GetAccessTokenUseCaseTest {
     fun `Should retrieve access token successfully`() = runBlocking {
         val expected: AccessToken = mockk()
 
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { accessTokenRepository.getAccessToken() } returns expected
 
         val actual = subject.execute()

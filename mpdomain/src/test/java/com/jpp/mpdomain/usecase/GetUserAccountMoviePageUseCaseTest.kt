@@ -14,7 +14,6 @@ import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.MoviePageRepository
 import com.jpp.mpdomain.repository.SessionRepository
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
@@ -64,7 +63,7 @@ class GetUserAccountMoviePageUseCaseTest {
     @ParameterizedTest
     @MethodSource("testParams")
     fun `Should fail with no connectivity message`(param: TestParam) = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
         val actual = subject.execute(1, param.type)
 
@@ -75,7 +74,7 @@ class GetUserAccountMoviePageUseCaseTest {
     @ParameterizedTest
     @MethodSource("testParams")
     fun `Should fail with user not logged`(param: TestParam) = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { sessionRepository.getCurrentSession() } returns null
 
         val actual = subject.execute(1, param.type)
@@ -88,7 +87,7 @@ class GetUserAccountMoviePageUseCaseTest {
     @MethodSource("testParams")
     fun `Should fail with user not logged when no account available`(param: TestParam) =
         runBlocking {
-            every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+            coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
             coEvery { sessionRepository.getCurrentSession() } returns mockk()
             coEvery { accountRepository.getUserAccount(any()) } returns null
 
@@ -103,7 +102,7 @@ class GetUserAccountMoviePageUseCaseTest {
     fun `Should fail with unknown reason`(param: TestParam) = runBlocking {
         val session = mockk<Session>()
         val account = mockk<UserAccount>()
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { sessionRepository.getCurrentSession() } returns session
         coEvery { accountRepository.getUserAccount(any()) } returns account
         coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
@@ -141,7 +140,7 @@ class GetUserAccountMoviePageUseCaseTest {
             results = moviePage.results.getImagesConfiguredMovies()
         )
 
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { sessionRepository.getCurrentSession() } returns session
         coEvery { accountRepository.getUserAccount(session) } returns account
         coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
@@ -175,7 +174,7 @@ class GetUserAccountMoviePageUseCaseTest {
             total_results = 500
         )
 
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { sessionRepository.getCurrentSession() } returns session
         coEvery { accountRepository.getUserAccount(session) } returns account
         coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
