@@ -6,7 +6,7 @@ import com.jpp.mpdomain.repository.ConnectivityRepository
 
 class ConnectivityRepositoryImpl(private val context: Context) : ConnectivityRepository {
 
-    override suspend  fun getCurrentConnectivity(): Connectivity {
+    override suspend fun getCurrentConnectivity(): Connectivity {
         return when (isConnectedToNetwork()) {
             true -> Connectivity.Connected
             false -> Connectivity.Disconnected

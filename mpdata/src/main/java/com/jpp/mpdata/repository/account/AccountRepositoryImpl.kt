@@ -20,7 +20,7 @@ class AccountRepositoryImpl(
         }
     }
 
-    override suspend  fun flushUserAccountData() {
+    override suspend fun flushUserAccountData() {
         accountDb.flushData()
     }
 }
