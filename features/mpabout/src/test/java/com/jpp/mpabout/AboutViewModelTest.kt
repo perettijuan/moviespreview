@@ -8,7 +8,7 @@ import com.jpp.mpdomain.repository.AppVersionRepository
 import com.jpp.mptestutils.CoroutineTestExtension
 import com.jpp.mptestutils.InstantTaskExecutorExtension
 import com.jpp.mptestutils.observeWith
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -39,7 +39,12 @@ class AboutViewModelTest {
 
     @BeforeEach
     fun setUp() {
-        subject = AboutViewModel(appVersionRepository, aboutUrlRepository, aboutNavigator)
+        subject = AboutViewModel(
+            appVersionRepository,
+            aboutUrlRepository,
+            aboutNavigator,
+            CoroutineTestExtension.testDispatcher
+        )
     }
 
     @Test
@@ -55,7 +60,7 @@ class AboutViewModelTest {
             AboutItem.TheMovieDbTermsOfUse
         )
 
-        every { appVersionRepository.getCurrentAppVersion() } returns AppVersion("appVersion")
+        coEvery { appVersionRepository.getCurrentAppVersion() } returns AppVersion("appVersion")
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
 
@@ -74,7 +79,7 @@ class AboutViewModelTest {
         var postedEvent: AboutNavEvent? = null
         val expected = AboutNavEvent.InnerNavigation("browseAppCode")
 
-        every { aboutUrlRepository.getCodeRepoUrl() } returns AboutUrl("browseAppCode")
+        coEvery { aboutUrlRepository.getCodeRepoUrl() } returns AboutUrl("browseAppCode")
         subject.navEvents.observeWith { handledEvent -> postedEvent = handledEvent.peekContent() }
 
         subject.onUserSelectedAboutItem(AboutItem.BrowseAppCode)
@@ -87,7 +92,7 @@ class AboutViewModelTest {
         var postedEvent: AboutNavEvent? = null
         val expected = AboutNavEvent.InnerNavigation("termsOfUse")
 
-        every { aboutUrlRepository.getTheMovieDbTermOfUseUrl() } returns AboutUrl("termsOfUse")
+        coEvery { aboutUrlRepository.getTheMovieDbTermOfUseUrl() } returns AboutUrl("termsOfUse")
         subject.navEvents.observeWith { handledEvent -> postedEvent = handledEvent.peekContent() }
 
         subject.onUserSelectedAboutItem(AboutItem.TheMovieDbTermsOfUse)
@@ -100,7 +105,7 @@ class AboutViewModelTest {
         var postedEvent: AboutNavEvent? = null
         val expected = AboutNavEvent.OuterNavigation("PrivacyPolicy")
 
-        every { aboutUrlRepository.getPrivacyPolicyUrl() } returns AboutUrl("PrivacyPolicy")
+        coEvery { aboutUrlRepository.getPrivacyPolicyUrl() } returns AboutUrl("PrivacyPolicy")
         subject.navEvents.observeWith { handledEvent -> postedEvent = handledEvent.peekContent() }
 
         subject.onUserSelectedAboutItem(AboutItem.PrivacyPolicy)
@@ -113,7 +118,7 @@ class AboutViewModelTest {
         var postedEvent: AboutNavEvent? = null
         val expected = AboutNavEvent.OpenGooglePlay("RateApp")
 
-        every { aboutUrlRepository.getGPlayAppUrl() } returns AboutUrl("RateApp")
+        coEvery { aboutUrlRepository.getGPlayAppUrl() } returns AboutUrl("RateApp")
         subject.navEvents.observeWith { handledEvent -> postedEvent = handledEvent.peekContent() }
 
         subject.onUserSelectedAboutItem(AboutItem.RateApp)
@@ -126,7 +131,7 @@ class AboutViewModelTest {
         var postedEvent: AboutNavEvent? = null
         val expected = AboutNavEvent.OpenSharing("ShareApp")
 
-        every { aboutUrlRepository.getSharingUrl() } returns AboutUrl("ShareApp")
+        coEvery { aboutUrlRepository.getSharingUrl() } returns AboutUrl("ShareApp")
         subject.navEvents.observeWith { handledEvent -> postedEvent = handledEvent.peekContent() }
 
         subject.onUserSelectedAboutItem(AboutItem.ShareApp)

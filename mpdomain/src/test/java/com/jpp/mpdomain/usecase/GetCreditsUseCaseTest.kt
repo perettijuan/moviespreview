@@ -9,7 +9,6 @@ import com.jpp.mpdomain.repository.ConfigurationRepository
 import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.CreditsRepository
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.runBlocking
@@ -44,7 +43,7 @@ class GetCreditsUseCaseTest {
 
     @Test
     fun `Should fail with no connectivity message`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
         val actual = subject.execute(1.0)
 
@@ -54,7 +53,7 @@ class GetCreditsUseCaseTest {
 
     @Test
     fun `Should fail with unknown reason`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { creditsRepository.getCreditsForMovie(any()) } returns null
 
         val actual = subject.execute(1.0)
@@ -77,7 +76,7 @@ class GetCreditsUseCaseTest {
             crew = listOf()
         )
 
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { creditsRepository.getCreditsForMovie(1.0) } returns credits
         coEvery { configurationRepository.getAppConfiguration() } returns AppConfiguration(
             IMAGES_CONFIG

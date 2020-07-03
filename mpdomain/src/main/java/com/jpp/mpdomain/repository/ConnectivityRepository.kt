@@ -10,5 +10,5 @@ interface ConnectivityRepository {
     /**
      * @return the current [Connectivity] of the application.
      */
-    fun getCurrentConnectivity(): Connectivity
+    suspend fun getCurrentConnectivity(): Connectivity
 }

@@ -8,7 +8,7 @@ class SupportRepositoryImpl(
     private val supportDb: SupportDb,
     private val personDb: PersonDb
 ) : SupportRepository {
-    override fun clearAllData() {
+    override suspend fun clearAllData() {
         supportDb.clearAllData()
         personDb.clearAllData()
     }

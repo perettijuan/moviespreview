@@ -10,5 +10,5 @@ import com.jpp.mpdomain.repository.AppVersionRepository
  * Note: Untested for simplicity.
  */
 class AppVersionRepositoryImpl : AppVersionRepository {
-    override fun getCurrentAppVersion(): AppVersion = AppVersion(BuildConfig.VERSION_NAME)
+    override suspend fun getCurrentAppVersion(): AppVersion = AppVersion(BuildConfig.VERSION_NAME)
 }

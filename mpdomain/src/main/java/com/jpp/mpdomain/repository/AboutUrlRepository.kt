@@ -3,10 +3,10 @@ package com.jpp.mpdomain.repository
 import com.jpp.mpdomain.AboutUrl
 
 interface AboutUrlRepository {
-    fun getTheMovieDbTermOfUseUrl(): AboutUrl
-    fun getCodeRepoUrl(): AboutUrl
-    fun getGPlayAppUrl(): AboutUrl
-    fun getGPlayWebUrl(): AboutUrl
-    fun getSharingUrl(): AboutUrl
-    fun getPrivacyPolicyUrl(): AboutUrl
+    suspend fun getTheMovieDbTermOfUseUrl(): AboutUrl
+    suspend fun getCodeRepoUrl(): AboutUrl
+    suspend fun getGPlayAppUrl(): AboutUrl
+    suspend fun getGPlayWebUrl(): AboutUrl
+    suspend fun getSharingUrl(): AboutUrl
+    suspend fun getPrivacyPolicyUrl(): AboutUrl
 }

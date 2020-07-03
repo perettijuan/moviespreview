@@ -11,14 +11,16 @@ internal data class AboutViewState(
     val header: AboutHeader = AboutHeader(),
     val content: AboutContent = AboutContent()
 ) {
+    fun showContent(
+        appVersion: String,
+        aboutItems: List<AboutItem>
+    ): AboutViewState = copy(
+        loadingVisibility = View.INVISIBLE,
+        header = AboutHeader.withHeader(appVersion),
+        content = AboutContent.withContent(aboutItems)
+    )
 
     companion object {
-        fun showContent(
-            appVersion: String,
-            aboutItems: List<AboutItem>
-        ) = AboutViewState(
-            header = AboutHeader.withHeader(appVersion),
-            content = AboutContent.withContent(aboutItems)
-        )
+        fun showLoading(): AboutViewState = AboutViewState(loadingVisibility = View.VISIBLE)
     }
 }

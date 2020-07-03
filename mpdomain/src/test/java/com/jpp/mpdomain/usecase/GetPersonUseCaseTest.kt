@@ -7,7 +7,6 @@ import com.jpp.mpdomain.repository.ConnectivityRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.PersonRepository
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.runBlocking
@@ -38,7 +37,7 @@ class GetPersonUseCaseTest {
 
     @Test
     fun `Should fail with no connectivity message`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
         val actual = subject.execute(1.0)
 
@@ -48,7 +47,7 @@ class GetPersonUseCaseTest {
 
     @Test
     fun `Should fail with unknown reason`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
         coEvery { personRepository.getPerson(any(), any()) } returns null
 
@@ -69,7 +68,7 @@ class GetPersonUseCaseTest {
             place_of_birth = null
         )
 
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { languageRepository.getCurrentAppLanguage() } returns SupportedLanguage.English
         coEvery { personRepository.getPerson(12.0, SupportedLanguage.English) } returns person
 

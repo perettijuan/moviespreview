@@ -5,6 +5,7 @@ import com.jpp.mp.common.viewmodel.ViewModelAssistedFactory
 import com.jpp.mpdomain.repository.AboutUrlRepository
 import com.jpp.mpdomain.repository.AppVersionRepository
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * [ViewModelAssistedFactory] to create specific [AboutViewModel] instances
@@ -13,9 +14,10 @@ import javax.inject.Inject
 class AboutViewModelFactory @Inject constructor(
     private val appVersionRepository: AppVersionRepository,
     private val aboutUrlRepository: AboutUrlRepository,
-    private val aboutNavigator: AboutNavigator
+    private val aboutNavigator: AboutNavigator,
+    private val ioDispatcher: CoroutineDispatcher
 ) : ViewModelAssistedFactory<AboutViewModel> {
     override fun create(handle: SavedStateHandle): AboutViewModel {
-        return AboutViewModel(appVersionRepository, aboutUrlRepository, aboutNavigator)
+        return AboutViewModel(appVersionRepository, aboutUrlRepository, aboutNavigator, ioDispatcher)
     }
 }

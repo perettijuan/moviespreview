@@ -8,7 +8,6 @@ import com.jpp.mpdomain.repository.MovieStateRepository
 import com.jpp.mpdomain.repository.SessionRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
@@ -49,7 +48,7 @@ class DeleteMovieRatingUseCaseTest {
 
     @Test
     fun `Should fail with no connectivity message`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
         val actual = subject.execute(1.0)
 
@@ -59,7 +58,7 @@ class DeleteMovieRatingUseCaseTest {
 
     @Test
     fun `Should fail with user not logged`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { sessionRepository.getCurrentSession() } returns null
 
         val actual = subject.execute(1.0)
@@ -70,7 +69,7 @@ class DeleteMovieRatingUseCaseTest {
 
     @Test
     fun `Should fail with unknown reason`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { sessionRepository.getCurrentSession() } returns mockk()
         coEvery {
             movieStateRepository.deleteMovieRate(
@@ -90,7 +89,7 @@ class DeleteMovieRatingUseCaseTest {
         val movieId = 1.toDouble()
         val session = mockk<Session>()
 
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { sessionRepository.getCurrentSession() } returns session
         coEvery {
             movieStateRepository.deleteMovieRate(

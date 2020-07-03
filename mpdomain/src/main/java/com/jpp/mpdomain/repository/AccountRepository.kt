@@ -15,5 +15,5 @@ interface AccountRepository {
     /**
      * Flushes out any [UserAccount] data stored locally on the device.
      */
-    fun flushUserAccountData()
+    suspend fun flushUserAccountData()
 }

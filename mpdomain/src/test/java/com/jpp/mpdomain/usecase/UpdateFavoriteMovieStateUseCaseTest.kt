@@ -9,7 +9,6 @@ import com.jpp.mpdomain.repository.MoviePageRepository
 import com.jpp.mpdomain.repository.MovieStateRepository
 import com.jpp.mpdomain.repository.SessionRepository
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
@@ -54,7 +53,7 @@ class UpdateFavoriteMovieStateUseCaseTest {
 
     @Test
     fun `Should fail with no connectivity message`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Disconnected
 
         val actual = subject.execute(1.0, true)
 
@@ -64,7 +63,7 @@ class UpdateFavoriteMovieStateUseCaseTest {
 
     @Test
     fun `Should fail with user not logged`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { sessionRepository.getCurrentSession() } returns null
 
         val actual = subject.execute(1.0, true)
@@ -75,7 +74,7 @@ class UpdateFavoriteMovieStateUseCaseTest {
 
     @Test
     fun `Should fail with user not logged when no account available`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { sessionRepository.getCurrentSession() } returns mockk()
         coEvery { accountRepository.getUserAccount(any()) } returns null
 
@@ -87,7 +86,7 @@ class UpdateFavoriteMovieStateUseCaseTest {
 
     @Test
     fun `Should fail with unknown reason`() = runBlocking {
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { sessionRepository.getCurrentSession() } returns mockk()
         coEvery { accountRepository.getUserAccount(any()) } returns mockk()
         coEvery {
@@ -112,7 +111,7 @@ class UpdateFavoriteMovieStateUseCaseTest {
         val session = mockk<Session>()
         val userAccount = mockk<UserAccount>()
 
-        every { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
+        coEvery { connectivityRepository.getCurrentConnectivity() } returns Connectivity.Connected
         coEvery { sessionRepository.getCurrentSession() } returns session
         coEvery { accountRepository.getUserAccount(session) } returns userAccount
         coEvery {
