@@ -4,12 +4,12 @@ import android.util.SparseArray
 import com.jpp.mpdata.cache.adapter.DomainRoomAdapter
 import com.jpp.mpdata.cache.adapter.RoomDomainAdapter
 import com.jpp.mpdata.cache.room.MPRoomDataBase
-import com.jpp.mpdata.datasources.moviepage.MoviesDb
+import com.jpp.mpdata.datasources.moviepage.MoviePageDb
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
 
 /**
- * [MoviesDb] implementation with a cache mechanism to verify that the data stored in the application
+ * [MoviePageDb] implementation with a cache mechanism to verify that the data stored in the application
  * is valid after a period of time.
  */
 class MoviesCache(
@@ -17,7 +17,7 @@ class MoviesCache(
     private val toDomain: RoomDomainAdapter,
     private val toRoom: DomainRoomAdapter,
     private val timestamp: CacheTimestampHelper
-) : MoviesDb {
+) : MoviePageDb {
 
     private val moviesDao = roomDatabase.moviesDao()
     private val favoriteMovies = SparseArray<MoviePage>()

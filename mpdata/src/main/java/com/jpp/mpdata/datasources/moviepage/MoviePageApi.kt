@@ -8,7 +8,7 @@ import com.jpp.mpdomain.UserAccount
 /**
  * API definition to retrieve all movies related data from the server.
  */
-interface MoviesApi {
+interface MoviePageApi {
     /**
      * @return the [MoviePage] that contains the movies being played right now.
      * Null if no data is available.

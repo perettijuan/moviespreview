@@ -6,7 +6,7 @@ import com.jpp.mpdomain.MovieSection
 /**
  * Defines the signature for the database that stores entities related to movies.
  */
-interface MoviesDb {
+interface MoviePageDb {
     /**
      * Searches for the [MoviePage] that identified whit the [page] that belongs to the
      * provided [section].

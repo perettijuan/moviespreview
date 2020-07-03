@@ -22,8 +22,8 @@ import com.jpp.mpdata.datasources.language.LanguageDb
 import com.jpp.mpdata.datasources.language.LanguageMonitor
 import com.jpp.mpdata.datasources.moviedetail.MovieDetailApi
 import com.jpp.mpdata.datasources.moviedetail.MovieDetailDb
-import com.jpp.mpdata.datasources.moviepage.MoviesApi
-import com.jpp.mpdata.datasources.moviepage.MoviesDb
+import com.jpp.mpdata.datasources.moviepage.MoviePageApi
+import com.jpp.mpdata.datasources.moviepage.MoviePageDb
 import com.jpp.mpdata.datasources.moviestate.MovieStateApi
 import com.jpp.mpdata.datasources.person.PersonApi
 import com.jpp.mpdata.datasources.person.PersonDb
@@ -120,7 +120,7 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesMoviesApi(mpApiInstance: MPApi): MoviesApi = mpApiInstance
+    fun providesMoviesApi(mpApiInstance: MPApi): MoviePageApi = mpApiInstance
 
     @Singleton
     @Provides
@@ -129,12 +129,12 @@ class DataLayerModule {
         toDomainAdapter: RoomDomainAdapter,
         toRoomAdapter: DomainRoomAdapter,
         timestampHelper: CacheTimestampHelper
-    ): MoviesDb = MoviesCache(roomDb, toDomainAdapter, toRoomAdapter, timestampHelper)
+    ): MoviePageDb = MoviesCache(roomDb, toDomainAdapter, toRoomAdapter, timestampHelper)
 
     @Singleton
     @Provides
-    fun providesMoviesRepository(moviesApi: MoviesApi, moviesDb: MoviesDb):
-            MoviePageRepository = MoviePageRepositoryImpl(moviesApi, moviesDb)
+    fun providesMoviesRepository(moviePageApi: MoviePageApi, moviePageDb: MoviePageDb):
+            MoviePageRepository = MoviePageRepositoryImpl(moviePageApi, moviePageDb)
 
     /*****************************************
      ****** CONFIGURATION DEPENDENCIES *******

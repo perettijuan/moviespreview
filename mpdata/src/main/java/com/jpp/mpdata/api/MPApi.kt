@@ -6,7 +6,7 @@ import com.jpp.mpdata.datasources.account.AccountApi
 import com.jpp.mpdata.datasources.configuration.ConfigurationApi
 import com.jpp.mpdata.datasources.credits.CreditsApi
 import com.jpp.mpdata.datasources.moviedetail.MovieDetailApi
-import com.jpp.mpdata.datasources.moviepage.MoviesApi
+import com.jpp.mpdata.datasources.moviepage.MoviePageApi
 import com.jpp.mpdata.datasources.moviestate.MovieStateApi
 import com.jpp.mpdata.datasources.person.PersonApi
 import com.jpp.mpdata.datasources.search.SearchApi
@@ -36,7 +36,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  */
 open class MPApi :
         ConfigurationApi,
-        MoviesApi,
+        MoviePageApi,
     SearchApi,
     PersonApi,
     CreditsApi,
