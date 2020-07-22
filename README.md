@@ -28,7 +28,7 @@
 MoviesPreview is an Android Application that queries The Movie DB API and presents the data available. It allows you to do things with that data, besides browsing. But mainly, MoviesPreview is an ongoing effort to expose my ideas and to try to stay up to date with the development of Android Applications.
 
 
-## Medium Posts
+## Medium
 
   - [Main App Architecture](https://medium.com/@peretti.juan/android-architecture-example-layers-and-modules-19ecbfa57264)
       - [Data Layer](https://medium.com/swlh/data-layer-using-the-repository-pattern-e32b19b04466)
@@ -63,6 +63,20 @@ A few of the things you can do with MoviesPreview:
  
  <p align="center">
   <img src = "https://github.com/perettijuan/moviespreview/blob/develop/art/account.png" width=700>
+ </p>
+ 
+## App layers
+From a logical standpoint, these are the layers in which the application is architected. More information can be found in this [Medium article](https://medium.com/@peretti.juan/android-architecture-example-layers-and-modules-19ecbfa57264)
+
+ <p align="center">
+  <img src = "https://github.com/perettijuan/moviespreview/blob/develop/art/LogicalDimension.png" width=800>
+ </p>
+ 
+## App Modules
+These are the Gradle modules that are present in the application and how they depend one on each other. More information can be found in this [Medium article](https://medium.com/@peretti.juan/android-architecture-example-layers-and-modules-19ecbfa57264)
+
+ <p align="center">
+  <img src = "https://github.com/perettijuan/moviespreview/blob/develop/art/ModuleDimension.png" width=800>
  </p>
 
 ## Libraries and Stack
