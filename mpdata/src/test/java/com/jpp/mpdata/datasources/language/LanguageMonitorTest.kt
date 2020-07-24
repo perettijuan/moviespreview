@@ -26,6 +26,7 @@ class LanguageMonitorTest {
         subject = LanguageMonitor.Impl(context)
     }
 
+    @Disabled("Flaky test in UI")
     @Test
     fun `Should invoke lambda when language changed`() {
         val bcReceiverSlot = slot<BroadcastReceiver>()
