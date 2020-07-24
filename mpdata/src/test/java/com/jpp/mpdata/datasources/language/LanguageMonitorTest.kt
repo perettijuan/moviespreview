@@ -9,7 +9,6 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -26,7 +25,6 @@ class LanguageMonitorTest {
         subject = LanguageMonitor.Impl(context)
     }
 
-    @Disabled("Flaky test in UI")
     @Test
     fun `Should invoke lambda when language changed`() {
         val bcReceiverSlot = slot<BroadcastReceiver>()
@@ -42,7 +40,6 @@ class LanguageMonitorTest {
         verify { lambdaMock.invoke() }
     }
 
-    @Disabled("Flaky test in UI")
     @Test
     fun `Should clear listeners in stopMonitoring`() {
         val bcReceiverSlot = slot<BroadcastReceiver>()
