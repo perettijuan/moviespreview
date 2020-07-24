@@ -62,9 +62,12 @@ class MovieListViewModel(
      * on it.
      */
     fun onInit(section: MovieSection, screenTitle: String) {
-        movieSection = section
-        _viewState.value = MovieListViewState.showLoading(screenTitle)
-        fetchMoviePage(FIRST_PAGE, movieSection)
+        val renderFreshState = _viewState.value?.contentViewState?.movieList?.isEmpty() ?: true
+        if (renderFreshState) {
+            movieSection = section
+            _viewState.value = MovieListViewState.showLoading(screenTitle)
+            fetchMoviePage(FIRST_PAGE, movieSection)
+        }
     }
 
     /**
