@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionInflater
 import com.jpp.mp.R
 import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.extensions.setScreenTitle
@@ -70,6 +71,8 @@ abstract class MovieListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        sharedElementEnterTransition =
+            TransitionInflater.from(context).inflateTransition(android.R.transition.move)
     }
 
     override fun onAttach(context: Context) {
@@ -141,12 +144,22 @@ abstract class MovieListFragment : Fragment() {
     private fun setUpViews(view: View) {
         movieListRv = view.findViewById<RecyclerView>(R.id.movieList).apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = MoviesAdapter { item -> viewModel.onMovieSelected(item) }
+            adapter = MoviesAdapter { item, imageView -> viewModel.onMovieSelected(item, imageView) }
 
             val pagingHandler = MPVerticalPagingHandler(layoutManager as LinearLayoutManager) {
                 viewModel.onNextMoviePage()
             }
             addOnScrollListener(pagingHandler)
+
+            /*
+             * Need this to perform the proper animations
+             * when coming back from movie details.
+             */
+            postponeEnterTransition()
+            viewTreeObserver?.addOnPreDrawListener {
+                startPostponedEnterTransition()
+                true
+            }
         }
     }
 

@@ -1,7 +1,9 @@
 package com.jpp.mp.main
 
+import android.view.View
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import com.jpp.mp.R
 import com.jpp.mp.main.header.HeaderNavigator
 import com.jpp.mp.main.movies.MovieListNavigator
@@ -43,17 +45,32 @@ class Navigator : MovieListNavigator,
     override fun navigateToMovieDetails(
         movieId: String,
         movieImageUrl: String,
-        movieTitle: String
+        movieTitle: String,
+        transitionView: View
     ) {
+        val transitionName = transitionView.transitionName
+        val extras = FragmentNavigatorExtras(
+            transitionView to transitionName
+        )
         navController?.navigate(
             R.id.movie_details_nav,
             NavigationMovieDetails.navArgs(
                 movieId,
                 movieImageUrl,
-                movieTitle
+                movieTitle,
+                transitionName
             ),
-            buildAnimationNavOptions()
+            null,
+            extras
         )
+    }
+
+    override fun navigateToMovieDetails(
+        movieId: String,
+        movieImageUrl: String,
+        movieTitle: String
+    ) {
+        TODO("Not yet implemented")
     }
 
     override fun navigateToSearch() {

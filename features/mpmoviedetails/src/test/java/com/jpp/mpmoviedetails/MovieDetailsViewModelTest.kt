@@ -57,7 +57,7 @@ class MovieDetailsViewModelTest {
         coEvery { getMovieDetailUseCase.execute(any()) } returns Try.Failure(Try.FailureCause.NoConnectivity)
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
-        subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
+        subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl", "aTransitionName"))
 
         assertNotNull(viewStatePosted)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
@@ -74,7 +74,7 @@ class MovieDetailsViewModelTest {
         coEvery { getMovieDetailUseCase.execute(any()) } returns Try.Failure(Try.FailureCause.Unknown)
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
-        subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl"))
+        subject.onInit(MovieDetailsParam(10.0, "aMovie", "aUrl", "aTransitionName"))
 
         assertNotNull(viewStatePosted)
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
@@ -119,7 +119,7 @@ class MovieDetailsViewModelTest {
         coEvery { getMovieDetailUseCase.execute(movieDetailId) } returns Try.Success(domainDetail)
 
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
-        subject.onInit(MovieDetailsParam(movieDetailId, "aTitle", "aUrl"))
+        subject.onInit(MovieDetailsParam(movieDetailId, "aTitle", "aUrl", "aTransitionName"))
 
         assertEquals(expected, viewStatePosted)
     }
@@ -136,7 +136,7 @@ class MovieDetailsViewModelTest {
         val movieId = 10.toDouble()
         val movieTitle = "aMovie"
         // pre-condition
-        subject.onInit(MovieDetailsParam(movieId, movieTitle, "aUrl"))
+        subject.onInit(MovieDetailsParam(movieId, movieTitle, "aUrl", "aTransitionName"))
         subject.onMovieCreditsSelected()
 
         verify { navigator.navigateToMovieCredits(movieId, movieTitle) }
@@ -149,7 +149,7 @@ class MovieDetailsViewModelTest {
         val movieImageUrl = "aUrl"
 
         // pre-condition
-        subject.onInit(MovieDetailsParam(movieId, movieTitle, movieImageUrl))
+        subject.onInit(MovieDetailsParam(movieId, movieTitle, movieImageUrl, "aTransitionName"))
         subject.onRateMovieSelected()
 
         verify { navigator.navigateToRateMovie(movieId, movieImageUrl, movieTitle) }

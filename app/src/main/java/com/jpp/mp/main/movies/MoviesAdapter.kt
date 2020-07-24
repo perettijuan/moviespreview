@@ -2,12 +2,13 @@ package com.jpp.mp.main.movies
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
 import com.jpp.mp.databinding.ListItemMovieBinding
 
-class MoviesAdapter(private val movieSelectionListener: (MovieListItem) -> Unit) :
+class MoviesAdapter(private val movieSelectionListener: (MovieListItem, ImageView) -> Unit) :
     RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
 
     private val itemList = ArrayList<MovieListItem>()
@@ -37,9 +38,9 @@ class MoviesAdapter(private val movieSelectionListener: (MovieListItem) -> Unit)
 
     class ViewHolder(private val itemBinding: ListItemMovieBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
-        fun bindMovie(movieList: MovieListItem, movieSelectionListener: (MovieListItem) -> Unit) {
+        fun bindMovie(movieList: MovieListItem, movieSelectionListener: (MovieListItem, ImageView) -> Unit) {
             itemBinding.viewState = movieList
-            itemView.setOnClickListener { movieSelectionListener(movieList) }
+            itemView.setOnClickListener { movieSelectionListener(movieList, itemBinding.movieItemImage) }
         }
     }
 }
