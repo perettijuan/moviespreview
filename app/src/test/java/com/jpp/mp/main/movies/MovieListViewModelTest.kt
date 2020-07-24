@@ -15,6 +15,7 @@ import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -158,20 +159,25 @@ class MovieListViewModelTest {
     @MethodSource("movieListTestParams")
     fun `Should request navigation to movie details when movie item selected`(section: MovieSection, screenTitle: String) {
         val movieItem = MovieListItem(
-                movieId = 10.0,
-                headerImageUrl = "aHeaderImageUrl",
-                title = "aTitle",
-                contentImageUrl = "aContentPath",
-                popularity = "aPopularity",
-                voteCount = "aVoteCount"
+            movieId = 10.0,
+            headerImageUrl = "aHeaderImageUrl",
+            title = "aTitle",
+            contentImageUrl = "aContentPath",
+            popularity = "aPopularity",
+            voteCount = "aVoteCount",
+            imageTransitionName = " imageTransitionName"
         )
-        subject.onMovieSelected(movieItem)
+
+        val transitionImage: View = mockk()
+
+        subject.onMovieSelected(movieItem, transitionImage)
 
         verify {
             navigator.navigateToMovieDetails(
-                    movieId = "10.0",
-                    movieImageUrl = "aContentPath",
-                    movieTitle = "aTitle"
+                movieId = "10.0",
+                movieImageUrl = "aContentPath",
+                movieTitle = "aTitle",
+                transitionView = transitionImage
             )
         }
     }
