@@ -141,7 +141,7 @@ abstract class MovieListFragment : Fragment() {
     private fun setUpViews(view: View) {
         movieListRv = view.findViewById<RecyclerView>(R.id.movieList).apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = MoviesAdapter { item -> viewModel.onMovieSelected(item) }
+            adapter = MoviesAdapter { item, imageView -> viewModel.onMovieSelected(item, imageView) }
 
             val pagingHandler = MPVerticalPagingHandler(layoutManager as LinearLayoutManager) {
                 viewModel.onNextMoviePage()

@@ -1,5 +1,6 @@
 package com.jpp.mp.main.movies
 
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -77,11 +78,12 @@ class MovieListViewModel(
     /**
      * Called when an item is selected in the list of movies.
      */
-    fun onMovieSelected(item: MovieListItem) {
+    fun onMovieSelected(item: MovieListItem, transitionView: View) {
         navigator.navigateToMovieDetails(
             item.movieId.toString(),
             item.contentImageUrl,
-            item.title
+            item.title,
+            transitionView
         )
     }
 
@@ -139,15 +141,18 @@ class MovieListViewModel(
         }
     }
 
-    private fun Movie.mapToListItem() =
-        MovieListItem(
+    private fun Movie.mapToListItem(): MovieListItem {
+        val contentImageUrl = poster_path ?: "emptyPath"
+        return MovieListItem(
             movieId = id,
             headerImageUrl = backdrop_path ?: "emptyPath",
             title = title,
-            contentImageUrl = poster_path ?: "emptyPath",
+            contentImageUrl = contentImageUrl,
             popularity = popularity.toString(),
-            voteCount = vote_count.toString()
+            voteCount = vote_count.toString(),
+            imageTransitionName = contentImageUrl
         )
+    }
 
     private companion object {
         const val MOVIE_SECTION_KEY = "MOVIE_SECTION_KEY"

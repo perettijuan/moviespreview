@@ -41,6 +41,7 @@
             android:layout_width="?attr/mpMovieItemImageWidth"
             android:layout_height="?attr/mpMovieItemImageHeight"
             android:layout_marginTop="6dp"
+            android:transitionName="@{viewState.imageTransitionName}"
             app:imageUrl="@{viewState.contentImageUrl}"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
