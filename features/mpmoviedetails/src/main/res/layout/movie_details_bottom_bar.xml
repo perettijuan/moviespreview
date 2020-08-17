@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/movie_details_bottom_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/mpDetailsBottomBarHeight"
+        android:layout_gravity="bottom"
+        android:background="@color/primaryDarkColor"
+        app:backgroundTint="@color/primaryDarkColor"
+        app:fabCradleMargin="?attr/mpDetailsFabCradleMargin"
+        app:fabCradleRoundedCornerRadius="?attr/mpDetailsFabCradleRoundedCornerRadius"
+        app:fabCradleVerticalOffset="?attr/mpDetailsFabVerticalOffset"
+        app:hideOnScroll="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/favorite_image_view"
+                style="@style/MovieDetailItemAction"
+                android:src="@drawable/ic_favorite_empty"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/watchlist_image_view"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/watchlist_image_view"
+                style="@style/MovieDetailItemAction"
+                android:src="@drawable/ic_watchlist_empty"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/movie_details_bottom_bar_guideline_left"
+                app:layout_constraintStart_toEndOf="@id/favorite_image_view"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/movie_details_bottom_bar_guideline_left"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.40" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/movie_details_bottom_bar_guideline_right"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.60" />
+
+            <com.jpp.mpdesign.views.MPSimpleItemSelectionView
+                android:id="@+id/detailCreditsSelectionView1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
+                app:itemText="@string/movie_credits_title"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/movie_details_bottom_bar_guideline_right"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.bottomappbar.BottomAppBar>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/movieDetailActionFab1"
+        style="@style/FabMovieDetailMainAction"
+        android:src="@drawable/ic_rate_empty"
+        app:elevation="0dp"
+        app:layout_anchor="@id/movie_details_bottom_app_bar" />
+</merge>

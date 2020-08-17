@@ -17,6 +17,10 @@
     <attr name="mpDetailsContentPadding" format="reference" />
     <attr name="mpDetailsActionLoadingSize" format="reference" />
     <attr name="mpDetailsActionMargin" format="reference" />
+    <attr name="mpDetailsBottomBarHeight" format="reference" />
+    <attr name="mpDetailsFabCradleRoundedCornerRadius" format="reference" />
+    <attr name="mpDetailsFabCradleMargin" format="reference" />
+    <attr name="mpDetailsFabVerticalOffset" format="reference" />
 
     <attr name="mpSearchImageSize" format="reference" />
     <attr name="mpSearchItemImageSize" format="reference" />

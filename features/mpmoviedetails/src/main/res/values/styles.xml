@@ -26,6 +26,12 @@
         <item name="fabSize">normal</item>
     </style>
 
+    <style name="MovieDetailItemAction">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="elevation">6dp</item>
+    </style>
+
     <style name="RateMovieDialogAnim">
         <item name="android:windowEnterAnimation">@anim/fragment_enter_slide_down</item>
         <item name="android:windowExitAnimation">@anim/fragment_exit_slide_down</item>

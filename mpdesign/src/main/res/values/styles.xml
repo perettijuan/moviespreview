@@ -27,6 +27,10 @@
         <item name="mpDetailsContentPadding">@dimen/movie_details_content_padding</item>
         <item name="mpDetailsActionLoadingSize">@dimen/movie_details_actions_loading_size</item>
         <item name="mpDetailsActionMargin">@dimen/movie_details_actions_margin</item>
+        <item name="mpDetailsBottomBarHeight">@dimen/movie_details_bottom_bar_height</item>
+        <item name="mpDetailsFabCradleRoundedCornerRadius">@dimen/movie_details_fab_cradle_radius</item>
+        <item name="mpDetailsFabCradleMargin">@dimen/movie_details_fab_cradle_margin</item>
+        <item name="mpDetailsFabVerticalOffset">@dimen/movie_details_fab_cradle_vertical_offset</item>
 
         <item name="mpSearchImageSize">@dimen/search_body_icon_size</item>
         <item name="mpSearchItemImageSize">@dimen/search_result_image_size</item>

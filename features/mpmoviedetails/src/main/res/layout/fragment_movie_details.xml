@@ -95,7 +95,6 @@
 
         </androidx.core.widget.NestedScrollView>
 
-
         <com.jpp.mpdesign.views.MPFloatingActionButton
             android:id="@+id/movieDetailFavoritesFab"
             style="@style/FabMovieDetailAction"
@@ -149,6 +148,7 @@
             app:layout_anchor="@id/movieDetailAppBarLayout"
             app:layout_anchorGravity="bottom|right|end" />
 
+        <include layout="@layout/movie_details_bottom_bar"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
