@@ -9,6 +9,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -103,6 +104,7 @@ abstract class MovieListFragment : Fragment() {
         rvState = savedInstanceState?.getParcelable(MOVIES_RV_STATE_KEY) ?: rvState
 
         viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
+        viewModel.viewAnimations.observeValue(viewLifecycleOwner, ::runAnimations)
         viewModel.onInit(movieSection, screenTitle)
     }
 
@@ -167,16 +169,25 @@ abstract class MovieListFragment : Fragment() {
 
     private fun renderViewState(viewState: MovieListViewState) {
         setScreenTitle(viewState.screenTitle)
-
-        if (viewState.transition != null) {
-            viewBinding?.root?.let { root ->
-                TransitionManager.beginDelayedTransition(root as ViewGroup, viewState.transition)
-            }
-        }
-
         viewBinding?.viewState = viewState
         (movieListRv?.adapter as MoviesAdapter).updateDataList(viewState.contentViewState.movieList)
         movieListRv?.layoutManager?.onRestoreInstanceState(rvState)
+    }
+
+
+    private fun runAnimations(viewAnimations: MovieListAnimations) {
+        if (viewAnimations.rootTransition != null) {
+            viewBinding?.root?.let { root ->
+                TransitionManager.beginDelayedTransition(root as ViewGroup, viewAnimations.rootTransition)
+            }
+        }
+
+        if (viewAnimations.itemAnimationId != -1) {
+            val rvAnimation = AnimationUtils.loadLayoutAnimation(requireContext(), viewAnimations.itemAnimationId)
+            movieListRv?.layoutAnimation = rvAnimation
+        } else {
+            movieListRv?.layoutAnimation = null
+        }
     }
 
     private companion object {

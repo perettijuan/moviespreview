@@ -56,6 +56,9 @@ class MovieListViewModel(
     private val _viewState = MutableLiveData<MovieListViewState>()
     val viewState: LiveData<MovieListViewState> = _viewState
 
+    private val _viewAnimations = MutableLiveData<MovieListAnimations>()
+    val viewAnimations: LiveData<MovieListAnimations> = _viewAnimations
+
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
      * indicate that it is ready to start rendering. When the method is called, the VM
@@ -63,6 +66,8 @@ class MovieListViewModel(
      * on it.
      */
     fun onInit(section: MovieSection, screenTitle: String) {
+        _viewAnimations.value = MovieListAnimations.noAnimations()
+
         val renderFreshState = _viewState.value?.contentViewState?.movieList?.isEmpty() ?: true
         if (renderFreshState) {
             movieSection = section
@@ -139,16 +144,14 @@ class MovieListViewModel(
                     .map { configuredMovie -> configuredMovie.mapToListItem() }
             }
 
-            val transition = if(_viewState.value?.loadingVisibility == View.VISIBLE) {
-                MovieListInTransition()
+            val animations = if (_viewState.value?.loadingVisibility == View.VISIBLE) {
+                _viewAnimations.value?.loadingToMovieList()
             } else {
                 null
             }
 
-            _viewState.value = viewState.value?.showMovieList(
-                movieList = movieList,
-                transition = transition
-            )
+            _viewState.value = viewState.value?.showMovieList(movieList = movieList)
+            _viewAnimations.value = animations
         }
     }
 

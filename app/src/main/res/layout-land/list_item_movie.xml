@@ -6,7 +6,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="6dp"
-        android:layoutAnimation="@anim/slide_from_bottom_list_item"
         android:maxHeight="?attr/mpMovieItemMaxSize">
 
         <ImageView
