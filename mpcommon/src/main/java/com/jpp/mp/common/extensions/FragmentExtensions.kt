@@ -1,7 +1,10 @@
 package com.jpp.mp.common.extensions
 
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.transition.Transition
+import androidx.transition.TransitionManager
 
 /**
  * Changes the title of the screen to the new provided [title].
@@ -30,4 +33,13 @@ inline fun <reified T : Any> Fragment.getFragmentArgument(key: String, default: 
         throw NullPointerException("Unable to get $key from bundle argument")
     }
     return value as T
+}
+
+/**
+ * Applies the provided [rootTransition] to the root view of this Fragment.
+ */
+fun Fragment.applyRootTransition(rootTransition: Transition?) {
+    if (rootTransition == null) return
+    if (view == null) return
+    TransitionManager.beginDelayedTransition(view as ViewGroup, rootTransition)
 }

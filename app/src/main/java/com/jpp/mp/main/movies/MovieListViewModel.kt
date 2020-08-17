@@ -1,12 +1,7 @@
 package com.jpp.mp.main.movies
 
 import android.view.View
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.jpp.mp.main.movies.transitions.MovieListInTransition
+import androidx.lifecycle.*
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
@@ -144,14 +139,10 @@ class MovieListViewModel(
                     .map { configuredMovie -> configuredMovie.mapToListItem() }
             }
 
-            val animations = if (_viewState.value?.loadingVisibility == View.VISIBLE) {
-                _viewAnimations.value?.loadingToMovieList()
-            } else {
-                null
-            }
-
             _viewState.value = viewState.value?.showMovieList(movieList = movieList)
-            _viewAnimations.value = animations
+            if (moviePage.page == FIRST_PAGE) {
+                _viewAnimations.value = _viewAnimations.value?.loadingToMovieList()
+            }
         }
     }
 

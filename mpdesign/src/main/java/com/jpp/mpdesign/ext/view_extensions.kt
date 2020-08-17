@@ -4,6 +4,7 @@ import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.annotation.StyleRes
@@ -54,5 +55,16 @@ fun TextView.setTextAppearanceCompat(@StyleRes resId: Int) {
         this.setTextAppearance(resId)
     } else {
         setTextAppearance(context, resId)
+    }
+}
+
+/**
+ * Applies the provided [transitionId] as [ViewGroup.setLayoutAnim].
+ */
+fun ViewGroup.setLayoutAnim(transitionId: Int) {
+    try {
+        layoutAnimation = AnimationUtils.loadLayoutAnimation(context, transitionId)
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
 }

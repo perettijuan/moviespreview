@@ -19,11 +19,13 @@ import androidx.transition.AutoTransition
 import androidx.transition.TransitionInflater
 import androidx.transition.TransitionManager
 import com.jpp.mp.R
+import com.jpp.mp.common.extensions.applyRootTransition
 import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.paging.MPVerticalPagingHandler
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mp.databinding.FragmentMovieListBinding
+import com.jpp.mpdesign.ext.setLayoutAnim
 import com.jpp.mpdomain.MovieSection
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
@@ -176,18 +178,8 @@ abstract class MovieListFragment : Fragment() {
 
 
     private fun runAnimations(viewAnimations: MovieListAnimations) {
-        if (viewAnimations.rootTransition != null) {
-            viewBinding?.root?.let { root ->
-                TransitionManager.beginDelayedTransition(root as ViewGroup, viewAnimations.rootTransition)
-            }
-        }
-
-        if (viewAnimations.itemAnimationId != -1) {
-            val rvAnimation = AnimationUtils.loadLayoutAnimation(requireContext(), viewAnimations.itemAnimationId)
-            movieListRv?.layoutAnimation = rvAnimation
-        } else {
-            movieListRv?.layoutAnimation = null
-        }
+        applyRootTransition(viewAnimations.rootTransition)
+        movieListRv?.setLayoutAnim(viewAnimations.itemAnimationId)
     }
 
     private companion object {
