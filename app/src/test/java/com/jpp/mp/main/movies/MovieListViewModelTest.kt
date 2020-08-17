@@ -182,6 +182,18 @@ class MovieListViewModelTest {
         }
     }
 
+    @ParameterizedTest
+    @MethodSource("movieListTestParams")
+    fun `Should post no animations in onInit`(section: MovieSection, screenTitle: String) {
+        var actual: MovieListAnimations? = null
+        val expected = MovieListAnimations.noAnimations()
+        subject.viewAnimations.observeWith { animation -> actual = animation }
+
+        subject.onInit(section, screenTitle)
+
+        assertEquals(actual, expected)
+    }
+
     private fun getMockedMovies(): List<Movie> {
         return mutableListOf<Movie>().apply {
             for (i in 0..50) {

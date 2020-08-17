@@ -16,11 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionInflater
 import com.jpp.mp.R
+import com.jpp.mp.common.extensions.applyRootTransition
 import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.paging.MPVerticalPagingHandler
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mp.databinding.FragmentMovieListBinding
+import com.jpp.mpdesign.ext.setLayoutAnim
 import com.jpp.mpdomain.MovieSection
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
@@ -101,6 +103,7 @@ abstract class MovieListFragment : Fragment() {
         rvState = savedInstanceState?.getParcelable(MOVIES_RV_STATE_KEY) ?: rvState
 
         viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
+        viewModel.viewAnimations.observeValue(viewLifecycleOwner, ::runAnimations)
         viewModel.onInit(movieSection, screenTitle)
     }
 
@@ -168,6 +171,11 @@ abstract class MovieListFragment : Fragment() {
         viewBinding?.viewState = viewState
         (movieListRv?.adapter as MoviesAdapter).updateDataList(viewState.contentViewState.movieList)
         movieListRv?.layoutManager?.onRestoreInstanceState(rvState)
+    }
+
+    private fun runAnimations(viewAnimations: MovieListAnimations) {
+        applyRootTransition(viewAnimations.rootTransition)
+        movieListRv?.setLayoutAnim(viewAnimations.itemAnimationId)
     }
 
     private companion object {

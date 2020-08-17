@@ -55,6 +55,9 @@ class MovieListViewModel(
     private val _viewState = MutableLiveData<MovieListViewState>()
     val viewState: LiveData<MovieListViewState> = _viewState
 
+    private val _viewAnimations = MutableLiveData<MovieListAnimations>()
+    val viewAnimations: LiveData<MovieListAnimations> = _viewAnimations
+
     /**
      * Called on VM initialization. The View (Fragment) should call this method to
      * indicate that it is ready to start rendering. When the method is called, the VM
@@ -62,6 +65,8 @@ class MovieListViewModel(
      * on it.
      */
     fun onInit(section: MovieSection, screenTitle: String) {
+        _viewAnimations.value = MovieListAnimations.noAnimations()
+
         val renderFreshState = _viewState.value?.contentViewState?.movieList?.isEmpty() ?: true
         if (renderFreshState) {
             movieSection = section
@@ -123,9 +128,10 @@ class MovieListViewModel(
 
     private fun processFailure(failure: Try.FailureCause) {
         _viewState.value = when (failure) {
-            is Try.FailureCause.NoConnectivity -> _viewState.value?.showNoConnectivityError { onNextMoviePage() }
-            else -> _viewState.value?.showUnknownError { onNextMoviePage() }
+            is Try.FailureCause.NoConnectivity -> _viewState.value?.showNoConnectivityError { onRetry() }
+            else -> _viewState.value?.showUnknownError { onRetry() }
         }
+        _viewAnimations.value = _viewAnimations.value?.anyToError()
     }
 
     private fun processMoviePage(moviePage: MoviePage) {
@@ -138,10 +144,16 @@ class MovieListViewModel(
                     .map { configuredMovie -> configuredMovie.mapToListItem() }
             }
 
-            _viewState.value = viewState.value?.showMovieList(
-                movieList = movieList
-            )
+            _viewState.value = viewState.value?.showMovieList(movieList = movieList)
+            if (moviePage.page == FIRST_PAGE) {
+                _viewAnimations.value = _viewAnimations.value?.loadingToMovieList()
+            }
         }
+    }
+
+    private fun onRetry() {
+        _viewAnimations.value = _viewAnimations.value?.anyToLoading()
+        onNextMoviePage()
     }
 
     private fun Movie.mapToListItem(): MovieListItem {
