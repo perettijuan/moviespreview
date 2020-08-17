@@ -9,15 +9,12 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.AutoTransition
 import androidx.transition.TransitionInflater
-import androidx.transition.TransitionManager
 import com.jpp.mp.R
 import com.jpp.mp.common.extensions.applyRootTransition
 import com.jpp.mp.common.extensions.observeValue
@@ -175,7 +172,6 @@ abstract class MovieListFragment : Fragment() {
         (movieListRv?.adapter as MoviesAdapter).updateDataList(viewState.contentViewState.movieList)
         movieListRv?.layoutManager?.onRestoreInstanceState(rvState)
     }
-
 
     private fun runAnimations(viewAnimations: MovieListAnimations) {
         applyRootTransition(viewAnimations.rootTransition)
