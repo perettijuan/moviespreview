@@ -124,9 +124,10 @@ class MovieListViewModel(
 
     private fun processFailure(failure: Try.FailureCause) {
         _viewState.value = when (failure) {
-            is Try.FailureCause.NoConnectivity -> _viewState.value?.showNoConnectivityError { onNextMoviePage() }
-            else -> _viewState.value?.showUnknownError { onNextMoviePage() }
+            is Try.FailureCause.NoConnectivity -> _viewState.value?.showNoConnectivityError { onRetry() }
+            else -> _viewState.value?.showUnknownError { onRetry() }
         }
+        _viewAnimations.value = _viewAnimations.value?.anyToError()
     }
 
     private fun processMoviePage(moviePage: MoviePage) {
@@ -144,6 +145,11 @@ class MovieListViewModel(
                 _viewAnimations.value = _viewAnimations.value?.loadingToMovieList()
             }
         }
+    }
+
+    private fun onRetry() {
+        _viewAnimations.value = _viewAnimations.value?.anyToLoading()
+        onNextMoviePage()
     }
 
     private fun Movie.mapToListItem(): MovieListItem {
