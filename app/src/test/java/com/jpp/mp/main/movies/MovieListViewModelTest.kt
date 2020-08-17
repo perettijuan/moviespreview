@@ -27,6 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments.arguments
 import org.junit.jupiter.params.provider.MethodSource
+import kotlin.math.exp
 
 @ExperimentalCoroutinesApi
 @ExtendWith(
@@ -180,6 +181,18 @@ class MovieListViewModelTest {
                 transitionView = transitionImage
             )
         }
+    }
+
+    @ParameterizedTest
+    @MethodSource("movieListTestParams")
+    fun `Should post no animations in onInit`(section: MovieSection, screenTitle: String) {
+        var actual: MovieListAnimations? = null
+        val expected = MovieListAnimations.noAnimations()
+        subject.viewAnimations.observeWith { animation ->  actual = animation}
+
+        subject.onInit(section, screenTitle)
+
+        assertEquals(actual, expected)
     }
 
     private fun getMockedMovies(): List<Movie> {
