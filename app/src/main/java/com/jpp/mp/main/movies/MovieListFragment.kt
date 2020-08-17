@@ -14,7 +14,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.AutoTransition
 import androidx.transition.TransitionInflater
+import androidx.transition.TransitionManager
 import com.jpp.mp.R
 import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.extensions.setScreenTitle
@@ -165,6 +167,13 @@ abstract class MovieListFragment : Fragment() {
 
     private fun renderViewState(viewState: MovieListViewState) {
         setScreenTitle(viewState.screenTitle)
+
+        if (viewState.transition != null) {
+            viewBinding?.root?.let { root ->
+                TransitionManager.beginDelayedTransition(root as ViewGroup, viewState.transition)
+            }
+        }
+
         viewBinding?.viewState = viewState
         (movieListRv?.adapter as MoviesAdapter).updateDataList(viewState.contentViewState.movieList)
         movieListRv?.layoutManager?.onRestoreInstanceState(rvState)

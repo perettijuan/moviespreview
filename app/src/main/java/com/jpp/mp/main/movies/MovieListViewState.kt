@@ -1,6 +1,7 @@
 package com.jpp.mp.main.movies
 
 import android.view.View
+import androidx.transition.Transition
 import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 
 /**
@@ -11,7 +12,8 @@ data class MovieListViewState(
     val loadingVisibility: Int = View.INVISIBLE,
     val screenTitle: String,
     val errorViewState: ErrorViewState = ErrorViewState.asNotVisible(),
-    val contentViewState: MovieListContentViewState = MovieListContentViewState()
+    val contentViewState: MovieListContentViewState = MovieListContentViewState(),
+    val transition: Transition? = null
 ) {
 
     fun showUnknownError(errorHandler: () -> Unit): MovieListViewState {
@@ -30,14 +32,15 @@ data class MovieListViewState(
         )
     }
 
-    fun showMovieList(movieList: List<MovieListItem>): MovieListViewState {
+    fun showMovieList(movieList: List<MovieListItem>, transition: Transition?): MovieListViewState {
         return copy(
             loadingVisibility = View.INVISIBLE,
             contentViewState = MovieListContentViewState(
                 visibility = View.VISIBLE,
                 movieList = movieList
             ),
-            errorViewState = ErrorViewState.asNotVisible()
+            errorViewState = ErrorViewState.asNotVisible(),
+            transition = transition
         )
     }
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jpp.mp.main.movies.transitions.MovieListInTransition
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.MovieSection
@@ -138,8 +139,15 @@ class MovieListViewModel(
                     .map { configuredMovie -> configuredMovie.mapToListItem() }
             }
 
+            val transition = if(_viewState.value?.loadingVisibility == View.VISIBLE) {
+                MovieListInTransition()
+            } else {
+                null
+            }
+
             _viewState.value = viewState.value?.showMovieList(
-                movieList = movieList
+                movieList = movieList,
+                transition = transition
             )
         }
     }
