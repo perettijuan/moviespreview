@@ -19,62 +19,7 @@ internal data class MovieDetailActionViewState(
     val expanded: Boolean = false
 ) {
 
-    fun showLoaded(
-        watchListButtonState: ActionButtonState,
-        favoriteButtonState: ActionButtonState
-    ): MovieDetailActionViewState {
-        return copy(
-            loadingVisibility = View.INVISIBLE,
-            reloadButtonVisibility = View.INVISIBLE,
-            actionButtonVisibility = View.VISIBLE,
-            rateButtonState = rateButtonState.asVisible(),
-            watchListButtonState = watchListButtonState,
-            favoriteButtonState = favoriteButtonState,
-            errorState = ActionErrorViewState.None,
-            animate = false,
-            expanded = false
-        )
-    }
 
-    fun showReload(): MovieDetailActionViewState {
-        return copy(
-            loadingVisibility = View.INVISIBLE,
-            reloadButtonVisibility = View.VISIBLE,
-            actionButtonVisibility = View.INVISIBLE,
-            rateButtonState = rateButtonState.asInVisible(),
-            watchListButtonState = watchListButtonState.asInVisible(),
-            favoriteButtonState = favoriteButtonState.asInVisible(),
-            errorState = ActionErrorViewState.UnknownError,
-            animate = false,
-            expanded = false
-        )
-    }
-
-    fun showLoadingFavorite(): MovieDetailActionViewState {
-        return copy(
-            favoriteButtonState = favoriteButtonState.asLoading()
-        )
-    }
-
-    fun showLoadingWatchlist(): MovieDetailActionViewState {
-        return copy(
-            watchListButtonState = watchListButtonState.asLoading()
-        )
-    }
-
-    fun showUserNotLogged(): MovieDetailActionViewState {
-        return copy(
-            loadingVisibility = View.INVISIBLE,
-            reloadButtonVisibility = View.INVISIBLE,
-            actionButtonVisibility = View.INVISIBLE, // IMPORTANT: this might be interpreted as a bug, but it is desired to hide the button.
-            rateButtonState = rateButtonState.asInVisible(),
-            watchListButtonState = watchListButtonState.asInVisible(),
-            favoriteButtonState = favoriteButtonState.asInVisible(),
-            errorState = ActionErrorViewState.UserNotLogged,
-            animate = true,
-            expanded = false
-        )
-    }
 
     companion object {
         fun showLoading(): MovieDetailActionViewState =

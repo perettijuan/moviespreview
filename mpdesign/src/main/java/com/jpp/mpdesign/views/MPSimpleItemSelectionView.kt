@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.jpp.mpdesign.R
+import java.lang.Exception
 
 /**
  * A custom [ConstraintLayout] that shows a text view at the start margin and a chevron image
@@ -38,6 +39,10 @@ class MPSimpleItemSelectionView : ConstraintLayout {
     }
 
     fun itemText(@StringRes text: Int) {
-        itemSelectionViewTitle?.setText(text)
+        try {
+            itemSelectionViewTitle?.setText(text)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

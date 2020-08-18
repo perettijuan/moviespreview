@@ -1,5 +1,6 @@
 package com.jpp.mpmoviedetails
 
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -33,8 +34,8 @@ class MovieDetailsActionViewModel(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _viewState = MutableLiveData<MovieDetailActionViewState>()
-    internal val viewState: LiveData<MovieDetailActionViewState> = _viewState
+    private val _viewState = MutableLiveData<MovieActionsViewState>()
+    internal val viewState: LiveData<MovieActionsViewState> = _viewState
 
     private var movieId: Double
         set(value) = savedStateHandle.set(MOVIE_ID_KEY, value)
@@ -46,6 +47,7 @@ class MovieDetailsActionViewModel(
      */
     fun onInit(movieId: Double) {
         this.movieId = movieId
+        _viewState.value = MovieActionsViewState.showLoading()
         fetchMovieState(movieId)
     }
 
@@ -59,12 +61,12 @@ class MovieDetailsActionViewModel(
      * user can take.
      */
     fun onMainActionSelected() {
-        viewState.value?.let { currentViewState ->
-            _viewState.value = currentViewState.copy(
-                animate = true,
-                expanded = !currentViewState.expanded
-            )
-        }
+//        viewState.value?.let { currentViewState ->
+//            _viewState.value = currentViewState.copy(
+//                animate = true,
+//                expanded = !currentViewState.expanded
+//            )
+//        }
     }
 
     /**
@@ -72,18 +74,18 @@ class MovieDetailsActionViewModel(
      * the movie being handled.
      */
     fun onFavoriteStateChanged() {
-        val currentFavorite = _viewState.value?.favoriteButtonState?.asFilled ?: return
-        _viewState.value = _viewState.value?.showLoadingFavorite()
-        viewModelScope.launch {
-            val result = withContext(ioDispatcher) {
-                updateFavoriteUseCase.execute(movieId, !currentFavorite)
-            }
-
-            when (result) {
-                is Try.Success -> processUpdateFavorite()
-                is Try.Failure -> processStateChangedError(result.cause)
-            }
-        }
+//        val currentFavorite = _viewState.value?.favoriteButtonState?.asFilled ?: return
+//        _viewState.value = _viewState.value?.showLoadingFavorite()
+//        viewModelScope.launch {
+//            val result = withContext(ioDispatcher) {
+//                updateFavoriteUseCase.execute(movieId, !currentFavorite)
+//            }
+//
+//            when (result) {
+//                is Try.Success -> processUpdateFavorite()
+//                is Try.Failure -> processStateChangedError(result.cause)
+//            }
+//        }
     }
 
     /**
@@ -91,22 +93,21 @@ class MovieDetailsActionViewModel(
      * movie being handled.
      */
     fun onWatchlistStateChanged() {
-        val currentWatchlist = _viewState.value?.watchListButtonState?.asFilled ?: return
-        _viewState.value = _viewState.value?.showLoadingWatchlist()
-        viewModelScope.launch {
-            val result = withContext(ioDispatcher) {
-                updateWatchListUseCase.execute(movieId, !currentWatchlist)
-            }
-
-            when (result) {
-                is Try.Success -> processUpdateWatchlist()
-                is Try.Failure -> processStateChangedError(result.cause)
-            }
-        }
+//        val currentWatchlist = _viewState.value?.watchListButtonState?.asFilled ?: return
+//        _viewState.value = _viewState.value?.showLoadingWatchlist()
+//        viewModelScope.launch {
+//            val result = withContext(ioDispatcher) {
+//                updateWatchListUseCase.execute(movieId, !currentWatchlist)
+//            }
+//
+//            when (result) {
+//                is Try.Success -> processUpdateWatchlist()
+//                is Try.Failure -> processStateChangedError(result.cause)
+//            }
+//        }
     }
 
     private fun fetchMovieState(movieId: Double) {
-        _viewState.value = MovieDetailActionViewState.showLoading()
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {
                 getMovieStateUseCase.execute(movieId)
@@ -121,18 +122,18 @@ class MovieDetailsActionViewModel(
      * Syncs the current view state with [movieState] and produces a new
      * view state to be rendered.
      */
-    private fun processMovieStateUpdate(movieState: MovieState?): MovieDetailActionViewState? {
+    private fun processMovieStateUpdate(movieState: MovieState?): MovieActionsViewState? {
         return viewState.value?.let { currentViewState ->
             val watchListButtonState = if (movieState != null && movieState.watchlist) {
-                currentViewState.watchListButtonState.asFilled()
+                currentViewState.watchListButtonState.watchList()
             } else {
-                currentViewState.watchListButtonState.asEmpty()
+                currentViewState.watchListButtonState.noWatchList()
             }
 
             val favoriteButtonState = if (movieState != null && movieState.favorite) {
-                currentViewState.favoriteButtonState.asFilled()
+                currentViewState.favoriteButtonState.favorite()
             } else {
-                currentViewState.favoriteButtonState.asEmpty()
+                currentViewState.favoriteButtonState.noFavorite()
             }
 
             currentViewState.showLoaded(
@@ -142,26 +143,26 @@ class MovieDetailsActionViewModel(
         }
     }
 
-    private fun processUpdateFavorite() {
-        viewState.value?.let { currentViewState ->
-            _viewState.value =
-                currentViewState.copy(favoriteButtonState = currentViewState.favoriteButtonState.flipState())
-        }
-    }
-
-    private fun processUpdateWatchlist() {
-        viewState.value?.let { currentViewState ->
-            _viewState.value =
-                currentViewState.copy(watchListButtonState = currentViewState.watchListButtonState.flipState())
-        }
-    }
-
-    private fun processStateChangedError(errorCause: Try.FailureCause) {
-        _viewState.value = when (errorCause) {
-            is Try.FailureCause.UserNotLogged -> _viewState.value?.showUserNotLogged()
-            else -> _viewState.value?.showReload()
-        }
-    }
+//    private fun processUpdateFavorite() {
+//        viewState.value?.let { currentViewState ->
+//            _viewState.value =
+//                currentViewState.copy(favoriteButtonState = currentViewState.favoriteButtonState.flipState())
+//        }
+//    }
+//
+//    private fun processUpdateWatchlist() {
+//        viewState.value?.let { currentViewState ->
+//            _viewState.value =
+//                currentViewState.copy(watchListButtonState = currentViewState.watchListButtonState.flipState())
+//        }
+//    }
+//
+//    private fun processStateChangedError(errorCause: Try.FailureCause) {
+//        _viewState.value = when (errorCause) {
+//            is Try.FailureCause.UserNotLogged -> _viewState.value?.showUserNotLogged()
+//            else -> _viewState.value?.showReload()
+//        }
+//    }
 
     private companion object {
         const val MOVIE_ID_KEY = "MOVIE_ID_KEY"

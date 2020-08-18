@@ -7,6 +7,11 @@
         <variable
             name="viewState"
             type="com.jpp.mpmoviedetails.MovieDetailViewState" />
+        <variable
+            name="actionsViewState"
+            type="com.jpp.mpmoviedetails.MovieActionsViewState" />
+
+
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -148,7 +153,9 @@
             app:layout_anchor="@id/movieDetailAppBarLayout"
             app:layout_anchorGravity="bottom|right|end" />
 
-        <include layout="@layout/movie_details_bottom_bar"/>
+        <include layout="@layout/movie_details_bottom_bar"
+            android:visibility="@{actionsViewState.visibility}"
+            bind:viewState="@{actionsViewState}"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

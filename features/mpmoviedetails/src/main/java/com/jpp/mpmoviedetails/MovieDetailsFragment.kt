@@ -168,49 +168,52 @@ class MovieDetailsFragment : Fragment() {
     }
 
     @SuppressLint("RestrictedApi")
-    private fun renderActionViewState(actionViewState: MovieDetailActionViewState) {
-        movieDetailActionFab?.visibility = actionViewState.actionButtonVisibility
-        movieDetailReloadActionFab?.visibility = actionViewState.reloadButtonVisibility
-        movieDetailActionsLoadingView?.visibility = actionViewState.loadingVisibility
+    private fun renderActionViewState(actionViewState: MovieActionsViewState) {
+        viewBinding?.actionsViewState = actionViewState
+        viewBinding?.executePendingBindings()
 
-        movieDetailFavoritesFab?.apply {
-            visibility = actionViewState.favoriteButtonState.visibility
-            setAsClickable(actionViewState.favoriteButtonState.asClickable)
-            setFilled(actionViewState.favoriteButtonState.asFilled)
-            doAnimation(actionViewState.favoriteButtonState.animateLoading)
-        }
-
-        movieDetailWatchlistFab?.apply {
-            visibility = actionViewState.watchListButtonState.visibility
-            setAsClickable(actionViewState.watchListButtonState.asClickable)
-            setFilled(actionViewState.watchListButtonState.asFilled)
-            doAnimation(actionViewState.watchListButtonState.animateLoading)
-        }
-
-        movieDetailRateFab?.apply {
-            visibility = actionViewState.rateButtonState.visibility
-            setAsClickable(actionViewState.rateButtonState.asClickable)
-            setFilled(actionViewState.rateButtonState.asFilled)
-            doAnimation(actionViewState.rateButtonState.animateLoading)
-        }
-
-        if (actionViewState.animate) {
-            when (actionViewState.expanded) {
-                true -> renderExpandedActions()
-                else -> renderClosedActions()
-            }
-        }
-
-        when (actionViewState.errorState) {
-            is ActionErrorViewState.UserNotLogged -> detailsContent?.let {
-                snackBar(it, R.string.account_need_to_login, R.string.login_generic) {
-                    viewModel.onUserRequestedLogin()
-                }
-            }
-            is ActionErrorViewState.UnknownError -> {
-                detailsContent?.let { snackBarNoAction(it, R.string.unexpected_action_error) }
-            }
-        }
+//        movieDetailActionFab?.visibility = actionViewState.actionButtonVisibility
+//        movieDetailReloadActionFab?.visibility = actionViewState.reloadButtonVisibility
+//        movieDetailActionsLoadingView?.visibility = actionViewState.loadingVisibility
+//
+//        movieDetailFavoritesFab?.apply {
+//            visibility = actionViewState.favoriteButtonState.visibility
+//            setAsClickable(actionViewState.favoriteButtonState.asClickable)
+//            setFilled(actionViewState.favoriteButtonState.asFilled)
+//            doAnimation(actionViewState.favoriteButtonState.animateLoading)
+//        }
+//
+//        movieDetailWatchlistFab?.apply {
+//            visibility = actionViewState.watchListButtonState.visibility
+//            setAsClickable(actionViewState.watchListButtonState.asClickable)
+//            setFilled(actionViewState.watchListButtonState.asFilled)
+//            doAnimation(actionViewState.watchListButtonState.animateLoading)
+//        }
+//
+//        movieDetailRateFab?.apply {
+//            visibility = actionViewState.rateButtonState.visibility
+//            setAsClickable(actionViewState.rateButtonState.asClickable)
+//            setFilled(actionViewState.rateButtonState.asFilled)
+//            doAnimation(actionViewState.rateButtonState.animateLoading)
+//        }
+//
+//        if (actionViewState.animate) {
+//            when (actionViewState.expanded) {
+//                true -> renderExpandedActions()
+//                else -> renderClosedActions()
+//            }
+//        }
+//
+//        when (actionViewState.errorState) {
+//            is ActionErrorViewState.UserNotLogged -> detailsContent?.let {
+//                snackBar(it, R.string.account_need_to_login, R.string.login_generic) {
+//                    viewModel.onUserRequestedLogin()
+//                }
+//            }
+//            is ActionErrorViewState.UnknownError -> {
+//                detailsContent?.let { snackBarNoAction(it, R.string.unexpected_action_error) }
+//            }
+//        }
     }
 
     private fun renderExpandedActions() {
