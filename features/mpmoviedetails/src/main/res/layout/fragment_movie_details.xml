@@ -102,7 +102,6 @@
 
         <include layout="@layout/movie_details_bottom_bar"
             android:id="@+id/movieDetailBottomBar"
-            android:visibility="@{actionsViewState.visibility}"
             bind:viewState="@{actionsViewState}"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

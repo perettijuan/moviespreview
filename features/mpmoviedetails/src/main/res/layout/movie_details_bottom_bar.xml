@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/mpDetailsBottomBarHeight"
             android:layout_gravity="bottom"
+            android:visibility="@{viewState.visibility}"
             android:background="@color/primaryDarkColor"
             app:backgroundTint="@color/primaryDarkColor"
             app:fabCradleMargin="?attr/mpDetailsFabCradleMargin"
@@ -78,8 +79,9 @@
         </com.google.android.material.bottomappbar.BottomAppBar>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/movieDetailActionFab"
+            android:id="@+id/rateMovieButton"
             style="@style/FabMovieDetailMainAction"
+            android:visibility="@{viewState.visibility}"
             app:imageRes="@{viewState.rateImage}"
             app:elevation="0dp"
             app:layout_anchor="@id/movie_details_bottom_app_bar" />

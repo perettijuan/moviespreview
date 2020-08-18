@@ -1,11 +1,12 @@
 package com.jpp.mpmoviedetails
 
-import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jpp.mp.common.livedata.HandledEvent
+import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mpdomain.MovieState
 import com.jpp.mpdomain.usecase.GetMovieStateUseCase
 import com.jpp.mpdomain.usecase.Try
@@ -36,6 +37,9 @@ class MovieDetailsActionViewModel(
 
     private val _viewState = MutableLiveData<MovieActionsViewState>()
     internal val viewState: LiveData<MovieActionsViewState> = _viewState
+
+    private val _events = MutableLiveData<HandledEvent<MovieActionsEvent>>()
+    internal val events: LiveData<HandledEvent<MovieActionsEvent>> = _events
 
     private var movieId: Double
         set(value) = savedStateHandle.set(MOVIE_ID_KEY, value)
@@ -110,7 +114,6 @@ class MovieDetailsActionViewModel(
             val result = withContext(ioDispatcher) {
                 getMovieStateUseCase.execute(movieId)
             }
-
             _viewState.value = processMovieStateUpdate(result.getOrNull())
         }
     }
@@ -159,13 +162,13 @@ class MovieDetailsActionViewModel(
     }
 
     private fun processStateChangedError(errorCause: Try.FailureCause) {
-        //TODO update me!!!
-//        _viewState.value = when (errorCause) {
-//            is Try.FailureCause.UserNotLogged -> _viewState.value?.showUserNotLogged()
-//            else -> _viewState.value?.showReload()
-//        }
+        if (errorCause is Try.FailureCause.UserNotLogged) {
+            _viewState.value = MovieActionsViewState.showLoading()
+            _events.value = of(MovieActionsEvent.ShowUserNotLogged())
+        } else {
+            _events.value = of(MovieActionsEvent.ShowUnexpectedError())
+        }
     }
-
 
     private fun ActionButtonState.updateWatchList(inWatchlist: Boolean): ActionButtonState {
         return if (inWatchlist) {

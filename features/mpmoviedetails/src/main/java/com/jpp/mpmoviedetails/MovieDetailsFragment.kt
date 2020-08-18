@@ -16,9 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionInflater
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.jpp.mp.common.extensions.observeHandledEvent
 import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
+import com.jpp.mpdesign.ext.mpToast
 import com.jpp.mpdesign.ext.snackBar
 import com.jpp.mpdesign.ext.snackBarNoAction
 import com.jpp.mpdesign.views.MPFloatingActionButton
@@ -100,6 +102,7 @@ class MovieDetailsFragment : Fragment() {
         viewModel.onInit(paramsFromBundle(arguments))
 
         actionsViewModel.viewState.observeValue(viewLifecycleOwner, ::renderActionViewState)
+        actionsViewModel.events.observeHandledEvent(viewLifecycleOwner, ::handleActionEvent)
         actionsViewModel.onInit(movieId(arguments).toDouble())
     }
 
@@ -112,7 +115,7 @@ class MovieDetailsFragment : Fragment() {
         viewBinding?.movieDetailBottomBar?.favoriteImageView?.setOnClickListener { actionsViewModel.onFavoriteStateChanged() }
         viewBinding?.movieDetailBottomBar?.watchlistImageView?.setOnClickListener { actionsViewModel.onWatchlistStateChanged() }
 
-        viewBinding?.movieDetailBottomBar?.movieDetailActionFab?.setOnClickListener { viewModel.onRateMovieSelected() }
+        viewBinding?.movieDetailBottomBar?.rateMovieButton?.setOnClickListener { viewModel.onRateMovieSelected() }
 
         viewBinding?.detailCreditsSelectionView?.setOnClickListener { viewModel.onMovieCreditsSelected() }
         viewBinding?.movieDetailContent?.detailCreditsSelectionView?.setOnClickListener { viewModel.onMovieCreditsSelected() }
@@ -141,48 +144,19 @@ class MovieDetailsFragment : Fragment() {
     private fun renderActionViewState(actionViewState: MovieActionsViewState) {
         viewBinding?.actionsViewState = actionViewState
         viewBinding?.executePendingBindings()
+    }
 
-//        movieDetailActionFab?.visibility = actionViewState.actionButtonVisibility
-//        movieDetailReloadActionFab?.visibility = actionViewState.reloadButtonVisibility
-//        movieDetailActionsLoadingView?.visibility = actionViewState.loadingVisibility
-//
-//        movieDetailFavoritesFab?.apply {
-//            visibility = actionViewState.favoriteButtonState.visibility
-//            setAsClickable(actionViewState.favoriteButtonState.asClickable)
-//            setFilled(actionViewState.favoriteButtonState.asFilled)
-//            doAnimation(actionViewState.favoriteButtonState.animateLoading)
-//        }
-//
-//        movieDetailWatchlistFab?.apply {
-//            visibility = actionViewState.watchListButtonState.visibility
-//            setAsClickable(actionViewState.watchListButtonState.asClickable)
-//            setFilled(actionViewState.watchListButtonState.asFilled)
-//            doAnimation(actionViewState.watchListButtonState.animateLoading)
-//        }
-//
-//        movieDetailRateFab?.apply {
-//            visibility = actionViewState.rateButtonState.visibility
-//            setAsClickable(actionViewState.rateButtonState.asClickable)
-//            setFilled(actionViewState.rateButtonState.asFilled)
-//            doAnimation(actionViewState.rateButtonState.animateLoading)
-//        }
-//
-//        if (actionViewState.animate) {
-//            when (actionViewState.expanded) {
-//                true -> renderExpandedActions()
-//                else -> renderClosedActions()
-//            }
-//        }
-//
-//        when (actionViewState.errorState) {
-//            is ActionErrorViewState.UserNotLogged -> detailsContent?.let {
-//                snackBar(it, R.string.account_need_to_login, R.string.login_generic) {
-//                    viewModel.onUserRequestedLogin()
-//                }
-//            }
-//            is ActionErrorViewState.UnknownError -> {
-//                detailsContent?.let { snackBarNoAction(it, R.string.unexpected_action_error) }
-//            }
-//        }
+    private fun handleActionEvent(event: MovieActionsEvent) {
+        when (event) {
+            is MovieActionsEvent.ShowUserNotLogged ->
+                snackBar(
+                    viewBinding?.detailsContent,
+                    event.error,
+                    event.action
+                ) {
+                    viewModel.onUserRequestedLogin()
+                }
+            is MovieActionsEvent.ShowUnexpectedError -> mpToast(event.error)
+        }
     }
 }

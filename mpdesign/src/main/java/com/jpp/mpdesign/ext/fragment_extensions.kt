@@ -16,11 +16,14 @@ import com.jpp.mpdesign.R
  * Creates and shows a [Snackbar] styled with the application resources.
  */
 fun Fragment.snackBar(
-    contentView: View,
+    contentView: View?,
     @StringRes message: Int,
     @StringRes actionMessage: Int,
     action: () -> Unit
 ) {
+    if (contentView == null) {
+        return
+    }
     activity?.let {
         Snackbar.make(
                 contentView,
