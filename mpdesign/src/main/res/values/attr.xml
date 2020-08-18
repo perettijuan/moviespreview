@@ -61,8 +61,7 @@
     </declare-styleable>
 
     <declare-styleable name="MPFloatingActionButton">
-        <attr name="fillIcon" format="reference"/>
-        <attr name="emptyIcon" format="reference"/>
+        <attr name="imageRes" format="reference"/>
     </declare-styleable>
 
 </resources>

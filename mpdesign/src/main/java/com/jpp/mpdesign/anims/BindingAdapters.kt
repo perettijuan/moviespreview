@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.view.View
 import androidx.databinding.BindingAdapter
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.jpp.mpdesign.R
 
 /**
@@ -73,5 +74,11 @@ object BindingAdapters {
                         }
                     })
                 }.start()
+    }
+
+    @JvmStatic
+    @BindingAdapter("imageRes")
+    fun setIconResource(fab: FloatingActionButton, imageRes: Int) {
+        fab.setImageResource(imageRes)
     }
 }

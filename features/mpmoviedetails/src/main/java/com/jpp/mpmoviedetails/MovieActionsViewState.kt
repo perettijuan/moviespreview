@@ -24,5 +24,4 @@ internal data class MovieActionsViewState(
     companion object {
         fun showLoading() = MovieActionsViewState()
     }
-
 }

@@ -30,23 +30,23 @@
                 android:layout_height="wrap_content">
 
                 <com.jpp.mpdesign.views.MPImageView
-                    android:id="@+id/favorite_image_view"
+                    android:id="@+id/favoriteImageView"
                     style="@style/MovieDetailItemAction"
                     android:clickable="@{viewState.favoriteButtonState.asClickable}"
                     app:imageRes="@{viewState.favoriteButtonState.imageRes}"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/watchlist_image_view"
+                    app:layout_constraintEnd_toStartOf="@id/watchlistImageView"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.jpp.mpdesign.views.MPImageView
-                    android:id="@+id/watchlist_image_view"
+                    android:id="@+id/watchlistImageView"
                     style="@style/MovieDetailItemAction"
                     android:clickable="@{viewState.watchListButtonState.asClickable}"
                     app:imageRes="@{viewState.watchListButtonState.imageRes}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/movie_details_bottom_bar_guideline_left"
-                    app:layout_constraintStart_toEndOf="@id/favorite_image_view"
+                    app:layout_constraintStart_toEndOf="@id/favoriteImageView"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.constraintlayout.widget.Guideline
@@ -77,10 +77,10 @@
 
         </com.google.android.material.bottomappbar.BottomAppBar>
 
-        <com.jpp.mpdesign.views.MPFloatingActionButton
-            android:id="@+id/movieDetailActionFab1"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/movieDetailActionFab"
             style="@style/FabMovieDetailMainAction"
-            android:src="@{viewState.rateImage}"
+            app:imageRes="@{viewState.rateImage}"
             app:elevation="0dp"
             app:layout_anchor="@id/movie_details_bottom_app_bar" />
     </merge>

@@ -7,6 +7,7 @@ import android.view.View
  * [animate] indicates if the actions section should perform the animation.
  * [expanded] indicates if the actions section should be shown expanded or not.
  */
+//TODO DELETE ME!
 internal data class MovieDetailActionViewState(
     val loadingVisibility: Int = View.INVISIBLE,
     val reloadButtonVisibility: Int = View.INVISIBLE,

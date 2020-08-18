@@ -100,60 +100,8 @@
 
         </androidx.core.widget.NestedScrollView>
 
-        <com.jpp.mpdesign.views.MPFloatingActionButton
-            android:id="@+id/movieDetailFavoritesFab"
-            style="@style/FabMovieDetailAction"
-            android:visibility="invisible"
-            app:emptyIcon="@drawable/ic_favorite_empty"
-            app:fillIcon="@drawable/ic_favorite_filled"
-            app:layout_anchor="@id/movieDetailAppBarLayout"
-            app:layout_anchorGravity="bottom|right|end" />
-
-        <com.jpp.mpdesign.views.MPFloatingActionButton
-            android:id="@+id/movieDetailWatchlistFab"
-            style="@style/FabMovieDetailAction"
-            android:visibility="invisible"
-            app:emptyIcon="@drawable/ic_watchlist_empty"
-            app:fillIcon="@drawable/ic_watchlist_filled"
-            app:layout_anchor="@id/movieDetailAppBarLayout"
-            app:layout_anchorGravity="bottom|right|end" />
-
-        <com.jpp.mpdesign.views.MPFloatingActionButton
-            android:id="@+id/movieDetailRateFab"
-            style="@style/FabMovieDetailAction"
-            android:visibility="invisible"
-            app:emptyIcon="@drawable/ic_rate_empty"
-            app:fillIcon="@drawable/ic_rate_filled"
-            app:layout_anchor="@id/movieDetailAppBarLayout"
-            app:layout_anchorGravity="bottom|right|end" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/movieDetailActionFab"
-            style="@style/FabMovieDetailMainAction"
-            android:src="@drawable/ic_arrow_down"
-            android:visibility="invisible"
-            app:layout_anchor="@id/movieDetailAppBarLayout"
-            app:layout_anchorGravity="bottom|right|end" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/movieDetailReloadActionFab"
-            style="@style/FabMovieDetailMainAction"
-            android:src="@drawable/ic_reload"
-            android:visibility="invisible"
-            app:layout_anchor="@id/movieDetailAppBarLayout"
-            app:layout_anchorGravity="bottom|right|end" />
-
-        <ProgressBar
-            android:id="@+id/movieDetailActionsLoadingView"
-            style="@style/MPProgressBar"
-            android:layout_width="?attr/mpDetailsActionLoadingSize"
-            android:layout_height="?attr/mpDetailsActionLoadingSize"
-            android:layout_margin="?attr/mpDetailsActionMargin"
-            android:visibility="invisible"
-            app:layout_anchor="@id/movieDetailAppBarLayout"
-            app:layout_anchorGravity="bottom|right|end" />
-
         <include layout="@layout/movie_details_bottom_bar"
+            android:id="@+id/movieDetailBottomBar"
             android:visibility="@{actionsViewState.visibility}"
             bind:viewState="@{actionsViewState}"/>
 

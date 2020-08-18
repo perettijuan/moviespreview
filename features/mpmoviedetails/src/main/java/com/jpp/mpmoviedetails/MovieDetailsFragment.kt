@@ -69,16 +69,6 @@ class MovieDetailsFragment : Fragment() {
         )
     }
 
-    private var detailsContent: CoordinatorLayout? = null
-    private var movieDetailFavoritesFab: MPFloatingActionButton? = null
-    private var movieDetailWatchlistFab: MPFloatingActionButton? = null
-    private var movieDetailRateFab: MPFloatingActionButton? = null
-    private var movieDetailReloadActionFab: FloatingActionButton? = null
-    private var movieDetailActionFab: FloatingActionButton? = null
-    private var movieDetailActionsLoadingView: ProgressBar? = null
-
-    private var movieDetailImageView: ImageView? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition =
@@ -102,9 +92,9 @@ class MovieDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupViews(view)
+        setupViews()
 
-        movieDetailImageView?.transitionName = movieImageTransitionName(arguments)
+        viewBinding?.movieDetailImageView?.transitionName = movieImageTransitionName(arguments)
 
         viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
         viewModel.onInit(paramsFromBundle(arguments))
@@ -115,37 +105,17 @@ class MovieDetailsFragment : Fragment() {
 
     override fun onDestroyView() {
         viewBinding = null
-        detailsContent = null
-        movieDetailFavoritesFab = null
-        movieDetailWatchlistFab = null
-        movieDetailRateFab = null
-        movieDetailReloadActionFab = null
-        movieDetailActionFab = null
-        movieDetailActionsLoadingView = null
-
-        movieDetailImageView = null
-
         super.onDestroyView()
     }
 
-    private fun setupViews(view: View) {
-        detailsContent = view.findViewById(R.id.detailsContent)
-        movieDetailFavoritesFab = view.findViewById(R.id.movieDetailFavoritesFab)
-        movieDetailWatchlistFab = view.findViewById(R.id.movieDetailWatchlistFab)
-        movieDetailRateFab = view.findViewById(R.id.movieDetailRateFab)
-        movieDetailReloadActionFab = view.findViewById(R.id.movieDetailReloadActionFab)
-        movieDetailActionFab = view.findViewById(R.id.movieDetailActionFab)
-        movieDetailActionsLoadingView = view.findViewById(R.id.movieDetailActionsLoadingView)
+    private fun setupViews() {
+        viewBinding?.movieDetailBottomBar?.favoriteImageView?.setOnClickListener { actionsViewModel.onFavoriteStateChanged() }
+        viewBinding?.movieDetailBottomBar?.watchlistImageView?.setOnClickListener { actionsViewModel.onWatchlistStateChanged() }
 
-        movieDetailImageView = view.findViewById(R.id.movieDetailImageView)
+        viewBinding?.movieDetailBottomBar?.movieDetailActionFab?.setOnClickListener { viewModel.onRateMovieSelected() }
 
-        viewBinding?.movieDetailActionFab?.setOnClickListener { actionsViewModel.onMainActionSelected() }
-        viewBinding?.movieDetailFavoritesFab?.setOnClickListener { actionsViewModel.onFavoriteStateChanged() }
-        viewBinding?.movieDetailWatchlistFab?.setOnClickListener { actionsViewModel.onWatchlistStateChanged() }
         viewBinding?.detailCreditsSelectionView?.setOnClickListener { viewModel.onMovieCreditsSelected() }
         viewBinding?.movieDetailContent?.detailCreditsSelectionView?.setOnClickListener { viewModel.onMovieCreditsSelected() }
-        viewBinding?.movieDetailRateFab?.setOnClickListener { viewModel.onRateMovieSelected() }
-        viewBinding?.movieDetailReloadActionFab?.setOnClickListener { actionsViewModel.onRetry() }
     }
 
     private fun renderViewState(viewState: MovieDetailViewState) {
@@ -214,26 +184,5 @@ class MovieDetailsFragment : Fragment() {
 //                detailsContent?.let { snackBarNoAction(it, R.string.unexpected_action_error) }
 //            }
 //        }
-    }
-
-    private fun renderExpandedActions() {
-        movieDetailActionFab?.animate()
-            ?.rotation(180F)
-        movieDetailFavoritesFab?.animate()
-            ?.translationY(resources.getDimension(R.dimen.standard_55))
-            ?.alpha(1F)
-        movieDetailWatchlistFab?.animate()
-            ?.translationY(resources.getDimension(R.dimen.standard_105))
-            ?.alpha(1F)
-        movieDetailRateFab?.animate()
-            ?.translationY(resources.getDimension(R.dimen.standard_155))
-            ?.alpha(1F)
-    }
-
-    private fun renderClosedActions() {
-        movieDetailActionFab?.animate()?.rotation(0F)
-        movieDetailFavoritesFab?.animate()?.translationY(0F)?.alpha(0F)
-        movieDetailWatchlistFab?.animate()?.translationY(0F)?.alpha(0F)
-        movieDetailRateFab?.animate()?.translationY(0F)?.alpha(0F)
     }
 }
