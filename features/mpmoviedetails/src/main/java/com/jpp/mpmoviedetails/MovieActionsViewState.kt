@@ -10,14 +10,27 @@ internal data class MovieActionsViewState(
     val creditsText: Int = R.string.movie_credits_title
 ) {
 
-    fun showLoaded(
+    fun showLoadedWithRating(
         favoriteButtonState: ActionButtonState,
         watchListButtonState: ActionButtonState
     ): MovieActionsViewState {
         return copy(
             visibility = View.VISIBLE,
             favoriteButtonState = favoriteButtonState,
-            watchListButtonState = watchListButtonState
+            watchListButtonState = watchListButtonState,
+            rateImage = R.drawable.ic_rate_filled
+        )
+    }
+
+    fun showLoadedNoRating(
+        favoriteButtonState: ActionButtonState,
+        watchListButtonState: ActionButtonState
+    ): MovieActionsViewState {
+        return copy(
+            visibility = View.VISIBLE,
+            favoriteButtonState = favoriteButtonState,
+            watchListButtonState = watchListButtonState,
+            rateImage = R.drawable.ic_rate_empty
         )
     }
 

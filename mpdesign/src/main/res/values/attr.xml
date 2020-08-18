@@ -60,8 +60,4 @@
         <attr name="itemText" format="reference" />
     </declare-styleable>
 
-    <declare-styleable name="MPFloatingActionButton">
-        <attr name="imageRes" format="reference"/>
-    </declare-styleable>
-
 </resources>

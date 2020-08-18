@@ -27,6 +27,11 @@ import kotlinx.coroutines.withContext
  * of the movie internally and in the server side and updates the view layer according to the new
  * state of the business layer.
  */
+//TODO JPP
+// delete classes
+// handle landscape
+// Check error in BottomBar when going to details and then back
+// unit tests
 class MovieDetailsActionViewModel(
     private val getMovieStateUseCase: GetMovieStateUseCase,
     private val updateFavoriteUseCase: UpdateFavoriteMovieStateUseCase,
@@ -134,10 +139,17 @@ class MovieDetailsActionViewModel(
                 currentViewState.favoriteButtonState.updateFavorite(isFavoriteMovie)
 
 
-            currentViewState.showLoaded(
-                favoriteButtonState,
-                watchListButtonState
-            )
+            return if(movieState.isRated()) {
+                currentViewState.showLoadedWithRating(
+                    favoriteButtonState,
+                    watchListButtonState
+                )
+            } else {
+                currentViewState.showLoadedNoRating(
+                    favoriteButtonState,
+                    watchListButtonState
+                )
+            }
         }
     }
 
@@ -184,6 +196,13 @@ class MovieDetailsActionViewModel(
         } else {
             noFavorite()
         }
+    }
+
+    private fun MovieState?.isRated(): Boolean {
+        if (this == null) {
+            return false
+        }
+        return rated.isRated && rated.value != null
     }
 
     private companion object {

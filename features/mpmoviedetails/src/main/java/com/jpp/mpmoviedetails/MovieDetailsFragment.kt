@@ -6,24 +6,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionInflater
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.jpp.mp.common.extensions.observeHandledEvent
 import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mpdesign.ext.mpToast
 import com.jpp.mpdesign.ext.snackBar
-import com.jpp.mpdesign.ext.snackBarNoAction
-import com.jpp.mpdesign.views.MPFloatingActionButton
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieId
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieImageTransitionName
 import com.jpp.mpmoviedetails.NavigationMovieDetails.paramsFromBundle
@@ -116,9 +110,9 @@ class MovieDetailsFragment : Fragment() {
         viewBinding?.movieDetailBottomBar?.watchlistImageView?.setOnClickListener { actionsViewModel.onWatchlistStateChanged() }
 
         viewBinding?.movieDetailBottomBar?.rateMovieButton?.setOnClickListener { viewModel.onRateMovieSelected() }
+        viewBinding?.movieDetailBottomBar?.detailCreditsSelectionView?.setOnClickListener { viewModel.onMovieCreditsSelected() }
 
         viewBinding?.detailCreditsSelectionView?.setOnClickListener { viewModel.onMovieCreditsSelected() }
-        viewBinding?.movieDetailContent?.detailCreditsSelectionView?.setOnClickListener { viewModel.onMovieCreditsSelected() }
     }
 
     private fun renderViewState(viewState: MovieDetailViewState) {

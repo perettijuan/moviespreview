@@ -128,16 +128,6 @@
             app:layout_constraintTop_toTopOf="@+id/detailReleaseDateTitleTxt"
             tools:text="10/10/2019" />
 
-        <com.jpp.mpdesign.views.MPSimpleItemSelectionView
-            android:id="@+id/detailCreditsSelectionView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
-            app:itemText="@{viewState.creditsTitle}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detailReleaseDateContentTxt" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
