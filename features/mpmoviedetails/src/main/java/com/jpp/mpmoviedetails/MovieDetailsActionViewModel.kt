@@ -29,7 +29,6 @@ import kotlinx.coroutines.withContext
  */
 //TODO JPP
 // delete classes
-// handle landscape
 // Check error in BottomBar when going to details and then back
 // unit tests
 class MovieDetailsActionViewModel(

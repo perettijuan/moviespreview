@@ -111,8 +111,6 @@ class MovieDetailsFragment : Fragment() {
 
         viewBinding?.movieDetailBottomBar?.rateMovieButton?.setOnClickListener { viewModel.onRateMovieSelected() }
         viewBinding?.movieDetailBottomBar?.detailCreditsSelectionView?.setOnClickListener { viewModel.onMovieCreditsSelected() }
-
-        viewBinding?.detailCreditsSelectionView?.setOnClickListener { viewModel.onMovieCreditsSelected() }
     }
 
     private fun renderViewState(viewState: MovieDetailViewState) {

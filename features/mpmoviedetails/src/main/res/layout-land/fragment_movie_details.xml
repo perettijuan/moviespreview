@@ -3,182 +3,197 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:bind="http://schemas.android.com/tools">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp">
-
-            <ProgressBar
-                android:id="@+id/movieDetailLoadingView"
-                style="@style/MPProgressBar"
-                android:visibility="@{viewState.loadingVisibility}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.jpp.mpdesign.views.MPErrorView
-                android:id="@+id/movieDetailErrorView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:visibility="@{viewState.errorViewState.visibility}"
-                app:asConnectivity="@{viewState.errorViewState.isConnectivity}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:onRetry="@{viewState.errorViewState.errorHandler}" />
-
-            <com.jpp.mpdesign.views.MPImageView
-                android:id="@+id/movieDetailImageView"
-                android:layout_width="?attr/mpMovieItemImageWidth"
-                android:layout_height="?attr/mpMovieItemImageHeight"
-                android:scaleType="centerCrop"
-                app:imageUrl="@{viewState.movieImageUrl}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/detailOverviewTitleTxt"
-                style="@style/MPTextViewTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:text="@{viewState.contentViewState.overviewTitle}"
-                android:visibility="@{viewState.contentViewState.visibility}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/movieDetailImageView"
-                app:layout_constraintTop_toTopOf="@+id/movieDetailImageView" />
-
-            <TextView
-                android:id="@+id/detailOverviewContentTxt"
-                style="@style/MPTextViewSmall"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@{viewState.contentViewState.overview}"
-                android:visibility="@{viewState.contentViewState.visibility}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/detailOverviewTitleTxt"
-                app:layout_constraintTop_toBottomOf="@id/detailOverviewTitleTxt" />
-
-            <TextView
-                android:id="@+id/detailGenresTitleTxt"
-                style="@style/MPTextViewTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
-                android:text="@{viewState.contentViewState.genresTitle}"
-                android:visibility="@{viewState.contentViewState.visibility}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/detailOverviewTitleTxt"
-                app:layout_constraintTop_toBottomOf="@+id/detailOverviewContentTxt" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/detailGenresRv"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:minHeight="60dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/detailOverviewTitleTxt"
-                app:layout_constraintTop_toBottomOf="@+id/detailGenresTitleTxt"
-                android:visibility="@{viewState.contentViewState.visibility}"/>
-
-            <TextView
-                android:id="@+id/detailPopularityTitleTxt"
-                style="@style/MPTextViewTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
-                android:text="@{viewState.contentViewState.popularityTitle}"
-                android:visibility="@{viewState.contentViewState.visibility}"
-                app:layout_constraintEnd_toStartOf="@+id/detailPopularityContentTxt"
-                app:layout_constraintStart_toStartOf="@+id/detailOverviewTitleTxt"
-                app:layout_constraintTop_toBottomOf="@+id/detailGenresRv" />
-
-            <TextView
-                android:id="@+id/detailPopularityContentTxt"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:text="@{viewState.contentViewState.popularity}"
-                android:visibility="@{viewState.contentViewState.visibility}"
-                app:layout_constraintBottom_toBottomOf="@+id/detailPopularityTitleTxt"
-                app:layout_constraintEnd_toEndOf="@+id/detailOverviewTitleTxt"
-                app:layout_constraintStart_toEndOf="@+id/detailPopularityTitleTxt"
-                app:layout_constraintTop_toTopOf="@+id/detailPopularityTitleTxt" />
-
-            <TextView
-                android:id="@+id/detailVoteCountTitleTxt"
-                style="@style/MPTextViewTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
-                android:text="@{viewState.contentViewState.voteCountTitle}"
-                android:visibility="@{viewState.contentViewState.visibility}"
-                app:layout_constraintEnd_toStartOf="@+id/detailVoteCountContentTxt"
-                app:layout_constraintStart_toStartOf="@+id/detailOverviewTitleTxt"
-                app:layout_constraintTop_toBottomOf="@+id/detailPopularityTitleTxt" />
-
-            <TextView
-                android:id="@+id/detailVoteCountContentTxt"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:text="@{viewState.contentViewState.voteCount}"
-                android:visibility="@{viewState.contentViewState.visibility}"
-                app:layout_constraintBottom_toBottomOf="@+id/detailVoteCountTitleTxt"
-                app:layout_constraintEnd_toEndOf="@+id/detailOverviewTitleTxt"
-                app:layout_constraintStart_toEndOf="@+id/detailVoteCountTitleTxt"
-                app:layout_constraintTop_toTopOf="@+id/detailVoteCountTitleTxt" />
-
-            <TextView
-                android:id="@+id/detailReleaseDateTitleTxt"
-                style="@style/MPTextViewTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
-                android:text="@{viewState.contentViewState.releaseDateTitle}"
-                android:visibility="@{viewState.contentViewState.visibility}"
-                app:layout_constraintEnd_toStartOf="@+id/detailReleaseDateContentTxt"
-                app:layout_constraintStart_toStartOf="@+id/detailOverviewTitleTxt"
-                app:layout_constraintTop_toBottomOf="@+id/detailVoteCountContentTxt" />
-
-            <TextView
-                android:id="@+id/detailReleaseDateContentTxt"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:text="@{viewState.contentViewState.releaseDate}"
-                android:visibility="@{viewState.contentViewState.visibility}"
-                app:layout_constraintBottom_toBottomOf="@+id/detailReleaseDateTitleTxt"
-                app:layout_constraintEnd_toEndOf="@+id/detailOverviewTitleTxt"
-                app:layout_constraintStart_toEndOf="@+id/detailReleaseDateTitleTxt"
-                app:layout_constraintTop_toTopOf="@+id/detailReleaseDateTitleTxt"/>
-
-            <com.jpp.mpdesign.views.MPSimpleItemSelectionView
-                android:id="@+id/detailCreditsSelectionView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
-                app:itemText="@{viewState.contentViewState.creditsTitle}"
-                android:visibility="@{viewState.contentViewState.visibility}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/detailOverviewTitleTxt"
-                app:layout_constraintTop_toBottomOf="@+id/detailReleaseDateContentTxt" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </ScrollView>
-
     <data>
-
         <variable
             name="viewState"
             type="com.jpp.mpmoviedetails.MovieDetailViewState" />
+        <variable
+            name="actionsViewState"
+            type="com.jpp.mpmoviedetails.MovieActionsViewState" />
     </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/detailsContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+
+                <ProgressBar
+                    android:id="@+id/movieDetailLoadingView"
+                    style="@style/MPProgressBar"
+                    android:visibility="@{viewState.loadingVisibility}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.jpp.mpdesign.views.MPErrorView
+                    android:id="@+id/movieDetailErrorView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:visibility="@{viewState.errorViewState.visibility}"
+                    app:asConnectivity="@{viewState.errorViewState.isConnectivity}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:onRetry="@{viewState.errorViewState.errorHandler}" />
+
+                <com.jpp.mpdesign.views.MPImageView
+                    android:id="@+id/movieDetailImageView"
+                    android:layout_width="?attr/mpMovieItemImageWidth"
+                    android:layout_height="?attr/mpMovieItemImageHeight"
+                    android:scaleType="centerCrop"
+                    app:imageUrl="@{viewState.movieImageUrl}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/detailOverviewTitleTxt"
+                    style="@style/MPTextViewTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="@{viewState.contentViewState.overviewTitle}"
+                    android:visibility="@{viewState.contentViewState.visibility}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/movieDetailImageView"
+                    app:layout_constraintTop_toTopOf="@+id/movieDetailImageView" />
+
+                <TextView
+                    android:id="@+id/detailOverviewContentTxt"
+                    style="@style/MPTextViewSmall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewState.contentViewState.overview}"
+                    android:visibility="@{viewState.contentViewState.visibility}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/detailOverviewTitleTxt"
+                    app:layout_constraintTop_toBottomOf="@id/detailOverviewTitleTxt" />
+
+                <TextView
+                    android:id="@+id/detailGenresTitleTxt"
+                    style="@style/MPTextViewTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
+                    android:text="@{viewState.contentViewState.genresTitle}"
+                    android:visibility="@{viewState.contentViewState.visibility}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/detailOverviewTitleTxt"
+                    app:layout_constraintTop_toBottomOf="@+id/detailOverviewContentTxt" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/detailGenresRv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="60dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/detailOverviewTitleTxt"
+                    app:layout_constraintTop_toBottomOf="@+id/detailGenresTitleTxt"
+                    android:visibility="@{viewState.contentViewState.visibility}"/>
+
+                <TextView
+                    android:id="@+id/detailPopularityTitleTxt"
+                    style="@style/MPTextViewTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
+                    android:text="@{viewState.contentViewState.popularityTitle}"
+                    android:visibility="@{viewState.contentViewState.visibility}"
+                    app:layout_constraintEnd_toStartOf="@+id/detailPopularityContentTxt"
+                    app:layout_constraintStart_toStartOf="@+id/detailOverviewTitleTxt"
+                    app:layout_constraintTop_toBottomOf="@+id/detailGenresRv" />
+
+                <TextView
+                    android:id="@+id/detailPopularityContentTxt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="@{viewState.contentViewState.popularity}"
+                    android:visibility="@{viewState.contentViewState.visibility}"
+                    app:layout_constraintBottom_toBottomOf="@+id/detailPopularityTitleTxt"
+                    app:layout_constraintEnd_toEndOf="@+id/detailOverviewTitleTxt"
+                    app:layout_constraintStart_toEndOf="@+id/detailPopularityTitleTxt"
+                    app:layout_constraintTop_toTopOf="@+id/detailPopularityTitleTxt" />
+
+                <TextView
+                    android:id="@+id/detailVoteCountTitleTxt"
+                    style="@style/MPTextViewTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
+                    android:text="@{viewState.contentViewState.voteCountTitle}"
+                    android:visibility="@{viewState.contentViewState.visibility}"
+                    app:layout_constraintEnd_toStartOf="@+id/detailVoteCountContentTxt"
+                    app:layout_constraintStart_toStartOf="@+id/detailOverviewTitleTxt"
+                    app:layout_constraintTop_toBottomOf="@+id/detailPopularityTitleTxt" />
+
+                <TextView
+                    android:id="@+id/detailVoteCountContentTxt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="@{viewState.contentViewState.voteCount}"
+                    android:visibility="@{viewState.contentViewState.visibility}"
+                    app:layout_constraintBottom_toBottomOf="@+id/detailVoteCountTitleTxt"
+                    app:layout_constraintEnd_toEndOf="@+id/detailOverviewTitleTxt"
+                    app:layout_constraintStart_toEndOf="@+id/detailVoteCountTitleTxt"
+                    app:layout_constraintTop_toTopOf="@+id/detailVoteCountTitleTxt" />
+
+                <TextView
+                    android:id="@+id/detailReleaseDateTitleTxt"
+                    style="@style/MPTextViewTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
+                    android:text="@{viewState.contentViewState.releaseDateTitle}"
+                    android:visibility="@{viewState.contentViewState.visibility}"
+                    app:layout_constraintEnd_toStartOf="@+id/detailReleaseDateContentTxt"
+                    app:layout_constraintStart_toStartOf="@+id/detailOverviewTitleTxt"
+                    app:layout_constraintTop_toBottomOf="@+id/detailVoteCountContentTxt" />
+
+                <TextView
+                    android:id="@+id/detailReleaseDateContentTxt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="@{viewState.contentViewState.releaseDate}"
+                    android:visibility="@{viewState.contentViewState.visibility}"
+                    app:layout_constraintBottom_toBottomOf="@+id/detailReleaseDateTitleTxt"
+                    app:layout_constraintEnd_toEndOf="@+id/detailOverviewTitleTxt"
+                    app:layout_constraintStart_toEndOf="@+id/detailReleaseDateTitleTxt"
+                    app:layout_constraintTop_toTopOf="@+id/detailReleaseDateTitleTxt"/>
+
+                <com.jpp.mpdesign.views.MPSimpleItemSelectionView
+                    android:id="@+id/detailCreditsSelectionView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="?attr/mpDetailsVerticalSpacing"
+                    app:itemText="@{viewState.contentViewState.creditsTitle}"
+                    android:visibility="@{viewState.contentViewState.visibility}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/detailOverviewTitleTxt"
+                    app:layout_constraintTop_toBottomOf="@+id/detailReleaseDateContentTxt" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <include layout="@layout/movie_details_bottom_bar"
+            android:id="@+id/movieDetailBottomBar"
+            bind:viewState="@{actionsViewState}"/>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>
