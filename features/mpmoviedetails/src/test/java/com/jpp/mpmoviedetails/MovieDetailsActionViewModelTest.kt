@@ -17,7 +17,9 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -107,7 +109,6 @@ internal class MovieDetailsActionViewModelTest {
         assertEquals(R.drawable.ic_watchlist_empty, viewStatePosted?.watchListButtonState?.imageRes)
         assertTrue(viewStatePosted?.watchListButtonState?.asClickable ?: false)
     }
-
 
     @ParameterizedTest
     @MethodSource("movieActionExecutedEvents")

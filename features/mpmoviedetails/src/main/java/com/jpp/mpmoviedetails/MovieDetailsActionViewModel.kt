@@ -59,7 +59,7 @@ class MovieDetailsActionViewModel(
      */
     fun onInit(movieId: Double) {
         this.movieId = movieId
-        //TODO JPP perform animation for initial fetch
+        // TODO JPP perform animation for initial fetch
         _viewState.value = MovieActionsViewState.showLoading()
         fetchMovieState(movieId)
     }
@@ -73,7 +73,7 @@ class MovieDetailsActionViewModel(
      * the movie being handled.
      */
     fun onFavoriteStateChanged() {
-        //TODO JPP perform animation for favorite
+        // TODO JPP perform animation for favorite
         val newState = !isFavoriteMovie
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {
@@ -92,7 +92,7 @@ class MovieDetailsActionViewModel(
      * movie being handled.
      */
     fun onWatchlistStateChanged() {
-        //TODO JPP perform animation for watchlist
+        // TODO JPP perform animation for watchlist
         val newState = !isInWatchList
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {
@@ -130,8 +130,7 @@ class MovieDetailsActionViewModel(
             val favoriteButtonState =
                 currentViewState.favoriteButtonState.updateFavorite(isFavoriteMovie)
 
-
-            return if(movieState.isRated()) {
+            return if (movieState.isRated()) {
                 currentViewState.showLoadedWithRating(
                     favoriteButtonState,
                     watchListButtonState
