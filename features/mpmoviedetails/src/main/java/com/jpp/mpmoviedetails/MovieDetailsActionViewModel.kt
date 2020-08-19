@@ -29,7 +29,7 @@ import kotlinx.coroutines.withContext
  */
 //TODO JPP
 // delete classes
-// Check error in BottomBar when going to details and then back
+// Check error in BottomBar when going to details and then back -> this can be fixed with an animation
 // unit tests
 class MovieDetailsActionViewModel(
     private val getMovieStateUseCase: GetMovieStateUseCase,
