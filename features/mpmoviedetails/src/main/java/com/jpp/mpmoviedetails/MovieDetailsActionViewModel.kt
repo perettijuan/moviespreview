@@ -27,10 +27,6 @@ import kotlinx.coroutines.withContext
  * of the movie internally and in the server side and updates the view layer according to the new
  * state of the business layer.
  */
-//TODO JPP
-// delete classes
-// Check error in BottomBar when going to details and then back -> this can be fixed with an animation
-// unit tests
 class MovieDetailsActionViewModel(
     private val getMovieStateUseCase: GetMovieStateUseCase,
     private val updateFavoriteUseCase: UpdateFavoriteMovieStateUseCase,
@@ -63,6 +59,7 @@ class MovieDetailsActionViewModel(
      */
     fun onInit(movieId: Double) {
         this.movieId = movieId
+        //TODO JPP perform animation for initial fetch
         _viewState.value = MovieActionsViewState.showLoading()
         fetchMovieState(movieId)
     }
@@ -76,9 +73,7 @@ class MovieDetailsActionViewModel(
      * the movie being handled.
      */
     fun onFavoriteStateChanged() {
-        //TODO ANIMATE HERE
-//        _viewState.value = _viewState.value?.showLoadingFavorite()
-
+        //TODO JPP perform animation for favorite
         val newState = !isFavoriteMovie
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {
@@ -97,9 +92,7 @@ class MovieDetailsActionViewModel(
      * movie being handled.
      */
     fun onWatchlistStateChanged() {
-        //TODO ANIMATE HERE
-        //_viewState.value = _viewState.value?.showLoadingWatchlist()
-
+        //TODO JPP perform animation for watchlist
         val newState = !isInWatchList
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {

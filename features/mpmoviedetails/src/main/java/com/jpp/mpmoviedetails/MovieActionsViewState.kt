@@ -2,6 +2,10 @@ package com.jpp.mpmoviedetails
 
 import android.view.View
 
+/**
+ * Represents the view state that the actions section
+ * can be at any given moment.
+ */
 internal data class MovieActionsViewState(
     val visibility: Int = View.INVISIBLE,
     val favoriteButtonState: ActionButtonState = ActionButtonState(),

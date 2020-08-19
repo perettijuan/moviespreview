@@ -1,7 +1,5 @@
 package com.jpp.mpmoviedetails
 
-
-
 /**
  * Represents the state of the action buttons show to the user.
  */

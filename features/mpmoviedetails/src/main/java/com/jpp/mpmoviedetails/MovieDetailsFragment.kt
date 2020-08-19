@@ -1,6 +1,5 @@
 package com.jpp.mpmoviedetails
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -34,7 +33,7 @@ import javax.inject.Inject
  *       of the movie details (image, title and details of the content). It is rendered using Data Binding
  *       based on the states posted by [MovieDetailsViewModel]. This might be considered as the static
  *       portion of the view.
- *   2 - The actions view state ([MovieDetailActionViewState]): this view state refers to the state
+ *   2 - The actions view state ([MovieActionsViewState]): this view state refers to the state
  *       of the actions that the user can perform on the particular movie being shown (rate, like, add
  *       to watchlist). It is based in the view states posted by [MovieDetailsActionViewModel] and it
  *       doesn't uses DataBinding since it is too complex to render the animations state in a static
@@ -132,7 +131,6 @@ class MovieDetailsFragment : Fragment() {
             MovieDetailsGenreAdapter(viewState.contentViewState.genres)
     }
 
-    @SuppressLint("RestrictedApi")
     private fun renderActionViewState(actionViewState: MovieActionsViewState) {
         viewBinding?.actionsViewState = actionViewState
         viewBinding?.executePendingBindings()
