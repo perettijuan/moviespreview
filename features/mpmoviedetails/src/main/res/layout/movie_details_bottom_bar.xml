@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
@@ -23,7 +24,8 @@
             app:backgroundTint="@color/primaryDarkColor"
             app:fabCradleMargin="?attr/mpDetailsFabCradleMargin"
             app:fabCradleRoundedCornerRadius="?attr/mpDetailsFabCradleRoundedCornerRadius"
-            app:fabCradleVerticalOffset="?attr/mpDetailsFabVerticalOffset">
+            app:fabCradleVerticalOffset="?attr/mpDetailsFabVerticalOffset"
+            tools:ignore="BottomAppBar">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
