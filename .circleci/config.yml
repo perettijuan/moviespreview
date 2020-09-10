@@ -28,10 +28,10 @@ references:
   setup_android_env: &setup_android_env
     working_directory: *workspace
     docker:
-      - image: circleci/android:api-29
+      - image: circleci/android@sha256:424801c766d119676dfdfddf469b1268dcab9b477d449731d35af9a2f39915d1
     environment:
       TERM: dumb
-      _JAVA_OPTIONS: "-Xmx2048m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+      _JAVA_OPTIONS: "-Xmx2048m -XX:+UseContainerSupport"
       GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m"'
 
   gcloud_config: &gcloud_config
