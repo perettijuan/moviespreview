@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.databinding.DataBindingUtil
@@ -14,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.TransitionInflater
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.extensions.setScreenTitle
@@ -23,7 +21,6 @@ import com.jpp.mpdesign.ext.snackBar
 import com.jpp.mpdesign.ext.snackBarNoAction
 import com.jpp.mpdesign.views.MPFloatingActionButton
 import com.jpp.mpmoviedetails.NavigationMovieDetails.movieId
-import com.jpp.mpmoviedetails.NavigationMovieDetails.movieImageTransitionName
 import com.jpp.mpmoviedetails.NavigationMovieDetails.paramsFromBundle
 import com.jpp.mpmoviedetails.databinding.FragmentMovieDetailsBinding
 import dagger.android.support.AndroidSupportInjection
@@ -77,14 +74,6 @@ class MovieDetailsFragment : Fragment() {
     private var movieDetailActionFab: FloatingActionButton? = null
     private var movieDetailActionsLoadingView: ProgressBar? = null
 
-    private var movieDetailImageView: ImageView? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        sharedElementEnterTransition =
-            TransitionInflater.from(context).inflateTransition(android.R.transition.move)
-    }
-
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -104,8 +93,6 @@ class MovieDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupViews(view)
 
-        movieDetailImageView?.transitionName = movieImageTransitionName(arguments)
-
         viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
         viewModel.onInit(paramsFromBundle(arguments))
 
@@ -122,9 +109,6 @@ class MovieDetailsFragment : Fragment() {
         movieDetailReloadActionFab = null
         movieDetailActionFab = null
         movieDetailActionsLoadingView = null
-
-        movieDetailImageView = null
-
         super.onDestroyView()
     }
 
@@ -136,8 +120,6 @@ class MovieDetailsFragment : Fragment() {
         movieDetailReloadActionFab = view.findViewById(R.id.movieDetailReloadActionFab)
         movieDetailActionFab = view.findViewById(R.id.movieDetailActionFab)
         movieDetailActionsLoadingView = view.findViewById(R.id.movieDetailActionsLoadingView)
-
-        movieDetailImageView = view.findViewById(R.id.movieDetailImageView)
 
         viewBinding?.movieDetailActionFab?.setOnClickListener { actionsViewModel.onMainActionSelected() }
         viewBinding?.movieDetailFavoritesFab?.setOnClickListener { actionsViewModel.onFavoriteStateChanged() }

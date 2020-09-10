@@ -15,7 +15,6 @@ import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -30,9 +29,9 @@ import org.junit.jupiter.params.provider.MethodSource
 
 @ExperimentalCoroutinesApi
 @ExtendWith(
-        MockKExtension::class,
-        InstantTaskExecutorExtension::class,
-        CoroutineTestExtension::class
+    MockKExtension::class,
+    InstantTaskExecutorExtension::class,
+    CoroutineTestExtension::class
 )
 class MovieListViewModelTest {
 
@@ -47,10 +46,10 @@ class MovieListViewModelTest {
     @BeforeEach
     fun setUp() {
         subject = MovieListViewModel(
-                getMoviePageUseCase,
-                navigator,
-                CoroutineTestExtension.testDispatcher,
-                SavedStateHandle()
+            getMoviePageUseCase,
+            navigator,
+            CoroutineTestExtension.testDispatcher,
+            SavedStateHandle()
         )
     }
 
@@ -133,10 +132,10 @@ class MovieListViewModelTest {
         var viewStatePosted: MovieListViewState? = null
         val mockedList = getMockedMovies()
         val moviePage = MoviePage(
-                page = 1,
-                results = mockedList,
-                total_pages = 100,
-                total_results = 2000
+            page = 1,
+            results = mockedList,
+            total_pages = 100,
+            total_results = 2000
         )
 
         coEvery { getMoviePageUseCase.execute(any(), section) } returns Try.Success(moviePage)
@@ -164,20 +163,15 @@ class MovieListViewModelTest {
             title = "aTitle",
             contentImageUrl = "aContentPath",
             popularity = "aPopularity",
-            voteCount = "aVoteCount",
-            imageTransitionName = " imageTransitionName"
+            voteCount = "aVoteCount"
         )
-
-        val transitionImage: View = mockk()
-
-        subject.onMovieSelected(movieItem, transitionImage)
+        subject.onMovieSelected(movieItem)
 
         verify {
             navigator.navigateToMovieDetails(
                 movieId = "10.0",
                 movieImageUrl = "aContentPath",
-                movieTitle = "aTitle",
-                transitionView = transitionImage
+                movieTitle = "aTitle"
             )
         }
     }
@@ -186,19 +180,19 @@ class MovieListViewModelTest {
         return mutableListOf<Movie>().apply {
             for (i in 0..50) {
                 add(
-                        Movie(
-                                id = i.toDouble(),
-                                title = "titleRes$i",
-                                original_language = "oTitle$i",
-                                overview = "overview$i",
-                                release_date = "releaseDate$i",
-                                original_title = "originalLanguage$i",
-                                poster_path = "posterPath$i",
-                                backdrop_path = "backdropPath$i",
-                                vote_count = i.toDouble(),
-                                vote_average = i.toFloat(),
-                                popularity = i.toFloat()
-                        )
+                    Movie(
+                        id = i.toDouble(),
+                        title = "titleRes$i",
+                        original_language = "oTitle$i",
+                        overview = "overview$i",
+                        release_date = "releaseDate$i",
+                        original_title = "originalLanguage$i",
+                        poster_path = "posterPath$i",
+                        backdrop_path = "backdropPath$i",
+                        vote_count = i.toDouble(),
+                        vote_average = i.toFloat(),
+                        popularity = i.toFloat()
+                    )
                 )
             }
         }
@@ -208,22 +202,22 @@ class MovieListViewModelTest {
 
         @JvmStatic
         fun movieListTestParams() = listOf(
-                arguments(
-                        MovieSection.Playing,
-                        "Playing"
-                ),
-                arguments(
-                        MovieSection.Popular,
-                        "Popular"
-                ),
-                arguments(
-                        MovieSection.Upcoming,
-                        "Upcoming"
-                ),
-                arguments(
-                        MovieSection.TopRated,
-                        "TopRated"
-                )
+            arguments(
+                MovieSection.Playing,
+                "Playing"
+            ),
+            arguments(
+                MovieSection.Popular,
+                "Popular"
+            ),
+            arguments(
+                MovieSection.Upcoming,
+                "Upcoming"
+            ),
+            arguments(
+                MovieSection.TopRated,
+                "TopRated"
+            )
         )
     }
 }

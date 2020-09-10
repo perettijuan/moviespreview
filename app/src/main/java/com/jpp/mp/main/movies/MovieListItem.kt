@@ -9,6 +9,5 @@ data class MovieListItem(
     val title: String,
     val contentImageUrl: String,
     val popularity: String,
-    val voteCount: String,
-    val imageTransitionName: String
+    val voteCount: String
 )
