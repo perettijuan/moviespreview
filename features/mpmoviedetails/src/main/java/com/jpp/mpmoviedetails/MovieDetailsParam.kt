@@ -6,6 +6,5 @@ package com.jpp.mpmoviedetails
 internal data class MovieDetailsParam(
     val movieId: Double,
     val movieTitle: String,
-    val movieImageUrl: String,
-    val movieImageTransitionName: String
+    val movieImageUrl: String
 )
