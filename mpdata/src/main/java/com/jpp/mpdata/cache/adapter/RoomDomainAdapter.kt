@@ -1,12 +1,6 @@
 package com.jpp.mpdata.cache.adapter
 
-import com.jpp.mpdata.cache.room.DBCastCharacter
-import com.jpp.mpdata.cache.room.DBCrewPerson
-import com.jpp.mpdata.cache.room.DBImageSize
-import com.jpp.mpdata.cache.room.DBMovie
-import com.jpp.mpdata.cache.room.DBMovieDetail
-import com.jpp.mpdata.cache.room.DBGenreByMovie
-import com.jpp.mpdata.cache.room.DBMoviePage
+import com.jpp.mpdata.cache.room.*
 import com.jpp.mpdata.cache.room.ImageTypes
 import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.CastCharacter
@@ -129,4 +123,10 @@ class RoomDomainAdapter {
                 )
             }
         )
+
+    /**
+     * [DBMovieGenre] to [MovieGenre].
+     */
+    internal fun movieGenre(genre: DBMovieGenre): MovieGenre =
+        MovieGenre(id = genre.id, name = genre.name)
 }

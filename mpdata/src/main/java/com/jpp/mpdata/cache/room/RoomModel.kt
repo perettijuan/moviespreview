@@ -153,5 +153,6 @@ data class DBCrewPerson(
 @Entity(tableName = "movie_genres")
 data class DBMovieGenre(
     @PrimaryKey @ColumnInfo(name = "_id") var id: Int,
-    @ColumnInfo(name = "name") var name: String
+    @ColumnInfo(name = "name") var name: String,
+    @ColumnInfo(name = "duedate") var dueDate: Long /* represents the date until the data is valid */
 )
