@@ -146,3 +146,12 @@ data class DBCrewPerson(
     @ColumnInfo(name = "duedate") var dueDate: Long /* represents the date until the data is valid */
 ) // -> this represents the ID of the movie to which this cast belongs to.
 // We do not store it as a foreign key since we don't want to delete it on CASCADE and we don't want to deal with integrity at this level.
+
+/**
+ * Represents an official genre for movies.
+ */
+@Entity(tableName = "movie_genres")
+data class DBMovieGenre(
+    @PrimaryKey @ColumnInfo(name = "_id") var id: Int,
+    @ColumnInfo(name = "name") var name: String
+)

@@ -89,6 +89,7 @@ class DataLayerModule {
     fun providesTheMoviesDBRoomDb(context: Context):
             MPRoomDataBase = Room
         .databaseBuilder(context, MPRoomDataBase::class.java, "MPRoomDataBase")
+        .fallbackToDestructiveMigration() // IMPORTANT: I don't want to keep user's data when going from v1 to v2. Keep in mind for future upgrades.
         .build()
 
     @Singleton
