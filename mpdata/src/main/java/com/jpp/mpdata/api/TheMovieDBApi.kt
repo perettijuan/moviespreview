@@ -1,15 +1,6 @@
 package com.jpp.mpdata.api
 
-import com.jpp.mpdomain.AccessToken
-import com.jpp.mpdomain.AppConfiguration
-import com.jpp.mpdomain.Credits
-import com.jpp.mpdomain.MovieDetail
-import com.jpp.mpdomain.MoviePage
-import com.jpp.mpdomain.MovieState
-import com.jpp.mpdomain.Person
-import com.jpp.mpdomain.SearchPage
-import com.jpp.mpdomain.Session
-import com.jpp.mpdomain.UserAccount
+import com.jpp.mpdomain.*
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -285,4 +276,15 @@ internal interface TheMovieDBApi {
         @Query("api_key") api_key: String,
         @Query("language") language: String? = null
     ): Call<MoviePage>
+
+    /**
+     * Retrieves the list of official genres for movies.
+     * [api_key] the api key provided by themoviedb.
+     * [language] Pass a ISO 639-1 value to display translated data for the fields that support it. - Optional.
+     */
+    @GET("genre/movie/list")
+    fun getMovieGenres(
+        @Query("api_key") api_key: String,
+        @Query("language") language: String? = null
+    ): Call<List<MovieGenre>>
 }
