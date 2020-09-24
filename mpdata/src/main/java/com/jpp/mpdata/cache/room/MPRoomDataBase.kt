@@ -12,7 +12,7 @@ import androidx.room.RoomDatabase
     (DBMovie::class),
     (DBImageSize::class),
     (DBMovieDetail::class),
-    (DBMovieGenre::class),
+    (DBGenreByMovie::class),
     (DBCastCharacter::class),
     (DBCrewPerson::class)
 ], version = 1)

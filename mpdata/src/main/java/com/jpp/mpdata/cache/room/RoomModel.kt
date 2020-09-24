@@ -100,7 +100,7 @@ data class DBMovieDetail(
                 parentColumns = arrayOf("_id"),
                 childColumns = arrayOf("movie_detail_d"),
                 onDelete = ForeignKey.CASCADE))])
-data class DBMovieGenre(
+data class DBGenreByMovie(
     @PrimaryKey @ColumnInfo(name = "_id") var id: Int,
     @ColumnInfo(name = "name") var name: String,
     @ColumnInfo(name = "movie_detail_d") var movieDetailId: Double

@@ -3,7 +3,7 @@ package com.jpp.mpdata.cache
 import com.jpp.mpdata.cache.adapter.DomainRoomAdapter
 import com.jpp.mpdata.cache.adapter.RoomDomainAdapter
 import com.jpp.mpdata.cache.room.DBMovieDetail
-import com.jpp.mpdata.cache.room.DBMovieGenre
+import com.jpp.mpdata.cache.room.DBGenreByMovie
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.MovieDAO
 import com.jpp.mpdata.cache.room.MovieDetailDAO
@@ -72,7 +72,7 @@ class MovieDetailCacheTest {
     fun `Should return mapped details`() {
         val dbMovieDetailId = 17.toDouble()
         val dbMovieDetail = mockk<DBMovieDetail>()
-        val dbGenres = listOf<DBMovieGenre>(mockk(), mockk())
+        val dbGenres = listOf<DBGenreByMovie>(mockk(), mockk())
         val movieDetail = mockk<MovieDetail>()
         val now = 12L
 
