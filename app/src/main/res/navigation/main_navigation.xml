@@ -31,4 +31,8 @@
         android:id="@+id/searchActivity"
         android:name="com.jpp.mpsearch.SearchActivity"
         tools:layout="@layout/search_activity"/>
+    <fragment
+        android:id="@+id/discoverMoviesFragment"
+        android:name="com.jpp.mp.main.discover.DiscoverMoviesFragment"
+        tools:layout="@layout/fragment_discover_movies" />
 </navigation>
