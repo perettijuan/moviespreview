@@ -73,6 +73,10 @@ class MoviePageRepositoryImpl(
         moviePageDb.flushWatchlistMoviePages()
     }
 
+    override suspend fun discover(page: Int): MoviePage? {
+        return moviePageApi.discover(page)
+    }
+
     private fun getFromApi(
         page: Int,
         section: MovieSection,

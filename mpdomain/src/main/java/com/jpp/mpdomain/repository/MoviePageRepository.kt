@@ -9,7 +9,8 @@ import com.jpp.mpdomain.UserAccount
 /**
  * Repository definition to access all [MoviePage] related data.
  */
-interface MoviePageRepository {
+interface
+MoviePageRepository {
 
     /**
      * Retrieves a [MoviePage] for the provided [section] and [language].
@@ -55,4 +56,9 @@ interface MoviePageRepository {
      * Flushes out any watchlist [MoviePage] data stored locally on the device.
      */
     suspend fun flushWatchlistMoviePages()
+
+    /**
+     * TODO JPP add javadoc
+     */
+    suspend fun discover(page: Int): MoviePage?
 }
