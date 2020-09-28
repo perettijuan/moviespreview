@@ -10,5 +10,5 @@ interface MovieGenreRepository {
     /**
      * Retrieve the list of all [MovieGenre] available.
      */
-    fun getMovieGenres(): List<MovieGenre>?
+    suspend fun getMovieGenres(): List<MovieGenre>?
 }

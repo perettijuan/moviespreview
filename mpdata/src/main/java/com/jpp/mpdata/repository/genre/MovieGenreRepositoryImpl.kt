@@ -13,7 +13,7 @@ class MovieGenreRepositoryImpl(
     val db: MovieGenreDb
 ) : MovieGenreRepository {
 
-    override fun getMovieGenres(): List<MovieGenre>? {
+    override suspend fun getMovieGenres(): List<MovieGenre>? {
         return db.getMovieGenres() ?: api.getMovieGenres()?.also { genres ->
             db.saveMovieGenres(genres)
         }
