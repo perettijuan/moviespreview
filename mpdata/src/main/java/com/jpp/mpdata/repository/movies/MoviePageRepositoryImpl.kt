@@ -73,8 +73,8 @@ class MoviePageRepositoryImpl(
         moviePageDb.flushWatchlistMoviePages()
     }
 
-    override suspend fun discover(page: Int): MoviePage? {
-        return moviePageApi.discover(page)
+    override suspend fun discover(page: Int, language: SupportedLanguage): MoviePage? {
+        return moviePageApi.discover(page, language)
     }
 
     private fun getFromApi(

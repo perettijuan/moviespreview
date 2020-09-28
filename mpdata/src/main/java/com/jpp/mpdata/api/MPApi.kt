@@ -223,8 +223,8 @@ open class MPApi :
         return tryCatchOrReturnNull { API.getMovieGenres(API_KEY) }
     }
 
-    override fun discover(page: Int): MoviePage? {
-        return tryCatchOrReturnNull { API.discover(page, API_KEY) }
+    override fun discover(page: Int, language: SupportedLanguage): MoviePage? {
+        return tryCatchOrReturnNull { API.discover(page, API_KEY, language = language.id) }
     }
 
     /**

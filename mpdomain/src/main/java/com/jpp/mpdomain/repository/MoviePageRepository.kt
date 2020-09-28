@@ -60,5 +60,5 @@ MoviePageRepository {
     /**
      * TODO JPP add javadoc
      */
-    suspend fun discover(page: Int): MoviePage?
+    suspend fun discover(page: Int, language: SupportedLanguage): MoviePage?
 }

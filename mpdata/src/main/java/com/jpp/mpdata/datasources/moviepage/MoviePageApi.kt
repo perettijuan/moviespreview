@@ -51,5 +51,5 @@ interface MoviePageApi {
     /**
      * TODO JPP add javadoc
      */
-    fun discover(page: Int): MoviePage?
+    fun discover(page: Int, language: SupportedLanguage): MoviePage?
 }
