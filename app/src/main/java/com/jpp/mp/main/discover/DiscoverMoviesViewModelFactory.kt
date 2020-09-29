@@ -12,12 +12,14 @@ import javax.inject.Inject
  */
 class DiscoverMoviesViewModelFactory @Inject constructor(
     private val getDiscoveredMoviePageUseCase: GetDiscoveredMoviePageUseCase,
+    private val navigator: DiscoverMoviesNavigator,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModelAssistedFactory<DiscoverMoviesViewModel> {
 
     override fun create(handle: SavedStateHandle): DiscoverMoviesViewModel {
         return DiscoverMoviesViewModel(
             getDiscoveredMoviePageUseCase,
+            navigator,
             ioDispatcher,
             handle
         )

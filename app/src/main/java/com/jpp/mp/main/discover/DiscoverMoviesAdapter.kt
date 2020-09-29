@@ -6,11 +6,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
 import com.jpp.mp.databinding.ListItemDiscoverMovieBinding
+import com.jpp.mpdesign.adapters.MPRecyclerViewAdapter
 
 class DiscoverMoviesAdapter(private val itemSelectionListener: (DiscoveredMovieListItem) -> Unit) :
-    RecyclerView.Adapter<DiscoverMoviesAdapter.ViewHolder>() {
-
-    private val itemList = ArrayList<DiscoveredMovieListItem>()
+    MPRecyclerViewAdapter<DiscoveredMovieListItem, DiscoverMoviesAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -24,15 +23,7 @@ class DiscoverMoviesAdapter(private val itemSelectionListener: (DiscoveredMovieL
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(itemList[position], itemSelectionListener)
-    }
-
-    override fun getItemCount(): Int = itemList.size
-
-    fun updateDataList(newData: List<DiscoveredMovieListItem>) {
-        val currentLastIndex = itemList.size
-        itemList.addAll(newData)
-        notifyItemRangeChanged(currentLastIndex, itemList.size)
+        holder.bind(getItem(position), itemSelectionListener)
     }
 
     class ViewHolder(private val itemBinding: ListItemDiscoverMovieBinding) :

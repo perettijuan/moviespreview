@@ -14,6 +14,7 @@ import kotlinx.coroutines.withContext
  */
 class DiscoverMoviesViewModel(
     private val getDiscoveredMoviePageUseCase: GetDiscoveredMoviePageUseCase,
+    private val navigator: DiscoverMoviesNavigator,
     private val ioDispatcher: CoroutineDispatcher,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -50,6 +51,16 @@ class DiscoverMoviesViewModel(
         fetchMoviePage(nextPage)
     }
 
+    /**
+     * Called when an item is selected in the list of movies.
+     */
+    fun onMovieSelected(item: DiscoveredMovieListItem) {
+        navigator.navigateToMovieDetails(
+            item.movieId.toString(),
+            item.contentImageUrl,
+            item.title
+        )
+    }
 
     private fun fetchMoviePage(page: Int) {
         // page is higher (or lower) than maxPage

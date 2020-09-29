@@ -88,7 +88,8 @@ class DiscoverMoviesFragment : Fragment() {
     private fun setUpViews() {
         viewBinding?.discoverMovieList?.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = DiscoverMoviesAdapter { TODO() }
+            adapter =
+                DiscoverMoviesAdapter { itemSelected -> viewModel.onMovieSelected(itemSelected) }
             val pagingHandler = MPVerticalPagingHandler(layoutManager as LinearLayoutManager) {
                 viewModel.onNextMoviePage()
             }
@@ -99,7 +100,7 @@ class DiscoverMoviesFragment : Fragment() {
     private fun renderViewState(viewState: DiscoverMoviesViewState) {
         setScreenTitle(getString(viewState.screenTitle))
         viewBinding?.viewState = viewState
-        (viewBinding?.discoverMovieList?.adapter as DiscoverMoviesAdapter).updateDataList(viewState.contentViewState.itemList)
+        (viewBinding?.discoverMovieList?.adapter as DiscoverMoviesAdapter).submitList(viewState.contentViewState.itemList)
         viewBinding?.discoverMovieList?.layoutManager?.onRestoreInstanceState(rvState)
     }
 

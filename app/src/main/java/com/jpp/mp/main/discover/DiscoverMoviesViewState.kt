@@ -30,10 +30,7 @@ data class DiscoverMoviesViewState(
     fun showMovieList(movieList: List<DiscoveredMovieListItem>): DiscoverMoviesViewState {
         return copy(
             loadingVisibility = View.INVISIBLE,
-            contentViewState = DiscoverMoviesContentViewState(
-                visibility = View.VISIBLE,
-                itemList = movieList
-            ),
+            contentViewState = contentViewState.showItems(movieList),
             errorViewState = MPErrorView.ErrorViewState.asNotVisible()
         )
     }
