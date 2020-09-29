@@ -1,14 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:text="Discover movies"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+    <data>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <variable
+            name="viewState"
+            type="com.jpp.mp.main.discover.DiscoverMoviesViewState" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.jpp.mpdesign.views.MPErrorView
+            android:id="@+id/discoverErrorView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="@{viewState.errorViewState.visibility}"
+            app:asConnectivity="@{viewState.errorViewState.isConnectivity}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:onRetry="@{viewState.errorViewState.errorHandler}" />
+
+        <ProgressBar
+            android:id="@+id/discoverLoadingView"
+            style="@style/MPProgressBar"
+            android:visibility="@{viewState.loadingVisibility}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/discoverMovieList"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="@{viewState.contentViewState.visibility}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/list_item_movie" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
+
