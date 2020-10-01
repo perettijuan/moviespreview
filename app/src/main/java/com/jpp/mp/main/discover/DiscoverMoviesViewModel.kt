@@ -34,6 +34,9 @@ class DiscoverMoviesViewModel(
     private val _viewState = MutableLiveData<DiscoverMoviesViewState>()
     val viewState: LiveData<DiscoverMoviesViewState> = _viewState
 
+    private val _filtersViewState = MutableLiveData<DiscoverMoviesFiltersViewState>()
+    val filterViewState: LiveData<DiscoverMoviesFiltersViewState> = _filtersViewState
+
     /**
      * Called on VM initialization. The View (Fragment) calls this method to
      * indicate that the view is ready to render any view states. When the method
@@ -42,6 +45,7 @@ class DiscoverMoviesViewModel(
      */
     fun onInit() {
         _viewState.value = DiscoverMoviesViewState.showLoading()
+        _filtersViewState.value = DiscoverMoviesFiltersViewState.showLoading()
         fetchMoviePage(FIRST_PAGE)
     }
 
@@ -64,6 +68,14 @@ class DiscoverMoviesViewModel(
         )
     }
 
+    /**
+     * Called when the expand/collapse section is clicked in the filters
+     * section.
+     */
+    fun onFilterExpandClicked(isExpanded: Boolean) {
+        _filtersViewState.value = _filtersViewState.value?.copy(isExpanded = !isExpanded)
+    }
+
     private fun fetchMoviePage(page: Int) {
         // page is higher (or lower) than maxPage
         if (maxPage in 1..page) return
@@ -73,8 +85,23 @@ class DiscoverMoviesViewModel(
                 getDiscoveredMoviePageUseCase.execute(page)
             }
             when (result) {
-                is Try.Success -> processMoviePage(result.value)
+                is Try.Success -> {
+                    fetchFilters() // fetch filters only if the discover has been successful
+                    processMoviePage(result.value)
+                }
                 is Try.Failure -> processFailure(result.cause)
+            }
+        }
+    }
+
+    private fun fetchFilters() {
+        viewModelScope.launch {
+            val genresResult = withContext(ioDispatcher) {
+                gentAllMovieGenresUseCase.execute()
+            }
+
+            if (genresResult is Try.Success) {
+                _filtersViewState.value = _filtersViewState.value?.showVisible()
             }
         }
     }

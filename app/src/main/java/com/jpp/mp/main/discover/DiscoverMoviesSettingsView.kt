@@ -17,7 +17,11 @@ import com.jpp.mpdesign.anims.MPAnimationAdapter
 /**
  * TODO JPP add javadoc
  */
-internal class DiscoverSettingsView : ConstraintLayout {
+internal class DiscoverMoviesSettingsView : ConstraintLayout {
+
+    interface ActionListener {
+        fun onExpandCollapseSelected(isExpanded: Boolean)
+    }
 
     private var clickableArea: LinearLayout? = null
     private var clickableAreaIcon: ImageView? = null
@@ -29,6 +33,8 @@ internal class DiscoverSettingsView : ConstraintLayout {
     private var targetExpandedHeight = 0
     private var targetCollapsedHeight = 0
     private var isExpanded = false
+
+    var actionListener: ActionListener? = null
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -50,21 +56,21 @@ internal class DiscoverSettingsView : ConstraintLayout {
         text4 = findViewById(R.id.text4)
 
         clickableArea?.setOnClickListener {
-            updateExpanded()
+            actionListener?.onExpandCollapseSelected(isExpanded)
         }
 
         viewTreeObserver?.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 if (measuredHeight != 0) {
-                    setCollapsed()
+                    initCollapsed()
                     viewTreeObserver?.removeOnGlobalLayoutListener(this)
                 }
             }
         })
     }
 
-    private fun setCollapsed() {
+    private fun initCollapsed() {
         targetExpandedHeight = measuredHeight
 
         text1?.visibility = View.GONE
@@ -75,7 +81,19 @@ internal class DiscoverSettingsView : ConstraintLayout {
         isExpanded = false
     }
 
-    private fun animateToExpanded() {
+    fun setExpanded(expanded: Boolean) {
+        if (expanded == isExpanded) {
+            return
+        }
+
+        if (isExpanded) {
+            animateToCollapsed(expanded)
+        } else {
+            animateToExpanded(expanded)
+        }
+    }
+
+    private fun animateToExpanded(finalExpanded: Boolean) {
         targetCollapsedHeight = measuredHeight
         val currentHeight = measuredHeight
 
@@ -95,7 +113,7 @@ internal class DiscoverSettingsView : ConstraintLayout {
                     text2?.visibility = View.VISIBLE
                     text3?.visibility = View.VISIBLE
                     text4?.visibility = View.VISIBLE
-                    isExpanded = true
+                    isExpanded = finalExpanded
                 }
             })
         }.start()
@@ -104,7 +122,7 @@ internal class DiscoverSettingsView : ConstraintLayout {
 
     }
 
-    private fun animateToCollapsed() {
+    private fun animateToCollapsed(finalExpanded: Boolean) {
         targetExpandedHeight = measuredHeight
         ValueAnimator.ofInt(measuredHeight, targetCollapsedHeight).apply {
             interpolator = AccelerateInterpolator()
@@ -129,22 +147,13 @@ internal class DiscoverSettingsView : ConstraintLayout {
                 }
 
                 override fun onAnimationEnd(animation: Animator?) {
-                    isExpanded = false
+                    isExpanded = finalExpanded
                 }
             })
         }.start()
 
         clickableAreaIcon?.animate()?.rotation(0F)?.setDuration(ANIMATION_DURATION)?.start()
     }
-
-    private fun updateExpanded() {
-        if (isExpanded) {
-            animateToCollapsed()
-        } else {
-            animateToExpanded()
-        }
-    }
-
 
     private companion object {
         const val ANIMATION_DURATION = 300L

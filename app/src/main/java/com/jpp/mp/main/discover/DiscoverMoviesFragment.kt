@@ -64,6 +64,7 @@ class DiscoverMoviesFragment : Fragment() {
         rvState = savedInstanceState?.getParcelable(DISCOVER_MOVIES_RV_STATE_KEY) ?: rvState
 
         viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
+        viewModel.filterViewState.observeValue(viewLifecycleOwner, ::renderFilterViewState)
         viewModel.onInit()
     }
 
@@ -95,6 +96,12 @@ class DiscoverMoviesFragment : Fragment() {
             }
             addOnScrollListener(pagingHandler)
         }
+
+        viewBinding?.discoverFiltersView?.actionListener = object : DiscoverMoviesSettingsView.ActionListener {
+            override fun onExpandCollapseSelected(isExpanded: Boolean) {
+                viewModel.onFilterExpandClicked(isExpanded)
+            }
+        }
     }
 
     private fun renderViewState(viewState: DiscoverMoviesViewState) {
@@ -102,6 +109,10 @@ class DiscoverMoviesFragment : Fragment() {
         viewBinding?.viewState = viewState
         (viewBinding?.discoverMovieList?.adapter as DiscoverMoviesAdapter).submitList(viewState.contentViewState.itemList)
         viewBinding?.discoverMovieList?.layoutManager?.onRestoreInstanceState(rvState)
+    }
+
+    private fun renderFilterViewState(viewState: DiscoverMoviesFiltersViewState) {
+        viewBinding?.filterViewState = viewState
     }
 
     private companion object {
