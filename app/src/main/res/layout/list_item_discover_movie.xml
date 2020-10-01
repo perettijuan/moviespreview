@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="viewState"
+            type="com.jpp.mp.main.discover.DiscoveredMovieListItem" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:maxHeight="?attr/mpMovieItemMaxSize">
+
+        <com.jpp.mpdesign.views.MPImageView
+            android:id="@+id/movieItemHeaderIcon"
+            android:layout_width="?attr/mpMovieItemHeaderImageWidth"
+            android:layout_height="?attr/mpMovieItemHeaderImageHeight"
+            android:layout_margin="8dp"
+            app:circularUrl="@{viewState.headerImageUrl}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/movieItemTitle"
+            style="@style/MPTextViewTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="@{viewState.title}"
+            app:layout_constraintBottom_toBottomOf="@+id/movieItemHeaderIcon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/movieItemHeaderIcon"
+            app:layout_constraintTop_toTopOf="@+id/movieItemHeaderIcon"
+            tools:text="Title 1" />
+
+        <com.jpp.mpdesign.views.MPImageView
+            android:id="@+id/movieItemImage"
+            android:layout_width="?attr/mpMovieItemImageWidth"
+            android:layout_height="?attr/mpMovieItemImageHeight"
+            android:layout_marginTop="6dp"
+            app:imageUrl="@{viewState.contentImageUrl}"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/movieItemHeaderIcon" />
+
+        <ImageView
+            android:id="@+id/movieItemPopularityIcon"
+            android:layout_width="?attr/mpMovieItemBottomIconSize"
+            android:layout_height="?attr/mpMovieItemBottomIconSize"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/movieItemPopularityText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/movieItemPopularityText"
+            app:srcCompat="@drawable/ic_popularity" />
+
+        <TextView
+            android:id="@+id/movieItemPopularityText"
+            style="@style/MPTextViewSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@{viewState.popularity}"
+            app:layout_constraintStart_toEndOf="@+id/movieItemPopularityIcon"
+            app:layout_constraintTop_toBottomOf="@+id/movieItemImage"
+            tools:text="2019" />
+
+        <ImageView
+            android:id="@+id/movieItemVoteIcon"
+            android:layout_width="?attr/mpMovieItemBottomIconSize"
+            android:layout_height="?attr/mpMovieItemBottomIconSize"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/movieItemVoteCountText"
+            app:layout_constraintEnd_toStartOf="@+id/movieItemVoteCountText"
+            app:layout_constraintTop_toTopOf="@+id/movieItemVoteCountText"
+            app:srcCompat="@drawable/ic_thumb_up_unselected" />
+
+        <TextView
+            android:id="@+id/movieItemVoteCountText"
+            style="@style/MPTextViewSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@{viewState.voteCount}"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/movieItemImage"
+            tools:text="300111" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

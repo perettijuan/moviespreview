@@ -47,4 +47,9 @@ interface MoviePageApi {
      * @return the [MoviePage] that contains the watchlist of movies.
      */
     fun getWatchlistMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
+
+    /**
+     * TODO JPP add javadoc
+     */
+    fun discover(page: Int, language: SupportedLanguage): MoviePage?
 }

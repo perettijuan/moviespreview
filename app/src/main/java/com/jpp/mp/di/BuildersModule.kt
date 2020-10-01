@@ -1,6 +1,7 @@
 package com.jpp.mp.di
 
 import com.jpp.mp.main.MainActivity
+import com.jpp.mp.main.discover.DiscoverMoviesFragment
 import com.jpp.mp.main.header.NavigationHeaderFragment
 import com.jpp.mp.main.movies.fragments.PlayingMoviesFragment
 import com.jpp.mp.main.movies.fragments.PopularMoviesFragment
@@ -80,4 +81,8 @@ abstract class BuildersModule {
 
     @ContributesAndroidInjector
     abstract fun bindRateMovieDialogFragment(): RateMovieDialogFragment
+
+    @ContributesAndroidInjector
+    abstract fun bindDiscoverMoviesFragment(): DiscoverMoviesFragment
+
 }
