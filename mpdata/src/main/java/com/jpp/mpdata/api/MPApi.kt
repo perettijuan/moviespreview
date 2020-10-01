@@ -220,7 +220,7 @@ open class MPApi :
     }
 
     override fun getMovieGenres(): List<MovieGenre>? {
-        return tryCatchOrReturnNull { API.getMovieGenres(API_KEY) }
+        return tryCatchOrReturnNull { API.getMovieGenres(API_KEY) }?.genres
     }
 
     override fun discover(page: Int, language: SupportedLanguage): MoviePage? {

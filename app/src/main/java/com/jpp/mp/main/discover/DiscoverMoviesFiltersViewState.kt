@@ -8,7 +8,7 @@ import com.jpp.mp.R
  * discover movies feature can assume.
  */
 data class DiscoverMoviesFiltersViewState(
-    val visibility: Int = View.INVISIBLE,
+    val visibility: Int = View.GONE,
     val isExpanded: Boolean = false,
     val discoverTitle: Int = R.string.discover_movies_filters
 ) {

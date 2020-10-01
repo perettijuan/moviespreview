@@ -19,7 +19,13 @@ class MovieGenreCache(
     private val movieGenresDao = roomDatabase.movieGenresDao()
 
     override fun getMovieGenres(): List<MovieGenre>? {
-        return movieGenresDao.getMovieGenres(timestamp.now())?.let { dbGenres ->
+        val genresInDb = movieGenresDao.getMovieGenres(timestamp.now())
+
+        if (genresInDb == null || genresInDb.isEmpty()) {
+            return null
+        }
+
+        return genresInDb.let { dbGenres ->
             dbGenres.map { genre -> toDomain.movieGenre(genre) }
         }
     }

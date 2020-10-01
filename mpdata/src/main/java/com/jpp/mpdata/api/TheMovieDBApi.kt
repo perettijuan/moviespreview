@@ -286,7 +286,7 @@ internal interface TheMovieDBApi {
     fun getMovieGenres(
         @Query("api_key") api_key: String,
         @Query("language") language: String? = null
-    ): Call<List<MovieGenre>>
+    ): Call<MovieGenresResponse>
 
     /**
      * TODO JPP add javadoc
