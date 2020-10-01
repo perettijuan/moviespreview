@@ -5,6 +5,7 @@ import com.jpp.mpdata.BuildConfig
 import com.jpp.mpdata.datasources.account.AccountApi
 import com.jpp.mpdata.datasources.configuration.ConfigurationApi
 import com.jpp.mpdata.datasources.credits.CreditsApi
+import com.jpp.mpdata.datasources.genre.MovieGenreApi
 import com.jpp.mpdata.datasources.moviedetail.MovieDetailApi
 import com.jpp.mpdata.datasources.moviepage.MoviePageApi
 import com.jpp.mpdata.datasources.moviestate.MovieStateApi
@@ -12,18 +13,7 @@ import com.jpp.mpdata.datasources.person.PersonApi
 import com.jpp.mpdata.datasources.search.SearchApi
 import com.jpp.mpdata.datasources.session.SessionApi
 import com.jpp.mpdata.datasources.tokens.AccessTokenApi
-import com.jpp.mpdomain.AccessToken
-import com.jpp.mpdomain.AppConfiguration
-import com.jpp.mpdomain.Credits
-import com.jpp.mpdomain.MovieDetail
-import com.jpp.mpdomain.MoviePage
-import com.jpp.mpdomain.MovieState
-import com.jpp.mpdomain.MovieStateRate
-import com.jpp.mpdomain.Person
-import com.jpp.mpdomain.SearchPage
-import com.jpp.mpdomain.Session
-import com.jpp.mpdomain.SupportedLanguage
-import com.jpp.mpdomain.UserAccount
+import com.jpp.mpdomain.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -35,16 +25,17 @@ import retrofit2.converter.gson.GsonConverterFactory
  * It is a wrapper around Retrofit classes to provide a clean access to the API.
  */
 open class MPApi :
-        ConfigurationApi,
-        MoviePageApi,
+    ConfigurationApi,
+    MoviePageApi,
     SearchApi,
     PersonApi,
     CreditsApi,
-        SessionApi,
-        AccountApi,
-        AccessTokenApi,
-        MovieDetailApi,
-        MovieStateApi {
+    SessionApi,
+    AccountApi,
+    AccessTokenApi,
+    MovieDetailApi,
+    MovieStateApi,
+    MovieGenreApi {
 
     override fun getAppConfiguration(): AppConfiguration? {
         return tryCatchOrReturnNull { API.getAppConfiguration(API_KEY) }
@@ -87,50 +78,71 @@ open class MPApi :
     }
 
     override fun createSession(accessToken: AccessToken): Session? {
-        return tryCatchOrReturnNull { API.createSession(API_KEY, RequestTokenBody(accessToken.request_token)) }
+        return tryCatchOrReturnNull {
+            API.createSession(
+                API_KEY,
+                RequestTokenBody(accessToken.request_token)
+            )
+        }
     }
 
     override fun getUserAccountInfo(session: Session): UserAccount? {
         return tryCatchOrReturnNull { API.getUserAccount(session.session_id, API_KEY) }
     }
 
-    override fun updateFavoriteMovieState(movieId: Double, asFavorite: Boolean, userAccount: UserAccount, session: Session): Boolean? {
+    override fun updateFavoriteMovieState(
+        movieId: Double,
+        asFavorite: Boolean,
+        userAccount: UserAccount,
+        session: Session
+    ): Boolean? {
         return API.markMediaAsFavorite(
-                accountId = userAccount.id,
-                sessionId = session.session_id,
-                api_key = API_KEY,
-                body = FavoriteMediaBody(
-                        media_type = "movie",
-                        favorite = asFavorite,
-                        media_id = movieId)
+            accountId = userAccount.id,
+            sessionId = session.session_id,
+            api_key = API_KEY,
+            body = FavoriteMediaBody(
+                media_type = "movie",
+                favorite = asFavorite,
+                media_id = movieId
+            )
         ).let {
             it.execute().body()?.let { true }
         }
     }
 
-    override fun updateWatchlistMovieState(movieId: Double, inWatchList: Boolean, userAccount: UserAccount, session: Session): Boolean? {
+    override fun updateWatchlistMovieState(
+        movieId: Double,
+        inWatchList: Boolean,
+        userAccount: UserAccount,
+        session: Session
+    ): Boolean? {
         return API.addMediaToWatchlist(
-                accountId = userAccount.id,
-                sessionId = session.session_id,
-                api_key = API_KEY,
-                body = WatchlistMediaBody(
-                        media_type = "movie",
-                        media_id = movieId,
-                        watchlist = inWatchList
-                )
+            accountId = userAccount.id,
+            sessionId = session.session_id,
+            api_key = API_KEY,
+            body = WatchlistMediaBody(
+                media_type = "movie",
+                media_id = movieId,
+                watchlist = inWatchList
+            )
         ).let {
             it.execute().body()?.let { true }
         }
     }
 
-    override fun rateMovie(movieId: Double, rating: Float, userAccount: UserAccount, session: Session): Boolean? {
+    override fun rateMovie(
+        movieId: Double,
+        rating: Float,
+        userAccount: UserAccount,
+        session: Session
+    ): Boolean? {
         return API.rateMovie(
-                movieId = movieId,
-                sessionId = session.session_id,
-                api_key = API_KEY,
-                body = RateMovieBody(
-                        value = rating
-                )
+            movieId = movieId,
+            sessionId = session.session_id,
+            api_key = API_KEY,
+            body = RateMovieBody(
+                value = rating
+            )
         ).let {
             it.execute().body()?.let { true }
         }
@@ -138,28 +150,77 @@ open class MPApi :
 
     override fun deleteMovieRating(movieId: Double, session: Session): Boolean? {
         return API.deleteMovieRating(
-                movieId = movieId,
-                sessionId = session.session_id,
-                api_key = API_KEY
+            movieId = movieId,
+            sessionId = session.session_id,
+            api_key = API_KEY
         ).let {
             it.execute().body()?.let { true }
         }
     }
 
     override fun getMovieAccountState(movieId: Double, session: Session): MovieState? {
-        return tryCatchOrReturnNull { API.getMovieAccountState(movieId, session.session_id, API_KEY) }
+        return tryCatchOrReturnNull {
+            API.getMovieAccountState(
+                movieId,
+                session.session_id,
+                API_KEY
+            )
+        }
     }
 
-    override fun getFavoriteMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
-        return tryCatchOrReturnNull { API.getFavoriteMoviesPage(userAccount.id, page, session.session_id, API_KEY, language.id) }
+    override fun getFavoriteMoviePage(
+        page: Int,
+        userAccount: UserAccount,
+        session: Session,
+        language: SupportedLanguage
+    ): MoviePage? {
+        return tryCatchOrReturnNull {
+            API.getFavoriteMoviesPage(
+                userAccount.id,
+                page,
+                session.session_id,
+                API_KEY,
+                language.id
+            )
+        }
     }
 
-    override fun getRatedMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
-        return tryCatchOrReturnNull { API.getRatedMoviesPage(userAccount.id, page, session.session_id, API_KEY, language.id) }
+    override fun getRatedMoviePage(
+        page: Int,
+        userAccount: UserAccount,
+        session: Session,
+        language: SupportedLanguage
+    ): MoviePage? {
+        return tryCatchOrReturnNull {
+            API.getRatedMoviesPage(
+                userAccount.id,
+                page,
+                session.session_id,
+                API_KEY,
+                language.id
+            )
+        }
     }
 
-    override fun getWatchlistMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
-        return tryCatchOrReturnNull { API.getWatchlistMoviesPage(userAccount.id, page, session.session_id, API_KEY, language.id) }
+    override fun getWatchlistMoviePage(
+        page: Int,
+        userAccount: UserAccount,
+        session: Session,
+        language: SupportedLanguage
+    ): MoviePage? {
+        return tryCatchOrReturnNull {
+            API.getWatchlistMoviesPage(
+                userAccount.id,
+                page,
+                session.session_id,
+                API_KEY,
+                language.id
+            )
+        }
+    }
+
+    override fun getMovieGenres(): List<MovieGenre>? {
+        return tryCatchOrReturnNull { API.getMovieGenres(API_KEY) }
     }
 
     /**
@@ -178,15 +239,15 @@ open class MPApi :
         const val API_KEY = BuildConfig.API_KEY
         val API: TheMovieDBApi by lazy {
             val gson = GsonBuilder()
-                    .registerTypeAdapter(MovieStateRate::class.java, MovieStateRateJsonDeserializer())
-                    .create()
+                .registerTypeAdapter(MovieStateRate::class.java, MovieStateRateJsonDeserializer())
+                .create()
 
             Retrofit.Builder()
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .baseUrl(BuildConfig.API_ENDPOINT)
-                    .client(buildHttpClient())
-                    .build()
-                    .create(TheMovieDBApi::class.java)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .baseUrl(BuildConfig.API_ENDPOINT)
+                .client(buildHttpClient())
+                .build()
+                .create(TheMovieDBApi::class.java)
         }
 
         private fun buildHttpClient(): OkHttpClient {
