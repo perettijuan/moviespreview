@@ -3,6 +3,7 @@ package com.jpp.mp.main.discover
 import androidx.lifecycle.*
 import com.jpp.mpdomain.Movie
 import com.jpp.mpdomain.MoviePage
+import com.jpp.mpdomain.usecase.GetAllMovieGenresUseCase
 import com.jpp.mpdomain.usecase.GetDiscoveredMoviePageUseCase
 import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
@@ -14,6 +15,7 @@ import kotlinx.coroutines.withContext
  */
 class DiscoverMoviesViewModel(
     private val getDiscoveredMoviePageUseCase: GetDiscoveredMoviePageUseCase,
+    private val gentAllMovieGenresUseCase: GetAllMovieGenresUseCase,
     private val navigator: DiscoverMoviesNavigator,
     private val ioDispatcher: CoroutineDispatcher,
     private val savedStateHandle: SavedStateHandle

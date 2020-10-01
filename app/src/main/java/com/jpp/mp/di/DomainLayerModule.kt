@@ -1,18 +1,6 @@
 package com.jpp.mp.di
 
-import com.jpp.mpdomain.repository.AccessTokenRepository
-import com.jpp.mpdomain.repository.AccountRepository
-import com.jpp.mpdomain.repository.ConfigurationRepository
-import com.jpp.mpdomain.repository.ConnectivityRepository
-import com.jpp.mpdomain.repository.CreditsRepository
-import com.jpp.mpdomain.repository.LanguageRepository
-import com.jpp.mpdomain.repository.LicensesRepository
-import com.jpp.mpdomain.repository.MovieDetailRepository
-import com.jpp.mpdomain.repository.MoviePageRepository
-import com.jpp.mpdomain.repository.MovieStateRepository
-import com.jpp.mpdomain.repository.PersonRepository
-import com.jpp.mpdomain.repository.SearchRepository
-import com.jpp.mpdomain.repository.SessionRepository
+import com.jpp.mpdomain.repository.*
 import com.jpp.mpdomain.usecase.*
 import dagger.Module
 import dagger.Provides
@@ -224,4 +212,11 @@ class DomainLayerModule {
         connectivityRepository,
         languageRepository
     )
+
+    @Provides
+    fun providesGetAllMovieGenresUseCase(
+        movieGenreRepository: MovieGenreRepository,
+        connectivityRepository: ConnectivityRepository
+    ): GetAllMovieGenresUseCase =
+        GetAllMovieGenresUseCase(movieGenreRepository, connectivityRepository)
 }
