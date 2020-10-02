@@ -1,6 +1,7 @@
 package com.jpp.mpdomain.usecase
 
 import com.jpp.mpdomain.Connectivity
+import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.repository.ConfigurationRepository
 import com.jpp.mpdomain.repository.ConnectivityRepository
@@ -19,13 +20,14 @@ class GetDiscoveredMoviePageUseCase(
     private val languageRepository: LanguageRepository
 ) {
 
-    suspend fun execute(page: Int): Try<MoviePage> {
+    suspend fun execute(page: Int, genres: List<MovieGenre>? = null): Try<MoviePage> {
         return when (connectivityRepository.getCurrentConnectivity()) {
             is Connectivity.Disconnected -> Try.Failure(Try.FailureCause.NoConnectivity)
             is Connectivity.Connected ->
                 moviePageRepository.discover(
-                    page,
-                    languageRepository.getCurrentAppLanguage()
+                    page = page,
+                    genreIds = genres?.map { movieGenre -> movieGenre.id },
+                    language = languageRepository.getCurrentAppLanguage()
                 )?.let { moviePage ->
                     Try.Success(
                         moviePage.copy(
@@ -35,6 +37,7 @@ class GetDiscoveredMoviePageUseCase(
                         )
                     )
                 } ?: Try.Failure(Try.FailureCause.Unknown)
+
         }
     }
 }

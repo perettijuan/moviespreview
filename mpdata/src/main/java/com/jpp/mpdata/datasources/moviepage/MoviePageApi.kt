@@ -49,7 +49,8 @@ interface MoviePageApi {
     fun getWatchlistMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
 
     /**
-     * TODO JPP add javadoc
+     * @return a [MoviePage] from the discover endpoint filtered by the provided filters.
+     * Null if no data is available.
      */
-    fun discover(page: Int, language: SupportedLanguage): MoviePage?
+    fun discover(page: Int, genreIds: List<Int>? = null, language: SupportedLanguage): MoviePage?
 }

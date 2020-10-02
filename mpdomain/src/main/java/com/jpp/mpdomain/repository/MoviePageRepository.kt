@@ -58,7 +58,7 @@ MoviePageRepository {
     suspend fun flushWatchlistMoviePages()
 
     /**
-     * TODO JPP add javadoc
+     * Retrieves a [MoviePage] with the movies obtained from the discover section.
      */
-    suspend fun discover(page: Int, language: SupportedLanguage): MoviePage?
+    suspend fun discover(page: Int, genreIds: List<Int>? = null, language: SupportedLanguage): MoviePage?
 }

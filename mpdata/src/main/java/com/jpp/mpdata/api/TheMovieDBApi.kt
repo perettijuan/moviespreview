@@ -289,18 +289,19 @@ internal interface TheMovieDBApi {
     ): Call<MovieGenresResponse>
 
     /**
-     * TODO JPP add javadoc
-     * Retrieves the list of movies currently playing in theaters.
+     * Retrieves a page of movies discovered using the provide filters.
      * [page] the current page to retrieve.
      * [api_key] the api key provided by themoviedb.
      * [language] Pass a ISO 639-1 value to display translated data for the fields that support it. - Optional.
      * [region] Specify a ISO 3166-1 code to filter release dates. Must be uppercase. - Optional.
+     * [genres] The list of movie genre identifiers to filter the results.
      */
     @GET("discover/movie")
     fun discover(
         @Query("page") page: Int,
         @Query("api_key") api_key: String,
         @Query("language") language: String? = null,
-        @Query("region") region: String? = null
+        @Query("region") region: String? = null,
+        @Query("with_genres") genres: List<Int>? = null
     ): Call<MoviePage>
 }
