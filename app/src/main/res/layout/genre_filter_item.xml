@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -11,36 +12,39 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="6dp">
+        android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/genreFilterChkBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:clickable="false"
+            android:checked="@{viewState.isSelected}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.jpp.mpdesign.views.MPImageView
-            android:id="@+id/genreFilterImageView"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            app:imageRes="@{viewState.uiGenre.icon}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/genreFilterChkBox"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/genreFilterTextView"
             style="@style/MPTextViewSmall"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:gravity="start"
             android:text="@{viewState.uiGenre.nameRes}"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/genreFilterImageView"
+            app:layout_constraintStart_toEndOf="@+id/genreFilterChkBox"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Genre name"/>
+
+        <com.jpp.mpdesign.views.MPImageView
+            android:id="@+id/genreFilterImageView"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:imageRes="@{viewState.uiGenre.icon}"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/genreFilterImageView"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

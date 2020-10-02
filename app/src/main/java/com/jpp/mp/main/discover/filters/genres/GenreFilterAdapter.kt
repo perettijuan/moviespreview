@@ -6,9 +6,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
 import com.jpp.mp.databinding.GenreFilterItemBinding
-import com.jpp.mpdesign.adapters.MPRecyclerViewAdapter
 
-class GenreFilterAdapter : MPRecyclerViewAdapter<GenreFilterItem, GenreFilterAdapter.ViewHolder>() {
+class GenreFilterAdapter(private val itemSelectionListener: (GenreFilterItem) -> Unit) :
+    RecyclerView.Adapter<GenreFilterAdapter.ViewHolder>() {
+
+    private var itemList = mutableListOf<GenreFilterItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -22,13 +24,37 @@ class GenreFilterAdapter : MPRecyclerViewAdapter<GenreFilterItem, GenreFilterAda
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(itemList[position], itemSelectionListener)
     }
 
-    class ViewHolder(private val itemBinding: GenreFilterItemBinding) :
+    override fun getItemCount(): Int = itemList.size
+
+    fun submitList(list: List<GenreFilterItem>) {
+        if (list.isEmpty()) {
+            return
+        }
+
+        if (list.size != itemList.size) {
+            itemList = list.toMutableList()
+            notifyDataSetChanged()
+            return
+        }
+
+        for (i in list.indices) {
+            if (list[i] != itemList[i]) {
+                itemList[i] = list[i]
+                notifyItemChanged(i)
+            }
+        }
+    }
+
+    class ViewHolder(
+        private val itemBinding: GenreFilterItemBinding
+    ) :
         RecyclerView.ViewHolder(itemBinding.root) {
-        fun bind(item: GenreFilterItem) {
+        fun bind(item: GenreFilterItem, itemSelectionListener: (GenreFilterItem) -> Unit) {
             itemBinding.viewState = item
+            itemView.setOnClickListener { itemSelectionListener(item) }
         }
     }
 }

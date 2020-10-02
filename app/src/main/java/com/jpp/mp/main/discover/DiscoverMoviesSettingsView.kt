@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AccelerateInterpolator
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -26,12 +27,14 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
 
     interface ActionListener {
         fun onExpandCollapseSelected(isExpanded: Boolean)
+        fun onGenreFilterItemSelected(genreFilterItem: GenreFilterItem)
     }
 
     private var clickableArea: LinearLayout? = null
     private var clickableAreaIcon: ImageView? = null
     private var genreFilterTitle: TextView? = null
     private var genreFilerList: RecyclerView? = null
+    private var applyButton: Button? = null
 
 
     private var targetExpandedHeight = 0
@@ -56,10 +59,13 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
         clickableAreaIcon = findViewById(R.id.clickableAreaIcon)
         genreFilterTitle = findViewById(R.id.genreFilterTitleTextView)
         genreFilerList = findViewById(R.id.genreFilterRecyclerView)
+        applyButton = findViewById(R.id.applyFiltersButton)
 
         genreFilerList?.apply {
             layoutManager = GridLayoutManager(context, 2)
-            adapter = GenreFilterAdapter()
+            adapter = GenreFilterAdapter { item ->
+                actionListener?.onGenreFilterItemSelected(item)
+            }
         }
 
 
@@ -83,6 +89,7 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
 
         genreFilterTitle?.visibility = View.GONE
         genreFilerList?.visibility = View.GONE
+        applyButton?.visibility = View.GONE
 
         isExpanded = false
     }
@@ -125,6 +132,7 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
                 override fun onAnimationEnd(animation: Animator?) {
                     genreFilterTitle?.visibility = View.VISIBLE
                     genreFilerList?.visibility = View.VISIBLE
+                    applyButton?.visibility = View.VISIBLE
                     isExpanded = finalExpanded
                 }
             })
@@ -154,6 +162,7 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
                 override fun onAnimationStart(animation: Animator?) {
                     genreFilterTitle?.visibility = View.GONE
                     genreFilerList?.visibility = View.GONE
+                    applyButton?.visibility = View.GONE
                 }
 
                 override fun onAnimationEnd(animation: Animator?) {

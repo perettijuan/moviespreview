@@ -16,6 +16,7 @@ import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.paging.MPVerticalPagingHandler
 import com.jpp.mp.common.viewmodel.MPGenericSavedStateViewModelFactory
 import com.jpp.mp.databinding.FragmentDiscoverMoviesBinding
+import com.jpp.mp.main.discover.filters.genres.GenreFilterItem
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
@@ -100,6 +101,10 @@ class DiscoverMoviesFragment : Fragment() {
         viewBinding?.discoverFiltersView?.actionListener = object : DiscoverMoviesSettingsView.ActionListener {
             override fun onExpandCollapseSelected(isExpanded: Boolean) {
                 viewModel.onFilterExpandClicked(isExpanded)
+            }
+
+            override fun onGenreFilterItemSelected(genreFilterItem: GenreFilterItem) {
+                viewModel.onGenreFilterItemSelected(genreFilterItem)
             }
         }
     }

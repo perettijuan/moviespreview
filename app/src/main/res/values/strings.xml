@@ -18,5 +18,6 @@
     <!-- Discover section -->
     <string name="discover_movies_filters">Filters</string>
     <string name="discover_movies_genres_filter_title">Genre</string>
+    <string name="discover_movies_apply_filters">Apply</string>
     <!-- Discover section -->
 </resources>

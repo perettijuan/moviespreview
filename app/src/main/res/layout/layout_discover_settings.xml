@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="12dp"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
     <LinearLayout
@@ -12,6 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -37,7 +37,9 @@
         style="@style/MPTextViewNormal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="12dp"
         app:layout_constraintTop_toBottomOf="@+id/clickableArea"
         tools:text="Genre" />
 
@@ -46,12 +48,21 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/genreFilterTitleTextView"
         app:layout_constraintStart_toStartOf="@+id/genreFilterTitleTextView"
         app:layout_constraintTop_toBottomOf="@+id/genreFilterTitleTextView"
         app:spanCount="2"
         tools:itemCount="10"
         tools:listitem="@layout/genre_filter_item" />
+
+    <Button
+        android:id="@+id/applyFiltersButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/discover_movies_apply_filters"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/genreFilterRecyclerView" />
 
     <View
         android:layout_width="0dp"

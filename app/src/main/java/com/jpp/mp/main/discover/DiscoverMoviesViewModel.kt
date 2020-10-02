@@ -79,6 +79,13 @@ class DiscoverMoviesViewModel(
         _filtersViewState.value = _filtersViewState.value?.copy(isExpanded = !isExpanded)
     }
 
+    /**
+     * Called when an item has been selected in the list of [GenreFilterItem].
+     */
+    fun onGenreFilterItemSelected(genreFilterItem: GenreFilterItem) {
+        _filtersViewState.value = filterViewState.value?.updateSelectedState(genreFilterItem)
+    }
+
     private fun fetchMoviePage(page: Int) {
         // page is higher (or lower) than maxPage
         if (maxPage in 1..page) return
