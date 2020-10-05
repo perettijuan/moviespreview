@@ -106,6 +106,10 @@ class DiscoverMoviesFragment : Fragment() {
             override fun onGenreFilterItemSelected(genreFilterItem: GenreFilterItem) {
                 viewModel.onGenreFilterItemSelected(genreFilterItem)
             }
+
+            override fun onApplyFilterSelected() {
+                viewModel.onApplyFiltersSelected()
+            }
         }
     }
 

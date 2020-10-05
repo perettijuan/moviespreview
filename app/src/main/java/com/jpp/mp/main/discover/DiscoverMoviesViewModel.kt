@@ -83,20 +83,35 @@ class DiscoverMoviesViewModel(
      * Called when an item has been selected in the list of [GenreFilterItem].
      */
     fun onGenreFilterItemSelected(genreFilterItem: GenreFilterItem) {
-        _filtersViewState.value = filterViewState.value?.updateSelectedState(genreFilterItem)
+        _filtersViewState.value = _filtersViewState.value?.updateSelectedState(genreFilterItem)
     }
 
-    private fun fetchMoviePage(page: Int) {
+    /**
+     * Called when the selected filters are applied.
+     */
+    fun onApplyFiltersSelected() {
+        _filtersViewState.value = _filtersViewState.value?.updateToLoading()
+
+        //reset state
+        _viewState.value = DiscoverMoviesViewState.showLoading()
+        currentPage = FIRST_PAGE
+
+        val genreList =
+            _filtersViewState.value?.genreList?.map { uiGenre -> uiGenre.mapToMovieGenre() }
+        fetchMoviePage(currentPage, genreList)
+    }
+
+    private fun fetchMoviePage(page: Int, genreList: List<MovieGenre>? = null) {
         // page is higher (or lower) than maxPage
         if (maxPage in 1..page) return
 
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {
-                getDiscoveredMoviePageUseCase.execute(page)
+                getDiscoveredMoviePageUseCase.execute(page, genreList)
             }
             when (result) {
                 is Try.Success -> {
-                    fetchFilters() // fetch filters only if the discover has been successful
+                    fetchFiltersIfNeeded() // fetch filters only if the discover has been successful
                     processMoviePage(result.value)
                 }
                 is Try.Failure -> processFailure(result.cause)
@@ -104,7 +119,13 @@ class DiscoverMoviesViewModel(
         }
     }
 
-    private fun fetchFilters() {
+    private fun fetchFiltersIfNeeded() {
+        if (_filtersViewState.value?.genreList?.isNotEmpty() == true) {
+            // avoid fetching filters if they are already present
+            _filtersViewState.value = _filtersViewState.value?.refreshAfterLoading()
+            return
+        }
+
         viewModelScope.launch {
             val genresResult = withContext(ioDispatcher) {
                 gentAllMovieGenresUseCase.execute()
@@ -168,6 +189,10 @@ class DiscoverMoviesViewModel(
             MovieGenre.WESTERN_GENRE_ID -> MovieGenreItem.Western
             else -> MovieGenreItem.Generic
         }.let { uiGenre -> GenreFilterItem(id, uiGenre, isSelected = false) }
+    }
+
+    private fun GenreFilterItem.mapToMovieGenre(): MovieGenre {
+        return MovieGenre(genreId, uiGenre.name)
     }
 
     private companion object {

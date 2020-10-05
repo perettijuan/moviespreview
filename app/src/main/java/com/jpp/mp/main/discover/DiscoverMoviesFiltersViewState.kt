@@ -29,6 +29,10 @@ data class DiscoverMoviesFiltersViewState(
         return copy(genreList = newList)
     }
 
+    fun updateToLoading(): DiscoverMoviesFiltersViewState = copy(visibility = View.INVISIBLE)
+    fun refreshAfterLoading(): DiscoverMoviesFiltersViewState =
+        copy(visibility = View.VISIBLE, isExpanded = false)
+
     companion object {
         fun showLoading(): DiscoverMoviesFiltersViewState = DiscoverMoviesFiltersViewState()
     }

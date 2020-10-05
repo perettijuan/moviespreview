@@ -28,6 +28,7 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
     interface ActionListener {
         fun onExpandCollapseSelected(isExpanded: Boolean)
         fun onGenreFilterItemSelected(genreFilterItem: GenreFilterItem)
+        fun onApplyFilterSelected()
     }
 
     private var clickableArea: LinearLayout? = null
@@ -71,6 +72,10 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
 
         clickableArea?.setOnClickListener {
             actionListener?.onExpandCollapseSelected(isExpanded)
+        }
+
+        applyButton?.setOnClickListener {
+            actionListener?.onApplyFilterSelected()
         }
 
         viewTreeObserver?.addOnGlobalLayoutListener(object :
@@ -149,7 +154,7 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
             duration = ANIMATION_DURATION
             addUpdateListener { animation ->
                 val calculated =
-                    layoutParams.height - (targetCollapsedHeight * animation.animatedFraction).toInt()
+                    targetExpandedHeight - (targetExpandedHeight * animation.animatedFraction).toInt()
                 if (calculated >= targetCollapsedHeight) {
                     layoutParams.height = calculated
                     layoutParams = layoutParams
