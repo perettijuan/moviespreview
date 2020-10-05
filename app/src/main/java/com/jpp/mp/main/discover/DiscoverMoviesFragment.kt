@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jpp.mp.R
+import com.jpp.mp.common.extensions.observeHandledEvent
 import com.jpp.mp.common.extensions.observeValue
 import com.jpp.mp.common.extensions.setScreenTitle
 import com.jpp.mp.common.paging.MPVerticalPagingHandler
@@ -20,6 +21,8 @@ import com.jpp.mp.main.discover.filters.genres.GenreFilterItem
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
+ *  handle rotation - horizontal layout
+ *  add clear all
 class DiscoverMoviesFragment : Fragment() {
 
     @Inject
@@ -66,6 +69,7 @@ class DiscoverMoviesFragment : Fragment() {
 
         viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
         viewModel.filterViewState.observeValue(viewLifecycleOwner, ::renderFilterViewState)
+        viewModel.events.observeHandledEvent(viewLifecycleOwner, ::handleEvent)
         viewModel.onInit()
     }
 
@@ -122,6 +126,10 @@ class DiscoverMoviesFragment : Fragment() {
 
     private fun renderFilterViewState(viewState: DiscoverMoviesFiltersViewState) {
         viewBinding?.filterViewState = viewState
+    }
+
+    private fun handleEvent(event: DiscoverMovieClearResultsEvent) {
+        (viewBinding?.discoverMovieList?.adapter as DiscoverMoviesAdapter).clearList()
     }
 
     private companion object {

@@ -24,14 +24,14 @@ data class DiscoverMoviesFiltersViewState(
         val index = genreList.indexOf(item)
         val newList = genreList.toMutableList()
         if (index != -1) {
-            newList[index] = item.copy(isSelected = true)
+            newList[index] = item.copy(isSelected = !item.isSelected)
         }
         return copy(genreList = newList)
     }
 
-    fun updateToLoading(): DiscoverMoviesFiltersViewState = copy(visibility = View.INVISIBLE)
+    fun updateToLoading(): DiscoverMoviesFiltersViewState = copy(visibility = View.INVISIBLE, isExpanded = false)
     fun refreshAfterLoading(): DiscoverMoviesFiltersViewState =
-        copy(visibility = View.VISIBLE, isExpanded = false)
+        copy(visibility = View.VISIBLE)
 
     companion object {
         fun showLoading(): DiscoverMoviesFiltersViewState = DiscoverMoviesFiltersViewState()

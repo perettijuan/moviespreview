@@ -1,6 +1,8 @@
 package com.jpp.mp.main.discover
 
 import androidx.lifecycle.*
+import com.jpp.mp.common.livedata.HandledEvent
+import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mp.main.discover.filters.genres.GenreFilterItem
 import com.jpp.mpdesign.mapped.MovieGenreItem
 import com.jpp.mpdomain.Movie
@@ -39,6 +41,9 @@ class DiscoverMoviesViewModel(
 
     private val _filtersViewState = MutableLiveData<DiscoverMoviesFiltersViewState>()
     val filterViewState: LiveData<DiscoverMoviesFiltersViewState> = _filtersViewState
+
+    private val _events = MutableLiveData<HandledEvent<DiscoverMovieClearResultsEvent>>()
+    val events: LiveData<HandledEvent<DiscoverMovieClearResultsEvent>> = _events
 
     /**
      * Called on VM initialization. The View (Fragment) calls this method to
@@ -93,17 +98,22 @@ class DiscoverMoviesViewModel(
         _filtersViewState.value = _filtersViewState.value?.updateToLoading()
 
         //reset state
+        _events.value = of(DiscoverMovieClearResultsEvent)
         _viewState.value = DiscoverMoviesViewState.showLoading()
         currentPage = FIRST_PAGE
 
-        val genreList =
-            _filtersViewState.value?.genreList?.map { uiGenre -> uiGenre.mapToMovieGenre() }
-        fetchMoviePage(currentPage, genreList)
+
+        fetchMoviePage(currentPage)
     }
 
-    private fun fetchMoviePage(page: Int, genreList: List<MovieGenre>? = null) {
+    private fun fetchMoviePage(page: Int) {
         // page is higher (or lower) than maxPage
         if (maxPage in 1..page) return
+
+        val genreList =
+            _filtersViewState.value?.genreList
+                ?.filter { uiGenre -> uiGenre.isSelected }
+                ?.map { uiGenre -> uiGenre.mapToMovieGenre() }
 
         viewModelScope.launch {
             val result = withContext(ioDispatcher) {

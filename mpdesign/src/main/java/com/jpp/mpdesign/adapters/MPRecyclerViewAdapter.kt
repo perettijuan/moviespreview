@@ -20,5 +20,11 @@ abstract class MPRecyclerViewAdapter<T, RV : RecyclerView.ViewHolder> :
         notifyItemRangeChanged(currentLastIndex, itemList.size)
     }
 
+    fun clearList() {
+        val currentLastIndex = itemList.size
+        itemList.clear()
+        notifyItemRangeRemoved(0, currentLastIndex)
+    }
+
     fun getItem(position: Int): T = itemList[position]
 }
