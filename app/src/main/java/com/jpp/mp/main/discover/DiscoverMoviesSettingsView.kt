@@ -119,6 +119,10 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
         (genreFilerList?.adapter as GenreFilterAdapter).submitList(genreList)
     }
 
+    fun isApplyEnabled(enabled: Boolean) {
+        applyButton?.isEnabled = enabled
+    }
+
     private fun animateToExpanded(finalExpanded: Boolean) {
         targetCollapsedHeight = measuredHeight
         val currentHeight = measuredHeight
