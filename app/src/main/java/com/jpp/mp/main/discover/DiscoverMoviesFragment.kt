@@ -21,7 +21,6 @@ import com.jpp.mp.main.discover.filters.genres.GenreFilterItem
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
- *  selector for apply button
 class DiscoverMoviesFragment : Fragment() {
 
     @Inject
