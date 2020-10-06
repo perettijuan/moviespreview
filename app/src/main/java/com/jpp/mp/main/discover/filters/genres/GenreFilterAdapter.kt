@@ -7,6 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
 import com.jpp.mp.databinding.GenreFilterItemBinding
 
+/**
+ * [RecyclerView.Adapter] to show the list of movie genres the user can use to filter
+ * discovered movies.
+ */
 class GenreFilterAdapter(private val itemSelectionListener: (GenreFilterItem) -> Unit) :
     RecyclerView.Adapter<GenreFilterAdapter.ViewHolder>() {
 
