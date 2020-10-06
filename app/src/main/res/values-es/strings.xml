@@ -13,4 +13,10 @@
     <string name="nav_header_to_account">Cuenta >></string>
     <!-- End Nav Header -->
 
+    <!-- Discover section -->
+    <string name="discover_movies_filters">Filtros</string>
+    <string name="discover_movies_genres_filter_title">Género</string>
+    <string name="discover_movies_apply_filters">Aplicar</string>
+    <!-- Discover section -->
+
 </resources>
