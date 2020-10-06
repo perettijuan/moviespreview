@@ -1,12 +1,13 @@
-package com.jpp.mpmoviedetails
+package com.jpp.mpdesign.mapped
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import com.jpp.mpdesign.R
 
 /**
  * Represents an item in the list of genres that a movie can belong to.
  */
-internal enum class MovieGenreItem(@DrawableRes val icon: Int, @StringRes val nameRes: Int) {
+enum class MovieGenreItem(@DrawableRes val icon: Int, @StringRes val nameRes: Int) {
     Action(R.drawable.ic_action, R.string.action_genre),
     Adventure(R.drawable.ic_adventure, R.string.adventure_genre),
     Animation(R.drawable.ic_animation, R.string.animation_genre),

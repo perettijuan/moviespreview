@@ -2,14 +2,12 @@ package com.jpp.mp
 
 import android.app.Activity
 import android.app.Application
-import com.crashlytics.android.Crashlytics
 import com.jpp.mp.di.AppModule
 import com.jpp.mp.di.DaggerAppComponent
 import com.squareup.leakcanary.LeakCanary
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
-import io.fabric.sdk.android.Fabric
 import javax.inject.Inject
 
 /**
@@ -28,8 +26,6 @@ open class MPApp : Application(), HasActivityInjector {
             .appModule(AppModule(this))
             .build()
             .inject(this)
-
-        Fabric.with(this, Crashlytics())
         /*
          * Use canary only on demand, since it is becoming too verbose.
          * UPDATE 08/22/2019 ---> executed a canary session and all seems to work OK.
