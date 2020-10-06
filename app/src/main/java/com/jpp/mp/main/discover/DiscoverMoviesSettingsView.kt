@@ -10,8 +10,13 @@ import android.view.animation.AccelerateInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.jpp.mp.R
+import com.jpp.mp.main.discover.filters.genres.GenreFilterAdapter
+import com.jpp.mp.main.discover.filters.genres.GenreFilterItem
 import com.jpp.mpdesign.anims.MPAnimationAdapter
 
 /**
@@ -25,10 +30,9 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
 
     private var clickableArea: LinearLayout? = null
     private var clickableAreaIcon: ImageView? = null
-    private var text1: TextView? = null
-    private var text2: TextView? = null
-    private var text3: TextView? = null
-    private var text4: TextView? = null
+    private var genreFilterTitle: TextView? = null
+    private var genreFilerList: RecyclerView? = null
+
 
     private var targetExpandedHeight = 0
     private var targetCollapsedHeight = 0
@@ -50,10 +54,14 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
         inflate(context, R.layout.layout_discover_settings, this)
         clickableArea = findViewById(R.id.clickableArea)
         clickableAreaIcon = findViewById(R.id.clickableAreaIcon)
-        text1 = findViewById(R.id.text1)
-        text2 = findViewById(R.id.text2)
-        text3 = findViewById(R.id.text3)
-        text4 = findViewById(R.id.text4)
+        genreFilterTitle = findViewById(R.id.genreFilterTitleTextView)
+        genreFilerList = findViewById(R.id.genreFilterRecyclerView)
+
+        genreFilerList?.apply {
+            layoutManager = GridLayoutManager(context, 2)
+            adapter = GenreFilterAdapter()
+        }
+
 
         clickableArea?.setOnClickListener {
             actionListener?.onExpandCollapseSelected(isExpanded)
@@ -73,10 +81,8 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
     private fun initCollapsed() {
         targetExpandedHeight = measuredHeight
 
-        text1?.visibility = View.GONE
-        text2?.visibility = View.GONE
-        text3?.visibility = View.GONE
-        text4?.visibility = View.GONE
+        genreFilterTitle?.visibility = View.GONE
+        genreFilerList?.visibility = View.GONE
 
         isExpanded = false
     }
@@ -91,6 +97,14 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
         } else {
             animateToExpanded(expanded)
         }
+    }
+
+    fun setGenreFilterTitle(@StringRes title: Int) {
+        genreFilterTitle?.setText(title)
+    }
+
+    fun setGenreList(genreList: List<GenreFilterItem>) {
+        (genreFilerList?.adapter as GenreFilterAdapter).submitList(genreList)
     }
 
     private fun animateToExpanded(finalExpanded: Boolean) {
@@ -109,10 +123,8 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
             }
             addListener(object : MPAnimationAdapter {
                 override fun onAnimationEnd(animation: Animator?) {
-                    text1?.visibility = View.VISIBLE
-                    text2?.visibility = View.VISIBLE
-                    text3?.visibility = View.VISIBLE
-                    text4?.visibility = View.VISIBLE
+                    genreFilterTitle?.visibility = View.VISIBLE
+                    genreFilerList?.visibility = View.VISIBLE
                     isExpanded = finalExpanded
                 }
             })
@@ -140,10 +152,8 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
             }
             addListener(object : MPAnimationAdapter {
                 override fun onAnimationStart(animation: Animator?) {
-                    text1?.visibility = View.GONE
-                    text2?.visibility = View.GONE
-                    text3?.visibility = View.GONE
-                    text4?.visibility = View.GONE
+                    genreFilterTitle?.visibility = View.GONE
+                    genreFilerList?.visibility = View.GONE
                 }
 
                 override fun onAnimationEnd(animation: Animator?) {

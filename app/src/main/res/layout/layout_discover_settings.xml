@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="12dp"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
     <LinearLayout
@@ -11,7 +12,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -33,47 +33,32 @@
 
 
     <TextView
-        android:id="@+id/text1"
-        android:layout_width="0dp"
+        android:id="@+id/genreFilterTitleTextView"
+        style="@style/MPTextViewNormal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Text 1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/clickableArea" />
+        app:layout_constraintTop_toBottomOf="@+id/clickableArea"
+        tools:text="Genre" />
 
-    <TextView
-        android:id="@+id/text2"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/genreFilterRecyclerView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Text 2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text1" />
-
-    <TextView
-        android:id="@+id/text3"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Text 3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text2" />
-
-    <TextView
-        android:id="@+id/text4"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Text 4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text3" />
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/genreFilterTitleTextView"
+        app:layout_constraintTop_toBottomOf="@+id/genreFilterTitleTextView"
+        app:spanCount="2"
+        tools:itemCount="10"
+        tools:listitem="@layout/genre_filter_item" />
 
     <View
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:background="@color/primaryColor"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
 </merge>

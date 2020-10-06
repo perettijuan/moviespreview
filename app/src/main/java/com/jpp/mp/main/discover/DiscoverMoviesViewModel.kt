@@ -1,7 +1,10 @@
 package com.jpp.mp.main.discover
 
 import androidx.lifecycle.*
+import com.jpp.mp.main.discover.filters.genres.GenreFilterItem
+import com.jpp.mpdesign.mapped.MovieGenreItem
 import com.jpp.mpdomain.Movie
+import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.MoviePage
 import com.jpp.mpdomain.usecase.GetAllMovieGenresUseCase
 import com.jpp.mpdomain.usecase.GetDiscoveredMoviePageUseCase
@@ -101,7 +104,8 @@ class DiscoverMoviesViewModel(
             }
 
             if (genresResult is Try.Success) {
-                _filtersViewState.value = _filtersViewState.value?.showVisible()
+                _filtersViewState.value =
+                    _filtersViewState.value?.showVisible(genresResult.value.map { domainGenre -> domainGenre.mapToGenreItem() })
             }
         }
     }
@@ -134,6 +138,30 @@ class DiscoverMoviesViewModel(
             popularity = popularity.toString(),
             voteCount = vote_count.toString()
         )
+
+    private fun MovieGenre.mapToGenreItem(): GenreFilterItem {
+        return when (id) {
+            MovieGenre.ACTION_GENRE_ID -> MovieGenreItem.Action
+            MovieGenre.ADVENTURE_GENRE_ID -> MovieGenreItem.Adventure
+            MovieGenre.ANIMATION_GENRE_ID -> MovieGenreItem.Animation
+            MovieGenre.COMEDY_GENRE_ID -> MovieGenreItem.Comedy
+            MovieGenre.CRIME_GENRE_ID -> MovieGenreItem.Crime
+            MovieGenre.DOCUMENTARY_GENRE_ID -> MovieGenreItem.Documentary
+            MovieGenre.DRAMA_GENRE_ID -> MovieGenreItem.Drama
+            MovieGenre.FAMILY_GENRE_ID -> MovieGenreItem.Family
+            MovieGenre.FANTASY_GENRE_ID -> MovieGenreItem.Fantasy
+            MovieGenre.HISTORY_GENRE_ID -> MovieGenreItem.History
+            MovieGenre.HORROR_GENRE_ID -> MovieGenreItem.Horror
+            MovieGenre.MUSIC_GENRE_ID -> MovieGenreItem.Music
+            MovieGenre.MYSTERY_GENRE_ID -> MovieGenreItem.Mystery
+            MovieGenre.SCI_FY_GENRE_ID -> MovieGenreItem.SciFi
+            MovieGenre.TV_MOVIE_GENRE_ID -> MovieGenreItem.TvMovie
+            MovieGenre.THRILLER_GENRE_ID -> MovieGenreItem.Thriller
+            MovieGenre.WAR_GENRE_ID -> MovieGenreItem.War
+            MovieGenre.WESTERN_GENRE_ID -> MovieGenreItem.Western
+            else -> MovieGenreItem.Generic
+        }.let { uiGenre -> GenreFilterItem(id, uiGenre, isSelected = false) }
+    }
 
     private companion object {
         const val MAX_MOVIE_PAGE_KEY = "MAX_MOVIE_PAGE_KEY"
