@@ -22,17 +22,21 @@
     <fragment
         android:id="@+id/upcomingMoviesFragment"
         android:name="com.jpp.mp.main.movies.fragments.UpcomingMoviesFragment"
-        tools:layout="@layout/fragment_movie_list"/>
+        tools:layout="@layout/fragment_movie_list" />
     <fragment
         android:id="@+id/topRatedMoviesFragment"
         android:name="com.jpp.mp.main.movies.fragments.TopRatedMoviesFragment"
-        tools:layout="@layout/fragment_movie_list"/>
+        tools:layout="@layout/fragment_movie_list" />
     <activity
         android:id="@+id/searchActivity"
         android:name="com.jpp.mpsearch.SearchActivity"
-        tools:layout="@layout/search_activity"/>
+        tools:layout="@layout/search_activity" />
     <fragment
         android:id="@+id/discoverMoviesFragment"
         android:name="com.jpp.mp.main.discover.DiscoverMoviesFragment"
+        app:enterAnim="@anim/fragment_enter_slide_right"
+        app:exitAnim="@anim/fragment_exit_slide_right"
+        app:popEnterAnim="@anim/fragment_enter_slide_left"
+        app:popExitAnim="@anim/fragment_exit_slide_left"
         tools:layout="@layout/fragment_discover_movies" />
 </navigation>
