@@ -7,9 +7,9 @@ import com.jpp.mpdata.cache.CacheTimestampHelper
 import com.jpp.mpdata.cache.ConfigurationCache
 import com.jpp.mpdata.cache.CreditsCache
 import com.jpp.mpdata.cache.MovieDetailCache
+import com.jpp.mpdata.cache.MovieGenreCache
 import com.jpp.mpdata.cache.MoviesCache
 import com.jpp.mpdata.cache.SupportCache
-import com.jpp.mpdata.cache.MovieGenreCache
 import com.jpp.mpdata.cache.adapter.DomainRoomAdapter
 import com.jpp.mpdata.cache.adapter.RoomDomainAdapter
 import com.jpp.mpdata.cache.room.MPRoomDataBase
@@ -64,13 +64,13 @@ import com.jpp.mpdomain.repository.CreditsRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.LicensesRepository
 import com.jpp.mpdomain.repository.MovieDetailRepository
+import com.jpp.mpdomain.repository.MovieGenreRepository
 import com.jpp.mpdomain.repository.MoviePageRepository
 import com.jpp.mpdomain.repository.MovieStateRepository
 import com.jpp.mpdomain.repository.PersonRepository
 import com.jpp.mpdomain.repository.SearchRepository
 import com.jpp.mpdomain.repository.SessionRepository
 import com.jpp.mpdomain.repository.SupportRepository
-import com.jpp.mpdomain.repository.MovieGenreRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

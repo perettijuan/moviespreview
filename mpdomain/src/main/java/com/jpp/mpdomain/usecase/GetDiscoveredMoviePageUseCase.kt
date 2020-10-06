@@ -37,7 +37,6 @@ class GetDiscoveredMoviePageUseCase(
                         )
                     )
                 } ?: Try.Failure(Try.FailureCause.Unknown)
-
         }
     }
 }
