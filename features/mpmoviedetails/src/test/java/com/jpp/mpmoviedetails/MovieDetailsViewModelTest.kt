@@ -2,6 +2,7 @@ package com.jpp.mpmoviedetails
 
 import android.view.View
 import androidx.lifecycle.SavedStateHandle
+import com.jpp.mpdesign.mapped.MovieGenreItem
 import com.jpp.mpdomain.MovieDetail
 import com.jpp.mpdomain.MovieGenre
 import com.jpp.mpdomain.usecase.GetMovieDetailUseCase

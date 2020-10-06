@@ -5,25 +5,6 @@
     <string name="popularity_title">Popularidad</string>
     <string name="vote_count_title">Votos</string>
     <string name="release_date_title">Fecha de Estreno</string>
-    <string name="action_genre">Acción</string>
-    <string name="adventure_genre">Aventura</string>
-    <string name="animation_genre">Animación</string>
-    <string name="comedy_genre">Comedia</string>
-    <string name="crime_genre">Crimen</string>
-    <string name="documentary_genre">Documental</string>
-    <string name="drama_genre">Drama</string>
-    <string name="familiy_genre">Familia</string>
-    <string name="fantasy_genre">Fantasia</string>
-    <string name="history_genre">Historia</string>
-    <string name="horror_genre">Terror</string>
-    <string name="music_genre">Música</string>
-    <string name="mystery_genre">Misterio</string>
-    <string name="sci_fi_genre">Ciencia Ficción</string>
-    <string name="tv_movie_genre">Película de Tv</string>
-    <string name="thriller_genre">Thriller</string>
-    <string name="war_genre">Guerra</string>
-    <string name="western_genre">Western</string>
-    <string name="generic_genre">Genérico</string>
     <string name="movie_credits_title">Créditos</string>
 
     <string name="account_need_to_login">Debes estar registrado para ejecutar esta acción.</string>

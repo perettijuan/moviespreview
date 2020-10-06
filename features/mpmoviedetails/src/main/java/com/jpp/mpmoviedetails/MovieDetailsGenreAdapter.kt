@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.jpp.mpdesign.mapped.MovieGenreItem
 import com.jpp.mpmoviedetails.databinding.ListItemMovieDetailGenreBinding
 
 internal class MovieDetailsGenreAdapter(private val genres: List<MovieGenreItem>) :
