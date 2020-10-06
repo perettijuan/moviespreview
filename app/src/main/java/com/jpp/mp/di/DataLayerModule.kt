@@ -7,6 +7,7 @@ import com.jpp.mpdata.cache.CacheTimestampHelper
 import com.jpp.mpdata.cache.ConfigurationCache
 import com.jpp.mpdata.cache.CreditsCache
 import com.jpp.mpdata.cache.MovieDetailCache
+import com.jpp.mpdata.cache.MovieGenreCache
 import com.jpp.mpdata.cache.MoviesCache
 import com.jpp.mpdata.cache.SupportCache
 import com.jpp.mpdata.cache.adapter.DomainRoomAdapter
@@ -18,6 +19,8 @@ import com.jpp.mpdata.datasources.configuration.ConfigurationApi
 import com.jpp.mpdata.datasources.configuration.ConfigurationDb
 import com.jpp.mpdata.datasources.credits.CreditsApi
 import com.jpp.mpdata.datasources.credits.CreditsDb
+import com.jpp.mpdata.datasources.genre.MovieGenreApi
+import com.jpp.mpdata.datasources.genre.MovieGenreDb
 import com.jpp.mpdata.datasources.language.LanguageDb
 import com.jpp.mpdata.datasources.language.LanguageMonitor
 import com.jpp.mpdata.datasources.moviedetail.MovieDetailApi
@@ -40,6 +43,7 @@ import com.jpp.mpdata.repository.appversion.AppVersionRepositoryImpl
 import com.jpp.mpdata.repository.configuration.ConfigurationRepositoryImpl
 import com.jpp.mpdata.repository.connectivity.ConnectivityRepositoryImpl
 import com.jpp.mpdata.repository.credits.CreditsRepositoryImpl
+import com.jpp.mpdata.repository.genre.MovieGenreRepositoryImpl
 import com.jpp.mpdata.repository.language.LanguageRepositoryImpl
 import com.jpp.mpdata.repository.licenses.LicensesRepositoryImpl
 import com.jpp.mpdata.repository.moviedetail.MovieDetailRepositoryImpl
@@ -60,6 +64,7 @@ import com.jpp.mpdomain.repository.CreditsRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.LicensesRepository
 import com.jpp.mpdomain.repository.MovieDetailRepository
+import com.jpp.mpdomain.repository.MovieGenreRepository
 import com.jpp.mpdomain.repository.MoviePageRepository
 import com.jpp.mpdomain.repository.MovieStateRepository
 import com.jpp.mpdomain.repository.PersonRepository
@@ -89,6 +94,7 @@ class DataLayerModule {
     fun providesTheMoviesDBRoomDb(context: Context):
             MPRoomDataBase = Room
         .databaseBuilder(context, MPRoomDataBase::class.java, "MPRoomDataBase")
+        .fallbackToDestructiveMigration() // IMPORTANT: I don't want to keep user's data when going from v1 to v2. Keep in mind for future upgrades.
         .build()
 
     @Singleton
@@ -336,4 +342,28 @@ class DataLayerModule {
     @Provides
     fun providesMovieStateRepository(movieStateApi: MovieStateApi): MovieStateRepository =
         MovieStateRepositoryImpl(movieStateApi)
+
+    /***************************************
+     ****** MOVIE GENRES DEPENDENCIES ******
+     ***************************************/
+
+    @Singleton
+    @Provides
+    fun providesMovieGenreApi(mpApiInstance: MPApi): MovieGenreApi = mpApiInstance
+
+    @Singleton
+    @Provides
+    fun providesMovieGenreDb(
+        roomDb: MPRoomDataBase,
+        toDomainAdapter: RoomDomainAdapter,
+        toRoomAdapter: DomainRoomAdapter,
+        timestampHelper: CacheTimestampHelper
+    ): MovieGenreDb = MovieGenreCache(roomDb, toDomainAdapter, toRoomAdapter, timestampHelper)
+
+    @Singleton
+    @Provides
+    fun providesMovieGenreRepository(
+        movieGenreApi: MovieGenreApi,
+        movieGenreDb: MovieGenreDb
+    ): MovieGenreRepository = MovieGenreRepositoryImpl(movieGenreApi, movieGenreDb)
 }
