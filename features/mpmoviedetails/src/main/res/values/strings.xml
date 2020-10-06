@@ -4,26 +4,6 @@
     <string name="popularity_title">Popularity</string>
     <string name="vote_count_title">Vote Count</string>
     <string name="release_date_title">Release Date</string>
-    <string name="action_genre">Action</string>
-    <string name="adventure_genre">Adventure</string>
-    <string name="animation_genre">Animation</string>
-    <string name="comedy_genre">Comedy</string>
-    <string name="crime_genre">Crime</string>
-    <string name="documentary_genre">Documentary</string>
-    <string name="drama_genre">Drama</string>
-    <string name="familiy_genre">Family</string>
-    <string name="fantasy_genre">Fantasy</string>
-    <string name="history_genre">History</string>
-    <string name="horror_genre">Horror</string>
-    <string name="music_genre">Music</string>
-    <string name="mystery_genre">Mystery</string>
-    <string name="sci_fi_genre">SciFi</string>
-    <string name="tv_movie_genre">Tv Movie</string>
-    <string name="thriller_genre">Thriller</string>
-    <string name="war_genre">War</string>
-    <string name="western_genre">Western</string>
-    <string name="generic_genre">Generic</string>
-    <string name="movie_credits_title">Credits</string>
 
     <string name="account_need_to_login">You need to be logged in to execute this action.</string>
     <string name="unexpected_action_error">Something went wrong. Please, try again later.</string>
