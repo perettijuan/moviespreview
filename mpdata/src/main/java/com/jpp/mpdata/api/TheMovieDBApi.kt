@@ -285,4 +285,32 @@ internal interface TheMovieDBApi {
         @Query("api_key") api_key: String,
         @Query("language") language: String? = null
     ): Call<MoviePage>
+
+    /**
+     * Retrieves the list of official genres for movies.
+     * [api_key] the api key provided by themoviedb.
+     * [language] Pass a ISO 639-1 value to display translated data for the fields that support it. - Optional.
+     */
+    @GET("genre/movie/list")
+    fun getMovieGenres(
+        @Query("api_key") api_key: String,
+        @Query("language") language: String? = null
+    ): Call<MovieGenresResponse>
+
+    /**
+     * Retrieves a page of movies discovered using the provide filters.
+     * [page] the current page to retrieve.
+     * [api_key] the api key provided by themoviedb.
+     * [language] Pass a ISO 639-1 value to display translated data for the fields that support it. - Optional.
+     * [region] Specify a ISO 3166-1 code to filter release dates. Must be uppercase. - Optional.
+     * [genres] The list of movie genre identifiers to filter the results.
+     */
+    @GET("discover/movie")
+    fun discover(
+        @Query("page") page: Int,
+        @Query("api_key") api_key: String,
+        @Query("language") language: String? = null,
+        @Query("region") region: String? = null,
+        @Query("with_genres") genres: List<Int>? = null
+    ): Call<MoviePage>
 }
