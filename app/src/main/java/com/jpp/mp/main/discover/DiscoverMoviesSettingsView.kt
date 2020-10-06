@@ -21,7 +21,8 @@ import com.jpp.mp.main.discover.filters.genres.GenreFilterItem
 import com.jpp.mpdesign.anims.MPAnimationAdapter
 
 /**
- * TODO JPP add javadoc
+ * Custom view that shows the filters that can be applied in the
+ * discover movies section.
  */
 internal class DiscoverMoviesSettingsView : ConstraintLayout {
 
