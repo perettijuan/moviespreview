@@ -21,8 +21,6 @@ import com.jpp.mp.main.discover.filters.genres.GenreFilterItem
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
- *  handle rotation - horizontal layout
- *  add clear all
 class DiscoverMoviesFragment : Fragment() {
 
     @Inject
