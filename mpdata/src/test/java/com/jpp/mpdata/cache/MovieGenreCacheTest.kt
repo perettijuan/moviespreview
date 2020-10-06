@@ -88,7 +88,6 @@ class MovieGenreCacheTest {
         every { toRoom.movieGenre(domainGenre4, dueDate) } returns dbGenre4
         every { movieGenresDao.saveMovieGenres(capture(capturingSlot)) } just Runs
 
-
         subject.saveMovieGenres(domainGenres)
 
         capturingSlot.captured.forEachIndexed { index, movieGenre ->

@@ -14,5 +14,4 @@ interface MovieGenreDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun saveMovieGenres(genres: List<DBMovieGenre>)
-
-} 
+}

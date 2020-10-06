@@ -1,7 +1,14 @@
 package com.jpp.mpdata.cache.adapter
 
 import com.jpp.mp.common.extensions.addAllMapping
-import com.jpp.mpdata.cache.room.*
+import com.jpp.mpdata.cache.room.DBCastCharacter
+import com.jpp.mpdata.cache.room.DBCrewPerson
+import com.jpp.mpdata.cache.room.DBGenreByMovie
+import com.jpp.mpdata.cache.room.DBImageSize
+import com.jpp.mpdata.cache.room.DBMovie
+import com.jpp.mpdata.cache.room.DBMovieDetail
+import com.jpp.mpdata.cache.room.DBMovieGenre
+import com.jpp.mpdata.cache.room.DBMoviePage
 import com.jpp.mpdata.cache.room.ImageTypes
 import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.CastCharacter

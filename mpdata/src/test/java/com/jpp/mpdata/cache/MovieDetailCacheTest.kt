@@ -2,8 +2,8 @@ package com.jpp.mpdata.cache
 
 import com.jpp.mpdata.cache.adapter.DomainRoomAdapter
 import com.jpp.mpdata.cache.adapter.RoomDomainAdapter
-import com.jpp.mpdata.cache.room.DBMovieDetail
 import com.jpp.mpdata.cache.room.DBGenreByMovie
+import com.jpp.mpdata.cache.room.DBMovieDetail
 import com.jpp.mpdata.cache.room.MPRoomDataBase
 import com.jpp.mpdata.cache.room.MovieDAO
 import com.jpp.mpdata.cache.room.MovieDetailDAO
