@@ -2,6 +2,7 @@ package com.jpp.mpmoviedetails
 
 import android.view.View
 import androidx.annotation.StringRes
+import com.jpp.mpdesign.mapped.MovieGenreItem
 
 /**
  * Represents the view state of the details content.

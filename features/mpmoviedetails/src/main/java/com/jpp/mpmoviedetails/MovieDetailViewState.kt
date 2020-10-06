@@ -1,6 +1,7 @@
 package com.jpp.mpmoviedetails
 
 import android.view.View
+import com.jpp.mpdesign.mapped.MovieGenreItem
 import com.jpp.mpdesign.views.MPErrorView.ErrorViewState
 
 /**
