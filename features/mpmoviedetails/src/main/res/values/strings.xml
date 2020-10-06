@@ -4,6 +4,7 @@
     <string name="popularity_title">Popularity</string>
     <string name="vote_count_title">Vote Count</string>
     <string name="release_date_title">Release Date</string>
+    <string name="movie_credits_title">Credits</string>
 
     <string name="account_need_to_login">You need to be logged in to execute this action.</string>
     <string name="unexpected_action_error">Something went wrong. Please, try again later.</string>
