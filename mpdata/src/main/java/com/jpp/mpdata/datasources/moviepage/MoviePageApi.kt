@@ -47,4 +47,10 @@ interface MoviePageApi {
      * @return the [MoviePage] that contains the watchlist of movies.
      */
     fun getWatchlistMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage?
+
+    /**
+     * @return a [MoviePage] from the discover endpoint filtered by the provided filters.
+     * Null if no data is available.
+     */
+    fun discover(page: Int, genreIds: List<Int>? = null, language: SupportedLanguage): MoviePage?
 }

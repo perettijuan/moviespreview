@@ -55,4 +55,9 @@ interface MoviePageRepository {
      * Flushes out any watchlist [MoviePage] data stored locally on the device.
      */
     suspend fun flushWatchlistMoviePages()
+
+    /**
+     * Retrieves a [MoviePage] with the movies obtained from the discover section.
+     */
+    suspend fun discover(page: Int, genreIds: List<Int>? = null, language: SupportedLanguage): MoviePage?
 }

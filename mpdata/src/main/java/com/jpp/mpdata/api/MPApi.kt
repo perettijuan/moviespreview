@@ -157,6 +157,21 @@ open class MPApi :
         return tryCatchOrReturnNull { API.getMovieGenres(API_KEY) }?.genres
     }
 
+    override fun discover(
+        page: Int,
+        genreIds: List<Int>?,
+        language: SupportedLanguage
+    ): MoviePage? {
+        return tryCatchOrReturnNull {
+            API.discover(
+                page,
+                API_KEY,
+                genres = genreIds,
+                language = language.id
+            )
+        }
+    }
+
     /**
      * Executes the provided [block] in a try-catch block and returns the result.
      * If the [block] fails with an exception, null is returned.
