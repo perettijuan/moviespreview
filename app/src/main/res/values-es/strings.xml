@@ -6,6 +6,7 @@
     <string name="main_menu_upcoming">Por estrenar</string>
     <string name="main_activity_search_menu_title">Buscar</string>
     <string name="about_menu_item">@string/about_generic</string>
+    <string name="main_menu_discover">Descubrir películas</string>
     <!-- End Main Activity -->
 
     <!-- Nav Header -->

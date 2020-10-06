@@ -6,6 +6,7 @@
     <string name="main_menu_upcoming">Upcoming</string>
     <string name="main_activity_search_menu_title">Search</string>
     <string name="about_menu_item">@string/about_generic</string>
+    <string name="main_menu_discover">Discover Movies</string>
     <!-- End Main Activity -->
 
 
