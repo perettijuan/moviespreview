@@ -102,7 +102,6 @@ class DiscoverMoviesViewModel(
         _viewState.value = DiscoverMoviesViewState.showLoading()
         currentPage = FIRST_PAGE
 
-
         fetchMoviePage(currentPage)
     }
 

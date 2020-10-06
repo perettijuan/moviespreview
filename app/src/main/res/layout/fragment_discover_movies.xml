@@ -47,7 +47,6 @@
             app:setExpanded="@{filterViewState.expanded}"
             app:setGenreFilterTitle="@{filterViewState.genreTitle}"
             app:setGenreList="@{filterViewState.genreList}"
-            app:isApplyEnabled="@{filterViewState.isApplyFilterEnabled}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>

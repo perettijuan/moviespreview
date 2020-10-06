@@ -13,10 +13,8 @@ data class DiscoverMoviesFiltersViewState(
     val isExpanded: Boolean = false,
     val discoverTitle: Int = R.string.discover_movies_filters,
     val genreTitle: Int = R.string.discover_movies_genres_filter_title,
-    val genreList: List<GenreFilterItem> = listOf(),
-    val isApplyFilterEnabled: Boolean = false
+    val genreList: List<GenreFilterItem> = listOf()
 ) {
-
 
     fun showVisible(genreList: List<GenreFilterItem>): DiscoverMoviesFiltersViewState =
         copy(visibility = View.VISIBLE, genreList = genreList)
@@ -27,8 +25,7 @@ data class DiscoverMoviesFiltersViewState(
         if (index != -1) {
             newList[index] = item.copy(isSelected = !item.isSelected)
         }
-        val applyEnabled = newList.count { updatedItem -> updatedItem.isSelected} > 0
-        return copy(genreList = newList, isApplyFilterEnabled = applyEnabled)
+        return copy(genreList = newList)
     }
 
     fun updateToLoading(): DiscoverMoviesFiltersViewState = copy(visibility = View.INVISIBLE, isExpanded = false)
