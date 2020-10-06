@@ -5,6 +5,7 @@ import com.jpp.mpdata.BuildConfig
 import com.jpp.mpdata.datasources.account.AccountApi
 import com.jpp.mpdata.datasources.configuration.ConfigurationApi
 import com.jpp.mpdata.datasources.credits.CreditsApi
+import com.jpp.mpdata.datasources.genre.MovieGenreApi
 import com.jpp.mpdata.datasources.moviedetail.MovieDetailApi
 import com.jpp.mpdata.datasources.moviepage.MoviePageApi
 import com.jpp.mpdata.datasources.moviestate.MovieStateApi
@@ -12,18 +13,7 @@ import com.jpp.mpdata.datasources.person.PersonApi
 import com.jpp.mpdata.datasources.search.SearchApi
 import com.jpp.mpdata.datasources.session.SessionApi
 import com.jpp.mpdata.datasources.tokens.AccessTokenApi
-import com.jpp.mpdomain.AccessToken
-import com.jpp.mpdomain.AppConfiguration
-import com.jpp.mpdomain.Credits
-import com.jpp.mpdomain.MovieDetail
-import com.jpp.mpdomain.MoviePage
-import com.jpp.mpdomain.MovieState
-import com.jpp.mpdomain.MovieStateRate
-import com.jpp.mpdomain.Person
-import com.jpp.mpdomain.SearchPage
-import com.jpp.mpdomain.Session
-import com.jpp.mpdomain.SupportedLanguage
-import com.jpp.mpdomain.UserAccount
+import com.jpp.mpdomain.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -35,16 +25,17 @@ import retrofit2.converter.gson.GsonConverterFactory
  * It is a wrapper around Retrofit classes to provide a clean access to the API.
  */
 open class MPApi :
-        ConfigurationApi,
-        MoviePageApi,
+    ConfigurationApi,
+    MoviePageApi,
     SearchApi,
     PersonApi,
     CreditsApi,
-        SessionApi,
-        AccountApi,
-        AccessTokenApi,
-        MovieDetailApi,
-        MovieStateApi {
+    SessionApi,
+    AccountApi,
+    AccessTokenApi,
+    MovieDetailApi,
+    MovieStateApi,
+    MovieGenreApi {
 
     override fun getAppConfiguration(): AppConfiguration? {
         return tryCatchOrReturnNull { API.getAppConfiguration(API_KEY) }
@@ -160,6 +151,10 @@ open class MPApi :
 
     override fun getWatchlistMoviePage(page: Int, userAccount: UserAccount, session: Session, language: SupportedLanguage): MoviePage? {
         return tryCatchOrReturnNull { API.getWatchlistMoviesPage(userAccount.id, page, session.session_id, API_KEY, language.id) }
+    }
+
+    override fun getMovieGenres(): List<MovieGenre>? {
+        return tryCatchOrReturnNull { API.getMovieGenres(API_KEY) }?.genres
     }
 
     /**

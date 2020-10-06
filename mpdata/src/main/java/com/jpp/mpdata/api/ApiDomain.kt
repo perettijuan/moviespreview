@@ -1,5 +1,7 @@
 package com.jpp.mpdata.api
 
+import com.jpp.mpdomain.MovieGenre
+
 /*
  * This file contains the entities that are needed to execute certain API requests.
  * Since not all API requests can be mapped one to one with domain objects, we need
@@ -58,4 +60,11 @@ internal data class WatchlistMediaBody(
 internal data class WatchlistMediaResponse(
     val status_code: Double,
     val status_message: String
+)
+
+/**
+ * Response obtained when retrieving the movie genres from the server.
+ */
+internal data class MovieGenresResponse(
+    val genres: List<MovieGenre>
 )
