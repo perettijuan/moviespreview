@@ -1,29 +1,8 @@
-buildscript {
-    repositories {
-        maven { url 'https://maven.fabric.io/public' }
-    }
-
-    dependencies {
-        // These docs use an expanded ended version so that our plugin
-        // can be updated quickly in response to Android tooling updates
-
-        // We recommend changing it to the latest version from our changelog:
-        // https://docs.fabric.io/android/changelog.html#fabric-gradle-plugin
-        classpath 'io.fabric.tools:gradle:1.30.0'
-    }
-}
-
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'androidx.navigation.safeargs'
-
-apply plugin: 'io.fabric'
-
-repositories {
-    maven { url 'https://maven.fabric.io/public' }
-}
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -99,11 +78,6 @@ dependencies {
     // Room persistence
     implementation deps.androidx.room.runtime
     kapt deps.androidx.room.compiler
-
-    // Crashlytics
-    implementation('com.crashlytics.sdk.android:crashlytics:2.9.9@aar') {
-        transitive = true
-    }
 
     // Canary
     debugImplementation deps.canary.debug
