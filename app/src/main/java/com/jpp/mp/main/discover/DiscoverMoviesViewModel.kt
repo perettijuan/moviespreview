@@ -25,7 +25,7 @@ import kotlinx.coroutines.withContext
  */
 class DiscoverMoviesViewModel(
     private val getDiscoveredMoviePageUseCase: GetDiscoveredMoviePageUseCase,
-    private val gentAllMovieGenresUseCase: GetAllMovieGenresUseCase,
+    private val getAllMovieGenresUseCase: GetAllMovieGenresUseCase,
     private val navigator: DiscoverMoviesNavigator,
     private val ioDispatcher: CoroutineDispatcher,
     private val savedStateHandle: SavedStateHandle
@@ -142,7 +142,7 @@ class DiscoverMoviesViewModel(
 
         viewModelScope.launch {
             val genresResult = withContext(ioDispatcher) {
-                gentAllMovieGenresUseCase.execute()
+                getAllMovieGenresUseCase.execute()
             }
 
             if (genresResult is Try.Success) {
