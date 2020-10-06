@@ -1,12 +1,6 @@
 package com.jpp.mpdata.cache.adapter
 
-import com.jpp.mpdata.cache.room.DBCastCharacter
-import com.jpp.mpdata.cache.room.DBCrewPerson
-import com.jpp.mpdata.cache.room.DBImageSize
-import com.jpp.mpdata.cache.room.DBMovie
-import com.jpp.mpdata.cache.room.DBMovieDetail
-import com.jpp.mpdata.cache.room.DBMovieGenre
-import com.jpp.mpdata.cache.room.DBMoviePage
+import com.jpp.mpdata.cache.room.*
 import com.jpp.mpdata.cache.room.ImageTypes
 import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.CastCharacter
@@ -76,7 +70,7 @@ class RoomDomainAdapter {
      */
     internal fun movieDetail(
         dbMovieDetail: DBMovieDetail,
-        genres: List<DBMovieGenre>
+        genres: List<DBGenreByMovie>
     ): MovieDetail = MovieDetail(
         id = dbMovieDetail.id,
         title = dbMovieDetail.title,
@@ -90,9 +84,9 @@ class RoomDomainAdapter {
     )
 
     /**
-     * Adapts the provided [DBMovieGenre] to the respective [MovieGenre].
+     * Adapts the provided [DBGenreByMovie] to the respective [MovieGenre].
      */
-    private fun adaptDBMovieGenreToDataMovieGenre(dbMovieGenre: DBMovieGenre): MovieGenre =
+    private fun adaptDBMovieGenreToDataMovieGenre(dbMovieGenre: DBGenreByMovie): MovieGenre =
         MovieGenre(id = dbMovieGenre.id, name = dbMovieGenre.name)
 
     /**
@@ -129,4 +123,10 @@ class RoomDomainAdapter {
                 )
             }
         )
+
+    /**
+     * [DBMovieGenre] to [MovieGenre].
+     */
+    internal fun movieGenre(genre: DBMovieGenre): MovieGenre =
+        MovieGenre(id = genre.id, name = genre.name)
 }

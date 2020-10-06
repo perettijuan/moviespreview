@@ -1,13 +1,7 @@
 package com.jpp.mpdata.cache.adapter
 
 import com.jpp.mp.common.extensions.addAllMapping
-import com.jpp.mpdata.cache.room.DBCastCharacter
-import com.jpp.mpdata.cache.room.DBCrewPerson
-import com.jpp.mpdata.cache.room.DBImageSize
-import com.jpp.mpdata.cache.room.DBMovie
-import com.jpp.mpdata.cache.room.DBMovieDetail
-import com.jpp.mpdata.cache.room.DBMovieGenre
-import com.jpp.mpdata.cache.room.DBMoviePage
+import com.jpp.mpdata.cache.room.*
 import com.jpp.mpdata.cache.room.ImageTypes
 import com.jpp.mpdomain.AppConfiguration
 import com.jpp.mpdomain.CastCharacter
@@ -71,12 +65,12 @@ class DomainRoomAdapter {
     )
 
     /**
-     * [MovieGenre] to [DBMovieGenre].
+     * [MovieGenre] to [DBGenreByMovie].
      */
     internal fun genre(
         dataMovieGenre: MovieGenre,
         detailId: Double
-    ): DBMovieGenre = DBMovieGenre(
+    ): DBGenreByMovie = DBGenreByMovie(
         id = dataMovieGenre.id,
         name = dataMovieGenre.name,
         movieDetailId = detailId
@@ -157,4 +151,13 @@ class DomainRoomAdapter {
                 }
             }
     }
+
+    /**
+     * Maps a [MovieGenre] to a [DBMovieGenre].
+     */
+    internal fun movieGenre(genre: MovieGenre, dueDate: Long): DBMovieGenre = DBMovieGenre(
+        id = genre.id,
+        name = genre.name,
+        dueDate = dueDate
+    )
 }
