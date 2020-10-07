@@ -57,12 +57,24 @@
 
     <Button
         android:id="@+id/applyFiltersButton"
+        style="@style/MPTextViewNormal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:text="@string/discover_movies_apply_filters"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/genreFilterRecyclerView" />
+
+    <TextView
+        android:id="@+id/clearAllTextView"
+        style="@style/MPTextViewNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:text="@string/discover_movies_clear_all"
+        app:layout_constraintBottom_toBottomOf="@+id/applyFiltersButton"
+        app:layout_constraintEnd_toStartOf="@+id/applyFiltersButton"
+        app:layout_constraintTop_toTopOf="@+id/applyFiltersButton" />
 
     <View
         android:layout_width="0dp"

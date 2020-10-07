@@ -302,6 +302,67 @@ class DiscoverMoviesViewModelTest {
         )
     }
 
+    @Test
+    fun `Should handle item selection`() {
+        var filterViewStatePosted: DiscoverMoviesFiltersViewState? = null
+        val mockedList = MOCKED_MOVIES
+        val moviePage = MoviePage(
+            page = 1,
+            results = mockedList,
+            total_pages = 100,
+            total_results = 2000
+        )
+
+        coEvery {
+            getDiscoveredMoviePageUseCase.execute(
+                any(),
+                any()
+            )
+        } returns Try.Success(moviePage)
+
+        coEvery { getAllMovieGenresUseCase.execute() } returns Try.Success(MOCKED_GENRES)
+
+        //pre condition
+        subject.onInit()
+        subject.filterViewState.observeWith { state -> filterViewStatePosted = state }
+        assertEquals(EXPECTED_GENRES, filterViewStatePosted?.genreList)
+        assertFalse(filterViewStatePosted?.genreList?.get(3)?.isSelected ?: fail())
+
+        subject.onGenreFilterItemSelected(EXPECTED_GENRES[3])
+        assertTrue(filterViewStatePosted?.genreList?.get(3)?.isSelected ?: fail())
+    }
+
+    @Test
+    fun `Should handle clear all`() {
+        var filterViewStatePosted: DiscoverMoviesFiltersViewState? = null
+        val mockedList = MOCKED_MOVIES
+        val moviePage = MoviePage(
+            page = 1,
+            results = mockedList,
+            total_pages = 100,
+            total_results = 2000
+        )
+
+        coEvery {
+            getDiscoveredMoviePageUseCase.execute(
+                any(),
+                any()
+            )
+        } returns Try.Success(moviePage)
+
+        coEvery { getAllMovieGenresUseCase.execute() } returns Try.Success(MOCKED_GENRES)
+
+        //pre condition
+        subject.onInit()
+        subject.filterViewState.observeWith { state -> filterViewStatePosted = state }
+        assertEquals(EXPECTED_GENRES, filterViewStatePosted?.genreList)
+        subject.onGenreFilterItemSelected(EXPECTED_GENRES[3])
+        assertTrue(filterViewStatePosted?.genreList?.get(3)?.isSelected ?: fail())
+
+        subject.onClearAllFiltersSelected()
+        assertFalse(filterViewStatePosted?.genreList?.get(3)?.isSelected ?: fail())
+    }
+
     companion object {
         private val MOCKED_MOVIES = mutableListOf<Movie>().apply {
             for (i in 0..50) {

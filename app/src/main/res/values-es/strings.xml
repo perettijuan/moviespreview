@@ -18,6 +18,7 @@
     <string name="discover_movies_filters">Filtros</string>
     <string name="discover_movies_genres_filter_title">Género</string>
     <string name="discover_movies_apply_filters">Aplicar</string>
+    <string name="discover_movies_clear_all">Clear all</string>
     <!-- Discover section -->
 
 </resources>

@@ -117,6 +117,10 @@ class DiscoverMoviesFragment : Fragment() {
             override fun onApplyFilterSelected() {
                 viewModel.onApplyFiltersSelected()
             }
+
+            override fun onClearAllSelected() {
+                viewModel.onClearAllFiltersSelected()
+            }
         }
     }
 

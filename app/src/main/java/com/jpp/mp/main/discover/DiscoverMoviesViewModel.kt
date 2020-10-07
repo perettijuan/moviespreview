@@ -112,6 +112,20 @@ class DiscoverMoviesViewModel(
         fetchMoviePage(currentPage)
     }
 
+    /**
+     * Called when the clear all filters option is selected.
+     */
+    fun onClearAllFiltersSelected() {
+        _filtersViewState.value = _filtersViewState.value?.updateToClearingAllFilters()
+
+        //reset state
+        _events.value = of(DiscoverMovieClearResultsEvent)
+        _viewState.value = DiscoverMoviesViewState.showLoading()
+        currentPage = FIRST_PAGE
+
+        fetchMoviePage(currentPage)
+    }
+
     private fun fetchMoviePage(page: Int) {
         // page is higher (or lower) than maxPage
         if (maxPage in 1..page) return
