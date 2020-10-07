@@ -46,7 +46,6 @@ class DiscoverMoviesViewModelTest {
 
     private lateinit var subject: DiscoverMoviesViewModel
 
-
     @BeforeEach
     fun setUp() {
         subject = DiscoverMoviesViewModel(
@@ -165,16 +164,13 @@ class DiscoverMoviesViewModelTest {
 
         coEvery { getAllMovieGenresUseCase.execute() } returns Try.Success(MOCKED_GENRES)
 
-
         subject.onInit()
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.filterViewState.observeWith { state -> filterViewStatePosted = state }
 
-
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.visibility)
         assertEquals(EXPECTED_UI_ITEMS, viewStatePosted?.contentViewState?.itemList)
-
 
         assertEquals(View.VISIBLE, filterViewStatePosted?.visibility)
         assertFalse(filterViewStatePosted?.isExpanded ?: fail())
@@ -207,16 +203,13 @@ class DiscoverMoviesViewModelTest {
 
         coEvery { getAllMovieGenresUseCase.execute() } returns Try.Failure(Try.FailureCause.Unknown)
 
-
         subject.onInit()
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.filterViewState.observeWith { state -> filterViewStatePosted = state }
 
-
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.visibility)
         assertEquals(EXPECTED_UI_ITEMS, viewStatePosted?.contentViewState?.itemList)
-
 
         assertEquals(View.GONE, filterViewStatePosted?.visibility)
     }
@@ -257,7 +250,7 @@ class DiscoverMoviesViewModelTest {
             )
         }
 
-        coVerify(exactly = 1) {getAllMovieGenresUseCase.execute() }
+        coVerify(exactly = 1) { getAllMovieGenresUseCase.execute() }
     }
 
     @Test
@@ -281,7 +274,6 @@ class DiscoverMoviesViewModelTest {
 
         coEvery { getAllMovieGenresUseCase.execute() } returns Try.Success(MOCKED_GENRES)
 
-
         subject.onInit()
         subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
         subject.filterViewState.observeWith { state -> filterViewStatePosted = state }
@@ -291,7 +283,6 @@ class DiscoverMoviesViewModelTest {
 
         assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
         assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.visibility)
-
 
         assertEquals(View.VISIBLE, filterViewStatePosted?.visibility)
         assertFalse(filterViewStatePosted?.isExpanded ?: fail())
@@ -322,7 +313,7 @@ class DiscoverMoviesViewModelTest {
 
         coEvery { getAllMovieGenresUseCase.execute() } returns Try.Success(MOCKED_GENRES)
 
-        //pre condition
+        // pre condition
         subject.onInit()
         subject.filterViewState.observeWith { state -> filterViewStatePosted = state }
         assertEquals(EXPECTED_GENRES, filterViewStatePosted?.genreList)
@@ -352,7 +343,7 @@ class DiscoverMoviesViewModelTest {
 
         coEvery { getAllMovieGenresUseCase.execute() } returns Try.Success(MOCKED_GENRES)
 
-        //pre condition
+        // pre condition
         subject.onInit()
         subject.filterViewState.observeWith { state -> filterViewStatePosted = state }
         assertEquals(EXPECTED_GENRES, filterViewStatePosted?.genreList)
@@ -397,7 +388,6 @@ class DiscoverMoviesViewModelTest {
                 )
             }
         }
-
 
         private val MOCKED_GENRES = listOf(
             MovieGenre(id = MovieGenre.ACTION_GENRE_ID, name = "Action"),

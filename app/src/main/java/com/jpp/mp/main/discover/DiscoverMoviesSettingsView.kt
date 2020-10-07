@@ -40,7 +40,6 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
     private var applyButton: Button? = null
     private var clearAllTxt: TextView? = null
 
-
     private var targetExpandedHeight = 0
     private var targetCollapsedHeight = 0
     private var isExpanded = false
@@ -72,7 +71,6 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
                 actionListener?.onGenreFilterItemSelected(item)
             }
         }
-
 
         clickableArea?.setOnClickListener {
             actionListener?.onExpandCollapseSelected(isExpanded)

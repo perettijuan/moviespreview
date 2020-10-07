@@ -1,6 +1,10 @@
 package com.jpp.mp.main.discover
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jpp.mp.common.livedata.HandledEvent
 import com.jpp.mp.common.livedata.HandledEvent.Companion.of
 import com.jpp.mp.main.discover.filters.genres.GenreFilterItem
@@ -104,7 +108,7 @@ class DiscoverMoviesViewModel(
     fun onApplyFiltersSelected() {
         _filtersViewState.value = _filtersViewState.value?.updateToLoading()
 
-        //reset state
+        // reset state
         _events.value = of(DiscoverMovieClearResultsEvent)
         _viewState.value = DiscoverMoviesViewState.showLoading()
         currentPage = FIRST_PAGE
@@ -118,7 +122,7 @@ class DiscoverMoviesViewModel(
     fun onClearAllFiltersSelected() {
         _filtersViewState.value = _filtersViewState.value?.updateToClearingAllFilters()
 
-        //reset state
+        // reset state
         _events.value = of(DiscoverMovieClearResultsEvent)
         _viewState.value = DiscoverMoviesViewState.showLoading()
         currentPage = FIRST_PAGE
