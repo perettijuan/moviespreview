@@ -57,8 +57,10 @@ class DiscoverMoviesViewModel(
      * the view state based on that state.
      */
     fun onInit() {
-        _viewState.value = DiscoverMoviesViewState.showLoading()
-        _filtersViewState.value = DiscoverMoviesFiltersViewState.showLoading()
+        if (currentPage == 0) {
+            _viewState.value = DiscoverMoviesViewState.showLoading()
+            _filtersViewState.value = DiscoverMoviesFiltersViewState.showLoading()
+        }
         fetchMoviePage(FIRST_PAGE)
     }
 

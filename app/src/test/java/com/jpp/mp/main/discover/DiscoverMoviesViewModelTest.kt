@@ -260,6 +260,48 @@ class DiscoverMoviesViewModelTest {
         coVerify(exactly = 1) {getAllMovieGenresUseCase.execute() }
     }
 
+    @Test
+    fun `Should handle rotation properly`() {
+        var viewStatePosted: DiscoverMoviesViewState? = null
+        var filterViewStatePosted: DiscoverMoviesFiltersViewState? = null
+        val mockedList = MOCKED_MOVIES
+        val moviePage = MoviePage(
+            page = 1,
+            results = mockedList,
+            total_pages = 100,
+            total_results = 2000
+        )
+
+        coEvery {
+            getDiscoveredMoviePageUseCase.execute(
+                any(),
+                any()
+            )
+        } returns Try.Success(moviePage)
+
+        coEvery { getAllMovieGenresUseCase.execute() } returns Try.Success(MOCKED_GENRES)
+
+
+        subject.onInit()
+        subject.viewState.observeWith { viewState -> viewStatePosted = viewState }
+        subject.filterViewState.observeWith { state -> filterViewStatePosted = state }
+
+        // 2nd call to onInit simulates rotation
+        subject.onInit()
+
+        assertEquals(View.INVISIBLE, viewStatePosted?.loadingVisibility)
+        assertEquals(View.VISIBLE, viewStatePosted?.contentViewState?.visibility)
+
+
+        assertEquals(View.VISIBLE, filterViewStatePosted?.visibility)
+        assertFalse(filterViewStatePosted?.isExpanded ?: fail())
+        assertEquals(R.string.discover_movies_filters, filterViewStatePosted?.discoverTitle)
+        assertEquals(
+            R.string.discover_movies_genres_filter_title,
+            filterViewStatePosted?.genreTitle
+        )
+    }
+
     companion object {
         private val MOCKED_MOVIES = mutableListOf<Movie>().apply {
             for (i in 0..50) {
