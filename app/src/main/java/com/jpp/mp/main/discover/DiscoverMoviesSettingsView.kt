@@ -91,7 +91,9 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
     }
 
     private fun initCollapsed() {
-        targetExpandedHeight = measuredHeight
+        if (targetExpandedHeight == 0) {
+            targetExpandedHeight = measuredHeight
+        }
 
         genreFilterTitle?.visibility = View.GONE
         genreFilerList?.visibility = View.GONE
@@ -121,9 +123,10 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
     }
 
     private fun animateToExpanded(finalExpanded: Boolean) {
-        targetCollapsedHeight = measuredHeight
+        if (targetCollapsedHeight == 0) {
+            targetCollapsedHeight = measuredHeight
+        }
         val currentHeight = measuredHeight
-
         ValueAnimator.ofInt(currentHeight, targetExpandedHeight).apply {
             interpolator = AccelerateInterpolator()
             duration = ANIMATION_DURATION
@@ -145,11 +148,9 @@ internal class DiscoverMoviesSettingsView : ConstraintLayout {
         }.start()
 
         clickableAreaIcon?.animate()?.rotation(90F)?.setDuration(ANIMATION_DURATION)?.start()
-
     }
 
     private fun animateToCollapsed(finalExpanded: Boolean) {
-        targetExpandedHeight = measuredHeight
         ValueAnimator.ofInt(measuredHeight, targetCollapsedHeight).apply {
             interpolator = AccelerateInterpolator()
             duration = ANIMATION_DURATION
