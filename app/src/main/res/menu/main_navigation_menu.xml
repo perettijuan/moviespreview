@@ -17,5 +17,9 @@
       android:id="@+id/topRatedMoviesFragment"
       android:title="@string/main_menu_top_rated"
       android:icon="@drawable/ic_section_top_rated"/>
+    <item
+        android:id="@+id/discoverMoviesFragment"
+        android:title="@string/main_menu_discover"
+        android:icon="@drawable/ic_discover_movies"/>
   </group>
 </menu>

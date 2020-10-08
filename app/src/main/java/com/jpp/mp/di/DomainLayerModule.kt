@@ -8,6 +8,7 @@ import com.jpp.mpdomain.repository.CreditsRepository
 import com.jpp.mpdomain.repository.LanguageRepository
 import com.jpp.mpdomain.repository.LicensesRepository
 import com.jpp.mpdomain.repository.MovieDetailRepository
+import com.jpp.mpdomain.repository.MovieGenreRepository
 import com.jpp.mpdomain.repository.MoviePageRepository
 import com.jpp.mpdomain.repository.MovieStateRepository
 import com.jpp.mpdomain.repository.PersonRepository
@@ -16,8 +17,10 @@ import com.jpp.mpdomain.repository.SessionRepository
 import com.jpp.mpdomain.usecase.DeleteMovieRatingUseCase
 import com.jpp.mpdomain.usecase.FindAppLicenseUseCase
 import com.jpp.mpdomain.usecase.GetAccessTokenUseCase
+import com.jpp.mpdomain.usecase.GetAllMovieGenresUseCase
 import com.jpp.mpdomain.usecase.GetAppLicensesUseCase
 import com.jpp.mpdomain.usecase.GetCreditsUseCase
+import com.jpp.mpdomain.usecase.GetDiscoveredMoviePageUseCase
 import com.jpp.mpdomain.usecase.GetMovieDetailUseCase
 import com.jpp.mpdomain.usecase.GetMoviePageUseCase
 import com.jpp.mpdomain.usecase.GetMovieStateUseCase
@@ -228,4 +231,24 @@ class DomainLayerModule {
         accountRepository: AccountRepository,
         moviePageRepository: MoviePageRepository
     ): LogOutUseCase = LogOutUseCase(sessionRepository, accountRepository, moviePageRepository)
+
+    @Provides
+    fun providesGetDiscoveredMoviePageUseCase(
+        moviePageRepository: MoviePageRepository,
+        configurationRepository: ConfigurationRepository,
+        connectivityRepository: ConnectivityRepository,
+        languageRepository: LanguageRepository
+    ): GetDiscoveredMoviePageUseCase = GetDiscoveredMoviePageUseCase(
+        moviePageRepository,
+        configurationRepository,
+        connectivityRepository,
+        languageRepository
+    )
+
+    @Provides
+    fun providesGetAllMovieGenresUseCase(
+        movieGenreRepository: MovieGenreRepository,
+        connectivityRepository: ConnectivityRepository
+    ): GetAllMovieGenresUseCase =
+        GetAllMovieGenresUseCase(movieGenreRepository, connectivityRepository)
 }

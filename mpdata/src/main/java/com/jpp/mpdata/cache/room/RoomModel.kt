@@ -53,10 +53,10 @@ data class DBMoviePage(
  * [pageId] is a foreign key that references the page to which this movie belongs to.
  */
 @Entity(tableName = "movies",
-        foreignKeys = [(ForeignKey(entity = DBMoviePage::class,
-                parentColumns = arrayOf("_id"),
-                childColumns = arrayOf("page_id"),
-                onDelete = ForeignKey.CASCADE))])
+    foreignKeys = [(ForeignKey(entity = DBMoviePage::class,
+        parentColumns = arrayOf("_id"),
+        childColumns = arrayOf("page_id"),
+        onDelete = ForeignKey.CASCADE))])
 data class DBMovie(
     @ColumnInfo(name = "movieId") var movieId: Double,
     @ColumnInfo(name = "title") var title: String,
@@ -96,11 +96,11 @@ data class DBMovieDetail(
  * Represents a genre of a movie in the database.
  */
 @Entity(tableName = "genres",
-        foreignKeys = [(ForeignKey(entity = DBMovieDetail::class,
-                parentColumns = arrayOf("_id"),
-                childColumns = arrayOf("movie_detail_d"),
-                onDelete = ForeignKey.CASCADE))])
-data class DBMovieGenre(
+    foreignKeys = [(ForeignKey(entity = DBMovieDetail::class,
+        parentColumns = arrayOf("_id"),
+        childColumns = arrayOf("movie_detail_d"),
+        onDelete = ForeignKey.CASCADE))])
+data class DBGenreByMovie(
     @PrimaryKey @ColumnInfo(name = "_id") var id: Int,
     @ColumnInfo(name = "name") var name: String,
     @ColumnInfo(name = "movie_detail_d") var movieDetailId: Double
@@ -146,3 +146,13 @@ data class DBCrewPerson(
     @ColumnInfo(name = "duedate") var dueDate: Long /* represents the date until the data is valid */
 ) // -> this represents the ID of the movie to which this cast belongs to.
 // We do not store it as a foreign key since we don't want to delete it on CASCADE and we don't want to deal with integrity at this level.
+
+/**
+ * Represents an official genre for movies.
+ */
+@Entity(tableName = "movie_genres")
+data class DBMovieGenre(
+    @PrimaryKey @ColumnInfo(name = "_id") var id: Int,
+    @ColumnInfo(name = "name") var name: String,
+    @ColumnInfo(name = "duedate") var dueDate: Long /* represents the date until the data is valid */
+)
