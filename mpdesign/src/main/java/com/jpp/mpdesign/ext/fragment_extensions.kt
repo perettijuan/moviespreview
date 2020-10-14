@@ -1,6 +1,5 @@
 package com.jpp.mpdesign.ext
 
-import android.graphics.PorterDuff
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
