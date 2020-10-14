@@ -55,11 +55,7 @@ fun Fragment.snackBarNoAction(
 }
 
 fun Fragment.mpToast(@StringRes messageRes: Int) {
-    Toast.makeText(requireContext(), messageRes, Toast.LENGTH_SHORT)
-            .apply {
-                view.background.setColorFilter(getColor(android.R.color.background_dark), PorterDuff.Mode.SRC_IN)
-                view.findViewById<TextView>(android.R.id.message).setTextColor(getColor(android.R.color.white))
-            }.show()
+    Toast.makeText(requireContext(), messageRes, Toast.LENGTH_SHORT).show()
 }
 
 /**
