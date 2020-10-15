@@ -16,5 +16,4 @@ data class MovieListContentViewState(
         movieList = movieList.toMutableList().addList(list)
     )
 
-    fun show(): MovieListContentViewState = copy(visibility = View.VISIBLE)
 }

@@ -64,8 +64,8 @@ class DiscoverMoviesViewModel(
         if (currentPage == 0) {
             _viewState.value = DiscoverMoviesViewState.showLoading()
             _filtersViewState.value = DiscoverMoviesFiltersViewState.showLoading()
+            fetchMoviePage(FIRST_PAGE)
         }
-        fetchMoviePage(FIRST_PAGE)
     }
 
     /**

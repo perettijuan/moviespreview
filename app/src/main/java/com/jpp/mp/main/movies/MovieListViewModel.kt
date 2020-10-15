@@ -61,12 +61,10 @@ class MovieListViewModel(
      * on it.
      */
     fun onInit(section: MovieSection, screenTitle: String) {
-        if (_viewState.value == null) {
+        if (currentPage == 0) {
             movieSection = section
             _viewState.value = MovieListViewState.showLoading(screenTitle)
             fetchMoviePage(FIRST_PAGE, movieSection)
-        } else {
-            _viewState.value = _viewState.value?.show()
         }
     }
 

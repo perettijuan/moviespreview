@@ -38,11 +38,6 @@ data class MovieListViewState(
         )
     }
 
-    fun show(): MovieListViewState = copy(
-        loadingVisibility = View.INVISIBLE,
-        contentViewState = contentViewState.show()
-    )
-
     companion object {
         fun showLoading(screenTitle: String) =
             MovieListViewState(screenTitle = screenTitle, loadingVisibility = View.VISIBLE)
