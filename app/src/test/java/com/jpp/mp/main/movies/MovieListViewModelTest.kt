@@ -171,7 +171,6 @@ class MovieListViewModelTest {
 
         subject.onInit(section, screenTitle)
 
-
         coVerify(exactly = 1) { getMoviePageUseCase.execute(1, section) }
     }
 

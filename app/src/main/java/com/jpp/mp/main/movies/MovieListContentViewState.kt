@@ -15,5 +15,4 @@ data class MovieListContentViewState(
         visibility = View.VISIBLE,
         movieList = movieList.toMutableList().addList(list)
     )
-
 }
