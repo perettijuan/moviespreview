@@ -48,7 +48,7 @@ class UserMovieListViewModel(
      * on it.
      */
     internal fun onInit(listType: UserMovieListType) {
-        if (currentPage == 0) {
+        if (_viewState.value == null) {
             this.listType = listType
             _viewState.value = UserMovieListViewState.showLoading(listType.titleRes)
             fetchMoviePage(FIRST_PAGE, listType)
