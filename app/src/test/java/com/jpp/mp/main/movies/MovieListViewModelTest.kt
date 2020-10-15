@@ -154,6 +154,27 @@ class MovieListViewModelTest {
         assertEquals(mockedList.size, viewStatePosted?.contentViewState?.movieList?.size)
     }
 
+    @Test
+    fun `Should avoid fetching new state when state is present (rotation)`() {
+        val screenTitle = "aTitle"
+        val section = MovieSection.Playing
+
+        val mockedList = getMockedMovies()
+        val moviePage = MoviePage(
+            page = 1,
+            results = mockedList,
+            total_pages = 100,
+            total_results = 2000
+        )
+
+        coEvery { getMoviePageUseCase.execute(any(), section) } returns Try.Success(moviePage)
+
+        subject.onInit(section, screenTitle)
+
+
+        coVerify(exactly = 1) { getMoviePageUseCase.execute(1, section) }
+    }
+
     @ParameterizedTest
     @MethodSource("movieListTestParams")
     fun `Should request navigation to movie details when movie item selected`(section: MovieSection, screenTitle: String) {
