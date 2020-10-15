@@ -2,7 +2,6 @@ package com.jpp.mpcredits
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,11 +45,6 @@ class CreditsFragment : Fragment() {
 
     private var movieCreditsRv: RecyclerView? = null
 
-    // used to restore the position of the RecyclerView on view re-creation
-    // TODO we can simplify this once RecyclerView 1.2.0 is released
-    //  ==> https://medium.com/androiddevelopers/restore-recyclerview-scroll-position-a8fbdc9a9334
-    private var rvState: Parcelable? = null
-
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -68,9 +62,6 @@ class CreditsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews(view)
-
-        rvState = savedInstanceState?.getParcelable(CREDITS_RV_STATE_KEY) ?: rvState
-
         viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
         viewModel.onInit(CreditsInitParam.create(this@CreditsFragment))
     }
@@ -81,23 +72,9 @@ class CreditsFragment : Fragment() {
         super.onDestroyView()
     }
 
-    override fun onPause() {
-        rvState = movieCreditsRv?.layoutManager?.onSaveInstanceState()
-        super.onPause()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable(
-            CREDITS_RV_STATE_KEY,
-            movieCreditsRv?.layoutManager?.onSaveInstanceState()
-        )
-        super.onSaveInstanceState(outState)
-    }
-
     private fun setupViews(view: View) {
         movieCreditsRv = view.findViewById<RecyclerView>(R.id.creditsRv).apply {
             layoutManager = LinearLayoutManager(context)
-            layoutManager?.onRestoreInstanceState(rvState)
             addItemDecoration(
                 DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation)
             )
@@ -111,9 +88,5 @@ class CreditsFragment : Fragment() {
         }
         viewBinding?.viewState = viewState
         viewBinding?.executePendingBindings()
-    }
-
-    private companion object {
-        const val CREDITS_RV_STATE_KEY = "creditsRvStateKey"
     }
 }
