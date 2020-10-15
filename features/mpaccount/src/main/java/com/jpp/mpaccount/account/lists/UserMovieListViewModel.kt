@@ -35,7 +35,7 @@ class UserMovieListViewModel(
 
     private var currentPage: Int
         set(value) = savedStateHandle.set(CURRENT_PAGE_KEY, value)
-        get() = savedStateHandle.get(CURRENT_PAGE_KEY) ?: FIRST_PAGE
+        get() = savedStateHandle.get(CURRENT_PAGE_KEY) ?: 0
 
     private var listType: UserMovieListType
         set(value) = savedStateHandle.set(MOVIE_LIST_TYPE, value)
@@ -48,10 +48,11 @@ class UserMovieListViewModel(
      * on it.
      */
     internal fun onInit(listType: UserMovieListType) {
-        currentPage = FIRST_PAGE
-        this.listType = listType
-        _viewState.value = UserMovieListViewState.showLoading(listType.titleRes)
-        fetchMoviePage(currentPage, listType)
+        if (currentPage == 0) {
+            this.listType = listType
+            _viewState.value = UserMovieListViewState.showLoading(listType.titleRes)
+            fetchMoviePage(FIRST_PAGE, listType)
+        }
     }
 
     /**
