@@ -2,7 +2,6 @@ package com.jpp.mp.main.discover
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,11 +39,6 @@ class DiscoverMoviesFragment : Fragment() {
         )
     }
 
-    // used to restore the position of the RecyclerView on view re-creation
-    // TODO we can simplify this once RecyclerView 1.2.0 is released
-    //  ==> https://medium.com/androiddevelopers/restore-recyclerview-scroll-position-a8fbdc9a9334
-    private var rvState: Parcelable? = null
-
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -67,9 +61,6 @@ class DiscoverMoviesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpViews()
-
-        rvState = savedInstanceState?.getParcelable(DISCOVER_MOVIES_RV_STATE_KEY) ?: rvState
-
         viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
         viewModel.filterViewState.observeValue(viewLifecycleOwner, ::renderFilterViewState)
         viewModel.events.observeHandledEvent(viewLifecycleOwner, ::handleEvent)
@@ -79,19 +70,6 @@ class DiscoverMoviesFragment : Fragment() {
     override fun onDestroyView() {
         viewBinding = null
         super.onDestroyView()
-    }
-
-    override fun onPause() {
-        rvState = viewBinding?.discoverMovieList?.layoutManager?.onSaveInstanceState()
-        super.onPause()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable(
-            DISCOVER_MOVIES_RV_STATE_KEY,
-            viewBinding?.discoverMovieList?.layoutManager?.onSaveInstanceState()
-        )
-        super.onSaveInstanceState(outState)
     }
 
     private fun setUpViews() {
@@ -128,7 +106,6 @@ class DiscoverMoviesFragment : Fragment() {
         setScreenTitle(getString(viewState.screenTitle))
         viewBinding?.viewState = viewState
         (viewBinding?.discoverMovieList?.adapter as DiscoverMoviesAdapter).submitList(viewState.contentViewState.itemList)
-        viewBinding?.discoverMovieList?.layoutManager?.onRestoreInstanceState(rvState)
     }
 
     private fun renderFilterViewState(viewState: DiscoverMoviesFiltersViewState) {
@@ -137,9 +114,5 @@ class DiscoverMoviesFragment : Fragment() {
 
     private fun handleEvent(event: DiscoverMovieClearResultsEvent) {
         (viewBinding?.discoverMovieList?.adapter as DiscoverMoviesAdapter).clearList()
-    }
-
-    private companion object {
-        const val DISCOVER_MOVIES_RV_STATE_KEY = "discoverMoviesRvStateKey"
     }
 }

@@ -2,7 +2,6 @@ package com.jpp.mp.main.movies
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -62,11 +61,6 @@ abstract class MovieListFragment : Fragment() {
     protected abstract val movieSection: MovieSection
     protected abstract val screenTitle: String
 
-    // used to restore the position of the RecyclerView on view re-creation
-    // TODO we can simplify this once RecyclerView 1.2.0 is released
-    //  ==> https://medium.com/androiddevelopers/restore-recyclerview-scroll-position-a8fbdc9a9334
-    private var rvState: Parcelable? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -94,9 +88,6 @@ abstract class MovieListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpViews(view)
-
-        rvState = savedInstanceState?.getParcelable(MOVIES_RV_STATE_KEY) ?: rvState
-
         viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
         viewModel.onInit(movieSection, screenTitle)
     }
@@ -105,19 +96,6 @@ abstract class MovieListFragment : Fragment() {
         viewBinding = null
         movieListRv = null
         super.onDestroyView()
-    }
-
-    override fun onPause() {
-        rvState = movieListRv?.layoutManager?.onSaveInstanceState()
-        super.onPause()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable(
-            MOVIES_RV_STATE_KEY,
-            movieListRv?.layoutManager?.onSaveInstanceState()
-        )
-        super.onSaveInstanceState(outState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -153,11 +131,6 @@ abstract class MovieListFragment : Fragment() {
     private fun renderViewState(viewState: MovieListViewState) {
         setScreenTitle(viewState.screenTitle)
         viewBinding?.viewState = viewState
-        (movieListRv?.adapter as MoviesAdapter).updateDataList(viewState.contentViewState.movieList)
-        movieListRv?.layoutManager?.onRestoreInstanceState(rvState)
-    }
-
-    private companion object {
-        const val MOVIES_RV_STATE_KEY = "moviesRvStateKey"
+        (movieListRv?.adapter as MoviesAdapter).submitList(viewState.contentViewState.movieList)
     }
 }

@@ -52,9 +52,11 @@ class CreditsViewModel(
      * on it.
      */
     internal fun onInit(param: CreditsInitParam) {
-        movieId = param.movieId
-        movieTitle = param.movieTitle
-        fetchMovieCredits()
+        if (_viewState.value == null) {
+            movieId = param.movieId
+            movieTitle = param.movieTitle
+            fetchMovieCredits()
+        }
     }
 
     /**

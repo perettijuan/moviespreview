@@ -35,7 +35,7 @@ class UserMovieListViewModel(
 
     private var currentPage: Int
         set(value) = savedStateHandle.set(CURRENT_PAGE_KEY, value)
-        get() = savedStateHandle.get(CURRENT_PAGE_KEY) ?: FIRST_PAGE
+        get() = savedStateHandle.get(CURRENT_PAGE_KEY) ?: 0
 
     private var listType: UserMovieListType
         set(value) = savedStateHandle.set(MOVIE_LIST_TYPE, value)
@@ -48,10 +48,11 @@ class UserMovieListViewModel(
      * on it.
      */
     internal fun onInit(listType: UserMovieListType) {
-        currentPage = FIRST_PAGE
-        this.listType = listType
-        _viewState.value = UserMovieListViewState.showLoading(listType.titleRes)
-        fetchMoviePage(currentPage, listType)
+        if (_viewState.value == null) {
+            this.listType = listType
+            _viewState.value = UserMovieListViewState.showLoading(listType.titleRes)
+            fetchMoviePage(FIRST_PAGE, listType)
+        }
     }
 
     /**
@@ -100,11 +101,11 @@ class UserMovieListViewModel(
         when (cause) {
             is Try.FailureCause.NoConnectivity -> _viewState.value =
                 _viewState.value?.showNoConnectivityError {
-                    fetchMoviePage(currentPage, listType)
+                    fetchMoviePage(FIRST_PAGE, listType)
                 }
             is Try.FailureCause.Unknown -> _viewState.value =
                 _viewState.value?.showUnknownError {
-                    fetchMoviePage(currentPage, listType)
+                    fetchMoviePage(FIRST_PAGE, listType)
                 }
             is Try.FailureCause.UserNotLogged -> navigator.navigateHome()
         }

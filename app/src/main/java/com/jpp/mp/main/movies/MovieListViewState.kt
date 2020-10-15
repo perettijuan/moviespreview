@@ -33,10 +33,7 @@ data class MovieListViewState(
     fun showMovieList(movieList: List<MovieListItem>): MovieListViewState {
         return copy(
             loadingVisibility = View.INVISIBLE,
-            contentViewState = MovieListContentViewState(
-                visibility = View.VISIBLE,
-                movieList = movieList
-            ),
+            contentViewState = contentViewState.showMovies(movieList),
             errorViewState = ErrorViewState.asNotVisible()
         )
     }
