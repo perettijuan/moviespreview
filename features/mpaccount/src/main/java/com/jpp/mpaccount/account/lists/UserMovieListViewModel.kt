@@ -101,11 +101,11 @@ class UserMovieListViewModel(
         when (cause) {
             is Try.FailureCause.NoConnectivity -> _viewState.value =
                 _viewState.value?.showNoConnectivityError {
-                    fetchMoviePage(currentPage, listType)
+                    fetchMoviePage(FIRST_PAGE, listType)
                 }
             is Try.FailureCause.Unknown -> _viewState.value =
                 _viewState.value?.showUnknownError {
-                    fetchMoviePage(currentPage, listType)
+                    fetchMoviePage(FIRST_PAGE, listType)
                 }
             is Try.FailureCause.UserNotLogged -> navigator.navigateHome()
         }
