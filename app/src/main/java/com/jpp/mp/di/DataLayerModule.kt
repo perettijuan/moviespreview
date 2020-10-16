@@ -223,8 +223,8 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesAppVersionRepository():
-            AppVersionRepository = AppVersionRepositoryImpl()
+    fun providesAppVersionRepository(context: Context):
+            AppVersionRepository = AppVersionRepositoryImpl(context)
 
     @Singleton
     @Provides

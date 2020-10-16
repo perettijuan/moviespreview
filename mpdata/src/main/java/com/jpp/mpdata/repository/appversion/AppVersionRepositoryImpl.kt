@@ -1,5 +1,6 @@
 package com.jpp.mpdata.repository.appversion
 
+import android.content.Context
 import com.jpp.mpdata.BuildConfig
 import com.jpp.mpdomain.AppVersion
 import com.jpp.mpdomain.repository.AppVersionRepository
@@ -9,6 +10,9 @@ import com.jpp.mpdomain.repository.AppVersionRepository
  *
  * Note: Untested for simplicity.
  */
-class AppVersionRepositoryImpl : AppVersionRepository {
-    override suspend fun getCurrentAppVersion(): AppVersion = AppVersion(BuildConfig.VERSION_NAME)
+class AppVersionRepositoryImpl(private val context: Context) : AppVersionRepository {
+    override suspend fun getCurrentAppVersion(): AppVersion {
+        val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        return AppVersion(packageInfo.versionName)
+    }
 }
