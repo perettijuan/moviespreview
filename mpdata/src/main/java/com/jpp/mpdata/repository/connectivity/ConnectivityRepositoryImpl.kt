@@ -17,7 +17,6 @@ class ConnectivityRepositoryImpl(private val context: Context) : ConnectivityRep
         }
     }
 
-
     private fun isConnectedToNetwork(): Boolean {
         return if (Build.VERSION.SDK_INT >= API_LEVEL_23) {
             isConnectedToNetworkApiLevel23()
