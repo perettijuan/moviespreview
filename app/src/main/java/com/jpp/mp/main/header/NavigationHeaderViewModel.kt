@@ -10,6 +10,7 @@ import com.jpp.mpdomain.usecase.GetUserAccountUseCase
 import com.jpp.mpdomain.usecase.Try
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -18,6 +19,7 @@ import kotlinx.coroutines.withContext
  * [ViewModel] that supports the [NavigationHeaderFragment] behavior. It retrieves the
  * user account data and updates the view state that the Fragment takes care of rendering.
  */
+@ObsoleteCoroutinesApi
 @ExperimentalCoroutinesApi
 class NavigationHeaderViewModel(
     private val getUserAccountUseCase: GetUserAccountUseCase,

@@ -63,7 +63,7 @@ class DiscoverMoviesFragment : Fragment() {
         setUpViews()
         viewModel.viewState.observeValue(viewLifecycleOwner, ::renderViewState)
         viewModel.filterViewState.observeValue(viewLifecycleOwner, ::renderFilterViewState)
-        viewModel.events.observeHandledEvent(viewLifecycleOwner, ::handleEvent)
+        viewModel.events.observeHandledEvent(viewLifecycleOwner) { handleEvent() }
         viewModel.onInit()
     }
 
@@ -112,7 +112,7 @@ class DiscoverMoviesFragment : Fragment() {
         viewBinding?.filterViewState = viewState
     }
 
-    private fun handleEvent(event: DiscoverMovieClearResultsEvent) {
+    private fun handleEvent() {
         (viewBinding?.discoverMovieList?.adapter as DiscoverMoviesAdapter).clearList()
     }
 }

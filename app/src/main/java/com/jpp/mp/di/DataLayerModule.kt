@@ -73,6 +73,7 @@ import com.jpp.mpdomain.repository.SessionRepository
 import com.jpp.mpdomain.repository.SupportRepository
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton
 
 /**
@@ -276,6 +277,7 @@ class DataLayerModule {
     @Provides
     fun providesSessionDb(context: Context): SessionDb = SessionDbImpl(context)
 
+    @ExperimentalCoroutinesApi
     @Singleton
     @Provides
     fun providesSessionRepository(sessionApi: SessionApi, sessionDb: SessionDb):
