@@ -73,8 +73,8 @@ import com.jpp.mpdomain.repository.SessionRepository
 import com.jpp.mpdomain.repository.SupportRepository
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * Provides all dependencies for the data layer.

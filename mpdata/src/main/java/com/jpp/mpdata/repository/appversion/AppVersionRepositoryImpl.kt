@@ -1,7 +1,6 @@
 package com.jpp.mpdata.repository.appversion
 
 import android.content.Context
-import com.jpp.mpdata.BuildConfig
 import com.jpp.mpdomain.AppVersion
 import com.jpp.mpdomain.repository.AppVersionRepository
 

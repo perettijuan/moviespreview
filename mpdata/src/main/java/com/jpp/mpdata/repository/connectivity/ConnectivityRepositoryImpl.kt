@@ -43,7 +43,6 @@ class ConnectivityRepositoryImpl(private val context: Context) : ConnectivityRep
         return connectivityManager.activeNetworkInfo?.isConnected ?: false
     }
 
-
     private val connectivityManager: ConnectivityManager
         get() = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
