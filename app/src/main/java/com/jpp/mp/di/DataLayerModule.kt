@@ -74,6 +74,7 @@ import com.jpp.mpdomain.repository.SupportRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * Provides all dependencies for the data layer.
@@ -223,8 +224,8 @@ class DataLayerModule {
 
     @Singleton
     @Provides
-    fun providesAppVersionRepository():
-            AppVersionRepository = AppVersionRepositoryImpl()
+    fun providesAppVersionRepository(context: Context):
+            AppVersionRepository = AppVersionRepositoryImpl(context)
 
     @Singleton
     @Provides
@@ -276,6 +277,7 @@ class DataLayerModule {
     @Provides
     fun providesSessionDb(context: Context): SessionDb = SessionDbImpl(context)
 
+    @ExperimentalCoroutinesApi
     @Singleton
     @Provides
     fun providesSessionRepository(sessionApi: SessionApi, sessionDb: SessionDb):

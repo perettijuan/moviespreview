@@ -2,20 +2,20 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="moviespreview/app" />
-      <module fileurl="file://$PROJECT_DIR$/features/features.iml" filepath="$PROJECT_DIR$/features/features.iml" group="moviespreview/features" />
-      <module fileurl="file://$PROJECT_DIR$/moviespreview.iml" filepath="$PROJECT_DIR$/moviespreview.iml" group="moviespreview" />
-      <module fileurl="file://$PROJECT_DIR$/features/mpabout/mpabout.iml" filepath="$PROJECT_DIR$/features/mpabout/mpabout.iml" group="moviespreview/features/mpabout" />
-      <module fileurl="file://$PROJECT_DIR$/features/mpaccount/mpaccount.iml" filepath="$PROJECT_DIR$/features/mpaccount/mpaccount.iml" group="moviespreview/features/mpaccount" />
-      <module fileurl="file://$PROJECT_DIR$/mpcommon/mpcommon.iml" filepath="$PROJECT_DIR$/mpcommon/mpcommon.iml" group="moviespreview/mpcommon" />
-      <module fileurl="file://$PROJECT_DIR$/features/mpcredits/mpcredits.iml" filepath="$PROJECT_DIR$/features/mpcredits/mpcredits.iml" group="moviespreview/features/mpcredits" />
-      <module fileurl="file://$PROJECT_DIR$/mpdata/mpdata.iml" filepath="$PROJECT_DIR$/mpdata/mpdata.iml" group="moviespreview/mpdata" />
-      <module fileurl="file://$PROJECT_DIR$/mpdesign/mpdesign.iml" filepath="$PROJECT_DIR$/mpdesign/mpdesign.iml" group="moviespreview/mpdesign" />
-      <module fileurl="file://$PROJECT_DIR$/mpdomain/mpdomain.iml" filepath="$PROJECT_DIR$/mpdomain/mpdomain.iml" group="moviespreview/mpdomain" />
-      <module fileurl="file://$PROJECT_DIR$/features/mpmoviedetails/mpmoviedetails.iml" filepath="$PROJECT_DIR$/features/mpmoviedetails/mpmoviedetails.iml" group="moviespreview/features/mpmoviedetails" />
-      <module fileurl="file://$PROJECT_DIR$/features/mpperson/mpperson.iml" filepath="$PROJECT_DIR$/features/mpperson/mpperson.iml" group="moviespreview/features/mpperson" />
-      <module fileurl="file://$PROJECT_DIR$/features/mpsearch/mpsearch.iml" filepath="$PROJECT_DIR$/features/mpsearch/mpsearch.iml" group="moviespreview/features/mpsearch" />
-      <module fileurl="file://$PROJECT_DIR$/mptestutils/mptestutils.iml" filepath="$PROJECT_DIR$/mptestutils/mptestutils.iml" group="moviespreview/mptestutils" />
+      <module fileurl="file://$PROJECT_DIR$/moviespreview.iml" filepath="$PROJECT_DIR$/moviespreview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/moviespreview.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/moviespreview.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/features/moviespreview.features.iml" filepath="$PROJECT_DIR$/.idea/modules/features/moviespreview.features.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/features/mpabout/moviespreview.features.mpabout.iml" filepath="$PROJECT_DIR$/.idea/modules/features/mpabout/moviespreview.features.mpabout.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/features/mpaccount/moviespreview.features.mpaccount.iml" filepath="$PROJECT_DIR$/.idea/modules/features/mpaccount/moviespreview.features.mpaccount.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/features/mpcredits/moviespreview.features.mpcredits.iml" filepath="$PROJECT_DIR$/.idea/modules/features/mpcredits/moviespreview.features.mpcredits.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/features/mpmoviedetails/moviespreview.features.mpmoviedetails.iml" filepath="$PROJECT_DIR$/.idea/modules/features/mpmoviedetails/moviespreview.features.mpmoviedetails.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/features/mpperson/moviespreview.features.mpperson.iml" filepath="$PROJECT_DIR$/.idea/modules/features/mpperson/moviespreview.features.mpperson.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/features/mpsearch/moviespreview.features.mpsearch.iml" filepath="$PROJECT_DIR$/.idea/modules/features/mpsearch/moviespreview.features.mpsearch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mpcommon/moviespreview.mpcommon.iml" filepath="$PROJECT_DIR$/.idea/modules/mpcommon/moviespreview.mpcommon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mpdata/moviespreview.mpdata.iml" filepath="$PROJECT_DIR$/.idea/modules/mpdata/moviespreview.mpdata.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mpdesign/moviespreview.mpdesign.iml" filepath="$PROJECT_DIR$/.idea/modules/mpdesign/moviespreview.mpdesign.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mpdomain/moviespreview.mpdomain.iml" filepath="$PROJECT_DIR$/.idea/modules/mpdomain/moviespreview.mpdomain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mptestutils/moviespreview.mptestutils.iml" filepath="$PROJECT_DIR$/.idea/modules/mptestutils/moviespreview.mptestutils.iml" />
     </modules>
   </component>
 </project>

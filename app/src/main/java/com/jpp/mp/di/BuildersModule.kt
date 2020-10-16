@@ -21,6 +21,7 @@ import com.jpp.mpsearch.SearchActivity
 import com.jpp.mpsearch.SearchFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * Dagger module used to bind the [MainActivity] and all the Fragments in the application
@@ -49,6 +50,7 @@ abstract class BuildersModule {
     @ContributesAndroidInjector
     abstract fun bindMovieDetailsFragment(): MovieDetailsFragment
 
+    @ExperimentalCoroutinesApi
     @ContributesAndroidInjector
     abstract fun bindNavigationHeaderFragment(): NavigationHeaderFragment
 
