@@ -108,8 +108,8 @@ project.ext {
     compileSdkVersion = 30
     minSdkVersion = 21
     targetSdkVersion = 30
-    versionName = "1.8"
-    versionCode = 7
+    versionName = "1.9"
+    versionCode = 8
 }
 
 allprojects {
